@@ -48,7 +48,7 @@ export default {
   },
   [types.SET_SESSION_STATUS](state, status) {
     const session = {
-      ...(state.session || {}),
+      ...state.session,
       status,
     };
 

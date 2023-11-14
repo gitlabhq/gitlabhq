@@ -5,6 +5,8 @@ module Gitlab
     module StageMethods
       extend ActiveSupport::Concern
 
+      MAX_RETRIES_AFTER_INTERRUPTION = 20
+
       included do
         include ApplicationWorker
 
@@ -15,6 +17,29 @@ module Gitlab
             error_source: self.class.name,
             fail_import: true
           )
+        end
+      end
+
+      class_methods do
+        # We can increase the number of times a GitHubImport::Stage worker is retried
+        # after being interrupted if the importer it executes can restart exactly
+        # from where it left off.
+        #
+        # It is not safe to call this method if the importer loops over its data from
+        # the beginning when restarted, even if it skips data that is already imported
+        # inside the loop, as there is a possibility the importer will never reach
+        # the end of the loop.
+        #
+        # Examples of stage workers that call this method are ones that execute services that:
+        #
+        # - Continue paging an endpoint from where it left off:
+        #   https://gitlab.com/gitlab-org/gitlab/-/blob/487521cc/lib/gitlab/github_import/parallel_scheduling.rb#L114-117
+        # - Continue their loop from where it left off:
+        #   https://gitlab.com/gitlab-org/gitlab/-/blob/024235ec/lib/gitlab/github_import/importer/pull_requests/review_requests_importer.rb#L15
+        def resumes_work_when_interrupted!
+          return unless Feature.enabled?(:github_importer_raise_max_interruptions)
+
+          sidekiq_options max_retries_after_interruption: MAX_RETRIES_AFTER_INTERRUPTION
         end
       end
 
@@ -54,6 +79,8 @@ module Gitlab
       # client - An instance of Gitlab::GithubImport::Client.
       # project - An instance of Project.
       def try_import(client, project)
+        project.import_state.refresh_jid_expiration
+
         import(client, project)
       rescue RateLimitError
         self.class.perform_in(client.rate_limit_resets_in, project.id)

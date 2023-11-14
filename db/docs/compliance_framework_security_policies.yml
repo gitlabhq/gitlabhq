@@ -1,0 +1,10 @@
+---
+table_name: compliance_framework_security_policies
+classes:
+- ComplianceManagement::ComplianceFramework::SecurityPolicy
+feature_categories:
+- security_policy_management
+description: Persists the relation between compliance_frameworks and security_orchestration_policy_configurations
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135291
+milestone: '16.6'
+gitlab_schema: gitlab_main

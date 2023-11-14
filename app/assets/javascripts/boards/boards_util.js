@@ -204,7 +204,8 @@ export function moveItemListHelper(item, fromList, toList) {
 
 export function moveItemVariables({
   iid,
-  epicId,
+  itemId,
+  epicId = null,
   fromListId,
   toListId,
   moveBeforeId,
@@ -225,6 +226,7 @@ export function moveItemVariables({
     };
   }
   return {
+    itemId,
     epicId,
     boardId,
     moveBeforeId,

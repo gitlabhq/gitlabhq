@@ -41,18 +41,19 @@ module APIInternalBaseHelpers
     )
   end
 
-  def push(key, container, protocol = 'ssh', env: nil, changes: nil)
+  def push(key, container, protocol = 'ssh', env: nil, changes: nil, relative_path: nil)
     push_with_path(
       key,
       full_path: full_path_for(container),
       gl_repository: gl_repository_for(container),
       protocol: protocol,
       env: env,
-      changes: changes
+      changes: changes,
+      relative_path: relative_path
     )
   end
 
-  def push_with_path(key, full_path:, gl_repository: nil, protocol: 'ssh', env: nil, changes: nil)
+  def push_with_path(key, full_path:, gl_repository: nil, protocol: 'ssh', env: nil, changes: nil, relative_path: nil)
     changes ||= 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master'
 
     params = {
@@ -61,7 +62,8 @@ module APIInternalBaseHelpers
       project: full_path,
       action: 'git-receive-pack',
       protocol: protocol,
-      env: env
+      env: env,
+      relative_path: relative_path
     }
     params[:gl_repository] = gl_repository if gl_repository
 

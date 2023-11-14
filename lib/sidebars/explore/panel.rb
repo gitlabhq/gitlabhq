@@ -28,6 +28,7 @@ module Sidebars
       def add_menus
         add_menu(Sidebars::Explore::Menus::ProjectsMenu.new(context))
         add_menu(Sidebars::Explore::Menus::GroupsMenu.new(context))
+        add_menu(Sidebars::Explore::Menus::CatalogMenu.new(context))
         add_menu(Sidebars::Explore::Menus::TopicsMenu.new(context))
         add_menu(Sidebars::Explore::Menus::SnippetsMenu.new(context))
       end

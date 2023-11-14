@@ -50,7 +50,11 @@ variables:
     - gitlab-terraform plan-json
   resource_group: ${TF_STATE_NAME}
   artifacts:
-    # The next line, which disables public access to pipeline artifacts, may not be available everywhere.
+    # Terraform's cache files can include secrets which can be accidentally exposed.
+    # Please exercise caution when utilizing secrets in your Terraform infrastructure and
+    # consider limiting access to artifacts or take other security measures to protect sensitive information.
+    #
+    # The next line, which disables public access to pipeline artifacts, is not available on GitLab.com.
     # See: https://docs.gitlab.com/ee/ci/yaml/#artifactspublic
     public: false
     paths:

@@ -7,20 +7,14 @@ module QA
       include Support::Helpers::MaskToken
 
       let(:project) { create(:project, :private, name: 'pypi-package-project') }
-      let(:package) do
-        Resource::Package.init do |package|
-          package.name = "mypypipackage-#{SecureRandom.hex(8)}"
-          package.project = project
-        end
-      end
+      let(:package) { build(:package, name: "mypypipackage-#{SecureRandom.hex(8)}", project: project) }
 
       let!(:runner) do
-        Resource::ProjectRunner.fabricate! do |runner|
-          runner.name = "qa-runner-#{Time.now.to_i}"
-          runner.tags = ["runner-for-#{project.name}"]
-          runner.executor = :docker
-          runner.project = project
-        end
+        create(:project_runner,
+          name: "qa-runner-#{Time.now.to_i}",
+          tags: ["runner-for-#{project.name}"],
+          executor: :docker,
+          project: project)
       end
 
       let(:uri) { URI.parse(Runtime::Scenario.gitlab_address) }
@@ -36,21 +30,21 @@ module QA
         Flow::Login.sign_in
 
         Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            pypi_yaml = ERB.new(read_fixture('package_managers/pypi', 'pypi_upload_install_package.yaml.erb')).result(binding)
-            pypi_setup_file = ERB.new(read_fixture('package_managers/pypi', 'setup.py.erb')).result(binding)
+          pypi_yaml = ERB.new(read_fixture('package_managers/pypi', 'pypi_upload_install_package.yaml.erb')).result(binding)
+          pypi_setup_file = ERB.new(read_fixture('package_managers/pypi', 'setup.py.erb')).result(binding)
 
-            commit.project = project
-            commit.commit_message = 'Add files'
-            commit.add_files([{
-                                  file_path: '.gitlab-ci.yml',
-                                  content: pypi_yaml
-                              },
-                              {
-                                  file_path: 'setup.py',
-                                  content: pypi_setup_file
-                              }])
-          end
+          create(:commit, project: project, actions: [
+            {
+              action: 'create',
+              file_path: '.gitlab-ci.yml',
+              content: pypi_yaml
+            },
+            {
+              action: 'create',
+              file_path: 'setup.py',
+              content: pypi_setup_file
+            }
+          ])
         end
 
         project.visit!

@@ -6,8 +6,8 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
   include FilteredSearchHelpers
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:reporter) { create(:user, :no_super_sidebar) }
-  let_it_be(:developer) { create(:user, :no_super_sidebar) }
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:developer) { create(:user) }
 
   let(:user) { reporter }
 
@@ -31,12 +31,6 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
         submit_search('gitlab')
       end
 
-      it 'renders page title' do
-        page.within('.page-title') do
-          expect(page).to have_content('Search')
-        end
-      end
-
       it 'renders breadcrumbs' do
         page.within('.breadcrumbs') do
           expect(page).to have_content('Search')
@@ -46,31 +40,34 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
 
     context 'when using the keyboard shortcut' do
       before do
-        find('#search')
         find('body').native.send_keys('s')
-        wait_for_all_requests
       end
 
-      it 'shows the category search dropdown', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/250285' do
-        expect(page).to have_selector('.dropdown-header', text: /#{scope_name}/i)
+      it 'shows the search modal' do
+        expect(page).to have_selector(search_modal_results, visible: :visible)
       end
     end
 
-    context 'when clicking the search field' do
+    context 'when clicking the search button' do
       before do
-        page.find('#search').click
+        within_testid('super-sidebar') do
+          click_button "Search or go to…"
+        end
         wait_for_all_requests
       end
 
-      it 'shows category search dropdown', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/250285' do
-        expect(page).to have_selector('.dropdown-header', text: /#{scope_name}/i)
+      it 'shows search scope badge' do
+        fill_in 'search', with: 'text'
+        within('#super-sidebar-search-modal') do
+          expect(page).to have_selector('.search-scope-help', text: scope_name)
+        end
       end
 
       context 'when clicking issues', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332317' do
         let!(:issue) { create(:issue, project: project, author: user, assignees: [user]) }
 
         it 'shows assigned issues' do
-          find('[data-testid="header-search-dropdown-menu"]').click_link('Issues assigned to me')
+          find(search_modal_results).click_link('Issues assigned to me')
 
           expect(page).to have_selector('.issues-list .issue')
           expect_tokens([assignee_token(user.name)])
@@ -78,7 +75,7 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
         end
 
         it 'shows created issues' do
-          find('[data-testid="header-search-dropdown-menu"]').click_link("Issues I've created")
+          find(search_modal_results).click_link("Issues I've created")
 
           expect(page).to have_selector('.issues-list .issue')
           expect_tokens([author_token(user.name)])
@@ -90,7 +87,7 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
         let!(:merge_request) { create(:merge_request, source_project: project, author: user, assignees: [user]) }
 
         it 'shows assigned merge requests' do
-          find('[data-testid="header-search-dropdown-menu"]').click_link('Merge requests assigned to me')
+          find(search_modal_results).click_link('Merge requests assigned to me')
 
           expect(page).to have_selector('.mr-list .merge-request')
           expect_tokens([assignee_token(user.name)])
@@ -98,7 +95,7 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
         end
 
         it 'shows created merge requests' do
-          find('[data-testid="header-search-dropdown-menu"]').click_link("Merge requests I've created")
+          find(search_modal_results).click_link("Merge requests I've created")
 
           expect(page).to have_selector('.mr-list .merge-request')
           expect_tokens([author_token(user.name)])
@@ -119,7 +116,7 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
   context 'when user is in a global scope' do
     include_examples 'search field examples' do
       let(:url) { root_path }
-      let(:scope_name) { 'All GitLab' }
+      let(:scope_name) { 'in all GitLab' }
     end
 
     it 'displays search options', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/251076' do
@@ -136,11 +133,13 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
       end
 
       it 'displays result counts for all categories' do
-        expect(page).to have_content('Projects 1')
-        expect(page).to have_content('Issues 1')
-        expect(page).to have_content('Merge requests 0')
-        expect(page).to have_content('Milestones 0')
-        expect(page).to have_content('Users 0')
+        within_testid('super-sidebar') do
+          expect(page).to have_link('Projects 1')
+          expect(page).to have_link('Issues 1')
+          expect(page).to have_link('Merge requests 0')
+          expect(page).to have_link('Milestones 0')
+          expect(page).to have_link('Users 0')
+        end
       end
     end
   end
@@ -162,9 +161,8 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
       it 'displays search options' do
         fill_in_search('test')
 
-        expect(page).to have_selector(scoped_search_link('test', search_code: true))
         expect(page).to have_selector(scoped_search_link('test', group_id: group.id, search_code: true))
-        expect(page).to have_selector(scoped_search_link('test', project_id: project.id, group_id: group.id, search_code: true))
+        expect(page).to have_selector(scoped_search_link('test', search_code: true))
       end
     end
 
@@ -176,26 +174,25 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
 
       it 'displays search options' do
         fill_in_search('test')
-        sleep 0.5
-        expect(page).to have_selector(scoped_search_link('test', search_code: true, repository_ref: 'master'))
+
         expect(page).not_to have_selector(scoped_search_link('test', search_code: true, group_id: project.namespace_id, repository_ref: 'master'))
-        expect(page).to have_selector(scoped_search_link('test', search_code: true, project_id: project.id, repository_ref: 'master'))
+        expect(page).to have_selector(scoped_search_link('test', search_code: true, repository_ref: 'master'))
       end
 
       it 'displays a link to project merge requests' do
         fill_in_search('Merge')
 
-        within(dashboard_search_options_popup_menu) do
-          expect(page).to have_text('Merge requests')
+        within(search_modal_results) do
+          expect(page).to have_link('Merge requests')
         end
       end
 
       it 'does not display a link to project feature flags' do
         fill_in_search('Feature')
 
-        within(dashboard_search_options_popup_menu) do
-          expect(page).to have_text('Feature in all GitLab')
-          expect(page).to have_no_text('Feature Flags')
+        within(search_modal_results) do
+          expect(page).to have_link('in all GitLab Feature')
+          expect(page).not_to have_link('Feature Flags')
         end
       end
 
@@ -205,8 +202,8 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
         it 'displays a link to project feature flags' do
           fill_in_search('Feature')
 
-          within(dashboard_search_options_popup_menu) do
-            expect(page).to have_text('Feature Flags')
+          within(search_modal_results) do
+            expect(page).to have_link('Feature Flags')
           end
         end
       end
@@ -228,8 +225,8 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
 
     it 'displays search options' do
       fill_in_search('test')
+
       expect(page).to have_selector(scoped_search_link('test'))
-      expect(page).to have_selector(scoped_search_link('test', group_id: group.id))
       expect(page).not_to have_selector(scoped_search_link('test', project_id: project.id))
     end
   end
@@ -253,7 +250,6 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
       fill_in_search('test')
 
       expect(page).to have_selector(scoped_search_link('test'))
-      expect(page).to have_selector(scoped_search_link('test', group_id: subgroup.id))
       expect(page).not_to have_selector(scoped_search_link('test', project_id: project.id))
     end
   end
@@ -268,10 +264,10 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
     href.concat("&search_code=true") if search_code
     href.concat("&repository_ref=#{repository_ref}") if repository_ref
 
-    "[data-testid='header-search-dropdown-menu'] a[href='#{href}']"
+    ".global-search-results a[href='#{href}']"
   end
 
-  def dashboard_search_options_popup_menu
-    "[data-testid='header-search-dropdown-menu'] .header-search-dropdown-content"
+  def search_modal_results
+    ".global-search-results"
   end
 end

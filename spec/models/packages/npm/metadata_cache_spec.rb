@@ -148,4 +148,40 @@ RSpec.describe Packages::Npm::MetadataCache, type: :model, feature_category: :pa
       end
     end
   end
+
+  describe '.stale' do
+    let_it_be(:npm_metadata_cache) { create(:npm_metadata_cache) }
+    let_it_be(:npm_metadata_cache_stale) { create(:npm_metadata_cache, :stale) }
+
+    subject { described_class.stale }
+
+    it { is_expected.to contain_exactly(npm_metadata_cache_stale) }
+  end
+
+  describe '.pending_destruction' do
+    let_it_be(:npm_metadata_cache) { create(:npm_metadata_cache) }
+    let_it_be(:npm_metadata_cache_stale_default) { create(:npm_metadata_cache, :stale) }
+    let_it_be(:npm_metadata_cache_stale_processing) { create(:npm_metadata_cache, :stale, :processing) }
+
+    subject { described_class.pending_destruction }
+
+    it { is_expected.to contain_exactly(npm_metadata_cache_stale_default) }
+  end
+
+  describe '.next_pending_destruction' do
+    let_it_be(:npm_metadata_cache1) { create(:npm_metadata_cache, created_at: 1.month.ago, updated_at: 1.day.ago) }
+    let_it_be(:npm_metadata_cache2) { create(:npm_metadata_cache, created_at: 1.year.ago, updated_at: 1.year.ago) }
+
+    let_it_be(:npm_metadata_cache3) do
+      create(:npm_metadata_cache, :stale, created_at: 2.years.ago, updated_at: 1.month.ago)
+    end
+
+    let_it_be(:npm_metadata_cache4) do
+      create(:npm_metadata_cache, :stale, created_at: 3.years.ago, updated_at: 2.weeks.ago)
+    end
+
+    it 'returns the oldest pending destruction item based on updated_at' do
+      expect(described_class.next_pending_destruction(order_by: :updated_at)).to eq(npm_metadata_cache3)
+    end
+  end
 end

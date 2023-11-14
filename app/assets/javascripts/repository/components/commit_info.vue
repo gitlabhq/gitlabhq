@@ -1,6 +1,6 @@
 <script>
 import { GlTooltipDirective, GlLink, GlButton } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -26,6 +26,11 @@ export default {
       type: Object,
       required: true,
     },
+    prevBlameLink: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return { showDescription: false };
@@ -34,6 +39,9 @@ export default {
     commitDescription() {
       // Strip the newline at the beginning
       return this.commit?.descriptionHtml?.replace(/^&#x000A;/, '');
+    },
+    avatarLinkAltText() {
+      return sprintf(__(`%{username}'s avatar`), { username: this.commit.authorName });
     },
   },
   methods: {
@@ -58,6 +66,7 @@ export default {
       v-if="commit.author"
       :link-href="commit.author.webPath"
       :img-src="commit.author.avatarUrl"
+      :img-alt="avatarLinkAltText"
       :img-size="32"
       class="gl-my-2 gl-mr-4"
     />
@@ -67,10 +76,8 @@ export default {
       :img-src="commit.authorGravatar || $options.defaultAvatarUrl"
       :size="32"
     />
-    <div
-      class="commit-detail flex-list gl-display-flex gl-justify-content-space-between gl-align-items-center gl-flex-grow-1 gl-min-w-0"
-    >
-      <div class="commit-content" data-qa-selector="commit_content">
+    <div class="commit-detail flex-list gl-display-flex gl-flex-grow-1 gl-min-w-0">
+      <div class="commit-content gl-w-full gl-text-truncate" data-testid="commit-content">
         <gl-link
           v-safe-html:[$options.safeHtmlConfig]="commit.titleHtml"
           :href="commit.webPath"
@@ -112,5 +119,6 @@ export default {
       <div class="gl-flex-grow-1"></div>
       <slot></slot>
     </div>
+    <div v-if="prevBlameLink" v-safe-html:[$options.safeHtmlConfig]="prevBlameLink"></div>
   </div>
 </template>

@@ -147,7 +147,6 @@ class MoveSecurityFindingsTableToGitlabPartitionsDynamicSchema < Gitlab::Databas
     latest_partition.match(/security_findings_(\d+)/).captures.first
   end
 
-  # rubocop:disable Migration/DropTable (These methods are called from the `down` method)
   def create_non_partitioned_security_findings_with_data
     with_lock_retries do
       lock_tables
@@ -227,6 +226,5 @@ class MoveSecurityFindingsTableToGitlabPartitionsDynamicSchema < Gitlab::Databas
       SQL
     end
   end
-  # rubocop:enable Migration/DropTable
 end
 # rubocop:enable Migration/WithLockRetriesDisallowedMethod

@@ -36,6 +36,12 @@ module Analytics
         new(name: Analytics::CycleAnalytics::Stages::BaseService::DEFAULT_VALUE_STREAM_NAME, namespace: namespace)
       end
 
+      def project
+        return unless namespace.is_a?(::Namespaces::ProjectNamespace)
+
+        namespace.project
+      end
+
       private
 
       def max_value_streams_count

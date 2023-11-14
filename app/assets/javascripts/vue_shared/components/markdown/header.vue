@@ -492,7 +492,7 @@ export default {
           tracking-property="quickAction"
         />
         <comment-templates-dropdown
-          v-if="!previewMarkdown && newCommentTemplatePath && glFeatures.savedReplies"
+          v-if="!previewMarkdown && newCommentTemplatePath"
           :new-comment-template-path="newCommentTemplatePath"
           @select="insertSavedReply"
         />

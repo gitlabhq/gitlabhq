@@ -306,7 +306,7 @@ When the [unified approval setting](../ci/environments/deployment_approvals.md#u
 }
 ```
 
-When the [multiple approval rules](../ci/environments/deployment_approvals.md#multiple-approval-rules) is configured, deployments created by users on GitLab Premium or Ultimate include the `approval_summary` property:
+When the [multiple approval rules](../ci/environments/deployment_approvals.md#add-multiple-approval-rules) is configured, deployments created by users on GitLab Premium or Ultimate include the `approval_summary` property:
 
 ```json
 {
@@ -547,7 +547,7 @@ POST /projects/:id/deployments/:deployment_id/approval
 | `deployment_id` | integer        | yes      | The ID of the deployment.                                                                                       |
 | `status`        | string         | yes      | The status of the approval (either `approved` or `rejected`).                                                   |
 | `comment`       | string         | no       | A comment to go with the approval                                                                               |
-| `represented_as`| string         | no       | The name of the User/Group/Role to use for the approval, when the user belongs to [multiple approval rules](../ci/environments/deployment_approvals.md#multiple-approval-rules). |
+| `represented_as`| string         | no       | The name of the User/Group/Role to use for the approval, when the user belongs to [multiple approval rules](../ci/environments/deployment_approvals.md#add-multiple-approval-rules). |
 
 ```shell
 curl --data "status=approved&comment=Looks good to me&represented_as=security" \

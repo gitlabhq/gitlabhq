@@ -4,6 +4,7 @@
 fragment WorkItem on WorkItem {
   id
   iid
+  archived
   title
   state
   description
@@ -13,10 +14,9 @@ fragment WorkItem on WorkItem {
   closedAt
   reference(full: true)
   createNoteEmail
-  project {
+  namespace {
     id
     fullPath
-    archived
     name
   }
   author {

@@ -10,9 +10,9 @@ RSpec.describe AvatarUploader do
   subject { uploader }
 
   it_behaves_like 'builds correct paths',
-    store_dir: %r[uploads/-/system/user/avatar/],
-    upload_path: %r[uploads/-/system/user/avatar/],
-    absolute_path: %r[#{CarrierWave.root}/uploads/-/system/user/avatar/]
+    store_dir: %r{uploads/-/system/user/avatar/},
+    upload_path: %r{uploads/-/system/user/avatar/},
+    absolute_path: %r{#{CarrierWave.root}/uploads/-/system/user/avatar/}
 
   context "object_store is REMOTE" do
     before do
@@ -22,8 +22,8 @@ RSpec.describe AvatarUploader do
     include_context 'with storage', described_class::Store::REMOTE
 
     it_behaves_like 'builds correct paths',
-      store_dir: %r[user/avatar/],
-      upload_path: %r[user/avatar/]
+      store_dir: %r{user/avatar/},
+      upload_path: %r{user/avatar/}
   end
 
   context "with a file" do

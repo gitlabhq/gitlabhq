@@ -1,21 +1,28 @@
-export default {
+export const mockFinding = {
+  title: 'mockedtitle',
+  state: 'detected',
+  scale: 'sast',
   line: 7,
-  description:
-    "Unused method argument - `c`. If it's necessary, use `_` or `_c` as an argument name to indicate that it won't be used.",
-  severity: 'minor',
+  description: 'fakedesc',
+  severity: 'low',
   engineName: 'testengine name',
   categories: ['testcategory 1', 'testcategory 2'],
   content: {
     body: 'Duplicated Code Duplicated code',
   },
-  location: {
-    path: 'workhorse/config_test.go',
-    lines: { begin: 221, end: 284 },
-  },
-  otherLocations: [
-    { path: 'testpath', href: 'http://testlink.com' },
-    { path: 'testpath 1', href: 'http://testlink.com' },
-    { path: 'testpath2', href: 'http://testlink.com' },
+  webUrl: {},
+  identifiers: [
+    {
+      __typename: 'VulnerabilityIdentifier',
+      externalId: 'eslint.detect-disable-mustache-escape',
+      externalType: 'semgrep_id',
+      name: 'eslint.detect-disable-mustache-escape',
+      url: 'https://semgrep.dev/r/gitlab.eslint.detect-disable-mustache-escape',
+    },
   ],
-  type: 'issue',
+};
+
+export const mockProject = {
+  nameWithNamespace: 'testname',
+  fullPath: 'testpath',
 };

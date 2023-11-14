@@ -1,9 +1,5 @@
 import { s__, __ } from '~/locale';
 
-export const USER_AVATAR_SIZE = 32;
-
-export const LENGTH_OF_USER_NOTE_TOOLTIP = 100;
-
 export const I18N_USER_ACTIONS = {
   edit: __('Edit'),
   userAdministration: s__('AdminUsers|User administration'),
@@ -19,4 +15,6 @@ export const I18N_USER_ACTIONS = {
   deleteWithContributions: s__('AdminUsers|Delete user and contributions'),
   ban: s__('AdminUsers|Ban user'),
   unban: s__('AdminUsers|Unban user'),
+  trust: s__('AdminUsers|Trust user'),
+  untrust: s__('AdminUsers|Untrust user'),
 };

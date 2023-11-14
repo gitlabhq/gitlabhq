@@ -1,10 +1,12 @@
 <script>
 import { GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
+import PrivateIcon from '../icons/private_icon.vue';
 
 export default {
   name: 'MemberSource',
   i18n: {
+    private: __('Private'),
     inherited: __('Inherited'),
     directMember: __('Direct member'),
     directMemberWithCreatedBy: s__('Members|Direct member by %{createdBy}'),
@@ -13,15 +15,23 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  components: { GlSprintf },
+  components: { GlSprintf, PrivateIcon },
   props: {
     memberSource: {
       type: Object,
-      required: true,
+      required: false,
+      default() {
+        return {};
+      },
     },
     isDirectMember: {
       type: Boolean,
       required: true,
+    },
+    isSharedWithGroupPrivate: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     createdBy: {
       type: Object,
@@ -43,7 +53,11 @@ export default {
 </script>
 
 <template>
-  <span v-if="showCreatedBy">
+  <div v-if="isSharedWithGroupPrivate" class="gl-display-flex gl-column-gap-2">
+    <span>{{ $options.i18n.private }}</span>
+    <private-icon />
+  </div>
+  <span v-else-if="showCreatedBy">
     <gl-sprintf :message="messageWithCreatedBy">
       <template #group>
         <a v-gl-tooltip.hover="$options.i18n.inherited" :href="memberSource.webUrl">{{

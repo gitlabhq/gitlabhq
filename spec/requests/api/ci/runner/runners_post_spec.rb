@@ -48,7 +48,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             description: 'server.hostname',
             maintenance_note: 'Some maintainer notes',
             run_untagged: false,
-            tag_list: %w(tag1 tag2),
+            tag_list: %w[tag1 tag2],
             locked: true,
             active: true,
             access_level: 'ref_protected',
@@ -167,7 +167,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           allow_any_instance_of(::Ci::Runner).to receive(:cache_attributes)
         end
 
-        %w(name version revision platform architecture).each do |param|
+        %w[name version revision platform architecture].each do |param|
           context "when info parameter '#{param}' info is present" do
             let(:value) { "#{param}_value" }
 
@@ -185,8 +185,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
         it "sets the runner's ip_address" do
           post api('/runners'),
-               params: { token: registration_token },
-               headers: { 'X-Forwarded-For' => '123.111.123.111' }
+            params: { token: registration_token },
+            headers: { 'X-Forwarded-For' => '123.111.123.111' }
 
           expect(response).to have_gitlab_http_status(:created)
           expect(::Ci::Runner.last.ip_address).to eq('123.111.123.111')

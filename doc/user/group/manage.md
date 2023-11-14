@@ -130,6 +130,11 @@ After sharing the `Frontend` group with the `Engineering` group:
 
 - The **Groups** tab lists the `Engineering` group.
 - The **Groups** tab lists a group regardless of whether it is a public or private group.
+- From [GitLab 16.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134623),
+  the invited group's name and membership source will be masked unless:
+  - the invited group is public, or
+  - the current user is a member of the invited group, or
+  - the current user is a member of the current group.
 - All direct members of the `Engineering` group have access to the `Frontend` group. The least access is granted between the access in the `Engineering` group and the access in the `Frontend` group.
   - If `Member1` has the Maintainer role in `Engineering` and `Engineering` is added to `Frontend` with the Developer role, `Member1` has the Developer role in `Frontend`.
   - If `Member2` has the Guest role in `Engineering` and `Engineering` is added to `Frontend` with the Developer role, `Member2` has the Guest role in `Frontend`.
@@ -486,29 +491,6 @@ To enable Experiment features for a top-level group:
 1. Expand **Permissions and group features**.
 1. Under **Experiment and Beta features**, select the **Use Experiment and Beta features** checkbox.
 1. Select **Save changes**.
-
-## Enable third-party AI features **(ULTIMATE SAAS)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) in GitLab 16.0.
-
-WARNING:
-These AI features use [third-party services](../ai_features.md#data-usage)
-and require transmission of data, including personal data.
-
-All users in the group have third-party AI features enabled by default.
-This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
-that belong to the group.
-
-To disable third-party AI features for a group:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
-1. Expand **Permissions and group features**.
-1. Under **Third-party AI services**, uncheck the **Use third-party AI services** checkbox.
-1. Select **Save changes**.
-
-When Code Suggestions are enabled and disabled, an
-[audit event](../../administration/audit_events.md#view-audit-events) is created.
 
 ## Group activity analytics **(PREMIUM ALL)**
 

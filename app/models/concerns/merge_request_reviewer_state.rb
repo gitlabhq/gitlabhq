@@ -6,7 +6,8 @@ module MergeRequestReviewerState
   included do
     enum state: {
       unreviewed: 0,
-      reviewed: 1
+      reviewed: 1,
+      requested_changes: 2
     }
 
     validates :state,

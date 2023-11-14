@@ -69,9 +69,11 @@ RSpec.describe Gitlab::Ci::Build::Artifacts::Metadata::Entry do
       it { is_expected.to all(be_an_instance_of(described_class)) }
 
       it do
-        is_expected.to contain_exactly entry('path/dir_1/file_1'),
-                                       entry('path/dir_1/file_b'),
-                                       entry('path/dir_1/subdir/')
+        is_expected.to contain_exactly(
+          entry('path/dir_1/file_1'),
+          entry('path/dir_1/file_b'),
+          entry('path/dir_1/subdir/')
+        )
       end
     end
 
@@ -82,8 +84,10 @@ RSpec.describe Gitlab::Ci::Build::Artifacts::Metadata::Entry do
       it { is_expected.to all(be_an_instance_of(described_class)) }
 
       it do
-        is_expected.to contain_exactly entry('path/dir_1/file_1'),
-                                       entry('path/dir_1/file_b')
+        is_expected.to contain_exactly(
+          entry('path/dir_1/file_1'),
+          entry('path/dir_1/file_b')
+        )
       end
     end
 
@@ -103,8 +107,10 @@ RSpec.describe Gitlab::Ci::Build::Artifacts::Metadata::Entry do
         it { is_expected.to all(be_an_instance_of(described_class)) }
 
         it do
-          is_expected.to contain_exactly entry('path/dir_1/subdir/'),
-                                         entry('path/')
+          is_expected.to contain_exactly(
+            entry('path/dir_1/subdir/'),
+            entry('path/')
+          )
         end
       end
 

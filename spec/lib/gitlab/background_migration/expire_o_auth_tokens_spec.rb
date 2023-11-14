@@ -9,14 +9,15 @@ RSpec.describe Gitlab::BackgroundMigration::ExpireOAuthTokens, :migration, schem
   let(:table_name) { 'oauth_access_tokens' }
 
   subject(:perform_migration) do
-    described_class.new(start_id: 1,
-                        end_id: 30,
-                        batch_table: :oauth_access_tokens,
-                        batch_column: :id,
-                        sub_batch_size: 2,
-                        pause_ms: 0,
-                        connection: ActiveRecord::Base.connection)
-                   .perform
+    described_class.new(
+      start_id: 1,
+      end_id: 30,
+      batch_table: :oauth_access_tokens,
+      batch_column: :id,
+      sub_batch_size: 2,
+      pause_ms: 0,
+      connection: ActiveRecord::Base.connection
+    ).perform
   end
 
   before do

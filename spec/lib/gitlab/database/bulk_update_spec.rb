@@ -92,7 +92,7 @@ RSpec.describe Gitlab::Database::BulkUpdate do
   end
 
   context 'validates prepared_statements support', :reestablished_active_record_base,
-          :suppress_gitlab_schemas_validate_connection do
+    :suppress_gitlab_schemas_validate_connection do
     using RSpec::Parameterized::TableSyntax
 
     where(:prepared_statements) do

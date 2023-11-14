@@ -53,7 +53,7 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
     end
 
     it "does not allow repository related features have higher level" do
-      features = %w(builds merge_requests)
+      features = %w[builds merge_requests]
       project_feature = project.project_feature
 
       features.each do |feature|
@@ -64,7 +64,7 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
     end
   end
 
-  it_behaves_like 'access level validation', ProjectFeature::FEATURES - %i(pages package_registry) do
+  it_behaves_like 'access level validation', ProjectFeature::FEATURES - %i[pages package_registry] do
     let(:container_features) { project.project_feature }
   end
 

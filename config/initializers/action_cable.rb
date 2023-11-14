@@ -11,15 +11,20 @@ end
 
 ActionCable::SubscriptionAdapter::Base.prepend(Gitlab::Patch::ActionCableSubscriptionAdapterIdentifier)
 
+using_redis_cluster = begin
+  Rails.application.config_for(:cable)[:cluster].present?
+rescue RuntimeError
+  # config/cable.yml does not exist, but that is not the purpose of this check
+end
+
+raise "Do not configure cable.yml with a Redis Cluster as ActionCable only works with Redis." if using_redis_cluster
+
 # https://github.com/rails/rails/blob/bb5ac1623e8de08c1b7b62b1368758f0d3bb6379/actioncable/lib/action_cable/subscription_adapter/redis.rb#L18
 ActionCable::SubscriptionAdapter::Redis.redis_connector = lambda do |config|
   args = config.except(:adapter, :channel_prefix)
     .merge(instrumentation_class: ::Gitlab::Instrumentation::Redis::ActionCable)
 
-  primary_store = ::Redis.new(Gitlab::Redis::Pubsub.params)
-  secondary_store = ::Redis.new(args)
-
-  Gitlab::Redis::MultiStore.new(primary_store, secondary_store, "ActionCable")
+  ::Redis.new(args)
 end
 
 Gitlab::ActionCable::RequestStoreCallbacks.install

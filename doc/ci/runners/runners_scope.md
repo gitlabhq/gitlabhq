@@ -89,7 +89,7 @@ To create a shared runner:
 1. Select **CI/CD > Runners**.
 1. Select **Register an instance runner**.
 1. Copy the registration token.
-1. [Register the runner](https://docs.gitlab.com/runner/register/).
+1. [Register the runner](https://docs.gitlab.com/runner/register/#register-with-a-runner-registration-token-deprecated).
 
 ### Pause or resume a shared runner
 
@@ -289,7 +289,7 @@ To create a group runner:
    These instructions include the token, URL, and a command to register a runner.
 
 Alternately, you can copy the registration token and follow the documentation for
-how to [register a runner](https://docs.gitlab.com/runner/register/).
+how to [register a runner](https://docs.gitlab.com/runner/register/#register-with-a-runner-registration-token-deprecated).
 
 ### View group runners
 
@@ -481,7 +481,7 @@ To create a project runner:
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
 1. In the **Project runners** section, note the URL and token.
-1. [Register the runner](https://docs.gitlab.com/runner/register/).
+1. [Register the runner](https://docs.gitlab.com/runner/register/#register-with-a-runner-registration-token-deprecated).
 
 The runner is now enabled for the project.
 

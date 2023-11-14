@@ -6,14 +6,14 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project) { create(:project, :repository, :public) }
-  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:user) { create(:user) }
 
   before do
     sign_in(user)
   end
 
   def find_new_menu_toggle
-    find('#js-onboarding-new-project-link')
+    find('[data-testid="base-dropdown-toggle"]', text: 'Create new...')
   end
 
   context 'with developer user' do
@@ -25,7 +25,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
       visit project_path(project)
 
       # The navigation bar
-      page.within('.header-new') do
+      within_testid('super-sidebar') do
         find_new_menu_toggle.click
 
         aggregate_failures 'dropdown links in the navigation bar' do
@@ -60,7 +60,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
 
       visit project_path(project)
 
-      page.within('.header-new') do
+      within_testid('super-sidebar') do
         find_new_menu_toggle.click
 
         aggregate_failures 'dropdown links' do

@@ -21,6 +21,8 @@ module Types
           Types::DesignManagement::DesignType
         when ::AlertManagement::Alert
           Types::AlertManagement::AlertType
+        when AbuseReport
+          Types::AbuseReportType
         else
           raise "Unknown GraphQL type for #{object}"
         end

@@ -2,7 +2,7 @@ import { GlDropdown } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import LegacyPipelineStage from '~/ci/pipeline_mini_graph/legacy_pipeline_stage.vue';
@@ -52,7 +52,7 @@ describe('Pipelines stage component', () => {
   });
 
   const findCiActionBtn = () => wrapper.find('.js-ci-action');
-  const findCiIcon = () => wrapper.findComponent(CiBadgeLink);
+  const findCiIcon = () => wrapper.findComponent(CiIcon);
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findDropdownToggle = () => wrapper.find('button.dropdown-toggle');
   const findDropdownMenu = () =>

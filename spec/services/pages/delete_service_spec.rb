@@ -8,14 +8,12 @@ RSpec.describe Pages::DeleteService, feature_category: :pages do
   let(:project) { create(:project, path: "my.project") }
   let(:service) { described_class.new(project, admin) }
 
-  before do
-    project.mark_pages_as_deployed
-  end
-
   it 'marks pages as not deployed' do
-    expect do
-      service.execute
-    end.to change { project.reload.pages_deployed? }.from(true).to(false)
+    create(:pages_deployment, project: project)
+
+    expect { service.execute }
+      .to change { project.reload.pages_deployed? }
+      .from(true).to(false)
   end
 
   it 'deletes all domains' do
@@ -29,9 +27,8 @@ RSpec.describe Pages::DeleteService, feature_category: :pages do
   end
 
   it 'schedules a destruction of pages deployments' do
-    expect(DestroyPagesDeploymentsWorker).to(
-      receive(:perform_async).with(project.id)
-    )
+    expect(DestroyPagesDeploymentsWorker)
+      .to(receive(:perform_async).with(project.id))
 
     service.execute
   end
@@ -39,9 +36,8 @@ RSpec.describe Pages::DeleteService, feature_category: :pages do
   it 'removes pages deployments', :sidekiq_inline do
     create(:pages_deployment, project: project)
 
-    expect do
-      service.execute
-    end.to change { PagesDeployment.count }.by(-1)
+    expect { service.execute }
+      .to change { PagesDeployment.count }.by(-1)
   end
 
   it 'publishes a ProjectDeleted event with project id and namespace id' do

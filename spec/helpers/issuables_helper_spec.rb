@@ -109,10 +109,14 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
         allow(helper).to receive(:current_user).and_return(user)
       end
 
-      context 'when assigned issues count is over 100' do
-        let_it_be(:issues) { create_list(:issue, 101, project: project, assignees: [user]) }
+      context 'when assigned issues count is over MAX_LIMIT_FOR_ASSIGNEED_ISSUES_COUNT' do
+        before do
+          stub_const('User::MAX_LIMIT_FOR_ASSIGNEED_ISSUES_COUNT', 2)
+        end
 
-        it { is_expected.to eq 100 }
+        let_it_be(:issues) { create_list(:issue, 3, project: project, assignees: [user]) }
+
+        it { is_expected.to eq 2 }
       end
     end
   end
@@ -127,10 +131,14 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
       allow(helper).to receive(:current_user).and_return(user)
     end
 
-    context 'when assigned issues count is over 99' do
-      let_it_be(:issues) { create_list(:issue, 100, project: project, assignees: [user]) }
+    context 'when assigned issues count is over MAX_LIMIT_FOR_ASSIGNEED_ISSUES_COUNT' do
+      before do
+        stub_const('User::MAX_LIMIT_FOR_ASSIGNEED_ISSUES_COUNT', 2)
+      end
 
-      it { is_expected.to eq '99+' }
+      let_it_be(:issues) { create_list(:issue, 3, project: project, assignees: [user]) }
+
+      it { is_expected.to eq '1+' }
     end
   end
 

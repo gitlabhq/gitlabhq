@@ -106,7 +106,8 @@ module Types
           null: false,
           description: 'Status of all mergeability checks of the merge request.',
           method: :all_mergeability_checks_results,
-          alpha: { milestone: '16.5' }
+          alpha: { milestone: '16.5' },
+          calls_gitaly: true
 
     field :mergeable_discussions_state, GraphQL::Types::Boolean, null: true,
                                                                  calls_gitaly: true,

@@ -82,7 +82,7 @@ export default {
       return this.issuableState === STATUS_OPEN || this.issuableState === STATUS_REOPENED;
     },
     statusIcon() {
-      return this.isOpen ? 'issues' : 'issue-closed';
+      return this.isOpen ? 'issue-open-m' : 'issue-close';
     },
     statusText() {
       if (this.isOpen) {
@@ -115,11 +115,9 @@ export default {
     <template #status-badge>
       <gl-sprintf v-if="closedStatusLink" :message="statusText">
         <template #link>
-          <gl-link
-            class="gl-reset-color! gl-reset-font-size gl-text-decoration-underline"
-            :href="closedStatusLink"
-            >{{ closedStatusText }}</gl-link
-          >
+          <gl-link class="gl-reset-color! gl-text-decoration-underline" :href="closedStatusLink">{{
+            closedStatusText
+          }}</gl-link>
         </template>
       </gl-sprintf>
       <template v-else>{{ statusText }}</template>

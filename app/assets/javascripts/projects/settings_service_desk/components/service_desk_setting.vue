@@ -4,6 +4,7 @@ import {
   GlToggle,
   GlLoadingIcon,
   GlSprintf,
+  GlFormCheckbox,
   GlFormInputGroup,
   GlFormGroup,
   GlFormInput,
@@ -11,7 +12,8 @@ import {
   GlAlert,
 } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ServiceDeskTemplateDropdown from './service_desk_template_dropdown.vue';
 
@@ -21,12 +23,22 @@ export default {
     issueTrackerEnableMessage: __(
       'To use Service Desk in this project, you must %{linkStart}activate the issue tracker%{linkEnd}.',
     ),
+    addExternalParticipantsFromCc: {
+      label: s__('ServiceDesk|Add external participants from the %{codeStart}Cc%{codeEnd} header'),
+      help: s__(
+        'ServiceDesk|Add email addresses in the %{codeStart}Cc%{codeEnd} header of Service Desk emails to the issue.',
+      ),
+      helpNotificationExtra: s__(
+        'ServiceDesk|Like the author, external participants receive Service Desk emails and can participate in the discussion.',
+      ),
+    },
   },
   components: {
     ClipboardButton,
     GlButton,
     GlToggle,
     GlLoadingIcon,
+    GlFormCheckbox,
     GlSprintf,
     GlFormInput,
     GlFormGroup,
@@ -35,6 +47,7 @@ export default {
     GlAlert,
     ServiceDeskTemplateDropdown,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     isEnabled: {
       type: Boolean,
@@ -78,6 +91,11 @@ export default {
       required: false,
       default: '',
     },
+    initialAddExternalParticipantsFromCc: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     templates: {
       type: Array,
       required: false,
@@ -95,11 +113,15 @@ export default {
       selectedFileTemplateProjectId: this.initialSelectedFileTemplateProjectId,
       outgoingName: this.initialOutgoingName || __('GitLab Support Bot'),
       projectKey: this.initialProjectKey,
+      addExternalParticipantsFromCc: this.initialAddExternalParticipantsFromCc,
       searchTerm: '',
       projectKeyError: null,
     };
   },
   computed: {
+    showAddExternalParticipantsFromCC() {
+      return this.glFeatures.issueEmailParticipants;
+    },
     hasProjectKeySupport() {
       return Boolean(this.serviceDeskEmailEnabled);
     },
@@ -134,6 +156,7 @@ export default {
         selectedTemplate: this.selectedTemplate,
         outgoingName: this.outgoingName,
         projectKey: this.projectKey,
+        addExternalParticipantsFromCc: this.addExternalParticipantsFromCc,
         fileTemplateProjectId: this.selectedFileTemplateProjectId,
       });
     },
@@ -240,12 +263,7 @@ export default {
               "
             >
               <template #link="{ content }">
-                <gl-link
-                  :href="emailSuffixHelpUrl"
-                  target="_blank"
-                  class="gl-text-blue-600 font-size-inherit"
-                  >{{ content }}
-                </gl-link>
+                <gl-link :href="emailSuffixHelpUrl" target="_blank">{{ content }} </gl-link>
               </template>
             </gl-sprintf>
           </template>
@@ -259,10 +277,7 @@ export default {
                 "
               >
                 <template #link="{ content }">
-                  <gl-link
-                    :href="serviceDeskEmailAddressHelpUrl"
-                    target="_blank"
-                    class="gl-text-blue-600 font-size-inherit"
+                  <gl-link :href="serviceDeskEmailAddressHelpUrl" target="_blank"
                     >{{ content }}
                   </gl-link>
                 </template>
@@ -307,11 +322,31 @@ export default {
           </template>
         </gl-form-group>
 
+        <gl-form-checkbox
+          v-if="showAddExternalParticipantsFromCC"
+          v-model="addExternalParticipantsFromCc"
+          :disabled="!isIssueTrackerEnabled"
+        >
+          <gl-sprintf :message="$options.i18n.addExternalParticipantsFromCc.label">
+            <template #code="{ content }">
+              <code>{{ content }}</code>
+            </template>
+          </gl-sprintf>
+
+          <template #help>
+            <gl-sprintf :message="$options.i18n.addExternalParticipantsFromCc.help">
+              <template #code="{ content }">
+                <code>{{ content }}</code>
+              </template>
+            </gl-sprintf>
+            {{ $options.i18n.addExternalParticipantsFromCc.helpNotificationExtra }}
+          </template>
+        </gl-form-checkbox>
+
         <gl-button
           variant="confirm"
           class="gl-mt-5"
           data-testid="save_service_desk_settings_button"
-          data-qa-selector="save_service_desk_settings_button"
           :disabled="isTemplateSaving || !isIssueTrackerEnabled"
           @click="onSaveTemplate"
         >

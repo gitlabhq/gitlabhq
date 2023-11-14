@@ -90,6 +90,19 @@ describe('NavItem component', () => {
         expect(findPill().text()).toBe(initialPillValue);
       });
     });
+
+    describe('async updating pill prop', () => {
+      it('re-renders item with when prop pill_count changes', async () => {
+        createWrapper({ item: { title: 'Foo', pill_count: 0 } });
+
+        expect(findPill().text()).toBe('0');
+
+        // https://gitlab.com/gitlab-org/gitlab/-/issues/428246
+        // This is testing specific async behaviour that was before missed
+        await wrapper.setProps({ item: { title: 'Foo', pill_count: 10 } });
+        expect(findPill().text()).toBe('10');
+      });
+    });
   });
 
   describe('destroyed', () => {

@@ -93,7 +93,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Environment do
 
   context 'when valid action is used' do
     where(:action) do
-      %w(start stop prepare verify access)
+      %w[start stop prepare verify access]
     end
 
     with_them do

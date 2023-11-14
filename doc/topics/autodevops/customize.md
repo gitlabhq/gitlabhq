@@ -208,11 +208,14 @@ repository or by specifying a project CI/CD variable:
   file in it, Auto DevOps detects the chart and uses it instead of the
   [default chart](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app).
 - **Project variable** - Create a [project CI/CD variable](../../ci/variables/index.md)
-  `AUTO_DEVOPS_CHART` with the URL of a custom chart. You can also create two project
+  `AUTO_DEVOPS_CHART` with the URL of a custom chart. You can also create five project
   variables:
 
   - `AUTO_DEVOPS_CHART_REPOSITORY` - The URL of a custom chart repository.
   - `AUTO_DEVOPS_CHART` - The path to the chart.
+  - `AUTO_DEVOPS_CHART_REPOSITORY_INSECURE` - Set to a non-empty value to add a `--insecure-skip-tls-verify` argument to the Helm commands.
+  - `AUTO_DEVOPS_CHART_CUSTOM_ONLY` - Set to a non-empty value to use only a custom chart. By default, the latest chart is downloaded from GitLab.
+  - `AUTO_DEVOPS_CHART_VERSION` - The version of the deployment chart.
 
 ### Customize Helm chart values
 

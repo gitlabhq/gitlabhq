@@ -530,7 +530,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       get api("#{base_url}/issues", user)
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response.last.keys).to include(*%w(id iid project_id title description))
+      expect(json_response.last.keys).to include(*%w[id iid project_id title description])
       expect(json_response.last).not_to have_key('subscribed')
     end
 

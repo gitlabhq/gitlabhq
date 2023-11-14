@@ -752,7 +752,7 @@ export default {
             :title="upcomingDeploymentTooltipText"
             data-testid="upcoming-deployment-status-link"
           >
-            <ci-icon class="gl-mr-2" :status="upcomingDeployment.deployable.status" />
+            <ci-icon :status="upcomingDeployment.deployable.status" class="gl-mr-2" />
           </gl-link>
         </div>
         <span

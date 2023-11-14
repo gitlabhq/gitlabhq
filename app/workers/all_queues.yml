@@ -3,6 +3,15 @@
 #
 # Do not edit it manually!
 ---
+- :name: activity_pub:activity_pub_projects_releases_subscription
+  :worker_name: ActivityPub::Projects::ReleasesSubscriptionWorker
+  :feature_category: :release_orchestration
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: authorized_project_update:authorized_project_update_project_recalculate
   :worker_name: AuthorizedProjectUpdate::ProjectRecalculateWorker
   :feature_category: :system_access
@@ -1461,42 +1470,6 @@
   :weight: 1
   :idempotent: false
   :tags: []
-- :name: hashed_storage:hashed_storage_migrator
-  :worker_name: HashedStorage::MigratorWorker
-  :feature_category: :source_code_management
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-- :name: hashed_storage:hashed_storage_project_migrate
-  :worker_name: HashedStorage::ProjectMigrateWorker
-  :feature_category: :source_code_management
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-- :name: hashed_storage:hashed_storage_project_rollback
-  :worker_name: HashedStorage::ProjectRollbackWorker
-  :feature_category: :source_code_management
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-- :name: hashed_storage:hashed_storage_rollbacker
-  :worker_name: HashedStorage::RollbackerWorker
-  :feature_category: :source_code_management
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
 - :name: incident_management:incident_management_add_severity_system_note
   :worker_name: IncidentManagement::AddSeveritySystemNoteWorker
   :feature_category: :incident_management
@@ -1760,6 +1733,15 @@
   :tags: []
 - :name: package_cleanup:packages_mark_package_files_for_destruction
   :worker_name: Packages::MarkPackageFilesForDestructionWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: package_cleanup:packages_npm_cleanup_stale_metadata_cache
+  :worker_name: Packages::Npm::CleanupStaleMetadataCacheWorker
   :feature_category: :package_registry
   :has_external_dependencies: false
   :urgency: :low
@@ -2307,6 +2289,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: abuse_spam_abuse_events
+  :worker_name: Abuse::SpamAbuseEventsWorker
+  :feature_category: :instance_resiliency
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: analytics_usage_trends_counter_job
   :worker_name: Analytics::UsageTrends::CounterJobWorker
   :feature_category: :devops_reports
@@ -2575,7 +2566,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: false
+  :idempotent: true
   :tags: []
 - :name: bulk_imports_entity
   :worker_name: BulkImports::EntityWorker
@@ -2629,7 +2620,7 @@
   :urgency: :low
   :resource_boundary: :memory
   :weight: 1
-  :idempotent: false
+  :idempotent: true
   :tags: []
 - :name: bulk_imports_pipeline_batch
   :worker_name: BulkImports::PipelineBatchWorker
@@ -2638,7 +2629,7 @@
   :urgency: :low
   :resource_boundary: :memory
   :weight: 1
-  :idempotent: false
+  :idempotent: true
   :tags: []
 - :name: bulk_imports_relation_batch_export
   :worker_name: BulkImports::RelationBatchExportWorker
@@ -2891,6 +2882,15 @@
   :resource_boundary: :cpu
   :weight: 2
   :idempotent: false
+  :tags: []
+- :name: environments_auto_recover
+  :worker_name: Environments::AutoRecoverWorker
+  :feature_category: :continuous_delivery
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: environments_auto_stop
   :worker_name: Environments::AutoStopWorker
@@ -3567,6 +3567,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: projects_import_export_after_import_merge_requests
+  :worker_name: Projects::ImportExport::AfterImportMergeRequestsWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: projects_import_export_create_relation_exports
   :worker_name: Projects::ImportExport::CreateRelationExportsWorker
   :feature_category: :importers
@@ -3836,15 +3845,6 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
-  :tags: []
-- :name: tasks_to_be_done_create
-  :worker_name: TasksToBeDone::CreateWorker
-  :feature_category: :onboarding
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 1
-  :idempotent: true
   :tags: []
 - :name: update_external_pull_requests
   :worker_name: UpdateExternalPullRequestsWorker

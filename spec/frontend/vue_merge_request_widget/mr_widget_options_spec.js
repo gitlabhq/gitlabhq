@@ -3,13 +3,13 @@ import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { createMockSubscription as createMockApolloSubscription } from 'mock-apollo-client';
-import * as Sentry from '@sentry/browser';
 import approvedByCurrentUser from 'test_fixtures/graphql/merge_requests/approvals/approvals.query.graphql.json';
 import getStateQueryResponse from 'test_fixtures/graphql/merge_requests/get_state.query.graphql.json';
 import readyToMergeResponse from 'test_fixtures/graphql/merge_requests/states/ready_to_merge.query.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK, HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
@@ -63,8 +63,8 @@ jest.mock('~/smart_interval');
 
 jest.mock('~/lib/utils/favicon');
 
-jest.mock('@sentry/browser', () => ({
-  ...jest.requireActual('@sentry/browser'),
+jest.mock('~/sentry/sentry_browser_wrapper', () => ({
+  ...jest.requireActual('~/sentry/sentry_browser_wrapper'),
   captureException: jest.fn(),
 }));
 

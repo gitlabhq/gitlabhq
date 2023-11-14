@@ -12,7 +12,7 @@ RSpec.describe Ci::PipelineArtifacts::CodeCoveragePresenter do
 
     context 'when code coverage has data' do
       context 'when filenames is empty' do
-        let(:filenames) { %w() }
+        let(:filenames) { %w[] }
 
         it 'returns hash without coverage' do
           expect(subject).to match(files: {})
@@ -20,7 +20,7 @@ RSpec.describe Ci::PipelineArtifacts::CodeCoveragePresenter do
       end
 
       context 'when filenames do not match code coverage data' do
-        let(:filenames) { %w(demo.rb) }
+        let(:filenames) { %w[demo.rb] }
 
         it 'returns hash without coverage' do
           expect(subject).to match(files: {})
@@ -29,7 +29,7 @@ RSpec.describe Ci::PipelineArtifacts::CodeCoveragePresenter do
 
       context 'when filenames matches code coverage data' do
         context 'when asking for one filename' do
-          let(:filenames) { %w(file_a.rb) }
+          let(:filenames) { %w[file_a.rb] }
 
           it 'returns coverage for the given filename' do
             expect(subject).to match(files: { "file_a.rb" => { "1" => 1, "2" => 1, "3" => 1 } })
@@ -37,7 +37,7 @@ RSpec.describe Ci::PipelineArtifacts::CodeCoveragePresenter do
         end
 
         context 'when asking for multiple filenames' do
-          let(:filenames) { %w(file_a.rb file_b.rb) }
+          let(:filenames) { %w[file_a.rb file_b.rb] }
 
           it 'returns coverage for a the given filenames' do
             expect(subject).to match(

@@ -32,9 +32,9 @@ module UpdateRepositoryStorageMethods
       end
     end
 
-    repository_storage_move.transaction do
-      repository_storage_move.finish_replication!
+    repository_storage_move.finish_replication!
 
+    repository_storage_move.transaction do
       track_repository(destination_storage_name)
     end
 

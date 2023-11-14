@@ -1,6 +1,7 @@
 import { TRACKING_CONTEXT_SCHEMA } from '~/experimentation/constants';
 import { getExperimentData, getAllExperimentContexts } from '~/experimentation/utils';
 import Tracking, { initUserTracking, initDefaultTrackers, InternalEvents } from '~/tracking';
+import { MAX_LOCAL_STORAGE_QUEUE_SIZE } from '~/tracking/constants';
 import getStandardContext from '~/tracking/get_standard_context';
 
 jest.mock('~/experimentation/utils', () => ({
@@ -65,6 +66,7 @@ describe('Tracking', () => {
           fields: { allow: [] },
           forms: { allow: [] },
         },
+        maxLocalStorageQueueSize: MAX_LOCAL_STORAGE_QUEUE_SIZE,
       });
     });
   });

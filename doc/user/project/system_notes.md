@@ -23,11 +23,13 @@ in system notes. System notes use the format `<Author> <action> <time ago>`.
 
 By default, system notes do not display. When displayed, they are shown oldest first.
 If you change the filter or sort options, your selection is remembered across sections.
-The filtering options are:
+For all item types except merge requests, the filtering options are:
 
 - **Show all activity** displays both comments and history.
 - **Show comments only** hides system notes.
 - **Show history only** hides user comments.
+
+Merge requests provide more granular filtering options.
 
 ### On an epic
 
@@ -49,7 +51,19 @@ The filtering options are:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find your merge request.
 1. Go to **Activity**.
-1. For **Sort or filter**, select **Show all activity**.
+1. For **Sort or filter**, select **Show all activity** to see all system notes.
+   To narrow the types of system notes returned, select one or more of:
+
+   - **Approvals**
+   - **Assignees &amp; Reviewers**
+   - **Comments**
+   - **Commits &amp; branches**
+   - **Edits**
+   - **Labels**
+   - **Lock status**
+   - **Mentions**
+   - **Merge request status**
+   - **Tracking**
 
 ## Privacy considerations
 

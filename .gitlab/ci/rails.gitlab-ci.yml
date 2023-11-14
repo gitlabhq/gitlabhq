@@ -61,7 +61,7 @@ update-ruby-gems-coverage-cache-push:
     - .ruby-gems-coverage-cache-push
     - .shared:rules:update-cache
   variables:
-    BUNDLE_WITHOUT: "" # This is to override the variable defined in .gitlab-ci.yml
+    BUNDLE_WITHOUT: ""  # This is to override the variable defined in .gitlab-ci.yml
     BUNDLE_ONLY: "coverage"
   script:
     - source scripts/utils.sh
@@ -75,7 +75,7 @@ update-ruby-gems-coverage-cache-push:
     - .default-retry
     - .ruby-gems-coverage-cache
   variables:
-    BUNDLE_WITHOUT: "" # This is to override the variable defined in .gitlab-ci.yml
+    BUNDLE_WITHOUT: ""  # This is to override the variable defined in .gitlab-ci.yml
     BUNDLE_ONLY: "coverage"
   before_script:
     - source scripts/utils.sh
@@ -276,16 +276,6 @@ rspec system pg14 praefect:
     - .rspec-system-parallel
     - .rails:rules:praefect-with-db
 
-# Dedicated job to test DB library code against PG12.
-# Note that these are already tested against PG12 in the `rspec unit pg12` / `rspec-ee unit pg12` jobs.
-rspec db-library-code pg12:
-  extends:
-    - .rspec-base-pg12
-    - .rails:rules:ee-and-foss-db-library-code
-  script:
-    - !reference [.base-script, script]
-    - rspec_db_library_code
-
 # Dedicated job to test DB library code against PG13.
 # Note that these are already tested against PG13 in the `rspec unit pg13` / `rspec-ee unit pg13` jobs.
 rspec db-library-code pg13:
@@ -358,8 +348,8 @@ rspec:artifact-collector unit:
     - .artifact-collector
     - .rails:rules:ee-and-foss-unit
   needs:
-    - rspec unit pg14 # 24 jobs
-    - job: rspec unit clickhouse # 1 job
+    - rspec unit pg14  # 24 jobs
+    - job: rspec unit clickhouse  # 1 job
       optional: true
 
 rspec:artifact-collector system:
@@ -367,17 +357,17 @@ rspec:artifact-collector system:
     - .artifact-collector
     - .rails:rules:ee-and-foss-system
   needs:
-    - rspec system pg14 # 26 jobs
+    - rspec system pg14  # 26 jobs
 
 rspec:artifact-collector remainder:
   extends:
     - .artifact-collector
   needs:
-    - job: rspec integration pg14 # 13 jobs
+    - job: rspec integration pg14  # 13 jobs
       optional: true
-    - job: rspec migration pg14 # 12 jobs
+    - job: rspec migration pg14  # 12 jobs
       optional: true
-    - job: rspec background_migration pg14 # 4 jobs
+    - job: rspec background_migration pg14  # 4 jobs
       optional: true
   rules:
     - !reference ['.rails:rules:ee-and-foss-integration', rules]
@@ -389,7 +379,7 @@ rspec:artifact-collector as-if-foss unit:
     - .artifact-collector
     - .rails:rules:as-if-foss-unit
   needs:
-    - rspec unit pg14-as-if-foss # 28 jobs
+    - rspec unit pg14-as-if-foss  # 28 jobs
 
 rspec:artifact-collector as-if-foss system:
   extends:
@@ -402,11 +392,11 @@ rspec:artifact-collector as-if-foss remainder:
   extends:
     - .artifact-collector
   needs:
-    - job: rspec integration pg14-as-if-foss # 12 jobs
+    - job: rspec integration pg14-as-if-foss  # 12 jobs
       optional: true
-    - job: rspec migration pg14-as-if-foss # 8 jobs
+    - job: rspec migration pg14-as-if-foss  # 8 jobs
       optional: true
-    - job: rspec background_migration pg14-as-if-foss # 4 jobs
+    - job: rspec background_migration pg14-as-if-foss  # 4 jobs
       optional: true
   rules:
     - !reference ['.rails:rules:as-if-foss-integration', rules]
@@ -418,43 +408,43 @@ rspec:artifact-collector single-redis:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - rspec unit pg14 single-redis # 28 jobs
-    - rspec integration pg14 single-redis # 12 jobs
+    - rspec unit pg14 single-redis  # 28 jobs
+    - rspec integration pg14 single-redis  # 12 jobs
 
 rspec:artifact-collector system single-redis:
   extends:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - rspec system pg14 single-redis # 28 jobs
+    - rspec system pg14 single-redis  # 28 jobs
 
 rspec:artifact-collector ee single-redis:
   extends:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - job: rspec-ee unit pg14 single-redis # 18 jobs
+    - job: rspec-ee unit pg14 single-redis  # 18 jobs
       optional: true
-    - job: rspec-ee integration pg14 single-redis # 6 jobs
+    - job: rspec-ee integration pg14 single-redis  # 6 jobs
       optional: true
-    - job: rspec-ee system pg14 single-redis # 10 jobs
+    - job: rspec-ee system pg14 single-redis  # 10 jobs
       optional: true
 
 rspec:artifact-collector ee:
   extends:
     - .artifact-collector
   needs:
-    - job: rspec-ee migration pg14 # 2 jobs
+    - job: rspec-ee migration pg14  # 2 jobs
       optional: true
-    - job: rspec-ee background_migration pg14 # 2 jobs
+    - job: rspec-ee background_migration pg14  # 2 jobs
       optional: true
-    - job: rspec-ee unit pg14 # 22 jobs
+    - job: rspec-ee unit pg14  # 22 jobs
       optional: true
-    - job: rspec-ee unit clickhouse # 1 job
+    - job: rspec-ee unit clickhouse  # 1 job
       optional: true
-    - job: rspec-ee integration pg14 # 5 jobs
+    - job: rspec-ee integration pg14  # 5 jobs
       optional: true
-    - job: rspec-ee system pg14 # 12 jobs
+    - job: rspec-ee system pg14  # 12 jobs
       optional: true
   rules:
     - !reference ['.rails:rules:ee-only-migration', rules]
@@ -573,11 +563,8 @@ rspec:merge-auto-explain-logs:
     - .rails:rules:rspec-merge-auto-explain-logs
   stage: post-test
   needs: !reference ["rspec:coverage", "needs"]
-  before_script:
-    - source scripts/utils.sh
-    - source scripts/rspec_helpers.sh
   script:
-    - merge_auto_explain_logs
+    - scripts/merge-auto-explain-logs
   artifacts:
     name: auto-explain-logs
     expire_in: 31d
@@ -764,16 +751,41 @@ rspec system pg14-as-if-foss clusterwide-db:
     - .clusterwide-db
     - .rails:rules:clusterwide-db
 
-rspec-ee unit gitlab_duo_chat pg14:
+rspec-ee unit gitlab-duo-chat pg14:
   variables:
     REAL_AI_REQUEST: "true"
-    OPENAI_EMBEDDINGS: "true"
+    RSPEC_RETRY_RETRY_COUNT: 0
   extends:
     - .rspec-ee-base-pg14
-    - .rails:rules:ee-gitlab-duo-chat
+    - .rails:rules:ee-gitlab-duo-chat-base
+  parallel:
+    matrix:
+      - DUO_RSPEC: ["lib/gitlab/llm/chain/agents/zero_shot/executor_real_requests_spec.rb", "support_specs/helpers/chat_qa_evaluation_helpers_spec.rb"]
   script:
     - !reference [.base-script, script]
-    - rspec_paralellized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag real_ai_request"
+    - bundle exec rspec -Ispec -rspec_helper --failure-exit-code 0 --tag real_ai_request --color -- ee/spec/${DUO_RSPEC}
+
+rspec-ee unit gitlab-duo-chat-qa pg14:
+  variables:
+    REAL_AI_REQUEST: "true"
+    RSPEC_RETRY_RETRY_COUNT: 0
+  extends:
+    - .rspec-ee-base-pg14
+    - .rails:rules:ee-gitlab-duo-chat-base
+  parallel:
+    matrix:
+      - DUO_RSPEC: ["qa_epic_spec.rb", "qa_issue_spec.rb"]
+  script:
+    - !reference [.base-script, script]
+    - source ./scripts/utils.sh
+    - install_gitlab_gem
+    - bundle exec rspec -Ispec -rspec_helper --failure-exit-code 0 --tag real_ai_request --color -- ee/spec/lib/gitlab/llm/chain/agents/zero_shot/${DUO_RSPEC}
+    - ./scripts/duo_chat/reporter.rb
+  artifacts:
+    expire_in: 5d
+    paths:
+      - tmp/duo_chat/qa*.json
+      - "${DUO_RSPEC}.md"
 
 rspec-ee migration pg14:
   extends:
@@ -961,39 +973,6 @@ rspec-ee system pg14 clusterwide-db:
 ##########################################
 # EE/FOSS: default branch nightly scheduled jobs #
 
-# PG12
-rspec migration pg12:
-  extends:
-    - .rspec-base-pg12
-    - .rspec-base-migration
-    - .rails:rules:rspec-on-pg12
-    - .rspec-migration-parallel
-
-rspec background_migration pg12:
-  extends:
-    - .rspec-base-pg12
-    - .rspec-base-migration
-    - .rails:rules:rspec-on-pg12
-    - .rspec-background-migration-parallel
-
-rspec unit pg12:
-  extends:
-    - .rspec-base-pg12
-    - .rails:rules:rspec-on-pg12
-    - .rspec-unit-parallel
-
-rspec integration pg12:
-  extends:
-    - .rspec-base-pg12
-    - .rails:rules:rspec-on-pg12
-    - .rspec-integration-parallel
-
-rspec system pg12:
-  extends:
-    - .rspec-base-pg12
-    - .rails:rules:rspec-on-pg12
-    - .rspec-system-parallel
-
 # PG13
 rspec migration pg13:
   extends:
@@ -1064,39 +1043,6 @@ rspec system pg15:
 
 #####################################
 # EE: default branch nightly scheduled jobs #
-
-# PG12
-rspec-ee migration pg12:
-  extends:
-    - .rspec-ee-base-pg12
-    - .rspec-base-migration
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-    - .rspec-ee-migration-parallel
-
-rspec-ee background_migration pg12:
-  extends:
-    - .rspec-ee-base-pg12
-    - .rspec-base-migration
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-    - .rspec-ee-background-migration-parallel
-
-rspec-ee unit pg12:
-  extends:
-    - .rspec-ee-base-pg12
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-    - .rspec-ee-unit-parallel
-
-rspec-ee integration pg12:
-  extends:
-    - .rspec-ee-base-pg12
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-    - .rspec-ee-integration-parallel
-
-rspec-ee system pg12:
-  extends:
-    - .rspec-ee-base-pg12
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-    - .rspec-ee-system-parallel
 
 # PG13
 rspec-ee unit pg13 opensearch1:

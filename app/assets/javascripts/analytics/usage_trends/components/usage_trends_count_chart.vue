@@ -1,8 +1,8 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { GlLineChart } from '@gitlab/ui/dist/charts';
-import * as Sentry from '@sentry/browser';
 import { some, every } from 'lodash';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import {
   differenceInMonths,
   formatDateAsMonth,

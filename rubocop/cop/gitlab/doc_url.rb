@@ -19,7 +19,7 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Use `#help_page_url` instead of directly including link. ' \
-              'See https://docs.gitlab.com/ee/development/documentation/#linking-to-help-in-ruby.'
+              'See https://docs.gitlab.com/ee/development/documentation/help#linking-to-help.'
 
         DOCS_URL_REGEXP = %r{https://docs.gitlab.com/ee/[\w#%./-]+}
 

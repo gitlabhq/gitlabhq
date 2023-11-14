@@ -6,9 +6,9 @@ module StubSaasFeatures
   # @param [Hash] features where key is feature name and value is boolean whether enabled or not.
   #
   # Examples
-  # - `stub_saas_features('onboarding' => false)` ... Disable `onboarding`
+  # - `stub_saas_features(onboarding: false)` ... Disable `onboarding`
   #   SaaS feature globally.
-  # - `stub_saas_features('onboarding' => true)` ... Enable `onboarding`
+  # - `stub_saas_features(onboarding: true)` ... Enable `onboarding`
   #   SaaS feature globally.
   def stub_saas_features(features)
     features.each do |feature_name, value|

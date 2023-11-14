@@ -26,7 +26,7 @@ RSpec.describe UnnestedInFilters::Rewriter do
 
     context 'when the given relation has an `IN` predicate' do
       context 'when there is no index coverage for the used columns' do
-        let(:relation) { User.where(username: %w(user_1 user_2), state: :active) }
+        let(:relation) { User.where(username: %w[user_1 user_2], state: :active) }
 
         it { is_expected.to be_falsey }
       end
@@ -37,7 +37,7 @@ RSpec.describe UnnestedInFilters::Rewriter do
         it { is_expected.to be_truthy }
 
         context 'when there is an ordering' do
-          let(:relation) { User.where(state: %w(active blocked banned)).order(order).limit(2) }
+          let(:relation) { User.where(state: %w[active blocked banned]).order(order).limit(2) }
 
           context 'when the order is an Arel node' do
             let(:order) { { user_type: :desc } }
@@ -67,7 +67,7 @@ RSpec.describe UnnestedInFilters::Rewriter do
 
   describe '#rewrite' do
     let(:recorded_queries) { ActiveRecord::QueryRecorder.new { rewriter.rewrite.load } }
-    let(:relation) { User.where(state: :active, user_type: %i(support_bot alert_bot)).limit(2) }
+    let(:relation) { User.where(state: :active, user_type: %i[support_bot alert_bot]).limit(2) }
     let(:users_select) { 'SELECT "users".*' }
     let(:users_select_with_ignored_columns) { 'SELECT ("users"."\w+", )+("users"."\w+")' }
 
@@ -101,7 +101,7 @@ RSpec.describe UnnestedInFilters::Rewriter do
     end
 
     context 'when the relation has a subquery' do
-      let(:relation) { User.where(state: User.select(:state), user_type: %i(support_bot alert_bot)).limit(1) }
+      let(:relation) { User.where(state: User.select(:state), user_type: %i[support_bot alert_bot]).limit(1) }
 
       let(:users_unnest) do
         'FROM
@@ -127,7 +127,7 @@ RSpec.describe UnnestedInFilters::Rewriter do
     end
 
     context 'when there is an order' do
-      let(:relation) { User.where(state: %w(active blocked banned)).order(order).limit(2) }
+      let(:relation) { User.where(state: %w[active blocked banned]).order(order).limit(2) }
 
       let(:users_unnest) do
         'FROM
@@ -177,7 +177,7 @@ RSpec.describe UnnestedInFilters::Rewriter do
     end
 
     context 'when the combined attributes include the primary key' do
-      let(:relation) { User.where(user_type: %i(support_bot alert_bot)).order(id: :desc).limit(2) }
+      let(:relation) { User.where(user_type: %i[support_bot alert_bot]).order(id: :desc).limit(2) }
 
       let(:users_where) do
         'FROM

@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe SafeZip::Entry do
   let(:target_path) { Dir.mktmpdir('safe-zip') }
-  let(:directories) { %w(public folder/with/subfolder) }
-  let(:files) { %w(public/index.html public/assets/image.png) }
+  let(:directories) { %w[public folder/with/subfolder] }
+  let(:files) { %w[public/index.html public/assets/image.png] }
   let(:params) { SafeZip::ExtractParams.new(directories: directories, files: files, to: target_path) }
 
   let(:entry) { described_class.new(zip_archive, zip_entry, params) }
@@ -52,7 +52,7 @@ RSpec.describe SafeZip::Entry do
     subject { entry.extract }
 
     context 'when entry does not match the filtered directories' do
-      let(:directories) { %w(public folder/with/subfolder) }
+      let(:directories) { %w[public folder/with/subfolder] }
       let(:files) { [] }
 
       using RSpec::Parameterized::TableSyntax
@@ -76,7 +76,7 @@ RSpec.describe SafeZip::Entry do
 
     context 'when entry does not match the filtered files' do
       let(:directories) { [] }
-      let(:files) { %w(public/index.html public/assets/image.png) }
+      let(:files) { %w[public/index.html public/assets/image.png] }
 
       using RSpec::Parameterized::TableSyntax
 

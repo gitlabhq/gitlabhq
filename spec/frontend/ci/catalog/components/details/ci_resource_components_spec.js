@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { resolvers } from '~/ci/catalog/graphql/settings';
 import CiResourceComponents from '~/ci/catalog/components/details/ci_resource_components.vue';
@@ -8,7 +8,7 @@ import getCiCatalogcomponentComponents from '~/ci/catalog/graphql/queries/get_ci
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-import { mockComponents } from '../../mock';
+import { mockComponents, mockComponentsEmpty } from '../../mock';
 
 Vue.use(VueApollo);
 jest.mock('~/alert');
@@ -37,7 +37,9 @@ describe('CiResourceComponents', () => {
     await waitForPromises();
   };
 
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findCopyToClipboardButton = (i) => wrapper.findAllByTestId('copy-to-clipboard').at(i);
   const findComponents = () => wrapper.findAllByTestId('component-section');
 
   beforeEach(() => {
@@ -82,30 +84,61 @@ describe('CiResourceComponents', () => {
   });
 
   describe('when queries have loaded', () => {
-    beforeEach(async () => {
-      await createComponent();
-    });
+    describe('and there is no metadata', () => {
+      beforeEach(async () => {
+        mockComponentsResponse.mockResolvedValue(mockComponentsEmpty);
+        await createComponent();
+      });
 
-    it('renders every component', () => {
-      expect(findComponents()).toHaveLength(components.length);
-    });
+      it('renders the empty state', () => {
+        expect(findEmptyState().exists()).toBe(true);
+        expect(findEmptyState().props().title).toBe('Component details not available');
+      });
 
-    it('renders the component name, description and snippet', () => {
-      components.forEach((component) => {
-        expect(wrapper.text()).toContain(component.name);
-        expect(wrapper.text()).toContain(component.description);
-        expect(wrapper.text()).toContain(component.path);
+      it('does not render components', () => {
+        expect(findComponents()).toHaveLength(0);
       });
     });
 
-    describe('inputs', () => {
-      it('renders the component parameter attributes', () => {
-        const [firstComponent] = components;
+    describe('and there is metadata', () => {
+      beforeEach(async () => {
+        await createComponent();
+      });
 
-        firstComponent.inputs.nodes.forEach((input) => {
-          expect(findComponents().at(0).text()).toContain(input.name);
-          expect(findComponents().at(0).text()).toContain(input.defaultValue);
-          expect(findComponents().at(0).text()).toContain('Yes');
+      it('does not render the empty state', () => {
+        expect(findEmptyState().exists()).toBe(false);
+      });
+
+      it('renders every component', () => {
+        expect(findComponents()).toHaveLength(components.length);
+      });
+
+      it('renders the component name, description and snippet', () => {
+        components.forEach((component) => {
+          expect(wrapper.text()).toContain(component.name);
+          expect(wrapper.text()).toContain(component.description);
+          expect(wrapper.text()).toContain(component.path);
+        });
+      });
+
+      it('adds a copy-to-clipboard button', () => {
+        components.forEach((component, i) => {
+          const button = findCopyToClipboardButton(i);
+
+          expect(button.props().icon).toBe('copy-to-clipboard');
+          expect(button.attributes('data-clipboard-text')).toContain(component.path);
+        });
+      });
+
+      describe('inputs', () => {
+        it('renders the component parameter attributes', () => {
+          const [firstComponent] = components;
+
+          firstComponent.inputs.nodes.forEach((input) => {
+            expect(findComponents().at(0).text()).toContain(input.name);
+            expect(findComponents().at(0).text()).toContain(input.defaultValue);
+            expect(findComponents().at(0).text()).toContain('Yes');
+          });
         });
       });
     });

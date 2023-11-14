@@ -120,51 +120,46 @@ However, Service-Integration will establish certain necessary and optional requi
 
 ###### Ease of Use, Ownership Requirements
 
-1. <a name="R100">`R100`</a>: Required: the platform should be easy to use: imagine Heroku with [GitLab Production Readiness-approved](https://about.gitlab.com/handbook/engineering/infrastructure/production/readiness/) defaults.
-1. <a name="R110">`R110`</a>: Required: with the exception of an Infrastructure-led onboarding process, services are owned, deployed and managed by stage-group teams. In other words,services follow a "You Build It, You Run It" model of ownership.
-1. <a name="R120">`R120`</a>: Required: programming-language agnostic: no requirements for services. Services should be packaged as container images.
-1. <a name="R130">`R130`</a>: Recommended: Each service should be evaluated against the GitLab.com [Service Maturity Model](https://about.gitlab.com/handbook/engineering/infrastructure/service-maturity-model/).
-1. <a name="R140">`R140`</a>: Recommended: services using the platform have expedited production-readiness processes.
-   1. Production-readiness requirements graded by service maturity: low-traffic, low-maturity experimental services will have lower requirement thresholds than more mature services.
-   1. By default, the platform should provide services with defaults that would pass production-readiness review for the lowest service maturity-level.
-   1. At introduction, lowest maturity services can be deployed without production readiness, provided the meet certain automatically validated requirements. This removes Infrastructure gate-keeping from being a blocker to experimental service delivery.
+| ID | Required | Detail | Epic/Issue | Done? |
+|---|---|---|---|---|
+| `R100` | Required    | The platform should be easy to use: imagine Heroku with [GitLab Production Readiness-approved](https://about.gitlab.com/handbook/engineering/infrastructure/production/readiness/) defaults. | [Runway to [BETA] : Increased Adoption and Self Service](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/1115) | **{dotted-circle}** No |
+| `R110` | Required    | With the exception of an Infrastructure-led onboarding process, services are owned, deployed and managed by stage-group teams. In other words,services follow a “You Build It, You Run It” model of ownership.| [[Paused] Discussion: Tiered Support Model for Runway](https://gitlab.com/gitlab-com/gl-infra/platform/runway/team/-/issues/97) | **{dotted-circle}** No |
+| `R120` | Required    | Programming-language agnostic: no requirements for services. Services should be packaged as container images.| [Runway to [BETA] : Increased Adoption and Self Service](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/1115) | **{dotted-circle}** No |
+| `R130` | Recommended | Each service should be evaluated against the GitLab.com [Service Maturity Model](https://about.gitlab.com/handbook/engineering/infrastructure/service-maturity-model/).| [Discussion: Introduce an 'Infrastructure Well-Architected Service Framework'](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2537) | **{dotted-circle}** No |
+| `R140` | Recommended | Services using the platform have expedited production-readiness processes. {::nomarkdown}<ol><li>Production-readiness requirements graded by service maturity: low-traffic, low-maturity experimental services will have lower requirement thresholds than more mature services. </li><li> By default, the platform should provide services with defaults that would pass production-readiness review for the lowest service maturity-level. </li><li> At introduction, lowest maturity services can be deployed without production readiness, provided the meet certain automatically validated requirements. This removes Infrastructure gate-keeping from being a blocker to experimental service delivery.</li></ol>{:/} | | |
 
 ###### Observability Requirements
 
-1. <a name="R200">`R200`</a>: Required: the platform must provide SLIs for services out-of-the-box.
-   1. While it is recommended that services expose internal metrics, it is not mandatory. The platform will provide monitoring from the load-balancer. This is to speed up deployment by removing barriers to experimentation.
-   1. For services that provide internal metrics scrape endpoints, the platform must be configurable to collect these.
-   1. The platform must provide generic load-balancer level SLIs for all services. Service owners must be able to select from constructing SLIs from internal application metrics, the platform-provided external SLIs, or a combination of both.
-1. <a name="R210">`R210`</a>: Required: Observability dashboards, rules, alerts (with per-term routing) must be generated from a manifest.
-1. <a name="R220">`R220`</a>:Required: standardized logging infrastructure.
-   1. Mandate that all logging emitted from services must be Structured JSON. Text logs are permitted but not recommended.
-   1. See [Common Service Libraries](#common-service-libraries) for more details of building common SDKs for observability.
+| ID | Required | Detail | Epic/Issue | Done? |
+|---|---|---|---|---|
+| `R200` | Required | The platform must provide SLIs for services out-of-the-box.{::nomarkdown}<ol><li>While it is recommended that services expose internal metrics, it is not mandatory. The platform will provide monitoring from the load-balancer. This is to speed up deployment by removing barriers to experimentation.</li><li>For services that provide internal metrics scrape endpoints, the platform must be configurable to collect these.</li><li>The platform must provide generic load-balancer level SLIs for all services. Service owners must be able to select from constructing SLIs from internal application metrics, the platform-provided external SLIs, or a combination of both.</li></ol>{:/} | [Observability: Default Metrics](https://gitlab.com/gitlab-com/gl-infra/platform/runway/team/-/issues/72), [Observability: Custom Metrics](https://gitlab.com/gitlab-com/gl-infra/platform/runway/team/-/issues/67) | **{check-circle}** Yes |
+| `R210` | Required | Observability dashboards, rules, alerts (with per-term routing) must be generated from a manifest. | [Observability: Metrics Catalog](https://gitlab.com/gitlab-com/gl-infra/platform/runway/team/-/issues/74) | **{check-circle}** Yes |
+| `R220` | Required | Standardized logging infrastructure.{::nomarkdown}<ol><li>Mandate that all logging emitted from services must be Structured JSON. Text logs are permitted but not recommended.</li><li>See <a href="#common-service-libraries">Common Service Libraries</a> for more details of building common SDKs for observability.</li></ol>{:/}  | [Observability: Logs in Elasticsearch for model-gateway](https://gitlab.com/gitlab-com/gl-infra/platform/runway/team/-/issues/75), [Observability: Runway logs available to users](https://gitlab.com/gitlab-com/gl-infra/platform/runway/team/-/issues/84) | |
 
 ###### Deployment Requirements
 
-1. <a name="R300">`R300`</a>: Required: No secrets stored in CI/CD.
-   1. Authentication with Cloud Provider Resources should be exclusively via OIDC, managed as part of the platform.
-   1. Secrets should be stored in the Infrastructure-provided Hashicorp Vault for the environment and passed to applications through files or environment variables.
-   1. Generation and management of service account tokens should be done declaratively, without manual interaction.
-1. <a name="R310">`R310`</a>: Required: multiple environment should be supported, eg Staging and Production.
-1. <a name="R320">`R320`</a>: Required: the platform should be cost-effective. Kubernetes clusters should support multiple services and teams.
-1. <a name="R330">`R330`</a>: Recommended: gradual rollouts, rollbacks, blue-green deployments.
-1. <a name="R340">`R340`</a>: Required: services should be isolated from one another.
-1. <a name="R350">`R350`</a>: Recommended: services should have the ability to specify node characteristic requirements (eg, GPU).
-1. <a name="R360">`R360`</a>: Required: Developers should not need knowledge of Helm, Kubernetes, Prometheus in order to deploy. All required values are configured and validated in project-hosted manifest before generating Kubernetes manifests, Prometheus rules, etc.
-1. <a name="R370">`R370`</a>: Initially services should be synchronous only - using REST or GRPC requests.
-    1. This does not however preclude long-running HTTP(s) requests, for example long-polling or Websocket requests.
-1. <a name="R390">`R390`</a>: Each service hosted in its own GitLab repository with deployment manifest stored in the repository.
-    1. Continuous deployments that are initiated from the CI pipeline of the corresponding GitLab repository.
+| ID | Required | Detail | Epic/Issue | Done? |
+|---|---|---|---|---|
+| `R300` | Required | No secrets stored in CI/CD. {::nomarkdown} <ol><li>Authentication with Cloud Provider Resources should be exclusively via OIDC, managed as part of the platform.</li><li> Secrets should be stored in the Infrastructure-provided Hashicorp Vault for the environment and passed to applications through files or environment variables. </li><li>Generation and management of service account tokens should be done declaratively, without manual interaction.</li></ul>{:/} | [Secrets Management](https://gitlab.com/gitlab-com/gl-infra/platform/runway/team/-/issues/52) | **{dotted-circle}** No |
+| `R310` | Required | Multiple environment should be supported, eg Staging and Production. |  | **{check-circle}** Yes |
+| `R320` | Required | The platform should be cost-effective. Kubernetes clusters should support multiple services and teams. |  |  |
+| `R330` | Recommended | Gradual rollouts, rollbacks, blue-green deployments. |  |  |
+| `R340` | Required | Services should be isolated from one another. |  |  |
+| `R350` | Recommended | Services should have the ability to specify node characteristic requirements (eg, GPU). |  |  |
+| `R360` | Required | Developers should not need knowledge of Helm, Kubernetes, Prometheus in order to deploy. All required values are configured and validated in project-hosted manifest before generating Kubernetes manifests, Prometheus rules, etc. |  |  |
+| `R370` |  | Initially services should be synchronous only - using REST or GRPC requests.{::nomarkdown}<ol><li>This does not however preclude long-running HTTP(s) requests, for example long-polling or Websocket requests.</li></ol>{:/} |  |  |
+| `R390` |  | Each service hosted in its own GitLab repository with deployment manifest stored in the repository.  {::nomarkdown}<ol><li>Continuous deployments that are initiated from the CI pipeline of the corresponding GitLab repository.</li></ol>{:/}  | | |
 
 ##### Security Requirements
 
-1. <a name="R400">`R400`</a>: stateful services deployed on the platform that utilize their own stateful storage (for example, custom deployed Postgres instance), must not store application security tokens, cloud-provider service keys or other long-lived security tokens in their stateful stores.
-1. <a name="R410">`R410`</a>: long-lived shared secrets are discouraged, and should be referenced in the service manifest as such, to allow for accounting and monitoring.
-1. <a name="R420">`R420`</a>: services using long-lived shared secrets should ensure that secret rotation can take place without downtime.
-    1. During a rotation, old and new generations of secrets should pass authentication, allowing gradual roll-out of new secrets.
+| ID | Required | Detail | Epic/Issue | Done? |
+|---|---|---|---|---|
+| `R400` |  | Stateful services deployed on the platform that utilize their own stateful storage (for example, custom deployed Postgres instance), must not store application security tokens, cloud-provider service keys or other long-lived security tokens in their stateful stores. |  |  |
+| `R410` |  | Long-lived shared secrets are discouraged, and should be referenced in the service manifest as such, to allow for accounting and monitoring. |  |  |
+| `R420` |  | Services using long-lived shared secrets should ensure that secret rotation can take place without downtime. {::nomarkdown}<ol><li>During a rotation, old and new generations of secrets should pass authentication, allowing gradual roll-out of new secrets.</li></ol>{:/} |  |  |
 
 ##### Common Service Libraries
 
-1. <a name="R500">`R500`</a>: Experimental services would be strongly encouraged to adopt and use [LabKit](https://gitlab.com/gitlab-org/labkit) (for Go services), or [LabKit-Ruby](https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby) for observability, context, correlation, FIPs verification, etc.
-   1. At present, there is no LabKit-Python library, but some experiments will run in Python, so building a library to providing observability, context, correlation services in Python will be required.
+| ID | Required | Detail | Epic/Issue | Done? |
+|---|---|---|---|---|
+| `R500` | Required | Experimental services would be strongly encouraged to adopt and use [LabKit](https://gitlab.com/gitlab-org/labkit) (for Go services), or [LabKit-Ruby](https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby) for observability, context, correlation, FIPs verification, etc. {::nomarkdown}<ol><li>At present, there is no LabKit-Python library, but some experiments will run in Python, so building a library to providing observability, context, correlation services in Python will be required. </li></ol>{:/} | | |

@@ -22,6 +22,10 @@ module API
       expose :encoding, documentation: { type: 'string', example: 'UTF-8' } do |wiki_page|
         wiki_page.content.encoding.name
       end
+
+      expose :front_matter, documentation: { type: 'Hash', example: { title: "deploy" } }, if: ->(wiki_page) {
+        ::Feature.enabled?(:wiki_front_matter_title, wiki_page.container)
+      }
     end
   end
 end

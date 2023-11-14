@@ -12,12 +12,12 @@ Follow this tutorial to learn how to use the new left sidebar to navigate the UI
 
 ## Enable the new left sidebar
 
-To view the new sidebar:
+From 16.0 through 16.5, you can turn the new sidebar on and off:
 
 1. On the left sidebar, select your avatar.
-1. Turn on the **New navigation** toggle.
+1. Change the **New navigation** toggle.
 
-To turn off this sidebar, return to your avatar and turn off the toggle.
+Return to your avatar to change the setting.
 
 ## Layout of the left sidebar
 

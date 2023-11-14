@@ -13,12 +13,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Read dependency added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126247) in GitLab 16.3.
 > - [Name and description fields added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126423) in GitLab 16.3.
 > - [Admin merge request introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128302) in GitLab 16.4 [with a flag](../administration/feature_flags.md) named `admin_merge_request`. Disabled by default.
-> - [Admin group members introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131914) in GitLab 16.5 [with a flag](../administration/feature_flags.md) named `admin_group_member`. Disabled by default.
+> - [Feature flag `admin_merge_request` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132578) in GitLab 16.5.
+> - [Admin group members introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131914) in GitLab 16.5 [with a flag](../administration/feature_flags.md) named `admin_group_member`. Disabled by default. The feature flag has been removed in GitLab 16.6.
 > - [Manage project access tokens introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132342) in GitLab 16.5 in [with a flag](../administration/feature_flags.md) named `manage_project_access_tokens`. Disabled by default.
+> - [Archive project introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134998) in GitLab 16.6 in [with a flag](../administration/feature_flags.md) named `archive_project`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default these two features are not available. To make them available, an administrator can [enable the feature flags](../administration/feature_flags.md) named `admin_merge_request` and `admin_member_custom_role`.
-On GitLab.com, this feature is not available.
+On self-managed GitLab, by default these features are not available. To make them available, an administrator can [enable the feature flags](../administration/feature_flags.md) named `admin_group_member`, `manage_project_access_tokens` and `archive_project`.
+On GitLab.com, these features are not available.
 
 ## List all member roles of a group
 
@@ -48,6 +50,7 @@ If successful, returns [`200`](rest/index.md#status-codes) and the following res
 | `[].read_vulnerability`            | boolean | Permission to read project vulnerabilities. |
 | `[].admin_group_member`            | boolean | Permission to admin members of a group. |
 | `[].manage_project_access_tokens`  | boolean | Permission to manage project access tokens. |
+| `[].archive_project`               | boolean | Permission to archive projects. |
 
 Example request:
 
@@ -70,7 +73,8 @@ Example response:
     "read_code": true,
     "read_dependency": false,
     "read_vulnerability": false,
-    "manage_project_access_tokens": false
+    "manage_project_access_tokens": false,
+    "archive_project": false
   },
   {
     "id": 3,
@@ -83,7 +87,8 @@ Example response:
     "read_code": false,
     "read_dependency": true,
     "read_vulnerability": true,
-    "manage_project_access_tokens": false
+    "manage_project_access_tokens": false,
+    "archive_project": false
   }
 ]
 ```

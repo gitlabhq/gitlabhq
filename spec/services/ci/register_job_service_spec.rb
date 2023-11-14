@@ -948,7 +948,7 @@ module Ci
           pending_job.create_queuing_entry!
         end
 
-        let(:runner) { create(:ci_runner, :instance, tag_list: %w(tag1 tag2)) }
+        let(:runner) { create(:ci_runner, :instance, tag_list: %w[tag1 tag2]) }
         let(:expected_shared_runner) { true }
         let(:expected_shard) { ::Gitlab::Ci::Queue::Metrics::DEFAULT_METRICS_SHARD }
         let(:expected_jobs_running_for_project_first_job) { '0' }
@@ -957,14 +957,14 @@ module Ci
         it_behaves_like 'metrics collector'
 
         context 'when metrics_shard tag is defined' do
-          let(:runner) { create(:ci_runner, :instance, tag_list: %w(tag1 metrics_shard::shard_tag tag2)) }
+          let(:runner) { create(:ci_runner, :instance, tag_list: %w[tag1 metrics_shard::shard_tag tag2]) }
           let(:expected_shard) { 'shard_tag' }
 
           it_behaves_like 'metrics collector'
         end
 
         context 'when multiple metrics_shard tag is defined' do
-          let(:runner) { create(:ci_runner, :instance, tag_list: %w(tag1 metrics_shard::shard_tag metrics_shard::shard_tag_2 tag2)) }
+          let(:runner) { create(:ci_runner, :instance, tag_list: %w[tag1 metrics_shard::shard_tag metrics_shard::shard_tag_2 tag2]) }
           let(:expected_shard) { 'shard_tag' }
 
           it_behaves_like 'metrics collector'
@@ -997,7 +997,7 @@ module Ci
       end
 
       context 'when project runner is used' do
-        let(:runner) { create(:ci_runner, :project, projects: [project], tag_list: %w(tag1 metrics_shard::shard_tag tag2)) }
+        let(:runner) { create(:ci_runner, :project, projects: [project], tag_list: %w[tag1 metrics_shard::shard_tag tag2]) }
         let(:expected_shared_runner) { false }
         let(:expected_shard) { ::Gitlab::Ci::Queue::Metrics::DEFAULT_METRICS_SHARD }
         let(:expected_jobs_running_for_project_first_job) { '+Inf' }

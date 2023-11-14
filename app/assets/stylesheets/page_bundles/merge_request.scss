@@ -88,20 +88,6 @@ $comparison-empty-state-height: 62px;
 
     .merge-request-title {
       margin-bottom: 2px;
-
-      .ci-status-link {
-        svg {
-          height: 16px;
-          width: 16px;
-          position: relative;
-          top: 3px;
-        }
-
-        &:hover,
-        &:focus {
-          text-decoration: none;
-        }
-      }
     }
   }
 }
@@ -146,10 +132,6 @@ $comparison-empty-state-height: 62px;
     margin-right: 5px;
     padding: 0;
     background: transparent;
-  }
-
-  .ci-status-link {
-    margin-right: 5px;
   }
 }
 

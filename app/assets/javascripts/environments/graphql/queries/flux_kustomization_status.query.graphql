@@ -1,15 +1,9 @@
 query getFluxHelmKustomizationStatusQuery(
   $configuration: LocalConfiguration
-  $namespace: String
-  $environmentName: String
   $fluxResourcePath: String
 ) {
-  fluxKustomizationStatus(
-    configuration: $configuration
-    namespace: $namespace
-    environmentName: $environmentName
-    fluxResourcePath: $fluxResourcePath
-  ) @client {
+  fluxKustomizationStatus(configuration: $configuration, fluxResourcePath: $fluxResourcePath)
+    @client {
     message
     status
     type

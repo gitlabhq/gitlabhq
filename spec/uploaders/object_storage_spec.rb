@@ -255,7 +255,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
       describe '#use_file' do
         context 'when file is stored locally' do
           it "calls a regular path" do
-            expect { |b| uploader.use_file(&b) }.not_to yield_with_args(%r[tmp/cache])
+            expect { |b| uploader.use_file(&b) }.not_to yield_with_args(%r{tmp/cache})
           end
         end
 
@@ -267,7 +267,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
           end
 
           it "calls a cache path" do
-            expect { |b| uploader.use_file(&b) }.to yield_with_args(%r[tmp/cache])
+            expect { |b| uploader.use_file(&b) }.to yield_with_args(%r{tmp/cache})
           end
 
           it "cleans up the cached file" do

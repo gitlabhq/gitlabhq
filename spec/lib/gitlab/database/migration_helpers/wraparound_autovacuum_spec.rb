@@ -14,20 +14,30 @@ RSpec.describe Gitlab::Database::MigrationHelpers::WraparoundAutovacuum, feature
   describe '#can_execute_on?' do
     using RSpec::Parameterized::TableSyntax
 
-    where(:dot_com, :dev_or_test, :wraparound_prevention, :expectation) do
-      true  | true  | true  | false
-      true  | false | true  | false
-      false | true  | true  | false
-      false | false | true  | false
-      true  | true  | false | true
-      true  | false | false | true
-      false | true  | false | true
-      false | false | false | false
+    where(:dot_com, :jh, :dev_or_test, :wraparound_prevention, :expectation) do
+      true  | true  | true  | true  | false
+      true  | true  | false | true  | false
+      false | true  | true  | true  | false
+      false | true  | false | true  | false
+      true  | true  | true  | false | true
+      true  | true  | false | false | false
+      false | true  | true  | false | true
+      false | true  | false | false | false
+
+      true  | false | true  | true  | false
+      true  | false | false | true  | false
+      false | false | true  | true  | false
+      false | false | false | true  | false
+      true  | false | true  | false | true
+      true  | false | false | false | true
+      false | false | true  | false | true
+      false | false | false | false | false
     end
 
     with_them do
-      it 'returns true for GitLab.com, dev, or test' do
+      it 'returns as expected for GitLab.com, dev, or test' do
         allow(Gitlab).to receive(:com?).and_return(dot_com)
+        allow(Gitlab).to receive(:jh?).and_return(jh)
         allow(Gitlab).to receive(:dev_or_test_env?).and_return(dev_or_test)
         allow(migration).to receive(:wraparound_prevention_on_tables?).with([:table]).and_return(wraparound_prevention)
 

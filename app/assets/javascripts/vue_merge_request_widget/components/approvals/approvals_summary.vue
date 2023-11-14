@@ -137,7 +137,7 @@ export default {
 </script>
 
 <template>
-  <div data-qa-selector="approvals_summary_content">
+  <div data-testid="approvals-summary-content">
     <span class="gl-font-weight-bold">{{ approvalLeftMessage }}</span>
     <template v-if="hasApprovers">
       <span v-if="approvalLeftMessage">{{ message }}</span>

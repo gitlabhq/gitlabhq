@@ -369,7 +369,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
 
         context "and at least one LDAP provider is defined" do
           before do
-            stub_ldap_config(providers: %w(ldapmain))
+            stub_ldap_config(providers: %w[ldapmain])
           end
 
           context "and a corresponding LDAP person" do
@@ -570,7 +570,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
             before do
               allow(ldap_user).to receive(:uid) { uid }
               allow(ldap_user).to receive(:username) { 'johndoe@example.com' }
-              allow(ldap_user).to receive(:email) { %w(johndoe@example.com john2@example.com) }
+              allow(ldap_user).to receive(:email) { %w[johndoe@example.com john2@example.com] }
               allow(ldap_user).to receive(:dn) { dn }
             end
 
@@ -605,7 +605,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
 
         context "and at least one LDAP provider is defined" do
           before do
-            stub_ldap_config(providers: %w(ldapmain))
+            stub_ldap_config(providers: %w[ldapmain])
           end
 
           context "and a corresponding LDAP person" do
@@ -1055,7 +1055,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
     context "update only requested info" do
       before do
         stub_omniauth_setting(sync_profile_from_provider: ['my-provider'])
-        stub_omniauth_setting(sync_profile_attributes: %w(name location))
+        stub_omniauth_setting(sync_profile_attributes: %w[name location])
       end
 
       it "updates the user name" do

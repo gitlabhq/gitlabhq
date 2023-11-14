@@ -1,7 +1,7 @@
-import * as Sentry from '@sentry/browser';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -12,7 +12,7 @@ import WorkItemsListApp from '~/work_items/list/components/work_items_list_app.v
 import getWorkItemsQuery from '~/work_items/list/queries/get_work_items.query.graphql';
 import { groupWorkItemsQueryResponse } from '../../mock_data';
 
-jest.mock('@sentry/browser');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('WorkItemsListApp component', () => {
   let wrapper;

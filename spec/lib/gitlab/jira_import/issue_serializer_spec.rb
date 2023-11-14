@@ -28,7 +28,7 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer do
     end
 
     let(:priority_field) { { 'name' => 'Medium' } }
-    let(:labels_field) { %w(bug dev backend frontend) }
+    let(:labels_field) { %w[bug dev backend frontend] }
 
     let(:fields) do
       {
@@ -101,7 +101,7 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer do
         end
 
         context 'when there are no new labels' do
-          let(:labels_field) { %w(bug dev) }
+          let(:labels_field) { %w[bug dev] }
 
           it 'assigns the labels to the Issue hash' do
             expect(subject[:label_ids]).to match_array([project_label.id, group_label.id])

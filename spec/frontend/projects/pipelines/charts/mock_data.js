@@ -1,7 +1,7 @@
 export const counts = {
-  failed: 2,
-  success: 2,
-  total: 4,
+  failed: 20000,
+  success: 20000,
+  total: 40000,
   successRatio: 50,
   totalDuration: 116158,
 };

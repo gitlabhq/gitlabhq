@@ -41,10 +41,7 @@ export default {
       );
     },
     showArchivedFilter() {
-      return (
-        archivedFilterData.scopes.includes(this.currentScope) &&
-        this.glFeatures.searchIssuesHideArchivedProjects
-      );
+      return archivedFilterData.scopes.includes(this.currentScope);
     },
     showDivider() {
       return !this.useSidebarNavigation;

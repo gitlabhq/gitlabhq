@@ -40,6 +40,10 @@ module QA
             click_element('span[aria-label="New Folder..."]')
           end
 
+          def has_committed_and_pushed_successfully?
+            page.has_css?('.span[title="Success! Your changes have been committed."]')
+          end
+
           def click_upload_menu_item
             click_element('span[aria-label="Upload..."]')
           end
@@ -88,6 +92,10 @@ module QA
             click_element('.monaco-button[title="Create new branch"]')
           end
 
+          def click_continue_with_existing_branch
+            page.find('.monaco-button[title="Continue"]').click
+          end
+
           def has_branch_input_field?
             has_element?('input[aria-label="input"]')
           end
@@ -103,6 +111,32 @@ module QA
             page.within_frame(iframe, &block)
           end
 
+          def click_new_file_menu_item
+            page.find('[aria-label="New File..."]').click
+          end
+
+          def switch_to_original_window
+            page.driver.browser.switch_to.window(page.driver.browser.window_handles.first)
+          end
+
+          def create_new_file_from_template(filename, template)
+            within_vscode_editor do
+              Support::Waiter.wait_until(max_duration: 20, retry_on_exception: true) do
+                click_new_file_menu_item
+                enter_new_file_text_input(filename)
+                page.within('div.editor-container') do
+                  page.find('textarea.inputarea.monaco-mouse-cursor-text').send_keys(template)
+                end
+                page.has_content?(filename)
+              end
+            end
+          end
+
+          def enter_new_file_text_input(name)
+            page.find('.explorer-item-edited', visible: true)
+            send_keys(name, :enter)
+          end
+
           # Used for stablility, due to feature_caching of vscode_web_ide
           def wait_for_ide_to_load
             page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
@@ -113,7 +147,7 @@ module QA
               end
             end
 
-            wait_for_requests
+            Support::WaitForRequests.wait_for_requests(finish_loading_wait: 30)
             Support::Waiter.wait_until(max_duration: 10, reload_page: page, retry_on_exception: true) do
               within_vscode_editor do
                 # Check for webide file_explorer element
@@ -157,6 +191,13 @@ module QA
             end
           end
 
+          def push_to_existing_branch
+            within_vscode_editor do
+              click_continue_with_existing_branch
+              has_committed_and_pushed_successfully?
+            end
+          end
+
           def push_to_new_branch
             within_vscode_editor do
               click_new_branch
@@ -191,8 +232,9 @@ module QA
             end
           end
 
-          def add_file_content(prompt_data)
+          def add_prompt_into_a_file(file_name, prompt_data)
             within_vscode_editor do
+              open_file_from_explorer(file_name)
               click_inside_editor_frame
               within_file_editor do
                 send_keys(:enter, :enter, prompt_data)

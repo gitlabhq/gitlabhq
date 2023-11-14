@@ -31,8 +31,6 @@ RSpec.describe Ci::Partitionable::Switch, :aggregate_failures do
   end
 
   before do
-    allow(ActiveSupport::DescendantsTracker).to receive(:store_inherited)
-
     create_tables(<<~SQL)
       CREATE TABLE _test_ci_jobs_metadata(
         id serial NOT NULL PRIMARY KEY,
@@ -76,6 +74,15 @@ RSpec.describe Ci::Partitionable::Switch, :aggregate_failures do
           { type: 'development', name: table_rollout_flag }
         )
       )
+  end
+
+  # the models defined here are leaked to other tests through
+  # `ActiveRecord::Base.descendants` and we need to counter the side effects
+  # from this. We redefine the method so that we don't check the FF existence
+  # outside of the examples here.
+  # `ActiveSupport::DescendantsTracker.clear` doesn't work with cached classes.
+  after do
+    model.define_singleton_method(:routing_table_enabled?) { false }
   end
 
   it { expect(model).not_to be_routing_class }

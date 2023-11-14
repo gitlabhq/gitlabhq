@@ -13,7 +13,7 @@ module Gitlab
         # 3. Introduce the migration again for self-managed.
         #
         def can_execute_on?(*tables)
-          return false unless Gitlab.com? || Gitlab.dev_or_test_env?
+          return false unless Gitlab.com_except_jh? || Gitlab.dev_or_test_env?
 
           if wraparound_prevention_on_tables?(tables)
             Gitlab::AppLogger.info(message: "Wraparound prevention vacuum detected", class: self.class)

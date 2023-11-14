@@ -56,7 +56,7 @@ RSpec.shared_examples 'User creates wiki page' do
         click_on("Create page")
       end
 
-      expect(page).to have_current_path(%r(one/two/three-test), ignore_query: true)
+      expect(page).to have_current_path(%r{one/two/three-test}, ignore_query: true)
       expect(page).to have_link(href: wiki_page_path(wiki, 'one/two/three-test'))
     end
 

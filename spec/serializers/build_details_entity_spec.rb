@@ -128,7 +128,7 @@ RSpec.describe BuildDetailsEntity do
       context 'when the dependency is in the same pipeline' do
         let!(:test1) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test1', stage_idx: 0) }
         let!(:test2) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test2', stage_idx: 1) }
-        let!(:build) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 2, options: { dependencies: %w(test1 test2) }) }
+        let!(:build) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 2, options: { dependencies: %w[test1 test2] }) }
 
         before do
           build.pipeline.unlocked!
@@ -148,7 +148,7 @@ RSpec.describe BuildDetailsEntity do
       end
 
       context 'when dependency is not found' do
-        let!(:build) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 2, options: { dependencies: %w(test1 test2) }) }
+        let!(:build) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 2, options: { dependencies: %w[test1 test2] }) }
 
         before do
           build.pipeline.unlocked!

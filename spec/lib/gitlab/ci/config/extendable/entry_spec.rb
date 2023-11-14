@@ -128,8 +128,7 @@ RSpec.describe Gitlab::Ci::Config::Extendable::Entry do
 
       it 'raises an error' do
         expect { subject.extend! }
-          .to raise_error(described_class::InvalidExtensionError,
-                          /invalid base hash/)
+          .to raise_error(described_class::InvalidExtensionError, /invalid base hash/)
       end
     end
 
@@ -140,8 +139,7 @@ RSpec.describe Gitlab::Ci::Config::Extendable::Entry do
 
       it 'raises an error' do
         expect { subject.extend! }
-          .to raise_error(described_class::InvalidExtensionError,
-                          /unknown key/)
+          .to raise_error(described_class::InvalidExtensionError, /unknown key/)
       end
     end
 
@@ -178,7 +176,7 @@ RSpec.describe Gitlab::Ci::Config::Extendable::Entry do
         {
           first: { script: 'my value', image: 'ubuntu' },
           second: { image: 'alpine' },
-          test: { extends: %w(first second) }
+          test: { extends: %w[first second] }
         }
       end
 
@@ -186,7 +184,7 @@ RSpec.describe Gitlab::Ci::Config::Extendable::Entry do
         {
           first: { script: 'my value', image: 'ubuntu' },
           second: { image: 'alpine' },
-          test: { extends: %w(first second), script: 'my value', image: 'alpine' }
+          test: { extends: %w[first second], script: 'my value', image: 'alpine' }
         }
       end
 
@@ -230,8 +228,7 @@ RSpec.describe Gitlab::Ci::Config::Extendable::Entry do
 
       it 'raises an error' do
         expect { subject.extend! }
-          .to raise_error(described_class::CircularDependencyError,
-                          /circular dependency detected/)
+          .to raise_error(described_class::CircularDependencyError, /circular dependency detected/)
       end
     end
 

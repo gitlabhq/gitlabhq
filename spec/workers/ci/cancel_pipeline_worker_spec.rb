@@ -11,14 +11,13 @@ RSpec.describe Ci::CancelPipelineWorker, :aggregate_failures, feature_category: 
     let(:cancel_service) { instance_double(::Ci::CancelPipelineService) }
 
     it 'cancels the pipeline' do
-      allow(::Ci::Pipeline).to receive(:find_by_id).and_return(pipeline)
+      allow(::Ci::Pipeline).to receive(:find_by_id).twice.and_return(pipeline)
       expect(::Ci::CancelPipelineService)
         .to receive(:new)
         .with(
           pipeline: pipeline,
           current_user: nil,
-          auto_canceled_by_pipeline_id:
-          pipeline.id,
+          auto_canceled_by_pipeline: pipeline,
           cascade_to_children: false)
         .and_return(cancel_service)
 
@@ -28,10 +27,27 @@ RSpec.describe Ci::CancelPipelineWorker, :aggregate_failures, feature_category: 
     end
 
     context 'if pipeline is deleted' do
-      subject(:perform) { described_class.new.perform(non_existing_record_id, non_existing_record_id) }
+      subject(:perform) { described_class.new.perform(non_existing_record_id, pipeline.id) }
 
       it 'does not error' do
         expect(::Ci::CancelPipelineService).not_to receive(:new)
+
+        perform
+      end
+    end
+
+    context 'when auto_canceled_by_pipeline is deleted' do
+      subject(:perform) { described_class.new.perform(pipeline.id, non_existing_record_id) }
+
+      it 'does not error' do
+        expect(::Ci::CancelPipelineService)
+          .to receive(:new)
+          .with(
+            pipeline: an_instance_of(::Ci::Pipeline),
+            current_user: nil,
+            auto_canceled_by_pipeline: nil,
+            cascade_to_children: false)
+          .and_call_original
 
         perform
       end

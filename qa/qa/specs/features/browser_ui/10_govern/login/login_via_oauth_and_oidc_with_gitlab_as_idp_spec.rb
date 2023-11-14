@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Govern', :skip_live_env, requires_admin: 'creates users and instance OAuth application',
-    product_group: :authentication_and_authorization do
+    product_group: :authentication do
     let!(:user) { create(:user) }
     let(:consumer_host) { "http://#{consumer_name}.#{Runtime::Env.running_in_ci? ? 'test' : 'bridge'}" }
     let(:instance_oauth_app) do
@@ -14,6 +14,7 @@ module QA
 
     after do
       instance_oauth_app.remove_via_api!
+      save_gitlab_logs(consumer_name)
       remove_gitlab_service(consumer_name)
     end
 
@@ -26,6 +27,11 @@ module QA
         gitlab.pull
         gitlab.register!
       end
+    end
+
+    # Copy GitLab logs from inside the named Docker container running the GitLab OAuth instance
+    def save_gitlab_logs(name)
+      Service::DockerRun::Gitlab.new(name: name).extract_service_logs
     end
 
     def remove_gitlab_service(name)
@@ -71,7 +77,10 @@ module QA
       end
     end
 
-    describe 'OIDC' do
+    describe 'OIDC', quarantine: {
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/429723',
+      type: :flaky
+    } do
       let(:consumer_name) { 'gitlab-oidc-consumer' }
       let(:redirect_uri) { "#{consumer_host}/users/auth/openid_connect/callback" }
       let(:scopes) { %w[openid profile email] }

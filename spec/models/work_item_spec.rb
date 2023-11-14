@@ -402,6 +402,12 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
   end
 
+  describe '#linked_items_keyset_order' do
+    subject { described_class.linked_items_keyset_order }
+
+    it { is_expected.to eq('"issue_links"."id" ASC') }
+  end
+
   context 'with hierarchy' do
     let_it_be(:type1) { create(:work_item_type, namespace: reusable_project.namespace) }
     let_it_be(:type2) { create(:work_item_type, namespace: reusable_project.namespace) }

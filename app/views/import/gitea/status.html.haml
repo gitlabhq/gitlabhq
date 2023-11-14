@@ -1,6 +1,7 @@
 - page_title _("Gitea import")
-%h1.page-title.gl-font-size-h-display
-  = custom_icon('gitea_logo')
+%h1.page-title.gl-font-size-h-display.d-flex.gl-align-items-center
+  .gl-display-flex.gl-align-items-center.gl-justify-content-center
+    = sprite_icon('gitea', css_class: 'gl-mr-3', size: 48)
   = _('Import projects from Gitea')
 
 = render 'import/githubish_status', provider: 'gitea', default_namespace: @namespace

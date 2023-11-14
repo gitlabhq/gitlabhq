@@ -22,7 +22,7 @@ module QA
           end
 
           view 'app/views/protected_branches/shared/_create_protected_branch.html.haml' do
-            element :protect_button
+            element 'protect-button'
           end
 
           def select_branch(branch_name)
@@ -43,7 +43,7 @@ module QA
           end
 
           def protect_branch
-            click_element(:protect_button, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
+            click_element('protect-button', wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
             wait_for_requests
           end
 

@@ -107,7 +107,7 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
       end
 
       context 'when dependencies are defined' do
-        let(:dependencies) { %w(rspec staging) }
+        let(:dependencies) { %w[rspec staging] }
 
         it { is_expected.to contain_exactly(rspec_test, staging) }
       end
@@ -137,7 +137,7 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
       end
 
       context 'when needs and dependencies are defined' do
-        let(:dependencies) { %w(rspec staging) }
+        let(:dependencies) { %w[rspec staging] }
         let(:needs) do
           [
             { name: 'build',   artifacts: true },
@@ -150,7 +150,7 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
       end
 
       context 'when needs and dependencies contradict' do
-        let(:dependencies) { %w(rspec staging) }
+        let(:dependencies) { %w[rspec staging] }
         let(:needs) do
           [
             { name: 'build',   artifacts: true },

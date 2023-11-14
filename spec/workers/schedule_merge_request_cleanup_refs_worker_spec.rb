@@ -13,18 +13,6 @@ RSpec.describe ScheduleMergeRequestCleanupRefsWorker, feature_category: :code_re
       worker.perform
     end
 
-    context 'when merge_request_refs_cleanup flag is disabled' do
-      before do
-        stub_feature_flags(merge_request_refs_cleanup: false)
-      end
-
-      it 'does not schedule any merge request clean ups' do
-        expect(MergeRequestCleanupRefsWorker).not_to receive(:perform_with_capacity)
-
-        worker.perform
-      end
-    end
-
     it 'retries stuck cleanup schedules' do
       expect(MergeRequest::CleanupSchedule).to receive(:stuck_retry!)
 

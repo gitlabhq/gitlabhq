@@ -544,3 +544,9 @@ generates the codes. For example:
   1. Select General.
   1. Select Date & Time.
   1. Enable Set Automatically. If it's already enabled, disable it, wait a few seconds, and re-enable.
+
+### Error: "Permission denied (publickey)" when regenerating recovery codes
+
+If you receive a `Permission denied (publickey)` error when attempting to [generate new recovery codes using an SSH key](#generate-new-recovery-codes-using-ssh)
+and you are using a non-default SSH key pair file path,
+you might need to [manually register your private SSH key](../../ssh.md#configure-ssh-to-point-to-a-different-directory) using `ssh-agent`.

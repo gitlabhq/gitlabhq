@@ -5,6 +5,7 @@ module Gitlab
       class CheckResult
         SUCCESS_STATUS = :success
         FAILED_STATUS = :failed
+        INACTIVE_STATUS = :inactive
 
         attr_reader :status, :payload
 
@@ -18,6 +19,10 @@ module Gitlab
 
         def self.failed(payload: {})
           new(status: FAILED_STATUS, payload: default_payload.merge(**payload))
+        end
+
+        def self.inactive(payload: {})
+          new(status: INACTIVE_STATUS, payload: default_payload.merge(**payload))
         end
 
         def self.from_hash(data)

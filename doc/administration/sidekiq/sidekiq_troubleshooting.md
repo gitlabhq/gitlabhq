@@ -536,6 +536,28 @@ The list of available jobs can be found in the [workers](https://gitlab.com/gitl
 
 For more information about Sidekiq jobs, see the [Sidekiq-cron](https://github.com/sidekiq-cron/sidekiq-cron#work-with-job) documentation.
 
+## Disabling cron jobs
+
+You can disable any Sidekiq cron jobs by visiting the [Monitoring section in the Admin area](../admin_area.md#monitoring-section). You can also perform the same action using the command line and [Rails Runner](../operations/rails_console.md#using-the-rails-runner).
+
+To disable all cron jobs:
+
+```shell
+sudo gitlab-rails runner 'Sidekiq::Cron::Job.all.map(&:disable!)'
+```
+
+To enable all cron jobs:
+
+```shell
+sudo gitlab-rails runner 'Sidekiq::Cron::Job.all.map(&:enable!)'
+```
+
+If you wish to enable only a subset of the jobs at a time you can use name matching. For example, to enable only jobs with `geo` in the name:
+
+```shell
+ sudo gitlab-rails runner 'Sidekiq::Cron::Job.all.select{ |j| j.name.match("geo") }.map(&:disable!)'
+```
+
 ## Clearing a Sidekiq job deduplication idempotency key
 
 Occasionally, jobs that are expected to run (for example, cron jobs) are observed to not run at all. When checking the logs, there might be instances where jobs are seen to not run with a `"job_status": "deduplicated"`.

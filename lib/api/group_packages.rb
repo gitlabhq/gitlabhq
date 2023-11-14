@@ -47,6 +47,9 @@ module API
         optional :package_name,
                  type: String,
                  desc: 'Return packages with this name'
+        optional :package_version,
+                type: String,
+                desc: 'Return packages with this version'
         optional :include_versionless,
                  type: Boolean,
                  desc: 'Returns packages without a version'
@@ -60,7 +63,8 @@ module API
           current_user,
           user_group,
           declared(params).slice(
-            :exclude_subgroups, :order_by, :sort, :package_type, :package_name, :include_versionless, :status
+            :exclude_subgroups, :order_by, :sort, :package_type, :package_name,
+            :package_version, :include_versionless, :status
           )
         ).execute
 

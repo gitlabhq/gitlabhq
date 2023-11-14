@@ -4,7 +4,7 @@ group: Authentication
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Use Kerberos as an OAuth 2.0 authentication provider **(PREMIUM SELF)**
+# Use Kerberos as an OAuth 2.0 authentication provider **(FREE SELF)**
 
 GitLab can integrate with [Kerberos](https://web.mit.edu/kerberos/) as an authentication mechanism.
 

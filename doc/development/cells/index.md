@@ -16,6 +16,7 @@ To make the application work within the GitLab Cells architecture, we need to fi
 Here is the suggested approach:
 
 1. Pick a workflow to fix.
+1. Firstly, we need to find out the tables that are affected while performing the chosen workflow. As an example, in [this note](https://gitlab.com/gitlab-org/gitlab/-/issues/428600#note_1610331742) we have described how to figure out the list of all tables that are affected when a project is created in a group.
 1. For each table affected for the chosen workflow, choose the approriate
    [GitLab schema](../database/multiple_databases.md#gitlab-schema).
 1. Identify all cross-joins, cross-transactions, and cross-database foreign keys for

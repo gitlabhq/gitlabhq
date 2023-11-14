@@ -17,10 +17,7 @@ describe('GlobalSearch MergeRequestsFilters', () => {
     currentScope: () => 'merge_requests',
   };
 
-  const createComponent = ({
-    initialState = {},
-    searchMergeRequestsHideArchivedProjects = true,
-  } = {}) => {
+  const createComponent = (initialState = {}) => {
     const store = new Vuex.Store({
       state: {
         urlQuery: MOCK_QUERY,
@@ -33,11 +30,6 @@ describe('GlobalSearch MergeRequestsFilters', () => {
 
     wrapper = shallowMount(MergeRequestsFilters, {
       store,
-      provide: {
-        glFeatures: {
-          searchMergeRequestsHideArchivedProjects,
-        },
-      },
     });
   };
 
@@ -45,34 +37,23 @@ describe('GlobalSearch MergeRequestsFilters', () => {
   const findArchivedFilter = () => wrapper.findComponent(ArchivedFilter);
   const findDividers = () => wrapper.findAll('hr');
 
-  describe.each`
-    description                                          | searchMergeRequestsHideArchivedProjects
-    ${'Renders correctly with Archived Filter disabled'} | ${false}
-    ${'Renders correctly with Archived Filter enabled'}  | ${true}
-  `('$description', ({ searchMergeRequestsHideArchivedProjects }) => {
+  describe('Renders correctly with Archived Filter', () => {
     beforeEach(() => {
-      createComponent({
-        searchMergeRequestsHideArchivedProjects,
-      });
+      createComponent();
     });
 
     it('renders StatusFilter', () => {
       expect(findStatusFilter().exists()).toBe(true);
     });
 
-    it(`renders correctly ArchivedFilter when searchMergeRequestsHideArchivedProjects is ${searchMergeRequestsHideArchivedProjects}`, () => {
-      expect(findArchivedFilter().exists()).toBe(searchMergeRequestsHideArchivedProjects);
-    });
-
     it('renders divider correctly', () => {
-      const dividersCount = searchMergeRequestsHideArchivedProjects ? 1 : 0;
-      expect(findDividers()).toHaveLength(dividersCount);
+      expect(findDividers()).toHaveLength(1);
     });
   });
 
   describe('Renders correctly with basic search', () => {
     beforeEach(() => {
-      createComponent({ initialState: { searchType: SEARCH_TYPE_BASIC } });
+      createComponent({ searchType: SEARCH_TYPE_BASIC });
     });
 
     it('renders StatusFilter', () => {
@@ -91,11 +72,8 @@ describe('GlobalSearch MergeRequestsFilters', () => {
   describe('Renders correctly in new nav', () => {
     beforeEach(() => {
       createComponent({
-        initialState: {
-          searchType: SEARCH_TYPE_ADVANCED,
-          useSidebarNavigation: true,
-        },
-        searchMergeRequestsHideArchivedProjects: true,
+        searchType: SEARCH_TYPE_ADVANCED,
+        useSidebarNavigation: true,
       });
     });
     it('renders StatusFilter', () => {

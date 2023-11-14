@@ -7,23 +7,26 @@ import Shortcuts, { LOCAL_MOUSETRAP_DATA_KEY } from '~/behaviors/shortcuts/short
 import MarkdownPreview from '~/behaviors/preview_markdown';
 
 describe('Shortcuts', () => {
-  const createEvent = (type, target) =>
-    $.Event(type, {
-      target,
-    });
   let shortcuts;
 
   beforeAll(() => {
     shortcuts = new Shortcuts();
   });
 
+  const mockSuperSidebarSearchButton = () => {
+    const button = document.createElement('button');
+    button.id = 'super-sidebar-search';
+    return button;
+  };
+
   beforeEach(() => {
     setHTMLFixture(htmlSnippetsShow);
+    document.body.appendChild(mockSuperSidebarSearchButton());
 
     new Shortcuts(); // eslint-disable-line no-new
     new MarkdownPreview(); // eslint-disable-line no-new
 
-    jest.spyOn(document.querySelector('#search'), 'focus');
+    jest.spyOn(HTMLElement.prototype, 'click');
 
     jest.spyOn(Mousetrap.prototype, 'stopCallback');
     jest.spyOn(Mousetrap.prototype, 'bind').mockImplementation();
@@ -100,21 +103,22 @@ describe('Shortcuts', () => {
   });
 
   describe('focusSearch', () => {
-    describe('when super sidebar is NOT enabled', () => {
-      let originalGon;
-      beforeEach(() => {
-        originalGon = window.gon;
-        window.gon = { use_new_navigation: false };
-      });
+    let event;
 
-      afterEach(() => {
-        window.gon = originalGon;
-      });
+    beforeEach(() => {
+      window.gon.use_new_navigation = true;
+      event = new KeyboardEvent('keydown', { cancelable: true });
+      Shortcuts.focusSearch(event);
+    });
 
-      it('focuses the search bar', () => {
-        Shortcuts.focusSearch(createEvent('KeyboardEvent'));
-        expect(document.querySelector('#search').focus).toHaveBeenCalled();
-      });
+    it('clicks the super sidebar search button', () => {
+      expect(HTMLElement.prototype.click).toHaveBeenCalled();
+      const thisArg = HTMLElement.prototype.click.mock.contexts[0];
+      expect(thisArg.id).toBe('super-sidebar-search');
+    });
+
+    it('cancels the default behaviour of the event', () => {
+      expect(event.defaultPrevented).toBe(true);
     });
   });
 

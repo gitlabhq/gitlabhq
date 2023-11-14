@@ -1,11 +1,11 @@
-import * as Sentry from '@sentry/browser';
 import MockAdapter from 'axios-mock-adapter';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import testAction from 'helpers/vuex_action_helper';
 import * as actions from '~/emoji/awards_app/store/actions';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
-jest.mock('@sentry/browser');
+jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/vue_shared/plugins/global_toast');
 
 describe('Awards app actions', () => {

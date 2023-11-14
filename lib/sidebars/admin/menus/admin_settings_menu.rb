@@ -12,7 +12,6 @@ module Sidebars
           add_item(ci_cd_menu_item)
           add_item(reporting_menu_item)
           add_item(metrics_and_profiling_menu_item)
-          add_item(service_usage_data_menu_item)
           add_item(network_settings_menu_item)
           add_item(appearance_menu_item)
           add_item(preferences_menu_item)
@@ -99,15 +98,6 @@ module Sidebars
             active_routes: { path: 'admin/application_settings#metrics_and_profiling' },
             item_id: :admin_metrics,
             container_html_options: { 'data-qa-selector': 'admin_settings_metrics_and_profiling_link' }
-          )
-        end
-
-        def service_usage_data_menu_item
-          ::Sidebars::MenuItem.new(
-            title: _('Service usage data'),
-            link: service_usage_data_admin_application_settings_path,
-            active_routes: { path: 'admin/application_settings#service_usage_data' },
-            item_id: :admin_service_usage
           )
         end
 

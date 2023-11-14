@@ -11,11 +11,14 @@ The DAST proxy-based analyzer can be added to your [GitLab CI/CD](../../../ci/in
 This helps you discover vulnerabilities in web applications that do not use JavaScript heavily. For applications that do,
 see the [DAST browser-based analyzer](browser_based.md).
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a video walkthrough, see [How to set up Dynamic Application Security Testing (DAST) with GitLab](https://youtu.be/EiFE1QrUQfk?si=6rpgwgUpalw3ByiV).
+
 WARNING:
 Do not run DAST scans against a production server. Not only can it perform *any* function that
 a user can, such as clicking buttons or submitting forms, but it may also trigger bugs, leading to modification or loss of production data. Only run DAST scans against a test server.
 
-The analyzer uses the [OWASP Zed Attack Proxy](https://www.zaproxy.org/) (ZAP) to scan in two different ways:
+The analyzer uses the [Software Security Project Zed Attack Proxy](https://www.zaproxy.org/) (ZAP) to scan in two different ways:
 
 - Passive scan only (default). DAST executes
   [ZAP's Baseline Scan](https://www.zaproxy.org/docs/docker/baseline-scan/) and doesn't
@@ -382,7 +385,7 @@ including a large number of false positives.
 | `DAST_REQUEST_HEADERS` <sup>1</sup>             | string        | Set to a comma-separated list of request header names and values. Headers are added to every request made by DAST. For example, `Cache-control: no-cache,User-Agent: DAST/1.0` |
 | `DAST_SKIP_TARGET_CHECK`                        | boolean       | Set to `true` to prevent DAST from checking that the target is available before scanning. Default: `false`.  |
 | `DAST_SPIDER_MINS` <sup>1</sup>                 | number        | The maximum duration of the spider scan in minutes. Set to `0` for unlimited. Default: One minute, or unlimited when the scan is a full scan. |
-| `DAST_SPIDER_START_AT_HOST`                     | boolean       | Set to `false` to prevent DAST from resetting the target to its host before scanning. When `true`, non-host targets `http://test.site/some_path` is reset to `http://test.site` before scan. Default: `true`. |
+| `DAST_SPIDER_START_AT_HOST`                     | boolean       | Set to `false` to prevent DAST from resetting the target to its host before scanning. When `true`, non-host targets `http://test.site/some_path` is reset to `http://test.site` before scan. Default: `false`. |
 | `DAST_TARGET_AVAILABILITY_TIMEOUT` <sup>1</sup> | number        | Time limit in seconds to wait for target availability. |
 | `DAST_USE_AJAX_SPIDER` <sup>1</sup>             | boolean       | Set to `true` to use the AJAX spider in addition to the traditional spider, useful for crawling sites that require JavaScript. Default: `false`.  |
 | `DAST_XML_REPORT`                               | string        | **{warning}** **[Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/384340)** in GitLab 15.7. The filename of the XML report written at the end of a scan.  |

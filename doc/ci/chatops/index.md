@@ -14,9 +14,19 @@ type: index, concepts, howto
 Use GitLab ChatOps to interact with CI/CD jobs through chat services
 like Slack.
 
-Many organizations use chat services to collaborate, troubleshoot, and plan work. With ChatOps,
+Many organizations use Slack or Mattermost to collaborate, troubleshoot, and plan work. With ChatOps,
 you can discuss work with your team, run CI/CD jobs, and view job output, all from the same
 application.
+
+## Slash command integrations
+
+You can trigger ChatOps with the [`run` slash command](../../user/project/integrations/gitlab_slack_application.md#slash-commands).
+
+The following integrations are available:
+
+- [GitLab for Slack app](../../user/project/integrations/gitlab_slack_application.md) (recommended for Slack)
+- [Slack slash commands](../../user/project/integrations/slack_slash_commands.md)
+- [Mattermost slash commands](../../user/project/integrations/mattermost_slash_commands.md)
 
 ## ChatOps workflow and CI/CD configuration
 
@@ -37,7 +47,7 @@ run as part of the standard CI/CD pipeline.
 ChatOps passes the following [CI/CD variables](../variables/index.md#predefined-cicd-variables)
 to the job:
 
-- `CHAT_INPUT` - The arguments passed to `/project-name run`.
+- `CHAT_INPUT` - The arguments passed to the `run` slash command.
 - `CHAT_CHANNEL` - The name of the chat channel the job is run from.
 - `CHAT_USER_ID` - The chat service ID of the user who runs the job.
 
@@ -47,30 +57,13 @@ When the job runs:
 - If the job completes in more than 30 minutes, you must use a method like the
   [Slack API](https://api.slack.com/) to send data to the channel.
 
-## Run a CI/CD job
-
-Prerequisite:
-
-- You must have at least the Developer role for the project.
-
-You can run a CI/CD job on the default branch from chat. To run a CI/CD job:
-
-- In the chat client, enter `/<project-name> run <job name> <arguments>` where:
-
-  - `<project-name>` is the name of the project.
-  - `<job name>` is the name of the CI/CD job to run.
-  - `<arguments>` is the arguments to pass to the CI/CD job.
-
-ChatOps schedules a pipeline that contains only the specified job.
-Other [slash commands](../../user/project/integrations/gitlab_slack_application.md#slash-commands) are also available.
-
 ### Exclude a job from ChatOps
 
 To prevent a job from being run from chat:
 
 - In `.gitlab-ci.yml`, set the job to `except: [chat]`.
 
-## Customize the ChatOps reply
+### Customize the ChatOps reply
 
 ChatOps sends the output for a job with a single command to the
 channel as a reply. For example, when the following job runs,
@@ -108,8 +101,34 @@ ls:
     - echo -e "section_start:$( date +%s ):chat_reply\r\033[0K\n$( ls -la )\nsection_end:$( date +%s ):chat_reply\r\033[0K"
 ```
 
+## Trigger a CI/CD job using ChatOps
+
+Prerequisite:
+
+- You must have at least the Developer role for the project.
+- The project is configured to use a slash command integration.
+
+You can run a CI/CD job on the default branch from Slack or Mattermost.
+
+The slash command to trigger a CI/CD job depends on which slash command integration
+is configured for the project.
+
+- For the GitLab for Slack app, use `/gitlab <project-name> run <job name> <arguments>`.
+- For Slack or Mattermost slash commands, use `/<trigger-name> run <job name> <arguments>`.
+
+Where:
+
+- `<job name>` is the name of the CI/CD job to run.
+- `<arguments>` are the arguments to pass to the CI/CD job.
+- `<trigger-name>` is the trigger name configured for the Slack or Mattermost integration.
+
+ChatOps schedules a pipeline that contains only the specified job.
+
 ## Related topics
 
-- [The official GitLab ChatOps icon](img/gitlab-chatops-icon.png)
 - [A repository of common ChatOps scripts](https://gitlab.com/gitlab-com/chatops)
   that GitLab uses to interact with GitLab.com
+- [GitLab for Slack app](../../user/project/integrations/gitlab_slack_application.md)
+- [Slack slash commands](../../user/project/integrations/slack_slash_commands.md)
+- [Mattermost slash commands](../../user/project/integrations/mattermost_slash_commands.md)
+- [The official GitLab ChatOps icon](img/gitlab-chatops-icon.png)

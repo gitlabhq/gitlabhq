@@ -1,33 +1,5 @@
 @import 'mixins_and_variables_and_functions';
-
-.limit-container-width {
-  .flash-container,
-  .detail-page-header,
-  .page-content-header,
-  .commit-box,
-  .info-well,
-  .commit-ci-menu,
-  .files-changed-inner,
-  .limited-header-width,
-  .limited-width-notes {
-    @include fixed-width-container;
-  }
-
-  .issuable-details {
-    .detail-page-description,
-    .mr-source-target,
-    .mr-state-widget,
-    .merge-manually {
-      @include fixed-width-container;
-    }
-  }
-
-  .merge-request-details {
-    .emoji-list-container {
-      @include fixed-width-container;
-    }
-  }
-}
+@import 'system_note_styles';
 
 .issuable-details {
   section {
@@ -111,29 +83,6 @@
 
   @include media-breakpoint-down(sm) {
     margin-bottom: $gl-padding;
-  }
-}
-
-/*
- * Following overrides are done to prevent
- * legacy dropdown styles from influencing
- * GitLab UI components used within GlDropdown
- */
-.issuable-move-dropdown {
-  .b-dropdown-form {
-    @include gl-p-0;
-  }
-
-  .gl-search-box-by-type button.gl-clear-icon-button:hover {
-    @include gl-bg-transparent;
-
-    &:focus {
-      @include gl-focus($inset: true);
-    }
-  }
-
-  .issuable-move-button:not(.disabled):hover {
-    @include gl-text-white;
   }
 }
 

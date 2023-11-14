@@ -16,17 +16,16 @@
 - api
 - api_security
 - application_instrumentation
-- application_performance
 - attack_emulation
 - audit_events
 - auto_devops
 - backup_restore
-- billing_and_payments
 - build
 - build_artifacts
 - capacity_planning
 - cell
 - ci-cd_visibility
+- cloud_connector
 - cloud_native_installation
 - code_quality
 - code_review_workflow
@@ -94,6 +93,7 @@
 - organization
 - package_registry
 - pages
+- permissions
 - pipeline_composition
 - portfolio_management
 - product_analytics_data_management

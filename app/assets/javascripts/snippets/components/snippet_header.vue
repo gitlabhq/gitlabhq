@@ -213,7 +213,7 @@ export default {
 </script>
 <template>
   <div class="detail-page-header">
-    <div class="detail-page-header-body">
+    <div class="detail-page-header-body gl-align-items-baseline">
       <div
         class="snippet-box has-tooltip d-flex align-items-center gl-mr-2 mb-1"
         data-testid="snippet-container"
@@ -235,12 +235,20 @@ export default {
           <template #author>
             <a :href="snippet.author.webUrl" class="d-inline">
               <gl-avatar :size="24" :src="snippet.author.avatarUrl" />
-              <span class="bold">{{ snippet.author.name }}</span>
+              <span class="bold gl-display-none gl-sm-display-inline">{{
+                snippet.author.name
+              }}</span>
+              <strong
+                v-if="snippet.author.username"
+                data-testid="authored-username"
+                class="gl-display-inline gl-sm-display-none!"
+                >@{{ snippet.author.username }}</strong
+              >
             </a>
             <gl-emoji
               v-if="snippet.author.status"
               v-gl-tooltip
-              class="gl-vertical-align-baseline font-size-inherit gl-mr-1"
+              class="gl-vertical-align-baseline gl-reset-font-size gl-mr-1"
               :title="snippet.author.status.message"
               :data-name="snippet.author.status.emoji"
             />
@@ -249,7 +257,7 @@ export default {
       </div>
     </div>
 
-    <div v-if="hasPersonalSnippetActions" class="detail-page-header-actions">
+    <div v-if="hasPersonalSnippetActions" class="detail-page-header-actions gl-align-self-start">
       <div class="d-none d-sm-flex">
         <template v-for="(action, index) in personalSnippetActions">
           <div

@@ -4,15 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BitbucketImport::Importers::IssuesNotesImporter, feature_category: :importers do
   let_it_be(:project) { create(:project, :import_started) }
-  # let_it_be(:merge_request_1) { create(:merge_request, source_project: project) }
-  # let_it_be(:merge_request_2) { create(:merge_request, source_project: project, source_branch: 'other-branch') }
   let_it_be(:issue_1) { create(:issue, project: project) }
   let_it_be(:issue_2) { create(:issue, project: project) }
 
   subject(:importer) { described_class.new(project) }
 
   describe '#execute', :clean_gitlab_redis_cache do
-    it 'imports the notes from each issue in parallel', :aggregate_failures do
+    it 'imports the notes from each issue in parallel' do
       expect(Gitlab::BitbucketImport::ImportIssueNotesWorker).to receive(:perform_in).twice
 
       waiter = importer.execute
@@ -40,7 +38,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssuesNotesImporter, feature_
         Gitlab::Cache::Import::Caching.set_add(importer.already_enqueued_cache_key, 2)
       end
 
-      it 'does not schedule job for enqueued issues', :aggregate_failures do
+      it 'does not schedule job for enqueued issues' do
         expect(Gitlab::BitbucketImport::ImportIssueNotesWorker).to receive(:perform_in).once
 
         waiter = importer.execute

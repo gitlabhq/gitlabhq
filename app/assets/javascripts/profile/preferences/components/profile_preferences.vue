@@ -5,9 +5,9 @@ import { INTEGRATION_VIEW_CONFIGS, i18n } from '../constants';
 import IntegrationView from './integration_view.vue';
 
 function updateClasses(bodyClasses = '', applicationTheme, layout) {
-  // Remove body class for any previous theme, re-add current one
-  document.body.classList.remove(...bodyClasses.split(' '));
-  document.body.classList.add(applicationTheme);
+  // Remove documentElement class for any previous theme, re-add current one
+  document.documentElement.classList.remove(...bodyClasses.split(' '));
+  document.documentElement.classList.add(applicationTheme);
 
   // Toggle container-fluid class
   if (layout === 'fluid') {

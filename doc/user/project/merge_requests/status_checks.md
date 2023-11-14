@@ -10,6 +10,8 @@ type: reference, concepts
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3869) in GitLab 14.0, disabled behind the `:ff_external_status_checks` feature flag.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/320783) in GitLab 14.1.
 > - `failed` status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329636) in GitLab 14.9.
+> - `pending` status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413723) in GitLab 16.5
+> - Timeout interval of two minutes for `pending` status checks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388725) in GitLab 16.6.
 
 Status checks are API calls to external systems that request the status of an external requirement.
 
@@ -24,6 +26,8 @@ widget within the merge request to surface this status to the merge request auth
 at the merge request level itself.
 
 You can configure merge request status checks for each individual project. These are not shared between projects.
+
+Status checks fail if they stay in the pending state for more than two minutes.
 
 For more information about use cases, feature discovery, and development timelines,
 see [epic 3869](https://gitlab.com/groups/gitlab-org/-/epics/3869).

@@ -35,7 +35,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportNotesWorker, feature_category:
 
       expect(Gitlab::GithubImport::AdvanceStageWorker)
         .to receive(:perform_async)
-        .with(project.id, { '123' => 2 }, :attachments)
+        .with(project.id, { '123' => 2 }, 'attachments')
 
       worker.import(client, project)
     end

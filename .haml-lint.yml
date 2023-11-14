@@ -139,6 +139,7 @@ linters:
       - Style/HashSyntax
       - Style/IdenticalConditionalBranches
       - Style/IfInsideElse
+      - Style/InlineDisableAnnotation
       - Style/NegatedIf
       - Style/NestedTernaryOperator
       - Style/RedundantInterpolation

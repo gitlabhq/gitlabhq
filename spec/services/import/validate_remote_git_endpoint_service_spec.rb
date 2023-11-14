@@ -7,7 +7,9 @@ RSpec.describe Import::ValidateRemoteGitEndpointService, feature_category: :impo
 
   let_it_be(:base_url) { 'http://demo.host/path' }
   let_it_be(:endpoint_url) { "#{base_url}/info/refs?service=git-upload-pack" }
-  let_it_be(:error_message) { "#{base_url} is not a valid HTTP Git repository" }
+  let_it_be(:endpoint_error_message) { "#{base_url} endpoint error:" }
+  let_it_be(:body_error_message) { described_class::INVALID_BODY_MESSAGE }
+  let_it_be(:content_type_error_message) { described_class::INVALID_CONTENT_TYPE_MESSAGE }
 
   describe '#execute' do
     let(:valid_response) do
@@ -70,13 +72,14 @@ RSpec.describe Import::ValidateRemoteGitEndpointService, feature_category: :impo
       end
 
       it 'reports error when status code is not 200' do
-        stub_full_request(endpoint_url, method: :get).to_return(valid_response.merge({ status: 301 }))
+        error_response = { status: 401 }
+        stub_full_request(endpoint_url, method: :get).to_return(error_response)
 
         result = subject.execute
 
         expect(result).to be_a(ServiceResponse)
         expect(result.error?).to be(true)
-        expect(result.message).to eq(error_message)
+        expect(result.message).to eq("#{endpoint_error_message} #{error_response[:status]}")
       end
 
       it 'reports error when invalid URL is provided' do
@@ -94,27 +97,49 @@ RSpec.describe Import::ValidateRemoteGitEndpointService, feature_category: :impo
 
         expect(result).to be_a(ServiceResponse)
         expect(result.error?).to be(true)
-        expect(result.message).to eq(error_message)
+        expect(result.message).to eq(content_type_error_message)
       end
 
-      it 'reports error when body is in invalid format' do
+      it 'reports error when body is too short' do
         stub_full_request(endpoint_url, method: :get).to_return(valid_response.merge({ body: 'invalid content' }))
 
         result = subject.execute
 
         expect(result).to be_a(ServiceResponse)
         expect(result.error?).to be(true)
-        expect(result.message).to eq(error_message)
+        expect(result.message).to eq(body_error_message)
       end
 
-      it 'reports error when exception is raised' do
-        stub_full_request(endpoint_url, method: :get).to_raise(SocketError.new('dummy message'))
+      it 'reports error when body is in invalid format' do
+        stub_full_request(endpoint_url, method: :get).to_return(valid_response.merge({ body: 'invalid long content with no git respons whatshowever' }))
 
         result = subject.execute
 
         expect(result).to be_a(ServiceResponse)
         expect(result.error?).to be(true)
-        expect(result.message).to eq(error_message)
+        expect(result.message).to eq(body_error_message)
+      end
+
+      it 'reports error when http exceptions are raised' do
+        err = SocketError.new('dummy message')
+        stub_full_request(endpoint_url, method: :get).to_raise(err)
+
+        result = subject.execute
+
+        expect(result).to be_a(ServiceResponse)
+        expect(result.error?).to be(true)
+        expect(result.message).to eq("HTTP #{err.class.name.underscore} error: #{err.message}")
+      end
+
+      it 'reports error when other exceptions are raised' do
+        err = StandardError.new('internal dummy message')
+        stub_full_request(endpoint_url, method: :get).to_raise(err)
+
+        result = subject.execute
+
+        expect(result).to be_a(ServiceResponse)
+        expect(result.error?).to be(true)
+        expect(result.message).to eq("Internal #{err.class.name.underscore} error: #{err.message}")
       end
     end
 

@@ -84,9 +84,9 @@ export class ContentEditor {
 
   async setSerializedContent(serializedContent) {
     const { _tiptapEditor: editor } = this;
-    const { doc, tr } = editor.state;
 
     const { document } = await this.deserialize(serializedContent);
+    const { doc, tr } = editor.state;
 
     if (document) {
       this._pristineDoc = document;

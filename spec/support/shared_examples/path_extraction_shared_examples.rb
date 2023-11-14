@@ -114,12 +114,12 @@ RSpec.shared_examples 'extracts refs' do
 
       it 'extracts a valid commit SHA' do
         expect(extract_ref('f4b14494ef6abf3d144c28e4af0c20143383e062/CHANGELOG')).to eq(
-          %w(f4b14494ef6abf3d144c28e4af0c20143383e062 CHANGELOG)
+          %w[f4b14494ef6abf3d144c28e4af0c20143383e062 CHANGELOG]
         )
       end
 
       it 'falls back to a primitive split for an invalid ref' do
-        expect(extract_ref('stable/CHANGELOG')).to eq(%w(stable CHANGELOG))
+        expect(extract_ref('stable/CHANGELOG')).to eq(%w[stable CHANGELOG])
       end
 
       it 'extracts the longest matching ref' do

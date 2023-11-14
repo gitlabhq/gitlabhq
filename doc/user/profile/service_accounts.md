@@ -53,6 +53,8 @@ Prerequisite:
 
    You define the scopes for the service account by [setting the scopes for the personal access token](personal_access_tokens.md#personal-access-token-scopes).
 
+   Optional. You can [create a personal access token with no expiry date](personal_access_tokens.md#when-personal-access-tokens-expire).
+
    The response includes the personal access token value.
 
 1. Make this service account a group or project member by [manually adding the service account user to the group or project](#add-a-service-account-to-subgroup-or-project).
@@ -73,6 +75,8 @@ Prerequisite:
    for the service account user.
 
    You define the scopes for the service account by [setting the scopes for the personal access token](personal_access_tokens.md#personal-access-token-scopes).
+
+   Optional. You can [create a personal access token with no expiry date](personal_access_tokens.md#when-personal-access-tokens-expire).
 
    The response includes the personal access token value.
 

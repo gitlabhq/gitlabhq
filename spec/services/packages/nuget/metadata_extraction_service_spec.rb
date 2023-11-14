@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Packages::Nuget::MetadataExtractionService, feature_category: :package_registry do
   let_it_be(:package_file) { build(:package_file, :nuget) }
-  let(:service) { described_class.new(package_file) }
+  let(:package_zip_file) { Zip::File.new(package_file.file) }
+  let(:service) { described_class.new(package_zip_file) }
 
   describe '#execute' do
     subject { service.execute }
@@ -50,8 +51,8 @@ RSpec.describe Packages::Nuget::MetadataExtractionService, feature_category: :pa
     end
 
     it 'calls the necessary services and executes the metadata extraction' do
-      expect_next_instance_of(Packages::Nuget::ProcessPackageFileService, package_file) do |service|
-        expect(service).to receive(:execute).and_return(ServiceResponse.success(payload: { nuspec_file_content: nuspec_file_content }))
+      expect_next_instance_of(Packages::Nuget::ExtractMetadataFileService, package_zip_file) do |service|
+        expect(service).to receive(:execute).and_return(ServiceResponse.success(payload: nuspec_file_content))
       end
 
       expect_next_instance_of(Packages::Nuget::ExtractMetadataContentService, nuspec_file_content) do |service|

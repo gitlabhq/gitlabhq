@@ -27,6 +27,10 @@ Redis::Cluster::SlotLoader.prepend(Gitlab::Patch::SlotLoader)
 Redis::Cluster::CommandLoader.prepend(Gitlab::Patch::CommandLoader)
 Redis::Cluster.prepend(Gitlab::Patch::RedisCluster)
 
+if Gitlab::Redis::Workhorse.params[:cluster].present?
+  raise "Do not configure workhorse with a Redis Cluster as pub/sub commands are not cluster-compatible."
+end
+
 # Make sure we initialize a Redis connection pool before multi-threaded
 # execution starts by
 # 1. Sidekiq

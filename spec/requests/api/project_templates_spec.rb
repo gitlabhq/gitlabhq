@@ -69,7 +69,7 @@ RSpec.describe API::ProjectTemplates, feature_category: :source_code_management 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(response).to match_response_schema('public_api/v4/template_list')
-      expect(json_response.map { |t| t['key'] }).to match_array(%w(bug feature_proposal template_test))
+      expect(json_response.map { |t| t['key'] }).to match_array(%w[bug feature_proposal template_test])
     end
 
     it 'returns merge request templates' do
@@ -78,7 +78,7 @@ RSpec.describe API::ProjectTemplates, feature_category: :source_code_management 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(response).to match_response_schema('public_api/v4/template_list')
-      expect(json_response.map { |t| t['key'] }).to match_array(%w(bug feature_proposal template_test))
+      expect(json_response.map { |t| t['key'] }).to match_array(%w[bug feature_proposal template_test])
     end
 
     it 'returns 400 for an unknown template type' do

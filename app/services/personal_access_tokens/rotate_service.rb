@@ -9,7 +9,7 @@ module PersonalAccessTokens
       @token = token
     end
 
-    def execute
+    def execute(params = {})
       return ServiceResponse.error(message: _('token already revoked')) if token.revoked?
 
       response = ServiceResponse.success
@@ -21,7 +21,7 @@ module PersonalAccessTokens
         end
 
         target_user = token.user
-        new_token = target_user.personal_access_tokens.create(create_token_params(token))
+        new_token = target_user.personal_access_tokens.create(create_token_params(token, params))
 
         if new_token.persisted?
           response = ServiceResponse.success(payload: { personal_access_token: new_token })
@@ -39,12 +39,13 @@ module PersonalAccessTokens
 
     attr_reader :current_user, :token
 
-    def create_token_params(token)
+    def create_token_params(token, params)
+      expires_at = params[:expires_at] || (Date.today + EXPIRATION_PERIOD)
       {  name: token.name,
          previous_personal_access_token_id: token.id,
          impersonation: token.impersonation,
          scopes: token.scopes,
-         expires_at: Date.today + EXPIRATION_PERIOD }
+         expires_at: expires_at }
     end
   end
 end

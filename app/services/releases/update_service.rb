@@ -19,6 +19,8 @@ module Releases
       ApplicationRecord.transaction do
         if release.update(params)
           execute_hooks(release, 'update')
+          audit(release, action: :updated)
+          audit(release, action: :milestones_updated) if milestones_updated?(previous_milestones)
           success(tag: existing_tag, release: release, milestones_updated: milestones_updated?(previous_milestones))
         else
           error(release.errors.messages || '400 Bad request', 400)

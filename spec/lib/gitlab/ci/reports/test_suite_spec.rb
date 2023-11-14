@@ -192,7 +192,7 @@ RSpec.describe Gitlab::Ci::Reports::TestSuite do
     end
 
     context 'when there are multiple test cases' do
-      let(:status_ordered) { %w(error failed success skipped) }
+      let(:status_ordered) { %w[error failed success skipped] }
 
       before do
         test_suite.add_test_case(test_case_success)

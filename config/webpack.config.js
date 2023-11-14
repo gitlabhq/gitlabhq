@@ -184,11 +184,6 @@ function generateEntries() {
 const alias = {
   // Map Apollo client to apollo/client/core to prevent react related imports from being loaded
   '@apollo/client$': '@apollo/client/core',
-  // Map Sentry calls to use local wrapper
-  '@sentry/browser$': path.join(
-    ROOT_PATH,
-    'app/assets/javascripts/sentry/sentry_browser_wrapper.js',
-  ),
   '~': path.join(ROOT_PATH, 'app/assets/javascripts'),
   emojis: path.join(ROOT_PATH, 'fixtures/emojis'),
   images: path.join(ROOT_PATH, 'app/assets/images'),
@@ -386,6 +381,15 @@ module.exports = {
         test: /mermaid\/.*\.js?$/,
         include: /node_modules/,
         loader: 'babel-loader',
+      },
+      {
+        test: /swagger-ui-dist\/.*\.js?$/,
+        include: /node_modules/,
+        loader: 'babel-loader',
+        options: {
+          plugins: ['@babel/plugin-proposal-logical-assignment-operators'],
+          ...defaultJsOptions,
+        },
       },
       {
         test: /\.(js|cjs)$/,

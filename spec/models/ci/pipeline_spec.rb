@@ -157,6 +157,106 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe 'unlocking pipelines based on state transition' do
+    let(:ci_ref) { create(:ci_ref) }
+    let(:unlock_previous_pipelines_worker_spy) { class_spy(::Ci::Refs::UnlockPreviousPipelinesWorker) }
+
+    before do
+      stub_const('Ci::Refs::UnlockPreviousPipelinesWorker', unlock_previous_pipelines_worker_spy)
+      stub_feature_flags(ci_stop_unlock_pipelines: false)
+    end
+
+    shared_examples 'not unlocking pipelines' do |event:|
+      context "on #{event}" do
+        let(:pipeline) { create(:ci_pipeline, ci_ref_id: ci_ref.id, locked: :artifacts_locked) }
+
+        it 'does not unlock previous pipelines' do
+          pipeline.fire_events!(event)
+
+          expect(unlock_previous_pipelines_worker_spy).not_to have_received(:perform_async)
+        end
+      end
+    end
+
+    shared_examples 'unlocking pipelines' do |event:|
+      context "on #{event}" do
+        before do
+          pipeline.fire_events!(event)
+        end
+
+        let(:pipeline) { create(:ci_pipeline, ci_ref_id: ci_ref.id, locked: :artifacts_locked) }
+
+        it 'unlocks previous pipelines' do
+          expect(unlock_previous_pipelines_worker_spy).to have_received(:perform_async).with(ci_ref.id)
+        end
+      end
+    end
+
+    context 'when transitioning to unlockable states' do
+      before do
+        pipeline.run
+      end
+
+      it_behaves_like 'unlocking pipelines', event: :succeed
+      it_behaves_like 'unlocking pipelines', event: :drop
+      it_behaves_like 'unlocking pipelines', event: :skip
+      it_behaves_like 'unlocking pipelines', event: :cancel
+      it_behaves_like 'unlocking pipelines', event: :block
+
+      context 'and ci_stop_unlock_pipelines is enabled' do
+        before do
+          stub_feature_flags(ci_stop_unlock_pipelines: true)
+        end
+
+        it_behaves_like 'not unlocking pipelines', event: :succeed
+        it_behaves_like 'not unlocking pipelines', event: :drop
+        it_behaves_like 'not unlocking pipelines', event: :skip
+        it_behaves_like 'not unlocking pipelines', event: :cancel
+        it_behaves_like 'not unlocking pipelines', event: :block
+      end
+
+      context 'and ci_unlock_non_successful_pipelines is disabled' do
+        before do
+          stub_feature_flags(ci_unlock_non_successful_pipelines: false)
+        end
+
+        it_behaves_like 'unlocking pipelines', event: :succeed
+        it_behaves_like 'not unlocking pipelines', event: :drop
+        it_behaves_like 'not unlocking pipelines', event: :skip
+        it_behaves_like 'not unlocking pipelines', event: :cancel
+        it_behaves_like 'not unlocking pipelines', event: :block
+
+        context 'and ci_stop_unlock_pipelines is enabled' do
+          before do
+            stub_feature_flags(ci_stop_unlock_pipelines: true)
+          end
+
+          it_behaves_like 'not unlocking pipelines', event: :succeed
+          it_behaves_like 'not unlocking pipelines', event: :drop
+          it_behaves_like 'not unlocking pipelines', event: :skip
+          it_behaves_like 'not unlocking pipelines', event: :cancel
+          it_behaves_like 'not unlocking pipelines', event: :block
+        end
+      end
+    end
+
+    context 'when transitioning to a non-unlockable state' do
+      before do
+        pipeline.enqueue
+      end
+
+      it_behaves_like 'not unlocking pipelines', event: :run
+
+      context 'and ci_unlock_non_successful_pipelines is disabled' do
+        before do
+          stub_feature_flags(ci_unlock_non_successful_pipelines: false)
+        end
+
+        it_behaves_like 'not unlocking pipelines', event: :run
+      end
+    end
+  end
+
   describe 'pipeline age metric' do
     let_it_be(:pipeline) { create(:ci_empty_pipeline, :created) }
 
@@ -220,6 +320,34 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '.with_unlockable_status' do
+    let_it_be(:project) { create(:project) }
+
+    let!(:pipeline) { create(:ci_pipeline, project: project, status: status) }
+
+    subject(:result) { described_class.with_unlockable_status }
+
+    described_class::UNLOCKABLE_STATUSES.map(&:to_s).each do |s|
+      context "when pipeline status is #{s}" do
+        let(:status) { s }
+
+        it 'includes the pipeline in the result' do
+          expect(result).to include(pipeline)
+        end
+      end
+    end
+
+    (Ci::HasStatus::AVAILABLE_STATUSES - described_class::UNLOCKABLE_STATUSES.map(&:to_s)).each do |s|
+      context "when pipeline status is #{s}" do
+        let(:status) { s }
+
+        it 'does excludes the pipeline in the result' do
+          expect(result).not_to include(pipeline)
+        end
+      end
+    end
+  end
+
   describe '.processables' do
     let_it_be(:pipeline) { create(:ci_empty_pipeline, :created) }
 
@@ -231,7 +359,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     it 'has an association with processable CI/CD entities' do
-      pipeline.processables.pluck('name').yield_self do |processables|
+      pipeline.processables.pluck('name').then do |processables|
         expect(processables).to match_array %w[build bridge]
       end
     end
@@ -1303,7 +1431,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       describe '#stages_names' do
         it 'returns a valid names of stages' do
-          expect(pipeline.stages_names).to eq(%w(build test deploy))
+          expect(pipeline.stages_names).to eq(%w[build test deploy])
         end
       end
     end
@@ -1900,10 +2028,22 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           end
         end
 
-        context 'when only_allow_merge_if_pipeline_succeeds? returns false' do
+        context 'when only_allow_merge_if_pipeline_succeeds? returns false and widget_pipeline_pass_subscription_update disabled' do
           let(:only_allow_merge_if_pipeline_succeeds?) { false }
 
+          before do
+            stub_feature_flags(widget_pipeline_pass_subscription_update: false)
+          end
+
           it_behaves_like 'state transition not triggering GraphQL subscription mergeRequestMergeStatusUpdated'
+        end
+
+        context 'when only_allow_merge_if_pipeline_succeeds? returns false and widget_pipeline_pass_subscription_update enabled' do
+          let(:only_allow_merge_if_pipeline_succeeds?) { false }
+
+          it_behaves_like 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
+            let(:action) { pipeline.succeed }
+          end
         end
       end
 
@@ -2640,7 +2780,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       subject(:latest_successful_for_refs) { described_class.latest_successful_for_refs(refs) }
 
       context 'when refs are specified' do
-        let(:refs) { %w(first_ref second_ref third_ref) }
+        let(:refs) { %w[first_ref second_ref third_ref] }
 
         before do
           create(:ci_empty_pipeline, id: 1001, status: :success, ref: 'first_ref', sha: 'sha')
@@ -2819,7 +2959,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     subject { described_class.bridgeable_statuses }
 
     it { is_expected.to be_an(Array) }
-    it { is_expected.not_to include('created', 'waiting_for_resource', 'preparing', 'pending') }
+    it { is_expected.to contain_exactly('running', 'success', 'failed', 'canceled', 'skipped', 'manual', 'scheduled') }
   end
 
   describe '#status', :sidekiq_inline do
@@ -3176,6 +3316,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     %i[
       enqueue
       request_resource
+      wait_for_callback
       prepare
       run
       skip
@@ -5576,27 +5717,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           it { is_expected.to be_truthy }
         end
       end
-    end
-  end
-
-  describe '#reduced_build_attributes_list_for_rules?' do
-    subject { pipeline.reduced_build_attributes_list_for_rules? }
-
-    let(:pipeline) { build_stubbed(:ci_pipeline, project: project, user: user) }
-
-    it { is_expected.to be_truthy }
-
-    it 'memoizes the result' do
-      expect { subject }
-        .to change { pipeline.strong_memoized?(:reduced_build_attributes_list_for_rules?) }
-    end
-
-    context 'with the FF disabled' do
-      before do
-        stub_feature_flags(reduced_build_attributes_list_for_rules: false)
-      end
-
-      it { is_expected.to be_falsey }
     end
   end
 end

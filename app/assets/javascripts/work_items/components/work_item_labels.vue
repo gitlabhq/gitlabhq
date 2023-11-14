@@ -3,7 +3,8 @@ import { GlTokenSelector, GlLabel, GlSkeletonLoader } from '@gitlab/ui';
 import { debounce, uniqueId, without } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import Tracking from '~/tracking';
-import labelSearchQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
+import groupLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/group_labels.query.graphql';
+import projectLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
 import LabelItem from '~/sidebar/components/labels/labels_select_widget/label_item.vue';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { isScopedLabel } from '~/lib/utils/common_utils';
@@ -90,7 +91,9 @@ export default {
       },
     },
     searchLabels: {
-      query: labelSearchQuery,
+      query() {
+        return this.isGroup ? groupLabelsQuery : projectLabelsQuery;
+      },
       variables() {
         return {
           fullPath: this.fullPath,

@@ -84,7 +84,6 @@ export default {
     id="service-desk-template-select"
     :text="selectedTemplate || $options.i18n.defaultDropdownText"
     :header-text="$options.i18n.defaultDropdownText"
-    data-qa-selector="service_desk_template_dropdown"
     :block="true"
     class="service-desk-template-select"
     toggle-class="gl-m-0"

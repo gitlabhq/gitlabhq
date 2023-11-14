@@ -18,7 +18,7 @@ module Sidebars
         override :extra_container_html_options
         def extra_container_html_options
           {
-            class: 'shortcuts-pipelines rspec-link-pipelines'
+            class: 'shortcuts-pipelines'
           }
         end
 

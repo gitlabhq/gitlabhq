@@ -207,7 +207,22 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
     let(:url) { "/projects/#{project.id}/packages/pypi" }
     let(:headers) { {} }
     let(:requires_python) { '>=3.7' }
-    let(:base_params) { { requires_python: requires_python, version: '1.0.0', name: 'sample-project', sha256_digest: '1' * 64, md5_digest: '1' * 32 } }
+    let(:base_params) do
+      {
+        requires_python: requires_python,
+        version: '1.0.0',
+        name: 'sample-project',
+        sha256_digest: '1' * 64,
+        md5_digest: '1' * 32,
+        metadata_version: '2.3',
+        author_email: 'cschultz@example.com, snoopy@peanuts.com',
+        description: 'Example description',
+        description_content_type: 'text/plain',
+        summary: 'A module for collecting votes from beagles.',
+        keywords: 'dog,puppy,voting,election'
+      }
+    end
+
     let(:params) { base_params.merge(content: temp_file(file_name)) }
     let(:send_rewritten_field) { true }
     let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user, property: 'i_package_pypi_user' } }

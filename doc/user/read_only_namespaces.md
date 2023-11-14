@@ -27,7 +27,7 @@ To restore a namespace to its standard state, you can:
   - [Purchase a paid tier](https://about.gitlab.com/pricing/).
 - For exceeded storage quota:
   - [Purchase more storage for the namespace](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer).
-  - [Manage your storage usage](usage_quotas.md#manage-your-storage-usage).
+  - [Manage your storage usage](usage_quotas.md#manage-storage-usage).
 
 ## Restricted actions
 

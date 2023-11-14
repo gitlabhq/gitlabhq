@@ -79,7 +79,10 @@ RSpec.describe 'getting organization information', feature_category: :cell do
         <<~FIELDS
           organizationUsers {
             nodes {
-              badges
+              badges {
+                text
+                variant
+              }
               id
               user {
                 id
@@ -94,7 +97,7 @@ RSpec.describe 'getting organization information', feature_category: :cell do
 
         organization_user_node = graphql_data_at(:organization, :organizationUsers, :nodes).first
         expected_attributes = {
-          "badges" => ["It's you!"],
+          "badges" => [{ "text" => "It's you!", "variant" => 'muted' }],
           "id" => organization_user.to_global_id.to_s,
           "user" => { "id" => user.to_global_id.to_s }
         }

@@ -109,7 +109,8 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
           allow(project).to receive(:branch_allows_collaboration?).and_return(true)
         end
 
-        it 'enables update_build if user is maintainer' do
+        it 'enables updates if user is maintainer', :aggregate_failures do
+          expect(policy).to be_allowed :cancel_build
           expect(policy).to be_allowed :update_build
           expect(policy).to be_allowed :update_commit_status
         end
@@ -130,6 +131,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
         end
 
         it 'does not include ability to update build' do
+          expect(policy).to be_disallowed :cancel_build
           expect(policy).to be_disallowed :update_build
         end
 
@@ -139,6 +141,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
           end
 
           it 'does not include ability to update build' do
+            expect(policy).to be_disallowed :cancel_build
             expect(policy).to be_disallowed :update_build
           end
         end
@@ -150,6 +153,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
         end
 
         it 'includes ability to update build' do
+          expect(policy).to be_allowed :cancel_build
           expect(policy).to be_allowed :update_build
         end
       end
@@ -162,6 +166,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
         end
 
         it 'does not include ability to update build' do
+          expect(policy).to be_disallowed :cancel_build
           expect(policy).to be_disallowed :update_build
         end
       end
@@ -172,6 +177,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
         end
 
         it 'includes ability to update build' do
+          expect(policy).to be_allowed :cancel_build
           expect(policy).to be_allowed :update_build
         end
       end

@@ -13,62 +13,71 @@ let awardsHandler = null;
 describe('AwardsHandler', () => {
   useFakeRequestAnimationFrame();
 
-  const emojiData = {
-    '8ball': {
+  const emojiData = [
+    {
+      n: '8ball',
       c: 'activity',
       e: '🎱',
       d: 'billiards',
       u: '6.0',
     },
-    grinning: {
+    {
+      n: 'grinning',
       c: 'people',
       e: '😀',
       d: 'grinning face',
       u: '6.1',
     },
-    angel: {
+    {
+      n: 'angel',
       c: 'people',
       e: '👼',
       d: 'baby angel',
       u: '6.0',
     },
-    anger: {
+    {
+      n: 'anger',
       c: 'symbols',
       e: '💢',
       d: 'anger symbol',
       u: '6.0',
     },
-    alien: {
+    {
+      n: 'alien',
       c: 'people',
       e: '👽',
       d: 'extraterrestrial alien',
       u: '6.0',
     },
-    sunglasses: {
+    {
+      n: 'sunglasses',
       c: 'people',
       e: '😎',
       d: 'smiling face with sunglasses',
       u: '6.0',
     },
-    grey_question: {
+    {
+      n: 'grey_question',
       c: 'symbols',
       e: '❔',
       d: 'white question mark ornament',
       u: '6.0',
     },
-    thumbsup: {
+    {
+      n: 'thumbsup',
       c: 'people',
       e: '👍',
       d: 'thumbs up sign',
       u: '6.0',
     },
-    thumbsdown: {
+    {
+      n: 'thumbsdown',
       c: 'people',
       e: '👎',
       d: 'thumbs down sign',
       u: '6.0',
     },
-  };
+  ];
 
   const openAndWaitForEmojiMenu = (sel = '.js-add-award') => {
     $(sel).eq(0).click();

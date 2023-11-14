@@ -32,6 +32,7 @@ class User < MainClusterwide::ApplicationRecord
   include EachBatch
   include CrossDatabaseIgnoredTables
   include IgnorableColumns
+  include UseSqlFunctionForPrimaryKeyLookups
 
   ignore_column %i[
     email_opted_in
@@ -48,7 +49,7 @@ class User < MainClusterwide::ApplicationRecord
 
   # Associations with dependent: option
   cross_database_ignore_tables(
-    %w[namespaces projects project_authorizations issues merge_requests merge_requests issues issues merge_requests],
+    %w[namespaces projects project_authorizations issues merge_requests merge_requests issues issues merge_requests events],
     url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424285',
     on: :destroy
   )
@@ -390,6 +391,7 @@ class User < MainClusterwide::ApplicationRecord
     :first_day_of_week, :first_day_of_week=,
     :timezone, :timezone=,
     :time_display_relative, :time_display_relative=,
+    :time_display_format, :time_display_format=,
     :show_whitespace_in_diffs, :show_whitespace_in_diffs=,
     :view_diffs_file_by_file, :view_diffs_file_by_file=,
     :pass_user_identities_to_ci_jwt, :pass_user_identities_to_ci_jwt=,
@@ -417,6 +419,7 @@ class User < MainClusterwide::ApplicationRecord
   delegate :pronouns, :pronouns=, to: :user_detail, allow_nil: true
   delegate :pronunciation, :pronunciation=, to: :user_detail, allow_nil: true
   delegate :registration_objective, :registration_objective=, to: :user_detail, allow_nil: true
+  delegate :mastodon, :mastodon=, to: :user_detail, allow_nil: true
   delegate :linkedin, :linkedin=, to: :user_detail, allow_nil: true
   delegate :twitter, :twitter=, to: :user_detail, allow_nil: true
   delegate :skype, :skype=, to: :user_detail, allow_nil: true
@@ -425,6 +428,7 @@ class User < MainClusterwide::ApplicationRecord
   delegate :organization, :organization=, to: :user_detail, allow_nil: true
   delegate :discord, :discord=, to: :user_detail, allow_nil: true
   delegate :email_reset_offered_at, :email_reset_offered_at=, to: :user_detail, allow_nil: true
+  delegate :project_authorizations_recalculated_at, :project_authorizations_recalculated_at=, to: :user_detail, allow_nil: true
 
   accepts_nested_attributes_for :user_preference, update_only: true
   accepts_nested_attributes_for :user_detail, update_only: true
@@ -600,6 +604,12 @@ class User < MainClusterwide::ApplicationRecord
   scope :by_provider_and_extern_uid, ->(provider, extern_uid) { joins(:identities).merge(Identity.with_extern_uid(provider, extern_uid)) }
   scope :by_ids_or_usernames, -> (ids, usernames) { where(username: usernames).or(where(id: ids)) }
   scope :without_forbidden_states, -> { where.not(state: FORBIDDEN_SEARCH_STATES) }
+  scope :trusted, -> do
+    where('EXISTS (?)', ::UserCustomAttribute
+      .select(1)
+      .where('user_id = users.id')
+      .trusted_with_spam)
+  end
 
   strip_attributes! :name
 
@@ -768,6 +778,8 @@ class User < MainClusterwide::ApplicationRecord
         external
       when 'deactivated'
         deactivated
+      when "trusted"
+        trusted
       else
         active_without_ghosts
       end
@@ -791,9 +803,9 @@ class User < MainClusterwide::ApplicationRecord
 
       order = <<~SQL
         CASE
-          WHEN LOWER(users.name) = :query THEN 0
+          WHEN LOWER(users.public_email) = :query THEN 0
           WHEN LOWER(users.username) = :query THEN 1
-          WHEN LOWER(users.public_email) = :query THEN 2
+          WHEN LOWER(users.name) = :query THEN 2
           ELSE 3
         END
       SQL
@@ -1081,7 +1093,7 @@ class User < MainClusterwide::ApplicationRecord
   def otp_secret_expired?
     return true unless otp_secret_expires_at
 
-    otp_secret_expires_at < Time.current
+    otp_secret_expires_at.past?
   end
 
   def update_otp_secret!
@@ -1446,7 +1458,7 @@ class User < MainClusterwide::ApplicationRecord
     if !Gitlab.config.ldap.enabled
       false
     elsif ldap_user?
-      !last_credential_check_at || (last_credential_check_at + ldap_sync_time) < Time.current
+      !last_credential_check_at || (last_credential_check_at + ldap_sync_time).past?
     else
       false
     end
@@ -2087,7 +2099,7 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   def password_expired?
-    !!(password_expires_at && password_expires_at < Time.current)
+    !!(password_expires_at && password_expires_at.past?)
   end
 
   def password_expired_if_applicable?

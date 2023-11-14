@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe MergeRequests::Mergeability::CheckRebaseStatusService, feature_category: :code_review_workflow do
   subject(:check_rebase_status) { described_class.new(merge_request: merge_request, params: params) }
 
-  let(:merge_request) { build(:merge_request) }
+  let_it_be(:project) { build(:project) }
+  let_it_be(:merge_request) { build(:merge_request, source_project: project) }
   let(:params) { { skip_rebase_check: skip_check } }
   let(:skip_check) { false }
 
@@ -13,23 +14,41 @@ RSpec.describe MergeRequests::Mergeability::CheckRebaseStatusService, feature_ca
     let(:result) { check_rebase_status.execute }
 
     before do
-      allow(merge_request).to receive(:should_be_rebased?).and_return(should_be_rebased)
+      allow(project)
+        .to receive(:ff_merge_must_be_possible?)
+        .and_return(ff_merge_must_be_possible?)
     end
 
-    context 'when the merge request should be rebased' do
-      let(:should_be_rebased) { true }
+    context 'when ff_merge_must_be_possible is true' do
+      let(:ff_merge_must_be_possible?) { true }
 
-      it 'returns a check result with status failed' do
-        expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
-        expect(result.payload[:reason]).to eq :need_rebase
+      before do
+        allow(merge_request).to receive(:should_be_rebased?).and_return(should_be_rebased)
+      end
+
+      context 'when the merge request should be rebased' do
+        let(:should_be_rebased) { true }
+
+        it 'returns a check result with status failed' do
+          expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
+          expect(result.payload[:reason]).to eq(:need_rebase)
+        end
+      end
+
+      context 'when the merge request should not be rebased' do
+        let(:should_be_rebased) { false }
+
+        it 'returns a check result with status success' do
+          expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
+        end
       end
     end
 
-    context 'when the merge request should not be rebased' do
-      let(:should_be_rebased) { false }
+    context 'when ff_merge_must_be_possible is false' do
+      let(:ff_merge_must_be_possible?) { false }
 
-      it 'returns a check result with status success' do
-        expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
+      it 'returns a check result with inactive status' do
+        expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::INACTIVE_STATUS
       end
     end
   end

@@ -5,13 +5,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# `.gitlab-ci.yml` keyword reference **(FREE ALL)**
+# CI/CD YAML syntax reference **(FREE ALL)**
 
 This document lists the configuration options for the GitLab `.gitlab-ci.yml` file.
 This file is where you define the CI/CD jobs that make up your pipeline.
 
-- To create your own `.gitlab-ci.yml` file, try a tutorial that demonstrates a
-  [simple](../quick_start/index.md) or [complex](../quick_start/tutorial.md) pipeline.
+- If you are already familiar with [basic CI/CD concepts](../index.md), try creating
+  your own `.gitlab-ci.yml` file by following a tutorial that demonstrates a [simple](../quick_start/index.md)
+  or [complex](../quick_start/tutorial.md) pipeline.
 - For a collection of examples, see [GitLab CI/CD examples](../examples/index.md).
 - To view a large `.gitlab-ci.yml` file used in an enterprise, see the
   [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
@@ -34,6 +35,12 @@ A GitLab CI/CD pipeline configuration includes:
   | [`stages`](#stages)       | The names and order of the pipeline stages. |
   | [`variables`](#variables) | Define CI/CD variables for all job in the pipeline. |
   | [`workflow`](#workflow)   | Control what types of pipeline run. |
+
+- [Header keywords](#header-keywords)
+
+  | Keyword         | Description |
+  |-----------------|:------------|
+  | [`spec`](#spec) | Define specifications for external configuration files. |
 
 - [Jobs](../jobs/index.md) configured with [job keywords](#job-keywords):
 
@@ -349,6 +356,42 @@ include:
 - All [nested includes](includes.md#use-nested-includes) are executed without context as a public user,
   so you can only include public projects or templates. No variables are available in the `include` section of nested includes.
 
+#### `include:inputs`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
+
+Use `include:inputs` to set the values for input parameters when the included configuration
+uses [`spec:inputs`](#specinputs) and is added to the pipeline.
+
+**Keyword type**: Global keyword.
+
+**Possible inputs**: A string, numeric value, or boolean.
+
+**Example of `include:inputs`**:
+
+```yaml
+include:
+  - local: 'custom_configuration.yml'
+    inputs:
+      website: "My website"
+```
+
+In this example:
+
+- The configuration contained in `custom_configuration.yml` is added to the pipeline,
+  with a `website` input set to a value of `My website` for the included configuration.
+
+**Additional details**:
+
+- If the included configuration file uses [`spec:inputs:type`](#specinputstype),
+  the input value must match the defined type.
+- If the included configuration file uses [`spec:inputs:options`](#specinputsoptions),
+  the input value must match one of the listed options.
+
+**Related topics**:
+
+- [Set input values when using `include`](inputs.md#set-input-values-when-using-include).
+
 ### `stages`
 
 Use `stages` to define stages that contain groups of jobs. Use [`stage`](#stage)
@@ -591,6 +634,193 @@ When the branch is something else:
   - Use unique variable names in every project's pipeline configuration, like `PROJECT1_VARIABLE_NAME`.
   - Use [`inherit:variables`](#inheritvariables) in the trigger job and list the
     exact variables you want to forward to the downstream pipeline.
+
+## Header keywords
+
+Some keywords must be defined in a header section of a YAML configuration file.
+The header must be at the top of the file, separated from the rest of the configuration
+with `---`.
+
+### `spec`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
+
+Add a `spec` section to the header of a YAML file to configure the behavior of a pipeline
+when a configuration is added to the pipeline with the `include` keyword.
+
+#### `spec:inputs`
+
+You can use `spec:inputs` to define input parameters for the CI/CD configuration you intend to add
+to a pipeline with `include`. Use `include:inputs` to define the values to use when the pipeline runs.
+
+Use the inputs to customize the behavior of the configuration when included in CI/CD configuration.
+
+Use the interpolation format `$[[ input.input-id ]]` to reference the values outside of the header section.
+Inputs are evaluated and interpolated when the configuration is fetched during pipeline creation, but before the
+configuration is merged with the contents of the `.gitlab-ci.yml` file.
+
+**Keyword type**: Header keyword. `specs` must be declared at the top of the configuration file,
+in a header section.
+
+**Possible inputs**: A hash of strings representing the expected inputs.
+
+**Example of `spec:inputs`**:
+
+```yaml
+spec:
+  inputs:
+    environment:
+    job-stage:
+---
+
+scan-website:
+  stage: $[[ inputs.job-stage ]]
+  script: ./scan-website $[[ inputs.environment ]]
+```
+
+**Additional details**:
+
+- Inputs are mandatory unless you use [`spec:inputs:default`](#specinputsdefault)
+  to set a default value.
+- Inputs expect strings unless you use [`spec:inputs:type`](#specinputstype) to set a
+  different input type.
+- A string containing an interpolation block must not exceed 1 MB.
+- The string inside an interpolation block must not exceed 1 KB.
+
+**Related topics**:
+
+- [Define input parameters with `spec:inputs`](inputs.md#define-input-parameters-with-specinputs).
+
+##### `spec:inputs:default`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
+
+Inputs are mandatory when included, unless you set a default value with `spec:inputs:default`.
+
+Use `default: null` to have no default value.
+
+**Keyword type**: Header keyword. `specs` must be declared at the top of the configuration file,
+in a header section.
+
+**Possible inputs**: A string representing the default value, or `null`.
+
+**Example of `spec:inputs:default`**:
+
+```yaml
+spec:
+  inputs:
+    website:
+    user:
+      default: 'test-user'
+    flags:
+      default: null
+---
+
+# The pipeline configuration would follow...
+```
+
+In this example:
+
+- `website` is mandatory and must be defined.
+- `user` is optional. If not defined, the value is `test-user`.
+- `flags` is optional. If not defined, it has no value.
+
+**Additional details**:
+
+- If an input uses both `default` and [`options`](#specinputsoptions), the default value
+  must be one of the listed options. If not, the pipeline fails with a validation error.
+
+##### `spec:inputs:description`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415637) in GitLab 16.5.
+
+Use `description` to give a description to a specific input. The description does
+not affect the behavior of the input and is only used to help users of the file
+understand the input.
+
+**Keyword type**: Header keyword. `specs` must be declared at the top of the configuration file,
+in a header section.
+
+**Possible inputs**: A string representing the description.
+
+**Example of `spec:inputs:description`**:
+
+```yaml
+spec:
+  inputs:
+    flags:
+      description: 'Sample description of the `flags` input details.'
+---
+
+# The pipeline configuration would follow...
+```
+
+##### `spec:inputs:options`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393401) in GitLab 16.6.
+
+Inputs can use `options` to specify a list of allowed values for an input.
+The limit is 50 options per input.
+
+**Keyword type**: Header keyword. `specs` must be declared at the top of the configuration file,
+in a header section.
+
+**Possible inputs**: An array of input options.
+
+**Example of `spec:inputs:options`**:
+
+```yaml
+spec:
+  inputs:
+    environment:
+      options:
+        - development
+        - staging
+        - production
+---
+
+# The pipeline configuration would follow...
+```
+
+In this example:
+
+- `environment` is mandatory and must be defined with one of the values in the list.
+
+**Additional details**:
+
+- If an input uses both [`default`](#specinputsdefault) and `options`, the default value
+  must be one of the listed options. If not, the pipeline fails with a validation error.
+
+##### `spec:inputs:type`
+
+By default, inputs expect strings. Use `spec:inputs:type` to set a different required
+type for inputs.
+
+**Keyword type**: Header keyword. `specs` must be declared at the top of the configuration file,
+in a header section.
+
+**Possible inputs**: Can be one of:
+
+- `string`, to accept string inputs (default when not defined).
+- `number`, to only accept numeric inputs.
+- `boolean`, to only accept `true` or `false` inputs.
+
+**Example of `spec:inputs:type`**:
+
+```yaml
+spec:
+  inputs:
+    job_name:
+    website:
+      type: string
+    port:
+      type: number
+    available:
+      type: boolean
+---
+
+# The pipeline configuration would follow...
+```
 
 ## Job keywords
 
@@ -2025,7 +2255,7 @@ Use `hooks:pre_get_sources_script` to specify a list of commands to execute on t
 before cloning the Git repository and any submodules.
 You can use it for example to:
 
-- Adjust the [Git configuration](../troubleshooting.md#get_sources-job-section-fails-because-of-an-http2-problem).
+- Adjust the [Git configuration](../jobs/index.md#get_sources-job-section-fails-because-of-an-http2-problem).
 - Export [tracing variables](../../topics/git/useful_git_commands.md).
 
 **Possible inputs**: An array including:
@@ -2421,8 +2651,8 @@ This example creates four paths of execution:
 **Additional details**:
 
 - The maximum number of jobs that a single job can have in the `needs` array is limited:
-  - For GitLab.com, the limit is 50. For more information, see our
-    [infrastructure issue](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/7541).
+  - For GitLab.com, the limit is 50. For more information, see
+    [issue 350398](https://gitlab.com/gitlab-org/gitlab/-/issues/350398).
   - For self-managed instances, the default limit is 50. This limit [can be changed](../../administration/cicd.md#set-the-needs-job-limit).
 - If `needs` refers to a job that uses the [`parallel`](#parallel) keyword,
   it depends on all jobs created in parallel, not just one job. It also downloads
@@ -2792,226 +3022,6 @@ The `linux:rspec` job runs as soon as the `linux:build: [aws, app1]` job finishe
               PROVIDER: aws
     script: echo "Running rspec on linux..."
   ```
-
-### `only` / `except`
-
-NOTE:
-`only` and `except` are not being actively developed. To control when to add jobs to pipelines,
-use [`rules`](#rules) instead.
-
-You can use `only` and `except` to control when to add jobs to pipelines.
-
-- Use `only` to define when a job runs.
-- Use `except` to define when a job **does not** run.
-
-See [specify when jobs run with `only` and `except`](../jobs/job_control.md#specify-when-jobs-run-with-only-and-except)
-for more details and examples.
-
-#### `only:refs` / `except:refs`
-
-NOTE:
-`only:refs` and `except:refs` are not being actively developed. To use refs, regular expressions,
-or variables to control when to add jobs to pipelines, use [`rules:if`](#rulesif) instead.
-
-Use the `only:refs` and `except:refs` keywords to control when to add jobs to a
-pipeline based on branch names or pipeline types.
-
-**Keyword type**: Job keyword. You can use it only as part of a job.
-
-**Possible inputs**: An array including any number of:
-
-- Branch names, for example `main` or `my-feature-branch`.
-- [Regular expressions](../jobs/job_control.md#only--except-regex-syntax)
-  that match against branch names, for example `/^feature-.*/`.
-- The following keywords:
-
-  | **Value**                | **Description** |
-  | -------------------------|-----------------|
-  | `api`                    | For pipelines triggered by the [pipelines API](../../api/pipelines.md#create-a-new-pipeline). |
-  | `branches`               | When the Git reference for a pipeline is a branch. |
-  | `chat`                   | For pipelines created by using a [GitLab ChatOps](../chatops/index.md) command. |
-  | `external`               | When you use CI services other than GitLab. |
-  | `external_pull_requests` | When an external pull request on GitHub is created or updated (See [Pipelines for external pull requests](../ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests)). |
-  | `merge_requests`         | For pipelines created when a merge request is created or updated. Enables [merge request pipelines](../pipelines/merge_request_pipelines.md), [merged results pipelines](../pipelines/merged_results_pipelines.md), and [merge trains](../pipelines/merge_trains.md). |
-  | `pipelines`              | For [multi-project pipelines](../pipelines/downstream_pipelines.md#multi-project-pipelines) created by [using the API with `CI_JOB_TOKEN`](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api), or the [`trigger`](#trigger) keyword. |
-  | `pushes`                 | For pipelines triggered by a `git push` event, including for branches and tags. |
-  | `schedules`              | For [scheduled pipelines](../pipelines/schedules.md). |
-  | `tags`                   | When the Git reference for a pipeline is a tag. |
-  | `triggers`               | For pipelines created by using a [trigger token](../triggers/index.md#configure-cicd-jobs-to-run-in-triggered-pipelines). |
-  | `web`                    | For pipelines created by selecting **Run pipeline** in the GitLab UI, from the project's **Build > Pipelines** section. |
-
-**Example of `only:refs` and `except:refs`**:
-
-```yaml
-job1:
-  script: echo
-  only:
-    - main
-    - /^issue-.*$/
-    - merge_requests
-
-job2:
-  script: echo
-  except:
-    - main
-    - /^stable-branch.*$/
-    - schedules
-```
-
-**Additional details**:
-
-- Scheduled pipelines run on specific branches, so jobs configured with `only: branches`
-  run on scheduled pipelines too. Add `except: schedules` to prevent jobs with `only: branches`
-  from running on scheduled pipelines.
-- `only` or `except` used without any other keywords are equivalent to `only: refs`
-  or `except: refs`. For example, the following two jobs configurations have the same
-  behavior:
-
-  ```yaml
-  job1:
-    script: echo
-    only:
-      - branches
-
-  job2:
-    script: echo
-    only:
-      refs:
-        - branches
-  ```
-
-- If a job does not use `only`, `except`, or [`rules`](#rules), then `only` is set to `branches`
-  and `tags` by default.
-
-  For example, `job1` and `job2` are equivalent:
-
-  ```yaml
-  job1:
-    script: echo "test"
-
-  job2:
-    script: echo "test"
-    only:
-      - branches
-      - tags
-  ```
-
-#### `only:variables` / `except:variables`
-
-NOTE:
-`only:variables` and `except:variables` are not being actively developed. To use refs,
-regular expressions, or variables to control when to add jobs to pipelines, use [`rules:if`](#rulesif) instead.
-
-Use the `only:variables` or `except:variables` keywords to control when to add jobs
-to a pipeline, based on the status of [CI/CD variables](../variables/index.md).
-
-**Keyword type**: Job keyword. You can use it only as part of a job.
-
-**Possible inputs**:
-
-- An array of [CI/CD variable expressions](../jobs/job_control.md#cicd-variable-expressions).
-
-**Example of `only:variables`**:
-
-```yaml
-deploy:
-  script: cap staging deploy
-  only:
-    variables:
-      - $RELEASE == "staging"
-      - $STAGING
-```
-
-**Related topics**:
-
-- [`only:variables` and `except:variables` examples](../jobs/job_control.md#only-variables--except-variables-examples).
-
-#### `only:changes` / `except:changes`
-
-NOTE:
-`only:changes` and `except:changes` are not being actively developed. To use changed files
-to control when to add a job to a pipeline, use [`rules:changes`](#ruleschanges) instead.
-
-Use the `changes` keyword with `only` to run a job, or with `except` to skip a job,
-when a Git push event modifies a file.
-
-Use `changes` in pipelines with the following refs:
-
-- `branches`
-- `external_pull_requests`
-- `merge_requests` (see additional details about [using `only:changes` with merge request pipelines](../jobs/job_control.md#use-onlychanges-with-merge-request-pipelines))
-
-**Keyword type**: Job keyword. You can use it only as part of a job.
-
-**Possible inputs**: An array including any number of:
-
-- Paths to files.
-- Wildcard paths for single directories, for example `path/to/directory/*`, or a directory
-  and all its subdirectories, for example `path/to/directory/**/*`.
-- Wildcard [glob](https://en.wikipedia.org/wiki/Glob_(programming)) paths for all
-  files with the same extension or multiple extensions, for example `*.md` or `path/to/directory/*.{rb,py,sh}`.
-  See the [Ruby `fnmatch` documentation](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
-  for the supported syntax list.
-- Wildcard paths to files in the root directory, or all directories, wrapped in double quotes.
-  For example `"*.json"` or `"**/*.json"`.
-
-**Example of `only:changes`**:
-
-```yaml
-docker build:
-  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
-  only:
-    refs:
-      - branches
-    changes:
-      - Dockerfile
-      - docker/scripts/*
-      - dockerfiles/**/*
-      - more_scripts/*.{rb,py,sh}
-      - "**/*.json"
-```
-
-**Additional details**:
-
-- `changes` resolves to `true` if any of the matching files are changed (an `OR` operation).
-- If you use refs other than `branches`, `external_pull_requests`, or `merge_requests`,
-  `changes` can't determine if a given file is new or old and always returns `true`.
-- If you use `only: changes` with other refs, jobs ignore the changes and always run.
-- If you use `except: changes` with other refs, jobs ignore the changes and never run.
-
-**Related topics**:
-
-- [`only: changes` and `except: changes` examples](../jobs/job_control.md#onlychanges--exceptchanges-examples).
-- If you use `changes` with [only allow merge requests to be merged if the pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge),
-  you should [also use `only:merge_requests`](../jobs/job_control.md#use-onlychanges-with-merge-request-pipelines).
-- [Jobs or pipelines can run unexpectedly when using `only: changes`](../jobs/job_control.md#jobs-or-pipelines-run-unexpectedly-when-using-changes).
-
-#### `only:kubernetes` / `except:kubernetes`
-
-NOTE:
-`only:refs` and `except:refs` are not being actively developed. To control if jobs are added
-to the pipeline when the Kubernetes service is active in the project, use [`rules:if`](#rulesif)
-with the [`CI_KUBERNETES_ACTIVE`](../variables/predefined_variables.md) predefined CI/CD variable instead.
-
-Use `only:kubernetes` or `except:kubernetes` to control if jobs are added to the pipeline
-when the Kubernetes service is active in the project.
-
-**Keyword type**: Job-specific. You can use it only as part of a job.
-
-**Possible inputs**:
-
-- The `kubernetes` strategy accepts only the `active` keyword.
-
-**Example of `only:kubernetes`**:
-
-```yaml
-deploy:
-  only:
-    kubernetes: active
-```
-
-In this example, the `deploy` job runs only when the Kubernetes service is active
-in the project.
 
 ### `pages`
 
@@ -4929,9 +4939,9 @@ The following keywords are deprecated.
 
 ### Globally-defined `image`, `services`, `cache`, `before_script`, `after_script`
 
-Defining `image`, `services`, `cache`, `before_script`, and
-`after_script` globally is deprecated. Support could be removed
-from a future release.
+Defining `image`, `services`, `cache`, `before_script`, and `after_script` globally is deprecated.
+Using these keywords at the top level is still possible to ensure backwards compatibility,
+but could be scheduled for removal in a future milestone.
 
 Use [`default`](#default) instead. For example:
 
@@ -4949,14 +4959,233 @@ default:
     - rm -rf tmp/
 ```
 
-<!-- ## Troubleshooting
+### `only` / `except`
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+NOTE:
+`only` and `except` are deprecated and not being actively developed. These keywords
+are still usable to ensure backwards compatibility, but could be scheduled for removal
+in a future milestone. To control when to add jobs to pipelines, use [`rules`](#rules) instead.
 
-Each scenario can be a third-level heading, for example, `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+You can use `only` and `except` to control when to add jobs to pipelines.
+
+- Use `only` to define when a job runs.
+- Use `except` to define when a job **does not** run.
+
+See [specify when jobs run with `only` and `except`](../jobs/job_control.md#specify-when-jobs-run-with-only-and-except)
+for more details and examples.
+
+#### `only:refs` / `except:refs`
+
+NOTE:
+`only:refs` and `except:refs` are deprecated and not being actively developed. These keywords
+are still usable to ensure backwards compatibility, but could be scheduled for removal
+in a future milestone. To use refs, regular expressions, or variables to control
+when to add jobs to pipelines, use [`rules:if`](#rulesif) instead.
+
+You can use the `only:refs` and `except:refs` keywords to control when to add jobs to a
+pipeline based on branch names or pipeline types.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**: An array including any number of:
+
+- Branch names, for example `main` or `my-feature-branch`.
+- [Regular expressions](../jobs/job_control.md#only--except-regex-syntax)
+  that match against branch names, for example `/^feature-.*/`.
+- The following keywords:
+
+  | **Value**                | **Description** |
+  | -------------------------|-----------------|
+  | `api`                    | For pipelines triggered by the [pipelines API](../../api/pipelines.md#create-a-new-pipeline). |
+  | `branches`               | When the Git reference for a pipeline is a branch. |
+  | `chat`                   | For pipelines created by using a [GitLab ChatOps](../chatops/index.md) command. |
+  | `external`               | When you use CI services other than GitLab. |
+  | `external_pull_requests` | When an external pull request on GitHub is created or updated (See [Pipelines for external pull requests](../ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests)). |
+  | `merge_requests`         | For pipelines created when a merge request is created or updated. Enables [merge request pipelines](../pipelines/merge_request_pipelines.md), [merged results pipelines](../pipelines/merged_results_pipelines.md), and [merge trains](../pipelines/merge_trains.md). |
+  | `pipelines`              | For [multi-project pipelines](../pipelines/downstream_pipelines.md#multi-project-pipelines) created by [using the API with `CI_JOB_TOKEN`](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api), or the [`trigger`](#trigger) keyword. |
+  | `pushes`                 | For pipelines triggered by a `git push` event, including for branches and tags. |
+  | `schedules`              | For [scheduled pipelines](../pipelines/schedules.md). |
+  | `tags`                   | When the Git reference for a pipeline is a tag. |
+  | `triggers`               | For pipelines created by using a [trigger token](../triggers/index.md#configure-cicd-jobs-to-run-in-triggered-pipelines). |
+  | `web`                    | For pipelines created by selecting **Run pipeline** in the GitLab UI, from the project's **Build > Pipelines** section. |
+
+**Example of `only:refs` and `except:refs`**:
+
+```yaml
+job1:
+  script: echo
+  only:
+    - main
+    - /^issue-.*$/
+    - merge_requests
+
+job2:
+  script: echo
+  except:
+    - main
+    - /^stable-branch.*$/
+    - schedules
+```
+
+**Additional details**:
+
+- Scheduled pipelines run on specific branches, so jobs configured with `only: branches`
+  run on scheduled pipelines too. Add `except: schedules` to prevent jobs with `only: branches`
+  from running on scheduled pipelines.
+- `only` or `except` used without any other keywords are equivalent to `only: refs`
+  or `except: refs`. For example, the following two jobs configurations have the same
+  behavior:
+
+  ```yaml
+  job1:
+    script: echo
+    only:
+      - branches
+
+  job2:
+    script: echo
+    only:
+      refs:
+        - branches
+  ```
+
+- If a job does not use `only`, `except`, or [`rules`](#rules), then `only` is set to `branches`
+  and `tags` by default.
+
+  For example, `job1` and `job2` are equivalent:
+
+  ```yaml
+  job1:
+    script: echo "test"
+
+  job2:
+    script: echo "test"
+    only:
+      - branches
+      - tags
+  ```
+
+#### `only:variables` / `except:variables`
+
+NOTE:
+`only:variables` and `except:variables` are deprecated and not being actively developed.
+These keywords are still usable to ensure backwards compatibility, but could be scheduled
+for removal in a future milestone. To use refs, regular expressions, or variables
+to control when to add jobs to pipelines, use [`rules:if`](#rulesif) instead.
+
+You can use the `only:variables` or `except:variables` keywords to control when to add jobs
+to a pipeline, based on the status of [CI/CD variables](../variables/index.md).
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- An array of [CI/CD variable expressions](../jobs/job_control.md#cicd-variable-expressions).
+
+**Example of `only:variables`**:
+
+```yaml
+deploy:
+  script: cap staging deploy
+  only:
+    variables:
+      - $RELEASE == "staging"
+      - $STAGING
+```
+
+**Related topics**:
+
+- [`only:variables` and `except:variables` examples](../jobs/job_control.md#only-variables--except-variables-examples).
+
+#### `only:changes` / `except:changes`
+
+`only:variables` and `except:variables`
+
+NOTE:
+`only:changes` and `except:changes` are deprecated and not being actively developed.
+These keywords are still usable to ensure backwards compatibility, but could be scheduled
+for removal in a future milestone. To use changed files to control when to add a job to a pipeline,
+use [`rules:changes`](#ruleschanges) instead.
+
+Use the `changes` keyword with `only` to run a job, or with `except` to skip a job,
+when a Git push event modifies a file.
+
+Use `changes` in pipelines with the following refs:
+
+- `branches`
+- `external_pull_requests`
+- `merge_requests` (see additional details about [using `only:changes` with merge request pipelines](../jobs/job_control.md#use-onlychanges-with-merge-request-pipelines))
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**: An array including any number of:
+
+- Paths to files.
+- Wildcard paths for single directories, for example `path/to/directory/*`, or a directory
+  and all its subdirectories, for example `path/to/directory/**/*`.
+- Wildcard [glob](https://en.wikipedia.org/wiki/Glob_(programming)) paths for all
+  files with the same extension or multiple extensions, for example `*.md` or `path/to/directory/*.{rb,py,sh}`.
+  See the [Ruby `fnmatch` documentation](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
+  for the supported syntax list.
+- Wildcard paths to files in the root directory, or all directories, wrapped in double quotes.
+  For example `"*.json"` or `"**/*.json"`.
+
+**Example of `only:changes`**:
+
+```yaml
+docker build:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  only:
+    refs:
+      - branches
+    changes:
+      - Dockerfile
+      - docker/scripts/*
+      - dockerfiles/**/*
+      - more_scripts/*.{rb,py,sh}
+      - "**/*.json"
+```
+
+**Additional details**:
+
+- `changes` resolves to `true` if any of the matching files are changed (an `OR` operation).
+- If you use refs other than `branches`, `external_pull_requests`, or `merge_requests`,
+  `changes` can't determine if a given file is new or old and always returns `true`.
+- If you use `only: changes` with other refs, jobs ignore the changes and always run.
+- If you use `except: changes` with other refs, jobs ignore the changes and never run.
+
+**Related topics**:
+
+- [`only: changes` and `except: changes` examples](../jobs/job_control.md#onlychanges--exceptchanges-examples).
+- If you use `changes` with [only allow merge requests to be merged if the pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge),
+  you should [also use `only:merge_requests`](../jobs/job_control.md#use-onlychanges-with-merge-request-pipelines).
+- [Jobs or pipelines can run unexpectedly when using `only: changes`](../jobs/job_control.md#jobs-or-pipelines-run-unexpectedly-when-using-changes).
+
+#### `only:kubernetes` / `except:kubernetes`
+
+NOTE:
+`only:kubernetes` and `except:kubernetes` are deprecated and not being actively developed.
+These keywords are still usable to ensure backwards compatibility, but could be scheduled
+for removal in a future milestone. To control if jobs are added to the pipeline when
+the Kubernetes service is active in the project, use [`rules:if`](#rulesif) with the
+[`CI_KUBERNETES_ACTIVE`](../variables/predefined_variables.md) predefined CI/CD variable instead.
+
+Use `only:kubernetes` or `except:kubernetes` to control if jobs are added to the pipeline
+when the Kubernetes service is active in the project.
+
+**Keyword type**: Job-specific. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- The `kubernetes` strategy accepts only the `active` keyword.
+
+**Example of `only:kubernetes`**:
+
+```yaml
+deploy:
+  only:
+    kubernetes: active
+```
+
+In this example, the `deploy` job runs only when the Kubernetes service is active
+in the project.

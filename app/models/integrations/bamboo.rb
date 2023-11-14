@@ -38,15 +38,15 @@ module Integrations
 
     attr_accessor :response
 
-    def title
+    def self.title
       s_('BambooService|Atlassian Bamboo')
     end
 
-    def description
+    def self.description
       s_('BambooService|Run CI/CD pipelines with Atlassian Bamboo.')
     end
 
-    def help
+    def self.help
       docs_link = ActionController::Base.helpers.link_to(
         _('Learn more.'),
         Rails.application.routes.url_helpers.help_page_url('user/project/integrations/bamboo'),

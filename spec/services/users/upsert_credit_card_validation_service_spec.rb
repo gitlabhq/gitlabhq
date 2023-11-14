@@ -3,20 +3,29 @@
 require 'spec_helper'
 
 RSpec.describe Users::UpsertCreditCardValidationService, feature_category: :user_profile do
+  include CryptoHelpers
+
   let_it_be(:user) { create(:user) }
 
   let(:user_id) { user.id }
-  let(:credit_card_validated_time) { Time.utc(2020, 1, 1) }
+
+  let(:network) { 'American Express' }
+  let(:holder_name) {  'John Smith' }
+  let(:last_digits) {  '1111' }
   let(:expiration_year) { Date.today.year + 10 }
+  let(:expiration_month) { 1 }
+  let(:expiration_date) { Date.new(expiration_year, expiration_month, -1) }
+  let(:credit_card_validated_at) { Time.utc(2020, 1, 1) }
+
   let(:params) do
     {
       user_id: user_id,
-      credit_card_validated_at: credit_card_validated_time,
+      credit_card_validated_at: credit_card_validated_at,
       credit_card_expiration_year: expiration_year,
-      credit_card_expiration_month: 1,
-      credit_card_holder_name: 'John Smith',
-      credit_card_type: 'AmericanExpress',
-      credit_card_mask_number: '1111'
+      credit_card_expiration_month: expiration_month,
+      credit_card_holder_name: holder_name,
+      credit_card_type: network,
+      credit_card_mask_number: last_digits
     }
   end
 
@@ -25,82 +34,97 @@ RSpec.describe Users::UpsertCreditCardValidationService, feature_category: :user
 
     context 'successfully set credit card validation record for the user' do
       context 'when user does not have credit card validation record' do
-        it 'creates the credit card validation and returns a success' do
+        it 'creates the credit card validation and returns a success', :aggregate_failures do
           expect(user.credit_card_validated_at).to be nil
 
-          result = service.execute
+          service_result = service.execute
 
-          expect(result.status).to eq(:success)
+          expect(service_result.status).to eq(:success)
+          expect(service_result.message).to eq(_('Credit card validation record saved'))
 
           user.reload
 
           expect(user.credit_card_validation).to have_attributes(
-            credit_card_validated_at: credit_card_validated_time,
-            network: 'AmericanExpress',
-            holder_name: 'John Smith',
-            last_digits: 1111,
-            expiration_date: Date.new(expiration_year, 1, 31)
+            credit_card_validated_at: credit_card_validated_at,
+            network_hash: sha256(network.downcase),
+            holder_name_hash: sha256(holder_name.downcase),
+            last_digits_hash: sha256(last_digits),
+            expiration_date_hash: sha256(expiration_date.to_s)
           )
         end
       end
 
       context 'when user has credit card validation record' do
-        let(:old_time) { Time.utc(1999, 2, 2) }
+        let(:previous_credit_card_validated_at) { Time.utc(1999, 2, 2) }
 
         before do
-          create(:credit_card_validation, user: user, credit_card_validated_at: old_time)
+          create(:credit_card_validation, user: user, credit_card_validated_at: previous_credit_card_validated_at)
         end
 
-        it 'updates the credit card validation and returns a success' do
-          expect(user.credit_card_validated_at).to eq(old_time)
+        it 'updates the credit card validation record and returns a success', :aggregate_failures do
+          expect(user.credit_card_validated_at).to eq(previous_credit_card_validated_at)
 
-          result = service.execute
+          service_result = service.execute
 
-          expect(result.status).to eq(:success)
-          expect(user.reload.credit_card_validated_at).to eq(credit_card_validated_time)
+          expect(service_result.status).to eq(:success)
+          expect(service_result.message).to eq(_('Credit card validation record saved'))
+
+          user.reload
+
+          expect(user.credit_card_validated_at).to eq(credit_card_validated_at)
         end
       end
     end
 
     shared_examples 'returns an error without tracking the exception' do
-      it do
+      it 'does not send an exception to Gitlab::ErrorTracking' do
         expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
 
-        result = service.execute
+        service.execute
+      end
 
-        expect(result.status).to eq(:error)
+      it 'returns an error', :aggregate_failures do
+        service_result = service.execute
+
+        expect(service_result.status).to eq(:error)
+        expect(service_result.message).to eq(_('Error saving credit card validation record'))
       end
     end
 
-    shared_examples 'returns an error, tracking the exception' do
-      it do
+    shared_examples 'returns an error and tracks the exception' do
+      it 'sends an exception to Gitlab::ErrorTracking' do
         expect(Gitlab::ErrorTracking).to receive(:track_exception)
 
-        result = service.execute
+        service.execute
+      end
 
-        expect(result.status).to eq(:error)
+      it 'returns an error', :aggregate_failures do
+        service_result = service.execute
+
+        expect(service_result.status).to eq(:error)
+        expect(service_result.message).to eq(_('Error saving credit card validation record'))
       end
     end
 
-    context 'when user id does not exist' do
+    context 'when the user_id does not exist' do
       let(:user_id) { non_existing_record_id }
 
       it_behaves_like 'returns an error without tracking the exception'
     end
 
-    context 'when missing credit_card_validated_at' do
+    context 'when the request is missing the credit_card_validated_at field' do
       let(:params) { { user_id: user_id } }
 
-      it_behaves_like 'returns an error, tracking the exception'
+      it_behaves_like 'returns an error and tracks the exception'
     end
 
-    context 'when missing user id' do
-      let(:params) { { credit_card_validated_at: credit_card_validated_time } }
+    context 'when the request is missing the user_id field' do
+      let(:params) { { credit_card_validated_at: credit_card_validated_at } }
 
-      it_behaves_like 'returns an error, tracking the exception'
+      it_behaves_like 'returns an error and tracks the exception'
     end
 
-    context 'when unexpected exception happen' do
+    context 'when there is an unexpected error' do
       let(:exception) { StandardError.new }
 
       before do
@@ -109,22 +133,7 @@ RSpec.describe Users::UpsertCreditCardValidationService, feature_category: :user
         end
       end
 
-      it 'tracks the exception and returns an error' do
-        logged_params = {
-          credit_card_validated_at: credit_card_validated_time,
-          expiration_date: Date.new(expiration_year, 1, 31),
-          holder_name: "John Smith",
-          last_digits: 1111,
-          network: "AmericanExpress",
-          user_id: user_id
-        }
-
-        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(exception, class: described_class.to_s, params: logged_params)
-
-        result = service.execute
-
-        expect(result.status).to eq(:error)
-      end
+      it_behaves_like 'returns an error and tracks the exception'
     end
   end
 end

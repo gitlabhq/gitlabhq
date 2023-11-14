@@ -1,22 +1,51 @@
-import { GlDropdown } from '@gitlab/ui';
+import { GlDisclosureDropdown } from '@gitlab/ui';
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import SubmitDropdown from '~/batch_comments/components/submit_dropdown.vue';
 import { mockTracking } from 'helpers/tracking_helper';
+import userCanApproveQuery from '~/batch_comments/queries/can_approve.query.graphql';
 
 jest.mock('~/autosave');
 
+Vue.use(VueApollo);
 Vue.use(Vuex);
 
 let wrapper;
 let publishReview;
 let trackingSpy;
 
-function factory({ canApprove = true, shouldAnimateReviewButton = false } = {}) {
+function factory({
+  canApprove = true,
+  shouldAnimateReviewButton = false,
+  mrRequestChanges = false,
+} = {}) {
   publishReview = jest.fn();
   trackingSpy = mockTracking(undefined, null, jest.spyOn);
+  const requestHandlers = [
+    [
+      userCanApproveQuery,
+      () =>
+        Promise.resolve({
+          data: {
+            project: {
+              id: 1,
+              mergeRequest: {
+                id: 1,
+                userPermissions: {
+                  canApprove,
+                },
+              },
+            },
+          },
+        }),
+    ],
+  ];
+  const apolloProvider = createMockApollo(requestHandlers);
 
   const store = new Vuex.Store({
     getters: {
@@ -27,12 +56,17 @@ function factory({ canApprove = true, shouldAnimateReviewButton = false } = {}) 
       getNoteableData: () => ({
         id: 1,
         preview_note_path: '/preview',
-        current_user: { can_approve: canApprove },
       }),
       noteableType: () => 'merge_request',
       getCurrentUserLastNote: () => ({ id: 1 }),
     },
     modules: {
+      diffs: {
+        namespaced: true,
+        state: {
+          projectPath: 'gitlab-org/gitlab',
+        },
+      },
       batchComments: {
         namespaced: true,
         state: { shouldAnimateReviewButton },
@@ -44,13 +78,17 @@ function factory({ canApprove = true, shouldAnimateReviewButton = false } = {}) 
   });
   wrapper = mountExtended(SubmitDropdown, {
     store,
+    apolloProvider,
+    provide: {
+      glFeatures: { mrRequestChanges },
+    },
   });
 }
 
 const findCommentTextarea = () => wrapper.findByTestId('comment-textarea');
 const findSubmitButton = () => wrapper.findByTestId('submit-review-button');
 const findForm = () => wrapper.findByTestId('submit-gl-form');
-const findSubmitDropdown = () => wrapper.findComponent(GlDropdown);
+const findSubmitDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
 
 describe('Batch comments submit dropdown', () => {
   afterEach(() => {
@@ -70,6 +108,7 @@ describe('Batch comments submit dropdown', () => {
       note: 'Hello world',
       approve: false,
       approval_password: '',
+      reviewer_state: 'reviewed',
     });
   });
 
@@ -113,11 +152,18 @@ describe('Batch comments submit dropdown', () => {
     canApprove | exists   | existsText
     ${true}    | ${true}  | ${'shows'}
     ${false}   | ${false} | ${'hides'}
-  `('$existsText approve checkbox if can_approve is $canApprove', ({ canApprove, exists }) => {
-    factory({ canApprove });
+  `(
+    '$existsText approve checkbox if can_approve is $canApprove',
+    async ({ canApprove, exists }) => {
+      factory({ canApprove });
 
-    expect(wrapper.findByTestId('approve_merge_request').exists()).toBe(exists);
-  });
+      wrapper.findComponent(GlDisclosureDropdown).vm.$emit('shown');
+
+      await waitForPromises();
+
+      expect(wrapper.findByTestId('approve_merge_request').exists()).toBe(exists);
+    },
+  );
 
   it.each`
     shouldAnimateReviewButton | animationClassApplied | classText
@@ -133,4 +179,52 @@ describe('Batch comments submit dropdown', () => {
       );
     },
   );
+
+  describe('when mrRequestChanges feature flag is enabled', () => {
+    it('renders a radio group with review state options', async () => {
+      factory({ mrRequestChanges: true });
+
+      await waitForPromises();
+
+      expect(wrapper.findAll('.gl-form-radio').length).toBe(3);
+    });
+
+    it('renders disabled approve radio button when user can not approve', async () => {
+      factory({ mrRequestChanges: true, canApprove: false });
+
+      wrapper.findComponent(GlDisclosureDropdown).vm.$emit('shown');
+
+      await waitForPromises();
+
+      expect(wrapper.find('.custom-control-input[value="approved"]').attributes('disabled')).toBe(
+        'disabled',
+      );
+    });
+
+    it.each`
+      value
+      ${'approved'}
+      ${'reviewed'}
+      ${'requested_changes'}
+    `('sends $value review state to api when submitting', async ({ value }) => {
+      factory({ mrRequestChanges: true });
+
+      wrapper.findComponent(GlDisclosureDropdown).vm.$emit('shown');
+
+      await waitForPromises();
+
+      await wrapper.find(`.custom-control-input[value="${value}"]`).trigger('change');
+
+      findForm().vm.$emit('submit', { preventDefault: jest.fn() });
+
+      expect(publishReview).toHaveBeenCalledWith(expect.anything(), {
+        noteable_type: 'merge_request',
+        noteable_id: 1,
+        note: 'Hello world',
+        approve: false,
+        approval_password: '',
+        reviewer_state: value,
+      });
+    });
+  });
 });

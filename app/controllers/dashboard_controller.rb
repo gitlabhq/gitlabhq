@@ -14,6 +14,7 @@ class DashboardController < Dashboard::ApplicationController
 
   before_action only: :issues do
     push_frontend_feature_flag(:frontend_caching)
+    push_frontend_feature_flag(:group_multi_select_tokens)
   end
 
   before_action only: :merge_requests do

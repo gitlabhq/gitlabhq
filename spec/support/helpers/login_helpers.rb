@@ -70,7 +70,13 @@ module LoginHelpers
 
   # Requires Javascript driver.
   def gitlab_sign_out
-    find(".header-user-dropdown-toggle").click
+    if has_testid?('super-sidebar')
+      click_on "#{@current_user.name} user’s menu"
+    else
+      # This can be removed once https://gitlab.com/gitlab-org/gitlab/-/issues/420121 is complete.
+      find(".header-user-dropdown-toggle").click
+    end
+
     click_link "Sign out"
     @current_user = nil
 
@@ -79,11 +85,8 @@ module LoginHelpers
 
   # Requires Javascript driver.
   def gitlab_disable_admin_mode
-    open_top_nav
-
-    within_top_nav do
-      click_on 'Leave admin mode'
-    end
+    click_on 'Search or go to…'
+    click_on 'Leave admin mode'
   end
 
   private
@@ -209,9 +212,9 @@ module LoginHelpers
 
   def mock_saml_config_with_upstream_two_factor_authn_contexts
     config = mock_saml_config
-    config.args[:upstream_two_factor_authn_contexts] = %w(urn:oasis:names:tc:SAML:2.0:ac:classes:CertificateProtectedTransport
+    config.args[:upstream_two_factor_authn_contexts] = %w[urn:oasis:names:tc:SAML:2.0:ac:classes:CertificateProtectedTransport
                                                           urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorOTPSMS
-                                                          urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorIGTOKEN)
+                                                          urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorIGTOKEN]
     config
   end
 
@@ -259,19 +262,15 @@ module LoginHelpers
   end
 
   def stub_omniauth_config(messages)
-    allow(Gitlab.config.omniauth).to receive_messages(messages)
+    allow(Gitlab.config.omniauth).to receive_messages(GitlabSettings::Options.build(messages))
   end
 
   def stub_basic_saml_config
-    allow_next_instance_of(Gitlab::Auth::Saml::Config) do |config|
-      allow(config).to receive_messages({ options: { name: 'saml', args: {} } })
-    end
+    stub_omniauth_config(providers: [{ name: 'saml', args: {} }])
   end
 
   def stub_saml_group_config(groups)
-    allow_next_instance_of(Gitlab::Auth::Saml::Config) do |config|
-      allow(config).to receive_messages({ options: { name: 'saml', groups_attribute: 'groups', external_groups: groups, args: {} } })
-    end
+    stub_omniauth_config(providers: [{ name: 'saml', groups_attribute: 'groups', external_groups: groups, args: {} }])
   end
 end
 

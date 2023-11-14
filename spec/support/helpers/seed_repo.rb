@@ -47,7 +47,7 @@ module SeedRepo
     FILES_COUNT      = 2
     C_FILE_PATH      = "files/ruby"
     C_FILES          = ["popen.rb", "regex.rb", "version_info.rb"].freeze
-    BLOB_FILE        = %{%h3= @key.title\n%hr\n%pre= @key.key\n.actions\n  = link_to 'Remove', @key, :confirm => 'Are you sure?', :method => :delete, :class => \"btn danger delete-key\"\n\n\n}
+    BLOB_FILE        = %(%h3= @key.title\n%hr\n%pre= @key.key\n.actions\n  = link_to 'Remove', @key, :confirm => 'Are you sure?', :method => :delete, :class => \"btn danger delete-key\"\n\n\n)
     BLOB_FILE_PATH   = "app/views/keys/show.html.haml"
   end
 

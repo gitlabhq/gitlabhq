@@ -45,9 +45,19 @@ RSpec.shared_examples 'unlicensed cycle analytics request params' do
       end
     end
 
+    context 'when the date range is exactly 180 days' do
+      before do
+        params[:created_before] = '2019-06-30'
+      end
+
+      it 'is valid' do
+        expect(subject).to be_valid
+      end
+    end
+
     context 'when the date range exceeds 180 days' do
       before do
-        params[:created_before] = '2019-07-15'
+        params[:created_before] = '2019-07-01'
       end
 
       it 'is invalid' do

@@ -5,9 +5,10 @@ import {
   TOKEN_TYPE_APPROVED_BY,
   TOKEN_TYPE_REVIEWER,
   TOKEN_TYPE_TARGET_BRANCH,
+  TOKEN_TYPE_SOURCE_BRANCH,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 
-export default (IssuableTokenKeys, disableTargetBranchFilter = false) => {
+export default (IssuableTokenKeys, disableBranchFilter = false) => {
   const reviewerToken = {
     formattedKey: TOKEN_TITLE_REVIEWER,
     key: TOKEN_TYPE_REVIEWER,
@@ -57,7 +58,7 @@ export default (IssuableTokenKeys, disableTargetBranchFilter = false) => {
   IssuableTokenKeys.tokenKeysWithAlternative.push(draftToken.token);
   IssuableTokenKeys.conditions.push(...draftToken.conditions);
 
-  if (!disableTargetBranchFilter) {
+  if (!disableBranchFilter) {
     const targetBranchToken = {
       formattedKey: __('Target-Branch'),
       key: TOKEN_TYPE_TARGET_BRANCH,
@@ -68,8 +69,18 @@ export default (IssuableTokenKeys, disableTargetBranchFilter = false) => {
       tag: 'branch',
     };
 
-    IssuableTokenKeys.tokenKeys.push(targetBranchToken);
-    IssuableTokenKeys.tokenKeysWithAlternative.push(targetBranchToken);
+    const sourceBranchToken = {
+      formattedKey: __('Source-Branch'),
+      key: TOKEN_TYPE_SOURCE_BRANCH,
+      type: 'string',
+      param: '',
+      symbol: '',
+      icon: 'branch',
+      tag: 'branch',
+    };
+
+    IssuableTokenKeys.tokenKeys.push(targetBranchToken, sourceBranchToken);
+    IssuableTokenKeys.tokenKeysWithAlternative.push(targetBranchToken, sourceBranchToken);
   }
 
   const approvedToken = {

@@ -17,12 +17,12 @@ exports[`Design management list item component with notes renders item with mult
   >
     <gl-intersection-observer-stub
       class="gl-flex-grow-1"
+      data-qa-filename="test"
+      data-testid="design-image"
     >
       <img
         alt="test"
         class="design-img gl-display-block gl-max-h-full gl-max-w-full gl-mx-auto gl-w-auto"
-        data-qa-filename="test"
-        data-qa-selector="design_image"
         data-testid="design-img-1"
         src="null"
       />
@@ -33,10 +33,10 @@ exports[`Design management list item component with notes renders item with mult
   >
     <div
       class="gl-display-flex gl-flex-direction-column str-truncated-100"
+      data-testid="design-file-name"
     >
       <span
         class="gl-font-weight-semibold str-truncated-100"
-        data-qa-selector="design_file_name"
         data-testid="design-img-filename-1"
         title="test"
       >
@@ -82,12 +82,12 @@ exports[`Design management list item component with notes renders item with sing
   >
     <gl-intersection-observer-stub
       class="gl-flex-grow-1"
+      data-qa-filename="test"
+      data-testid="design-image"
     >
       <img
         alt="test"
         class="design-img gl-display-block gl-max-h-full gl-max-w-full gl-mx-auto gl-w-auto"
-        data-qa-filename="test"
-        data-qa-selector="design_image"
         data-testid="design-img-1"
         src="null"
       />
@@ -98,10 +98,10 @@ exports[`Design management list item component with notes renders item with sing
   >
     <div
       class="gl-display-flex gl-flex-direction-column str-truncated-100"
+      data-testid="design-file-name"
     >
       <span
         class="gl-font-weight-semibold str-truncated-100"
-        data-qa-selector="design_file_name"
         data-testid="design-img-filename-1"
         title="test"
       >

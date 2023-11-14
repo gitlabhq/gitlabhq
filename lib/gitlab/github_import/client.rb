@@ -182,12 +182,12 @@ module Gitlab
 
         request_count_counter.increment
 
-        raise_or_wait_for_rate_limit unless requests_remaining?
+        raise_or_wait_for_rate_limit('Internal threshold reached') unless requests_remaining?
 
         begin
           with_retry { yield }
-        rescue ::Octokit::TooManyRequests
-          raise_or_wait_for_rate_limit
+        rescue ::Octokit::TooManyRequests => e
+          raise_or_wait_for_rate_limit(e.response_body)
 
           # This retry will only happen when running in sequential mode as we'll
           # raise an error in parallel mode.
@@ -213,11 +213,11 @@ module Gitlab
         octokit.rate_limit.limit
       end
 
-      def raise_or_wait_for_rate_limit
+      def raise_or_wait_for_rate_limit(message)
         rate_limit_counter.increment
 
         if parallel?
-          raise RateLimitError
+          raise RateLimitError, message
         else
           sleep(rate_limit_resets_in)
         end

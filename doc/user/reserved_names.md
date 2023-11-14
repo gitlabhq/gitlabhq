@@ -6,31 +6,30 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Reserved project and group names **(FREE ALL)**
 
-Not all project & group names are allowed because they would conflict with
-existing routes used by GitLab.
+To not conflict with existing routes used by GitLab, some words cannot be used as project or group names.
+These words are listed in the
+[`path_regex.rb` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/path_regex.rb),
+where:
 
-For a list of words that are not allowed to be used as group or project names, see the
-[`path_regex.rb` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/path_regex.rb)
-under the `TOP_LEVEL_ROUTES`, `PROJECT_WILDCARD_ROUTES` and `GROUP_ROUTES` lists:
-
-- `TOP_LEVEL_ROUTES`: are names that are reserved as usernames or top level groups
-- `PROJECT_WILDCARD_ROUTES`: are names that are reserved for child groups or projects.
-- `GROUP_ROUTES`: are names that are reserved for all groups or projects.
+- `TOP_LEVEL_ROUTES` are names reserved as usernames or top-level groups.
+- `PROJECT_WILDCARD_ROUTES` are names reserved for child groups or projects.
+- `GROUP_ROUTES` are names reserved for all groups or projects.
 
 ## Limitations on project and group names
 
-- Project or group names must start with a letter, digit, emoji, or "_".
-- Project names can only contain letters, digits, emoji, "_", ".", "+", dashes, or spaces.
-- Group names can only contain letters, digits, emoji, "_", ".", parenthesis, dashes, or spaces.
-- Project or group slugs must start with a letter or digit.
-- Project or group slugs can only contain letters, digits, '_', '.', or dashes.
-- Project or group slugs must not contain consecutive special characters.
-- Project or group slugs cannot start or end with a special character.
-- Project or group slugs cannot end in `.git` or `.atom`.
+- Project or group names must start with a letter (`a-zA-Z`), digit (`0-9`), emoji, or underscore (`_`). Additionally:
+  - Project names can contain only letters (`a-zA-Z`), digits (`0-9`), emoji, underscores (`_`), dots (`.`), pluses (`+`), dashes (`-`), or spaces.
+  - Group names can contain only letters (`a-zA-Z`), digits (`0-9`), emoji, underscores (`_`), dots (`.`), parentheses (`()`), dashes (`-`), or spaces.
+- Project or group slugs:
+  - Must start with a letter (`a-zA-Z`) or digit (`0-9`).
+  - Must not contain consecutive special characters.
+  - Cannot start or end with a special character.
+  - Cannot end in `.git` or `.atom`.
+  - Can contain only letters (`a-zA-Z`), digits (`0-9`), underscores (`_`), dots (`.`), or dashes (`-`).
 
 ## Reserved project names
 
-It is not possible to create a project with the following names:
+You cannot create projects with the following names:
 
 - `\-`
 - `badges`
@@ -56,7 +55,7 @@ It is not possible to create a project with the following names:
 
 ## Reserved group names
 
-The following names are reserved as top level groups:
+You cannot create groups with the following names, because they are reserved for top-level groups:
 
 - `\-`
 - `.well-known`
@@ -98,6 +97,6 @@ The following names are reserved as top level groups:
 - `users`
 - `v2`
 
-These group names are unavailable as subgroup names:
+You cannot create subgroups with the following names:
 
 - `\-`

@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Bitbucket::Representation::PullRequestComment do
+RSpec.describe Bitbucket::Representation::PullRequestComment, feature_category: :importers do
   describe '#iid' do
     it { expect(described_class.new('id' => 1).iid).to eq(1) }
   end
@@ -32,5 +32,11 @@ RSpec.describe Bitbucket::Representation::PullRequestComment do
   describe '#has_parent?' do
     it { expect(described_class.new('parent' => {}).has_parent?).to be_truthy }
     it { expect(described_class.new({}).has_parent?).to be_falsey }
+  end
+
+  describe '#deleted?' do
+    it { expect(described_class.new('deleted' => true).deleted?).to be_truthy }
+    it { expect(described_class.new('deleted' => false).deleted?).to be_falsey }
+    it { expect(described_class.new({}).deleted?).to be_falsey }
   end
 end

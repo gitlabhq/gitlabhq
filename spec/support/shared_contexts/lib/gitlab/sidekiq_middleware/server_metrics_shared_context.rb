@@ -19,6 +19,12 @@ RSpec.shared_context 'server metrics with mocked prometheus' do
   let(:load_balancing_metric) { double('load balancing metric') }
   let(:sidekiq_mem_total_bytes) { double('sidekiq mem total bytes') }
   let(:completion_seconds_sum_metric) { double('sidekiq completion seconds sum metric') }
+  let(:completion_count_metric) { double('sidekiq completion seconds count metric') }
+  let(:cpu_seconds_sum_metric) { double('cpu seconds sum metric') }
+  let(:db_seconds_sum_metric) { double('db seconds sum metric') }
+  let(:gitaly_seconds_sum_metric) { double('gitaly seconds sum metric') }
+  let(:redis_seconds_sum_metric) { double('redis seconds sum metric') }
+  let(:elasticsearch_seconds_sum_metric) { double('elasticsearch seconds sum metric') }
 
   before do
     allow(Gitlab::Metrics).to receive(:histogram).and_call_original
@@ -38,6 +44,12 @@ RSpec.shared_context 'server metrics with mocked prometheus' do
     allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_elasticsearch_requests_total, anything).and_return(elasticsearch_requests_total)
     allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_load_balancing_count, anything).and_return(load_balancing_metric)
     allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_jobs_completion_seconds_sum, anything).and_return(completion_seconds_sum_metric)
+    allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_jobs_completion_count, anything).and_return(completion_count_metric)
+    allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_jobs_cpu_seconds_sum, anything).and_return(cpu_seconds_sum_metric)
+    allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_jobs_db_seconds_sum, anything).and_return(db_seconds_sum_metric)
+    allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_jobs_gitaly_seconds_sum, anything).and_return(gitaly_seconds_sum_metric)
+    allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_redis_requests_duration_seconds_sum, anything).and_return(redis_seconds_sum_metric)
+    allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_elasticsearch_requests_duration_seconds_sum, anything).and_return(elasticsearch_seconds_sum_metric)
     allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_running_jobs, anything, {}, :all).and_return(running_jobs_metric)
     allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_concurrency, anything, {}, :all).and_return(concurrency_metric)
     allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_mem_total_bytes, anything, {}, :all).and_return(sidekiq_mem_total_bytes)
@@ -78,12 +90,8 @@ RSpec.shared_context 'server metrics call' do
     }
   end
 
-  let(:stub_subject) { true }
-
   before do
-    if stub_subject
-      allow(subject).to receive(:get_thread_cputime).and_return(thread_cputime_before, thread_cputime_after)
-    end
+    allow(subject).to receive(:get_thread_cputime).and_return(thread_cputime_before, thread_cputime_after)
 
     allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(monotonic_time_before, monotonic_time_after)
     allow(Gitlab::InstrumentationHelper).to receive(:queue_duration_for_job).with(job).and_return(queue_duration_for_job)
@@ -101,9 +109,16 @@ RSpec.shared_context 'server metrics call' do
     allow(redis_requests_total).to receive(:increment)
     allow(elasticsearch_requests_total).to receive(:increment)
     allow(completion_seconds_sum_metric).to receive(:increment)
+    allow(completion_count_metric).to receive(:increment)
+    allow(cpu_seconds_sum_metric).to receive(:increment)
+    allow(db_seconds_sum_metric).to receive(:increment)
+    allow(gitaly_seconds_sum_metric).to receive(:increment)
+    allow(redis_seconds_sum_metric).to receive(:increment)
+    allow(elasticsearch_seconds_sum_metric).to receive(:increment)
     allow(queue_duration_seconds).to receive(:observe)
     allow(user_execution_seconds_metric).to receive(:observe)
     allow(db_seconds_metric).to receive(:observe)
+    allow(db_seconds_sum_metric).to receive(:increment)
     allow(gitaly_seconds_metric).to receive(:observe)
     allow(completion_seconds_metric).to receive(:observe)
     allow(redis_seconds_metric).to receive(:observe)

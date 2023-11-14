@@ -11,6 +11,9 @@ export const SIMPLE_BLOB_VIEWER_TITLE = __('Display source');
 export const RICH_BLOB_VIEWER = 'rich';
 export const RICH_BLOB_VIEWER_TITLE = __('Display rendered file');
 
+export const BLAME_VIEWER = 'blame';
+export const BLAME_TITLE = __('Display blame info');
+
 export const BLOB_RENDER_EVENT_LOAD = 'force-content-fetch';
 export const BLOB_RENDER_EVENT_SHOW_SOURCE = 'force-switch-viewer';
 

@@ -45,10 +45,10 @@
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/'
 
 .if-merge-request-approved-and-specific-devops-stage: &if-merge-request-approved-and-specific-devops-stage
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && ($CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/ && $CI_MERGE_REQUEST_LABELS =~ /devops::create/)'
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && ($CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/ && $CI_MERGE_REQUEST_LABELS =~ /devops::(create|govern|manage)/)'
 
 .if-merge-request-and-specific-devops-stage: &if-merge-request-and-specific-devops-stage
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /devops::create/'
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /devops::(create|govern|manage)/'
 
 .if-merge-request-not-approved: &if-merge-request-not-approved
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS !~ /pipeline:mr-approved/'
@@ -59,8 +59,14 @@
 .if-merge-request-targeting-stable-branch: &if-merge-request-targeting-stable-branch
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee|-jh)?$/'
 
+.if-merge-request-labels-run-in-ruby3_0: &if-merge-request-labels-run-in-ruby3_0
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_0/'
+
 .if-merge-request-labels-run-in-ruby3_1: &if-merge-request-labels-run-in-ruby3_1
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_1/'
+
+.if-merge-request-labels-run-in-ruby3_2: &if-merge-request-labels-run-in-ruby3_2
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_2/'
 
 .if-merge-request-labels-as-if-foss: &if-merge-request-labels-as-if-foss
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-foss/'
@@ -89,14 +95,8 @@
 .if-merge-request-labels-run-review-app: &if-merge-request-labels-run-review-app
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
 
-.if-merge-request-labels-run-on-pg12: &if-merge-request-labels-run-on-pg12
-  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-on-pg12/'
-
 .if-merge-request-labels-skip-undercoverage: &if-merge-request-labels-skip-undercoverage
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-undercoverage/'
-
-.if-merge-request-labels-record-queries: &if-merge-request-labels-record-queries
-  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:record-queries/'
 
 .if-merge-request-labels-jh-contribution: &if-merge-request-labels-jh-contribution
   if: '$CI_MERGE_REQUEST_LABELS =~ /JiHu contribution/'
@@ -371,6 +371,7 @@
 # AI patterns:
 .ai-patterns: &ai-patterns
   - "{,ee/,jh/}lib/gitlab/llm/**/*"
+  - "{,ee/,jh/}{,spec/}lib/gitlab/llm/**/*"
 
 # DB patterns + .ci-patterns
 .db-patterns: &db-patterns
@@ -930,7 +931,7 @@
       variables:
         BUILD_GDK_BASE: "true"
     - !reference [".qa:rules:package-and-test-never-run", rules]
-    - <<: *if-default-branch-schedule-nightly # already executed in the 2-hourly schedule
+    - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
       when: never
     - <<: *if-default-branch-refs
     - <<: *if-merge-request
@@ -1588,9 +1589,9 @@
     - <<: *if-merge-request-approved-and-specific-devops-stage
       changes: *code-patterns
       allow_failure: true
-    # We used to have a rule at the end here that would catch any remaining code MRs and allow the job to be run
-    # manually. That rule is now in ".qa:rules:code-merge-request-manual" so it can be included when needed and we can
-    # still use ".qa:rules:package-and-test-common" in jobs we don't want to be manual.
+      # We used to have a rule at the end here that would catch any remaining code MRs and allow the job to be run
+      # manually. That rule is now in ".qa:rules:code-merge-request-manual" so it can be included when needed and we can
+      # still use ".qa:rules:package-and-test-common" in jobs we don't want to be manual.
 
 # Like .qa:rules:package-and-test-common but not allowed to fail.
 # It's named `e2e` instead of `package-and-test` because it's used for e2e tests on GDK (and could be used
@@ -1623,7 +1624,11 @@
     - <<: *if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
       changes: *code-patterns
     - <<: *if-merge-request
-      changes: *code-qa-patterns # Includes all CI changes
+      changes: *code-patterns
+      variables:
+        MR_CODE_PATTERNS: "true"
+    - <<: *if-merge-request
+      changes: *code-qa-patterns  # Includes all CI changes
     - <<: *if-force-ci
       when: manual
 
@@ -1679,7 +1684,7 @@
   rules:
     - if: '$QA_RUN_TESTS_ON_GDK !~ /true|yes|1/i'
       when: never
-    - <<: *if-default-branch-schedule-nightly # already executed in the 2-hourly schedule
+    - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
       when: never
     - !reference [".qa:rules:e2e-blocking", rules]
     - !reference [".qa:rules:e2e-schedule-blocking", rules]
@@ -2109,14 +2114,16 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
-.rails:rules:ee-gitlab-duo-chat:
+.rails:rules:ee-gitlab-duo-chat-base:
   rules:
     - !reference [".strict-ee-only-rules", rules]
     - if: '$REAL_AI_REQUEST == null'
       when: never
     - if: '$ANTHROPIC_API_KEY == null'
       when: never
-    - if: '$OPENAI_EMBEDDINGS == null'
+    - if: '$VERTEX_AI_PROJECT == null'
+      when: never
+    - if: '$VERTEX_AI_CREDENTIALS == null'
       when: never
     - <<: *if-merge-request
       changes: *ai-patterns
@@ -2188,7 +2195,6 @@
     - <<: *if-default-refs
       changes: *db-library-patterns
     - <<: *if-merge-request-labels-run-all-rspec
-    - <<: *if-merge-request-labels-run-on-pg12
 
 .rails:rules:ee-mr-and-default-branch-only:
   rules:
@@ -2278,11 +2284,6 @@
     - <<: *if-merge-request
       changes: *backend-patterns
 
-.rails:rules:rspec-on-pg12:
-  rules:
-    - <<: *if-merge-request-labels-run-on-pg12
-    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-default-rules", rules]
-
 .rails:rules:rspec-merge-auto-explain-logs:
   rules:
     - <<: *if-not-ee
@@ -2290,7 +2291,8 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
-    - <<: *if-merge-request-labels-record-queries
+    - <<: *if-merge-request
+      changes: *code-backstage-patterns
     - <<: *if-default-branch-refs
       changes: *code-patterns
 
@@ -2323,13 +2325,10 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
+    - <<: *if-merge-request
       when: never
     - if: '$FAST_QUARANTINE == "false" && $RETRY_FAILED_TESTS_IN_NEW_PROCESS != "true"'
       when: never
-    - <<: *if-merge-request
-      changes: *code-backstage-patterns
-      when: always
     - <<: *if-default-branch-refs
       changes: *code-backstage-patterns
       when: always
@@ -2740,9 +2739,9 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
-.setup:rules:verify-ruby-3.0:
+.setup:rules:verify-default-ruby:
   rules:
-    - <<: *if-merge-request-labels-run-in-ruby3_1
+    - <<: *if-merge-request-labels-run-in-ruby3_2
 
 .setup:rules:verify-tests-yml:
   rules:

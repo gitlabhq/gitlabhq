@@ -30,6 +30,7 @@ const configuration = {
   headers: {
     'GitLab-Agent-Id': '1',
     'Content-Type': 'application/json',
+    Accept: 'application/json',
   },
   credentials: 'include',
 };
@@ -121,7 +122,6 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
       expect(findKubernetesStatusBar().props()).toEqual({
         clusterHealthStatus: 'success',
         configuration,
-        namespace: kubernetesNamespace,
         environmentName: resolvedEnvironment.name,
         fluxResourcePath: fluxResourcePathMock,
       });

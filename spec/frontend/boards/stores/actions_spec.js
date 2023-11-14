@@ -1,8 +1,8 @@
-import * as Sentry from '@sentry/browser';
 import { cloneDeep } from 'lodash';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { inactiveId, ISSUABLE, ListType, DraggableItemTypes } from 'ee_else_ce/boards/constants';
 import issueMoveListMutation from 'ee_else_ce/boards/graphql/issue_move_list.mutation.graphql';
 import testAction from 'helpers/vuex_action_helper';

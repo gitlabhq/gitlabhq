@@ -206,7 +206,9 @@ To add Google Cloud Logging streaming destinations to a top-level group:
 1. Select **Secure > Audit events**.
 1. On the main area, select **Streams** tab.
 1. Select **Add streaming destination** and select **Google Cloud Logging** to show the section for adding destinations.
-1. Enter the Google project ID, Google client email, log ID, and Google private key to add.
+1. Enter a random string to use as a name for the new destination.
+1. Enter the Google project ID, Google client email, and Google private key from previously-created Google Cloud service account key to add to the new destination.
+1. Enter a random string to use as a log ID for the new destination. You can use this later to filter log results in Google Cloud.
 1. Select **Add** to add the new streaming destination.
 
 #### List Google Cloud Logging destinations
@@ -236,7 +238,9 @@ To update Google Cloud Logging streaming destinations to a top-level group:
 1. Select **Secure > Audit events**.
 1. On the main area, select **Streams** tab.
 1. Select the Google Cloud Logging stream to expand.
-1. Enter the Google project ID, Google client email, and log ID to update.
+1. Enter a random string to use as a name for the destination.
+1. Enter the Google project ID and Google client email from previously-created Google Cloud service account key to update the destination.
+1. Enter a random string to update the log ID for the destination. You can use this later to filter log results in Google Cloud.
 1. Select **Add a new private key** and enter a Google private key to update the private key.
 1. Select **Save** to update the streaming destination.
 
@@ -252,6 +256,85 @@ To delete Google Cloud Logging streaming destinations to a top-level group:
 1. Select **Secure > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the Google Cloud Logging stream to expand.
+1. Select **Delete destination**.
+1. Confirm by selecting **Delete destination** in the dialog.
+
+### AWS S3 destinations
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132603) in GitLab 16.6 [with a flag](../feature_flags.md) named `allow_streaming_audit_events_to_amazon_s3`. Enabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature per group, an administrator can [disable the feature flag](../feature_flags.md) named `allow_streaming_audit_events_to_amazon_s3`.
+On GitLab.com, this feature is available.
+
+Manage AWS S3 destinations for top-level groups.
+
+#### Prerequisites
+
+Before setting up AWS S3 streaming audit events, you must:
+
+1. Create a access key for AWS with the appropriate credentials and permissions. This account is used to configure audit log streaming authentication.
+   For more information, see [Managing access keys](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html?icmpid=docs_iam_console#Using_CreateAccessKey).
+1. Create a AWS S3 bucket. This bucket is used to store audit log streaming data. For more information, see [Creating a bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html)
+
+#### Add a new AWS S3 destination
+
+Prerequisites:
+
+- Owner role for a top-level group.
+
+To add AWS S3 streaming destinations to a top-level group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Audit events**.
+1. On the main area, select **Streams** tab.
+1. Select **Add streaming destination** and select **AWS S3** to show the section for adding destinations.
+1. Enter a random string to use as a name for the new destination.
+1. Enter the Access Key ID, Secret Access Key, Bucket Name, and AWS Region from previously-created AWS access key and bucket to add to the new destination.
+1. Select **Add** to add the new streaming destination.
+
+#### List AWS S3 destinations
+
+Prerequisites:
+
+- Owner role for a top-level group.
+
+To list AWS S3 streaming destinations for a top-level group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Audit events**.
+1. On the main area, select **Streams** tab.
+1. Select the AWS S3 stream to expand and see all the fields.
+
+#### Update a AWS S3 destination
+
+Prerequisites:
+
+- Owner role for a top-level group.
+
+To update AWS S3 streaming destinations to a top-level group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Audit events**.
+1. On the main area, select **Streams** tab.
+1. Select the AWS S3 stream to expand.
+1. Enter a random string to use as a name for the destination.
+1. Enter the Access Key ID, Secret Access Key, Bucket Name, and AWS Region from previously-created AWS access key and bucket to update the destination.
+1. Select **Add a new Secret Access Key** and enter a AWS Secret Access Key to update the Secret Access Key.
+1. Select **Save** to update the streaming destination.
+
+#### Delete a AWS S3 streaming destination
+
+Prerequisites:
+
+- Owner role for a top-level group.
+
+To delete AWS S3 streaming destinations to a top-level group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Audit events**.
+1. On the main area, select the **Streams** tab.
+1. Select the AWS S3 stream to expand.
 1. Select **Delete destination**.
 1. Confirm by selecting **Delete destination** in the dialog.
 
@@ -446,7 +529,9 @@ To add Google Cloud Logging streaming destinations to an instance:
 1. On the left sidebar, select **Monitoring > Audit Events**.
 1. On the main area, select **Streams** tab.
 1. Select **Add streaming destination** and select **Google Cloud Logging** to show the section for adding destinations.
-1. Enter the Google project ID, Google client email, log ID, and Google private key to add.
+1. Enter a random string to use as a name for the new destination.
+1. Enter the Google project ID, Google client email, and Google private key from previously-created Google Cloud service account key to add to the new destination.
+1. Enter a random string to use as a log ID for the new destination. You can use this later to filter log results in Google Cloud.
 1. Select **Add** to add the new streaming destination.
 
 #### List Google Cloud Logging destinations
@@ -476,7 +561,9 @@ To update Google Cloud Logging streaming destinations to an instance:
 1. On the left sidebar, select **Monitoring > Audit Events**.
 1. On the main area, select **Streams** tab.
 1. Select the Google Cloud Logging stream to expand.
-1. Enter the Google project ID, Google client email, and log ID to update.
+1. Enter a random string to use as a name for the destination.
+1. Enter the Google project ID and Google client email from previously-created Google Cloud service account key to update the destination.
+1. Enter a random string to update the log ID for the destination. You can use this later to filter log results in Google Cloud.
 1. Select **Add a new private key** and enter a Google private key to update the private key.
 1. Select **Save** to update the streaming destination.
 

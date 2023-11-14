@@ -59,7 +59,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
       end
 
       context 'when invite is sent before account is created;ldap or service sign in for manual acceptance edge case' do
-        let(:user) { create(:user, :no_super_sidebar, email: 'user@example.com') }
+        let(:user) { create(:user, email: 'user@example.com') }
 
         context 'when invite clicked and not signed in' do
           before do
@@ -85,7 +85,6 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
 
             it 'shows message user already a member' do
               expect(page).to have_current_path(invite_path(group_invite.raw_invite_token), ignore_query: true)
-              expect(page).to have_link(user.name, href: user_path(user))
               expect(page).to have_content('You are already a member of this group.')
             end
           end

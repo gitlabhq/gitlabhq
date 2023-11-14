@@ -33,6 +33,10 @@ module Types
         null: false,
         description: 'Path of the organization.',
         alpha: { milestone: '16.4' }
+      field :web_url, GraphQL::Types::String,
+        null: false,
+        description: 'Web URL of the organization.',
+        alpha: { milestone: '16.6' }
     end
   end
 end

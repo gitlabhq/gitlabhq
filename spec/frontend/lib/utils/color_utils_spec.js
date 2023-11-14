@@ -18,15 +18,17 @@ describe('Color utils', () => {
 
   describe('darkModeEnabled', () => {
     it.each`
-      page                     | bodyClass     | ideTheme           | expected
+      page                     | rootClass     | ideTheme           | expected
       ${'ide:index'}           | ${'gl-dark'}  | ${'monokai-light'} | ${false}
       ${'ide:index'}           | ${'ui-light'} | ${'monokai'}       | ${true}
       ${'groups:issues:index'} | ${'ui-light'} | ${'monokai'}       | ${false}
       ${'groups:issues:index'} | ${'gl-dark'}  | ${'monokai-light'} | ${true}
     `(
-      'is $expected on $page with $bodyClass body class and $ideTheme IDE theme',
-      ({ page, bodyClass, ideTheme, expected }) => {
-        document.body.outerHTML = `<body class="${bodyClass}" data-page="${page}"></body>`;
+      'is $expected on $page with $rootClass root class and $ideTheme IDE theme',
+      ({ page, rootClass, ideTheme, expected }) => {
+        document.documentElement.className = rootClass;
+        document.body.outerHTML = `<body data-page="${page}"></body>`;
+
         window.gon = {
           user_color_scheme: ideTheme,
         };

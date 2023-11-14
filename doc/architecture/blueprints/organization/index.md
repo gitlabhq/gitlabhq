@@ -323,6 +323,7 @@ In iteration 2, an Organization MVC Experiment will be released. We will test th
 - Organizations can be deleted.
 - Organization Owners can access the Activity page for the Organization.
 - Forking across Organizations will be defined.
+- [Organization Isolation](isolation.md) will be finished to meet the requirements of the initial set of customers
 
 ### Iteration 3: Organization MVC Beta (FY25Q1)
 
@@ -333,6 +334,7 @@ In iteration 3, the Organization MVC Beta will be released.
 - Organization Owners can create, edit and delete Groups from the Groups overview.
 - Organization Owners can create, edit and delete Projects from the Projects overview.
 - The Organization URL path can be changed.
+- [Organization Isolation](isolation.md) is available.
 
 ### Iteration 4: Organization MVC GA (FY25Q2)
 
@@ -398,3 +400,4 @@ See [Organization: Frequently Asked Questions](organization-faq.md).
 - [Cells blueprint](../cells/index.md)
 - [Cells epic](https://gitlab.com/groups/gitlab-org/-/epics/7582)
 - [Namespaces](../../../user/namespace/index.md)
+- [Organization Isolation](isolation.md)

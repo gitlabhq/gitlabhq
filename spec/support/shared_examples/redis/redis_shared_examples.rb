@@ -365,6 +365,21 @@ RSpec.shared_examples "redis_shared_examples" do
     end
   end
 
+  describe '#secret_file' do
+    context 'when explicitly specified in config file' do
+      it 'returns the absolute path of specified file inside Rails root' do
+        allow(subject).to receive(:raw_config_hash).and_return({ secret_file: '/etc/gitlab/redis_secret.enc' })
+        expect(subject.send(:secret_file)).to eq('/etc/gitlab/redis_secret.enc')
+      end
+    end
+
+    context 'when not explicitly specified' do
+      it 'returns the default path in the encrypted settings shared directory' do
+        expect(subject.send(:secret_file)).to eq(Rails.root.join("shared/encrypted_settings/redis.yaml.enc").to_s)
+      end
+    end
+  end
+
   describe "#parse_client_tls_options" do
     let(:dummy_certificate) { OpenSSL::X509::Certificate.new }
     let(:dummy_key) { OpenSSL::PKey::RSA.new }

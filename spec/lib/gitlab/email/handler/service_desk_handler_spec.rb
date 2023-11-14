@@ -8,12 +8,14 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
   before do
     stub_incoming_email_setting(enabled: true, address: "incoming+%{key}@appmail.adventuretime.ooo")
+    stub_service_desk_email_setting(enabled: true, address: "contact+%{key}@example.com")
     stub_config_setting(host: 'localhost')
   end
 
   let(:email_raw) { email_fixture('emails/service_desk.eml') }
   let(:author_email) { 'jake@adventuretime.ooo' }
   let(:message_id) { 'CADkmRc+rNGAGGbV2iE5p918UVy4UyJqVcXRO2=otppgzduJSg@mail.gmail.com' }
+  let(:issue_email_participants_count) { 1 }
 
   let_it_be(:group) { create(:group, :private, :crm_enabled, name: "email") }
 
@@ -22,7 +24,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
   end
 
   context 'service desk is enabled for the project' do
-    let_it_be(:project) { create(:project, :repository, :private, group: group, path: 'test', service_desk_enabled: true) }
+    let_it_be_with_reload(:project) { create(:project, :repository, :private, group: group, path: 'test', service_desk_enabled: true) }
 
     before do
       allow(Gitlab::ServiceDesk).to receive(:supported?).and_return(true)
@@ -50,6 +52,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
         receiver.execute
         new_issue = Issue.last
 
+        expect(new_issue.issue_email_participants.count).to eq(issue_email_participants_count)
         expect(new_issue.issue_email_participants.first.email).to eq(author_email)
       end
 
@@ -96,6 +99,72 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
         expect(new_issue.issue_customer_relations_contacts.map(&:contact)).to contain_exactly(contact, contact2, contact3)
       end
 
+      context 'when add_external_participants_from_cc is true' do
+        shared_examples 'does not add CC address' do
+          it 'creates a new issue and adds issue_email_participant from From header' do
+            expect { receiver.execute }.to change { Issue.count }.by(1)
+            expect(Issue.last.issue_email_participants.map(&:email)).to match_array(%w[from@example.com])
+          end
+        end
+
+        let_it_be(:setting) { create(:service_desk_setting, project: project, add_external_participants_from_cc: true) }
+
+        # Original email contains two CC email addresses
+        let(:issue_email_participants_count) { 3 }
+        let(:to_address) { project.service_desk_incoming_address }
+
+        it_behaves_like 'a new issue request'
+
+        context 'when no CC header is present' do
+          let(:email_raw) do
+            <<~EMAIL
+            From: from@example.com
+            To: #{to_address}
+            Subject: Issue title
+
+            Issue description
+            EMAIL
+          end
+
+          it_behaves_like 'does not add CC address'
+        end
+
+        context 'when service desk system address is in CC' do
+          let(:cc_address) { project.service_desk_incoming_address }
+          let(:email_raw) do
+            <<~EMAIL
+            From: from@example.com
+            To: #{to_address}
+            Cc: #{cc_address}
+            Subject: Issue title
+
+            Issue description
+            EMAIL
+          end
+
+          it_behaves_like 'does not add CC address'
+
+          context 'when service_desk_email is part of CC' do
+            let(:cc_address) { project.service_desk_alias_address }
+
+            it_behaves_like 'does not add CC address'
+          end
+
+          context 'when custom email is part of CC' do
+            let!(:credential) { create(:service_desk_custom_email_credential, project: project) }
+            let!(:verification) { create(:service_desk_custom_email_verification, :finished, project: project) }
+            let(:cc_address) { project.service_desk_custom_address }
+
+            before do
+              project.reset
+              setting.update!(custom_email: 'support@example.com', custom_email_enabled: true)
+            end
+
+            it_behaves_like 'does not add CC address'
+          end
+        end
+      end
+
       context 'with legacy incoming email address' do
         let(:email_raw) { fixture_file('emails/service_desk_legacy.eml') }
 
@@ -140,25 +209,26 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
             subject
           end
 
-          context 'when issue_email_participants FF is enabled' do
-            it 'creates 2 issue_email_participants' do
-              subject
+          it 'creates issue_email_participants for author and reply author' do
+            subject
 
-              expect(Issue.last.issue_email_participants.map(&:email))
-                .to match_array(%w(alan@adventuretime.ooo jake@adventuretime.ooo))
-            end
+            # 1 from issue creation
+            # 1 from new note reply
+            expect(Issue.last.issue_email_participants.map(&:email))
+              .to match_array(%w[alan@adventuretime.ooo jake@adventuretime.ooo])
           end
 
           context 'when issue_email_participants FF is disabled' do
             before do
+              # Was turned off after issue creation
               stub_feature_flags(issue_email_participants: false)
             end
 
-            it 'creates only 1 issue_email_participant' do
+            it 'creates issue_email_participant for the author' do
               subject
 
               expect(Issue.last.issue_email_participants.map(&:email))
-                .to match_array(%w(jake@adventuretime.ooo))
+                .to match_array(%w[jake@adventuretime.ooo])
             end
           end
         end
@@ -182,11 +252,11 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
             subject
           end
 
-          it 'creates 1 issue_email_participant' do
+          it 'creates issue_email_participant for the author' do
             subject
 
             expect(Issue.last.issue_email_participants.map(&:email))
-              .to match_array(%w(alan@adventuretime.ooo))
+              .to match_array(%w[alan@adventuretime.ooo])
           end
         end
       end

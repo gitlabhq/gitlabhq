@@ -145,8 +145,8 @@ export default {
       :items="item.items"
       @mouseover="isMouseOverFlyout = true"
       @mouseleave="isMouseOverFlyout = false"
-      @pin-add="(itemId) => $emit('pin-add', itemId)"
-      @pin-remove="(itemId) => $emit('pin-remove', itemId)"
+      @pin-add="(itemId, itemTitle) => $emit('pin-add', itemId, itemTitle)"
+      @pin-remove="(itemId, itemTitle) => $emit('pin-remove', itemId, itemTitle)"
     />
 
     <gl-collapse
@@ -162,8 +162,8 @@ export default {
             v-for="subItem of item.items"
             :key="`${item.title}-${subItem.title}`"
             :item="subItem"
-            @pin-add="(itemId) => $emit('pin-add', itemId)"
-            @pin-remove="(itemId) => $emit('pin-remove', itemId)"
+            @pin-add="(itemId, itemTitle) => $emit('pin-add', itemId, itemTitle)"
+            @pin-remove="(itemId, itemTitle) => $emit('pin-remove', itemId, itemTitle)"
           />
         </ul>
       </slot>

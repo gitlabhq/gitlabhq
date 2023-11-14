@@ -297,26 +297,30 @@ describe('FilteredSearchBarRoot', () => {
         await nextTick();
       });
 
-      it('calls `uniqueTokens` on `filterValue` prop to remove duplicates', () => {
-        wrapper.vm.handleFilterSubmit();
+      it('calls `uniqueTokens` on `filterValue` prop to remove duplicates', async () => {
+        findGlFilteredSearch().vm.$emit('submit');
+        await nextTick();
 
         expect(uniqueTokens).toHaveBeenCalledWith(wrapper.vm.filterValue);
       });
 
-      it('calls `recentSearchesStore.addRecentSearch` with serialized value of provided `filters` param', () => {
+      it('calls `recentSearchesStore.addRecentSearch` with serialized value of provided `filters` param', async () => {
         jest.spyOn(wrapper.vm.recentSearchesStore, 'addRecentSearch');
 
-        wrapper.vm.handleFilterSubmit();
+        findGlFilteredSearch().vm.$emit('submit');
+        await nextTick();
 
         return wrapper.vm.recentSearchesPromise.then(() => {
           expect(wrapper.vm.recentSearchesStore.addRecentSearch).toHaveBeenCalledWith(mockFilters);
         });
       });
 
-      it('calls `recentSearchesService.save` with array of searches', () => {
+      it('calls `recentSearchesService.save` with array of searches', async () => {
         jest.spyOn(wrapper.vm.recentSearchesService, 'save');
 
         wrapper.vm.handleFilterSubmit();
+
+        await nextTick();
 
         return wrapper.vm.recentSearchesPromise.then(() => {
           expect(wrapper.vm.recentSearchesService.save).toHaveBeenCalledWith([mockFilters]);
@@ -336,15 +340,16 @@ describe('FilteredSearchBarRoot', () => {
       it('calls `blurSearchInput` method to remove focus from filter input field', () => {
         jest.spyOn(wrapper.vm, 'blurSearchInput');
 
-        wrapper.findComponent(GlFilteredSearch).vm.$emit('submit', mockFilters);
+        findGlFilteredSearch().vm.$emit('submit', mockFilters);
 
         expect(wrapper.vm.blurSearchInput).toHaveBeenCalled();
       });
 
-      it('emits component event `onFilter` with provided filters param', () => {
+      it('emits component event `onFilter` with provided filters param', async () => {
         jest.spyOn(wrapper.vm, 'removeQuotesEnclosure');
 
-        wrapper.vm.handleFilterSubmit();
+        findGlFilteredSearch().vm.$emit('submit');
+        await nextTick();
 
         expect(wrapper.emitted('onFilter')[0]).toEqual([mockFilters]);
         expect(wrapper.vm.removeQuotesEnclosure).toHaveBeenCalledWith(mockFilters);

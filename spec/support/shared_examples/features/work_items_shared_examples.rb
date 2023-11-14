@@ -8,7 +8,6 @@ RSpec.shared_examples 'work items title' do
 
     find(title_selector).set("Work item title")
     find(title_selector).native.send_keys(:return)
-
     wait_for_requests
 
     expect(work_item.reload.title).to eq 'Work item title'
@@ -16,54 +15,37 @@ RSpec.shared_examples 'work items title' do
 end
 
 RSpec.shared_examples 'work items toggle status button' do
-  let(:state_button) { '[data-testid="work-item-state-toggle"]' }
-
   it 'successfully shows and changes the status of the work item' do
-    expect(find(state_button, match: :first)).to have_content 'Close'
+    click_button 'Close', match: :first
 
-    find(state_button, match: :first).click
-
-    wait_for_requests
-
-    expect(find(state_button, match: :first)).to have_content 'Reopen'
+    expect(page).to have_button 'Reopen'
     expect(work_item.reload.state).to eq('closed')
   end
 end
 
 RSpec.shared_examples 'work items comments' do |type|
-  let(:form_selector) { '[data-testid="work-item-add-comment"]' }
-  let(:edit_button) { '[data-testid="edit-work-item-note"]' }
-  let(:textarea_selector) { '[data-testid="work-item-add-comment"] #work-item-add-or-edit-comment' }
   let(:is_mac) { page.evaluate_script('navigator.platform').include?('Mac') }
   let(:modifier_key) { is_mac ? :command : :control }
-  let(:comment) { 'Test comment' }
 
   def set_comment
-    find(form_selector).fill_in(with: comment)
+    fill_in _('Add a reply'), with: 'Test comment'
   end
 
   it 'successfully creates and shows comments' do
     set_comment
-
     click_button "Comment"
 
-    wait_for_requests
-
     page.within(".main-notes-list") do
-      expect(page).to have_content comment
+      expect(page).to have_text 'Test comment'
     end
   end
 
   it 'successfully updates existing comments' do
     set_comment
     click_button "Comment"
-    wait_for_all_requests
-
-    find(edit_button).click
+    click_button _('Edit comment')
     send_keys(" updated")
-    click_button "Save comment"
-
-    wait_for_all_requests
+    click_button _('Save comment')
 
     page.within(".main-notes-list") do
       expect(page).to have_content "Test comment updated"
@@ -79,39 +61,31 @@ RSpec.shared_examples 'work items comments' do |type|
 
     it 'shows work item note actions' do
       set_comment
-
       send_keys([modifier_key, :enter])
-      wait_for_requests
 
       page.within(".main-notes-list") do
-        expect(page).to have_content comment
+        expect(page).to have_text 'Test comment'
       end
 
       page.within('.timeline-entry.note.note-wrapper.note-comment:last-child') do
-        expect(page).to have_selector('[data-testid="work-item-note-actions"]')
+        click_button _('More actions')
 
-        find('[data-testid="work-item-note-actions"]').click
-
-        expect(page).to have_selector('[data-testid="copy-link-action"]')
-        expect(page).to have_selector('[data-testid="assign-note-action"]')
-        expect(page).to have_selector('[data-testid="delete-note-action"]')
-        expect(page).to have_selector('[data-testid="edit-work-item-note"]')
+        expect(page).to have_button _('Copy link')
+        expect(page).to have_button _('Assign to commenting user')
+        expect(page).to have_button _('Delete comment')
+        expect(page).to have_button _('Edit comment')
       end
     end
   end
 
   it 'successfully posts comments using shortcut and checks if textarea is blank when reinitiated' do
     set_comment
-
     send_keys([modifier_key, :enter])
 
-    wait_for_requests
-
     page.within(".main-notes-list") do
-      expect(page).to have_content comment
+      expect(page).to have_content 'Test comment'
     end
-
-    expect(find(textarea_selector)).to have_content ""
+    expect(page).to have_field _('Add a reply'), with: ''
   end
 
   context 'when using quick actions' do
@@ -158,9 +132,7 @@ RSpec.shared_examples 'work items comments' do |type|
     end
 
     def click_reply_and_enter_slash
-      find(form_selector).fill_in(with: "/")
-
-      wait_for_all_requests
+      fill_in _('Add a reply'), with: '/'
     end
   end
 end
@@ -171,7 +143,6 @@ RSpec.shared_examples 'work items assignees' do
     # The button is only when the mouse is over the input
     find('[data-testid="work-item-assignees-input"]').fill_in(with: user.username)
     wait_for_requests
-
     # submit and simulate blur to save
     send_keys(:enter)
     find("body").click
@@ -182,21 +153,19 @@ RSpec.shared_examples 'work items assignees' do
 
   it 'successfully assigns the current user by clicking `Assign myself` button' do
     find('[data-testid="work-item-assignees-input"]').hover
-    find('[data-testid="assign-self"]').click
-    wait_for_requests
+    click_button _('Assign yourself')
 
     expect(work_item.reload.assignees).to include(user)
   end
 
   it 'successfully removes all users on clear all button click' do
     find('[data-testid="work-item-assignees-input"]').hover
-    find('[data-testid="assign-self"]').click
-    wait_for_requests
+    click_button _('Assign yourself')
 
     expect(work_item.reload.assignees).to include(user)
 
     find('[data-testid="work-item-assignees-input"]').click
-    find('[data-testid="clear-all-button"]').click
+    click_button 'Clear all'
     find("body").click
     wait_for_requests
 
@@ -205,13 +174,12 @@ RSpec.shared_examples 'work items assignees' do
 
   it 'successfully removes user on clicking badge cross button' do
     find('[data-testid="work-item-assignees-input"]').hover
-    find('[data-testid="assign-self"]').click
-    wait_for_requests
+    click_button _('Assign yourself')
 
     expect(work_item.reload.assignees).to include(user)
 
     within('[data-testid="work-item-assignees-input"]') do
-      find('[data-testid="close-icon"]').click
+      click_button 'Close'
     end
     find("body").click
     wait_for_requests
@@ -228,11 +196,9 @@ RSpec.shared_examples 'work items assignees' do
     end
 
     find('[data-testid="work-item-assignees-input"]').hover
-    find('[data-testid="assign-self"]').click
-    wait_for_requests
+    click_button _('Assign yourself')
 
     expect(work_item.reload.assignees).to include(user)
-
     using_session :other_session do
       expect(work_item.reload.assignees).to include(user)
     end
@@ -246,7 +212,6 @@ RSpec.shared_examples 'work items labels' do
   it 'successfully assigns a label' do
     find(labels_input_selector).fill_in(with: label.title)
     wait_for_requests
-
     # submit and simulate blur to save
     send_keys(:enter)
     find(label_title_selector).click
@@ -276,7 +241,6 @@ RSpec.shared_examples 'work items labels' do
   it 'removes all labels on clear all button click' do
     find(labels_input_selector).fill_in(with: label.title)
     wait_for_requests
-
     send_keys(:enter)
     find(label_title_selector).click
     wait_for_requests
@@ -285,9 +249,8 @@ RSpec.shared_examples 'work items labels' do
 
     within(labels_input_selector) do
       find('input').click
-      find('[data-testid="clear-all-button"]').click
+      click_button 'Clear all'
     end
-
     find(label_title_selector).click
     wait_for_requests
 
@@ -297,7 +260,6 @@ RSpec.shared_examples 'work items labels' do
   it 'removes label on clicking badge cross button' do
     find(labels_input_selector).fill_in(with: label.title)
     wait_for_requests
-
     send_keys(:enter)
     find(label_title_selector).click
     wait_for_requests
@@ -305,9 +267,8 @@ RSpec.shared_examples 'work items labels' do
     expect(page).to have_text(label.title)
 
     within(labels_input_selector) do
-      find('[data-testid="close-icon"]').click
+      click_button 'Remove label'
     end
-
     find(label_title_selector).click
     wait_for_requests
 
@@ -324,7 +285,6 @@ RSpec.shared_examples 'work items labels' do
 
     find(labels_input_selector).fill_in(with: label.title)
     wait_for_requests
-
     send_keys(:enter)
     find(label_title_selector).click
     wait_for_requests
@@ -341,10 +301,7 @@ end
 RSpec.shared_examples 'work items description' do
   it 'shows GFM autocomplete', :aggregate_failures do
     click_button "Edit description"
-
-    find('[aria-label="Description"]').send_keys("@#{user.username}")
-
-    wait_for_requests
+    fill_in _('Description'), with: "@#{user.username}"
 
     page.within('.atwho-container') do
       expect(page).to have_text(user.name)
@@ -353,10 +310,7 @@ RSpec.shared_examples 'work items description' do
 
   it 'autocompletes available quick actions', :aggregate_failures do
     click_button "Edit description"
-
-    find('[aria-label="Description"]').send_keys("/")
-
-    wait_for_requests
+    fill_in _('Description'), with: '/'
 
     page.within('#at-view-commands') do
       expect(page).to have_text("title")
@@ -378,8 +332,6 @@ RSpec.shared_examples 'work items description' do
     it 'shows conflict message when description changes', :aggregate_failures do
       click_button "Edit description"
 
-      wait_for_requests
-
       ::WorkItems::UpdateService.new(
         container: work_item.project,
         current_user: other_user,
@@ -388,11 +340,11 @@ RSpec.shared_examples 'work items description' do
 
       wait_for_requests
 
-      find('[aria-label="Description"]').send_keys("oh yeah!")
+      fill_in _('Description'), with: 'oh yeah!'
 
-      expect(page.find('[data-testid="work-item-description-conflicts"]')).to have_text(expected_warning)
+      expect(page).to have_text(expected_warning)
 
-      click_button "Save and overwrite"
+      click_button s_('WorkItem|Save and overwrite')
 
       expect(page.find('[data-testid="work-item-description"]')).to have_text("oh yeah!")
     end
@@ -410,32 +362,23 @@ RSpec.shared_examples 'work items invite members' do
     click_button('Invite members')
 
     page.within invite_modal_selector do
-      expect(page).to have_content("You're inviting members to the #{work_item.project.name} project")
+      expect(page).to have_text("You're inviting members to the #{work_item.project.name} project")
     end
   end
 end
 
 RSpec.shared_examples 'work items milestone' do
-  def set_milestone(milestone_dropdown, milestone_text)
-    milestone_dropdown.click
-
-    find('[data-testid="work-item-milestone-dropdown"] .gl-form-input', visible: true).send_keys "\"#{milestone_text}\""
-    wait_for_requests
-
-    click_button(milestone_text)
-    wait_for_requests
-  end
-
-  let(:milestone_dropdown_selector) { '[data-testid="work-item-milestone-dropdown"]' }
-
   it 'searches and sets or removes milestone for the work item' do
-    set_milestone(find(milestone_dropdown_selector), milestone.title)
+    click_button s_('WorkItem|Add to milestone')
+    send_keys "\"#{milestone.title}\""
+    select_listbox_item(milestone.title, exact_text: true)
 
-    expect(page.find(milestone_dropdown_selector)).to have_text(milestone.title)
+    expect(page).to have_button(milestone.title)
 
-    set_milestone(find(milestone_dropdown_selector), 'No milestone')
+    click_button milestone.title
+    select_listbox_item(s_('WorkItem|No milestone'), exact_text: true)
 
-    expect(page.find(milestone_dropdown_selector)).to have_text('Add to milestone')
+    expect(page).to have_button(s_('WorkItem|Add to milestone'))
   end
 end
 
@@ -443,70 +386,52 @@ RSpec.shared_examples 'work items comment actions for guest users' do
   context 'for guest user' do
     it 'hides other actions other than copy link' do
       page.within(".main-notes-list") do
-        expect(page).to have_selector('[data-testid="work-item-note-actions"]')
+        click_button _('More actions'), match: :first
 
-        find('[data-testid="work-item-note-actions"]', match: :first).click
-        expect(page).to have_selector('[data-testid="copy-link-action"]')
-        expect(page).not_to have_selector('[data-testid="assign-note-action"]')
+        expect(page).to have_button _('Copy link')
+        expect(page).not_to have_button _('Assign to commenting user')
       end
     end
   end
 end
 
 RSpec.shared_examples 'work items notifications' do
-  let(:actions_dropdown_selector) { '[data-testid="work-item-actions-dropdown"]' }
-  let(:notifications_toggle_selector) { '[data-testid="notifications-toggle-action"] button[role="switch"]' }
-
   it 'displays toast when notification is toggled' do
-    find(actions_dropdown_selector).click
+    click_button _('More actions'), match: :first
 
-    page.within('[data-testid="notifications-toggle-form"]') do
-      expect(page).not_to have_css(".is-checked")
+    within_testid('notifications-toggle-form') do
+      expect(page).not_to have_button(class: 'gl-toggle is-checked')
 
-      find(notifications_toggle_selector).click
-      wait_for_requests
+      click_button(class: 'gl-toggle')
 
-      expect(page).to have_css(".is-checked")
+      expect(page).to have_button(class: 'gl-toggle is-checked')
     end
 
-    page.within('.gl-toast') do
-      expect(find('.toast-body')).to have_content(_('Notifications turned on.'))
-    end
+    expect(page).to have_css('.gl-toast', text: _('Notifications turned on.'))
   end
 end
 
 RSpec.shared_examples 'work items todos' do
-  let(:todos_action_selector) { '[data-testid="work-item-todos-action"]' }
-  let(:todos_icon_selector) { '[data-testid="work-item-todos-icon"]' }
-  let(:header_section_selector) { '[data-testid="work-item-body"]' }
-
-  def toggle_todo_action
-    find(todos_action_selector).click
-    wait_for_requests
-  end
-
   it 'adds item to the list' do
-    page.within(header_section_selector) do
-      expect(find(todos_action_selector)['aria-label']).to eq('Add a to do')
+    expect(page).to have_button s_('WorkItem|Add a to do')
 
-      toggle_todo_action
+    click_button s_('WorkItem|Add a to do')
 
-      expect(find(todos_action_selector)['aria-label']).to eq('Mark as done')
-    end
+    expect(page).to have_button s_('WorkItem|Mark as done')
 
-    page.within ".header-content span[aria-label='#{_('Todos count')}']" do
+    within_testid('todos-shortcut-button') do
       expect(page).to have_content '1'
     end
   end
 
   it 'marks a todo as done' do
-    page.within(header_section_selector) do
-      toggle_todo_action
-      toggle_todo_action
-    end
+    click_button s_('WorkItem|Add a to do')
+    click_button s_('WorkItem|Mark as done')
 
-    expect(find(todos_action_selector)['aria-label']).to eq('Add a to do')
-    expect(page).to have_selector(".header-content span[aria-label='#{_('Todos count')}']", visible: :hidden)
+    expect(page).to have_button s_('WorkItem|Add a to do')
+    within_testid('todos-shortcut-button') do
+      expect(page).to have_content("")
+    end
   end
 end
 
@@ -514,8 +439,7 @@ RSpec.shared_examples 'work items award emoji' do
   let(:award_section_selector) { '.awards' }
   let(:award_button_selector) { '[data-testid="award-button"]' }
   let(:selected_award_button_selector) { '[data-testid="award-button"].selected' }
-  let(:emoji_picker_button_selector) { '[data-testid="emoji-picker"]' }
-  let(:basketball_emoji_selector) { 'gl-emoji[data-name="basketball"]' }
+  let(:grinning_emoji_selector) { 'gl-emoji[data-name="grinning"]' }
   let(:tooltip_selector) { '.gl-tooltip' }
 
   def select_emoji
@@ -560,10 +484,41 @@ RSpec.shared_examples 'work items award emoji' do
 
   it 'add custom award to the work item for current user' do
     within(award_section_selector) do
-      find(emoji_picker_button_selector).click
-      find(basketball_emoji_selector).click
+      click_button _('Add reaction')
+      find(grinning_emoji_selector).click
 
-      expect(page).to have_selector(basketball_emoji_selector)
+      expect(page).to have_selector(grinning_emoji_selector)
+    end
+  end
+end
+
+RSpec.shared_examples 'work items parent' do |type|
+  let(:work_item_parent) { create(:work_item, type, project: project) }
+
+  def set_parent(parent_dropdown, parent_text)
+    parent_dropdown.click
+
+    find('[data-testid="listbox-search-input"] .gl-listbox-search-input',
+      visible: true).send_keys "\"#{parent_text}\""
+    wait_for_requests
+
+    find('.gl-new-dropdown-item').click
+    wait_for_requests
+  end
+
+  let(:parent_dropdown_selector) { 'work-item-parent-listbox' }
+
+  it 'searches and sets or removes parent for the work item' do
+    within_testid('work-item-parent-form') do
+      set_parent(find_by_testid(parent_dropdown_selector), work_item_parent.title)
+
+      expect(find_by_testid(parent_dropdown_selector)).to have_text(work_item_parent.title)
+
+      find_by_testid(parent_dropdown_selector).click
+
+      click_button('Unassign')
+
+      expect(find_by_testid(parent_dropdown_selector)).to have_text('None')
     end
   end
 end

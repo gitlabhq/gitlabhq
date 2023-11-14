@@ -112,13 +112,13 @@ eos
       }
     ] + extra_changes
 
-    commits = %w(
+    commits = %w[
       5937ac0a7beb003549fc5fd26fc247adbce4a52e
       570e7b2abdd848b95f2f578043fc23bd6f6fd24d
       6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
       d14d6c0abdd253381df51a723d58691b2ee1ab08
       c1acaa58bbcbc3eafe538cb8274ba387047b69f8
-    ).reverse # last commit is recent one
+    ].reverse # last commit is recent one
 
     reviewers = [
       {

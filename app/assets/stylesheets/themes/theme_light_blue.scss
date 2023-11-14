@@ -1,6 +1,6 @@
 @import './theme_helper';
 
-body {
+:root {
   &.ui-light-blue {
     @include gitlab-theme(
       $theme-light-blue-200,

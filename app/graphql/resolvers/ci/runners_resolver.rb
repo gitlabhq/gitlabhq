@@ -41,6 +41,17 @@ module Resolvers
                required: false,
                description: 'Filter by upgrade status.'
 
+      argument :creator_id, ::Types::GlobalIDType[::User].as('UserID'),
+               required: false,
+               description: 'Filter runners by creator ID.'
+
+      argument :version_prefix, GraphQL::Types::String,
+               required: false,
+               description: "Filter runners by version. Runners that contain runner managers with the version at " \
+                            "the start of the search term are returned. For example, the search term '14.' returns " \
+                            "runner managers with versions '14.11.1' and '14.2.3'.",
+               alpha: { milestone: '16.6' }
+
       def resolve_with_lookahead(**args)
         apply_lookahead(
           ::Ci::RunnersFinder
@@ -68,6 +79,9 @@ module Resolvers
           upgrade_status: params[:upgrade_status],
           search: params[:search],
           sort: params[:sort]&.to_s,
+          creator_id:
+            params[:creator_id] ? ::GitlabSchema.parse_gid(params[:creator_id], expected_type: ::User).model_id : nil,
+          version_prefix: params[:version_prefix],
           preload: false # we'll handle preloading ourselves
         }.compact
          .merge(parent_param)

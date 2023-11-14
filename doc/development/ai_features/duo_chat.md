@@ -12,7 +12,6 @@ NOTE:
 Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for help automating the following section.
 
 1. [Enable Anthropic API features](index.md#configure-anthropic-access).
-1. [Enable OpenAI support](index.md#configure-openai-access).
 1. [Ensure the embedding database is configured](index.md#set-up-the-embedding-database).
 1. Ensure that your current branch is up-to-date with `master`.
 1. To access the GitLab Duo Chat interface, in the lower-left corner of any page, select **Help** and **Ask GitLab Duo Chat**.
@@ -86,18 +85,44 @@ gdk start
 tail -f log/llm.log
 ```
 
-## Testing GitLab Duo Chat with predefined questions
+## Testing GitLab Duo Chat against real LLMs
 
-Because success of answers to user questions in GitLab Duo Chat heavily depends on toolchain and prompts of each tool, it's common that even a minor change in a prompt or a tool impacts processing of some questions. To make sure that a change in the toolchain doesn't break existing functionality, you can use the following rspecs to validate answers to some predefined questions:
+Because success of answers to user questions in GitLab Duo Chat heavily depends
+on toolchain and prompts of each tool, it's common that even a minor change in a
+prompt or a tool impacts processing of some questions.
+
+To make sure that a change in the toolchain doesn't break existing
+functionality, you can use the following RSpec tests to validate answers to some
+predefined questions when using real LLMs:
 
 ```ruby
-export OPENAI_API_KEY='<key>'
-export ANTHROPIC_API_KEY='<key>'
-REAL_AI_REQUEST=1 rspec ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_spec.rb
+export VERTEX_AI_EMBEDDINGS='true' # if using Vertex embeddings
+export ANTHROPIC_API_KEY='<key>' # can use dev value of Gitlab::CurrentSettings
+export VERTEX_AI_CREDENTIALS='<vertex-ai-credentials>' # can set as dev value of Gitlab::CurrentSettings.vertex_ai_credentials
+export VERTEX_AI_PROJECT='<vertex-project-name>' # can use dev value of Gitlab::CurrentSettings.vertex_ai_project
+
+REAL_AI_REQUEST=1 bundle exec rspec ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_real_requests_spec.rb
 ```
 
 When you need to update the test questions that require documentation embeddings,
 make sure a new fixture is generated and committed together with the change.
+
+## Running the rspecs tagged with `real_ai_request`
+
+The rspecs tagged with the metadata `real_ai_request` can be run in GitLab project's CI by triggering
+`rspec-ee unit gitlab-duo-chat`.
+The former runs with Vertex APIs enabled. The CI jobs are optional and allowed to fail to account for
+the non-deterministic nature of LLM responses.
+
+### Management of credentials and API keys for CI jobs
+
+All API keys required to run the rspecs should be [masked](../../ci/variables/index.md#mask-a-cicd-variable)
+
+The exception is GCP credentials as they contain characters that prevent them from being masked.
+Because `rspec-ee unit gitlab-duo-chat` needs to run on MR branches, GCP credentials cannot be added as a protected variable
+and must be added as a regular CI variable.
+For security, the GCP credentials and the associated project added to
+GitLab project's CI must not be able to access any production infrastructure and sandboxed.
 
 ## GraphQL Subscription
 

@@ -88,7 +88,7 @@ RSpec.describe Tooling::TestMapGenerator do
       end
 
       it 'displays a warning when report has no examples' do
-        expect { subject.parse('yaml3.yml') }.to output(%|No examples in yaml3.yml! Metadata: {:type=>"Crystalball::ExecutionMap", :commit=>"74056e8d9cf3773f43faa1cf5416f8779c8284c9", :timestamp=>1602671965, :version=>nil}\n|).to_stdout
+        expect { subject.parse('yaml3.yml') }.to output(%(No examples in yaml3.yml! Metadata: {:type=>"Crystalball::ExecutionMap", :commit=>"74056e8d9cf3773f43faa1cf5416f8779c8284c9", :timestamp=>1602671965, :version=>nil}\n)).to_stdout
       end
     end
 

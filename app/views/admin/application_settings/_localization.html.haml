@@ -7,11 +7,11 @@
       = f.select :first_day_of_week, first_day_of_week_choices, {}, class: 'form-control'
       .form-text.text-muted
         = _('Default first day of the week in calendars and date pickers.')
-        = link_to _('Learn more.'), help_page_path('administration/settings/localization.md', anchor: 'change-the-default-first-day-of-the-week'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more.'), help_page_path('administration/settings/localization', anchor: 'change-the-default-first-day-of-the-week'), target: '_blank', rel: 'noopener noreferrer'
 
     .form-group
       = f.label :time_tracking, _('Time tracking'), class: 'label-bold'
-      - time_tracking_help_link = help_page_path('user/project/time_tracking.md')
+      - time_tracking_help_link = help_page_path('user/project/time_tracking')
       - time_tracking_help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: time_tracking_help_link }
       = f.gitlab_ui_checkbox_component :time_tracking_limit_to_hours, _('Limit display of time tracking units to hours.'), help_text: _('Display time tracking in issues in total hours only. %{link_start}What is time tracking?%{link_end}').html_safe % { link_start: time_tracking_help_link_start, link_end: '</a>'.html_safe }
 

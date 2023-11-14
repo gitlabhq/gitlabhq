@@ -113,73 +113,57 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         end
       end
 
-      context 'when usage_ping is disabled' do
-        it 'does not track the event' do
-          allow(::ServicePing::ServicePingSettings).to receive(:enabled?).and_return(false)
+      it 'tracks event when using symbol' do
+        expect(Gitlab::Redis::HLL).to receive(:add)
 
-          described_class.track_event(weekly_event, values: entity1, time: Date.current)
+        described_class.track_event(:g_analytics_contribution, values: entity1)
+      end
 
-          expect(Gitlab::Redis::HLL).not_to receive(:add)
+      it 'tracks events with multiple values' do
+        values = [entity1, entity2]
+        expect(Gitlab::Redis::HLL).to receive(:add).with(key: /g_analytics_contribution/, value: values,
+          expiry: described_class::KEY_EXPIRY_LENGTH)
+
+        described_class.track_event(:g_analytics_contribution, values: values)
+      end
+
+      it 'raise error if metrics of unknown event' do
+        expect { described_class.track_event('unknown', values: entity1, time: Date.current) }.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
+      end
+
+      context 'when Rails environment is production' do
+        before do
+          allow(Rails.env).to receive(:development?).and_return(false)
+          allow(Rails.env).to receive(:test?).and_return(false)
+        end
+
+        it 'reports only UnknownEvent exception' do
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+                                             .with(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
+                                             .once
+                                             .and_call_original
+
+          expect { described_class.track_event('unknown', values: entity1, time: Date.current) }.not_to raise_error
         end
       end
 
-      context 'when usage_ping is enabled' do
-        before do
-          allow(::ServicePing::ServicePingSettings).to receive(:enabled?).and_return(true)
-        end
+      it 'reports an error if Feature.enabled raise an error' do
+        expect(Feature).to receive(:enabled?).and_raise(StandardError.new)
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
 
-        it 'tracks event when using symbol' do
-          expect(Gitlab::Redis::HLL).to receive(:add)
+        described_class.track_event(:g_analytics_contribution, values: entity1, time: Date.current)
+      end
 
-          described_class.track_event(:g_analytics_contribution, values: entity1)
-        end
+      context 'for weekly events' do
+        it 'sets the keys in Redis to expire' do
+          described_class.track_event("g_compliance_dashboard", values: entity1)
 
-        it 'tracks events with multiple values' do
-          values = [entity1, entity2]
-          expect(Gitlab::Redis::HLL).to receive(:add).with(key: /g_analytics_contribution/, value: values,
-            expiry: described_class::KEY_EXPIRY_LENGTH)
+          Gitlab::Redis::SharedState.with do |redis|
+            keys = redis.scan_each(match: "{#{described_class::REDIS_SLOT}}_g_compliance_dashboard-*").to_a
+            expect(keys).not_to be_empty
 
-          described_class.track_event(:g_analytics_contribution, values: values)
-        end
-
-        it 'raise error if metrics of unknown event' do
-          expect { described_class.track_event('unknown', values: entity1, time: Date.current) }.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
-        end
-
-        context 'when Rails environment is production' do
-          before do
-            allow(Rails.env).to receive(:development?).and_return(false)
-            allow(Rails.env).to receive(:test?).and_return(false)
-          end
-
-          it 'reports only UnknownEvent exception' do
-            expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
-                                               .with(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
-                                               .once
-                                               .and_call_original
-
-            expect { described_class.track_event('unknown', values: entity1, time: Date.current) }.not_to raise_error
-          end
-        end
-
-        it 'reports an error if Feature.enabled raise an error' do
-          expect(Feature).to receive(:enabled?).and_raise(StandardError.new)
-          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
-
-          described_class.track_event(:g_analytics_contribution, values: entity1, time: Date.current)
-        end
-
-        context 'for weekly events' do
-          it 'sets the keys in Redis to expire' do
-            described_class.track_event("g_compliance_dashboard", values: entity1)
-
-            Gitlab::Redis::SharedState.with do |redis|
-              keys = redis.scan_each(match: "{#{described_class::REDIS_SLOT}}_g_compliance_dashboard-*").to_a
-              expect(keys).not_to be_empty
-
-              keys.each do |key|
-                expect(redis.ttl(key)).to be_within(5.seconds).of(described_class::KEY_EXPIRY_LENGTH)
-              end
+            keys.each do |key|
+              expect(redis.ttl(key)).to be_within(5.seconds).of(described_class::KEY_EXPIRY_LENGTH)
             end
           end
         end

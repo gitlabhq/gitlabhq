@@ -177,7 +177,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
           let!(:ci_config) do
             project.repository.create_file(
               project.creator,
-              Gitlab::FileDetector::PATTERNS[:gitlab_ci],
+              project.ci_config_path_or_default,
               'contents go here',
               message: 'test',
               branch_name: 'master')

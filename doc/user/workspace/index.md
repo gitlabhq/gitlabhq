@@ -95,18 +95,28 @@ Only these properties are relevant to the GitLab implementation of the `containe
 | `endpoints`    | Port mappings to expose from the container.                                       |
 | `volumeMounts` | Storage volume to mount in the container.                                         |
 
+### Using variables in a devfile
+
+You can define variables to use in your devfile.
+The `variables` object is a map of name-value pairs that you can use for string replacement in the devfile.
+
+Variables cannot have names that start with `gl-`, `gl_`, `GL-`, or `GL_`.
+For more information about how and where to use variables, see the [devfile documentation](https://devfile.io/docs/2.2.0/defining-variables).
+
 ### Example configurations
 
 The following is an example devfile configuration:
 
 ```yaml
 schemaVersion: 2.2.0
+variables:
+  registry-root: registry.gitlab.com
 components:
   - name: tooling-container
     attributes:
       gl/inject-editor: true
     container:
-      image: registry.gitlab.com/gitlab-org/remote-development/gitlab-remote-development-docs/debian-bullseye-ruby-3.2-node-18.12:rubygems-3.4-git-2.33-lfs-2.9-yarn-1.22-graphicsmagick-1.3.36-gitlab-workspaces
+      image: "{{registry-root}}/gitlab-org/remote-development/gitlab-remote-development-docs/debian-bullseye-ruby-3.2-node-18.12:rubygems-3.4-git-2.33-lfs-2.9-yarn-1.22-graphicsmagick-1.3.36-gitlab-workspaces"
       env:
         - name: KEY
           value: VALUE

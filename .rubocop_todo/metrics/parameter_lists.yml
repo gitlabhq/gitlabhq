@@ -6,4 +6,3 @@ Metrics/ParameterLists:
     - 'app/models/packages/sem_ver.rb'
     - 'app/models/repository.rb'
     - 'lib/gitlab/git/tree.rb'
-    - 'lib/gitlab/version_info.rb'

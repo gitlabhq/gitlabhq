@@ -77,7 +77,7 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService, feature_categor
       before do
         expect(::Projects::ContainerRepository::Gitlab::DeleteTagsService).not_to receive(:new)
         expect(::Projects::ContainerRepository::ThirdParty::DeleteTagsService).not_to receive(:new)
-        expect_any_instance_of(ContainerRegistry::Client).not_to receive(:delete_repository_tag_by_name)
+        expect_any_instance_of(ContainerRegistry::Client).not_to receive(:delete_repository_tag_by_digest)
       end
 
       context 'when no params are specified' do
@@ -107,7 +107,7 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService, feature_categor
       context 'with the real service' do
         before do
           stub_delete_reference_requests(tags)
-          expect_delete_tag_by_names(tags)
+          expect_delete_tags(tags)
         end
 
         it { is_expected.to include(status: :success) }

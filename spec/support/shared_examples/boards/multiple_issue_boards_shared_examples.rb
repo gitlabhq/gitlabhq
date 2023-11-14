@@ -5,7 +5,6 @@ RSpec.shared_examples 'multiple issue boards' do
 
   context 'authorized user' do
     before do
-      stub_feature_flags(apollo_boards: false)
       parent.add_maintainer(user)
 
       login_as(user)
@@ -124,7 +123,6 @@ RSpec.shared_examples 'multiple issue boards' do
 
   context 'unauthorized user' do
     before do
-      stub_feature_flags(apollo_boards: false)
       visit boards_path
       wait_for_requests
     end
@@ -174,6 +172,8 @@ RSpec.shared_examples 'multiple issue boards' do
   end
 
   def assert_boards_nav_active
-    expect(find('.nav-sidebar .active .active')).to have_selector('a', text: 'Boards')
+    within_testid('super-sidebar') do
+      expect(page).to have_selector('[aria-current="page"]', text: 'Issue boards')
+    end
   end
 end

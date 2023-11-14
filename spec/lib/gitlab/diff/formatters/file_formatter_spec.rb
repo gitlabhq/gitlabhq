@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Diff::Formatters::FileFormatter, feature_category: :code_
   let(:attrs) { base_attrs.merge(old_path: 'path.rb', new_path: 'path.rb') }
 
   it_behaves_like 'position formatter' do
-    # rubocop:disable Fips/SHA1 (This is used to match the existing class method)
+    # rubocop:disable Fips/SHA1 -- This is used to match the existing class method
     let(:key) do
       [123, 456, 789,
         Digest::SHA1.hexdigest(formatter.old_path), Digest::SHA1.hexdigest(formatter.new_path),

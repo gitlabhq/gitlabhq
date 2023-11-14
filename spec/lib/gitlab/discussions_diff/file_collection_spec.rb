@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::DiscussionsDiff::FileCollection do
+RSpec.describe Gitlab::DiscussionsDiff::FileCollection, :clean_gitlab_redis_shared_state do
   let(:merge_request) { create(:merge_request) }
   let!(:diff_note_a) { create(:diff_note_on_merge_request, project: merge_request.project, noteable: merge_request) }
   let!(:diff_note_b) { create(:diff_note_on_merge_request, project: merge_request.project, noteable: merge_request) }
@@ -11,7 +11,18 @@ RSpec.describe Gitlab::DiscussionsDiff::FileCollection do
 
   subject { described_class.new([note_diff_file_a, note_diff_file_b]) }
 
-  describe '#load_highlight', :clean_gitlab_redis_shared_state do
+  describe '#load_highlight' do
+    it 'only takes into account for the specific diff note ids' do
+      file_a_caching_content = diff_note_a.diff_file.highlighted_diff_lines.map(&:to_hash)
+
+      expect(Gitlab::DiscussionsDiff::HighlightCache)
+        .to receive(:write_multiple)
+        .with({ note_diff_file_a.id => file_a_caching_content })
+        .and_call_original
+
+      subject.load_highlight(diff_note_ids: [note_diff_file_a.diff_note_id])
+    end
+
     it 'writes uncached diffs highlight' do
       file_a_caching_content = diff_note_a.diff_file.highlighted_diff_lines.map(&:to_hash)
       file_b_caching_content = diff_note_b.diff_file.highlighted_diff_lines.map(&:to_hash)

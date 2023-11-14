@@ -85,6 +85,9 @@ module API
         end
         params do
           requires :title, type: String, desc: 'Title of a wiki page'
+          optional :front_matter, type: Hash do
+            optional :title, type: String, desc: 'Front matter title of a wiki page'
+          end
           requires :content, type: String, desc: 'Content of a wiki page'
           use :common_wiki_page_params
         end
@@ -112,6 +115,9 @@ module API
         end
         params do
           optional :title, type: String, desc: 'Title of a wiki page'
+          optional :front_matter, type: Hash do
+            optional :title, type: String, desc: 'Front matter title of a wiki page'
+          end
           optional :content, type: String, desc: 'Content of a wiki page'
           use :common_wiki_page_params
           at_least_one_of :content, :title, :format

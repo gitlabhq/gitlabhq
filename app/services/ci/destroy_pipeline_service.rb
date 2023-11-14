@@ -28,3 +28,5 @@ module Ci
     end
   end
 end
+
+Ci::DestroyPipelineService.prepend_mod

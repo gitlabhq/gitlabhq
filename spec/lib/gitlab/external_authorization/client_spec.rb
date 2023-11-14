@@ -109,7 +109,7 @@ RSpec.describe Gitlab::ExternalAuthorization::Client do
 
     describe 'for non-ldap users with identities' do
       before do
-        %w(twitter facebook).each do |provider|
+        %w[twitter facebook].each do |provider|
           create(:identity, provider: provider, extern_uid: "#{provider}_external_id", user: user)
         end
       end

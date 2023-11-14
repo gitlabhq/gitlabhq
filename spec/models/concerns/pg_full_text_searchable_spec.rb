@@ -18,7 +18,7 @@ RSpec.describe PgFullTextSearchable, feature_category: :global_search do
       before_validation -> { self.work_item_type_id = ::WorkItems::Type.default_issue_type.id }
 
       def persist_pg_full_text_search_vector(search_vector)
-        Issues::SearchData.upsert({ project_id: project_id, issue_id: id, search_vector: search_vector }, unique_by: %i(project_id issue_id))
+        Issues::SearchData.upsert({ project_id: project_id, issue_id: id, search_vector: search_vector }, unique_by: %i[project_id issue_id])
       end
 
       def self.name
@@ -95,7 +95,7 @@ RSpec.describe PgFullTextSearchable, feature_category: :global_search do
       matching_object = model_class.create!(project: project, namespace: project.project_namespace, title: 'english', description: 'some description')
       matching_object.update_search_data!
 
-      expect(model_class.pg_full_text_search('english', matched_columns: %w(title))).to contain_exactly(matching_object)
+      expect(model_class.pg_full_text_search('english', matched_columns: %w[title])).to contain_exactly(matching_object)
     end
 
     it 'uses prefix matching' do

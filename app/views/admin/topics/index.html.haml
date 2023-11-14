@@ -6,7 +6,7 @@
     = form_tag admin_topics_path, method: :get do |f|
       - search = params.fetch(:search, nil)
       .search-field-holder
-        = search_field_tag :search, search, class: "form-control gl-form-input search-text-input js-search-input", autofocus: true, spellcheck: false, placeholder: _('Search by name'), data: { qa_selector: 'topic_search_field' }
+        = search_field_tag :search, search, class: "form-control gl-form-input search-text-input js-search-input", autofocus: true, spellcheck: false, placeholder: _('Search by name')
         = sprite_icon('search', css_class: 'search-icon')
     .gl-flex-grow-1
     .js-merge-topics{ data: { path: merge_admin_topics_path } }

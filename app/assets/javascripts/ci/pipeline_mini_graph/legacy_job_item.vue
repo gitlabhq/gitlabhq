@@ -132,7 +132,6 @@ export default {
 <template>
   <div
     class="ci-job-component gl-display-flex gl-align-items-center gl-justify-content-space-between"
-    data-qa-selector="job_item_container"
   >
     <gl-link
       v-if="hasDetails"

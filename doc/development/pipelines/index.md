@@ -610,15 +610,26 @@ Exceptions to this general guideline should be motivated and documented.
 
 ### Ruby versions testing
 
-We're running Ruby 3.0 on GitLab.com, as well as for merge requests and the default branch.
-To prepare for the next release, Ruby 3.1, we also run our test suite against Ruby 3.1 on
-a dedicated 2-hourly scheduled pipelines.
+We're running Ruby 3.0 on GitLab.com, as well as for the default branch.
+To prepare for the next Ruby version, we run merge requests in Ruby 3.1.
 
-For merge requests, you can add the `pipeline:run-in-ruby3_1` label to switch
-the Ruby version used for running the whole test suite to 3.1. When you do
-this, the test suite will no longer run in Ruby 3.0 (default), and an
-additional job `verify-ruby-3.0` will also run and always fail to remind us to
-remove the label and run in Ruby 3.0 before merging the merge request.
+This takes effects at the time when
+[Run merge requests in Ruby 3.1 by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134290)
+is merged. See
+[Ruby 3.1 epic](https://gitlab.com/groups/gitlab-org/-/epics/10034)
+for the roadmap to fully make Ruby 3.1 the default.
+
+To make sure both Ruby versions are working, we also run our test suite
+against both Ruby 3.0 and Ruby 3.1 on dedicated 2-hourly scheduled pipelines.
+
+For merge requests, you can add the `pipeline:run-in-ruby3_0` label to switch
+the Ruby version to 3.0. When you do this, the test suite will no longer run
+in Ruby 3.1 (default for merge requests).
+
+When the pipeline is running in a Ruby version not considered default, an
+additional job `verify-default-ruby` will also run and always fail to remind
+us to remove the label and run in default Ruby before merging the merge
+request. At the moment both Ruby 3.0 and Ruby 3.1 are considered default.
 
 This should let us:
 
@@ -632,17 +643,17 @@ Our test suite runs against PostgreSQL 14 as GitLab.com runs on PostgreSQL 14 an
 
 We do run our test suite against PostgreSQL 14 on nightly scheduled pipelines.
 
-We also run our test suite against PostgreSQL 12 and PostgreSQL 13 upon specific database library changes in merge requests and `main` pipelines (with the `rspec db-library-code pg12` and `rspec db-library-code pg13` jobs).
+We also run our test suite against PostgreSQL 13 upon specific database library changes in merge requests and `main` pipelines (with the `rspec db-library-code pg13` job).
 
 #### Current versions testing
 
 | Where?                                                                                           | PostgreSQL version                              | Ruby version          |
 |--------------------------------------------------------------------------------------------------|-------------------------------------------------|-----------------------|
-| Merge requests                                                                                   | 14 (default version), 13 for DB library changes | 3.0 (default version) |
+| Merge requests                                                                                   | 14 (default version), 13 for DB library changes | 3.1 |
 | `master` branch commits                                                                          | 14 (default version), 13 for DB library changes | 3.0 (default version) |
 | `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour)             | 14 (default version), 13 for DB library changes | 3.0 (default version) |
 | `maintenance` scheduled pipelines for the `ruby3_1` branch (every odd-numbered hour), see below. | 14 (default version), 13 for DB library changes | 3.1                   |
-| `nightly` scheduled pipelines for the `master` branch                                            | 14 (default version), 12, 13, 15                | 3.0 (default version) |
+| `nightly` scheduled pipelines for the `master` branch                                            | 14 (default version), 13, 15                    | 3.0 (default version) |
 
 There are 2 pipeline schedules used for testing Ruby 3.1. One is triggering a
 pipeline in `ruby3_1-sync` branch, which updates the `ruby3_1` branch with latest

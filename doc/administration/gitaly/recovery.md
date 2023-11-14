@@ -15,12 +15,17 @@ You can add and replace Gitaly nodes on a Gitaly Cluster.
 
 ### Add new Gitaly nodes
 
-To add a new Gitaly node to a Gitaly Cluster that has [replication factor](praefect.md#configure-replication-factor):
+The steps to add a new Gitaly node to a Gitaly Cluster depend on whether a [custom replication factor](praefect.md#configure-replication-factor) is set.
 
-- Set, set the [replication factor](praefect.md#configure-replication-factor) for each repository using `set-replication-factor` Praefect command. New repositories are
-  replicated based on [replication factor](praefect.md#configure-replication-factor). Praefect doesn't automatically replicate existing repositories to the new Gitaly node.
-- Not set, add the new node in your [Praefect configuration](praefect.md#praefect) under `praefect['virtual_storages']`. Praefect automatically replicates all data to any
-  new Gitaly node added to the configuration.
+#### Custom replication factor
+
+If a custom replication factor is set, set the [replication factor](praefect.md#configure-replication-factor) for each repository using the
+`set-replication-factor` Praefect command. New repositories are replicated based on the [replication factor](praefect.md#configure-replication-factor). Praefect doesn't automatically replicate existing repositories to the new Gitaly node.
+
+#### Default replication factor
+
+If the default replication factor is used, add the new node in your [Praefect configuration](praefect.md#praefect) under `praefect['virtual_storages']`.
+Praefect automatically replicates all data to any new Gitaly node added to the configuration.
 
 ### Replace an existing Gitaly node
 
@@ -33,32 +38,37 @@ To use the same name for the replacement node, use [repository verifier](praefec
 
 #### With a node with a different name
 
-To use a different name for the replacement node for a Gitaly Cluster that has [replication factor](praefect.md#configure-replication-factor):
+The steps use a different name for the replacement node for a Gitaly Cluster depend on if a [custom replication factor](praefect.md#configure-replication-factor)
+is set.
 
-- Set, use [`praefect set-replication-factor`](praefect.md#configure-replication-factor) to set the replication factor per repository again to get new storage assigned.
-  For example:
+##### Custom replication factor set
 
-  ```shell
-  $ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage default -relative-path @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git -replication-factor 2
+If a custom replication factor is set, use [`praefect set-replication-factor`](praefect.md#configure-replication-factor) to set the replication factor per repository again to get new storage assigned. For example:
 
-  current assignments: gitaly-1, gitaly-2
-  ```
+```shell
+$ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage default -relative-path @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git -replication-factor 2
 
-  To reassign all repositories from the old storage to the new one, after configuring the new Gitaly node:
+current assignments: gitaly-1, gitaly-2
+```
 
-  1. Connect to Praefect database:
+To reassign all repositories from the old storage to the new one, after configuring the new Gitaly node:
 
-     ```shell
-     /opt/gitlab/embedded/bin/psql -h <psql host> -U <user> -d <database name>
-     ```
+1. Connect to Praefect database:
 
-  1. Update `repository_assignments` table to replace the old Gitaly node name (for example, `old-gitaly`) with the new Gitaly node name (for example, `new-gitaly`):
+   ```shell
+   /opt/gitlab/embedded/bin/psql -h <psql host> -U <user> -d <database name>
+   ```
 
-     ```sql
-     UPDATE repository_assignments SET storage='new-gitaly' WHERE storage='old-gitaly';
-     ```
+1. Update the `repository_assignments` table to replace the old Gitaly node name (for example, `old-gitaly`) with the new Gitaly node name
+   (for example, `new-gitaly`):
 
-- Not set, replace the node in the configuration. The old node's state remains in the Praefect database but it is ignored.
+   ```sql
+   UPDATE repository_assignments SET storage='new-gitaly' WHERE storage='old-gitaly';
+   ```
+
+##### Default replication factor
+
+If the default replication factor is used, replace the node in the configuration. The old node's state remains in the Praefect database but it is ignored.
 
 ## Primary node failure
 

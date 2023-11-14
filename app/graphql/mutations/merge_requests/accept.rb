@@ -9,6 +9,10 @@ module Mutations
         Accepts a merge request.
         When accepted, the source branch will be scheduled to merge into the target branch, either
         immediately if possible, or using one of the automatic merge strategies.
+
+        [In GitLab 16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/421510), the merging happens asynchronously.
+        This results in `mergeRequest` and `state` not updating after a mutation request,
+        because the merging may not have happened yet.
       DESC
 
       NOT_MERGEABLE = 'This branch cannot be merged'

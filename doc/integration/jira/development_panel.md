@@ -49,6 +49,8 @@ You can [view GitLab activity for a Jira issue](https://support.atlassian.com/ji
 in the Jira development panel by referring to the Jira issue by ID in GitLab. The information displayed in the development panel
 depends on where you mention the Jira issue ID in GitLab.
 
+For the [GitLab for Jira Cloud app](connect-app.md), the following information is displayed.
+
 | GitLab: where you mention the Jira issue ID    | Jira development panel: what information is displayed |
 |------------------------------------------------|-------------------------------------------------------|
 | Merge request title or description             | Link to the merge request<br>Link to the deployment<br>Link to the pipeline through merge request title<br>Link to the pipeline through merge request description <sup>1</sup><br>Link to the branch <sup>2</sup><br>Reviewer information and approval status <sup>3</sup> |

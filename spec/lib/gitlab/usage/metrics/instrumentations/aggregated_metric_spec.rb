@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Usage::Metrics::Instrumentations::AggregatedMetric, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::Usage::Metrics::Instrumentations::AggregatedMetric, :clean_gitlab_redis_shared_state,
+  feature_category: :service_ping do
   using RSpec::Parameterized::TableSyntax
   before do
     # weekly AND 1 weekly OR 2

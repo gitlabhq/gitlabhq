@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { cloneDeep } from 'lodash';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __, s__ } from '~/locale';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { createAlert } from '~/alert';
@@ -48,6 +48,11 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    showLabels: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   data() {
@@ -231,6 +236,7 @@ export default {
         :can-update="canUpdate"
         :parent-work-item-id="issuableGid"
         :work-item-type="workItemType"
+        :show-labels="showLabels"
         @click="$emit('click', $event)"
         @removeChild="$emit('removeChild', childItem)"
       />
@@ -241,6 +247,7 @@ export default {
       :work-item-id="issuableGid"
       :work-item-type="workItemType"
       :children="children"
+      :show-labels="showLabels"
       @removeChild="removeChild"
       @click="$emit('click', $event)"
     />

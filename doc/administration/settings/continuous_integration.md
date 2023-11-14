@@ -266,6 +266,22 @@ To enable or disable the banner:
 1. Select or clear the **Enable pipeline suggestion banner** checkbox.
 1. Select **Save changes**.
 
+## Enable or disable the external redirect page for job artifacts
+
+By default, GitLab Pages shows an external redirect page when a user tries to view
+a job artifact served by GitLab Pages. This page warns about the potential for
+malicious user-generated content, as described in
+[issue 352611](https://gitlab.com/gitlab-org/gitlab/-/issues/352611).
+
+Self-managed administrators can disable the external redirect warning page,
+so you can view job artifact pages directly:
+
+1. On the left sidebar, select **Search or go to**.
+1. Select **Admin Area**.
+1. Select **Settings > CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Deselect **Enable the external redirect page for job artifacts**.
+
 ## Required pipeline configuration **(ULTIMATE SELF)**
 
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/352316) from GitLab Premium to GitLab Ultimate in 15.0.

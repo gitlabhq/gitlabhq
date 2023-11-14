@@ -24,7 +24,7 @@ RSpec.shared_examples 'url validator examples' do |schemes|
     end
 
     context 'with schemes' do
-      let(:options) { { schemes: %w(http) } }
+      let(:options) { { schemes: %w[http] } }
 
       it 'allows urls with the defined schemes' do
         subject

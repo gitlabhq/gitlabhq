@@ -3,11 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe 'Work item', :js, feature_category: :team_planning do
-  let_it_be_with_reload(:user) { create(:user, :no_super_sidebar) }
-  let_it_be_with_reload(:user2) { create(:user, :no_super_sidebar, name: 'John') }
+  include ListboxHelpers
+
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be_with_reload(:user2) { create(:user, name: 'John') }
 
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:work_item) { create(:work_item, project: project) }
+  let_it_be(:task) { create(:work_item, :task, project: project) }
   let_it_be(:emoji_upvote) { create(:award_emoji, :upvote, awardable: work_item, user: user2) }
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:milestones) { create_list(:milestone, 25, project: project) }
@@ -18,9 +21,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
   context 'for signed in user' do
     before do
       project.add_developer(user)
-
       sign_in(user)
-
       visit work_items_path
     end
 
@@ -37,7 +38,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
     end
 
     it 'actions dropdown is displayed' do
-      expect(page).to have_selector('[data-testid="work-item-actions-dropdown"]')
+      expect(page).to have_button _('More actions')
     end
 
     it 'reassigns to another user',
@@ -74,9 +75,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
   context 'for signed in owner' do
     before do
       project.add_owner(user)
-
       sign_in(user)
-
       visit work_items_path
     end
 
@@ -86,13 +85,23 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
   context 'for guest users' do
     before do
       project.add_guest(user)
-
       sign_in(user)
-
       visit work_items_path
     end
 
     it_behaves_like 'work items comment actions for guest users'
+  end
+
+  context 'when item is a task' do
+    before do
+      project.add_developer(user)
+
+      sign_in(user)
+
+      visit project_work_item_path(project, task.iid)
+    end
+
+    it_behaves_like 'work items parent', :issue
   end
 
   context 'for user not signed in' do
@@ -101,14 +110,12 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
     end
 
     it 'todos action is not displayed' do
-      expect(page).not_to have_selector('[data-testid="work-item-todos-action"]')
+      expect(page).not_to have_button s_('WorkItem|Add a to do')
     end
 
     it 'award button is disabled and add reaction is not displayed' do
-      within('[data-testid="work-item-award-list"]') do
-        expect(page).not_to have_selector('[data-testid="emoji-picker"]')
-        expect(page).to have_selector('[data-testid="award-button"].disabled')
-      end
+      expect(page).not_to have_button _('Add reaction')
+      expect(page).to have_selector('[data-testid="award-button"].disabled')
     end
 
     it 'assignees input field is disabled' do

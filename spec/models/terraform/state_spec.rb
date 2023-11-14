@@ -21,7 +21,7 @@ RSpec.describe Terraform::State, feature_category: :infrastructure_as_code do
     describe '.ordered_by_name' do
       let_it_be(:project) { create(:project) }
 
-      let(:names) { %w(state_d state_b state_a state_c) }
+      let(:names) { %w[state_d state_b state_a state_c] }
 
       subject { described_class.ordered_by_name }
 

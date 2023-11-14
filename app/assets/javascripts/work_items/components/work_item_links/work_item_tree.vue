@@ -1,10 +1,12 @@
 <script>
+import { GlToggle } from '@gitlab/ui';
 import {
   FORM_TYPES,
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEMS_TREE_TEXT_MAP,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
+  I18N_WORK_ITEM_SHOW_LABELS,
 } from '../../constants';
 import WidgetWrapper from '../widget_wrapper.vue';
 import OkrActionsSplitButton from './okr_actions_split_button.vue';
@@ -21,6 +23,7 @@ export default {
     WidgetWrapper,
     WorkItemLinksForm,
     WorkItemChildrenWrapper,
+    GlToggle,
   },
   props: {
     fullPath: {
@@ -68,6 +71,7 @@ export default {
       formType: null,
       childType: null,
       widgetName: 'tasks',
+      showLabels: true,
     };
   },
   computed: {
@@ -99,6 +103,9 @@ export default {
       this.$emit('show-modal', { event, modalWorkItem: child });
     },
   },
+  i18n: {
+    showLabelsLabel: I18N_WORK_ITEM_SHOW_LABELS,
+  },
 };
 </script>
 
@@ -114,6 +121,14 @@ export default {
       {{ $options.WORK_ITEMS_TREE_TEXT_MAP[workItemType].title }}
     </template>
     <template #header-right>
+      <gl-toggle
+        class="gl-mr-4"
+        :value="showLabels"
+        :label="$options.i18n.showLabelsLabel"
+        label-position="left"
+        label-id="relationship-toggle-labels"
+        @change="showLabels = $event"
+      />
       <okr-actions-split-button
         v-if="canUpdate"
         @showCreateObjectiveForm="
@@ -160,6 +175,7 @@ export default {
         :work-item-id="workItemId"
         :work-item-iid="workItemIid"
         :work-item-type="workItemType"
+        :show-labels="showLabels"
         @error="error = $event"
         @show-modal="showModal"
       />

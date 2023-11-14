@@ -183,7 +183,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['description']).to be_nil
-      expect(json_response['labels']).to eq(%w(label label2))
+      expect(json_response['labels']).to eq(%w[label label2])
       expect(json_response['confidential']).to be_falsy
       expect(json_response['assignee']['name']).to eq(user2.name)
       expect(json_response['assignees'].first['name']).to eq(user2.name)
@@ -191,12 +191,12 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
 
     it 'creates a new project issue with labels param as array' do
       post api("/projects/#{project.id}/issues", user),
-        params: { title: 'new issue', labels: %w(label label2), weight: 3, assignee_ids: [user2.id] }
+        params: { title: 'new issue', labels: %w[label label2], weight: 3, assignee_ids: [user2.id] }
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['description']).to be_nil
-      expect(json_response['labels']).to eq(%w(label label2))
+      expect(json_response['labels']).to eq(%w[label label2])
       expect(json_response['confidential']).to be_falsy
       expect(json_response['assignee']['name']).to eq(user2.name)
       expect(json_response['assignees'].first['name']).to eq(user2.name)
@@ -391,7 +391,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
 
       it 'cannot create new labels with labels param as array' do
         expect do
-          post api("/projects/#{project.id}/issues", non_member), params: { title: 'new issue', labels: %w(label label2) }
+          post api("/projects/#{project.id}/issues", non_member), params: { title: 'new issue', labels: %w[label label2] }
         end.not_to change { project.labels.count }
       end
     end

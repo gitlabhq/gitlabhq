@@ -583,7 +583,7 @@ visualized in Thanos ([see an example](https://thanos-query.ops.gitlab.net/graph
 
 ### Swap the columns (release N + 1)
 
-After the background is completed and the new `bigint` columns are populated for all records, we can
+After the background migration is complete and the new `bigint` columns are populated for all records, we can
 swap the columns. Swapping is done with post-deployment migration. The exact process depends on the
 table being converted, but in general it's done in the following steps:
 
@@ -591,8 +591,11 @@ table being converted, but in general it's done in the following steps:
 migration has finished ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L13-18)).
 If the migration has not completed, the subsequent steps fail anyway. By checking in advance we
 aim to have more helpful error message.
-1. Create indexes using the `bigint` columns that match the existing indexes using the `integer`
-column ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L28-34)).
+1. Use the `add_bigint_column_indexes` helper method from `Gitlab::Database::MigrationHelpers::ConvertToBigint` module
+   to create indexes with the `bigint` columns that match the existing indexes using the `integer` column.
+   - The helper method is expected to create all required `bigint` indexes, but it's advised to recheck to make sure
+     we are not missing any of the existing indexes. More information about the helper can be
+     found in merge request [135781](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135781).
 1. Create foreign keys (FK) using the `bigint` columns that match the existing FK using the
 `integer` column. Do this both for FK referencing other tables, and FK that reference the table
 that is being migrated ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L36-43)).
@@ -603,6 +606,8 @@ that is being migrated ([see an example](https://gitlab.com/gitlab-org/gitlab/-/
     1. Swap the defaults ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L59-62)).
     1. Swap the PK constraint (if any) ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L64-68)).
     1. Remove old indexes and rename new ones ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L70-72)).
+       - Names of the `bigint` indexes created using `add_bigint_column_indexes` helper can be retrieved by calling
+         `bigint_index_name` from `Gitlab::Database::MigrationHelpers::ConvertToBigint` module.
     1. Remove old foreign keys (if still present) and rename new ones ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L74)).
 
 See example [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66088), and [migration](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb).

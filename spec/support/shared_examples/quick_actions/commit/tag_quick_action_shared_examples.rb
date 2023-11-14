@@ -5,7 +5,7 @@ RSpec.shared_examples 'tag quick action' do
     it 'tags this commit' do
       add_note("/tag #{tag_name} #{tag_message}")
 
-      expect(page).to have_content %{Tagged this commit to #{tag_name} with "#{tag_message}".}
+      expect(page).to have_content %(Tagged this commit to #{tag_name} with "#{tag_message}".)
       expect(page).to have_content "tagged commit #{truncated_commit_sha}"
       expect(page).to have_content tag_name
 
@@ -21,7 +21,7 @@ RSpec.shared_examples 'tag quick action' do
       preview_note("/tag #{tag_name} #{tag_message}")
 
       expect(page).not_to have_content '/tag'
-      expect(page).to have_content %{Tags this commit to #{tag_name} with "#{tag_message}"}
+      expect(page).to have_content %(Tags this commit to #{tag_name} with "#{tag_message}")
       expect(page).to have_content tag_name
     end
   end

@@ -328,6 +328,8 @@ module Gitlab
         'client_name' => CLIENT_NAME
       }
 
+      relative_path = fetch_relative_path
+
       context_data = Gitlab::ApplicationContext.current
 
       feature_stack = Thread.current[:gitaly_feature_stack]
@@ -339,6 +341,7 @@ module Gitlab
       metadata['username'] = context_data['meta.user'] if context_data&.fetch('meta.user', nil)
       metadata['user_id'] = context_data['meta.user_id'].to_s if context_data&.fetch('meta.user_id', nil)
       metadata['remote_ip'] = context_data['meta.remote_ip'] if context_data&.fetch('meta.remote_ip', nil)
+      metadata['relative-path-bin'] = relative_path if relative_path
       metadata.merge!(Feature::Gitaly.server_feature_flags(**feature_flag_actors))
       metadata.merge!(route_to_primary)
 
@@ -346,6 +349,17 @@ module Gitlab
       metadata.merge!(deadline_info.slice(:deadline_type))
 
       { metadata: metadata, deadline: deadline_info[:deadline] }
+    end
+
+    # The GitLab `internal/allowed/` API sets the :gitlab_git_relative_path
+    # variable. This provides the repository relative path which can be used to
+    # locate snapshot repositories in Gitaly which act as a quarantine repository
+    # until a transaction is committed.
+    def self.fetch_relative_path
+      return unless Gitlab::SafeRequestStore.active?
+      return if Gitlab::SafeRequestStore[:gitlab_git_relative_path].blank?
+
+      Gitlab::SafeRequestStore.fetch(:gitlab_git_relative_path)
     end
 
     # Gitlab::Git::HookEnv will set the :gitlab_git_env variable in case we're

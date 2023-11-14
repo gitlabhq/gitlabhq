@@ -8,7 +8,6 @@ Style/EmptyElse:
     - 'app/graphql/resolvers/group_milestones_resolver.rb'
     - 'app/graphql/types/ci/detailed_status_type.rb'
     - 'app/models/legacy_diff_discussion.rb'
-    - 'app/models/performance_monitoring/prometheus_dashboard.rb'
     - 'app/models/resource_state_event.rb'
     - 'app/models/resource_timebox_event.rb'
     - 'app/services/award_emojis/add_service.rb'

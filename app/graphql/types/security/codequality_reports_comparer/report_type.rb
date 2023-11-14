@@ -3,7 +3,7 @@
 module Types
   module Security
     module CodequalityReportsComparer
-      # rubocop: disable Graphql/AuthorizeTypes (Parent node applies authorization)
+      # rubocop: disable Graphql/AuthorizeTypes -- Parent node applies authorization
       class ReportType < BaseObject
         graphql_name 'CodequalityReportsComparerReport'
 

@@ -468,8 +468,10 @@ $content-wrapper-padding: 100px;
 $header-zindex: 1000;
 $zindex-dropdown-menu: 300;
 $ide-statusbar-height: 25px;
-$fixed-layout-width: 1280px;
-$limited-layout-width: 990px;
+$limited-layout-width: 1006px;
+$fixed-layout-width: 1296px;
+$container-margin: $gl-padding;
+$container-margin-xl: $gl-padding-24;
 $container-text-max-width: 540px;
 $border-radius-default: 4px;
 $border-radius-small: 2px;
@@ -485,7 +487,7 @@ $performance-bar-height: 2.5rem;
 $system-header-height: 16px;
 $system-footer-height: $system-header-height;
 $mr-sticky-header-height: 72px;
-$mr-review-bar-height: calc(2rem + 13px);
+$mr-review-bar-height: calc(2rem + 16px);
 $flash-height: 52px;
 $context-header-height: 60px;
 $top-bar-height: 48px;
@@ -655,8 +657,8 @@ $status-icon-size: 22px;
 */
 $discord: #5865f2;
 $linkedin: #2867b2;
+$mastodon: #6364ff;
 $skype: #0078d7;
-$twitter: #1d9bf0;
 
 /*
  *  Award emoji
@@ -715,10 +717,10 @@ $blame-blue: #254e77;
 */
 $builds-log-bg: #111;
 $job-log-highlight-height: 18px;
-$job-log-line-padding: 55px;
+$job-log-line-padding: 63px;
 $job-line-number-width: 50px;
-$job-line-number-margin: 43px;
-$job-arrow-margin: 55px;
+$job-line-number-margin: 51px;
+$job-arrow-margin: 63px;
 
 /*
  * Calendar
@@ -810,7 +812,7 @@ $ci-action-icon-size: 22px;
 $ci-action-icon-size-lg: 24px;
 $pipeline-dropdown-line-height: 20px;
 $ci-action-dropdown-button-size: 24px;
-$ci-action-dropdown-svg-size: 12px;
+$ci-action-dropdown-svg-size: 16px;
 
 /*
 CI variable lists

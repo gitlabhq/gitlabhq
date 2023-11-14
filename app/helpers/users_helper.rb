@@ -80,10 +80,6 @@ module UsersHelper
     current_user&.max_member_access_for_project(project.id) || Gitlab::Access::NO_ACCESS
   end
 
-  def max_project_member_access_cache_key(project)
-    "access:#{max_project_member_access(project)}"
-  end
-
   def user_status(user)
     return unless user
 
@@ -262,7 +258,9 @@ module UsersHelper
       delete_with_contributions: admin_user_path(:id, hard_delete: true),
       admin_user: admin_user_path(:id),
       ban: ban_admin_user_path(:id),
-      unban: unban_admin_user_path(:id)
+      unban: unban_admin_user_path(:id),
+      trust: trust_admin_user_path(:id),
+      untrust: untrust_admin_user_path(:id)
     }
   end
 
@@ -334,27 +332,6 @@ module UsersHelper
     end
   end
 
-  def user_table_headers
-    [
-      {
-        section_class_name: 'section-40',
-        header_text: _('Name')
-      },
-      {
-        section_class_name: 'section-10',
-        header_text: _('Projects')
-      },
-      {
-        section_class_name: 'section-15',
-        header_text: _('Created on')
-      },
-      {
-        section_class_name: 'section-15',
-        header_text: _('Last activity')
-      }
-    ]
-  end
-
   # the keys should match the user model defined roles in app/models/user.rb
   def localized_user_roles
     {
@@ -368,10 +345,6 @@ module UsersHelper
       product_designer: s_('User|Product Designer'),
       other: s_('User|Other')
     }.with_indifferent_access.freeze
-  end
-
-  def saved_replies_enabled?
-    Feature.enabled?(:saved_replies, current_user)
   end
 
   def preload_project_associations(_)

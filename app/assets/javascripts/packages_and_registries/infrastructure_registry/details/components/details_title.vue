@@ -34,7 +34,7 @@ export default {
 </script>
 
 <template>
-  <title-area :title="packageEntity.name" data-qa-selector="package_title">
+  <title-area :title="packageEntity.name">
     <template #sub-header>
       <gl-icon name="eye" class="gl-mr-3" />
       <gl-sprintf :message="$options.i18n.packageInfo">

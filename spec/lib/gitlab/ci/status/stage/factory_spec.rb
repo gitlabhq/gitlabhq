@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Ci::Status::Stage::Factory, feature_category: :continuous
   end
 
   context 'when stage has a core status' do
-    (Ci::HasStatus::AVAILABLE_STATUSES - %w(manual skipped scheduled)).each do |core_status|
+    (Ci::HasStatus::AVAILABLE_STATUSES - %w[manual skipped scheduled]).each do |core_status|
       context "when core status is #{core_status}" do
         let(:stage) { create(:ci_stage, pipeline: pipeline, status: core_status) }
 

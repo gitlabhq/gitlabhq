@@ -67,9 +67,9 @@ describe('CI Variable Drawer', () => {
     });
   };
 
-  const findConfirmBtn = () => wrapper.findByTestId('ci-variable-confirm-btn');
+  const findConfirmBtn = () => wrapper.findByTestId('ci-variable-confirm-button');
   const findConfirmDeleteModal = () => wrapper.findComponent(GlModal);
-  const findDeleteBtn = () => wrapper.findByTestId('ci-variable-delete-btn');
+  const findDeleteBtn = () => wrapper.findByTestId('ci-variable-delete-button');
   const findDisabledEnvironmentScopeDropdown = () => wrapper.findComponent(GlFormInput);
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findEnvironmentScopeDropdown = () => wrapper.findComponent(CiEnvironmentsDropdown);
@@ -350,6 +350,13 @@ describe('CI Variable Drawer', () => {
   });
 
   describe('drawer events', () => {
+    it('emits `search-environment-scope` before mounting', () => {
+      createComponent();
+
+      expect(wrapper.emitted('search-environment-scope')).toHaveLength(1);
+      expect(wrapper.emitted('search-environment-scope')).toEqual([['']]);
+    });
+
     it('emits `close-form` when closing the drawer', async () => {
       createComponent();
 
@@ -477,7 +484,7 @@ describe('CI Variable Drawer', () => {
       it('bubbles up the search event', async () => {
         await findEnvironmentScopeDropdown().vm.$emit('search-environment-scope', 'staging');
 
-        expect(wrapper.emitted('search-environment-scope')).toEqual([['staging']]);
+        expect(wrapper.emitted('search-environment-scope')[1]).toEqual(['staging']);
       });
     });
   });

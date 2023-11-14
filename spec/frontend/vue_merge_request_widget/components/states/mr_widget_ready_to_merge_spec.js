@@ -831,4 +831,16 @@ describe('ReadyToMerge', () => {
       });
     });
   });
+
+  describe('merge details', () => {
+    it('shows auto-merge hint when auto merge is set and some checks have failed', () => {
+      createComponent({ mr: { state: 'mergeChecksFailed', autoMergeEnabled: true } });
+      expect(wrapper.text()).toContain('Auto-merge enabled');
+    });
+
+    it("doesn't show auto-merge hint when auto merge is not set", () => {
+      createComponent({ mr: { autoMergeEnabled: false } });
+      expect(wrapper.text()).not.toContain('Auto-merge enabled');
+    });
+  });
 });

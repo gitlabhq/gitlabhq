@@ -48,7 +48,7 @@ class Projects::RepositoriesController < Projects::ApplicationController
 
     expires_in(
       cache_max_age(commit_id),
-      public: Guest.can?(:download_code, project),
+      public: ::Users::Anonymous.can?(:download_code, project),
       must_revalidate: true,
       stale_if_error: 5.minutes,
       stale_while_revalidate: 1.minute,

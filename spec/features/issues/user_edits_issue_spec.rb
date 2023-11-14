@@ -210,166 +210,79 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
       end
 
       describe 'update assignee' do
-        context 'when GraphQL assignees widget feature flag is disabled' do
-          before do
-            stub_feature_flags(issue_assignees_widget: false)
-          end
+        context 'by authorized user' do
+          it 'allows user to select unassigned' do
+            visit project_issue_path(project, issue)
 
-          context 'by authorized user' do
-            def close_dropdown_menu_if_visible
-              find('.dropdown-menu-toggle', visible: :all).tap do |toggle|
-                toggle.click if toggle.visible?
-              end
-            end
+            page.within('.assignee') do
+              expect(page).to have_content user.name.to_s
 
-            it 'allows user to select unassigned' do
-              visit project_issue_path(project, issue)
+              click_button('Edit')
+              wait_for_requests
 
-              page.within('.assignee') do
-                expect(page).to have_content user.name.to_s
+              find('[data-testid="unassign"]').click
+              find('[data-testid="title"]').click
+              wait_for_requests
 
-                click_link 'Edit'
-                click_link 'Unassigned'
-
-                close_dropdown_menu_if_visible
-
-                expect(page).to have_content 'None - assign yourself'
-              end
-            end
-
-            it 'allows user to select an assignee' do
-              issue2 = create(:issue, project: project, author: user)
-              visit project_issue_path(project, issue2)
-
-              page.within('.assignee') do
-                expect(page).to have_content "None"
-              end
-
-              page.within '.assignee' do
-                click_link 'Edit'
-              end
-
-              page.within '.dropdown-menu-user' do
-                click_link user.name
-              end
-
-              page.within('.assignee') do
-                expect(page).to have_content user.name
-              end
-            end
-
-            it 'allows user to unselect themselves' do
-              issue2 = create(:issue, project: project, author: user, assignees: [user])
-
-              visit project_issue_path(project, issue2)
-
-              page.within '.assignee' do
-                expect(page).to have_content user.name
-
-                click_link 'Edit'
-                click_link user.name
-
-                close_dropdown_menu_if_visible
-
-                page.within '[data-testid="no-value"]' do
-                  expect(page).to have_content "None"
-                end
-              end
+              expect(page).to have_content 'None - assign yourself'
             end
           end
 
-          context 'by unauthorized user' do
-            let(:guest) { create(:user) }
+          it 'allows user to select an assignee' do
+            issue2 = create(:issue, project: project, author: user)
+            visit project_issue_path(project, issue2)
 
-            before do
-              project.add_guest(guest)
+            page.within('.assignee') do
+              expect(page).to have_content "None"
+              click_button('Edit')
+              wait_for_requests
             end
 
-            it 'shows assignee text' do
-              sign_out(:user)
-              sign_in(guest)
+            page.within '.dropdown-menu-user' do
+              click_button user.name
+            end
 
-              visit project_issue_path(project, issue)
-              expect(page).to have_content issue.assignees.first.name
+            page.within('.assignee') do
+              find('[data-testid="title"]').click
+              wait_for_requests
+
+              expect(page).to have_content user.name
+            end
+          end
+
+          it 'allows user to unselect themselves' do
+            issue2 = create(:issue, project: project, author: user, assignees: [user])
+
+            visit project_issue_path(project, issue2)
+
+            page.within '.assignee' do
+              expect(page).to have_content user.name
+
+              click_button('Edit')
+              wait_for_requests
+              click_button user.name
+
+              find('[data-testid="title"]').click
+              wait_for_requests
+
+              expect(page).to have_content "None"
             end
           end
         end
 
-        context 'when GraphQL assignees widget feature flag is enabled' do
-          context 'by authorized user' do
-            it 'allows user to select unassigned' do
-              visit project_issue_path(project, issue)
+        context 'by unauthorized user' do
+          let(:guest) { create(:user) }
 
-              page.within('.assignee') do
-                expect(page).to have_content user.name.to_s
-
-                click_button('Edit')
-                wait_for_requests
-
-                find('[data-testid="unassign"]').click
-                find('[data-testid="title"]').click
-                wait_for_requests
-
-                expect(page).to have_content 'None - assign yourself'
-              end
-            end
-
-            it 'allows user to select an assignee' do
-              issue2 = create(:issue, project: project, author: user)
-              visit project_issue_path(project, issue2)
-
-              page.within('.assignee') do
-                expect(page).to have_content "None"
-                click_button('Edit')
-                wait_for_requests
-              end
-
-              page.within '.dropdown-menu-user' do
-                click_button user.name
-              end
-
-              page.within('.assignee') do
-                find('[data-testid="title"]').click
-                wait_for_requests
-
-                expect(page).to have_content user.name
-              end
-            end
-
-            it 'allows user to unselect themselves' do
-              issue2 = create(:issue, project: project, author: user, assignees: [user])
-
-              visit project_issue_path(project, issue2)
-
-              page.within '.assignee' do
-                expect(page).to have_content user.name
-
-                click_button('Edit')
-                wait_for_requests
-                click_button user.name
-
-                find('[data-testid="title"]').click
-                wait_for_requests
-
-                expect(page).to have_content "None"
-              end
-            end
+          before do
+            project.add_guest(guest)
           end
 
-          context 'by unauthorized user' do
-            let(:guest) { create(:user) }
+          it 'shows assignee text' do
+            sign_out(:user)
+            sign_in(guest)
 
-            before do
-              project.add_guest(guest)
-            end
-
-            it 'shows assignee text' do
-              sign_out(:user)
-              sign_in(guest)
-
-              visit project_issue_path(project, issue)
-              expect(page).to have_content issue.assignees.first.name
-            end
+            visit project_issue_path(project, issue)
+            expect(page).to have_content issue.assignees.first.name
           end
         end
       end

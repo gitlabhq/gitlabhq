@@ -17,7 +17,8 @@ export default {
     },
     isClosed: {
       type: Boolean,
-      required: true,
+      required: false,
+      default: false,
     },
     path: {
       type: String,

@@ -55,6 +55,17 @@ Prerequisites:
 
 ## View a dashboard
 
+> Kubernetes watch API integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422945) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `k8s_watch_api`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default the Kubernetes watch API integration is not available.
+To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `k8s_watch_api`.
+On GitLab.com, this feature is not available.
+
+View a dashboard to see the status of any connected clusters.
+If the `k8s_watch_api` feature flag is enabled, the status of your
+pods and Flux reconciliation updates in real time.
+
 To view a configured dashboard:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -72,8 +83,7 @@ You can review the sync status of your Flux deployments from a dashboard.
 To display the deployment status, your dashboard must be able to retrieve the `Kustomization` and `HelmRelease` resources,
 which requires a namespace to be configured for the environment.
 
-By default, GitLab searches the `Kustomization` and `HelmRelease` resources for the name of the project slug.
-You can specify the resource names with the **Flux resource** dropdown list in the environment settings.
+GitLab searches the `Kustomization` and `HelmRelease` resources specified by the **Flux resource** dropdown list in the environment settings.
 
 A dashboard displays one of the following status badges:
 

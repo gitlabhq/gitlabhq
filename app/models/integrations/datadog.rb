@@ -117,15 +117,15 @@ module Integrations
       # archive_trace is opt-in but we handle it with a more detailed field below
     end
 
-    def title
+    def self.title
       'Datadog'
     end
 
-    def description
+    def self.description
       s_('DatadogIntegration|Trace your GitLab pipelines with Datadog.')
     end
 
-    def help
+    def self.help
       docs_link = ActionController::Base.helpers.link_to(
         s_('DatadogIntegration|How do I set up this integration?'),
         Rails.application.routes.url_helpers.help_page_url('integration/datadog'),

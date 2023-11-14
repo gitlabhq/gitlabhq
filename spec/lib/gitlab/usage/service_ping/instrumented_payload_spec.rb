@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Usage::ServicePing::InstrumentedPayload do
   end
 
   context 'when building service ping with values' do
-    let(:metrics_key_paths) { %w(counts.boards uuid redis_hll_counters.search.i_search_total_monthly) }
+    let(:metrics_key_paths) { %w[counts.boards uuid redis_hll_counters.search.i_search_total_monthly] }
     let(:expected_payload) do
       {
         counts: { boards: 0 },
@@ -26,7 +26,7 @@ RSpec.describe Gitlab::Usage::ServicePing::InstrumentedPayload do
   end
 
   context 'when building service ping with instrumentations' do
-    let(:metrics_key_paths) { %w(counts.boards uuid redis_hll_counters.search.i_search_total_monthly) }
+    let(:metrics_key_paths) { %w[counts.boards uuid redis_hll_counters.search.i_search_total_monthly] }
     let(:expected_payload) do
       {
         counts: { boards: "SELECT COUNT(\"boards\".\"id\") FROM \"boards\"" },

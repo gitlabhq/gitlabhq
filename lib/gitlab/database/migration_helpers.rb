@@ -18,8 +18,8 @@ module Gitlab
       include AsyncConstraints::MigrationHelpers
       include WraparoundVacuumHelpers
 
-      def define_batchable_model(table_name, connection: self.connection)
-        super(table_name, connection: connection)
+      def define_batchable_model(table_name, connection: self.connection, primary_key: nil)
+        super(table_name, connection: connection, primary_key: primary_key)
       end
 
       def each_batch(table_name, connection: self.connection, **kwargs)
@@ -821,6 +821,7 @@ module Gitlab
         primary_key: :id,
         batch_size: 20_000,
         sub_batch_size: 1000,
+        pause_ms: 100,
         interval: 2.minutes
       )
 
@@ -848,6 +849,7 @@ module Gitlab
           conversions.keys,
           conversions.values,
           job_interval: interval,
+          pause_ms: pause_ms,
           batch_size: batch_size,
           sub_batch_size: sub_batch_size)
       end

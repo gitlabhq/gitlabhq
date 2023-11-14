@@ -240,7 +240,16 @@ To view group import history:
 1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
 1. Select **Import group**.
 1. In the upper-right corner, select **History**.
-1. If there are any errors for a particular import, you can see them by selecting **Details**.
+1. If there are any errors for a particular import, select **See failures** to see their details.
+
+### Review results of the import
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429109) in GitLab 16.6 [with a flag](../../feature_flags.md) named `bulk_import_details_page`. Enabled by default.
+
+To review the results of an import:
+
+1. Go to the [Group import history page](#group-import-history).
+1. To see the details of a failed import, select the **See failures** link on any import with a **Failed** status.
 
 ### Migrated group items
 
@@ -337,7 +346,7 @@ Project items that are migrated to the destination GitLab instance include:
 | Projects                                | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/267945)        |
 | Auto DevOps                             | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339410)        |
 | Badges                                  | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75029) |
-| Branches (including protected branches) | [GitLab 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/339414)        |
+| Branches (including protected branches) <sup>1</sup> | [GitLab 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/339414) |
 | CI Pipelines                            | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339407)        |
 | Commit comments                         | [GitLab 15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/391601)       |
 | Designs                                 | [GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/339421)        |
@@ -360,6 +369,14 @@ Project items that are migrated to the destination GitLab instance include:
 | Settings                                | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339416)        |
 | Uploads                                 | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339401)        |
 | Wikis                                   | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/345923)        |
+
+<html>
+<small>Footnotes:
+  <ol>
+    <li>Imported branches respect the [default branch protection settings](../../project/protected_branches.md) of the destination group, which can cause an unprotected branch to be imported as protected.</li>
+  </ol>
+</small>
+</html>
 
 #### Issue-related items
 

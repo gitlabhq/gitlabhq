@@ -112,7 +112,7 @@ RSpec.describe "User adds a comment on a commit", :js, feature_category: :source
             click_button("Comment")
           end
 
-          expect(page).to have_button("Reply...").and have_no_css("form.new_note")
+          expect(page).to have_css(".reply-placeholder-text-field").and have_no_css("form.new_note")
         end
 
         # A comment should be added and visible.

@@ -47,7 +47,7 @@ describe('IssueHeader component', () => {
       issuableType: 'issue',
       serviceDeskReplyTo: '',
       showWorkItemTypeIcon: true,
-      statusIcon: 'issues',
+      statusIcon: 'issue-open-m',
       workspaceType: 'project',
     });
   });
@@ -63,7 +63,7 @@ describe('IssueHeader component', () => {
       });
 
       it('renders correct icon', () => {
-        expect(findIssuableHeader().props('statusIcon')).toBe('issues');
+        expect(findIssuableHeader().props('statusIcon')).toBe('issue-open-m');
       });
     });
 
@@ -77,7 +77,7 @@ describe('IssueHeader component', () => {
       });
 
       it('renders correct icon', () => {
-        expect(findIssuableHeader().props('statusIcon')).toBe('issue-closed');
+        expect(findIssuableHeader().props('statusIcon')).toBe('issue-close');
       });
 
       describe('when issue is marked as duplicate', () => {

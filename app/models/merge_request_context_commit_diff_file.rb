@@ -10,7 +10,6 @@ class MergeRequestContextCommitDiffFile < ApplicationRecord
   belongs_to :merge_request_context_commit, inverse_of: :diff_files
 
   sha_attribute :sha
-  alias_attribute :id, :sha
 
   # create MergeRequestContextCommitDiffFile by given diff file record(s)
   def self.bulk_insert(*args)

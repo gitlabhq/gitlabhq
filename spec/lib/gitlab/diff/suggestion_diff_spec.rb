@@ -22,9 +22,7 @@ RSpec.describe Gitlab::Diff::SuggestionDiff do
     end
 
     let(:suggestion) do
-      instance_double(Suggestion, from_line: 12,
-                                  from_content: from_content,
-                                  to_content: to_content)
+      instance_double(Suggestion, from_line: 12, from_content: from_content, to_content: to_content)
     end
 
     subject { described_class.new(suggestion).diff_lines }
@@ -56,9 +54,12 @@ RSpec.describe Gitlab::Diff::SuggestionDiff do
       it 'returns a correct value if there is no newline at the end of the file' do
         from_content = "One line test"
         to_content = "Successful test!"
-        suggestion = instance_double(Suggestion, from_line: 1,
-                                                 from_content: from_content,
-                                                 to_content: to_content)
+        suggestion = instance_double(
+          Suggestion,
+          from_line: 1,
+          from_content: from_content,
+          to_content: to_content
+        )
 
         diff_lines = described_class.new(suggestion).diff_lines
 

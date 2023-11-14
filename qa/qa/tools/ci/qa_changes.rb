@@ -29,10 +29,16 @@ module QA
         # @return [String]
         def qa_tests
           return if mr_diff.empty? || dependency_changes
+          return if only_spec_changes? && mr_diff.all? { |change| change[:deleted_file] }
 
-          # make paths relative to qa directory
-          return changed_files&.map { |path| path.delete_prefix("qa/") }&.join(" ") if only_spec_changes?
-          return qa_spec_directories_for_devops_stage&.join(" ") if non_qa_changes? && mr_labels.any?
+          if only_spec_changes?
+            return mr_diff
+              .reject { |change| change[:deleted_file] }
+              .map { |change| change[:path].delete_prefix("qa/") } # make paths relative to qa directory
+              .join(" ")
+          end
+
+          qa_spec_directories_for_devops_stage&.join(" ") if non_qa_changes? && mr_labels.any?
         end
 
         # Qa framework changes

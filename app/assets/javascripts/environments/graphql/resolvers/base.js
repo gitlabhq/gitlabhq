@@ -47,7 +47,7 @@ export const baseQueries = (endpoint) => ({
       });
 
       return {
-        availableCount: res.data.available_count,
+        activeCount: res.data.active_count,
         environments: res.data.environments.map(mapNestedEnvironment),
         reviewApp: {
           ...convertObjectPropsToCamelCase(res.data.review_app),
@@ -61,7 +61,7 @@ export const baseQueries = (endpoint) => ({
   },
   folder(_, { environment: { folderPath }, scope, search }) {
     return axios.get(folderPath, { params: { scope, search, per_page: 3 } }).then((res) => ({
-      availableCount: res.data.available_count,
+      activeCount: res.data.active_count,
       environments: res.data.environments.map(mapEnvironment),
       stoppedCount: res.data.stopped_count,
       __typename: 'LocalEnvironmentFolder',

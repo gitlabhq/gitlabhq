@@ -36,7 +36,7 @@ RSpec.describe InstanceConfiguration do
 
           result = subject.settings[:ssh_algorithms_hashes]
 
-          expect(result.map { |a| a[:name] }).to match_array(%w(DSA ECDSA ED25519 RSA))
+          expect(result.map { |a| a[:name] }).to match_array(%w[DSA ECDSA ED25519 RSA])
         end
 
         it 'does not include disabled algorithm' do
@@ -45,7 +45,7 @@ RSpec.describe InstanceConfiguration do
 
           result = subject.settings[:ssh_algorithms_hashes]
 
-          expect(result.map { |a| a[:name] }).to match_array(%w(ECDSA ED25519 RSA))
+          expect(result.map { |a| a[:name] }).to match_array(%w[ECDSA ED25519 RSA])
         end
 
         def pub_file(exist: true)

@@ -22,6 +22,7 @@ describe('ServiceDeskRoot', () => {
     isIssueTrackerEnabled: true,
     outgoingName: 'GitLab Support Bot',
     projectKey: 'key',
+    addExternalParticipantsFromCc: true,
     selectedTemplate: 'Bug',
     selectedFileTemplateProjectId: 42,
     templates: ['Bug', 'Documentation'],
@@ -62,6 +63,7 @@ describe('ServiceDeskRoot', () => {
         incomingEmail: provideData.initialIncomingEmail,
         initialOutgoingName: provideData.outgoingName,
         initialProjectKey: provideData.projectKey,
+        initialAddExternalParticipantsFromCc: provideData.addExternalParticipantsFromCc,
         initialSelectedTemplate: provideData.selectedTemplate,
         initialSelectedFileTemplateProjectId: provideData.selectedFileTemplateProjectId,
         isEnabled: provideData.initialIsEnabled,
@@ -147,6 +149,7 @@ describe('ServiceDeskRoot', () => {
             selectedTemplate: 'Bug',
             outgoingName: 'GitLab Support Bot',
             projectKey: 'key',
+            addExternalParticipantsFromCc: true,
           };
 
           wrapper.findComponent(ServiceDeskSetting).vm.$emit('save', payload);
@@ -160,6 +163,7 @@ describe('ServiceDeskRoot', () => {
             outgoing_name: 'GitLab Support Bot',
             project_key: 'key',
             service_desk_enabled: true,
+            add_external_participants_from_cc: true,
           });
         });
 
@@ -178,6 +182,7 @@ describe('ServiceDeskRoot', () => {
             selectedTemplate: 'Bug',
             outgoingName: 'GitLab Support Bot',
             projectKey: 'key',
+            addExternalParticipantsFromCc: true,
           };
 
           wrapper.findComponent(ServiceDeskSetting).vm.$emit('save', payload);

@@ -82,7 +82,7 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorsImporter, feature_ca
 
     it 'imports each collaborator in parallel' do
       expect(Gitlab::GithubImport::ImportCollaboratorWorker).to receive(:perform_in)
-        .with(1.second, project.id, an_instance_of(Hash), an_instance_of(String))
+        .with(1, project.id, an_instance_of(Hash), an_instance_of(String))
 
       waiter = importer.parallel_import
 

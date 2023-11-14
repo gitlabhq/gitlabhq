@@ -2,92 +2,135 @@ import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
+const mockStatus = {
+  group: 'success',
+  icon: 'status_success',
+  text: 'Success',
+};
+
 describe('CI Icon component', () => {
   let wrapper;
 
-  const createComponent = (props) => {
+  const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMount(CiIcon, {
       propsData: {
+        status: mockStatus,
         ...props,
       },
     });
   };
 
-  it('should render a span element with an svg', () => {
-    createComponent({
-      status: {
-        group: 'success',
-        icon: 'status_success',
-      },
-    });
+  const findIcon = () => wrapper.findComponent(GlIcon);
 
-    expect(wrapper.find('span').exists()).toBe(true);
-    expect(wrapper.findComponent(GlIcon).exists()).toBe(true);
+  it('should render a span element and an icon', () => {
+    createComponent();
+
+    expect(wrapper.attributes('size')).toBe('md');
+    expect(findIcon().exists()).toBe(true);
   });
 
   describe.each`
-    isActive
-    ${true}
-    ${false}
-  `('when isActive is $isActive', ({ isActive }) => {
-    it(`"active" class is ${isActive ? 'not ' : ''}added`, () => {
-      wrapper = shallowMount(CiIcon, {
-        propsData: {
-          status: {
-            group: 'success',
-            icon: 'status_success',
+    showStatusText | showTooltip | expectedText | expectedTooltip | expectedAriaLabel
+    ${true}        | ${true}     | ${'Success'} | ${undefined}    | ${undefined}
+    ${true}        | ${false}    | ${'Success'} | ${undefined}    | ${undefined}
+    ${false}       | ${true}     | ${''}        | ${'Success'}    | ${'Success'}
+    ${false}       | ${false}    | ${''}        | ${undefined}    | ${'Success'}
+  `(
+    'when showStatusText is %{showStatusText} and showTooltip is %{showTooltip}',
+    ({ showStatusText, showTooltip, expectedText, expectedTooltip, expectedAriaLabel }) => {
+      beforeEach(() => {
+        createComponent({
+          props: {
+            showStatusText,
+            showTooltip,
           },
-          isActive,
+        });
+      });
+
+      it(`aria-label is ${expectedAriaLabel}`, () => {
+        expect(wrapper.attributes('aria-label')).toBe(expectedAriaLabel);
+      });
+
+      it(`text shown is ${expectedAriaLabel}`, () => {
+        expect(wrapper.text()).toBe(expectedText);
+      });
+
+      it(`tooltip shown is ${expectedAriaLabel}`, () => {
+        expect(wrapper.attributes('title')).toBe(expectedTooltip);
+      });
+    },
+  );
+
+  describe('when appearing as a link', () => {
+    it('shows a GraphQL path', () => {
+      createComponent({
+        props: {
+          status: {
+            ...mockStatus,
+            detailsPath: '/path',
+          },
+          useLink: true,
         },
       });
 
-      expect(wrapper.classes('active')).toBe(isActive);
+      expect(wrapper.attributes('href')).toBe('/path');
     });
-  });
 
-  describe.each`
-    isInteractive
-    ${true}
-    ${false}
-  `('when isInteractive is $isInteractive', ({ isInteractive }) => {
-    it(`"interactive" class is ${isInteractive ? 'not ' : ''}added`, () => {
-      wrapper = shallowMount(CiIcon, {
-        propsData: {
+    it('shows a REST API path', () => {
+      createComponent({
+        props: {
           status: {
-            group: 'success',
-            icon: 'status_success',
+            ...mockStatus,
+            details_path: '/path',
           },
-          isInteractive,
+          useLink: true,
         },
       });
 
-      expect(wrapper.classes('interactive')).toBe(isInteractive);
+      expect(wrapper.attributes('href')).toBe('/path');
+    });
+
+    it('shows no path', () => {
+      createComponent({
+        status: {
+          detailsPath: '/path',
+          details_path: '/path',
+        },
+        props: {
+          useLink: false,
+        },
+      });
+
+      expect(wrapper.attributes('href')).toBe(undefined);
     });
   });
 
-  describe('rendering a status', () => {
+  describe('rendering a status icon and class', () => {
     it.each`
-      icon                 | group         | cssClass
-      ${'status_success'}  | ${'success'}  | ${'ci-status-icon-success'}
-      ${'status_failed'}   | ${'failed'}   | ${'ci-status-icon-failed'}
-      ${'status_warning'}  | ${'warning'}  | ${'ci-status-icon-warning'}
-      ${'status_pending'}  | ${'pending'}  | ${'ci-status-icon-pending'}
-      ${'status_running'}  | ${'running'}  | ${'ci-status-icon-running'}
-      ${'status_created'}  | ${'created'}  | ${'ci-status-icon-created'}
-      ${'status_skipped'}  | ${'skipped'}  | ${'ci-status-icon-skipped'}
-      ${'status_canceled'} | ${'canceled'} | ${'ci-status-icon-canceled'}
-      ${'status_manual'}   | ${'manual'}   | ${'ci-status-icon-manual'}
-    `('should render a $group status', ({ icon, group, cssClass }) => {
-      wrapper = shallowMount(CiIcon, {
-        propsData: {
+      icon                 | variant
+      ${'status_success'}  | ${'success'}
+      ${'status_warning'}  | ${'warning'}
+      ${'status_pending'}  | ${'warning'}
+      ${'status_failed'}   | ${'danger'}
+      ${'status_running'}  | ${'info'}
+      ${'status_created'}  | ${'neutral'}
+      ${'status_skipped'}  | ${'neutral'}
+      ${'status_canceled'} | ${'neutral'}
+      ${'status_manual'}   | ${'neutral'}
+    `('should render a $group status', ({ icon, variant }) => {
+      createComponent({
+        props: {
           status: {
+            ...mockStatus,
             icon,
-            group,
           },
+          showStatusText: true,
         },
       });
+      expect(wrapper.attributes('variant')).toBe(variant);
+      expect(wrapper.classes(`ci-icon-variant-${variant}`)).toBe(true);
 
-      expect(wrapper.classes()).toContain(cssClass);
+      expect(findIcon().props('name')).toBe(`${icon}_borderless`);
     });
   });
 });

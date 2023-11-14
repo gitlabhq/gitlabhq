@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Import::ImportFailureService, :aggregate_failures, featur
   let(:import_state) { nil }
   let(:fail_import) { false }
   let(:metrics) { false }
-  let(:external_identifiers) { {} }
+  let(:external_identifiers) { { foo: 'bar' } }
   let(:project_id) { project.id }
 
   let(:arguments) do
@@ -90,13 +90,19 @@ RSpec.describe Gitlab::Import::ImportFailureService, :aggregate_failures, featur
           )
 
         service.execute
+        project.reload
 
-        expect(project.import_state.reload.status).to eq('failed')
-
-        expect(project.import_failures).not_to be_empty
-        expect(project.import_failures.last.exception_class).to eq('StandardError')
-        expect(project.import_failures.last.exception_message).to eq('some error')
-        expect(project.import_failures.last.retry_count).to eq(0)
+        expect(project.import_state.status).to eq('failed')
+        expect(project.import_failures).to contain_exactly(
+          have_attributes(
+            retry_count: 0,
+            exception_class: 'StandardError',
+            exception_message: 'some error',
+            external_identifiers: external_identifiers.with_indifferent_access,
+            correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id,
+            source: 'SomeImporter'
+          )
+        )
       end
     end
 
@@ -128,13 +134,19 @@ RSpec.describe Gitlab::Import::ImportFailureService, :aggregate_failures, featur
           )
 
         service.execute
+        project.reload
 
         expect(project.import_state.reload.status).to eq('started')
-
-        expect(project.import_failures).not_to be_empty
-        expect(project.import_failures.last.exception_class).to eq('StandardError')
-        expect(project.import_failures.last.exception_message).to eq('some error')
-        expect(project.import_failures.last.retry_count).to eq(nil)
+        expect(project.import_failures).to contain_exactly(
+          have_attributes(
+            retry_count: nil,
+            exception_class: 'StandardError',
+            exception_message: 'some error',
+            external_identifiers: external_identifiers.with_indifferent_access,
+            correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id,
+            source: 'SomeImporter'
+          )
+        )
       end
     end
 

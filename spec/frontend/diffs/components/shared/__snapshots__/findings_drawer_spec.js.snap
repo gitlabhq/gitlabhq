@@ -1,111 +1,220 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`FindingsDrawer matches the snapshot 1`] = `
-<gl-drawer-stub
+<transition-stub
   class="findings-drawer"
-  headerheight=""
-  open="true"
-  variant="default"
-  zindex="252"
+  name="gl-drawer"
 >
-  <h2
-    class="gl-font-size-h2 gl-mb-0 gl-mt-0"
-    data-testid="findings-drawer-heading"
+  <aside
+    class="gl-drawer gl-drawer-default"
+    style="top: 0px; z-index: 252;"
   >
-    Unused method argument - \`c\`. If it's necessary, use \`_\` or \`_c\` as an argument name to indicate that it won't be used.
-  </h2>
-  <ul
-    class="gl-border-b-initial gl-list-style-none gl-mb-0 gl-pb-0!"
-  >
-    <li
-      class="gl-mb-4"
-      data-testid="findings-drawer-severity"
+    <div
+      class="gl-drawer-header"
     >
-      <span
-        class="gl-font-weight-bold"
+      <div
+        class="gl-drawer-title"
       >
-        Severity:
-      </span>
-      <gl-icon-stub
-        class="gl-text-orange-300 inline-findings-severity-icon"
-        data-testid="findings-drawer-severity-icon"
-        name="severity-low"
-        size="12"
-      />
-      minor
-    </li>
-    <li
-      class="gl-mb-4"
-      data-testid="findings-drawer-engine"
+        <h2
+          class="drawer-heading gl-font-base gl-mb-0 gl-mt-0"
+        >
+          <svg
+            aria-hidden="true"
+            class="gl-icon gl-text-orange-300 gl-vertical-align-baseline! inline-findings-severity-icon s12"
+            data-testid="severity-low-icon"
+            role="img"
+          >
+            <use
+              href="file-mock#severity-low"
+            />
+          </svg>
+          <span
+            class="drawer-heading-severity"
+          >
+            low
+          </span>
+          SAST Finding
+        </h2>
+        <button
+          aria-label="Close drawer"
+          class="btn btn-default btn-default-tertiary btn-icon btn-sm gl-button gl-drawer-close-button"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="gl-button-icon gl-icon s16"
+            data-testid="close-icon"
+            role="img"
+          >
+            <use
+              href="file-mock#close"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div
+      class="gl-drawer-body gl-drawer-body-scrim"
     >
-      <span
-        class="gl-font-weight-bold"
-      >
-        Engine:
-      </span>
-      testengine name
-    </li>
-    <li
-      class="gl-mb-4"
-      data-testid="findings-drawer-category"
-    >
-      <span
-        class="gl-font-weight-bold"
-      >
-        Category:
-      </span>
-      testcategory 1
-    </li>
-    <li
-      class="gl-mb-4"
-      data-testid="findings-drawer-other-locations"
-    >
-      <span
-        class="gl-display-block gl-font-weight-bold gl-mb-3"
-      >
-        Other locations:
-      </span>
       <ul
-        class="gl-pl-6"
+        class="gl-border-b-initial gl-list-style-none gl-mb-0 gl-pb-0!"
       >
         <li
-          class="gl-mb-1"
+          class="gl-mb-4"
         >
-          <gl-link-stub
-            data-testid="findings-drawer-other-locations-link"
-            href="http://testlink.com"
+          <p
+            class="gl-line-height-20"
           >
-            testpath
-          </gl-link-stub>
+            <span
+              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              data-testid="findings-drawer-item-description"
+            >
+              Name
+            </span>
+            <span
+              data-testid="findings-drawer-item-value-prop"
+            >
+              mockedtitle
+            </span>
+          </p>
         </li>
         <li
-          class="gl-mb-1"
+          class="gl-mb-4"
         >
-          <gl-link-stub
-            data-testid="findings-drawer-other-locations-link"
-            href="http://testlink.com"
+          <p
+            class="gl-line-height-20"
           >
-            testpath 1
-          </gl-link-stub>
+            <span
+              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              data-testid="findings-drawer-item-description"
+            >
+              Status
+            </span>
+            <span
+              class="badge badge-pill badge-warning gl-badge md text-capitalize"
+            >
+              detected
+            </span>
+          </p>
         </li>
         <li
-          class="gl-mb-1"
+          class="gl-mb-4"
         >
-          <gl-link-stub
-            data-testid="findings-drawer-other-locations-link"
-            href="http://testlink.com"
+          <p
+            class="gl-line-height-20"
           >
-            testpath2
-          </gl-link-stub>
+            <span
+              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              data-testid="findings-drawer-item-description"
+            >
+              Description
+            </span>
+            <span
+              data-testid="findings-drawer-item-value-prop"
+            >
+              fakedesc
+            </span>
+          </p>
+        </li>
+        <li
+          class="gl-mb-4"
+        >
+          <p
+            class="gl-line-height-20"
+          >
+            <span
+              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              data-testid="findings-drawer-item-description"
+            >
+              Project
+            </span>
+            <a
+              class="gl-link"
+              href="/testpath"
+            >
+              testname
+            </a>
+          </p>
+        </li>
+        <li
+          class="gl-mb-4"
+        >
+          <p
+            class="gl-line-height-20"
+          >
+            <span
+              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              data-testid="findings-drawer-item-description"
+            >
+              File
+            </span>
+            <span
+              data-testid="findings-drawer-item-value-prop"
+            />
+          </p>
+        </li>
+        <li
+          class="gl-mb-4"
+        >
+          <p
+            class="gl-line-height-20"
+          >
+            <span
+              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              data-testid="findings-drawer-item-description"
+            >
+              Identifiers
+            </span>
+            <span>
+              <a
+                class="gl-link"
+                href="https://semgrep.dev/r/gitlab.eslint.detect-disable-mustache-escape"
+              >
+                eslint.detect-disable-mustache-escape
+              </a>
+            </span>
+          </p>
+        </li>
+        <li
+          class="gl-mb-4"
+        >
+          <p
+            class="gl-line-height-20"
+          >
+            <span
+              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              data-testid="findings-drawer-item-description"
+            >
+              Tool
+            </span>
+            <span
+              data-testid="findings-drawer-item-value-prop"
+            >
+              SAST
+            </span>
+          </p>
+        </li>
+        <li
+          class="gl-mb-4"
+        >
+          <p
+            class="gl-line-height-20"
+          >
+            <span
+              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              data-testid="findings-drawer-item-description"
+            >
+              Engine
+            </span>
+            <span
+              data-testid="findings-drawer-item-value-prop"
+            >
+              testengine name
+            </span>
+          </p>
         </li>
       </ul>
-    </li>
-  </ul>
-  <span
-    class="drawer-body gl-display-block gl-px-3 gl-py-0!"
-    data-testid="findings-drawer-body"
-  >
-    Duplicated Code Duplicated code
-  </span>
-</gl-drawer-stub>
+    </div>
+  </aside>
+</transition-stub>
 `;

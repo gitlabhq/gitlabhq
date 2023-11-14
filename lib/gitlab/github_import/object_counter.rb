@@ -52,7 +52,7 @@ module Gitlab
               .sort
               .each do |counter|
                 object_type = counter.split('/').last
-                result[operation][object_type] = CACHING.read_integer(counter) || 0
+                result[operation][object_type] = CACHING.read_integer(counter, timeout: IMPORT_CACHING_TIMEOUT) || 0
               end
           end
         end

@@ -804,6 +804,7 @@ For questions about these integrations, use the [GitLab community forum](https:/
 ### `C#`
 
 - [`GitLabApiClient`](https://github.com/nmklotas/GitLabApiClient)
+- [`NGitLab`](https://github.com/ubisoft/NGitLab)
 
 ### Go
 

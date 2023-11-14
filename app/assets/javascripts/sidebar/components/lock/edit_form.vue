@@ -27,11 +27,10 @@ export default {
         <gl-sprintf
           :message="
             __(
-              'Unlock this %{issuableDisplayName}? %{strongStart}Everyone%{strongEnd} will be able to comment.',
+              'Unlock this discussion? %{strongStart}Everyone%{strongEnd} will be able to comment.',
             )
           "
         >
-          <template #issuableDisplayName>{{ issuableDisplayName }}</template>
           <template #strong="{ content }"
             ><strong>{{ content }}</strong></template
           >
@@ -42,11 +41,10 @@ export default {
         <gl-sprintf
           :message="
             __(
-              'Lock this %{issuableDisplayName}? Only %{strongStart}project members%{strongEnd} will be able to comment.',
+              'Lock this discussion? Only %{strongStart}project members%{strongEnd} will be able to comment.',
             )
           "
         >
-          <template #issuableDisplayName>{{ issuableDisplayName }}</template>
           <template #strong="{ content }"
             ><strong>{{ content }}</strong></template
           >

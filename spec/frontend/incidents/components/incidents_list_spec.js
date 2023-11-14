@@ -278,7 +278,7 @@ describe('Incidents List', () => {
       ${'severity'}      | ${TH_SEVERITY_TEST_ID}          | ${noneSort} | ${descSort} | ${ascSort}
       ${'status'}        | ${TH_ESCALATION_STATUS_TEST_ID} | ${noneSort} | ${descSort} | ${ascSort}
       ${'publish date'}  | ${TH_PUBLISHED_TEST_ID}         | ${noneSort} | ${descSort} | ${ascSort}
-      ${'due date'}      | ${TH_INCIDENT_SLA_TEST_ID}      | ${noneSort} | ${ascSort}  | ${descSort}
+      ${'due date'}      | ${TH_INCIDENT_SLA_TEST_ID}      | ${noneSort} | ${descSort} | ${ascSort}
     `(
       'updates sort with new direction when sorting by $description',
       async ({ selector, initialSort, firstSort, nextSort }) => {

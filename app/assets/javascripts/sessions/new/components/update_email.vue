@@ -1,6 +1,7 @@
 <script>
 import { GlForm, GlFormGroup, GlFormInput, GlButton } from '@gitlab/ui';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
+import { isUserEmail } from '~/lib/utils/forms';
 import axios from '~/lib/utils/axios_utils';
 import {
   I18N_EMAIL,
@@ -10,7 +11,6 @@ import {
   I18N_EMAIL_INVALID,
   I18N_UPDATE_EMAIL_SUCCESS,
   I18N_GENERIC_ERROR,
-  EMAIL_REGEXP,
   SUCCESS_RESPONSE,
   FAILURE_RESPONSE,
 } from '../constants';
@@ -48,7 +48,7 @@ export default {
         return '';
       }
 
-      if (!EMAIL_REGEXP.test(this.email)) {
+      if (!isUserEmail(this.email)) {
         return I18N_EMAIL_INVALID;
       }
 

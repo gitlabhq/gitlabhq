@@ -64,7 +64,7 @@ describe('RunnerEditApp', () => {
     await createComponentWithApollo({ mountFn: mount });
 
     expect(findRunnerHeader().text()).toContain(`#${mockRunnerId} (${mockRunnerSha})`);
-    expect(findRunnerHeader().text()).toContain('created');
+    expect(findRunnerHeader().text()).toContain('Created');
   });
 
   it('displays the runner type and status', async () => {

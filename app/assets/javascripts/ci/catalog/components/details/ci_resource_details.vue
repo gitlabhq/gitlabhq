@@ -30,12 +30,12 @@ export default {
 
 <template>
   <gl-tabs>
-    <gl-tab v-if="glFeatures.ciCatalogComponentsTab" :title="$options.i18n.tabs.components" lazy>
-      <ci-resource-components :resource-id="resourceId"
-    /></gl-tab>
     <gl-tab :title="$options.i18n.tabs.readme" lazy>
       <ci-resource-readme :resource-id="resourceId" />
     </gl-tab>
+    <gl-tab v-if="glFeatures.ciCatalogComponentsTab" :title="$options.i18n.tabs.components" lazy>
+      <ci-resource-components :resource-id="resourceId"
+    /></gl-tab>
   </gl-tabs>
 </template>
 <style></style>

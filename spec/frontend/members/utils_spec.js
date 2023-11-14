@@ -22,6 +22,8 @@ import {
   buildSortHref,
   parseDataAttributes,
   groupLinkRequestFormatter,
+  roleDropdownItems,
+  initialSelectedRole,
 } from '~/members/utils';
 import {
   member as memberMock,
@@ -34,6 +36,8 @@ import {
   pagination,
   dataAttribute,
 } from './mock_data';
+
+jest.mock('lodash/uniqueId', () => (prefix) => `${prefix}0`);
 
 const IS_CURRENT_USER_ID = 123;
 const IS_NOT_CURRENT_USER_ID = 124;
@@ -317,7 +321,46 @@ describe('Members Utils', () => {
           accessLevel: 50,
           expires_at: '2020-10-16',
         }),
-      ).toEqual({ group_link: { group_access: 50, expires_at: '2020-10-16' } });
+      ).toEqual({
+        group_link: { group_access: 50, expires_at: '2020-10-16', member_role_id: null },
+      });
+
+      expect(
+        groupLinkRequestFormatter({
+          accessLevel: 50,
+          expires_at: '2020-10-16',
+          memberRoleId: 80,
+        }),
+      ).toEqual({
+        group_link: { group_access: 50, expires_at: '2020-10-16', member_role_id: 80 },
+      });
+    });
+  });
+
+  describe('roleDropdownItems', () => {
+    it('returns properly flatten and formatted dropdowns', () => {
+      const { flatten, formatted } = roleDropdownItems(members[0]);
+
+      expect(flatten).toEqual(formatted);
+      expect(flatten[0]).toMatchObject({
+        text: 'Guest',
+        value: 'role-static-0',
+        accessLevel: 10,
+        memberRoleId: null,
+      });
+    });
+  });
+
+  describe('initialSelectedRole', () => {
+    it('find and return correct value', () => {
+      expect(
+        initialSelectedRole(
+          [{ accessLevel: 10, memberRoleId: null, text: 'Guest', value: 'role-static-0' }],
+          {
+            accessLevel: { integerValue: 10 },
+          },
+        ),
+      ).toBe('role-static-0');
     });
   });
 });

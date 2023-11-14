@@ -5,116 +5,119 @@
 - reduce_visibility_form_id = 'reduce-visibility-form'
 - @force_desktop_expanded_sidebar = true
 
-= render Pajamas::AlertComponent.new(title: _('GitLab Pages has moved'),
+- if can?(current_user, :admin_project, @project)
+  = render Pajamas::AlertComponent.new(title: _('GitLab Pages has moved'),
     alert_options: { class: 'gl-my-5', data: { feature_id: Users::CalloutsHelper::PAGES_MOVED_CALLOUT, dismiss_endpoint: callouts_path, defer_links: 'true' } }) do |c|
-  - c.with_body do
-    = _('To go to GitLab Pages, on the left sidebar, select %{pages_link}.').html_safe % {pages_link: link_to('Deploy > Pages', project_pages_path(@project)).html_safe}
+    - c.with_body do
+      = _('To go to GitLab Pages, on the left sidebar, select %{pages_link}.').html_safe % {pages_link: link_to('Deploy > Pages', project_pages_path(@project)).html_safe}
 
-%section.settings.general-settings.no-animate.expanded#js-general-settings
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Naming, topics, avatar')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = _('Collapse')
-    %p.gl-text-secondary= _('Update your project name, topics, description, and avatar.')
-  .settings-content= render 'projects/settings/general'
+  %section.settings.general-settings.no-animate.expanded#js-general-settings
+    .settings-header
+      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Naming, topics, avatar')
+      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+        = _('Collapse')
+      %p.gl-text-secondary= _('Update your project name, topics, description, and avatar.')
+    .settings-content= render 'projects/settings/general'
 
-%section.settings.sharing-permissions.no-animate#js-shared-permissions{ class: ('expanded' if expanded), data: { testid: 'visibility-features-permissions-content' } }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Visibility, project features, permissions')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary= _('Choose visibility level, enable/disable project features and their permissions, disable email notifications, and show default emoji reactions.')
+  %section.settings.sharing-permissions.no-animate#js-shared-permissions{ class: ('expanded' if expanded), data: { testid: 'visibility-features-permissions-content' } }
+    .settings-header
+      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Visibility, project features, permissions')
+      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+        = expanded ? _('Collapse') : _('Expand')
+      %p.gl-text-secondary= _('Choose visibility level, enable/disable project features and their permissions, disable email notifications, and show default emoji reactions.')
 
-  .settings-content
-    = form_for @project, html: { multipart: true, class: "sharing-permissions-form", id: reduce_visibility_form_id }, authenticity_token: true do |f|
-      %input{ name: 'update_section', type: 'hidden', value: 'js-shared-permissions' }
-      %template.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data(@project).to_json.html_safe
-      .js-project-permissions-form{ data: visibility_confirm_modal_data(@project, reduce_visibility_form_id) }
-- if show_merge_request_settings_callout?(@project)
-  %section.settings.expanded
-    = render Pajamas::AlertComponent.new(variant: :info,
+    .settings-content
+      = form_for @project, html: { multipart: true, class: "sharing-permissions-form", id: reduce_visibility_form_id }, authenticity_token: true do |f|
+        %input{ name: 'update_section', type: 'hidden', value: 'js-shared-permissions' }
+        %template.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data(@project).to_json.html_safe
+        .js-project-permissions-form{ data: visibility_confirm_modal_data(@project, reduce_visibility_form_id) }
+  - if show_merge_request_settings_callout?(@project)
+    %section.settings.expanded
+      = render Pajamas::AlertComponent.new(variant: :info,
         title: _('Merge requests and approvals settings have moved.'),
         alert_options: { class: 'js-merge-request-settings-callout gl-my-5', data: { feature_id: Users::CalloutsHelper::MERGE_REQUEST_SETTINGS_MOVED_CALLOUT, dismiss_endpoint: callouts_path, defer_links: 'true' } }) do |c|
-      - c.with_body do
-        = _('On the left sidebar, select %{merge_requests_link} to view them.').html_safe % { merge_requests_link: link_to('Settings > Merge requests', project_settings_merge_requests_path(@project)).html_safe }
+        - c.with_body do
+          = _('On the left sidebar, select %{merge_requests_link} to view them.').html_safe % { merge_requests_link: link_to('Settings > Merge requests', project_settings_merge_requests_path(@project)).html_safe }
 
-%section.settings.no-animate{ class: ('expanded' if expanded), data: { testid: 'badges-settings-content' } }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = s_('ProjectSettings|Badges')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = s_('ProjectSettings|Customize this project\'s badges.')
-      = link_to s_('ProjectSettings|What are badges?'), help_page_path('user/project/badges')
-  .settings-content
-    = render 'shared/badges/badge_settings'
+  %section.settings.no-animate{ class: ('expanded' if expanded), data: { testid: 'badges-settings-content' } }
+    .settings-header
+      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
+        = s_('ProjectSettings|Badges')
+      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+        = expanded ? _('Collapse') : _('Expand')
+      %p.gl-text-secondary
+        = s_('ProjectSettings|Customize this project\'s badges.')
+        = link_to s_('ProjectSettings|What are badges?'), help_page_path('user/project/badges')
+    .settings-content
+      = render 'shared/badges/badge_settings'
 
-= render_if_exists 'compliance_management/compliance_framework/project_settings', expanded: expanded
+  = render_if_exists 'compliance_management/compliance_framework/project_settings', expanded: expanded
 
-= render_if_exists 'projects/settings/default_issue_template'
+  = render_if_exists 'projects/settings/default_issue_template'
 
-= render 'projects/service_desk_settings'
+  = render 'projects/service_desk_settings'
 
-%section.settings.advanced-settings.no-animate#js-project-advanced-settings{ class: ('expanded' if expanded), data: { testid: 'advanced-settings-content' } }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Advanced')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary= s_('ProjectSettings|Housekeeping, export, archive, change path, transfer, and delete.')
+  %section.settings.advanced-settings.no-animate#js-project-advanced-settings{ class: ('expanded' if expanded), data: { testid: 'advanced-settings-content' } }
+    .settings-header
+      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Advanced')
+      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+        = expanded ? _('Collapse') : _('Expand')
+      %p.gl-text-secondary= s_('ProjectSettings|Housekeeping, export, archive, change path, transfer, and delete.')
 
-  .settings-content
-    = render_if_exists 'projects/settings/restore', project: @project
+    .settings-content
+      = render_if_exists 'projects/settings/restore', project: @project
 
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card gl-mt-0' }, header_options: { class: 'gl-new-card-header gl-flex-direction-column' }, body_options: { class: 'gl-new-card-body gl-px-5 gl-py-4' }) do |c|
-      - c.with_header do
-        .gl-new-card-title-wrapper
-          %h4.gl-new-card-title= _('Housekeeping')
-        %p.gl-new-card-description
-          = _('Runs a number of housekeeping tasks within the current repository, such as compressing file revisions and removing unreachable objects.')
-          = link_to _('Learn more.'), help_page_path('administration/housekeeping'), target: '_blank', rel: 'noopener noreferrer'
+      = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card gl-mt-0' }, header_options: { class: 'gl-new-card-header gl-flex-direction-column' }, body_options: { class: 'gl-new-card-body gl-px-5 gl-py-4' }) do |c|
+        - c.with_header do
+          .gl-new-card-title-wrapper
+            %h4.gl-new-card-title= _('Housekeeping')
+          %p.gl-new-card-description
+            = _('Runs a number of housekeeping tasks within the current repository, such as compressing file revisions and removing unreachable objects.')
+            = link_to _('Learn more.'), help_page_path('administration/housekeeping'), target: '_blank', rel: 'noopener noreferrer'
 
-      - c.with_body do
-        .gl-display-flex.gl-flex-wrap.gl-gap-3
-          = render Pajamas::ButtonComponent.new(method: :post, href: housekeeping_project_path(@project)) do
-            = _('Run housekeeping')
-          #js-project-prune-unreachable-objects-button{ data: { prune_objects_path: housekeeping_project_path(@project, prune: true), prune_objects_doc_path: help_page_path('administration/housekeeping', anchor: 'prune-unreachable-objects') } }
+        - c.with_body do
+          .gl-display-flex.gl-flex-wrap.gl-gap-3
+            = render Pajamas::ButtonComponent.new(method: :post, href: housekeeping_project_path(@project)) do
+              = _('Run housekeeping')
+            #js-project-prune-unreachable-objects-button{ data: { prune_objects_path: housekeeping_project_path(@project, prune: true), prune_objects_doc_path: help_page_path('administration/housekeeping', anchor: 'prune-unreachable-objects') } }
 
-    = render 'export', project: @project
+      = render 'export', project: @project
 
-    = render_if_exists 'projects/settings/archive'
+      = render_if_exists 'projects/settings/archive'
 
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card rename-repository' }, header_options: { class: 'gl-new-card-header gl-flex-direction-column' }, body_options: { class: 'gl-new-card-body gl-px-5 gl-py-4' }) do |c|
-      - c.with_header do
-        .gl-new-card-title-wrapper
-          %h4.gl-new-card-title.warning-title= _('Change path')
-        %p.gl-new-card-description
-          - link = link_to('', help_page_path('user/project/settings/index', anchor: 'rename-a-repository'), target: '_blank', rel: 'noopener noreferrer')
-          = safe_format(_("A project’s repository name defines its URL (the one you use to access the project via a browser) and its place on the file disk where GitLab is installed. %{link_start}Learn more.%{link_end}"), tag_pair(link, :link_start, :link_end))
+      = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card rename-repository' }, header_options: { class: 'gl-new-card-header gl-flex-direction-column' }, body_options: { class: 'gl-new-card-body gl-px-5 gl-py-4' }) do |c|
+        - c.with_header do
+          .gl-new-card-title-wrapper
+            %h4.gl-new-card-title.warning-title= _('Change path')
+          %p.gl-new-card-description
+            - link = link_to('', help_page_path('user/project/settings/index', anchor: 'rename-a-repository'), target: '_blank', rel: 'noopener noreferrer')
+            = safe_format(_("A project’s repository name defines its URL (the one you use to access the project via a browser) and its place on the file disk where GitLab is installed. %{link_start}Learn more.%{link_end}"), tag_pair(link, :link_start, :link_end))
 
-      - c.with_body do
-        = render 'projects/errors'
-        = gitlab_ui_form_for @project do |f|
-          .form-group
-            %p
-              %span.gl-font-weight-bold= _("Be careful. Renaming a project's repository can have unintended side effects.")
-              = _('You will need to update your local repositories to point to the new location.')
-            - if @project.deployment_platform.present?
-              %p= _('Your deployment services will be broken, you will need to manually fix the services after renaming.')
-            = f.label :path, _('Path'), class: 'label-bold'
+        - c.with_body do
+          = render 'projects/errors'
+          = gitlab_ui_form_for @project do |f|
             .form-group
-              .input-group
-                .input-group-prepend
-                  .input-group-text
-                    #{Gitlab::Utils.append_path(root_url, @project.namespace.full_path)}/
-                = f.text_field :path, class: 'form-control gl-form-input-xl', data: { testid: 'project-path-field' }
-          = f.submit _('Change path'), class: "btn-danger", data: { testid: 'change-path-button' }, pajamas_button: true
+              %p
+                %span.gl-font-weight-bold= _("Be careful. Renaming a project's repository can have unintended side effects.")
+                = _('You will need to update your local repositories to point to the new location.')
+              - if @project.deployment_platform.present?
+                %p= _('Your deployment services will be broken, you will need to manually fix the services after renaming.')
+              = f.label :path, _('Path'), class: 'label-bold'
+              .form-group
+                .input-group
+                  .input-group-prepend
+                    .input-group-text
+                      #{Gitlab::Utils.append_path(root_url, @project.namespace.full_path)}/
+                  = f.text_field :path, class: 'form-control gl-form-input-xl', data: { testid: 'project-path-field' }
+            = f.submit _('Change path'), class: "btn-danger", data: { testid: 'change-path-button' }, pajamas_button: true
 
-    = render 'transfer', project: @project
+      = render 'transfer', project: @project
 
-    = render 'remove_fork', project: @project
+      = render 'remove_fork', project: @project
 
-    = render 'remove', project: @project
+      = render 'remove', project: @project
+- elsif can?(current_user, :archive_project, @project)
+  = render_if_exists 'projects/settings/archive'
 
 .save-project-loader.hide
   .center

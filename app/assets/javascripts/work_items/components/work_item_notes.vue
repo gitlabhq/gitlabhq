@@ -1,7 +1,7 @@
 <script>
 import { GlSkeletonLoader, GlModal } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
 import { uniqueId } from 'lodash';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __ } from '~/locale';
 import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import { TYPENAME_DISCUSSION, TYPENAME_NOTE } from '~/graphql_shared/constants';
@@ -170,9 +170,6 @@ export default {
   apollo: {
     workItemNotes: {
       query: workItemNotesByIidQuery,
-      context: {
-        isSingleRequest: true,
-      },
       variables() {
         return {
           fullPath: this.fullPath,

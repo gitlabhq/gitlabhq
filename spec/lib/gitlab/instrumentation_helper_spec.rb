@@ -7,6 +7,7 @@ require 'support/helpers/rails_helpers'
 RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cache, :clean_gitlab_redis_cache,
                :use_null_store_as_repository_cache, feature_category: :scalability do
   using RSpec::Parameterized::TableSyntax
+  include RedisHelpers
 
   describe '.add_instrumentation_data', :request_store do
     let(:payload) { {} }
@@ -39,11 +40,23 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
     end
 
     context 'when Redis calls are made' do
-      it 'adds Redis data and omits Gitaly data' do
-        stub_rails_env('staging') # to avoid raising CrossSlotError
-        Gitlab::Redis::Sessions.with { |redis| redis.mset('test-cache', 123, 'test-cache2', 123) }
+      let_it_be(:redis_store_class) { define_helper_redis_store_class }
+
+      before do
+        redis_store_class.with(&:ping)
+        Gitlab::Redis::Queues.with(&:ping)
+        RequestStore.clear!
+      end
+
+      it 'adds Redis data including cross slot calls' do
+        expect(Gitlab::Instrumentation::RedisBase)
+          .to receive(:raise_cross_slot_validation_errors?)
+          .once.and_return(false)
+
+        redis_store_class.with { |redis| redis.mset('test-cache', 123, 'test-cache2', 123) }
+
         Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-          Gitlab::Redis::Sessions.with { |redis| redis.mget('cache-test', 'cache-test-2') }
+          redis_store_class.with { |redis| redis.mget('cache-test', 'cache-test-2') }
         end
         Gitlab::Redis::Queues.with { |redis| redis.set('test-queues', 321) }
 
@@ -249,15 +262,12 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
     end
   end
 
-  describe 'duration calculations' do
-    where(:end_time, :start_time, :time_now, :expected_duration) do
+  describe '.queue_duration_for_job' do
+    where(:enqueued_at, :created_at, :time_now, :expected_duration) do
       "2019-06-01T00:00:00.000+0000" | nil                            | "2019-06-01T02:00:00.000+0000" | 2.hours.to_f
-      "2019-06-01T02:00:00.000+0000" | nil                            | "2019-06-01T02:00:00.001+0000" | 0.001
       "2019-06-01T02:00:00.000+0000" | "2019-05-01T02:00:00.000+0000" | "2019-06-01T02:00:01.000+0000" | 1
-      nil                            | "2019-06-01T02:00:00.000+0000" | "2019-06-01T02:00:00.001+0000" | 0.001
       nil                            | nil                            | "2019-06-01T02:00:00.001+0000" | nil
       "2019-06-01T02:00:00.000+0200" | nil                            | "2019-06-01T02:00:00.000-0200" | 4.hours.to_f
-      1571825569.998168              | nil                            | "2019-10-23T12:13:16.000+0200" | 26.001832
       1571825569                     | nil                            | "2019-10-23T12:13:16.000+0200" | 27
       "invalid_date"                 | nil                            | "2019-10-23T12:13:16.000+0200" | nil
       ""                             | nil                            | "2019-10-23T12:13:16.000+0200" | nil
@@ -267,27 +277,30 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
       Time.at(1571999233).utc        | nil                            | "2019-10-25T12:29:16.000+0200" | 123
     end
 
-    describe '.queue_duration_for_job' do
-      with_them do
-        let(:job) { { 'enqueued_at' => end_time, 'created_at' => start_time } }
+    with_them do
+      let(:job) { { 'enqueued_at' => enqueued_at, 'created_at' => created_at } }
 
-        it "returns the correct duration" do
-          travel_to(Time.iso8601(time_now)) do
-            expect(described_class.queue_duration_for_job(job)).to eq(expected_duration)
-          end
+      it "returns the correct duration" do
+        travel_to(Time.iso8601(time_now)) do
+          expect(described_class.queue_duration_for_job(job)).to eq(expected_duration)
         end
       end
     end
+  end
 
-    describe '.enqueue_latency_for_scheduled_job' do
-      with_them do
-        let(:job) { { 'enqueued_at' => end_time, 'scheduled_at' => start_time } }
+  describe '.enqueue_latency_for_scheduled_job' do
+    where(:scheduled_at, :enqueued_at, :expected_duration) do
+      "2019-06-01T02:00:00.000+0000" | "2019-06-01T02:00:00.001+0000" | 0.001
+      "2019-06-01T02:00:00.000+0000" | "2019-06-01T02:00:01.000+0000" | 1
+      "2019-06-01T02:00:00.000+0000" | nil                            | nil
+      nil                            | "2019-06-01T02:00:01.000+0000" | nil
+    end
 
-        it "returns the correct duration" do
-          travel_to(Time.iso8601(time_now)) do
-            expect(described_class.enqueue_latency_for_scheduled_job(job)).to eq(expected_duration)
-          end
-        end
+    with_them do
+      let(:job) { { 'enqueued_at' => enqueued_at, 'scheduled_at' => scheduled_at } }
+
+      it "returns the correct duration" do
+        expect(described_class.enqueue_latency_for_scheduled_job(job)).to eq(expected_duration)
       end
     end
   end

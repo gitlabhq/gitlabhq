@@ -1,5 +1,12 @@
 <script>
-import { GlIntersectionObserver, GlLink, GlSprintf, GlBadge } from '@gitlab/ui';
+import {
+  GlIntersectionObserver,
+  GlLink,
+  GlSprintf,
+  GlBadge,
+  GlIcon,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -45,6 +52,7 @@ export default {
     GlLink,
     GlSprintf,
     GlBadge,
+    GlIcon,
     DiscussionCounter,
     StatusBadge,
     TodoWidget,
@@ -53,10 +61,12 @@ export default {
   },
   directives: {
     SafeHtml,
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {
     projectPath: { default: null },
+    sourceProjectPath: { default: null },
     title: { default: '' },
     tabs: { default: () => [] },
     isFluidLayout: { default: false },
@@ -88,6 +98,16 @@ export default {
     },
     isNotificationsTodosButtons() {
       return this.glFeatures.notificationsTodosButtons && this.glFeatures.movedMrSidebar;
+    },
+    isForked() {
+      return this.projectPath !== this.sourceProjectPath;
+    },
+    sourceBranch() {
+      if (this.isForked) {
+        return `${this.sourceProjectPath}:${this.getNoteableData.source_branch}`;
+      }
+
+      return this.getNoteableData.source_branch;
     },
   },
   watch: {
@@ -122,8 +142,8 @@ export default {
       :class="{ 'gl-visibility-hidden': !isStickyHeaderVisible }"
     >
       <div
-        class="issue-sticky-header-text gl-display-flex gl-flex-direction-column gl-align-items-center gl-mx-auto gl-px-5 gl-w-full"
-        :class="{ 'gl-max-w-container-xl': !isFluidLayout }"
+        class="issue-sticky-header-text gl-display-flex gl-flex-direction-column gl-align-items-center gl-mx-auto gl-w-full"
+        :class="{ 'container-limited': !isFluidLayout }"
       >
         <div class="gl-w-full gl-display-flex gl-align-items-baseline">
           <status-badge
@@ -153,8 +173,17 @@ export default {
                   :title="getNoteableData.source_branch"
                   :href="getNoteableData.source_branch_path"
                   class="gl-text-blue-500! gl-font-monospace gl-bg-blue-50 gl-rounded-base gl-font-sm gl-px-2 gl-text-truncate gl-max-w-26"
+                  data-testid="source-branch"
                 >
-                  {{ getNoteableData.source_branch }}
+                  <span
+                    v-if="isForked"
+                    v-gl-tooltip
+                    class="gl-vertical-align-middle gl-mr-n2"
+                    :title="__('The source project is a fork')"
+                  >
+                    <gl-icon name="fork" :size="12" class="gl-ml-1" />
+                  </span>
+                  {{ sourceBranch }}
                 </gl-link>
               </template>
               <template #target>

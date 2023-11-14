@@ -15,6 +15,8 @@ import {
 } from '~/members/store/actions';
 import * as types from '~/members/store/mutation_types';
 
+const mockedRequestFormatter = jest.fn().mockImplementation(noop);
+
 describe('Vuex members actions', () => {
   describe('update member actions', () => {
     let mock;
@@ -22,7 +24,7 @@ describe('Vuex members actions', () => {
     const state = {
       members,
       memberPath: '/groups/foo-bar/-/group_members/:id',
-      requestFormatter: noop,
+      requestFormatter: mockedRequestFormatter,
     };
 
     beforeEach(() => {
@@ -35,7 +37,7 @@ describe('Vuex members actions', () => {
 
     describe('updateMemberRole', () => {
       const memberId = members[0].id;
-      const accessLevel = { integerValue: 30, stringValue: 'Developer' };
+      const accessLevel = { integerValue: 30, memberRoleId: 90 };
 
       const payload = {
         memberId,
@@ -54,6 +56,10 @@ describe('Vuex members actions', () => {
           ]);
 
           expect(mock.history.put[0].url).toBe('/groups/foo-bar/-/group_members/238');
+          expect(mockedRequestFormatter).toHaveBeenCalledWith({
+            accessLevel: accessLevel.integerValue,
+            memberRoleId: accessLevel.memberRoleId,
+          });
         });
       });
 

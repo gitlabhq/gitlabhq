@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigation do
-  let_it_be(:user) { create(:user, use_new_navigation: true) }
+  let_it_be(:user) { create(:user) }
 
   before do
     sign_in(user)

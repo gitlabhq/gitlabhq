@@ -13,6 +13,8 @@ RSpec.shared_context 'with FOSS query type fields' do
       :current_user,
       :design_management,
       :echo,
+      :frecent_groups,
+      :frecent_projects,
       :gitpod_enabled,
       :group,
       :groups,

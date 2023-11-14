@@ -53,7 +53,6 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
     let!(:deployment)  { build.deployment }
 
     before do
-      stub_feature_flags(unbatch_graphql_queries: false)
       merge_request.update!(head_pipeline: pipeline)
       deployment.update!(status: :success)
       visit project_merge_request_path(project, merge_request)
@@ -83,6 +82,8 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
       click_button 'Merge'
 
       wait_for_requests
+
+      page.refresh
 
       click_button 'Cherry-pick'
 
@@ -175,7 +176,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
       expect(page).to have_content("Merge blocked")
       expect(page).to have_content(
         "pipeline must succeed. It's waiting for a manual action to continue.")
-      expect(page).to have_css('.ci-status-icon-manual')
+      expect(page).to have_css('[data-testid="status_manual_borderless-icon"]')
     end
   end
 

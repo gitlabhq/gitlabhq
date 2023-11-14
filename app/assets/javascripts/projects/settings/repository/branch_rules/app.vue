@@ -76,7 +76,7 @@ export default {
         v-gl-modal="$options.modalId"
         size="small"
         class="gl-ml-3"
-        data-qa-selector="add_branch_rule_button"
+        data-testid="add-branch-rule-button"
         >{{ $options.i18n.addBranchRule }}</gl-button
       >
     </template>

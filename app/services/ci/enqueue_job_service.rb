@@ -11,11 +11,14 @@ module Ci
     end
 
     def execute(&transition)
-      job.user = current_user
-      job.job_variables_attributes = variables if variables
-
       transition ||= ->(job) { job.enqueue! }
-      Gitlab::OptimisticLocking.retry_lock(job, name: 'ci_enqueue_job', &transition)
+
+      Gitlab::OptimisticLocking.retry_lock(job, name: 'ci_enqueue_job') do |job|
+        job.user = current_user
+        job.job_variables_attributes = variables if variables
+
+        transition.call(job)
+      end
 
       ResetSkippedJobsService.new(job.project, current_user).execute(job)
 

@@ -94,8 +94,12 @@ export default {
     computedValueIsVisible() {
       return !this.showToggleVisibilityButton || this.valueIsVisible;
     },
-    inputType() {
-      return this.computedValueIsVisible ? 'text' : 'password';
+    formInputClass() {
+      return [
+        'gl-font-monospace! gl-cursor-default!',
+        { 'input-copy-show-disc': !this.computedValueIsVisible },
+        this.formInputGroupProps.class,
+      ];
     },
   },
   mounted() {
@@ -157,10 +161,9 @@ export default {
         ref="input"
         :readonly="readonly"
         :width="size"
-        class="gl-font-monospace! gl-cursor-default!"
+        :class="formInputClass"
         v-bind="formInputGroupProps"
         :value="value"
-        :type="inputType"
         @input="handleInput"
         @click="handleClick"
       />
@@ -194,3 +197,8 @@ export default {
     </template>
   </gl-form-group>
 </template>
+<style>
+.input-copy-show-disc {
+  -webkit-text-security: disc;
+}
+</style>

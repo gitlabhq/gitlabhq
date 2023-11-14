@@ -7,7 +7,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
   include TermsHelper
   include UsageDataHelpers
 
-  let_it_be(:admin) { create(:admin, :no_super_sidebar) }
+  let_it_be(:admin) { create(:admin) }
 
   context 'application setting :admin_mode is enabled', :request_store do
     before do
@@ -22,7 +22,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'change visibility settings' do
-        page.within('[data-testid="admin-visibility-access-settings"]') do
+        within_testid('admin-visibility-access-settings') do
           choose "application_setting_default_project_visibility_20"
           click_button 'Save changes'
         end
@@ -31,19 +31,19 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'uncheck all restricted visibility levels' do
-        page.within('[data-testid="restricted-visibility-levels"]') do
+        within_testid('restricted-visibility-levels') do
           uncheck s_('VisibilityLevel|Public')
           uncheck s_('VisibilityLevel|Internal')
           uncheck s_('VisibilityLevel|Private')
         end
 
-        page.within('[data-testid="admin-visibility-access-settings"]') do
+        within_testid('admin-visibility-access-settings') do
           click_button 'Save changes'
         end
 
         expect(page).to have_content "Application settings saved successfully"
 
-        page.within('[data-testid="restricted-visibility-levels"]') do
+        within_testid('restricted-visibility-levels') do
           expect(find_field(s_('VisibilityLevel|Public'))).not_to be_checked
           expect(find_field(s_('VisibilityLevel|Internal'))).not_to be_checked
           expect(find_field(s_('VisibilityLevel|Private'))).not_to be_checked
@@ -53,7 +53,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       it 'modify import sources' do
         expect(current_settings.import_sources).to be_empty
 
-        page.within('[data-testid="admin-import-export-settings"]') do
+        within_testid('admin-import-export-settings') do
           check "Repository by URL"
           click_button 'Save changes'
         end
@@ -63,12 +63,12 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'change Visibility and Access Controls' do
-        page.within('[data-testid="admin-import-export-settings"]') do
-          page.within('[data-testid="project-export"]') do
+        within_testid('admin-import-export-settings') do
+          within_testid('project-export') do
             uncheck 'Enabled'
           end
 
-          page.within('[data-testid="bulk-import"]') do
+          within_testid('bulk-import') do
             check 'Enabled'
           end
 
@@ -81,7 +81,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'change Keys settings' do
-        page.within('[data-testid="admin-visibility-access-settings"]') do
+        within_testid('admin-visibility-access-settings') do
           select 'Are forbidden', from: 'RSA SSH keys'
           select 'Are allowed', from: 'DSA SSH keys'
           select 'Must be at least 384 bits', from: 'ECDSA SSH keys'
@@ -103,7 +103,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'change Account and Limit Settings' do
-        page.within(find('[data-testid="account-and-limit-settings-content"]')) do
+        within_testid('account-and-limit-settings-content') do
           uncheck 'Gravatar enabled'
           click_button 'Save changes'
         end
@@ -113,7 +113,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'change Maximum export size' do
-        page.within(find('[data-testid="admin-import-export-settings"]')) do
+        within_testid('admin-import-export-settings') do
           fill_in 'Maximum export size (MiB)', with: 25
           click_button 'Save changes'
         end
@@ -123,7 +123,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'change Maximum import size' do
-        page.within(find('[data-testid="admin-import-export-settings"]')) do
+        within_testid('admin-import-export-settings') do
           fill_in 'Maximum import size (MiB)', with: 15
           click_button 'Save changes'
         end
@@ -169,7 +169,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             expect(page).to have_unchecked_field(_('Deactivate dormant users after a period of inactivity'))
             expect(current_settings.deactivate_dormant_users).to be_falsey
 
-            page.within(find('[data-testid="account-and-limit-settings-content"]')) do
+            within_testid('account-and-limit-settings-content') do
               check _('Deactivate dormant users after a period of inactivity')
               click_button _('Save changes')
             end
@@ -185,7 +185,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           it 'change dormant users period', :js do
             expect(page).to have_field(_('Days of inactivity before deactivation'), disabled: true)
 
-            page.within(find('[data-testid="account-and-limit-settings-content"]')) do
+            within_testid('account-and-limit-settings-content') do
               check _('Deactivate dormant users after a period of inactivity')
               fill_in _('Days of inactivity before deactivation'), with: '180'
               click_button _('Save changes')
@@ -202,7 +202,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             selector = '#application_setting_deactivate_dormant_users_period_error'
             expect(page).not_to have_selector(selector, visible: :visible)
 
-            page.within(find('[data-testid="account-and-limit-settings-content"]')) do
+            within_testid('account-and-limit-settings-content') do
               check 'application_setting_deactivate_dormant_users'
               fill_in _('application_setting_deactivate_dormant_users_period'), with: '30'
               click_button 'Save changes'
@@ -666,28 +666,47 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(find_field('Allow access to members of the following group').value).to be_nil
       end
 
-      it 'loads togglable usage ping payload on click', :js do
-        allow(Gitlab::Usage::ServicePingReport).to receive(:for).and_return({ uuid: '12345678', hostname: '127.0.0.1' })
+      context 'Service usage data', :with_license do
+        before do
+          stub_usage_data_connections
+          stub_database_flavor_check
+        end
 
-        stub_usage_data_connections
-        stub_database_flavor_check
+        context 'when service data cached' do
+          before_all do
+            create(:raw_usage_data)
+          end
 
-        page.within('#js-usage-settings') do
-          expected_payload_content = /(?=.*"uuid")(?=.*"hostname")/m
+          it 'loads usage ping payload on click', :js do
+            expected_payload_content = /(?=.*"test")/m
 
-          expect(page).not_to have_content expected_payload_content
+            expect(page).not_to have_content expected_payload_content
 
-          click_button('Preview payload')
+            click_button('Preview payload')
 
-          wait_for_requests
+            wait_for_requests
 
-          expect(page).to have_selector '.js-service-ping-payload'
-          expect(page).to have_button 'Hide payload'
-          expect(page).to have_content expected_payload_content
+            expect(page).to have_button 'Hide payload'
+            expect(page).to have_content expected_payload_content
+          end
 
-          click_button('Hide payload')
+          it 'generates usage ping payload on button click', :js do
+            expect_next_instance_of(Admin::ApplicationSettingsController) do |instance|
+              expect(instance).to receive(:usage_data).and_call_original
+            end
 
-          expect(page).not_to have_content expected_payload_content
+            click_button('Download payload')
+
+            wait_for_requests
+          end
+        end
+
+        context 'when service data not cached' do
+          it 'renders missing cache information' do
+            visit metrics_and_profiling_admin_application_settings_path
+
+            expect(page).to have_text('Service Ping payload not found in the application cache')
+          end
         end
       end
     end
@@ -799,7 +818,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       it 'changes gitlab shell operation limits settings' do
         visit network_admin_application_settings_path
 
-        page.within('[data-testid="gitlab-shell-operation-limits"]') do
+        within_testid('gitlab-shell-operation-limits') do
           fill_in 'Maximum number of Git operations per minute', with: 100
           click_button 'Save changes'
         end
@@ -971,15 +990,14 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
     end
 
-    context 'Nav bar' do
+    context 'Nav bar', :js do
       it 'shows default help links in nav' do
         default_support_url = "https://#{ApplicationHelper.promo_host}/get-help/"
 
         visit root_dashboard_path
 
-        find('.header-help-dropdown-toggle').click
-
-        page.within '.header-help' do
+        within_testid('super-sidebar') do
+          click_on 'Help'
           expect(page).to have_link(text: 'Help', href: help_path)
           expect(page).to have_link(text: 'Support', href: default_support_url)
         end
@@ -991,65 +1009,9 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
         visit root_dashboard_path
 
-        find('.header-help-dropdown-toggle').click
-
-        page.within '.header-help' do
+        within_testid('super-sidebar') do
+          click_on 'Help'
           expect(page).to have_link(text: 'Support', href: new_support_url)
-        end
-      end
-    end
-
-    context 'Service usage data page', :with_license do
-      before do
-        stub_usage_data_connections
-        stub_database_flavor_check
-      end
-
-      context 'when service data cached', :use_clean_rails_memory_store_caching do
-        let(:usage_data) { { uuid: "1111", hostname: "localhost", counts: { issue: 0 } }.deep_stringify_keys }
-
-        before do
-          # We are mocking Gitlab::Usage::ServicePingReport because this dataset generation
-          # takes a very long time, and is not what we're testing in this context.
-          #
-          # See https://gitlab.com/gitlab-org/gitlab/-/issues/414929
-          allow(Gitlab::UsageData).to receive(:data).and_return(usage_data)
-          allow(Gitlab::Usage::ServicePingReport).to receive(:with_instrumentation_classes)
-            .with(usage_data, :with_value).and_return(usage_data)
-
-          visit usage_data_admin_application_settings_path
-          visit service_usage_data_admin_application_settings_path
-        end
-
-        it 'loads usage ping payload on click', :js do
-          expected_payload_content = /(?=.*"uuid")(?=.*"hostname")/m
-
-          expect(page).not_to have_content expected_payload_content
-
-          click_button('Preview payload')
-
-          wait_for_requests
-
-          expect(page).to have_button 'Hide payload'
-          expect(page).to have_content expected_payload_content
-        end
-
-        it 'generates usage ping payload on button click', :js do
-          expect_next_instance_of(Admin::ApplicationSettingsController) do |instance|
-            expect(instance).to receive(:usage_data).and_call_original
-          end
-
-          click_button('Download payload')
-
-          wait_for_requests
-        end
-      end
-
-      context 'when service data not cached' do
-        it 'renders missing cache information' do
-          visit service_usage_data_admin_application_settings_path
-
-          expect(page).to have_text('Service Ping payload not found in the application cache')
         end
       end
     end

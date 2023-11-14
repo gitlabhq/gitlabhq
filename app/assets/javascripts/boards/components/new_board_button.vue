@@ -38,7 +38,7 @@ export default {
     <template #control> </template>
     <template #candidate>
       <div v-if="canShowCreateButton" class="gl-ml-1 gl-mr-3 gl-display-flex gl-align-items-center">
-        <gl-button data-qa-selector="new_board_button" @click.prevent="showDialog">
+        <gl-button @click.prevent="showDialog">
           {{ createButtonText }}
         </gl-button>
       </div>

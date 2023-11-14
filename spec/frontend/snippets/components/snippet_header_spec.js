@@ -80,6 +80,7 @@ describe('Snippet header component', () => {
 
   const findAuthorEmoji = () => wrapper.findComponent(GlEmoji);
   const findAuthoredMessage = () => wrapper.find('[data-testid="authored-message"]').text();
+  const findAuthorUsername = () => wrapper.find('[data-testid="authored-username"]');
   const findButtons = () => wrapper.findAllComponents(GlButton);
   const findButtonsAsModel = () =>
     findButtons().wrappers.map((x) => ({
@@ -116,6 +117,7 @@ describe('Snippet header component', () => {
       project: null,
       author: {
         name: 'Thor Odinson',
+        username: null,
         status: null,
       },
       blobs: [Blob],
@@ -135,12 +137,24 @@ describe('Snippet header component', () => {
     expect(wrapper.find('.detail-page-header').exists()).toBe(true);
   });
 
-  it('renders a message showing snippet creation date and author', () => {
+  it('renders a message showing snippet creation date and author full name, without username when not available', () => {
     createComponent();
 
     const text = findAuthoredMessage();
     expect(text).toContain('Authored 1 month ago by');
     expect(text).toContain('Thor Odinson');
+    expect(findAuthorUsername().exists()).toBe(false);
+  });
+
+  it('renders a message showing snippet creation date, author full name and username', () => {
+    snippet.author.username = 'todinson';
+    createComponent();
+
+    const text = findAuthoredMessage();
+    expect(text).toContain('Authored 1 month ago by');
+    expect(text).toContain('Thor Odinson');
+    expect(text).toContain('@todinson');
+    expect(findAuthorUsername().exists()).toBe(true);
   });
 
   describe('author status', () => {

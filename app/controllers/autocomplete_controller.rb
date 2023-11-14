@@ -3,16 +3,18 @@
 class AutocompleteController < ApplicationController
   include SearchRateLimitable
 
-  skip_before_action :authenticate_user!, only: [:users, :award_emojis, :merge_request_target_branches]
+  skip_before_action :authenticate_user!, only: [
+    :users, :award_emojis, :merge_request_target_branches, :merge_request_source_branches
+  ]
   before_action :check_search_rate_limit!, only: [:users, :projects]
 
   feature_category :user_profile, [:users, :user]
   feature_category :groups_and_projects, [:projects]
   feature_category :team_planning, [:award_emojis]
-  feature_category :code_review_workflow, [:merge_request_target_branches]
+  feature_category :code_review_workflow, [:merge_request_target_branches, :merge_request_source_branches]
   feature_category :continuous_delivery, [:deploy_keys_with_owners]
 
-  urgency :low, [:merge_request_target_branches, :deploy_keys_with_owners, :users]
+  urgency :low, [:merge_request_target_branches, :merge_request_source_branches, :deploy_keys_with_owners, :users]
   urgency :low, [:award_emojis]
   urgency :medium, [:projects]
 
@@ -62,14 +64,11 @@ class AutocompleteController < ApplicationController
   end
 
   def merge_request_target_branches
-    if target_branch_params.present?
-      merge_requests = MergeRequestsFinder.new(current_user, target_branch_params).execute
-      target_branches = merge_requests.recent_target_branches
+    merge_request_branches(target: true)
+  end
 
-      render json: target_branches.map { |target_branch| { title: target_branch } }
-    else
-      render json: { error: _('At least one of group_id or project_id must be specified') }, status: :bad_request
-    end
+  def merge_request_source_branches
+    merge_request_branches(source: true)
   end
 
   def deploy_keys_with_owners
@@ -90,13 +89,28 @@ class AutocompleteController < ApplicationController
       .execute
   end
 
-  def target_branch_params
+  def branch_params
     params.permit(:group_id, :project_id).select { |_, v| v.present? }
   end
 
   # overridden in EE
   def presented_suggested_users
     []
+  end
+
+  def merge_request_branches(source: false, target: false)
+    if branch_params.present?
+      merge_requests = MergeRequestsFinder.new(current_user, branch_params).execute
+
+      branches = []
+
+      branches.concat(merge_requests.recent_source_branches) if source
+      branches.concat(merge_requests.recent_target_branches) if target
+
+      render json: branches.map { |branch| { title: branch } }
+    else
+      render json: { error: _('At least one of group_id or project_id must be specified') }, status: :bad_request
+    end
   end
 end
 

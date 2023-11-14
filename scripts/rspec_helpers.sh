@@ -486,13 +486,3 @@ function is_rspec_last_run_results_file_missing() {
     return 1
   fi
 }
-
-function merge_auto_explain_logs() {
-  local auto_explain_logs_path="$(dirname "${RSPEC_AUTO_EXPLAIN_LOG_PATH}")/"
-
-  for file in ${auto_explain_logs_path}*.gz; do
-    (gunzip -c "${file}" && rm -f "${file}" || true)
-  done | \
-  scripts/merge-auto-explain-logs | \
-  gzip -c > "${RSPEC_AUTO_EXPLAIN_LOG_PATH}"
-}

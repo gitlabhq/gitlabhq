@@ -9,7 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab Inc. periodically collects information about your instance in order
 to perform various actions.
 
-All usage statistics are [opt-out](#enable-or-disable-usage-statistics).
+For free self-managed instances, all usage statistics are [opt-out](#enable-or-disable-service-ping).
+For information about other tiers, see [Customer Product Usage Information](https://about.gitlab.com/handbook/legal/privacy/customer-product-usage-information/#service-ping-formerly-known-as-usage-ping).
 
 ## Service Ping
 
@@ -63,6 +64,13 @@ In the following table, you can see:
 | [Issue analytics](../../user/group/issues_analytics/index.md) | GitLab 16.5 and later |
 | [Custom Text in Emails](../../administration/settings/email.md#custom-additional-text) | GitLab 16.5 and later |
 | [Contribution analytics](../../user/group/contribution_analytics/index.md) | GitLab 16.5 and later |
+| [Group file templates](../../user/group/manage.md#group-file-templates) | GitLab 16.6 and later |
+| [Group webhooks](../../user/project/integrations/webhooks.md#group-webhooks) | GitLab 16.6 and later |
+| [Service Level Agreement countdown timer](../../operations/incident_management/incidents.md#service-level-agreement-countdown-timer) | GitLab 16.6 and later |
+| [Lock project membership to group](../../user/group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) | GitLab 16.6 and later |
+| [Users and permissions report](../../administration/admin_area.md#user-permission-export) | GitLab 16.6 and later |
+| [Advanced search](../../user/search/advanced_search.md) | GitLab 16.6 and later |
+| [DevOps Adoption](../../user/group/devops_adoption/index.md) | GitLab 16.6 and later |
 
 ### Enable registration features
 
@@ -95,7 +103,16 @@ This information is used, among other things, to identify to which versions
 patches must be backported, making sure active GitLab instances remain
 secure.
 
-If you [disable version check](#enable-or-disable-usage-statistics), this information isn't collected.
+If you disable version check, this information isn't collected.
+
+### Enable or disable version check
+
+1. On the left sidebar, select **Search or go to**.
+1. Select **Admin Area**.
+1. Select **Settings > Metrics and profiling**.
+1. Expand **Usage statistics**.
+1. Select or clear the **Enable version check** checkbox.
+1. Select **Save changes**.
 
 ### Request flow example
 
@@ -121,23 +138,26 @@ GitLab instance to the host `version.gitlab.com` on port `443`.
 If your GitLab instance is behind a proxy, set the appropriate
 [proxy configuration variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html).
 
-## Enable or disable usage statistics
+## Enable or disable Service Ping
 
-To enable or disable Service Ping and version check:
+### Through the UI
+
+To enable or disable Service Ping:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Metrics and profiling**.
 1. Expand **Usage statistics**.
-1. Select or clear the **Enable version check** and **Enable Service Ping** checkboxes.
+1. Select or clear the  **Enable Service Ping** checkbox.
 1. Select **Save changes**.
 
 NOTE:
-Service Ping settings only control whether the data is being shared with GitLab, or used only internally.
+The effect of disabling Service Ping depends on the instance's tier. For more information, see [Customer Product Usage Information](https://about.gitlab.com/handbook/legal/privacy/customer-product-usage-information/#service-ping-formerly-known-as-usage-ping).
+Service Ping settings only control whether the data is being shared with GitLab, or limited to only internal use by the instance.
 Even if you disable Service Ping, the `gitlab_service_ping_worker` background job still periodically generates a Service Ping payload for your instance.
-The payload is available in the [Service Usage data](#manually-upload-service-ping-payload) admin section.
+The payload is available in the [Metrics and profiling](#manually-upload-service-ping-payload) admin section.
 
-## Disable usage statistics with the configuration file
+### Through the configuration file
 
 NOTE:
 The method to disable Service Ping in the GitLab configuration file does not work in
@@ -189,7 +209,7 @@ You can view the exact JSON payload sent to GitLab Inc. in the Admin Area. To vi
 1. Sign in as a user with administrator access.
 1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
-1. Select **Settings > Service usage data**.
+1. Select **Settings > Metrics and profiling > Usage statistics**.
 1. Select **Preview payload**.
 
 For an example payload, see [Example Service Ping payload](../../development/internal_analytics/service_ping/index.md#example-service-ping-payload).
@@ -207,7 +227,7 @@ To upload the payload manually:
 1. Sign in as a user with administrator access.
 1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
-1. Select **Settings > Service usage data**.
+1. Select **Settings > Metrics and profiling > Usage statistics**.
 1. Select **Download payload**.
 1. Save the JSON file.
 1. Visit [Service usage data center](https://version.gitlab.com/usage_data/new).

@@ -1,5 +1,5 @@
 <script>
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { SEVERITY_ICONS_MR_WIDGET } from '~/ci/reports/codequality_report/constants';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';

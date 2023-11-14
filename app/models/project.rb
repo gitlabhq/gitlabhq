@@ -45,6 +45,7 @@ class Project < ApplicationRecord
   include UpdatedAtFilterable
   include IgnorableColumns
   include CrossDatabaseIgnoredTables
+  include UseSqlFunctionForPrimaryKeyLookups
 
   ignore_column :emails_disabled, remove_with: '16.3', remove_after: '2023-08-22'
 
@@ -140,8 +141,14 @@ class Project < ApplicationRecord
   after_create -> { create_or_load_association(:pages_metadatum) }
   after_create :set_timestamps_for_create
   after_create :check_repository_absence!
+
+  # TODO: Remove this callback after background syncing is implemented. See https://gitlab.com/gitlab-org/gitlab/-/issues/429376.
+  after_update :update_catalog_resource,
+    if: -> { (saved_change_to_name? || saved_change_to_description? || saved_change_to_visibility_level?) && catalog_resource }
+
   before_destroy :remove_private_deploy_keys
   after_destroy :remove_exports
+
   after_save :update_project_statistics, if: :saved_change_to_namespace_id?
 
   after_save :schedule_sync_event_worker, if: -> { saved_change_to_id? || saved_change_to_namespace_id? }
@@ -457,8 +464,10 @@ class Project < ApplicationRecord
   # GitLab Pages
   has_many :pages_domains
   has_one  :pages_metadatum, class_name: 'ProjectPagesMetadatum', inverse_of: :project
-  # we need to clean up files, not only remove records
-  has_many :pages_deployments, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  # rubocop:disable Cop/ActiveRecordDependent -- we need to clean up files, not only remove records
+  has_many :pages_deployments, dependent: :destroy, inverse_of: :project
+  # rubocop:enable Cop/ActiveRecordDependent
+  has_many :active_pages_deployments, -> { active }, class_name: 'PagesDeployment', inverse_of: :project
 
   # Can be too many records. We need to implement delete_all in batches.
   # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/228637
@@ -497,7 +506,7 @@ class Project < ApplicationRecord
 
   delegate :merge_requests_access_level, :forking_access_level, :issues_access_level, :wiki_access_level, :snippets_access_level, :builds_access_level, :repository_access_level, :package_registry_access_level, :pages_access_level, :metrics_dashboard_access_level, :analytics_access_level, :operations_access_level, :security_and_compliance_access_level, :container_registry_access_level, :environments_access_level, :feature_flags_access_level, :monitor_access_level, :releases_access_level, :infrastructure_access_level, :model_experiments_access_level, to: :project_feature, allow_nil: true
   delegate :name, to: :owner, allow_nil: true, prefix: true
-  delegate :log_jira_dvcs_integration_usage, :jira_dvcs_server_last_sync_at, :jira_dvcs_cloud_last_sync_at, to: :feature_usage
+  delegate :jira_dvcs_server_last_sync_at, :jira_dvcs_cloud_last_sync_at, to: :feature_usage
   delegate :last_pipeline, to: :commit, allow_nil: true
 
   with_options to: :team do
@@ -620,42 +629,6 @@ class Project < ApplicationRecord
         .or(arel_table[:storage_version].eq(nil)))
   end
 
-  scope :sorted_by_name_desc, -> {
-    keyset_order = Gitlab::Pagination::Keyset::Order.build([
-      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-        attribute_name: :name,
-        column_expression: Project.arel_table[:name],
-        order_expression: Project.arel_table[:name].desc,
-        distinct: false,
-        nullable: :nulls_last
-      ),
-      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-        attribute_name: :id,
-        order_expression: Project.arel_table[:id].desc
-      )
-    ])
-
-    reorder(keyset_order)
-  }
-
-  scope :sorted_by_name_asc, -> {
-    keyset_order = Gitlab::Pagination::Keyset::Order.build([
-      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-        attribute_name: :name,
-        column_expression: Project.arel_table[:name],
-        order_expression: Project.arel_table[:name].asc,
-        distinct: false,
-        nullable: :nulls_last
-      ),
-      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-        attribute_name: :id,
-        order_expression: Project.arel_table[:id].asc
-      )
-    ])
-
-    reorder(keyset_order)
-  }
-
   scope :sorted_by_updated_asc, -> { reorder(self.arel_table['updated_at'].asc) }
   scope :sorted_by_updated_desc, -> { reorder(self.arel_table['updated_at'].desc) }
   scope :sorted_by_stars_desc, -> { reorder(self.arel_table['star_count'].desc) }
@@ -769,7 +742,7 @@ class Project < ApplicationRecord
   end
 
   scope :with_pages_deployed, -> do
-    joins(:pages_metadatum).merge(ProjectPagesMetadatum.deployed)
+    where_exists(PagesDeployment.active.where('pages_deployments.project_id = projects.id'))
   end
 
   scope :pages_metadata_not_migrated, -> do
@@ -1476,12 +1449,10 @@ class Project < ApplicationRecord
   end
 
   def build_or_assign_import_data(data: nil, credentials: nil)
-    return if data.nil? && credentials.nil?
-
     project_import_data = import_data || build_import_data
 
-    project_import_data.merge_data(data.to_h)
-    project_import_data.merge_credentials(credentials.to_h)
+    project_import_data.merge_data(data.to_h) if data
+    project_import_data.merge_credentials(credentials.to_h) if credentials
 
     project_import_data
   end
@@ -1564,9 +1535,9 @@ class Project < ApplicationRecord
     limit = creator.projects_limit
     error =
       if limit == 0
-        _('Personal project creation is not allowed. Please contact your administrator with questions')
+        _('You cannot create projects in your personal namespace. Contact your GitLab administrator.')
       else
-        _('Your project limit is %{limit} projects! Please contact your administrator to increase it')
+        _("You've reached your limit of %{limit} projects created. Contact your GitLab administrator.")
       end
 
     self.errors.add(:limit_reached, error % { limit: limit })
@@ -2236,11 +2207,11 @@ class Project < ApplicationRecord
   end
 
   def pages_deployed?
-    pages_metadatum&.deployed?
+    active_pages_deployments.exists?
   end
 
   def pages_show_onboarding?
-    !(pages_metadatum&.onboarding_complete || pages_metadatum&.deployed)
+    !(pages_metadatum&.onboarding_complete || pages_deployed?)
   end
 
   def remove_private_deploy_keys
@@ -2260,27 +2231,6 @@ class Project < ApplicationRecord
 
   def mark_pages_onboarding_complete
     ensure_pages_metadatum.update!(onboarding_complete: true)
-  end
-
-  def mark_pages_as_deployed
-    ensure_pages_metadatum.update!(deployed: true)
-  end
-
-  def mark_pages_as_not_deployed
-    ensure_pages_metadatum.update!(deployed: false)
-  end
-
-  def update_pages_deployment!(deployment)
-    ensure_pages_metadatum.update!(pages_deployment: deployment)
-  end
-
-  def set_first_pages_deployment!(deployment)
-    ensure_pages_metadatum
-
-    # where().update_all to perform update in the single transaction with check for null
-    ProjectPagesMetadatum
-      .where(project_id: id, pages_deployment_id: nil)
-      .update_all(deployed: deployment.present?, pages_deployment_id: deployment&.id)
   end
 
   def set_full_path(gl_full_path: full_path)
@@ -2875,7 +2825,7 @@ class Project < ApplicationRecord
   end
 
   def uses_default_ci_config?
-    ci_config_path.blank? || ci_config_path == Gitlab::FileDetector::PATTERNS[:gitlab_ci]
+    ci_config_path.blank? || Gitlab::FileDetector.type_of(ci_config_path) == :gitlab_ci
   end
 
   def limited_protected_branches(limit)
@@ -3026,7 +2976,7 @@ class Project < ApplicationRecord
   end
 
   def ci_config_for(sha)
-    repository.gitlab_ci_yml_for(sha, ci_config_path_or_default)
+    repository.blob_data_at(sha, ci_config_path_or_default)
   end
 
   def enabled_group_deploy_keys
@@ -3529,6 +3479,10 @@ class Project < ApplicationRecord
     pool_repository_shard = pool.shard.name
 
     pool_repository_shard == repository_storage
+  end
+
+  def update_catalog_resource
+    catalog_resource.sync_with_project!
   end
 end
 

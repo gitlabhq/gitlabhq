@@ -1,9 +1,16 @@
 import Vue, { nextTick } from 'vue';
-import { GlDropdown, GlDropdownItem, GlLink, GlModal, GlButton } from '@gitlab/ui';
+import {
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlLink,
+  GlModal,
+  GlButton,
+} from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
+import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking } from 'helpers/tracking_helper';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
@@ -120,8 +127,10 @@ describe('HeaderActions component', () => {
   const findDropdownBy = (dataTestId) => wrapper.find(`[data-testid="${dataTestId}"]`);
   const findMobileDropdown = () => findDropdownBy('mobile-dropdown');
   const findDesktopDropdown = () => findDropdownBy('desktop-dropdown');
-  const findMobileDropdownItems = () => findMobileDropdown().findAllComponents(GlDropdownItem);
-  const findDesktopDropdownItems = () => findDesktopDropdown().findAllComponents(GlDropdownItem);
+  const findMobileDropdownItems = () =>
+    findMobileDropdown().findAllComponents(GlDisclosureDropdownItem);
+  const findDesktopDropdownItems = () =>
+    findDesktopDropdown().findAllComponents(GlDisclosureDropdownItem);
   const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
   const findReportAbuseButton = () => wrapper.find(`[data-testid="report-abuse-item"]`);
   const findNotificationWidget = () => wrapper.find(`[data-testid="notification-toggle"]`);
@@ -179,6 +188,11 @@ describe('HeaderActions component', () => {
       },
       stubs: {
         GlButton,
+        GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
+          methods: {
+            close: jest.fn(),
+          },
+        }),
       },
     });
   };
@@ -217,7 +231,7 @@ describe('HeaderActions component', () => {
         });
 
         it('calls apollo mutation', () => {
-          findToggleIssueStateButton().vm.$emit('click');
+          findToggleIssueStateButton().vm.$emit('action');
 
           expect(updateIssueMutationResponseHandler).toHaveBeenCalledWith({
             input: {
@@ -229,7 +243,7 @@ describe('HeaderActions component', () => {
         });
 
         it('dispatches a custom event to update the issue page', async () => {
-          findToggleIssueStateButton().vm.$emit('click');
+          findToggleIssueStateButton().vm.$emit('action');
 
           await waitForPromises();
 
@@ -286,7 +300,11 @@ describe('HeaderActions component', () => {
           it(`${isItemVisible ? 'shows' : 'hides'} "${itemText}" item`, () => {
             expect(
               findDropdownItems()
-                .filter((item) => item.text() === itemText)
+                .filter((item) => {
+                  return item.props('item')
+                    ? item.props('item').text === itemText
+                    : item.text() === itemText;
+                })
                 .exists(),
             ).toBe(isItemVisible);
           });
@@ -313,7 +331,7 @@ describe('HeaderActions component', () => {
 
       it('should trigger "open.form" event when clicked', async () => {
         expect(issuesEventHub.$emit).not.toHaveBeenCalled();
-        await findEditButton().trigger('click');
+        await findEditButton().vm.$emit('click');
         expect(issuesEventHub.$emit).toHaveBeenCalledWith('open.form');
       });
     });
@@ -328,7 +346,7 @@ describe('HeaderActions component', () => {
     });
 
     it('tracks clicking on button', () => {
-      findDesktopDropdownItems().at(4).vm.$emit('click');
+      findDesktopDropdownItems().at(4).vm.$emit('action');
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_dropdown', {
         label: 'delete_issue',
@@ -345,7 +363,7 @@ describe('HeaderActions component', () => {
           promoteToEpicHandler: promoteToEpicMutationSuccessResponseHandler,
         });
 
-        wrapper.find('[data-testid="promote-button"]').vm.$emit('click');
+        wrapper.find('[data-testid="promote-button"]').vm.$emit('action');
 
         await waitForPromises();
       });
@@ -381,7 +399,7 @@ describe('HeaderActions component', () => {
           promoteToEpicHandler: promoteToEpicMutationErrorHandler,
         });
 
-        wrapper.find('[data-testid="promote-button"]').vm.$emit('click');
+        wrapper.find('[data-testid="promote-button"]').vm.$emit('action');
 
         await waitForPromises();
       });
@@ -483,7 +501,7 @@ describe('HeaderActions component', () => {
     });
 
     it('opens the abuse category drawer', async () => {
-      findReportAbuseButton().vm.$emit('click');
+      findReportAbuseButton().vm.$emit('action');
 
       await nextTick();
 
@@ -491,7 +509,7 @@ describe('HeaderActions component', () => {
     });
 
     it('closes the abuse category drawer', async () => {
-      await findReportAbuseButton().vm.$emit('click');
+      await findReportAbuseButton().vm.$emit('action');
       expect(findAbuseCategorySelector().exists()).toEqual(true);
 
       await findAbuseCategorySelector().vm.$emit('close-drawer');
@@ -603,7 +621,7 @@ describe('HeaderActions component', () => {
       });
 
       it('shows toast message', () => {
-        findCopyRefenceDropdownItem().vm.$emit('click');
+        findCopyRefenceDropdownItem().vm.$emit('action');
 
         expect(toast).toHaveBeenCalledWith('Reference copied');
       });
@@ -652,7 +670,7 @@ describe('HeaderActions component', () => {
       });
 
       it('shows toast message', () => {
-        findCopyEmailItem().vm.$emit('click');
+        findCopyEmailItem().vm.$emit('action');
 
         expect(toast).toHaveBeenCalledWith('Email address copied');
       });
@@ -710,11 +728,13 @@ describe('HeaderActions component', () => {
         props: { issueType, issuableEmailAddress: 'mock-email-address' },
       });
 
-      expect(wrapper.findComponent(GlDropdown).attributes('text')).toBe(
+      expect(wrapper.findComponent(GlDisclosureDropdown).props('toggleText')).toBe(
         `${capitalizeFirstCharacter(expectedText)} actions`,
       );
       expect(findDropdownBy('copy-email').text()).toBe(`Copy ${expectedText} email address`);
-      expect(findDesktopDropdownItems().at(1).text()).toBe(`New related ${expectedText}`);
+      expect(findDesktopDropdownItems().at(1).props('item').text).toBe(
+        `New related ${expectedText}`,
+      );
     });
   });
 });

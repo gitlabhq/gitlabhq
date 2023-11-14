@@ -20,8 +20,6 @@ Each command has a rate limit of 600 per minute. For example:
 
 Because the same commands are shared by `git-upload-pack`, `git pull`, and `git clone`, they share a rate limit.
 
-Users on self-managed GitLab can disable this rate limit.
-
 ## Configure GitLab Shell operation limit
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123761) in GitLab 16.2.
@@ -33,4 +31,5 @@ Users on self-managed GitLab can disable this rate limit.
 1. Select **Settings > Network**.
 1. Expand **Git SSH operations rate limit**.
 1. Enter a value for **Maximum number of Git operations per minute**.
+   - To disable the rate limit, set it to `0`.
 1. Select **Save changes**.

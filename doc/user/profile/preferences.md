@@ -268,6 +268,22 @@ To use exact times on the GitLab UI:
 1. Clear the **Use relative times** checkbox.
 1. Select **Save changes**.
 
+### Customize time format
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15206) in GitLab 16.6.
+
+You can customize the format used to display times of activities on your group and project overview pages and user profiles. You can display times as:
+
+- 12 hour format. For example: `2:34 PM`.
+- 24 hour format. For example: `14:34`.
+
+To customize the time format:
+
+1. On the left sidebar, select your avatar.
+1. Select **Preferences** > **Time preferences**.
+1. In **Time format**, select either the **12-hour** or **24-hour** option.
+1. Select **Save changes**.
+
 ## User identities in CI job JSON web tokens
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387537) in GitLab 16.0.

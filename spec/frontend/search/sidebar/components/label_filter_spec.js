@@ -13,7 +13,11 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { MOCK_QUERY, MOCK_LABEL_AGGREGATIONS } from 'jest/search/mock_data';
+import {
+  MOCK_QUERY,
+  MOCK_LABEL_AGGREGATIONS,
+  MOCK_FILTERED_UNSELECTED_LABELS,
+} from 'jest/search/mock_data';
 import LabelFilter from '~/search/sidebar/components/label_filter/index.vue';
 import LabelDropdownItems from '~/search/sidebar/components/label_filter/label_dropdown_items.vue';
 
@@ -52,8 +56,15 @@ describe('GlobalSearchSidebarLabelFilter', () => {
   let trackingSpy;
   let config;
   let store;
+  let state;
 
-  const createComponent = (initialState) => {
+  const createComponent = (initialState, gettersStubs) => {
+    state = createState({
+      query: MOCK_QUERY,
+      aggregations: MOCK_LABEL_AGGREGATIONS,
+      ...initialState,
+    });
+
     config = {
       actions: {
         ...actions,
@@ -62,13 +73,12 @@ describe('GlobalSearchSidebarLabelFilter', () => {
         setLabelFilterSearch: actionSpies.setLabelFilterSearch,
         setQuery: actionSpies.setQuery,
       },
-      getters,
+      state,
+      getters: {
+        ...getters,
+        ...gettersStubs,
+      },
       mutations,
-      state: createState({
-        query: MOCK_QUERY,
-        aggregations: MOCK_LABEL_AGGREGATIONS,
-        ...initialState,
-      }),
     };
 
     store = new Vuex.Store(config);
@@ -94,6 +104,10 @@ describe('GlobalSearchSidebarLabelFilter', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findNoLabelsFoundMessage = () => wrapper.findComponentByTestId('no-labels-found-message');
+
+  const findLabelPills = () => wrapper.findAllComponentsByTestId('label');
+  const findSelectedUappliedLavelPills = () => wrapper.findAllComponentsByTestId('unapplied-label');
+  const findClosedUnappliedPills = () => wrapper.findAllComponentsByTestId('unselected-label');
 
   describe('Renders correctly closed', () => {
     beforeEach(async () => {
@@ -347,6 +361,43 @@ describe('GlobalSearchSidebarLabelFilter', () => {
           label: TRACKING_LABEL_FILTER,
           property: 6,
         });
+      });
+    });
+
+    describe('newly selected and unapplied labels show as pills above dropdown', () => {
+      beforeEach(() => {
+        const mockGetters = { unappliedNewLabels: jest.fn(() => MOCK_FILTERED_UNSELECTED_LABELS) };
+        createComponent({}, mockGetters);
+      });
+
+      it('has correct pills', () => {
+        expect(findSelectedUappliedLavelPills()).toHaveLength(2);
+      });
+    });
+
+    describe('applied labels show as pills above dropdown', () => {
+      beforeEach(() => {
+        const mockGetters = {
+          appliedSelectedLabels: jest.fn(() => MOCK_FILTERED_UNSELECTED_LABELS),
+        };
+        createComponent({}, mockGetters);
+      });
+
+      it('has correct pills', () => {
+        expect(findLabelPills()).toHaveLength(2);
+      });
+    });
+
+    describe('closed unapplied labels show as pills above dropdown', () => {
+      beforeEach(() => {
+        const mockGetters = {
+          unselectedLabels: jest.fn(() => MOCK_FILTERED_UNSELECTED_LABELS),
+        };
+        createComponent({}, mockGetters);
+      });
+
+      it('has correct pills', () => {
+        expect(findClosedUnappliedPills()).toHaveLength(2);
       });
     });
   });

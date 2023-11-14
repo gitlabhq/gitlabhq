@@ -67,7 +67,6 @@ Gitlab/ServiceResponse:
     - 'spec/controllers/projects/alerting/notifications_controller_spec.rb'
     - 'spec/controllers/projects/issues_controller_spec.rb'
     - 'spec/controllers/projects/pipelines_controller_spec.rb'
-    - 'spec/controllers/projects/prometheus/alerts_controller_spec.rb'
     - 'spec/lib/gitlab/import_export/snippet_repo_restorer_spec.rb'
     - 'spec/requests/api/ci/pipelines_spec.rb'
     - 'spec/requests/api/ci/runner/runners_post_spec.rb'

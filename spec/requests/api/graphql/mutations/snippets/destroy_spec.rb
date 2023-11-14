@@ -24,7 +24,7 @@ RSpec.describe 'Destroying a Snippet', feature_category: :source_code_management
       let(:current_user) { create(:user) }
 
       it_behaves_like 'a mutation that returns top-level errors',
-                      errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
+        errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
 
       it 'does not destroy the Snippet' do
         expect do
@@ -53,7 +53,7 @@ RSpec.describe 'Destroying a Snippet', feature_category: :source_code_management
         let!(:snippet_gid) { project.to_gid.to_s }
 
         it 'returns an error' do
-          err_message = %["#{snippet_gid}" does not represent an instance of Snippet]
+          err_message = %("#{snippet_gid}" does not represent an instance of Snippet)
 
           post_graphql_mutation(mutation, current_user: current_user)
 

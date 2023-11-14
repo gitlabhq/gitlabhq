@@ -7,13 +7,14 @@ import {
   GlTooltip,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { TYPENAME_CI_PIPELINE } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __, sprintf } from '~/locale';
 import CancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
 import RetryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import { reportToSentry } from '~/ci/utils';
 import { ACTION_FAILURE, DOWNSTREAM, UPSTREAM } from '../constants';
 
@@ -22,13 +23,14 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    CiBadgeLink,
+    CiIcon,
     GlBadge,
     GlButton,
     GlLink,
     GlLoadingIcon,
     GlTooltip,
   },
+  mixins: [glFeatureFlagMixin()],
   styles: {
     actionSizeClasses: ['gl-h-7 gl-w-7'],
     flatLeftBorder: ['gl-rounded-bottom-left-none!', 'gl-rounded-top-left-none!'],
@@ -115,9 +117,6 @@ export default {
     downstreamTitle() {
       return this.childPipeline ? this.sourceJobName : this.pipeline.project.name;
     },
-    flexDirection() {
-      return this.isUpstream ? 'gl-flex-direction-row-reverse' : 'gl-flex-direction-row';
-    },
     graphqlPipelineId() {
       return convertToGraphQLId(TYPENAME_CI_PIPELINE, this.pipeline.id);
     },
@@ -176,6 +175,9 @@ export default {
       return `${this.downstreamTitle} #${this.pipeline.id} - ${this.pipelineStatus.label} -
       ${this.sourceJobInfo}`;
     },
+    isNewPipelineGraph() {
+      return this.glFeatures.newPipelineGraph;
+    },
   },
   errorCaptured(err, _vm, info) {
     reportToSentry('linked_pipeline', `error: ${err}, info: ${info}`);
@@ -231,9 +233,15 @@ export default {
 <template>
   <div
     ref="linkedPipeline"
-    class="gl-h-full gl-display-flex! gl-px-2"
-    :class="flexDirection"
+    class="linked-pipeline-container gl-h-full gl-display-flex!"
+    :class="{
+      'gl-flex-direction-row-reverse': isUpstream,
+      'gl-flex-direction-row': !isUpstream,
+      'gl-px-2': !isNewPipelineGraph,
+      'gl-w-full gl-sm-w-auto': isNewPipelineGraph,
+    }"
     data-testid="linked-pipeline-container"
+    :aria-expanded="expanded"
     @mouseover="onDownstreamHovered"
     @mouseleave="onDownstreamHoverLeave"
   >
@@ -242,17 +250,15 @@ export default {
     </gl-tooltip>
     <div class="gl-bg-white gl-border gl-p-3 gl-rounded-lg gl-w-full" :class="cardClasses">
       <div class="gl-display-flex gl-gap-x-3">
-        <ci-badge-link
+        <ci-icon
           v-if="!pipelineIsLoading"
           :status="pipelineStatus"
-          size="md"
-          :show-text="false"
           :use-link="false"
           class="gl-align-self-start"
         />
         <div v-else class="gl-pr-3"><gl-loading-icon size="sm" inline /></div>
         <div
-          class="gl-display-flex gl-downstream-pipeline-job-width gl-flex-direction-column gl-line-height-normal"
+          class="gl-display-flex gl-flex-direction-column gl-line-height-normal gl-downstream-pipeline-job-width"
         >
           <span class="gl-text-truncate" data-testid="downstream-title-content">
             {{ downstreamTitle }}

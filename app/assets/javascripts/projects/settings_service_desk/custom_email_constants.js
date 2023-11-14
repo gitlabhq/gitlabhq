@@ -37,6 +37,13 @@ export const I18N_FORM_SMTP_PORT_DESCRIPTION = s__(
 export const I18N_FORM_SMTP_USERNAME_LABEL = s__('ServiceDesk|SMTP username');
 export const I18N_FORM_SMTP_PASSWORD_LABEL = s__('ServiceDesk|SMTP password');
 export const I18N_FORM_SMTP_PASSWORD_DESCRIPTION = s__('ServiceDesk|Minimum 8 characters long.');
+export const I18N_FORM_SMTP_AUTHENTICATION_LABEL = s__('ServiceDesk|SMTP authentication method');
+export const I18N_FORM_SMTP_AUTHENTICATION_NONE = s__(
+  'ServiceDesk|Let GitLab select a server-supported method (recommended)',
+);
+export const I18N_FORM_SMTP_AUTHENTICATION_PLAIN = s__('ServiceDesk|Plain');
+export const I18N_FORM_SMTP_AUTHENTICATION_LOGIN = s__('ServiceDesk|Login');
+export const I18N_FORM_SMTP_AUTHENTICATION_CRAM_MD5 = s__('ServiceDesk|CRAM-MD5');
 export const I18N_FORM_SUBMIT_LABEL = s__('ServiceDesk|Save and test connection');
 
 export const I18N_FORM_INVALID_FEEDBACK_CUSTOM_EMAIL = s__(

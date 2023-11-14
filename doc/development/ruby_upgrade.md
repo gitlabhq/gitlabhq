@@ -84,6 +84,8 @@ order reversed as described above.
 
 Tracking this work in an epic is useful to get a sense of progress. For larger upgrades, include a
 timeline in the epic description so stakeholders know when the final switch is expected to go live.
+Include the designated [performance testing template](https://gitlab.com/gitlab-org/quality/performance-testing/ruby-rollout-performance-testing)
+to help ensure performance standards on the upgrade.
 
 Break changes to individual repositories into separate issues under this epic.
 
@@ -141,14 +143,13 @@ A [build matrix definition](../ci/yaml/index.md#parallelmatrix) can do this effi
 
 #### Decide which repositories to update
 
-When upgrading Ruby, consider updating the following repositories:
+When upgrading Ruby, consider updating the repositories in the [`ruby/gems` group](https://gitlab.com/gitlab-org/ruby/gems/) as well.
+For reference, here is a list of merge requests that have updated Ruby for some of these projects in the past:
 
-- [Gitaly](https://gitlab.com/gitlab-org/gitaly) ([example](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3771))
 - [GitLab LabKit](https://gitlab.com/gitlab-org/labkit-ruby) ([example](https://gitlab.com/gitlab-org/labkit-ruby/-/merge_requests/79))
 - [GitLab Exporter](https://gitlab.com/gitlab-org/ruby/gems/gitlab-exporter) ([example](https://gitlab.com/gitlab-org/ruby/gems/gitlab-exporter/-/merge_requests/150))
 - [GitLab Experiment](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment) ([example](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment/-/merge_requests/128))
 - [Gollum Lib](https://gitlab.com/gitlab-org/gollum-lib) ([example](https://gitlab.com/gitlab-org/gollum-lib/-/merge_requests/21))
-- [GitLab Helm Chart](https://gitlab.com/gitlab-org/charts/gitlab) ([example](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/2162))
 - [GitLab Sidekiq fetcher](https://gitlab.com/gitlab-org/sidekiq-reliable-fetch) ([example](https://gitlab.com/gitlab-org/sidekiq-reliable-fetch/-/merge_requests/33))
 - [Prometheus Ruby Mmap Client](https://gitlab.com/gitlab-org/prometheus-client-mmap) ([example](https://gitlab.com/gitlab-org/prometheus-client-mmap/-/merge_requests/59))
 - [GitLab-mail_room](https://gitlab.com/gitlab-org/gitlab-mail_room) ([example](https://gitlab.com/gitlab-org/gitlab-mail_room/-/merge_requests/16))
@@ -213,14 +214,17 @@ the new Ruby to be the new default.
 
 The last step is to use the new Ruby in production. This
 requires updating Omnibus and production Docker images to use the new version.
-Helm charts may also have to be updated if there were changes to related systems that maintain
-their own charts (such as `gitlab-exporter`.)
 
 To use the new Ruby in production, update the following projects:
 
 - [Cloud-native GitLab Docker Images (CNG)](https://gitlab.com/gitlab-org/build/CNG) ([example](https://gitlab.com/gitlab-org/build/CNG/-/merge_requests/739))
 - [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab) ([example](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5545))
 - [Self-compiled installations](../install/installation.md): update the [Ruby system version check](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/system_check/app/ruby_version_check.rb)
+
+Charts like the [GitLab Helm Chart](https://gitlab.com/gitlab-org/charts/gitlab) should also be updated if
+they use Ruby in some capacity, for example
+to run tests (see [this example](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/2162)), though
+this may not strictly be necessary.
 
 If you submit a change management request, coordinate the rollout with infrastructure
 engineers. When dealing with larger upgrades, involve [Release Managers](https://about.gitlab.com/community/release-managers/)

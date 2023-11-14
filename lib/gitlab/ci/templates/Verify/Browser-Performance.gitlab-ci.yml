@@ -19,6 +19,7 @@ browser_performance:
     SITESPEED_IMAGE: sitespeedio/sitespeed.io
     SITESPEED_VERSION: 26.1.0
     SITESPEED_OPTIONS: ''
+    SITESPEED_DOCKER_OPTIONS: ''
   services:
     - docker:dind
   script:
@@ -48,7 +49,7 @@ browser_performance:
           HTTP_PROXY \
           NO_PROXY \
         ) \
-        --shm-size=1g --rm -v "$(pwd)":/sitespeed.io $SITESPEED_IMAGE:$SITESPEED_VERSION --plugins.add ./gitlab-exporter --cpu --outputFolder sitespeed-results $URL $SITESPEED_OPTIONS
+        $SITESPEED_DOCKER_OPTIONS --shm-size=1g --rm -v "$(pwd)":/sitespeed.io $SITESPEED_IMAGE:$SITESPEED_VERSION --plugins.add ./gitlab-exporter --cpu --outputFolder sitespeed-results $URL $SITESPEED_OPTIONS
     - mv sitespeed-results/data/performance.json browser-performance.json
   artifacts:
     paths:

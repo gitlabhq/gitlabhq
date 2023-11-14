@@ -160,18 +160,6 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
       it_behaves_like '.find'
     end
 
-    describe '.find with Rugged enabled', :enable_rugged do
-      it 'calls out to the Rugged implementation' do
-        allow_next_instance_of(Rugged) do |instance|
-          allow(instance).to receive(:rev_parse).with(SeedRepo::Commit::ID).and_call_original
-        end
-
-        described_class.find(repository, SeedRepo::Commit::ID)
-      end
-
-      it_behaves_like '.find'
-    end
-
     describe '.last_for_path' do
       context 'no path' do
         subject { described_class.last_for_path(repository, 'master') }
@@ -456,18 +444,6 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
 
           described_class.batch_by_oid(repository, [])
         end
-      end
-    end
-
-    describe '.batch_by_oid with Rugged enabled', :enable_rugged do
-      it_behaves_like '.batch_by_oid'
-
-      it 'calls out to the Rugged implementation' do
-        allow_next_instance_of(Rugged) do |instance|
-          allow(instance).to receive(:rev_parse).with(SeedRepo::Commit::ID).and_call_original
-        end
-
-        described_class.batch_by_oid(repository, [SeedRepo::Commit::ID])
       end
     end
 

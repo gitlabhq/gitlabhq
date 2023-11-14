@@ -14,7 +14,7 @@ RSpec.describe API::Geo, feature_category: :geo_replication do
       {
         'type' => 'object',
         'additionalProperties' => false,
-        'required' => %w(geo_enabled),
+        'required' => %w[geo_enabled],
         'properties' => {
           'geo_enabled' => { 'type' => 'boolean' }
         }

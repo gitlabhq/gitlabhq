@@ -21,9 +21,9 @@ const findAuthorName = () => wrapper.findByText(`${commit.authorName} authored`)
 const findCommitRowDescription = () => wrapper.find('pre');
 const findTitleHtml = () => wrapper.findByText(commit.titleHtml);
 
-const createComponent = async ({ commitMock = {} } = {}) => {
+const createComponent = async ({ commitMock = {}, prevBlameLink } = {}) => {
   wrapper = shallowMountExtended(CommitInfo, {
-    propsData: { commit: { ...commit, ...commitMock } },
+    propsData: { commit: { ...commit, ...commitMock }, prevBlameLink },
   });
 
   await nextTick();
@@ -35,6 +35,7 @@ describe('Repository last commit component', () => {
 
     expect(findUserLink().exists()).toBe(true);
     expect(findUserAvatarLink().exists()).toBe(true);
+    expect(findUserAvatarLink().props('imgAlt')).toBe("Test authorName's avatar");
   });
 
   it('hides author component when author does not exist', () => {
@@ -76,6 +77,22 @@ describe('Repository last commit component', () => {
       expect(findCommitRowDescription().classes('gl-display-block!')).toBe(true);
       expect(findTextExpander().classes('open')).toBe(true);
       expect(findTextExpander().props('selected')).toBe(true);
+    });
+  });
+
+  describe('previous blame link', () => {
+    const prevBlameLink = '<a>Previous blame link</a>';
+
+    it('renders a previous blame link when it is present', () => {
+      createComponent({ prevBlameLink });
+
+      expect(wrapper.html()).toContain(prevBlameLink);
+    });
+
+    it('does not render a previous blame link when it is not present', () => {
+      createComponent({ prevBlameLink: null });
+
+      expect(wrapper.html()).not.toContain(prevBlameLink);
     });
   });
 

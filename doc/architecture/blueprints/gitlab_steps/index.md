@@ -33,12 +33,12 @@ shows a need for a better way to define CI job execution.
 
 ## Motivation
 
-Even though the current [`.gitlab-ci.yml`](../../../ci/yaml/gitlab_ci_yaml.md) is reasonably flexible, it easily becomes very
+Even though the current [`.gitlab-ci.yml`](../../../ci/index.md#the-gitlab-ciyml-file) is reasonably flexible, it easily becomes very
 complex when trying to support complex workflows. This complexity is represented
 with repetetitve patterns, a purpose-specific syntax, or a complex sequence of commands
 to execute.
 
-This is particularly challenging, because the [`.gitlab-ci.yml`](../../../ci/yaml/gitlab_ci_yaml.md)
+This is particularly challenging, because the [`.gitlab-ci.yml`](../../../ci/index.md#the-gitlab-ciyml-file)
 is inflexible on more complex workflows that require fine-tuning or special behavior
 for the CI job execution. Its prescriptive approach how to handle Git cloning,
 when artifacts are downloaded, or how the shell script is being executed quite often
@@ -46,7 +46,7 @@ results in the need to work around the system for pipelines that are not "standa
 or when new features are requested.
 
 This proves especially challenging when trying to add a new syntax to the
-[`.gitlab-ci.yml`](../../../ci/yaml/gitlab_ci_yaml.md)
+[`.gitlab-ci.yml`](../../../ci/index.md#the-gitlab-ciyml-file)
 to support a specific feature, like [`secure files`](../../../ci/secure_files/index.md)
 or `release:` keyword. Adding these special features on a syntax level
 results in a more complex config, which is harder to maintain, and more complex
@@ -131,7 +131,14 @@ TBD
 
 ## Proposal
 
-TBD
+### GitLab Steps definition and syntax
+
+- [Step Definition](step-definition.md).
+- [Syntactic Sugar extensions](steps-syntactic-sugar.md).
+
+### Integration of GitLab Steps in `.gitlab-ci.yml`
+
+- [Usage of the GitLab Steps with `.gitlab-ci.yml`](gitlab-ci.md).
 
 ## Design and implementation details
 

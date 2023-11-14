@@ -68,7 +68,7 @@ Introducing a dedicated edge service for Cloud Connector serves the following go
   we do not currently support.
 - **Independently scalable.** For reasons of fault tolerance and scalability, it is beneficial to have all SM traffic go
   through a separate service. For example, if an excess of unexpected requests arrive from SM instances due to a bug
-  in a milestone release, this traffic could be absorbed at the CC gateway level without cascading downstream, thus leaving
+  in a milestone release, this traffic could be absorbed at the CC gateway level without cascading further, thus leaving
   SaaS users unaffected.
 
 ### Non-goals
@@ -81,6 +81,10 @@ Introducing a dedicated edge service for Cloud Connector serves the following go
   the current mechanism in place that emits access tokens from CustomersDot that are subsequently verified in
   other systems using public key cryptographic checks. We may move some of the code around that currently implements this,
   however.
+
+## Decisions
+
+- [ADR-001: Use load balancer as single entry point](decisions/001_lb_entry_point.md)
 
 ## Proposal
 
@@ -133,7 +137,7 @@ The new service would be made available at `cloud.gitlab.com` and act as a "smar
 It will have the following responsibilities:
 
 1. **Request handling.** The service will make decisions about whether a particular request is handled
-   in the service itself or forwarded to a downstream service. For example, a request to `/ai/code_suggestions/completions`
+   in the service itself or forwarded to other backends. For example, a request to `/ai/code_suggestions/completions`
    could be handled by forwarding this request to an appropriate endpoint in the AI gateway unchanged, while a request
    to `/-/metrics` could be handled by the service itself. As mentioned in [non-goals](#non-goals), the latter would not
    include domain logic as it pertains to an end user feature, but rather cross-cutting logic such as telemetry, or
@@ -141,14 +145,14 @@ It will have the following responsibilities:
 
    When handling requests, the service should be unopinionated about which protocol is used, to the extent possible.
    Reasons for injecting custom logic could be setting additional HTTP header fields. A design principle should be
-   to not require CC service deployments if a downstream service merely changes request payload or endpoint definitions. However,
+   to not require CC service deployments if a backend service merely changes request payload or endpoint definitions. However,
    supporting more protocols on top of HTTP may require adding support in the CC service itself.
 1. **Authentication/authorization.** The service will be the first point of contact for authenticating clients and verifying
    they are authorized to use a particular CC feature. This will include fetching and caching public keys served from GitLab SaaS
    and CustomersDot to decode JWT access tokens sent by GitLab instances, including matching token scopes to feature endpoints
    to ensure an instance is eligible to consume this feature. This functionality will largely be lifted out of the AI gateway
    where it currently lives. To maintain a ZeroTrust environment, the service will implement a more lightweight auth/z protocol
-   with internal services downstream that merely performs general authenticity checks but forgoes billing and permission
+   with internal backends that merely performs general authenticity checks but forgoes billing and permission
    related scoping checks. How this protocol will look like is to be decided, and might be further explored in
    [Discussion: Standardized Authentication and Authorization between internal services and GitLab Rails](https://gitlab.com/gitlab-org/gitlab/-/issues/421983).
 1. **Organization-level rate limits.** It is to be decided if this is needed, but there could be value in having application-level rate limits

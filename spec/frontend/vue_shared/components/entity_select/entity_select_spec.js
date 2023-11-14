@@ -23,10 +23,13 @@ describe('EntitySelect', () => {
 
   // Props
   const label = 'label';
+  const description = 'description';
   const inputName = 'inputName';
   const inputId = 'inputId';
   const headerText = 'headerText';
   const defaultToggleText = 'defaultToggleText';
+  const toggleClass = 'foo-bar';
+  const block = true;
 
   // Finders
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
@@ -37,11 +40,14 @@ describe('EntitySelect', () => {
     wrapper = shallowMountExtended(EntitySelect, {
       propsData: {
         label,
+        description,
         inputName,
         inputId,
         headerText,
         defaultToggleText,
         fetchItems: fetchItemsMock,
+        toggleClass,
+        block,
         ...props,
       },
       stubs: {
@@ -63,6 +69,21 @@ describe('EntitySelect', () => {
 
   beforeEach(() => {
     fetchItemsMock = jest.fn().mockImplementation(() => ({ items: [itemMock], totalPages: 1 }));
+  });
+
+  describe('GlCollapsibleListbox props', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it.each`
+      prop             | expectedValue
+      ${'block'}       | ${block}
+      ${'toggleClass'} | ${toggleClass}
+      ${'headerText'}  | ${headerText}
+    `('passes the $prop prop to GlCollapsibleListbox', ({ prop, expectedValue }) => {
+      expect(findListbox().props(prop)).toBe(expectedValue);
+    });
   });
 
   describe('on mount', () => {
@@ -112,6 +133,12 @@ describe('EntitySelect', () => {
     });
 
     expect(wrapper.findByTestId(testid).exists()).toBe(true);
+  });
+
+  it('passes description prop to GlFormGroup', () => {
+    createComponent();
+
+    expect(wrapper.findComponent(GlFormGroup).attributes('description')).toBe(description);
   });
 
   describe('selection', () => {

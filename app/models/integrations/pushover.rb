@@ -71,11 +71,11 @@ module Integrations
         ]
       end
 
-    def title
+    def self.title
       'Pushover'
     end
 
-    def description
+    def self.description
       s_('PushoverService|Get real-time notifications on your device.')
     end
 

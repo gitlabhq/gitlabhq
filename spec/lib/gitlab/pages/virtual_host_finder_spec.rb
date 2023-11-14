@@ -5,10 +5,6 @@ require 'spec_helper'
 RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
   let_it_be(:project) { create(:project) }
 
-  before_all do
-    project.update_pages_deployment!(create(:pages_deployment, project: project))
-  end
-
   before do
     stub_pages_setting(host: 'example.com')
   end
@@ -24,10 +20,6 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
     subject(:virtual_domain) { described_class.new(pages_domain.domain).execute }
 
     context 'when there are no pages deployed for the project' do
-      before_all do
-        project.mark_pages_as_not_deployed
-      end
-
       it 'returns nil' do
         expect(virtual_domain).to be_nil
       end
@@ -35,7 +27,7 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
 
     context 'when there are pages deployed for the project' do
       before_all do
-        project.mark_pages_as_deployed
+        create(:pages_deployment, project: project)
       end
 
       it 'returns the virual domain when there are pages deployed for the project' do
@@ -48,10 +40,6 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
 
   context 'when host is a namespace domain' do
     context 'when there are no pages deployed for the project' do
-      before_all do
-        project.mark_pages_as_not_deployed
-      end
-
       it 'returns no result if the provided host is not subdomain of the Pages host' do
         virtual_domain = described_class.new("#{project.namespace.path}.something.io").execute
 
@@ -68,7 +56,7 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
 
     context 'when there are pages deployed for the project' do
       before_all do
-        project.mark_pages_as_deployed
+        create(:pages_deployment, project: project)
         project.namespace.update!(path: 'topNAMEspace')
       end
 
@@ -109,10 +97,6 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
       end
 
       context 'when there are no pages deployed for the project' do
-        before_all do
-          project.mark_pages_as_not_deployed
-        end
-
         it 'returns nil' do
           expect(virtual_domain).to be_nil
         end
@@ -120,7 +104,7 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
 
       context 'when there are pages deployed for the project' do
         before_all do
-          project.mark_pages_as_deployed
+          create(:pages_deployment, project: project)
         end
 
         it 'returns the virual domain when there are pages deployed for the project' do
@@ -133,9 +117,10 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
           it 'prioritizes the unique domain project' do
             group = create(:group, path: 'unique-domain')
             other_project = build(:project, path: 'unique-domain.example.com', group: group)
-            other_project.save!(validate: false)
-            other_project.update_pages_deployment!(create(:pages_deployment, project: other_project))
-            other_project.mark_pages_as_deployed
+              .tap { |project| project.save!(validate: false) }
+
+            create(:pages_deployment, project: project)
+            create(:pages_deployment, project: other_project)
 
             expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
             expect(virtual_domain.lookup_paths.first.project_id).to eq(project.id)
@@ -150,10 +135,6 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
       end
 
       context 'when there are no pages deployed for the project' do
-        before_all do
-          project.mark_pages_as_not_deployed
-        end
-
         it 'returns nil' do
           expect(virtual_domain).to be_nil
         end
@@ -161,7 +142,7 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
 
       context 'when there are pages deployed for the project' do
         before_all do
-          project.mark_pages_as_deployed
+          create(:pages_deployment, project: project)
         end
 
         it 'returns nil' do

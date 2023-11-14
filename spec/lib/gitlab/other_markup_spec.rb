@@ -59,6 +59,31 @@ RSpec.describe Gitlab::OtherMarkup, feature_category: :wiki do
     end
   end
 
+  context 'when mediawiki content' do
+    links = {
+      'p' => {
+        file: 'file.mediawiki',
+        input: 'Red Bridge (JRuby Embed)',
+        output: "\n<p>Red Bridge (JRuby Embed)</p>"
+      },
+      'h1' => {
+        file: 'file.mediawiki',
+        input: '= Red Bridge (JRuby Embed) =',
+        output: "\n\n<h1>\n<a name=\"Red_Bridge_JRuby_Embed\"></a><span>Red Bridge (JRuby Embed)</span>\n</h1>\n"
+      },
+      'h2' => {
+        file: 'file.mediawiki',
+        input: '== Red Bridge (JRuby Embed) ==',
+        output: "\n\n<h2>\n<a name=\"Red_Bridge_JRuby_Embed\"></a><span>Red Bridge (JRuby Embed)</span>\n</h2>\n"
+      }
+    }
+    links.each do |name, data|
+      it "does render into #{name} element" do
+        expect(render(data[:file], data[:input], context)).to eq(data[:output])
+      end
+    end
+  end
+
   context 'when rendering takes too long' do
     let_it_be(:file_name) { 'foo.bar' }
     let_it_be(:project) { create(:project, :repository) }
@@ -83,6 +108,24 @@ RSpec.describe Gitlab::OtherMarkup, feature_category: :wiki do
       )
 
       expect(render(file_name, text, context)).to eq("<p>#{text}</p>")
+    end
+  end
+
+  context 'RedCloth markup' do
+    it 'renders textile correctly' do
+      test_text = '"This is *my* text."'
+      expected_res = "<p>&#8220;This is <strong>my</strong> text.&#8221;</p>"
+      expect(RedCloth.new(test_text).to_html).to eq(expected_res)
+    end
+
+    it 'protects against malicious backtracking' do
+      test_text = '<A' + ('A' * 54773)
+
+      expect do
+        Timeout.timeout(Gitlab::OtherMarkup::RENDER_TIMEOUT.seconds) do
+          RedCloth.new(test_text, [:sanitize_html]).to_html
+        end
+      end.not_to raise_error
     end
   end
 

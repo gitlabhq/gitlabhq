@@ -284,13 +284,7 @@ export default {
     >
       <div v-if="userName" class="gl-display-inline-flex gl-mt-2" data-testid="assigned-users">
         <span class="gl-relative gl-mr-4">
-          <img
-            :alt="userName"
-            :src="userImg"
-            :width="32"
-            class="avatar avatar-inline gl-m-0 s32"
-            data-qa-selector="avatar_image"
-          />
+          <img :alt="userName" :src="userImg" :width="32" class="avatar avatar-inline gl-m-0 s32" />
         </span>
         <span class="gl-display-flex gl-flex-direction-column gl-overflow-hidden">
           <strong class="dropdown-menu-user-full-name">

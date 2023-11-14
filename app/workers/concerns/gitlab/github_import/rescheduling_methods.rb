@@ -52,8 +52,7 @@ module Gitlab
 
         job_delay = client.rate_limit_resets_in + calculate_job_delay(enqueued_job_counter)
 
-        self.class
-          .perform_in(job_delay, project.id, hash, notify_key)
+        self.class.perform_in(job_delay, project.id, hash.deep_stringify_keys, notify_key.to_s)
       end
     end
   end

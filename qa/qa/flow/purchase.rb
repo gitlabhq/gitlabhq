@@ -19,25 +19,25 @@ module QA
           fill_in_customer_info
           fill_in_payment_info
 
-          new_subscription.confirm_purchase
+          new_subscription.purchase
         end
       end
 
-      def purchase_ci_minutes(quantity: 1)
+      def purchase_compute_minutes(quantity: 1)
         Page::Group::Menu.perform(&:go_to_usage_quotas)
         Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quota|
           usage_quota.pipelines_tab
-          usage_quota.buy_ci_minutes
+          usage_quota.buy_compute_minutes
         end
 
-        Gitlab::Page::Subscriptions::New.perform do |ci_minutes|
-          ci_minutes.quantity = quantity
-          ci_minutes.continue_to_billing
+        Gitlab::Page::Subscriptions::New.perform do |compute_minutes|
+          compute_minutes.quantity = quantity
+          compute_minutes.continue_to_billing
 
           fill_in_customer_info
           fill_in_payment_info
 
-          ci_minutes.confirm_purchase
+          compute_minutes.purchase
         end
       end
 
@@ -59,7 +59,7 @@ module QA
           fill_in_customer_info
           fill_in_payment_info
 
-          storage.confirm_purchase
+          storage.purchase
         end
       end
 

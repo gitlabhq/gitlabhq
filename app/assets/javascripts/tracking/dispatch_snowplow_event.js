@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import getStandardContext from './get_standard_context';
 
 export function dispatchSnowplowEvent(

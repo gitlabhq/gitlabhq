@@ -41,7 +41,7 @@ RSpec.describe 'query Jira service', feature_category: :system_access do
     it 'retuns list of jira imports' do
       service_types = services.map { |s| s['type'] }
 
-      expect(service_types).to match_array(%w(BugzillaService JiraService RedmineService))
+      expect(service_types).to match_array(%w[BugzillaService JiraService RedmineService])
     end
   end
 end

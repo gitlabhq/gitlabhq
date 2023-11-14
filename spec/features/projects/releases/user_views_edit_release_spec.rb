@@ -20,8 +20,8 @@ RSpec.describe 'User edits Release', :js, feature_category: :continuous_delivery
   end
 
   def fill_out_form_and_click(button_to_click)
-    fill_in 'Release title', with: 'Updated Release title'
-    fill_in 'Release notes', with: 'Updated Release notes'
+    fill_in 'release-title', with: 'Updated Release title', fill_options: { clear: :backspace }
+    fill_in 'release-notes', with: 'Updated Release notes'
 
     click_link_or_button button_to_click
 
@@ -44,8 +44,8 @@ RSpec.describe 'User edits Release', :js, feature_category: :continuous_delivery
     expect(page).to have_content('Releases are based on Git tags. We recommend tags that use semantic versioning, for example 1.0.0, 2.1.0-pre.')
 
     expect(find_field('Tag name', disabled: true).value).to eq(release.tag)
-    expect(find_field('Release title').value).to eq(release.name)
-    expect(find_field('Release notes').value).to eq(release.description)
+    expect(find_field('release-title').value).to eq(release.name)
+    expect(find_field('release-notes').value).to eq(release.description)
 
     expect(page).to have_button('Save changes')
     expect(page).to have_link('Cancel')

@@ -65,7 +65,7 @@ RSpec.describe PagesDomains::ObtainLetsEncryptCertificateService, feature_catego
     end
   end
 
-  %w(pending processing).each do |status|
+  %w[pending processing].each do |status|
     context "there is an order in '#{status}' status" do
       let(:existing_order) do
         create(:pages_domain_acme_order, pages_domain: pages_domain)

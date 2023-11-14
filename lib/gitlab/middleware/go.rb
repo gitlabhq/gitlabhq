@@ -141,7 +141,7 @@ module Gitlab
         return empty_result unless has_basic_credentials?(request)
 
         login, password = user_name_and_password(request)
-        auth_result = Gitlab::Auth.find_for_git_client(login, password, project: project, ip: request.ip)
+        auth_result = Gitlab::Auth.find_for_git_client(login, password, project: project, request: request)
         return empty_result unless auth_result.success?
 
         return empty_result unless auth_result.can?(:access_git)

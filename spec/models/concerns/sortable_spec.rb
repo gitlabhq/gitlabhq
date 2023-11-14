@@ -14,14 +14,14 @@ RSpec.describe Sortable do
       it 'allows secondary ordering by id ascending' do
         orders = arel_orders(sorted_relation.with_order_id_asc)
 
-        expect(orders.map { |arel| arel.expr.name }).to eq(%w(created_at id))
+        expect(orders.map { |arel| arel.expr.name }).to eq(%w[created_at id])
         expect(orders).to all(be_kind_of(Arel::Nodes::Ascending))
       end
 
       it 'allows secondary ordering by id descending' do
         orders = arel_orders(sorted_relation.with_order_id_desc)
 
-        expect(orders.map { |arel| arel.expr.name }).to eq(%w(created_at id))
+        expect(orders.map { |arel| arel.expr.name }).to eq(%w[created_at id])
         expect(orders.first).to be_kind_of(Arel::Nodes::Ascending)
         expect(orders.last).to be_kind_of(Arel::Nodes::Descending)
       end
@@ -123,24 +123,24 @@ RSpec.describe Sortable do
     let!(:group4) { create(:group, name: 'bbb', id: 4, created_at: ref_time, updated_at: ref_time - 15.seconds) }
 
     it 'sorts groups by id' do
-      expect(ordered_group_names('id_asc')).to eq(%w(aa AAA BB bbb))
-      expect(ordered_group_names('id_desc')).to eq(%w(bbb BB AAA aa))
+      expect(ordered_group_names('id_asc')).to eq(%w[aa AAA BB bbb])
+      expect(ordered_group_names('id_desc')).to eq(%w[bbb BB AAA aa])
     end
 
     it 'sorts groups by name via case-insensitive comparision' do
-      expect(ordered_group_names('name_asc')).to eq(%w(aa AAA BB bbb))
-      expect(ordered_group_names('name_desc')).to eq(%w(bbb BB AAA aa))
+      expect(ordered_group_names('name_asc')).to eq(%w[aa AAA BB bbb])
+      expect(ordered_group_names('name_desc')).to eq(%w[bbb BB AAA aa])
     end
 
     it 'sorts groups by created_at' do
-      expect(ordered_group_names('created_asc')).to eq(%w(aa AAA BB bbb))
-      expect(ordered_group_names('created_desc')).to eq(%w(bbb BB AAA aa))
-      expect(ordered_group_names('created_date')).to eq(%w(bbb BB AAA aa))
+      expect(ordered_group_names('created_asc')).to eq(%w[aa AAA BB bbb])
+      expect(ordered_group_names('created_desc')).to eq(%w[bbb BB AAA aa])
+      expect(ordered_group_names('created_date')).to eq(%w[bbb BB AAA aa])
     end
 
     it 'sorts groups by updated_at' do
-      expect(ordered_group_names('updated_asc')).to eq(%w(bbb BB AAA aa))
-      expect(ordered_group_names('updated_desc')).to eq(%w(aa AAA BB bbb))
+      expect(ordered_group_names('updated_asc')).to eq(%w[bbb BB AAA aa])
+      expect(ordered_group_names('updated_desc')).to eq(%w[aa AAA BB bbb])
     end
   end
 end

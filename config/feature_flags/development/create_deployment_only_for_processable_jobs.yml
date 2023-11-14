@@ -1,8 +1,0 @@
----
-name: create_deployment_only_for_processable_jobs
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132835
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/427062
-milestone: '16.5'
-type: development
-group: group::environments
-default_enabled: false

@@ -102,8 +102,8 @@ RSpec.describe 'Work item linked items', :js, feature_category: :team_planning d
 
         expect(find('.work-items-list')).to have_content('Task 1')
 
-        find_by_testid('links-menu').click
-        click_button 'Remove'
+        find_by_testid('links-child').hover
+        find_by_testid('remove-work-item-link').click
 
         wait_for_all_requests
 

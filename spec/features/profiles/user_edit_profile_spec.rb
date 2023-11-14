@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User edit profile', feature_category: :user_profile do
   include Features::NotesHelpers
 
-  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be_with_reload(:user) { create(:user) }
 
   before do
     stub_feature_flags(edit_user_profile_vue: false)
@@ -15,17 +15,6 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
 
   def submit_settings
     click_button 'Update profile settings'
-    wait_for_requests if respond_to?(:wait_for_requests)
-  end
-
-  def update_user_email
-    fill_in 'user_email', with: 'new-email@example.com'
-    click_button 'Update profile settings'
-  end
-
-  def confirm_password(password)
-    fill_in 'password-confirmation', with: password
-    click_button 'Confirm password'
     wait_for_requests if respond_to?(:wait_for_requests)
   end
 
@@ -119,6 +108,18 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
   end
 
   describe 'when I change my email', :js do
+    def update_user_email
+      fill_in 'user_email', with: '' # Clearing the email field
+      fill_in 'user_email', with: 'new-email@example.com'
+      submit_settings
+    end
+
+    def confirm_password(password)
+      fill_in 'password-confirmation', with: password
+      click_button 'Confirm password'
+      wait_for_requests if respond_to?(:wait_for_requests)
+    end
+
     before do
       user.send_reset_password_instructions
     end
@@ -194,13 +195,20 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
       emoji_button.click
     end
 
+    after do
+      if user.status
+        user.status.destroy!
+        user.reload_status
+      end
+    end
+
     context 'profile edit form' do
       it 'shows the user status form' do
         expect(page).to have_content('Current status')
       end
 
       it 'adds emoji to user status' do
-        emoji = 'basketball'
+        emoji = 'laughing'
         select_emoji(emoji)
         submit_settings
 
@@ -225,7 +233,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
       end
 
       it 'adds message and emoji to user status' do
-        emoji = '8ball'
+        emoji = 'grinning'
         message = 'Playing outside'
         select_emoji(emoji)
         fill_in s_("SetStatusModal|What's your status?"), with: message
@@ -319,9 +327,9 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
       let(:project) { create(:project) }
 
       def open_modal(button_text)
-        find('.header-user-dropdown-toggle').click
+        find_by_testid('user-dropdown').click
 
-        page.within ".header-user" do
+        within_testid('user-dropdown') do
           find('.js-set-status-modal-trigger.ready')
 
           click_button button_text
@@ -348,9 +356,9 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
       end
 
       it 'shows the "Set status" menu item in the user menu' do
-        find('.header-user-dropdown-toggle').click
+        find_by_testid('user-dropdown').click
 
-        page.within ".header-user" do
+        within_testid('user-dropdown') do
           expect(page).to have_content('Set status')
         end
       end
@@ -359,9 +367,9 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
         user_status = create(:user_status, user: user, message: 'Eating bread', emoji: 'stuffed_flatbread')
         visit root_path(user)
 
-        find('.header-user-dropdown-toggle').click
+        find_by_testid('user-dropdown').click
 
-        page.within ".header-user" do
+        within_testid('user-dropdown') do
           expect(page).to have_emoji(user_status.emoji)
           expect(page).to have_content user_status.message
           expect(page).to have_content('Edit status')
@@ -376,7 +384,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
       end
 
       it 'adds emoji to user status' do
-        emoji = '8ball'
+        emoji = 'grinning'
         open_user_status_modal
         select_emoji(emoji, true)
         set_user_status_in_modal
@@ -407,7 +415,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
 
       it 'opens the emoji modal again after closing it' do
         open_user_status_modal
-        select_emoji('8ball', true)
+        select_emoji('grinning', true)
 
         find('.emoji-menu-toggle-button').click
 
@@ -418,7 +426,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
         project.add_maintainer(user)
         visit(project_issue_path(project, issue))
 
-        emoji = '8ball'
+        emoji = 'grinning'
         open_user_status_modal
         select_emoji(emoji, true)
 
@@ -440,7 +448,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
       end
 
       it 'adds message and emoji to user status' do
-        emoji = '8ball'
+        emoji = 'grinning'
         message = 'Playing outside'
         open_user_status_modal
         select_emoji(emoji, true)
@@ -478,8 +486,6 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
       end
 
       context 'Remove status button' do
-        let(:user) { create(:user, :no_super_sidebar) }
-
         before do
           user.status = UserStatus.new(message: 'Eating bread', emoji: 'stuffed_flatbread')
 
@@ -504,9 +510,9 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
         it 'shows the "Set status" menu item in the user menu' do
           visit root_path(user)
 
-          find('.header-user-dropdown-toggle').click
+          find_by_testid('user-dropdown').click
 
-          page.within ".header-user" do
+          within_testid('user-dropdown') do
             expect(page).to have_content('Set status')
           end
         end
@@ -520,30 +526,30 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
         expect(page).to have_emoji('speech_balloon')
       end
     end
+  end
 
-    context 'User time preferences', :js do
-      let(:issue) { create(:issue, project: project) }
-      let(:project) { create(:project) }
+  context 'User time preferences', :js do
+    let(:issue) { create(:issue, project: project) }
+    let(:project) { create(:project) }
 
-      it 'shows the user time preferences form' do
-        expect(page).to have_content('Time settings')
-      end
+    it 'shows the user time preferences form' do
+      expect(page).to have_content('Time settings')
+    end
 
-      it 'allows the user to select a time zone from a dropdown list of options' do
-        expect(page).not_to have_selector('.user-time-preferences [data-testid="base-dropdown-menu"]')
+    it 'allows the user to select a time zone from a dropdown list of options' do
+      expect(page).not_to have_selector('.user-time-preferences [data-testid="base-dropdown-menu"]')
 
-        page.find('.user-time-preferences .gl-new-dropdown-toggle').click
+      page.find('.user-time-preferences .gl-new-dropdown-toggle').click
 
-        expect(page.find('.user-time-preferences [data-testid="base-dropdown-menu"]')).to be_visible
+      expect(page.find('.user-time-preferences [data-testid="base-dropdown-menu"]')).to be_visible
 
-        page.find("li", text: "Arizona").click
+      page.find("li", text: "Arizona").click
 
-        expect(page).to have_field(:user_timezone, with: 'America/Phoenix', type: :hidden)
-      end
+      expect(page).to have_field(:user_timezone, with: 'America/Phoenix', type: :hidden)
+    end
 
-      it 'timezone defaults to empty' do
-        expect(page).to have_field(:user_timezone, with: '', type: :hidden)
-      end
+    it 'timezone defaults to empty' do
+      expect(page).to have_field(:user_timezone, with: '', type: :hidden)
     end
   end
 

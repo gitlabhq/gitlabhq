@@ -11,7 +11,7 @@
 
   .form-group
     - help_text = _("When merge requests and commits in the default branch close, any issues they reference also close.")
-    - help_icon = link_to sprite_icon('question-o'), help_page_path('user/project/issues/managing_issues.md', anchor: 'closing-issues-automatically'), target: '_blank', rel: 'noopener noreferrer'
+    - help_icon = link_to sprite_icon('question-o'), help_page_path('user/project/issues/managing_issues', anchor: 'closing-issues-automatically'), target: '_blank', rel: 'noopener noreferrer'
     = f.gitlab_ui_checkbox_component :autoclose_referenced_issues,
         s_('ProjectSettings|Auto-close referenced issues on default branch'),
         help_text: (help_text + "&nbsp;" + help_icon).html_safe

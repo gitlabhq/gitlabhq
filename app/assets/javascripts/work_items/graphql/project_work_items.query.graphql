@@ -3,6 +3,8 @@ query projectWorkItems(
   $fullPath: ID!
   $types: [IssueType!]
   $in: [IssuableSearchableField!]
+  $iid: String = null
+  $isNumber: Boolean!
 ) {
   workspace: project(fullPath: $fullPath) {
     id
@@ -11,8 +13,13 @@ query projectWorkItems(
         id
         iid
         title
-        state
-        confidential
+      }
+    }
+    workItemsByIid: workItems(iid: $iid, types: $types) @include(if: $isNumber) {
+      nodes {
+        id
+        iid
+        title
       }
     }
   }

@@ -8,7 +8,7 @@ import { STATE_OPEN, TRACKING_CATEGORY_SHOW, TASK_TYPE_NAME } from '~/work_items
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
-import WorkItemStateToggleButton from '~/work_items/components/work_item_state_toggle_button.vue';
+import WorkItemStateToggle from '~/work_items/components/work_item_state_toggle.vue';
 import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
 
 export default {
@@ -29,7 +29,7 @@ export default {
     MarkdownEditor,
     GlFormCheckbox,
     GlIcon,
-    WorkItemStateToggleButton,
+    WorkItemStateToggle,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -195,7 +195,6 @@ export default {
             :autocomplete-data-sources="autocompleteDataSources"
             :form-field-props="formFieldProps"
             :add-spacing-classes="false"
-            data-testid="work-item-add-comment"
             use-bottom-toolbar
             supports-quick-actions
             :autofocus="autofocus"
@@ -230,7 +229,7 @@ export default {
             @click="$emit('submitForm', { commentText, isNoteInternal })"
             >{{ commentButtonTextComputed }}
           </gl-button>
-          <work-item-state-toggle-button
+          <work-item-state-toggle
             v-if="isNewDiscussion"
             class="gl-ml-3"
             :work-item-id="workItemId"

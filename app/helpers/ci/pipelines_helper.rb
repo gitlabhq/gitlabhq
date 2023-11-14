@@ -71,7 +71,7 @@ module Ci
     def pipelines_list_data(project, list_url)
       artifacts_endpoint_placeholder = ':pipeline_artifacts_id'
 
-      data = {
+      {
         endpoint: list_url,
         project_id: project.id,
         default_branch_name: project.default_branch,
@@ -89,15 +89,6 @@ module Ci
         full_path: project.full_path,
         visibility_pipeline_id_type: visibility_pipeline_id_type
       }
-
-      experiment(:ios_specific_templates, actor: current_user, project: project, sticky_to: project) do |e|
-        e.candidate do
-          data[:registration_token] = project.runners_token if can?(current_user, :register_project_runners, project)
-          data[:ios_runners_available] = (project.shared_runners_available? && Gitlab.com?).to_s
-        end
-      end
-
-      data
     end
 
     def visibility_pipeline_id_type

@@ -20,6 +20,7 @@ function createSuggestionPlugin({
   limit = 15,
   nodeType,
   nodeProps = {},
+  insertionMap = {},
 }) {
   const fetchData = memoize(
     isFunction(dataSource) ? dataSource : async () => (await axios.get(dataSource)).data,
@@ -36,7 +37,7 @@ function createSuggestionPlugin({
         .focus()
         .insertContentAt(range, [
           { type: nodeType, attrs: props },
-          { type: 'text', text: ' ' },
+          { type: 'text', text: ` ${insertionMap[props.text] || ''}` },
         ])
         .run();
     },
@@ -56,6 +57,7 @@ function createSuggestionPlugin({
     render: () => {
       let component;
       let popup;
+      let isHidden = false;
 
       const onUpdate = (props) => {
         component?.updateProps({ ...props, loading: false });
@@ -87,6 +89,12 @@ function createSuggestionPlugin({
           popup = tippy('body', {
             getReferenceClientRect: props.clientRect,
             appendTo: () => document.body,
+            onHide: () => {
+              isHidden = true;
+            },
+            onShow: () => {
+              isHidden = false;
+            },
             content: component.element,
             showOnCreate: true,
             interactive: true,
@@ -99,6 +107,8 @@ function createSuggestionPlugin({
         onUpdate,
 
         onKeyDown(props) {
+          if (isHidden) return false;
+
           if (props.event.key === 'Escape') {
             popup?.[0].hide();
 
@@ -217,11 +227,24 @@ export default Node.create({
           referenceType: 'command',
         },
         search: (query) => ({ name }) => find(name, query),
+        insertionMap: {
+          '/label': '~',
+          '/unlabel': '~',
+          '/relabel': '~',
+          '/assign': '@',
+          '/unassign': '@',
+          '/reassign': '@',
+          '/cc': '@',
+          '/assign_reviewer': '@',
+          '/unassign_reviewer': '@',
+          '/reassign_reviewer': '@',
+          '/milestone': '%',
+        },
       }),
       createSuggestionPlugin({
         editor: this.editor,
         char: ':',
-        dataSource: () => Object.values(getAllEmoji()),
+        dataSource: () => getAllEmoji(),
         nodeType: 'emoji',
         search: (query) => ({ d, name }) => find(d, query) || find(name, query),
         limit: 10,

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Logout/Sign out', :js, feature_category: :system_access do
-  let(:user) { create(:user, :no_super_sidebar) }
+  let(:user) { create(:user) }
 
   before do
     sign_in(user)

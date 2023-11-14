@@ -2,8 +2,11 @@ import { GlLoadingIcon, GlPagination } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import getMRCodequalityAndSecurityReports from '~/diffs/components/graphql/get_mr_codequality_and_security_reports.query.graphql';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'spec/test_constants';
 
@@ -19,11 +22,14 @@ import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vu
 import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
 
 import eventHub from '~/diffs/event_hub';
+import { EVT_DISCUSSIONS_ASSIGNED } from '~/diffs/constants';
 
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { Mousetrap } from '~/lib/mousetrap';
 import * as urlUtils from '~/lib/utils/url_utility';
+import * as commonUtils from '~/lib/utils/common_utils';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 import createDiffsStore from '../create_diffs_store';
 import diffsMockData from '../mock_data/merge_request_diffs';
@@ -34,6 +40,7 @@ const COMMIT_URL = `${TEST_HOST}/COMMIT/OLD`;
 const UPDATED_COMMIT_URL = `${TEST_HOST}/COMMIT/NEW`;
 
 Vue.use(Vuex);
+Vue.use(VueApollo);
 
 Vue.config.ignoredElements = ['copy-code'];
 
@@ -46,12 +53,19 @@ describe('diffs/components/app', () => {
   let store;
   let wrapper;
   let mock;
+  let fakeApollo;
+
+  const codeQualityAndSastQueryHandlerSuccess = jest.fn().mockResolvedValue({});
 
   function createComponent(props = {}, extendStore = () => {}, provisions = {}, baseConfig = {}) {
+    fakeApollo = createMockApollo([
+      [getMRCodequalityAndSecurityReports, codeQualityAndSastQueryHandlerSuccess],
+    ]);
+
     const provide = {
       ...provisions,
       glFeatures: {
-        ...(provisions.glFeatures || {}),
+        ...provisions.glFeatures,
       },
     };
 
@@ -74,10 +88,11 @@ describe('diffs/components/app', () => {
     });
 
     wrapper = shallowMount(App, {
+      apolloProvider: fakeApollo,
       propsData: {
         endpointCoverage: `${TEST_HOST}/diff/endpointCoverage`,
         endpointCodequality: '',
-        endpointSast: '',
+        sastReportAvailable: false,
         projectPath: 'namespace/project',
         currentUser: {},
         changesEmptyStateIllustration: '',
@@ -120,8 +135,6 @@ describe('diffs/components/app', () => {
       jest.spyOn(wrapper.vm, 'fetchDiffFilesBatch').mockImplementation(fetchResolver);
       jest.spyOn(wrapper.vm, 'fetchCoverageFiles').mockImplementation(fetchResolver);
       jest.spyOn(wrapper.vm, 'setDiscussions').mockImplementation(() => {});
-      jest.spyOn(wrapper.vm, 'unwatchDiscussions').mockImplementation(() => {});
-      jest.spyOn(wrapper.vm, 'unwatchRetrievingBatches').mockImplementation(() => {});
       store.state.diffs.retrievingBatches = true;
       store.state.diffs.diffFiles = [];
       return nextTick();
@@ -136,9 +149,7 @@ describe('diffs/components/app', () => {
       expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
       expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
       expect(wrapper.vm.fetchCoverageFiles).toHaveBeenCalled();
-      expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
       expect(wrapper.vm.diffFilesLength).toBe(100);
-      expect(wrapper.vm.unwatchRetrievingBatches).toHaveBeenCalled();
     });
 
     it('calls batch methods if diffsBatchLoad is enabled, and latest version', async () => {
@@ -150,9 +161,7 @@ describe('diffs/components/app', () => {
       expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
       expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
       expect(wrapper.vm.fetchCoverageFiles).toHaveBeenCalled();
-      expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
       expect(wrapper.vm.diffFilesLength).toBe(100);
-      expect(wrapper.vm.unwatchRetrievingBatches).toHaveBeenCalled();
     });
   });
 
@@ -187,16 +196,14 @@ describe('diffs/components/app', () => {
       wrapper.vm.fetchData(false);
 
       expect(wrapper.vm.fetchCodequality).not.toHaveBeenCalled();
+      expect(codeQualityAndSastQueryHandlerSuccess).not.toHaveBeenCalled();
     });
   });
 
   describe('SAST diff', () => {
     it('does not fetch Sast data on FOSS', () => {
       createComponent();
-      jest.spyOn(wrapper.vm, 'fetchSast');
-      wrapper.vm.fetchData(false);
-
-      expect(wrapper.vm.fetchSast).not.toHaveBeenCalled();
+      expect(codeQualityAndSastQueryHandlerSuccess).not.toHaveBeenCalled();
     });
   });
 
@@ -652,6 +659,12 @@ describe('diffs/components/app', () => {
   });
 
   describe('file-by-file', () => {
+    let hashSpy;
+
+    beforeEach(() => {
+      hashSpy = jest.spyOn(commonUtils, 'handleLocationHash');
+    });
+
     it('renders a single diff', async () => {
       createComponent(
         undefined,
@@ -669,6 +682,48 @@ describe('diffs/components/app', () => {
       await nextTick();
 
       expect(wrapper.findAllComponents(DiffFile).length).toBe(1);
+    });
+
+    describe('rechecking the url hash for scrolling', () => {
+      const advanceAndCheckCalls = (count = 0) => {
+        jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+        expect(hashSpy).toHaveBeenCalledTimes(count);
+      };
+
+      it('re-checks one time after the file finishes loading', () => {
+        createComponent(
+          undefined,
+          ({ state }) => {
+            state.diffs.diffFiles = [{ isLoadingFullFile: true }];
+          },
+          undefined,
+          { viewDiffsFileByFile: true },
+        );
+
+        // The hash check is not called if the file is still marked as loading
+        expect(hashSpy).toHaveBeenCalledTimes(0);
+        eventHub.$emit(EVT_DISCUSSIONS_ASSIGNED);
+        advanceAndCheckCalls();
+        eventHub.$emit(EVT_DISCUSSIONS_ASSIGNED);
+        advanceAndCheckCalls();
+        // Once the file has finished loading, it calls through to check the hash
+        store.state.diffs.diffFiles[0].isLoadingFullFile = false;
+        eventHub.$emit(EVT_DISCUSSIONS_ASSIGNED);
+        advanceAndCheckCalls(1);
+        // No further scrolls happen after one hash check / scroll
+        eventHub.$emit(EVT_DISCUSSIONS_ASSIGNED);
+        advanceAndCheckCalls(1);
+        eventHub.$emit(EVT_DISCUSSIONS_ASSIGNED);
+        advanceAndCheckCalls(1);
+      });
+
+      it('does not re-check when not in single-file mode', () => {
+        createComponent();
+
+        eventHub.$emit(EVT_DISCUSSIONS_ASSIGNED);
+
+        expect(hashSpy).not.toHaveBeenCalled();
+      });
     });
 
     describe('pagination', () => {
@@ -769,6 +824,15 @@ describe('diffs/components/app', () => {
 
     beforeEach(() => {
       createComponent();
+
+      store.state.diffs.diffFiles = [
+        {
+          file_hash: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a',
+          highlighted_diff_lines: [],
+          viewer: { manuallyCollapsed: true },
+        },
+      ];
+
       loadSpy = jest.spyOn(wrapper.vm, 'loadCollapsedDiff').mockResolvedValue('resolved');
     });
 
@@ -786,6 +850,15 @@ describe('diffs/components/app', () => {
       eventHub.$emit('doneLoadingBatches');
 
       expect(loadSpy).toHaveBeenCalledWith({ file: store.state.diffs.diffFiles[0] });
+    });
+
+    it('does nothing when file is not collapsed', () => {
+      store.state.diffs.diffFiles[0].viewer.manuallyCollapsed = false;
+      window.location.hash = '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_0_1';
+
+      eventHub.$emit('doneLoadingBatches');
+
+      expect(loadSpy).not.toHaveBeenCalledWith({ file: store.state.diffs.diffFiles[0] });
     });
   });
 });

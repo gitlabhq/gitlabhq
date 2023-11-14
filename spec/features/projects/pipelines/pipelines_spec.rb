@@ -11,7 +11,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
   let(:expected_detached_mr_tag) { 'merge request' }
 
   context 'when user is logged in' do
-    let(:user) { create(:user, :no_super_sidebar) }
+    let(:user) { create(:user) }
 
     before do
       sign_in(user)
@@ -115,7 +115,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
         it 'indicates that pipeline can be canceled' do
           expect(page).to have_selector('.js-pipelines-cancel-button')
-          expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Running')
+          expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
         end
 
         context 'when canceling' do
@@ -127,7 +127,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
           it 'indicated that pipelines was canceled', :sidekiq_might_not_need_inline do
             expect(page).not_to have_selector('.js-pipelines-cancel-button')
-            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Canceled')
+            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Canceled')
           end
         end
       end
@@ -144,7 +144,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
         it 'indicates that pipeline can be retried' do
           expect(page).to have_selector('.js-pipelines-retry-button')
-          expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Failed')
+          expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Failed')
         end
 
         context 'when retrying' do
@@ -155,7 +155,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
           it 'shows running pipeline that is not retryable' do
             expect(page).not_to have_selector('.js-pipelines-retry-button')
-            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Running')
+            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
           end
         end
       end
@@ -183,7 +183,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
             within '.pipeline-tags' do
               expect(page).to have_content(expected_detached_mr_tag)
 
-              expect(page).to have_link(merge_request.iid, href: project_merge_request_path(project, merge_request))
+              expect(page).to have_link(merge_request.iid.to_s, href: project_merge_request_path(project, merge_request))
 
               expect(page).not_to have_link(pipeline.ref)
             end
@@ -223,7 +223,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
             within '.pipeline-tags' do
               expect(page).not_to have_content(expected_detached_mr_tag)
 
-              expect(page).to have_link(merge_request.iid, href: project_merge_request_path(project, merge_request))
+              expect(page).to have_link(merge_request.iid.to_s, href: project_merge_request_path(project, merge_request))
 
               expect(page).not_to have_link(pipeline.ref)
             end
@@ -396,7 +396,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           end
 
           it 'shows the pipeline as preparing' do
-            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Preparing')
+            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Preparing')
           end
         end
 
@@ -417,7 +417,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           end
 
           it 'has pipeline running' do
-            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Running')
+            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
           end
 
           context 'when canceling' do
@@ -428,7 +428,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
             it 'indicates that pipeline was canceled', :sidekiq_might_not_need_inline do
               expect(page).not_to have_selector('.js-pipelines-cancel-button')
-              expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Canceled')
+              expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Canceled')
             end
           end
         end
@@ -450,7 +450,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           end
 
           it 'has failed pipeline', :sidekiq_might_not_need_inline do
-            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Failed')
+            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Failed')
           end
         end
       end
@@ -650,7 +650,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
         # header
         expect(page).to have_text("##{pipeline.id}")
-        expect(page).to have_link(pipeline.user.name, href: user_path(pipeline.user))
+        expect(page).to have_link(pipeline.user.name, href: /#{user_path(pipeline.user)}$/)
 
         # stages
         expect(page).to have_text('build')
@@ -805,29 +805,12 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
     describe 'Empty State' do
       let(:project) { create(:project, :repository) }
 
-      context 'when `ios_specific_templates` is not enabled' do
-        before do
-          visit project_pipelines_path(project)
-        end
-
-        it 'renders empty state' do
-          expect(page).to have_content 'Try test template'
-        end
+      before do
+        visit project_pipelines_path(project)
       end
 
-      describe 'when the `ios_specific_templates` experiment is enabled and the "Set up a runner" button is clicked' do
-        before do
-          stub_experiments(ios_specific_templates: :candidate)
-          project.project_setting.update!(target_platforms: %w[ios])
-          visit project_pipelines_path(project)
-          click_button 'Set up a runner'
-        end
-
-        it 'displays a modal with the macOS platform selected and an explanation popover' do
-          expect(page).to have_button 'macOS', class: 'selected'
-          expect(page).to have_selector('#runner-instructions-modal___BV_modal_content_')
-          expect(page).to have_selector('.popover')
-        end
+      it 'renders empty state' do
+        expect(page).to have_content 'Try test template'
       end
     end
   end

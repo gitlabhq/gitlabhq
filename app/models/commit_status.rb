@@ -8,20 +8,24 @@ class CommitStatus < Ci::ApplicationRecord
   include Presentable
   include BulkInsertableAssociations
   include TaggableQueries
+  include IgnorableColumns
 
-  def self.switch_table_names
-    if Gitlab::Utils.to_boolean(ENV['USE_CI_BUILDS_ROUTING_TABLE'])
-      :p_ci_builds
-    else
-      :ci_builds
-    end
-  end
+  ignore_columns %i[
+    auto_canceled_by_id_convert_to_bigint
+    commit_id_convert_to_bigint
+    erased_by_id_convert_to_bigint
+    project_id_convert_to_bigint
+    runner_id_convert_to_bigint
+    trigger_request_id_convert_to_bigint
+    upstream_pipeline_id_convert_to_bigint
+    user_id_convert_to_bigint
+  ], remove_with: '17.0', remove_after: '2024-04-22'
 
-  self.table_name = self.switch_table_names
+  self.table_name = :p_ci_builds
   self.sequence_name = :ci_builds_id_seq
   self.primary_key = :id
 
-  partitionable scope: :pipeline
+  partitionable scope: :pipeline, partitioned: true
 
   belongs_to :user
   belongs_to :project
@@ -155,15 +159,15 @@ class CommitStatus < Ci::ApplicationRecord
     end
 
     event :drop do
-      transition [:created, :waiting_for_resource, :preparing, :pending, :running, :manual, :scheduled] => :failed
+      transition [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :running, :manual, :scheduled] => :failed
     end
 
     event :success do
-      transition [:created, :waiting_for_resource, :preparing, :pending, :running] => :success
+      transition [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :running] => :success
     end
 
     event :cancel do
-      transition [:created, :waiting_for_resource, :preparing, :pending, :running, :manual, :scheduled] => :canceled
+      transition [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :running, :manual, :scheduled] => :canceled
     end
 
     before_transition [:created, :waiting_for_resource, :preparing, :skipped, :manual, :scheduled] => :pending do |commit_status|

@@ -32,34 +32,32 @@ module Integrations
       non_empty_password_help: -> { s_('HarborIntegration|Leave blank to use your current password.') },
       required: true
 
-    def title
+    def self.title
       'Harbor'
     end
 
-    def description
+    def self.description
       s_("HarborIntegration|Use Harbor as this project's container registry.")
     end
 
-    def help
+    def self.help
       s_("HarborIntegration|After the Harbor integration is activated, global variables `$HARBOR_USERNAME`, `$HARBOR_HOST`, `$HARBOR_OCI`, `$HARBOR_PASSWORD`, `$HARBOR_URL` and `$HARBOR_PROJECT` will be created for CI/CD use.")
+    end
+
+    def self.to_param
+      name.demodulize.downcase
     end
 
     def hostname
       Gitlab::Utils.parse_url(url).hostname
     end
 
-    class << self
-      def to_param
-        name.demodulize.downcase
-      end
+    def self.supported_events
+      []
+    end
 
-      def supported_events
-        []
-      end
-
-      def supported_event_actions
-        []
-      end
+    def self.supported_event_actions
+      []
     end
 
     def test(*_args)

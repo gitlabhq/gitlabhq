@@ -15,12 +15,13 @@ module Ml
       end
 
       def create!(experiment, start_time, tags = nil, name = nil)
-        candidate = experiment.candidates.create!(
+        create_params = {
+          start_time: start_time,
           user: user,
-          name: candidate_name(name, tags),
-          project: project,
-          start_time: start_time || 0
-        )
+          name: candidate_name(name, tags)
+        }
+
+        candidate = Ml::CreateCandidateService.new(experiment, create_params).execute
 
         add_tags(candidate, tags)
 
@@ -103,16 +104,11 @@ module Ml
       end
 
       def candidate_name(name, tags)
-        name.presence || candidate_name_from_tags(tags) || random_candidate_name
+        name.presence || candidate_name_from_tags(tags)
       end
 
       def candidate_name_from_tags(tags)
         tags&.detect { |t| t[:key] == 'mlflow.runName' }&.dig(:value)
-      end
-
-      def random_candidate_name
-        parts = Array.new(3).map { FFaker::Animal.common_name.downcase.delete(' ') } << rand(10000)
-        parts.join('-').truncate(255)
       end
     end
   end

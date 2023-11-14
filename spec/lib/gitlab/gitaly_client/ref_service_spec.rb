@@ -67,7 +67,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
         .with(gitaly_request_with_params(merged_only: true, merged_branches: ['test']), kind_of(Hash))
         .and_return([])
 
-      client.merged_branches(%w(test))
+      client.merged_branches(%w[test])
     end
   end
 
@@ -425,7 +425,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
   end
 
   describe '#delete_refs' do
-    let(:prefixes) { %w(refs/heads refs/keep-around) }
+    let(:prefixes) { %w[refs/heads refs/keep-around] }
 
     subject(:delete_refs) { client.delete_refs(except_with_prefixes: prefixes) }
 

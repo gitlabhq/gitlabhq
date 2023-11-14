@@ -10,20 +10,14 @@ module QA
       include Runtime::Fixtures
 
       let(:project) { create(:project, :private, name: 'conan-package-project') }
-      let(:package) do
-        Resource::Package.init do |package|
-          package.name = "conantest-#{SecureRandom.hex(8)}"
-          package.project = project
-        end
-      end
+      let(:package) { build(:package, name: "conantest-#{SecureRandom.hex(8)}", project: project) }
 
       let!(:runner) do
-        Resource::ProjectRunner.fabricate! do |runner|
-          runner.name = "qa-runner-#{Time.now.to_i}"
-          runner.tags = ["runner-for-#{project.name}"]
-          runner.executor = :docker
-          runner.project = project
-        end
+        create(:project_runner,
+          name: "qa-runner-#{Time.now.to_i}",
+          tags: ["runner-for-#{project.name}"],
+          executor: :docker,
+          project: project)
       end
 
       let(:gitlab_address_with_port) do

@@ -26,9 +26,6 @@ module API
           status 200
 
           authenticate!
-
-          check_api_read!
-          check_api_write! unless request.get? || request.head?
         end
 
         rescue_from ActiveRecord::ActiveRecordError do |e|
@@ -44,7 +41,9 @@ module API
           end
           namespace MLFLOW_API_PREFIX do
             mount ::API::Ml::Mlflow::Experiments
+            mount ::API::Ml::Mlflow::ModelVersions
             mount ::API::Ml::Mlflow::Runs
+            mount ::API::Ml::Mlflow::RegisteredModels
           end
         end
       end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::MergeRequests::Mergeability::CheckResult do
+RSpec.describe Gitlab::MergeRequests::Mergeability::CheckResult, feature_category: :code_review_workflow do
   subject(:check_result) { described_class }
 
   let(:time) { Time.current }
@@ -59,6 +59,28 @@ RSpec.describe Gitlab::MergeRequests::Mergeability::CheckResult do
 
       it 'uses the payload passed' do
         expect(failed.payload).to eq payload
+      end
+    end
+  end
+
+  describe '.inactive' do
+    subject(:inactive) { check_result.inactive(payload: payload) }
+
+    let(:payload) { {} }
+
+    it 'creates a inactive result' do
+      expect(inactive.status).to eq described_class::INACTIVE_STATUS
+    end
+
+    it 'uses the default payload' do
+      expect(inactive.payload).to eq described_class.default_payload
+    end
+
+    context 'when given a payload' do
+      let(:payload) { { last_run_at: time + 1.day, test: 'test' } }
+
+      it 'uses the payload passed' do
+        expect(inactive.payload).to eq payload
       end
     end
   end

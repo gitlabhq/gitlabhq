@@ -477,6 +477,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
       let_it_be(:token) { create(:personal_access_token, user: project_bot) }
       let_it_be(:resource_id) { resource.id }
       let_it_be(:token_id) { token.id }
+      let(:params) { {} }
 
       let(:path) { "/#{source_type}s/#{resource_id}/access_tokens/#{token_id}/rotate" }
 
@@ -485,7 +486,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
         resource.add_owner(user)
       end
 
-      subject(:rotate_token) { post api(path, user) }
+      subject(:rotate_token) { post(api(path, user), params: params) }
 
       it "allows owner to rotate token", :freeze_time do
         rotate_token
@@ -493,6 +494,19 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['token']).not_to eq(token.token)
         expect(json_response['expires_at']).to eq((Date.today + 1.week).to_s)
+      end
+
+      context 'when expiry is defined' do
+        let(:expiry_date) { Date.today + 1.month }
+        let(:params) { { expires_at: expiry_date } }
+
+        it "allows owner to rotate token", :freeze_time do
+          rotate_token
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['token']).not_to eq(token.token)
+          expect(json_response['expires_at']).to eq(expiry_date.to_s)
+        end
       end
 
       context 'without permission' do

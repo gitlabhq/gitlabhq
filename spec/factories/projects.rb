@@ -94,6 +94,8 @@ FactoryBot.define do
         visibility_level: evaluator.visibility_level
       }
 
+      project_namespace_hash[:id] = evaluator.project_namespace_id.presence
+
       project.build_project_namespace(project_namespace_hash)
       project.build_project_feature(project_feature_hash)
 
@@ -252,6 +254,35 @@ FactoryBot.define do
             message: "Automatically created file #{filename}",
             branch_name: project.default_branch || 'master'
           )
+        end
+      end
+    end
+
+    # A catalog resource repository with a file structure set up for ci components.
+    trait :catalog_resource_with_components do
+      small_repo
+      description { 'catalog resource' }
+
+      files do
+        {
+          'templates/secret-detection.yml' => "spec:\n inputs:\n  website:\n---\nimage: alpine_1",
+          'templates/dast/template.yml' => 'image: alpine_2',
+          'templates/template.yml' => 'image: alpine_3',
+          'templates/blank-yaml.yml' => '',
+          'README.md' => 'readme'
+        }
+      end
+
+      transient do
+        create_tag { nil }
+      end
+
+      after(:create) do |project, evaluator|
+        if evaluator.create_tag
+          project.repository.add_tag(
+            project.creator,
+            evaluator.create_tag,
+            project.repository.commit.sha)
         end
       end
     end
@@ -477,7 +508,7 @@ FactoryBot.define do
   trait :pages_published do
     after(:create) do |project|
       project.mark_pages_onboarding_complete
-      project.mark_pages_as_deployed
+      create(:pages_deployment, project: project) # rubocop: disable RSpec/FactoryBot/StrategyInCallback
     end
   end
 

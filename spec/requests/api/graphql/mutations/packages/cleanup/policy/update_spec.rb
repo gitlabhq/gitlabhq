@@ -17,14 +17,16 @@ RSpec.describe 'Updating the packages cleanup policy', feature_category: :packag
   end
 
   let(:mutation) do
-    graphql_mutation(:update_packages_cleanup_policy, params,
-                     <<~QUERY
-                       packagesCleanupPolicy {
-                         keepNDuplicatedPackageFiles
-                         nextRunAt
-                       }
-                       errors
-                     QUERY
+    graphql_mutation(
+      :update_packages_cleanup_policy,
+      params,
+      <<~QUERY
+        packagesCleanupPolicy {
+          keepNDuplicatedPackageFiles
+          nextRunAt
+        }
+        errors
+      QUERY
     )
   end
 

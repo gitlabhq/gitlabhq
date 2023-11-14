@@ -10,14 +10,22 @@ module Projects
       end
 
       def execute(group_link_params)
+        return ServiceResponse.error(message: 'Not found', reason: :not_found) unless allowed_to_update?
+
         group_link.update!(group_link_params)
 
         refresh_authorizations if requires_authorization_refresh?(group_link_params)
+
+        ServiceResponse.success
       end
 
       private
 
       attr_reader :group_link
+
+      def allowed_to_update?
+        current_user.can?(:admin_project_member, project)
+      end
 
       def refresh_authorizations
         AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(project.id)

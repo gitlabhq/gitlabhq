@@ -1,10 +1,7 @@
 - status             = local_assigns.fetch(:status)
-- tooltip_placement  = local_assigns.fetch(:tooltip_placement, "left")
 - path               = local_assigns.fetch(:path, status.has_details? ? status.details_path : nil)
-- option_css_classes = local_assigns.fetch(:option_css_classes, '')
-- css_classes        = "gl-px-2 #{option_css_classes}"
-- ci_css_classes     = "ci-status-link ci-status-icon ci-status-icon-#{status.group} gl-line-height-1"
-- title              = s_("PipelineStatusTooltip|Pipeline: %{ci_status}") % {ci_status: status.label}
+- tooltip_placement  = local_assigns.fetch(:tooltip_placement, "left")
+- option_css_classes = local_assigns.fetch(:option_css_classes, nil)
+- show_status_text   = local_assigns.fetch(:show_status_text, false)
 
-= gl_badge_tag(variant: badge_variant(status), size: :md, href: path, class: css_classes, title: title, data: { toggle: 'tooltip', placement: tooltip_placement, testid: "ci-status-badge" }) do
-  = content_tag :span, sprite_icon(status.icon, size: 16), class: ci_css_classes
+= render_ci_icon(status, path, tooltip_placement: tooltip_placement, option_css_classes: option_css_classes, show_status_text: show_status_text)

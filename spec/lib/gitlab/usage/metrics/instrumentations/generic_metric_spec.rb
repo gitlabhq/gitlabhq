@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Usage::Metrics::Instrumentations::GenericMetric do
+RSpec.describe Gitlab::Usage::Metrics::Instrumentations::GenericMetric, feature_category: :service_ping do
   shared_examples 'custom fallback' do |custom_fallback|
     subject do
       Class.new(described_class) do

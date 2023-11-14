@@ -14,7 +14,7 @@ class BuildDetailsEntity < Ci::JobEntity
   expose :deployment_status, if: -> (*) { build.deployment_job? } do
     expose :deployment_status, as: :status
     expose :persisted_environment, as: :environment do |build, options|
-      options.merge(deployment_details: false).yield_self do |opts|
+      options.merge(deployment_details: false).then do |opts|
         EnvironmentEntity.represent(build.persisted_environment, opts)
       end
     end

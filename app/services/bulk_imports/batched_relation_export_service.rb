@@ -26,8 +26,6 @@ module BulkImports
       start_export!
       export.batches.destroy_all # rubocop: disable Cop/DestroyAll
       enqueue_batch_exports
-    rescue StandardError => e
-      fail_export!(e)
     ensure
       FinishBatchedRelationExportWorker.perform_async(export.id)
     end
@@ -80,12 +78,6 @@ module BulkImports
 
     def find_or_create_batch(batch_number)
       export.batches.find_or_create_by!(batch_number: batch_number) # rubocop:disable CodeReuse/ActiveRecord
-    end
-
-    def fail_export!(exception)
-      Gitlab::ErrorTracking.track_exception(exception, portable_id: portable.id, portable_type: portable.class.name)
-
-      export.update!(status_event: 'fail_op', error: exception.message.truncate(255))
     end
   end
 end

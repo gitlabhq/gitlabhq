@@ -62,11 +62,7 @@ module QA
     end
 
     def add_ci_file(project, files)
-      Resource::Repository::Commit.fabricate_via_api! do |commit|
-        commit.project = project
-        commit.commit_message = 'Add CI config file'
-        commit.add_files(files)
-      end
+      create(:commit, project: project, commit_message: 'Add CI config file', actions: files)
     end
 
     def visit_job_page(pipeline_title, job_name)
@@ -100,56 +96,60 @@ module QA
 
     def upstream_child1_ci_file
       {
+        action: 'create',
         file_path: '.child1-ci.yml',
         content: <<~YAML
-            child1_job:
-              stage: test
-              tags: ["#{random_string}"]
-              script:
-                - echo $TEST_VAR
-                - echo Done!
+          child1_job:
+            stage: test
+            tags: ["#{random_string}"]
+            script:
+              - echo $TEST_VAR
+              - echo Done!
         YAML
       }
     end
 
     def upstream_child2_ci_file
       {
+        action: 'create',
         file_path: '.child2-ci.yml',
         content: <<~YAML
-            child2_job:
-              stage: test
-              tags: ["#{random_string}"]
-              script:
-                - echo $TEST_VAR
-                - echo Done!
+          child2_job:
+            stage: test
+            tags: ["#{random_string}"]
+            script:
+              - echo $TEST_VAR
+              - echo Done!
         YAML
       }
     end
 
     def downstream1_ci_file
       {
+        action: 'create',
         file_path: '.gitlab-ci.yml',
         content: <<~YAML
-            downstream1_job:
-              stage: deploy
-              tags: ["#{random_string}"]
-              script:
-                - echo $TEST_VAR
-                - echo Done!
+          downstream1_job:
+            stage: deploy
+            tags: ["#{random_string}"]
+            script:
+              - echo $TEST_VAR
+              - echo Done!
         YAML
       }
     end
 
     def downstream2_ci_file
       {
+        action: 'create',
         file_path: '.gitlab-ci.yml',
         content: <<~YAML
-            downstream2_job:
-              stage: deploy
-              tags: ["#{random_string}"]
-              script:
-                - echo $TEST_VAR
-                - echo Done!
+          downstream2_job:
+            stage: deploy
+            tags: ["#{random_string}"]
+            script:
+              - echo $TEST_VAR
+              - echo Done!
         YAML
       }
     end

@@ -11,7 +11,7 @@ module Mutations
               null: true,
               description: 'Job after the mutation.'
 
-        authorize :update_build
+        authorize :cancel_build
 
         def resolve(id:)
           job = authorized_find!(id: id)

@@ -28,14 +28,50 @@ discussions, nitpicking, or back-and-forth in reviews. The
 [GitLab Ruby style guide](backend/ruby_style_guide.md) includes a non-exhaustive
 list of styles that commonly come up in reviews and are not enforced.
 
-By default, we should not
-[disable a RuboCop rule inline](https://docs.rubocop.org/rubocop/configuration.html#disabling-cops-within-source-code), because it negates agreed-upon code standards that the rule is attempting to apply to the codebase.
-
-If you must use inline disable, provide the reason on the MR and ensure the reviewers agree
-before merging.
-
 Additionally, we have dedicated
 [test-specific style guides and best practices](testing_guide/index.md).
+
+## Disabling rules inline
+
+By default, RuboCop rules should not be
+[disabled inline](https://docs.rubocop.org/rubocop/configuration.html#disabling-cops-within-source-code),
+because it negates agreed-upon code standards that the rule is attempting to
+apply to the codebase.
+
+If you must use inline disable provide the reason as a code comment in
+the same line where the rule is disabled.
+
+More context can go into code comments above this inline disable comment. To
+reduce verbose code comments link a resource (issue, epic, ...) to provide
+detailed context.
+
+For example:
+
+```ruby
+# bad
+module Types
+  module Domain
+    # rubocop:disable Graphql/AuthorizeTypes
+    class SomeType < BaseObject
+      object.public_send(action) # rubocop:disable GitlabSecurity/PublicSend
+    end
+    # rubocop:enable Graphql/AuthorizeTypes
+  end
+end
+
+# good
+module Types
+  module Domain
+    # rubocop:disable Graphql/AuthorizeTypes -- already authroized in parent entity
+    class SomeType < BaseObject
+      # At this point `action` is safe to be used in `public_send`.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/123457890.
+      object.public_send(action) # rubocop:disable GitlabSecurity/PublicSend -- User input verified
+    end
+    # rubocop:enable Graphql/AuthorizeTypes
+  end
+end
+```
 
 ## Creating new RuboCop cops
 

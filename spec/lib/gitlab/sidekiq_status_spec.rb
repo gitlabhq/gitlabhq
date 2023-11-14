@@ -55,13 +55,13 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues, :clean_gitlab_
 
     describe '.all_completed?' do
       it 'returns true if all jobs have been completed' do
-        expect(described_class.all_completed?(%w(123))).to eq(true)
+        expect(described_class.all_completed?(%w[123])).to eq(true)
       end
 
       it 'returns false if a job has not yet been completed' do
         described_class.set('123')
 
-        expect(described_class.all_completed?(%w(123 456))).to eq(false)
+        expect(described_class.all_completed?(%w[123 456])).to eq(false)
       end
     end
 
@@ -79,40 +79,40 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues, :clean_gitlab_
 
     describe '.num_running' do
       it 'returns 0 if all jobs have been completed' do
-        expect(described_class.num_running(%w(123))).to eq(0)
+        expect(described_class.num_running(%w[123])).to eq(0)
       end
 
       it 'returns 2 if two jobs are still running' do
         described_class.set('123')
         described_class.set('456')
 
-        expect(described_class.num_running(%w(123 456 789))).to eq(2)
+        expect(described_class.num_running(%w[123 456 789])).to eq(2)
       end
     end
 
     describe '.num_completed' do
       it 'returns 1 if all jobs have been completed' do
-        expect(described_class.num_completed(%w(123))).to eq(1)
+        expect(described_class.num_completed(%w[123])).to eq(1)
       end
 
       it 'returns 1 if a job has not yet been completed' do
         described_class.set('123')
         described_class.set('456')
 
-        expect(described_class.num_completed(%w(123 456 789))).to eq(1)
+        expect(described_class.num_completed(%w[123 456 789])).to eq(1)
       end
     end
 
     describe '.completed_jids' do
       it 'returns the completed job' do
-        expect(described_class.completed_jids(%w(123))).to eq(['123'])
+        expect(described_class.completed_jids(%w[123])).to eq(['123'])
       end
 
       it 'returns only the jobs completed' do
         described_class.set('123')
         described_class.set('456')
 
-        expect(described_class.completed_jids(%w(123 456 789))).to eq(['789'])
+        expect(described_class.completed_jids(%w[123 456 789])).to eq(['789'])
       end
     end
 
@@ -122,7 +122,7 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues, :clean_gitlab_
         described_class.set('456')
         described_class.unset('123')
 
-        expect(described_class.job_status(%w(123 456 789))).to eq([false, true, false])
+        expect(described_class.job_status(%w[123 456 789])).to eq([false, true, false])
       end
 
       it 'handles an empty array' do
@@ -140,7 +140,7 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues, :clean_gitlab_
       expect(Gitlab::Redis::SidekiqStatus).to receive(:with).and_call_original
       expect(Sidekiq).not_to receive(:redis)
 
-      described_class.job_status(%w(123 456 789))
+      described_class.job_status(%w[123 456 789])
     end
 
     it_behaves_like 'tracking status in redis'
@@ -160,7 +160,7 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues, :clean_gitlab_
       expect(Sidekiq).to receive(:redis).and_call_original
       expect(Gitlab::Redis::SidekiqStatus).not_to receive(:with)
 
-      described_class.job_status(%w(123 456 789))
+      described_class.job_status(%w[123 456 789])
     end
 
     it_behaves_like 'tracking status in redis'

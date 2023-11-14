@@ -1,0 +1,13 @@
++# frozen_string_literal: true
++
++class TestMigration < Gitlab::Database::Migration[2.1]
++  enable_lock_retries!
++
++  def change
++    change_column_default('ci_builds', 'partition_id', from: 100, to: 101)
++
++    change_column_default('ci_builds', 'partition_id', from: 100, to: 101)
++
++    remove_column_default('ci_builds', 'partition_id')
++  end
++end

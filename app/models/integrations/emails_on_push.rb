@@ -39,11 +39,11 @@ module Integrations
       recipients.split.grep(Devise.email_regexp).uniq(&:downcase)
     end
 
-    def title
+    def self.title
       s_('EmailsOnPushService|Emails on push')
     end
 
-    def description
+    def self.description
       s_('EmailsOnPushService|Email the commits and diff of each push to a list of recipients.')
     end
 

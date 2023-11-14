@@ -15,10 +15,8 @@ module Gitlab
           # this portion swaps out Sidekiq.redis for Gitlab::Redis::Queues
           Gitlab::Redis::Queues.with do |conn| # rubocop:disable Cop/RedisQueueUsage
             sorted_sets.each do |sorted_set|
-              # adds namespace if `super` polls with a non-namespaced Sidekiq.redis
-              if Gitlab::Utils.to_boolean(ENV['SIDEKIQ_ENQUEUE_NON_NAMESPACED'])
-                sorted_set = "#{Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE}:#{sorted_set}" # rubocop:disable Cop/RedisQueueUsage
-              end
+              # adds namespace since `super` polls with a non-namespaced Sidekiq.redis
+              sorted_set = "#{Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE}:#{sorted_set}" # rubocop:disable Cop/RedisQueueUsage
 
               while !@done && (job = zpopbyscore(conn, keys: [sorted_set], argv: [Time.now.to_f.to_s])) # rubocop:disable Gitlab/ModuleWithInstanceVariables, Lint/AssignmentInCondition
                 Sidekiq::Client.push(Sidekiq.load_json(job)) # rubocop:disable Cop/SidekiqApiUsage
@@ -28,7 +26,6 @@ module Gitlab
           end
         end
 
-        # calls original enqueue_jobs which may or may not be namespaced depending on SIDEKIQ_ENQUEUE_NON_NAMESPACED
         super
       end
     end

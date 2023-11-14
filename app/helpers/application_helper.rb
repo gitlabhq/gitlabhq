@@ -318,7 +318,6 @@ module ApplicationHelper
     class_names << 'with-header' if !show_super_sidebar? || !current_user
     class_names << 'with-top-bar' if show_super_sidebar? && !@hide_top_bar_padding
     class_names << system_message_class
-    class_names << 'logged-out-marketing-header' if !current_user && ::Gitlab.com? && !show_super_sidebar?
 
     class_names
   end
@@ -369,6 +368,14 @@ module ApplicationHelper
     return '' if user.discord.blank?
 
     "https://discord.com/users/#{user.discord}"
+  end
+
+  def mastodon_url(user)
+    return '' if user.mastodon.blank?
+
+    url = user.mastodon.match UserDetail::MASTODON_VALIDATION_REGEX
+
+    external_redirect_path(url: "https://#{url[2]}/@#{url[1]}")
   end
 
   def collapsed_sidebar?

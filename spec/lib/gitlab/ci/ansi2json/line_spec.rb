@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Ansi2json::Line do
+RSpec.describe Gitlab::Ci::Ansi2json::Line, feature_category: :continuous_integration do
   let(:offset) { 0 }
   let(:style) { Gitlab::Ci::Ansi2json::Style.new }
 
@@ -71,6 +71,14 @@ RSpec.describe Gitlab::Ci::Ansi2json::Line do
     it 'change the section_header to true' do
       expect { subject.set_as_section_header }
         .to change { subject.section_header }
+        .to be_truthy
+    end
+  end
+
+  describe '#set_as_section_footer' do
+    it 'change the section_footer to true' do
+      expect { subject.set_as_section_footer }
+        .to change { subject.section_footer }
         .to be_truthy
     end
   end
@@ -173,6 +181,23 @@ RSpec.describe Gitlab::Ci::Ansi2json::Line do
             content: [{ text: 'some data', style: 'term-bold' }],
             section: 'section_2',
             section_duration: '01:15'
+          }
+
+          expect(subject.to_h).to eq(result)
+        end
+      end
+
+      context 'when section footer is set' do
+        before do
+          subject.set_as_section_footer
+        end
+
+        it 'serializes the attributes set' do
+          result = {
+            offset: 0,
+            content: [{ text: 'some data', style: 'term-bold' }],
+            section: 'section_2',
+            section_footer: true
           }
 
           expect(subject.to_h).to eq(result)

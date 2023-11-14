@@ -5,7 +5,7 @@ RSpec.shared_examples 'ci_cd_settings delegation' do
 
   context 'when ci_cd_settings is destroyed but project is not' do
     it 'allows methods delegated to ci_cd_settings to be nil', :aggregate_failures do
-      attributes = project.ci_cd_settings.attributes.keys - %w(id project_id) - exclude_attributes
+      attributes = project.ci_cd_settings.attributes.keys - %w[id project_id] - exclude_attributes
 
       expect(attributes).to match_array(attributes_with_prefix.keys)
 

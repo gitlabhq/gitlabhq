@@ -37,7 +37,7 @@ RSpec.describe 'Merge requests > User merges immediately', :js, feature_category
       wait_for_requests
 
       page.within '[data-testid="ready_to_merge_state"]' do
-        find('.dropdown-toggle').click
+        find('.gl-new-dropdown-toggle').click
 
         Sidekiq::Testing.fake! do
           click_button 'Merge immediately'

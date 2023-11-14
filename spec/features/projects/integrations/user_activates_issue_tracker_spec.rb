@@ -38,7 +38,8 @@ RSpec.describe 'User activates issue tracker', :js, feature_category: :integrati
         end
 
         it 'shows the link in the menu' do
-          page.within('.nav-sidebar') do
+          within_testid('super-sidebar') do
+            click_button 'Plan'
             expect(page).to have_link(tracker, href: url)
           end
         end
@@ -77,7 +78,8 @@ RSpec.describe 'User activates issue tracker', :js, feature_category: :integrati
       end
 
       it 'does not show the external tracker link in the menu' do
-        page.within('.nav-sidebar') do
+        within_testid('super-sidebar') do
+          click_button 'Plan'
           expect(page).not_to have_link(tracker, href: url)
         end
       end

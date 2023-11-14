@@ -24,7 +24,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportLfsObjectsWorker, feature_cate
 
       expect(Gitlab::GithubImport::AdvanceStageWorker)
         .to receive(:perform_async)
-        .with(project.id, { '123' => 2 }, :finish)
+        .with(project.id, { '123' => 2 }, 'finish')
 
       worker.import(project)
     end

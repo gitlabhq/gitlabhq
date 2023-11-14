@@ -1549,7 +1549,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
                 stage: 'build',
                 script: 'echo',
                 only: {
-                  variables: %w($CI)
+                  variables: %w[$CI]
                 }
               }
             }

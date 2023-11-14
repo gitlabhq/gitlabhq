@@ -105,6 +105,11 @@ export default {
       required: false,
       default: true,
     },
+    discussion: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {

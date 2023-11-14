@@ -8,8 +8,10 @@ class RecreateBillableIndex < Gitlab::Database::Migration[2.1]
   def up
     remove_concurrent_index_by_name :users, INDEX_NAME
 
+    # rubocop:disable Migration/PreventIndexCreation
     add_concurrent_index :users, :id, name: INDEX_NAME,
       where: "state = 'active' AND (user_type IN (0, 6, 4, 13)) AND (user_type IN (0, 4, 5))"
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

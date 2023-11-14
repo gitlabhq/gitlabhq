@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ProjectTemplate do
+RSpec.describe Gitlab::ProjectTemplate, feature_category: :source_code_management do
   include ProjectTemplateTestHelper
 
   describe '.all' do

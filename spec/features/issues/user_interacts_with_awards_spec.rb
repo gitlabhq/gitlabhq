@@ -57,7 +57,7 @@ RSpec.describe 'User interacts with awards', feature_category: :team_planning do
       end
 
       page.within('.emoji-picker') do
-        emoji_button = page.first('gl-emoji[data-name="8ball"]')
+        emoji_button = page.first('gl-emoji[data-name="grinning"]')
         emoji_button.hover
         emoji_button.click
       end
@@ -65,7 +65,7 @@ RSpec.describe 'User interacts with awards', feature_category: :team_planning do
       page.within('.awards') do
         expect(page).to have_selector('[data-testid="award-button"]')
         expect(page.find('[data-testid="award-button"].selected .js-counter')).to have_content('1')
-        expect(page).to have_css('[data-testid="award-button"].selected[title="You reacted with :8ball:"]')
+        expect(page).to have_css('[data-testid="award-button"].selected[title="You reacted with :grinning:"]')
 
         wait_for_requests
 
@@ -114,17 +114,17 @@ RSpec.describe 'User interacts with awards', feature_category: :team_planning do
 
     context 'User interacts with awards on a note' do
       let!(:note) { create(:note, noteable: issue, project: issue.project) }
-      let!(:award_emoji) { create(:award_emoji, awardable: note, name: '100') }
+      let!(:award_emoji) { create(:award_emoji, awardable: note, name: 'grinning') }
 
       it 'shows the award on the note' do
         page.within('.note-awards') do
-          expect(page).to have_emoji('100')
+          expect(page).to have_emoji('grinning')
         end
       end
 
       it 'allows adding a vote to an award' do
         page.within('.note-awards') do
-          find('gl-emoji[data-name="100"]').click
+          find('gl-emoji[data-name="grinning"]').click
         end
         wait_for_requests
 
@@ -140,11 +140,11 @@ RSpec.describe 'User interacts with awards', feature_category: :team_planning do
         # make sure emoji popup is visible
         execute_script("window.scrollBy(0, 200)")
 
-        find('gl-emoji[data-name="8ball"]').click
+        find('gl-emoji[data-name="laughing"]').click
         wait_for_requests
 
         page.within('.note-awards') do
-          expect(page).to have_emoji('8ball')
+          expect(page).to have_emoji('laughing')
         end
         expect(note.reload.award_emoji.size).to eq(2)
         restore_window_size
@@ -165,7 +165,7 @@ RSpec.describe 'User interacts with awards', feature_category: :team_planning do
 
         it 'does not allow toggling existing emoji' do
           page.within('.note-awards') do
-            find('gl-emoji[data-name="100"]').click
+            find('gl-emoji[data-name="grinning"]').click
           end
           wait_for_requests
 

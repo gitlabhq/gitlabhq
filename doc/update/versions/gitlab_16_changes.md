@@ -30,6 +30,52 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   - [Praefect configuration structure change](#praefect-configuration-structure-change).
   - [Gitaly configuration structure change](#gitaly-configuration-structure-change).
 
+## 16.5.0
+
+- Git 2.42.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
+
+### Geo installations
+
+Specific information applies to installations using Geo:
+
+- A number of Prometheus metrics were incorrectly removed in 16.3.0, which can break dashboards and alerting:
+
+  | Affected metric                          | Metric restored in 16.5.2 and later  | Replacement available in 16.3+                 |
+  | ---------------------------------------- | ------------------------------------ | ---------------------------------------------- |
+  | `geo_repositories_synced`                | Yes                                  | `geo_project_repositories_synced`              |
+  | `geo_repositories_failed`                | Yes                                  | `geo_project_repositories_failed`              |
+  | `geo_repositories_checksummed`           | Yes                                  | `geo_project_repositories_checksummed`         |
+  | `geo_repositories_checksum_failed`       | Yes                                  | `geo_project_repositories_checksum_failed`     |
+  | `geo_repositories_verified`              | Yes                                  | `geo_project_repositories_verified`            |
+  | `geo_repositories_verification_failed`   | Yes                                  | `geo_project_repositories_verification_failed` |
+  | `geo_repositories_checksum_mismatch`     | No                                   | None available                                 |
+  | `geo_repositories_retrying_verification` | No                                   | None available                                 |
+
+  - Impacted versions:
+    - 16.3.0 to 16.5.1
+  - Versions containing fix:
+    - 16.5.2 and later
+
+  For more information, see [issue 429617](https://gitlab.com/gitlab-org/gitlab/-/issues/429617).
+
+- [Object storage verification](https://about.gitlab.com/releases/2023/09/22/gitlab-16-4-released/#geo-verifies-object-storage) was added in GitLab 16.4. Due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429242) some Geo installations are reporting high memory usage which can lead to the GitLab application on the primary becoming unresponsive. 
+
+  Your installation may be impacted if you have configured it to use [object storage](../../administration/object_storage.md) and have enabled [GitLab-managed object storage replication](../../administration/geo/replication/object_storage.md#enabling-gitlab-managed-object-storage-replication)
+
+  Until this is fixed, the workaround is to disable object storage verification.
+  Run the following command on one of the Rails nodes on the primary site:
+
+  ```shell
+  sudo gitlab-rails runner 'Feature.disable(:geo_object_storage_verification)'
+  ```
+
+  **Affected releases**:
+ 
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ------ | ------ | ------ |
+  | 16.4   | All    | None   |
+  | 16.5   | All    | None   |
+
 ## 16.4.0
 
 - Updating a group path [received a bug fix](https://gitlab.com/gitlab-org/gitlab/-/issues/419289) that uses a database index introduced in 16.3.
@@ -71,8 +117,32 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   SELECT id FROM push_rules WHERE LENGTH(delete_branch_regex) > 511;
   ```
 
+  To find out if a push rule belongs to a project, group, or instance, run this script
+  in the [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session):
+  
+  ```ruby
+  # replace `delete_branch_regex` with a name of the field used in constraint
+  long_rules = PushRule.where("length(delete_branch_regex) > 511")
+
+  array = long_rules.map do |lr|
+    if lr.project
+      "Push rule with ID #{lr.id} is configured in a project #{lr.project.full_name}"
+    elsif lr.group
+      "Push rule with ID #{lr.id} is configured in a group #{lr.group.full_name}"
+    else
+      "Push rule with ID #{lr.id} is configured on the instance level"
+    end
+  end
+
+  puts "Total long rules: #{array.count}"
+  puts array.join("\n")
+  ```
+
   Reduce the value length of the regex field for affected push rules records, then
   retry the migration.
+
+  If you have too many affected push rules, and you can't update them through the GitLab UI,
+  contact [GitLab support](https://about.gitlab.com/support/).
 
 ### Self-compiled installations
 
@@ -81,6 +151,57 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   1. If you have custom hooks, update your configuration `[hooks] custom_hooks_dir` to [configure the path](../../administration/gitaly/reference.md#custom-hooks) to
      server-side custom hooks.
   1. Remove the `[gitlab-shell] dir` configuration.
+
+### Geo installations
+
+Specific information applies to installations using Geo:
+
+- A number of Prometheus metrics were incorrectly removed in 16.3.0, which can break dashboards and alerting:
+
+  | Affected metric                          | Metric restored in 16.5.2 and later  | Replacement available in 16.3+                 |
+  | ---------------------------------------- | ------------------------------------ | ---------------------------------------------- |
+  | `geo_repositories_synced`                | Yes                                  | `geo_project_repositories_synced`              |
+  | `geo_repositories_failed`                | Yes                                  | `geo_project_repositories_failed`              |
+  | `geo_repositories_checksummed`           | Yes                                  | `geo_project_repositories_checksummed`         |
+  | `geo_repositories_checksum_failed`       | Yes                                  | `geo_project_repositories_checksum_failed`     |
+  | `geo_repositories_verified`              | Yes                                  | `geo_project_repositories_verified`            |
+  | `geo_repositories_verification_failed`   | Yes                                  | `geo_project_repositories_verification_failed` |
+  | `geo_repositories_checksum_mismatch`     | No                                   | None available                                 |
+  | `geo_repositories_retrying_verification` | No                                   | None available                                 |
+
+  - Impacted versions:
+    - 16.3.0 to 16.5.1
+  - Versions containing fix:
+    - 16.5.2 and later
+
+  For more information, see [issue 429617](https://gitlab.com/gitlab-org/gitlab/-/issues/429617).
+
+- [Object storage verification](https://about.gitlab.com/releases/2023/09/22/gitlab-16-4-released/#geo-verifies-object-storage) was added in GitLab 16.4. Due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429242) some Geo installations are reporting high memory usage which can lead to the GitLab application on the primary becoming unresponsive. 
+
+  Your installation may be impacted if you have configured it to use [object storage](../../administration/object_storage.md) and have enabled [GitLab-managed object storage replication](../../administration/geo/replication/object_storage.md#enabling-gitlab-managed-object-storage-replication)
+
+  Until this is fixed, the workaround is to disable object storage verification.
+  Run the following command on one of the Rails nodes on the primary site:
+
+  ```shell
+  sudo gitlab-rails runner 'Feature.disable(:geo_object_storage_verification)'
+  ```
+
+  **Affected releases**:
+ 
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ------ | ------ | ------ |
+  | 16.4   | All    | None   |
+  | 16.5   | All    | None   |
+
+- An [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/419370) with sync states getting stuck in pending state results in replication being stuck indefinitely for impacted items leading to risk of data loss in the event of a failover. This mostly impact repository syncs but can also can also affect container registry syncs. You are advised to upgrade to a fixed version to avoid risk of data loss.
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ------ | ------ | ------ |
+  | 16.3   | 16.3.0 - 16.3.5    | 16.3.6   |
+  | 16.4   | 16.4.0 - 16.4.1    | 16.4.2   |
 
 ## 16.3.0
 
@@ -148,6 +269,35 @@ Specific information applies to installations using Geo:
     - 16.3.4 and later
 
   For more information, see [issue 425224](https://gitlab.com/gitlab-org/gitlab/-/issues/425224).
+
+- A number of Prometheus metrics were incorrectly removed in 16.3.0, which can break dashboards and alerting:
+
+  | Affected metric                          | Metric restored in 16.5.2 and later  | Replacement available in 16.3+                 |
+  | ---------------------------------------- | ------------------------------------ | ---------------------------------------------- |
+  | `geo_repositories_synced`                | Yes                                  | `geo_project_repositories_synced`              |
+  | `geo_repositories_failed`                | Yes                                  | `geo_project_repositories_failed`              |
+  | `geo_repositories_checksummed`           | Yes                                  | `geo_project_repositories_checksummed`         |
+  | `geo_repositories_checksum_failed`       | Yes                                  | `geo_project_repositories_checksum_failed`     |
+  | `geo_repositories_verified`              | Yes                                  | `geo_project_repositories_verified`            |
+  | `geo_repositories_verification_failed`   | Yes                                  | `geo_project_repositories_verification_failed` |
+  | `geo_repositories_checksum_mismatch`     | No                                   | None available                                 |
+  | `geo_repositories_retrying_verification` | No                                   | None available                                 |
+
+  - Impacted versions:
+    - 16.3.0 to 16.5.1
+  - Versions containing fix:
+    - 16.5.2 and later
+
+  For more information, see [issue 429617](https://gitlab.com/gitlab-org/gitlab/-/issues/429617).
+
+- An [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/419370) with sync states getting stuck in pending state results in replication being stuck indefinitely for impacted items leading to risk of data loss in the event of a failover. This mostly impact repository syncs but can also can also affect container registry syncs. You are advised to upgrade to a fixed version to avoid risk of data loss.
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ------ | ------ | ------ |
+  | 16.3   | 16.3.0 - 16.3.5    | 16.3.6   |
+  | 16.4   | 16.4.0 - 16.4.1    | 16.4.2   |
 
 ## 16.2.0
 
@@ -227,6 +377,24 @@ Specific information applies to installations using Geo:
     Affected artifacts are automatically resynced upon upgrade to 16.1.5, 16.2.5, 16.3.1, 16.4.0, or later.
     You can [manually resync affected job artifacts](https://gitlab.com/gitlab-org/gitlab/-/issues/419742#to-fix-data) if needed.
 
+#### Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced
+
+A [bug](https://gitlab.com/gitlab-org/gitlab/-/issues/410413) in the Geo proxying logic for LFS objects meant that all LFS clone requests against a secondary site are proxied to the primary even if the secondary site is up-to-date. This can result in increased load on the primary site and longer access times for LFS objects for users cloning from the secondary site.
+
+In GitLab 15.1 proxying was enabled by default.
+
+You are not impacted:
+
+- If your installation is not configured to use LFS objects
+- If you do not use Geo to accelerate remote users
+- If you are using Geo to accelerate remote users but have disabled proxying
+
+| Affected minor releases | Affected patch releases | Fixed in |
+|-------------------------|-------------------------|----------|
+| 15.1 - 16.2             | All                     | 16.3 and later    |
+
+Workaround: A possible workaround is to [disable proxying](../../administration/geo/secondary_proxy/index.md#disable-geo-proxying). Note that the secondary site fails to serve LFS files that have not been replicated at the time of cloning.
+
 ## 16.1.0
 
 - A `BackfillPreparedAtMergeRequests` background migration is finalized with
@@ -273,6 +441,7 @@ Specific information applies to installations using Geo:
   - While running an affected version, artifacts which appeared to become synced may actually be missing on the secondary site.
     Affected artifacts are automatically resynced upon upgrade to 16.1.5, 16.2.5, 16.3.1, 16.4.0, or later.
     You can [manually resync affected job artifacts](https://gitlab.com/gitlab-org/gitlab/-/issues/419742#to-fix-data) if needed.
+  - Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site-even-when-secondary-is-fully-synced).
 
 #### Wiki repositories not initialized on project creation
 
@@ -302,6 +471,7 @@ by this issue.
   [throw errors on startup](../../install/docker.md#threaderror-cant-create-thread-operation-not-permitted).
 - Starting with 16.0, GitLab self-managed installations now have two database connections by default, instead of one. This change doubles the number of PostgreSQL connections. It makes self-managed versions of GitLab behave similarly to GitLab.com, and is a step toward enabling a separate database for CI features for self-managed versions of GitLab. Before upgrading to 16.0, determine if you need to [increase max connections for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
   - This change applies to installation methods with Linux packages (Omnibus), GitLab Helm chart, GitLab Operator, GitLab Docker images, and self-compiled installations.
+- Container registry using Azure storage might be empty with zero tags. You can fix this by following the [breaking change instructions](../deprecations.md#azure-storage-driver-defaults-to-the-correct-root-prefix). 
 
 ### Linux package installations
 
@@ -334,6 +504,7 @@ Specific information applies to installations using Geo:
 
 - Some project imports do not initialize wiki repositories on project creation. See
   [the details and workaround](#wiki-repositories-not-initialized-on-project-creation).
+- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site-even-when-secondary-is-fully-synced).
 
 ### Gitaly configuration structure change
 

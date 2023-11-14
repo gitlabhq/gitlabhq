@@ -262,16 +262,17 @@ export const environmentsApp = {
   review_app: {
     can_setup_review_app: true,
     all_clusters_empty: true,
+    has_review_app: false,
     review_snippet:
       '{"deploy_review"=>{"stage"=>"deploy", "script"=>["echo \\"Deploy a review app\\""], "environment"=>{"name"=>"review/$CI_COMMIT_REF_NAME", "url"=>"https://$CI_ENVIRONMENT_SLUG.example.com"}, "only"=>["branches"]}}',
   },
   can_stop_stale_environments: true,
-  available_count: 4,
+  active_count: 4,
   stopped_count: 0,
 };
 
 export const resolvedEnvironmentsApp = {
-  availableCount: 4,
+  activeCount: 4,
   environments: [
     {
       name: 'review',
@@ -471,6 +472,7 @@ export const resolvedEnvironmentsApp = {
   reviewApp: {
     canSetupReviewApp: true,
     allClustersEmpty: true,
+    hasReviewApp: false,
     reviewSnippet:
       '{"deploy_review"=>{"stage"=>"deploy", "script"=>["echo \\"Deploy a review app\\""], "environment"=>{"name"=>"review/$CI_COMMIT_REF_NAME", "url"=>"https://$CI_ENVIRONMENT_SLUG.example.com"}, "only"=>["branches"]}}',
     __typename: 'ReviewApp',
@@ -533,7 +535,7 @@ export const folder = {
       has_opened_alert: false,
     },
   ],
-  available_count: 2,
+  active_count: 2,
   stopped_count: 0,
 };
 
@@ -702,7 +704,7 @@ export const resolvedEnvironment = {
 };
 
 export const resolvedFolder = {
-  availableCount: 2,
+  activeCount: 2,
   environments: [
     {
       id: 42,

@@ -46,19 +46,14 @@ module QA
         end
 
         it "pushes and pulls a helm chart", testcase: params[:testcase] do
-          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-            Resource::Repository::Commit.fabricate_via_api! do |commit|
-              helm_upload_yaml = ERB.new(read_fixture('package_managers/helm', 'helm_upload_package.yaml.erb')).result(binding)
-              helm_chart_yaml = ERB.new(read_fixture('package_managers/helm', 'Chart.yaml.erb')).result(binding)
+          helm_upload_yaml = ERB.new(read_fixture('package_managers/helm', 'helm_upload_package.yaml.erb')).result(binding)
+          helm_chart_yaml = ERB.new(read_fixture('package_managers/helm', 'Chart.yaml.erb')).result(binding)
 
-              commit.project = package_project
-              commit.commit_message = 'Add .gitlab-ci.yml'
-              commit.add_files(
-                [
-                  { file_path: '.gitlab-ci.yml', content: helm_upload_yaml },
-                  { file_path: 'Chart.yaml', content: helm_chart_yaml }
-                ])
-            end
+          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+            create(:commit, project: package_project, commit_message: 'Add .gitlab-ci.yml', actions: [
+              { action: 'create', file_path: '.gitlab-ci.yml', content: helm_upload_yaml },
+              { action: 'create', file_path: 'Chart.yaml', content: helm_chart_yaml }
+            ])
           end
 
           package_project.visit!
@@ -85,14 +80,12 @@ module QA
             expect(show).to have_package_info(package_name, package_version)
           end
 
-          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-            Resource::Repository::Commit.fabricate_via_api! do |commit|
-              helm_install_yaml = ERB.new(read_fixture('package_managers/helm', 'helm_install_package.yaml.erb')).result(binding)
+          helm_install_yaml = ERB.new(read_fixture('package_managers/helm', 'helm_install_package.yaml.erb')).result(binding)
 
-              commit.project = client_project
-              commit.commit_message = 'Add .gitlab-ci.yml'
-              commit.add_files([{ file_path: '.gitlab-ci.yml', content: helm_install_yaml }])
-            end
+          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+            create(:commit, project: client_project, commit_message: 'Add .gitlab-ci.yml', actions: [
+              { action: 'create', file_path: '.gitlab-ci.yml', content: helm_install_yaml }
+            ])
           end
 
           client_project.visit!

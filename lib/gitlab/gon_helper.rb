@@ -50,6 +50,7 @@ module Gitlab
       gon.suggested_label_colors = LabelsHelper.suggested_colors
       gon.first_day_of_week      = current_user&.first_day_of_week || Gitlab::CurrentSettings.first_day_of_week
       gon.time_display_relative  = true
+      gon.time_display_format    = 0
       gon.ee                     = Gitlab.ee?
       gon.jh                     = Gitlab.jh?
       gon.dot_com                = Gitlab.com?
@@ -67,6 +68,7 @@ module Gitlab
         gon.current_user_fullname = current_user.name
         gon.current_user_avatar_url = current_user.avatar_url
         gon.time_display_relative = current_user.time_display_relative
+        gon.time_display_format = current_user.time_display_format
       end
 
       # Initialize gon.features with any flags that should be
@@ -75,7 +77,6 @@ module Gitlab
       push_frontend_feature_flag(:security_auto_fix)
       push_frontend_feature_flag(:source_editor_toolbar)
       push_frontend_feature_flag(:vscode_web_ide, current_user)
-      push_frontend_feature_flag(:unbatch_graphql_queries, current_user)
       # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/399248
       push_frontend_feature_flag(:remove_monitor_metrics)
       push_frontend_feature_flag(:custom_emoji)

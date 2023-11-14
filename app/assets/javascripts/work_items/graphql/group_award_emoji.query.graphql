@@ -1,0 +1,27 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "~/work_items/graphql/award_emoji.fragment.graphql"
+
+query groupWorkItemAwardEmojis($fullPath: ID!, $iid: String, $after: String, $pageSize: Int) {
+  workspace: group(fullPath: $fullPath) {
+    id
+    workItems(iid: $iid) {
+      nodes {
+        id
+        iid
+        widgets {
+          ... on WorkItemWidgetAwardEmoji {
+            type
+            awardEmoji(first: $pageSize, after: $after) {
+              pageInfo {
+                ...PageInfo
+              }
+              nodes {
+                ...AwardEmojiFragment
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

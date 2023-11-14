@@ -71,6 +71,11 @@ module Types
           type: GraphQL::Types::String,
           null: false,
           description: 'Web path of the user.'
+    field :organizations,
+          resolver: Resolvers::Users::OrganizationsResolver,
+          null: true,
+          alpha: { milestone: '16.6' },
+          description: 'Organizations where the user has access.'
     field :group_memberships,
           type: Types::GroupMemberType.connection_type,
           null: true,
@@ -134,13 +139,11 @@ module Types
     field :saved_replies,
           Types::SavedReplyType.connection_type,
           null: true,
-          description: 'Saved replies authored by the user. ' \
-                       'Will not return saved replies if `saved_replies` feature flag is disabled.'
+          description: 'Saved replies authored by the user.'
 
     field :saved_reply,
           resolver: Resolvers::SavedReplyResolver,
-          description: 'Saved reply authored by the user. ' \
-                       'Will not return saved reply if `saved_replies` feature flag is disabled.'
+          description: 'Saved reply authored by the user.'
 
     field :gitpod_enabled, GraphQL::Types::Boolean, null: true,
                                                     description: 'Whether Gitpod is enabled at the user level.'
@@ -196,6 +199,11 @@ module Types
           type: Types::TimeType,
           null: true,
           description: 'Timestamp of when the user was created.'
+
+    field :last_activity_on,
+          type: Types::DateType,
+          null: true,
+          description: 'Date the user last performed any actions.'
 
     field :pronouns,
           type: ::GraphQL::Types::String,

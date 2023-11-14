@@ -660,6 +660,7 @@ project:
 - pages_domains
 - pages_metadatum
 - pages_deployments
+- active_pages_deployments
 - authorized_users
 - project_authorizations
 - remote_mirrors
@@ -1061,6 +1062,7 @@ approval_rules:
   - users
   - groups
   - group_users
+  - group_members
   - security_orchestration_policy_configuration
   - protected_branches
   - approval_merge_request_rule_sources

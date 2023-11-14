@@ -6,7 +6,6 @@ import { CHUNK_1, CHUNK_2 } from '../mock_data';
 
 describe('Chunk component', () => {
   let wrapper;
-  let idleCallbackSpy;
 
   const createComponent = (props = {}) => {
     wrapper = shallowMountExtended(Chunk, {
@@ -19,7 +18,6 @@ describe('Chunk component', () => {
   const findContent = () => wrapper.findByTestId('content');
 
   beforeEach(() => {
-    idleCallbackSpy = jest.spyOn(window, 'requestIdleCallback').mockImplementation((fn) => fn());
     createComponent();
   });
 
@@ -40,19 +38,6 @@ describe('Chunk component', () => {
   });
 
   describe('rendering', () => {
-    it('does not register window.requestIdleCallback for the first chunk, renders content immediately', () => {
-      expect(window.requestIdleCallback).not.toHaveBeenCalled();
-      expect(findContent().text()).toBe(CHUNK_1.highlightedContent);
-    });
-
-    it('does not render content if browser is not in idle state', () => {
-      idleCallbackSpy.mockRestore();
-      createComponent({ chunkIndex: 1, ...CHUNK_2 });
-
-      expect(findLineNumbers()).toHaveLength(0);
-      expect(findContent().exists()).toBe(false);
-    });
-
     describe('isHighlighted is false', () => {
       beforeEach(() => createComponent(CHUNK_2));
 

@@ -418,6 +418,15 @@ module Gitlab
 
         response = gitaly_client_call(@repository.storage, :commit_service, :raw_blame, request, timeout: GitalyClient.medium_timeout)
         response.reduce([]) { |memo, msg| memo << msg.data }.join
+      rescue GRPC::BadStatus => e
+        detailed_error = GitalyClient.decode_detailed_error(e)
+
+        case detailed_error.try(:error)
+        when :out_of_range, :path_not_found
+          raise ArgumentError, e.details
+        else
+          raise e
+        end
       end
 
       def find_commit(revision)

@@ -391,7 +391,7 @@ RSpec.describe PostReceive, feature_category: :source_code_management do
 
     it 'enqueues a UpdateMergeRequestsWorker job' do
       allow(Project).to receive(:find_by).and_return(project)
-      expect_next(MergeRequests::PushedBranchesService).to receive(:execute).and_return(%w(tést))
+      expect_next(MergeRequests::PushedBranchesService).to receive(:execute).and_return(%w[tést])
 
       expect(UpdateMergeRequestsWorker).to receive(:perform_async).with(project.id, project.first_owner.id, any_args)
 

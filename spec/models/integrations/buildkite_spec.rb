@@ -50,7 +50,7 @@ RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching, f
 
   describe '.supported_events' do
     it 'supports push, merge_request, and tag_push events' do
-      expect(integration.supported_events).to eq %w(push merge_request tag_push)
+      expect(integration.supported_events).to eq %w[push merge_request tag_push]
     end
   end
 

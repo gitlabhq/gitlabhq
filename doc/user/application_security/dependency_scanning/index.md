@@ -6,11 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Dependency Scanning **(ULTIMATE ALL)**
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an interactive reading and how-to demo of this Dependency Scanning doc, see [How to use dependency scanning tutorial hands-on GitLab Application Security part 3](https://youtu.be/ii05cMbJ4xQ?feature=shared)
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an interactive reading and how-to demo playlist, see [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9)
-
 Dependency Scanning analyzes your application's dependencies for known vulnerabilities. All
 dependencies are scanned, including transitive dependencies, also known as nested dependencies.
 
@@ -33,11 +28,15 @@ we encourage you to use all of our security scanners. For a comparison of these 
 
 ![Dependency scanning Widget](img/dependency_scanning_v13_2.png)
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Dependency Scanning](https://www.youtube.com/watch?v=TBnfbGk4c4o).
-
 WARNING:
 Dependency Scanning does not support runtime installation of compilers and interpreters.
+
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Dependency Scanning](https://www.youtube.com/watch?v=TBnfbGk4c4o)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an interactive reading and how-to demo of this Dependency Scanning documentation, see [How to use dependency scanning tutorial hands-on GitLab Application Security part 3](https://youtu.be/ii05cMbJ4xQ?feature=shared)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For other interactive reading and how-to demos, see [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9)
 
 ## Supported languages and package managers
 
@@ -230,7 +229,8 @@ table.supported-languages ul {
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-2"></a>
     <p>
-      Java 21 LTS is only available when using <a href="https://maven.apache.org/">Maven</a> or <a href="https://gradle.org/">Gradle</a>. Java 21 LTS for <a href="https://www.scala-sbt.org/">sbt</a> is not yet available and tracked in <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/421174">issue 421174</a>. It is not supported when <a href="https://docs.gitlab.com/ee/development/fips_compliance.html#enable-fips-mode">FIPS mode</a> is enabled.
+      Java 21 LTS for <a href="https://www.scala-sbt.org/">sbt</a> is limited to version 1.9.7. Support for more <a href="https://www.scala-sbt.org/">sbt</a> versions can be tracked in <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/430335">issue 430335</a>.
+      It is not supported when <a href="https://docs.gitlab.com/ee/development/fips_compliance.html#enable-fips-mode">FIPS mode</a> is enabled.
     </p>
   </li>
   <li>
@@ -598,6 +598,10 @@ To enable dependency scanning:
 1. Review the merge request, then select **Merge**.
 
 Pipelines now include a dependency scanning job.
+
+### Running jobs in merge request pipelines
+
+See [Use security scanning tools with merge request pipelines](../index.md#use-security-scanning-tools-with-merge-request-pipelines)
 
 ### Customizing analyzer behavior
 
@@ -1091,6 +1095,17 @@ To make the Gradle wrapper script use a proxy, you can specify the options using
 ```yaml
 variables:
   GRADLE_CLI_OPTS: "-Dhttps.proxyHost=squid-proxy -Dhttps.proxyPort=3128 -Dhttp.proxyHost=squid-proxy -Dhttp.proxyPort=3128 -Dhttp.nonProxyHosts=localhost"
+```
+
+## Using a proxy with Maven projects
+
+Maven does not read the `HTTP(S)_PROXY` environment variables.
+
+To make the Maven dependency scanner use a proxy, you can specify the options using the `MAVEN_CLI_OPTS` CI/CD variable:
+
+```yaml
+variables:
+  MAVEN_CLI_OPTS: "-DproxySet=true -Dhttps.proxyHost=squid-proxy -Dhttps.proxyPort=3128 -Dhttp.proxyHost=squid-proxy -Dhttp.proxyPort=3218"
 ```
 
 ## Specific settings for languages and package managers

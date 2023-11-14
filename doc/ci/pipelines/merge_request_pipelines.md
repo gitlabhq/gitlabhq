@@ -262,3 +262,25 @@ Some possible reasons for this error message:
 If **Run pipeline** is available, but the project does not have merge request pipelines
 enabled, do not use this option. You can push a commit or rebase the branch to trigger
 new branch pipelines.
+
+### `Merge blocked: pipeline must succeed. Push a new commit that fixes the failure` message
+
+This message is shown if the merge request pipeline, [merged results pipeline](merged_results_pipelines.md),
+or [merge train pipeline](merge_trains.md) has failed or been canceled.
+This does not happen when a branch pipeline fails.
+
+If a merge request pipeline or merged result pipeline was canceled or failed, you can:
+
+- Re-run the entire pipeline by selecting **Run pipeline** in the pipeline tab in the merge request.
+- [Retry only the jobs that failed](index.md#view-pipelines). If you re-run the entire pipeline, this is not necessary.
+- Push a new commit to fix the failure.
+
+If the merge train pipeline has failed, you can:
+
+- Check the failure and determine if you can use the [`/merge` quick action](../../user/project/quick_actions.md) to immediately add the merge request to the train again.
+- Re-run the entire pipeline by selecting **Run pipeline** in the pipeline tab in the merge request, then add the merge request to the train again.
+- Push a commit to fix the failure, then add the merge request to the train again.
+
+If the merge train pipeline was canceled before the merge request was merged, without a failure, you can:
+
+- Add it to the train again.

@@ -183,7 +183,12 @@ export default {
       <span data-testid="right-secondary">
         <gl-sprintf :message="publishedMessage">
           <template v-if="isGroupPage" #projectName>
-            <gl-link data-testid="root-link" :href="projectLink">{{ projectName }}</gl-link>
+            <gl-link
+              data-testid="root-link"
+              class="gl-text-decoration-underline"
+              :href="projectLink"
+              >{{ projectName }}</gl-link
+            >
           </template>
           <template #date>
             <timeago-tooltip :time="packageEntity.createdAt" />

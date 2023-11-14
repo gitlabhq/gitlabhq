@@ -36,7 +36,7 @@
 
 .ruby-gems-cache-push: &ruby-gems-cache-push
   <<: *ruby-gems-cache
-  policy: push # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
+  policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .ruby-coverage-gems-cache: &ruby-coverage-gems-cache
   key: "ruby-coverage-gems-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}"
@@ -46,7 +46,7 @@
 
 .ruby-coverage-gems-cache-push: &ruby-coverage-gems-cache-push
   <<: *ruby-coverage-gems-cache
-  policy: push # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
+  policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .gitaly-binaries-cache: &gitaly-binaries-cache
   key:
@@ -229,7 +229,7 @@
 .redis-services:
   services:
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
-      alias: rediscluster # configure connections in config/redis.yml
+      alias: rediscluster  # configure connections in config/redis.yml
     - name: redis:${REDIS_VERSION}-alpine
 
 .pg-base-variables:
@@ -281,15 +281,6 @@
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.2
       alias: zoekt-ci-image
 
-.use-pg12:
-  extends:
-    - .pg-base-variables
-  services:
-    - !reference [.db-services, services]
-  variables:
-    PG_VERSION: "12"
-    REDIS_VERSION: "6.2"
-
 .use-pg13:
   extends:
     - .pg-base-variables
@@ -322,14 +313,6 @@
     - !reference [.zoekt-services, services]
     - name: elasticsearch:7.17.6
       command: ["elasticsearch", "-E", "discovery.type=single-node", "-E", "xpack.security.enabled=false", "-E", "cluster.routing.allocation.disk.threshold_enabled=false"]
-
-.use-pg12-es7-ee:
-  extends:
-    - .use-pg12
-    - .zoekt-variables
-  services:
-    - !reference [.db-services, services]
-    - !reference [.es7-services, services]
 
 .use-pg13-es7-ee:
   extends:
@@ -516,7 +499,7 @@
 
 .fast-no-clone-job:
   variables:
-    GIT_STRATEGY: none # We will download the required files for the job from the API
+    GIT_STRATEGY: none  # We will download the required files for the job from the API
   before_script:
     # Logic taken from scripts/utils.sh in download_files function
     - |

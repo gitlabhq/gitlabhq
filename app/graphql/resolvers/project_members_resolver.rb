@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-# rubocop:disable Graphql/ResolverType (inherited from MembersResolver)
+
+# rubocop:disable Graphql/ResolverType -- inherited from MembersResolver
 
 module Resolvers
   class ProjectMembersResolver < MembersResolver
@@ -17,3 +18,4 @@ module Resolvers
     end
   end
 end
+# rubocop:enable Graphql/ResolverType

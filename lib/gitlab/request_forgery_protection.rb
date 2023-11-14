@@ -6,7 +6,8 @@
 
 module Gitlab
   module RequestForgeryProtection
-    class Controller < BaseActionController
+    # rubocop:disable Rails/ApplicationController
+    class Controller < ActionController::Base
       protect_from_forgery with: :exception, prepend: true
 
       def initialize
@@ -39,5 +40,6 @@ module Gitlab
     rescue ActionController::InvalidAuthenticityToken
       false
     end
+    # rubocop:enable Rails/ApplicationController
   end
 end

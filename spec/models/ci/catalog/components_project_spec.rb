@@ -5,38 +5,41 @@ require 'spec_helper'
 RSpec.describe Ci::Catalog::ComponentsProject, feature_category: :pipeline_composition do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:files) do
-    {
-      'templates/secret-detection.yml' => "spec:\n inputs:\n  website:\n---\nimage: alpine_1",
-      'templates/dast/template.yml' => 'image: alpine_2',
-      'templates/template.yml' => 'image: alpine_3',
-      'templates/blank-yaml.yml' => '',
-      'templates/dast/sub-folder/template.yml' => 'image: alpine_4',
-      'tests/test.yml' => 'image: alpine_5',
-      'README.md' => 'Read me'
-    }
-  end
-
-  let_it_be(:project) do
-    create(
-      :project, :custom_repo,
-      description: 'Simple, complex, and other components',
-      files: files
-    )
-  end
-
+  let_it_be(:project) { create(:project, :catalog_resource_with_components) }
   let_it_be(:catalog_resource) { create(:ci_catalog_resource, project: project) }
 
   let(:components_project) { described_class.new(project, project.default_branch) }
 
   describe '#fetch_component_paths' do
-    it 'retrieves all the paths for valid components' do
+    context 'when there are invalid paths' do
+      let(:project) do
+        create(:project, :small_repo, description: 'description',
+          files: { 'templates/secrets.yml' => '',
+                   'tests/test.yml' => 'this is invalid',
+                   'README.md' => 'this is not ok' }
+        )
+      end
+
+      it 'does not retrieve the invalid path(s) and only retrieves the valid one(s)' do
+        paths = components_project.fetch_component_paths(project.default_branch)
+
+        expect(paths).to contain_exactly('templates/secrets.yml')
+      end
+    end
+
+    it 'retrieves all the valid paths for components' do
       paths = components_project.fetch_component_paths(project.default_branch)
 
       expect(paths).to contain_exactly(
         'templates/blank-yaml.yml', 'templates/dast/template.yml', 'templates/secret-detection.yml',
         'templates/template.yml'
       )
+    end
+
+    it 'does not fetch more paths than the limit' do
+      paths = components_project.fetch_component_paths(project.default_branch, limit: 1)
+
+      expect(paths.size).to eq(1)
     end
   end
 
@@ -50,7 +53,11 @@ RSpec.describe Ci::Catalog::ComponentsProject, feature_category: :pipeline_compo
     context 'with valid component paths' do
       where(:path, :name) do
         'templates/secret-detection.yml'         | 'secret-detection'
+        'templates/secret_detection.yml'         | 'secret_detection'
+        'templates/secret_detection123.yml'      | 'secret_detection123'
+        'templates/secret-detection-123.yml'     | 'secret-detection-123'
         'templates/dast/template.yml'            | 'dast'
+        'templates/d-a-s_t/template.yml'         | 'd-a-s_t'
         'templates/template.yml'                 | 'template'
         'templates/blank-yaml.yml'               | 'blank-yaml'
       end

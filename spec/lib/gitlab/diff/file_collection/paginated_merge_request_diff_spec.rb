@@ -11,9 +11,7 @@ RSpec.describe Gitlab::Diff::FileCollection::PaginatedMergeRequestDiff, feature_
   let(:diff_files) { subject.diff_files }
 
   subject do
-    described_class.new(diffable,
-                        page,
-                        per_page)
+    described_class.new(diffable, page, per_page)
   end
 
   describe '#diff_files' do
@@ -79,9 +77,7 @@ RSpec.describe Gitlab::Diff::FileCollection::PaginatedMergeRequestDiff, feature_
     context 'when last page' do
       it 'returns correct diff files' do
         last_page = diff_files_relation.count - per_page
-        collection = described_class.new(diffable,
-                                         last_page,
-                                         per_page)
+        collection = described_class.new(diffable, last_page, per_page)
 
         expected_batch_files = diff_files_relation.page(last_page).per(per_page).map(&:new_path)
 
@@ -92,9 +88,7 @@ RSpec.describe Gitlab::Diff::FileCollection::PaginatedMergeRequestDiff, feature_
 
   it_behaves_like 'unfoldable diff' do
     subject do
-      described_class.new(merge_request.merge_request_diff,
-                          page,
-                          per_page)
+      described_class.new(merge_request.merge_request_diff, page, per_page)
     end
   end
 
@@ -106,9 +100,7 @@ RSpec.describe Gitlab::Diff::FileCollection::PaginatedMergeRequestDiff, feature_
     let(:diffable) { merge_request.merge_request_diff }
 
     subject do
-      described_class.new(merge_request.merge_request_diff,
-                          page,
-                          per_page)
+      described_class.new(merge_request.merge_request_diff, page, per_page)
     end
   end
 end

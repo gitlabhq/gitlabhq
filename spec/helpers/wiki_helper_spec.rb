@@ -115,17 +115,6 @@ RSpec.describe WikiHelper, feature_category: :wiki do
     end
   end
 
-  describe '#wiki_sort_title' do
-    it 'returns a title corresponding to a key' do
-      expect(helper.wiki_sort_title('created_at')).to eq('Created date')
-      expect(helper.wiki_sort_title('title')).to eq('Title')
-    end
-
-    it 'defaults to Title if a key is unknown' do
-      expect(helper.wiki_sort_title('unknown')).to eq('Title')
-    end
-  end
-
   describe '#wiki_page_tracking_context' do
     let_it_be(:page) { create(:wiki_page, title: 'path/to/page 💩', content: '💩', format: :markdown) }
 

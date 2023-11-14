@@ -74,7 +74,6 @@ export default {
             class: 'js-delete-branch-button gl-text-red-500!',
             'aria-label': this.deleteBranchText,
             'data-testid': 'delete-branch-button',
-            'data-qa-selector': 'delete_branch_button',
           },
         });
       }

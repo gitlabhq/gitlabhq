@@ -9,6 +9,11 @@ module API
       class Experiments < ::API::Base
         feature_category :mlops
 
+        before do
+          check_api_read!
+          check_api_write! unless request.get? || request.head?
+        end
+
         resource :experiments do
           desc 'Fetch experiment by experiment_id' do
             success Entities::Ml::Mlflow::GetExperiment

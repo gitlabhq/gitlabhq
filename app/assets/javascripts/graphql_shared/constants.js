@@ -27,5 +27,6 @@ export const TYPENAME_USER = 'User';
 export const TYPENAME_VULNERABILITIES_SCANNER = 'Vulnerabilities::Scanner';
 export const TYPENAME_VULNERABILITY = 'Vulnerability';
 export const TYPENAME_WORK_ITEM = 'WorkItem';
+export const TYPENAME_ORGANIZATION = 'Organization';
 export const TYPE_USERS_SAVED_REPLY = 'Users::SavedReply';
 export const TYPE_WORKSPACE = 'RemoteDevelopment::Workspace';

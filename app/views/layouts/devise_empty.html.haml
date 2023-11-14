@@ -1,8 +1,8 @@
 - add_page_specific_style 'page_bundles/login'
 !!! 5
-%html.html-devise-layout{ lang: I18n.locale }
+%html.html-devise-layout{ class: user_application_theme, lang: I18n.locale }
   = render "layouts/head"
-  %body.gl-h-full.login-page.navless{ class: "#{system_message_class} #{user_application_theme} #{client_class_list}" }
+  %body.gl-h-full.login-page.navless{ class: "#{system_message_class} #{client_class_list}" }
     = header_message
     = render "layouts/init_client_detection_flags"
     = render "layouts/header/empty"

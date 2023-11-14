@@ -1,6 +1,6 @@
 import { GlButtonGroup, GlButton } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import BlobHeaderViewerSwitcher from '~/blob/components/blob_header_viewer_switcher.vue';
 import {
   RICH_BLOB_VIEWER,
@@ -12,14 +12,15 @@ import {
 describe('Blob Header Viewer Switcher', () => {
   let wrapper;
 
-  function createComponent(propsData = {}) {
-    wrapper = mount(BlobHeaderViewerSwitcher, {
+  function createComponent(propsData = { showViewerToggles: true }) {
+    wrapper = mountExtended(BlobHeaderViewerSwitcher, {
       propsData,
     });
   }
 
   const findSimpleViewerButton = () => wrapper.findComponent('[data-viewer="simple"]');
   const findRichViewerButton = () => wrapper.findComponent('[data-viewer="rich"]');
+  const findBlameButton = () => wrapper.findByText('Blame');
 
   describe('intiialization', () => {
     it('is initialized with simple viewer as active', () => {
@@ -74,12 +75,36 @@ describe('Blob Header Viewer Switcher', () => {
     });
 
     it('emits an event when a Simple Viewer button is clicked', async () => {
-      createComponent({ value: RICH_BLOB_VIEWER });
+      createComponent({ value: RICH_BLOB_VIEWER, showViewerToggles: true });
 
       findSimpleViewerButton().vm.$emit('click');
       await nextTick();
 
       expect(wrapper.emitted('input')).toEqual([[SIMPLE_BLOB_VIEWER]]);
     });
+  });
+
+  it('does not render simple and rich viewer buttons if `showViewerToggles` is `false`', async () => {
+    createComponent({ showViewerToggles: false });
+    await nextTick();
+
+    expect(findSimpleViewerButton().exists()).toBe(false);
+    expect(findRichViewerButton().exists()).toBe(false);
+  });
+
+  it('does not render a Blame button if `showBlameToggle` is `false`', async () => {
+    createComponent({ showBlameToggle: false });
+    await nextTick();
+
+    expect(findBlameButton().exists()).toBe(false);
+  });
+
+  it('emits an event when the Blame button is clicked', async () => {
+    createComponent({ showBlameToggle: true });
+
+    findBlameButton().trigger('click');
+    await nextTick();
+
+    expect(wrapper.emitted('blame')).toHaveLength(1);
   });
 });

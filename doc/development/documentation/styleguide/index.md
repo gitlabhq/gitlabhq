@@ -1281,11 +1281,10 @@ You can use an automatic screenshot generator to take and compress screenshots.
 
 #### Extending the tool
 
-To add an additional **screenshot generator**, complete the following steps:
+To add an additional screenshot generator:
 
-1. Locate the `spec/docs_screenshots` directory.
-1. Add a new file with a `_docs.rb` extension.
-1. Be sure to include the following information in the file:
+1. In the `spec/docs_screenshots` directory, add a new file with a `_docs.rb` extension.
+1. Add the following information to your file:
 
    ```ruby
    require 'spec_helper'
@@ -1298,29 +1297,29 @@ To add an additional **screenshot generator**, complete the following steps:
      end
    ```
 
-1. In addition, every `it` block must include the path where the screenshot is saved:
+1. To each `it` block, add the path where the screenshot is saved:
 
    ```ruby
-   it 'user/packages/container_registry/img/project_image_repositories_list'
+   it '<path/to/images/directory>'
    ```
 
-##### Full page screenshots
+You can take a screenshot of a page with `visit <path>`.
+To avoid blank screenshots, use `expect` to wait for the content to load.
 
-To take a full page screenshot, `visit the page` and perform any expectation on real content (to have capybara wait till the page is ready and not take a white screenshot).
+##### Single-element screenshots
 
-##### Element screenshot
+You can take a screenshot of a single element.
 
-To have the screenshot focuses few more steps are needed:
+- Add the following to your screenshot generator file:
 
-- **find the area**: `screenshot_area = find('#js-registry-policies')`
-- **scroll the area in focus**: `scroll_to screenshot_area`
-- **wait for the content**: `expect(screenshot_area).to have_content 'Expiration interval'`
-- **set the crop area**: `set_crop_data(screenshot_area, 20)`
+  ```ruby
+  screenshot_area = find('<element>') # Find the element
+  scroll_to screenshot_area # Scroll to the element
+  expect(screenshot_area).to have_content '<content>' # Wait for the content you want to capture
+  set_crop_data(screenshot_area, <padding>) # Capture the element with added padding
+  ```
 
-In particular, `set_crop_data` accepts as arguments: a `DOM` element and a
-padding. The padding is added around the element, enlarging the screenshot area.
-
-Use `spec/docs_screenshots/container_registry_docs.rb` as a guide and as an example to create your own scripts.
+Use `spec/docs_screenshots/container_registry_docs.rb` as a guide to create your own scripts.
 
 ## Emoji
 
@@ -1731,6 +1730,7 @@ Some pages won't have a tier badge, because no obvious tier badge applies. For e
 - Tutorials.
 - Pages that compare features from different tiers.
 - Pages in the `/development` folder. These pages are automatically assigned a `Contribute` badge.
+- Pages in the `/solutions` folder. These pages are automatically assigned a `Solutions` badge.
 
 ##### Administrator documentation tier badges
 

@@ -12,14 +12,11 @@ RSpec.describe Gitlab::Database::Migrations::MilestoneMixin, feature_category: :
   end
 
   let(:migration_mixin) do
-    Class.new(Gitlab::Database::Migration[2.1]) do
-      include Gitlab::Database::Migrations::MilestoneMixin
-    end
+    Class.new(Gitlab::Database::Migration[2.2])
   end
 
   let(:migration_mixin_version) do
-    Class.new(Gitlab::Database::Migration[2.1]) do
-      include Gitlab::Database::Migrations::MilestoneMixin
+    Class.new(Gitlab::Database::Migration[2.2]) do
       milestone '16.4'
     end
   end
@@ -42,6 +39,12 @@ RSpec.describe Gitlab::Database::Migrations::MilestoneMixin, feature_category: :
     context 'when a milestone is specified' do
       it "does not raise an error" do
         expect { migration_mixin_version.new(4, 4, :regular) }.not_to raise_error
+      end
+    end
+
+    context 'when initialize arguments are not provided' do
+      it "does not raise an error" do
+        expect { migration_mixin_version.new }.not_to raise_error
       end
     end
   end

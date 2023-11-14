@@ -3,7 +3,7 @@
 module Gitlab
   module Usage
     class MetricDefinition
-      METRIC_SCHEMA_PATH = Rails.root.join('config', 'metrics', 'schema.json')
+      METRIC_SCHEMA_PATH = Rails.root.join('config', 'metrics', 'schema', '**', '*.json')
       AVAILABLE_STATUSES = %w[active broken].to_set.freeze
       VALID_SERVICE_PING_STATUSES = %w[active broken].to_set.freeze
 
@@ -52,7 +52,7 @@ module Gitlab
       end
 
       def validate!
-        self.class.schemer.validate(attributes.deep_stringify_keys).each do |error|
+        errors.each do |error|
           error_message = <<~ERROR_MSG
             Error type: #{error['type']}
             Data: #{error['data']}
@@ -104,8 +104,10 @@ module Gitlab
           definitions[key_path]&.to_context
         end
 
-        def schemer
-          @schemer ||= ::JSONSchemer.schema(Pathname.new(METRIC_SCHEMA_PATH))
+        def schemers
+          @schemers ||= Dir[METRIC_SCHEMA_PATH].map do |path|
+            ::JSONSchemer.schema(Pathname.new(path))
+          end
         end
 
         def dump_metrics_yaml
@@ -144,6 +146,19 @@ module Gitlab
       end
 
       private
+
+      def errors
+        result = []
+
+        self.class.schemers.each do |schemer|
+          # schemer.validate returns an Enumerator object
+          schemer.validate(attributes.deep_stringify_keys).each do |error|
+            result << error
+          end
+        end
+
+        result
+      end
 
       def method_missing(method, *args)
         attributes[method] || super

@@ -162,5 +162,13 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestImporter, :clean_g
 
       importer.execute
     end
+
+    it 'increments the merge requests counter' do
+      expect_next_instance_of(Gitlab::Import::Metrics) do |metrics|
+        expect(metrics).to receive_message_chain(:merge_requests_counter, :increment)
+      end
+
+      importer.execute
+    end
   end
 end

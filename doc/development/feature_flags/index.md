@@ -203,7 +203,7 @@ Only feature flags that have a YAML definition file can be used when running the
 ```shell
 $ bin/feature-flag my_feature_flag
 >> Specify the group introducing the feature flag, like `group::project management`:
-?> group::application performance
+?> group::cloud connector
 
 >> URL of the MR introducing the feature flag (enter to skip):
 ?> https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38602
@@ -218,7 +218,7 @@ create config/feature_flags/development/my_feature_flag.yml
 name: my_feature_flag
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38602
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/232533
-group: group::application performance
+group: group::cloud connector
 type: development
 default_enabled: false
 ```
@@ -625,7 +625,7 @@ A common pattern of testing both paths looks like:
 ```ruby
 it 'ci_live_trace works' do
   # tests assuming ci_live_trace is enabled in tests by default
-  Feature.enabled?(:ci_live_trace) # => true 
+  Feature.enabled?(:ci_live_trace) # => true
 end
 
 context 'when ci_live_trace is disabled' do

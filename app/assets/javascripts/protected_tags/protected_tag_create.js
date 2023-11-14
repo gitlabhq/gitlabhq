@@ -41,7 +41,7 @@ export default class ProtectedTagCreate {
       accessLevel: ACCESS_LEVELS.CREATE,
       accessLevelsData: gon.create_access_levels,
       searchEnabled: dropdownEl.dataset.filter !== undefined,
-      testId: 'allowed_to_create_dropdown',
+      testId: 'allowed-to-create-dropdown',
     });
 
     this.protectedTagAccessDropdown.$on('select', (selected) => {

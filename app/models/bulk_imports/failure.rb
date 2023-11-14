@@ -15,6 +15,10 @@ class BulkImports::Failure < ApplicationRecord
     pipeline_relation || default_relation
   end
 
+  def exception_message=(message)
+    super(::Projects::ImportErrorFilter.filter_message(message).truncate(255))
+  end
+
   private
 
   def pipeline_relation

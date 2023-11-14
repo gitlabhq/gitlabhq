@@ -11,7 +11,7 @@ class RemoveExpiredGroupLinksWorker # rubocop:disable Scalability/IdempotentWork
 
   def perform
     ProjectGroupLink.expired.find_each do |link|
-      Projects::GroupLinks::DestroyService.new(link.project, nil).execute(link)
+      Projects::GroupLinks::DestroyService.new(link.project, nil).execute(link, skip_authorization: true)
     end
 
     GroupGroupLink.expired.find_in_batches do |link_batch|

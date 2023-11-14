@@ -8,7 +8,7 @@ RSpec.describe AnyFieldValidator do
       Class.new(ApplicationRecord) do
         self.table_name = 'vulnerabilities'
 
-        validates_with AnyFieldValidator, fields: %w(title description)
+        validates_with AnyFieldValidator, fields: %w[title description]
       end
     end
 
@@ -18,7 +18,7 @@ RSpec.describe AnyFieldValidator do
       expect(validated_object.valid?).to be_falsey
       expect(validated_object.errors.messages)
       .to eq(base: ["At least one field of %{one_of_required_fields} must be present" %
-        { one_of_required_fields: %w(title description) }])
+        { one_of_required_fields: %w[title description] }])
     end
 
     it 'validates if only one field is present' do

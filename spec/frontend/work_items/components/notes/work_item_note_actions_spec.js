@@ -1,4 +1,4 @@
-import { GlDisclosureDropdown } from '@gitlab/ui';
+import { GlButton, GlDisclosureDropdown } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -17,7 +17,7 @@ describe('Work Item Note Actions', () => {
   const showSpy = jest.fn();
 
   const findReplyButton = () => wrapper.findComponent(ReplyButton);
-  const findEditButton = () => wrapper.findByTestId('edit-work-item-note');
+  const findEditButton = () => wrapper.findComponent(GlButton);
   const findEmojiButton = () => wrapper.findByTestId('note-emoji-button');
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findDeleteNoteButton = () => wrapper.findByTestId('delete-note-action');

@@ -1,0 +1,6 @@
+- add_to_breadcrumbs s_('ModelRegistry|Model registry'), project_ml_models_path(@project)
+- add_to_breadcrumbs @model_version.name, project_ml_model_path(@project, @model)
+- breadcrumb_title @model_version.version
+- page_title "#{@model_version.name} / #{@model_version.version}"
+
+= render(Projects::Ml::ShowMlModelVersionComponent.new(model_version: @model_version))

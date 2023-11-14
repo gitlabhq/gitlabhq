@@ -352,7 +352,6 @@ Indexes:
     "index_users_on_static_object_token" UNIQUE, btree (static_object_token)
     "index_users_on_unlock_token" UNIQUE, btree (unlock_token)
     "index_on_users_name_lower" btree (lower(name::text))
-    "index_users_on_accepted_term_id" btree (accepted_term_id)
     "index_users_on_admin" btree (admin)
     "index_users_on_created_at" btree (created_at)
     "index_users_on_email_trigram" gin (email gin_trgm_ops)

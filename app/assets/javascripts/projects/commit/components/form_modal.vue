@@ -57,7 +57,6 @@ export default {
           variant: 'confirm',
           category: 'primary',
           'data-testid': 'submit-commit',
-          'data-qa-selector': 'submit_commit_button',
         },
       },
       actionCancel: {
@@ -74,7 +73,6 @@ export default {
       'branchCollaboration',
       'modalTitle',
       'existingBranch',
-      'prependedText',
       'targetProjectId',
       'targetProjectName',
       'branchesEndpoint',

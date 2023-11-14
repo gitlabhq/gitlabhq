@@ -5,6 +5,23 @@ RSpec.describe Packages::Tag, type: :model, feature_category: :package_registry 
   let!(:project) { create(:project) }
   let!(:package) { create(:npm_package, version: '1.0.2', project: project, updated_at: 3.days.ago) }
 
+  describe '#ensure_project_id' do
+    it 'sets the project_id before saving' do
+      tag = build(:packages_tag)
+      expect(tag.project_id).to be_nil
+      tag.save!
+      expect(tag.project_id).not_to be_nil
+      expect(tag.project_id).to eq(tag.package.project_id)
+    end
+
+    it 'does not override the project_id if set' do
+      another_project = create(:project)
+      tag = build(:packages_tag, project_id: another_project.id)
+      tag.save!
+      expect(tag.project_id).to eq(another_project.id)
+    end
+  end
+
   describe 'relationships' do
     it { is_expected.to belong_to(:package).inverse_of(:tags) }
   end
@@ -61,7 +78,7 @@ RSpec.describe Packages::Tag, type: :model, feature_category: :package_registry 
     end
 
     context 'with multiple names' do
-      let(:name) { %w(tag1 tag3) }
+      let(:name) { %w[tag1 tag3] }
 
       it { is_expected.to contain_exactly(tag1, tag3) }
     end

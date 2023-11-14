@@ -70,14 +70,16 @@ export default {
     return {
       isMouseIn: false,
       canClickPinButton: false,
-      pillCount: this.item.pill_count,
     };
   },
   computed: {
+    pillData() {
+      return this.item.pill_count;
+    },
     hasPill() {
       return (
-        Number.isFinite(this.pillCount) ||
-        (typeof this.pillCount === 'string' && this.pillCount !== '')
+        Number.isFinite(this.pillData) ||
+        (typeof this.pillData === 'string' && this.pillData !== '')
       );
     },
     isPinnable() {
@@ -188,12 +190,22 @@ export default {
     eventHub.$off('updatePillValue', this.updatePillValue);
   },
   methods: {
+    pinAdd() {
+      this.$emit('pin-add', this.item.id, this.item.title);
+    },
+    pinRemove() {
+      this.$emit('pin-remove', this.item.id, this.item.title);
+    },
     togglePointerEvents() {
       this.canClickPinButton = this.isMouseIn;
     },
     updatePillValue({ value, itemId }) {
       if (this.item.id === itemId) {
-        this.pillCount = value;
+        // https://gitlab.com/gitlab-org/gitlab/-/issues/428246
+        // fixing this linting issue is causing the pills not to async update
+        //
+        // eslint-disable-next-line vue/no-mutating-props
+        this.item.pill_count = value;
       }
     },
   },
@@ -214,7 +226,6 @@ export default {
       class="gl-relative gl-display-flex gl-align-items-center gl-min-h-7 gl-gap-3 gl-mb-1 gl-py-2 gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-focus--focus show-on-focus-or-hover--control hide-on-focus-or-hover--control"
       :class="computedLinkClasses"
       data-testid="nav-item-link"
-      data-qa-selector="nav_item_link"
     >
       <div
         :class="[isActive ? 'gl-opacity-10' : 'gl-opacity-0']"
@@ -258,7 +269,7 @@ export default {
             'hide-on-focus-or-hover--target transition-opacity-on-hover--target': isPinnable,
           }"
         >
-          {{ pillCount }}
+          {{ pillData }}
         </gl-badge>
       </span>
     </component>
@@ -273,7 +284,7 @@ export default {
         data-testid="nav-item-unpin"
         icon="thumbtack-solid"
         size="small"
-        @click="$emit('pin-remove', item.id)"
+        @click="pinRemove"
         @transitionend="togglePointerEvents"
       />
       <gl-button
@@ -286,7 +297,7 @@ export default {
         data-testid="nav-item-pin"
         icon="thumbtack"
         size="small"
-        @click="$emit('pin-add', item.id)"
+        @click="pinAdd"
         @transitionend="togglePointerEvents"
       />
     </template>

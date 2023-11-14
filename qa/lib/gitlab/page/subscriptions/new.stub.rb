@@ -621,6 +621,30 @@ module Gitlab
         def total_amount?
           # This is a stub, used for indexing. The method is dynamically generated.
         end
+
+        # @note Defined as +div :lock_competition_error+
+        # @return [String] The text content or value of +lock_competition_error+
+        def lock_competition_error
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # @example
+        #   Gitlab::Page::Subscriptions::New.perform do |new|
+        #     expect(new.lock_competition_error_element).to exist
+        #   end
+        # @return [Watir::Div] The raw +Div+ element
+        def lock_competition_error_element
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # @example
+        #   Gitlab::Page::Subscriptions::New.perform do |new|
+        #     expect(new).to be_lock_competition_error
+        #   end
+        # @return [Boolean] true if the +lock_competition_error+ element is present on the page
+        def lock_competition_error?
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
       end
     end
   end

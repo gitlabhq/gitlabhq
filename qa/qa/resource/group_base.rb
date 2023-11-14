@@ -22,8 +22,14 @@ module QA
       # Get group projects
       #
       # @return [Array<QA::Resource::Project>]
-      def projects
-        parse_body(api_get_from("#{api_get_path}/projects")).map do |project|
+      def projects(auto_paginate: false)
+        response = if auto_paginate
+                     auto_paginated_response(request_url("#{api_get_path}/projects", per_page: '100'))
+                   else
+                     parse_body(api_get_from("#{api_get_path}/projects"))
+                   end
+
+        response.map do |project|
           Project.init do |resource|
             resource.add_name_uuid = false
             resource.api_client = api_client
@@ -39,8 +45,14 @@ module QA
       # Get group labels
       #
       # @return [Array<QA::Resource::GroupLabel>]
-      def labels
-        parse_body(api_get_from("#{api_get_path}/labels")).map do |label|
+      def labels(auto_paginate: false)
+        response = if auto_paginate
+                     auto_paginated_response(request_url("#{api_get_path}/labels", per_page: '100'))
+                   else
+                     parse_body(api_get_from("#{api_get_path}/labels"))
+                   end
+
+        response.map do |label|
           GroupLabel.init do |resource|
             resource.api_client = api_client
             resource.group = self
@@ -55,8 +67,14 @@ module QA
       # Get group milestones
       #
       # @return [Array<QA::Resource::GroupMilestone>]
-      def milestones
-        parse_body(api_get_from("#{api_get_path}/milestones")).map do |milestone|
+      def milestones(auto_paginate: false)
+        response = if auto_paginate
+                     auto_paginated_response(request_url("#{api_get_path}/milestones", per_page: '100'))
+                   else
+                     parse_body(api_get_from("#{api_get_path}/milestones"))
+                   end
+
+        response.map do |milestone|
           GroupMilestone.init do |resource|
             resource.api_client = api_client
             resource.group = self
@@ -71,8 +89,14 @@ module QA
       # Get group badges
       #
       # @return [Array<QA::Resource::GroupBadge>]
-      def badges
-        parse_body(api_get_from("#{api_get_path}/badges")).map do |badge|
+      def badges(auto_paginate: false)
+        response = if auto_paginate
+                     auto_paginated_response(request_url("#{api_get_path}/badges", per_page: '100'))
+                   else
+                     parse_body(api_get_from("#{api_get_path}/badges"))
+                   end
+
+        response.map do |badge|
           GroupBadge.init do |resource|
             resource.api_client = api_client
             resource.group = self

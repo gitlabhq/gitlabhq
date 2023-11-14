@@ -53,12 +53,29 @@ module Integrations
     # in the UI or API.
     prop_accessor :channels
 
-    def title
+    def self.title
       s_('IrkerService|irker (IRC gateway)')
     end
 
-    def description
+    def self.description
       s_('IrkerService|Send update messages to an irker server.')
+    end
+
+    def self.help
+      docs_link = ActionController::Base.helpers.link_to(
+        _('Learn more.'),
+        Rails.application.routes.url_helpers.help_page_url(
+          'user/project/integrations/irker',
+          anchor: 'set-up-an-irker-daemon'
+        ),
+        target: '_blank',
+        rel: 'noopener noreferrer'
+      )
+
+      format(s_(
+        'IrkerService|Send update messages to an irker server. ' \
+        'Before you can use this, you need to set up the irker daemon. %{docs_link}'
+      ).html_safe, docs_link: docs_link.html_safe)
     end
 
     def self.to_param
@@ -83,23 +100,6 @@ module Integrations
         server_host: server_host.presence || 'localhost',
         server_port: server_port.presence || 6659
       }
-    end
-
-    def help
-      docs_link = ActionController::Base.helpers.link_to(
-        _('Learn more.'),
-        Rails.application.routes.url_helpers.help_page_url(
-          'user/project/integrations/irker',
-          anchor: 'set-up-an-irker-daemon'
-        ),
-        target: '_blank',
-        rel: 'noopener noreferrer'
-      )
-
-      format(s_(
-        'IrkerService|Send update messages to an irker server. ' \
-        'Before you can use this, you need to set up the irker daemon. %{docs_link}'
-      ).html_safe, docs_link: docs_link.html_safe)
     end
 
     private

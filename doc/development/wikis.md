@@ -28,9 +28,6 @@ Some notable gems that are used for wikis are:
 | Component     | Description                                    | Gem name                       | GitLab project                                                                                          | Upstream project                                                    |
 |:--------------|:-----------------------------------------------|:-------------------------------|:--------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------|
 | `gitlab`      | Markup renderer, depends on various other gems | `gitlab-markup`                | [`gitlab-org/gitlab-markup`](https://gitlab.com/gitlab-org/gitlab-markup)                               | [`github/markup`](https://github.com/github/markup)                 |
-| `gollum-lib`  | Main Gollum library                            | `gitlab-gollum-lib`            | [`gitlab-org/gollum-lib`](https://gitlab.com/gitlab-org/gollum-lib)                                     | [`gollum/gollum-lib`](https://github.com/gollum/gollum-lib)         |
-|               | Gollum Git adapter for Rugged                  | `gitlab-gollum-rugged_adapter` | [`gitlab-org/gitlab-gollum-rugged_adapter`](https://gitlab.com/gitlab-org/gitlab-gollum-rugged_adapter) | [`gollum/rugged_adapter`](https://github.com/gollum/rugged_adapter) |
-|               | Rugged (also used in Gitaly itself)            | `rugged`                       | -                                                                                                       | [`libgit2/rugged`](https://github.com/libgit2/rugged)               |
 
 ### Notes on Gollum
 

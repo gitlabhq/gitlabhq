@@ -7,8 +7,8 @@
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
     %p.gl-text-secondary
-      = _('Allows projects to track errors using an Opstrace integration.').html_safe % { link: help_page_path('operations/error_tracking.md') }
-      = link_to _('Learn more.'), help_page_path('operations/error_tracking.md'), target: '_blank', rel: 'noopener noreferrer'
+      = _('Allows projects to track errors using an Opstrace integration.').html_safe % { link: help_page_path('operations/error_tracking') }
+      = link_to _('Learn more.'), help_page_path('operations/error_tracking'), target: '_blank', rel: 'noopener noreferrer'
 
   .settings-content
 

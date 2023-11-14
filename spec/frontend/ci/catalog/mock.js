@@ -1,5 +1,23 @@
 import { componentsMockData } from '~/ci/catalog/constants';
 
+export const emptyCatalogResponseBody = {
+  data: {
+    ciCatalogResources: {
+      pageInfo: {
+        startCursor:
+          'eyJjcmVhdGVkX2F0IjoiMjAxNS0wNy0wMyAxMDowMDowMC4wMDAwMDAwMDAgKzAwMDAiLCJpZCI6IjEyOSJ9',
+        endCursor:
+          'eyJjcmVhdGVkX2F0IjoiMjAxNS0wNy0wMyAxMDowMDowMC4wMDAwMDAwMDAgKzAwMDAiLCJpZCI6IjExMCJ9',
+        hasNextPage: false,
+        hasPreviousPage: false,
+        __typename: 'PageInfo',
+      },
+      count: 0,
+      nodes: [],
+    },
+  },
+};
+
 export const catalogResponseBody = {
   data: {
     ciCatalogResources: {
@@ -20,7 +38,6 @@ export const catalogResponseBody = {
           name: 'Project-42 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -37,7 +54,6 @@ export const catalogResponseBody = {
           name: 'Project-41 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -54,7 +70,6 @@ export const catalogResponseBody = {
           name: 'Project-40 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -71,7 +86,6 @@ export const catalogResponseBody = {
           name: 'Project-39 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -88,7 +102,6 @@ export const catalogResponseBody = {
           name: 'Project-38 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -105,7 +118,6 @@ export const catalogResponseBody = {
           name: 'Project-37 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -122,7 +134,6 @@ export const catalogResponseBody = {
           name: 'Project-36 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -139,7 +150,6 @@ export const catalogResponseBody = {
           name: 'Project-35 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -156,7 +166,6 @@ export const catalogResponseBody = {
           name: 'Project-34 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -173,7 +182,6 @@ export const catalogResponseBody = {
           name: 'Project-33 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -190,7 +198,6 @@ export const catalogResponseBody = {
           name: 'Project-32 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -207,7 +214,6 @@ export const catalogResponseBody = {
           name: 'Project-31 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -224,7 +230,6 @@ export const catalogResponseBody = {
           name: 'Project-30 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -241,7 +246,6 @@ export const catalogResponseBody = {
           name: 'Project-29 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -258,7 +262,6 @@ export const catalogResponseBody = {
           name: 'Project-28 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -275,7 +278,6 @@ export const catalogResponseBody = {
           name: 'Project-27 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -292,7 +294,6 @@ export const catalogResponseBody = {
           name: 'Project-26 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -309,7 +310,6 @@ export const catalogResponseBody = {
           name: 'Project-25 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -326,7 +326,6 @@ export const catalogResponseBody = {
           name: 'Project-24 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -343,7 +342,6 @@ export const catalogResponseBody = {
           name: 'Project-23 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -380,7 +378,6 @@ export const catalogSinglePageResponse = {
           name: 'Project-45 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -397,7 +394,6 @@ export const catalogSinglePageResponse = {
           name: 'Project-44 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -414,7 +410,6 @@ export const catalogSinglePageResponse = {
           name: 'Project-43 Name',
           description: 'A simple component',
           starCount: 0,
-          forksCount: 0,
           latestVersion: null,
           rootNamespace: {
             id: 'gid://gitlab/Group/185',
@@ -441,7 +436,6 @@ export const catalogSharedDataMock = {
       name: 'Ruby',
       rootNamespace: { id: 1, fullPath: '/group/project', name: 'my-dumb-project' },
       starCount: 1,
-      forksCount: 2,
       latestVersion: {
         __typename: 'Release',
         id: '3',
@@ -506,7 +500,6 @@ const generateResourcesNodes = (count = 20, startId = 0) => {
       __typename: 'CiCatalogResource',
       id: `gid://gitlab/CiCatalogResource/${i}`,
       description: `This is a component that does a bunch of stuff and is really just a number: ${i}`,
-      forksCount: 5,
       icon: 'my-icon',
       name: `My component #${i}`,
       rootNamespace: {
@@ -541,6 +534,16 @@ export const mockComponents = {
       components: {
         ...componentsMockData,
       },
+    },
+  },
+};
+
+export const mockComponentsEmpty = {
+  data: {
+    ciCatalogResource: {
+      __typename: 'CiCatalogResource',
+      id: `gid://gitlab/CiCatalogResource/1`,
+      components: [],
     },
   },
 };

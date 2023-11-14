@@ -366,6 +366,15 @@
 <li><a href="#footnotes-1">Footnotes</a></li>
 </ul>
 </li>
+<li>
+<a href="#gfm-undocumented-extensions-and-more-robust-test">GFM undocumented extensions and more robust test</a><ul>
+<li><a href="#footnotes-2">Footnotes</a></li>
+<li><a href="#when-a-footnote-is-used-multiple-times-we-insert-multiple-backrefs">When a footnote is used multiple times, we insert multiple backrefs.</a></li>
+<li><a href="#footnote-reference-labels-are-href-escaped">Footnote reference labels are href escaped</a></li>
+<li><a href="#interop">Interop</a></li>
+<li><a href="#task-lists">Task lists</a></li>
+</ul>
+</li>
 </ul>
 <h1 data-sourcepos="3:1-3:15" dir="auto">
 <a id="user-content-preliminaries" class="anchor" href="#preliminaries" aria-hidden="true"></a>Preliminaries</h1>
@@ -13545,6 +13554,269 @@ where it makes sense.</p>
 <copy-code></copy-code>
 </div>
 </div>
+<h1 data-sourcepos="15150:1-15150:50" dir="auto">
+<a id="user-content-gfm-undocumented-extensions-and-more-robust-test" class="anchor" href="#gfm-undocumented-extensions-and-more-robust-test" aria-hidden="true"></a>GFM undocumented extensions and more robust test</h1>
+<p data-sourcepos="15152:1-15154:16" dir="auto">This section contains tests borrowed from <a href="https://github.com/github/cmark-gfm/blob/master/test/extensions.txt" rel="nofollow noreferrer noopener" target="_blank">https://github.com/github/cmark-gfm/blob/master/test/extensions.txt</a>.
+It includes items not found in the official GFM specification, such as footnotes and additional tests for tables,
+task lists, etc.</p>
+<h2 data-sourcepos="15156:1-15156:12" dir="auto">
+<a id="user-content-footnotes-2" class="anchor" href="#footnotes-2" aria-hidden="true"></a>Footnotes</h2>
+<div>
+<div><a href="#example-755">Example 755</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15161:1-15188:32" data-canonical-lang="example" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">This is some text![^1]. Other text.[^footnote].</span>
+<span id="LC2" class="line" lang="plaintext"></span>
+<span id="LC3" class="line" lang="plaintext">Here's a thing[^other-note].</span>
+<span id="LC4" class="line" lang="plaintext"></span>
+<span id="LC5" class="line" lang="plaintext">And another thing[^codeblock-note].</span>
+<span id="LC6" class="line" lang="plaintext"></span>
+<span id="LC7" class="line" lang="plaintext">This doesn't have a referent[^nope].</span>
+<span id="LC8" class="line" lang="plaintext"></span>
+<span id="LC9" class="line" lang="plaintext"></span>
+<span id="LC10" class="line" lang="plaintext">[^other-note]:       no code block here (spaces are stripped away)</span>
+<span id="LC11" class="line" lang="plaintext"></span>
+<span id="LC12" class="line" lang="plaintext">[^codeblock-note]:</span>
+<span id="LC13" class="line" lang="plaintext">        this is now a code block (8 spaces indentation)</span>
+<span id="LC14" class="line" lang="plaintext"></span>
+<span id="LC15" class="line" lang="plaintext">[^1]: Some *bolded* footnote definition.</span>
+<span id="LC16" class="line" lang="plaintext"></span>
+<span id="LC17" class="line" lang="plaintext">Hi!</span>
+<span id="LC18" class="line" lang="plaintext"></span>
+<span id="LC19" class="line" lang="plaintext">[^footnote]:</span>
+<span id="LC20" class="line" lang="plaintext">    &gt; Blockquotes can be in a footnote.</span>
+<span id="LC21" class="line" lang="plaintext"></span>
+<span id="LC22" class="line" lang="plaintext">        as well as code blocks</span>
+<span id="LC23" class="line" lang="plaintext"></span>
+<span id="LC24" class="line" lang="plaintext">    or, naturally, simple paragraphs.</span>
+<span id="LC25" class="line" lang="plaintext"></span>
+<span id="LC26" class="line" lang="plaintext">[^unused]: This is unused.</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15190:1-15219:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;This is some text!&lt;sup class="footnote-ref"&gt;&lt;a href="#fn-1" id="fnref-1" data-footnote-ref&gt;1&lt;/a&gt;&lt;/sup&gt;. Other text.&lt;sup class="footnote-ref"&gt;&lt;a href="#fn-footnote" id="fnref-footnote" data-footnote-ref&gt;2&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;</span>
+<span id="LC2" class="line" lang="plaintext">&lt;p&gt;Here's a thing&lt;sup class="footnote-ref"&gt;&lt;a href="#fn-other-note" id="fnref-other-note" data-footnote-ref&gt;3&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;</span>
+<span id="LC3" class="line" lang="plaintext">&lt;p&gt;And another thing&lt;sup class="footnote-ref"&gt;&lt;a href="#fn-codeblock-note" id="fnref-codeblock-note" data-footnote-ref&gt;4&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;</span>
+<span id="LC4" class="line" lang="plaintext">&lt;p&gt;This doesn't have a referent[^nope].&lt;/p&gt;</span>
+<span id="LC5" class="line" lang="plaintext">&lt;p&gt;Hi!&lt;/p&gt;</span>
+<span id="LC6" class="line" lang="plaintext">&lt;section class="footnotes" data-footnotes&gt;</span>
+<span id="LC7" class="line" lang="plaintext">&lt;ol&gt;</span>
+<span id="LC8" class="line" lang="plaintext">&lt;li id="fn-1"&gt;</span>
+<span id="LC9" class="line" lang="plaintext">&lt;p&gt;Some &lt;em&gt;bolded&lt;/em&gt; footnote definition. &lt;a href="#fnref-1" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1"&gt;↩&lt;/a&gt;&lt;/p&gt;</span>
+<span id="LC10" class="line" lang="plaintext">&lt;/li&gt;</span>
+<span id="LC11" class="line" lang="plaintext">&lt;li id="fn-footnote"&gt;</span>
+<span id="LC12" class="line" lang="plaintext">&lt;blockquote&gt;</span>
+<span id="LC13" class="line" lang="plaintext">&lt;p&gt;Blockquotes can be in a footnote.&lt;/p&gt;</span>
+<span id="LC14" class="line" lang="plaintext">&lt;/blockquote&gt;</span>
+<span id="LC15" class="line" lang="plaintext">&lt;pre&gt;&lt;code&gt;as well as code blocks</span>
+<span id="LC16" class="line" lang="plaintext">&lt;/code&gt;&lt;/pre&gt;</span>
+<span id="LC17" class="line" lang="plaintext">&lt;p&gt;or, naturally, simple paragraphs. &lt;a href="#fnref-footnote" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="2" aria-label="Back to reference 2"&gt;↩&lt;/a&gt;&lt;/p&gt;</span>
+<span id="LC18" class="line" lang="plaintext">&lt;/li&gt;</span>
+<span id="LC19" class="line" lang="plaintext">&lt;li id="fn-other-note"&gt;</span>
+<span id="LC20" class="line" lang="plaintext">&lt;p&gt;no code block here (spaces are stripped away) &lt;a href="#fnref-other-note" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="3" aria-label="Back to reference 3"&gt;↩&lt;/a&gt;&lt;/p&gt;</span>
+<span id="LC21" class="line" lang="plaintext">&lt;/li&gt;</span>
+<span id="LC22" class="line" lang="plaintext">&lt;li id="fn-codeblock-note"&gt;</span>
+<span id="LC23" class="line" lang="plaintext">&lt;pre&gt;&lt;code&gt;this is now a code block (8 spaces indentation)</span>
+<span id="LC24" class="line" lang="plaintext">&lt;/code&gt;&lt;/pre&gt;</span>
+<span id="LC25" class="line" lang="plaintext">&lt;a href="#fnref-codeblock-note" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="4" aria-label="Back to reference 4"&gt;↩&lt;/a&gt;</span>
+<span id="LC26" class="line" lang="plaintext">&lt;/li&gt;</span>
+<span id="LC27" class="line" lang="plaintext">&lt;/ol&gt;</span>
+<span id="LC28" class="line" lang="plaintext">&lt;/section&gt;</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<h2 data-sourcepos="15222:1-15222:71" dir="auto">
+<a id="user-content-when-a-footnote-is-used-multiple-times-we-insert-multiple-backrefs" class="anchor" href="#when-a-footnote-is-used-multiple-times-we-insert-multiple-backrefs" aria-hidden="true"></a>When a footnote is used multiple times, we insert multiple backrefs.</h2>
+<div>
+<div><a href="#example-756">Example 756</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15227:1-15233:32" data-canonical-lang="example" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">This is some text. It has a footnote[^a-footnote].</span>
+<span id="LC2" class="line" lang="plaintext"></span>
+<span id="LC3" class="line" lang="plaintext">This footnote is referenced[^a-footnote] multiple times, in lots of different places.[^a-footnote]</span>
+<span id="LC4" class="line" lang="plaintext"></span>
+<span id="LC5" class="line" lang="plaintext">[^a-footnote]: This footnote definition should have three backrefs.</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15235:1-15245:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;This is some text. It has a footnote&lt;sup class="footnote-ref"&gt;&lt;a href="#fn-a-footnote" id="fnref-a-footnote" data-footnote-ref&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;</span>
+<span id="LC2" class="line" lang="plaintext">&lt;p&gt;This footnote is referenced&lt;sup class="footnote-ref"&gt;&lt;a href="#fn-a-footnote" id="fnref-a-footnote-2" data-footnote-ref&gt;1&lt;/a&gt;&lt;/sup&gt; multiple times, in lots of different places.&lt;sup class="footnote-ref"&gt;&lt;a href="#fn-a-footnote" id="fnref-a-footnote-3" data-footnote-ref&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;</span>
+<span id="LC3" class="line" lang="plaintext">&lt;section class="footnotes" data-footnotes&gt;</span>
+<span id="LC4" class="line" lang="plaintext">&lt;ol&gt;</span>
+<span id="LC5" class="line" lang="plaintext">&lt;li id="fn-a-footnote"&gt;</span>
+<span id="LC6" class="line" lang="plaintext">&lt;p&gt;This footnote definition should have three backrefs. &lt;a href="#fnref-a-footnote" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1"&gt;↩&lt;/a&gt; &lt;a href="#fnref-a-footnote-2" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="1-2" aria-label="Back to reference 1-2"&gt;↩&lt;sup class="footnote-ref"&gt;2&lt;/sup&gt;&lt;/a&gt; &lt;a href="#fnref-a-footnote-3" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="1-3" aria-label="Back to reference 1-3"&gt;↩&lt;sup class="footnote-ref"&gt;3&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;</span>
+<span id="LC7" class="line" lang="plaintext">&lt;/li&gt;</span>
+<span id="LC8" class="line" lang="plaintext">&lt;/ol&gt;</span>
+<span id="LC9" class="line" lang="plaintext">&lt;/section&gt;</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<h2 data-sourcepos="15248:1-15248:45" dir="auto">
+<a id="user-content-footnote-reference-labels-are-href-escaped" class="anchor" href="#footnote-reference-labels-are-href-escaped" aria-hidden="true"></a>Footnote reference labels are href escaped</h2>
+<div>
+<div><a href="#example-757">Example 757</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15253:1-15257:32" data-canonical-lang="example" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">Hello[^"&gt;&lt;script&gt;alert(1)&lt;/script&gt;]</span>
+<span id="LC2" class="line" lang="plaintext"></span>
+<span id="LC3" class="line" lang="plaintext">[^"&gt;&lt;script&gt;alert(1)&lt;/script&gt;]: pwned</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15259:1-15268:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;Hello&lt;sup class="footnote-ref"&gt;&lt;a href="#fn-%22%3E%3Cscript%3Ealert(1)%3C/script%3E" id="fnref-%22%3E%3Cscript%3Ealert(1)%3C/script%3E" data-footnote-ref&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;</span>
+<span id="LC2" class="line" lang="plaintext">&lt;section class="footnotes" data-footnotes&gt;</span>
+<span id="LC3" class="line" lang="plaintext">&lt;ol&gt;</span>
+<span id="LC4" class="line" lang="plaintext">&lt;li id="fn-%22%3E%3Cscript%3Ealert(1)%3C/script%3E"&gt;</span>
+<span id="LC5" class="line" lang="plaintext">&lt;p&gt;pwned &lt;a href="#fnref-%22%3E%3Cscript%3Ealert(1)%3C/script%3E" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1"&gt;↩&lt;/a&gt;&lt;/p&gt;</span>
+<span id="LC6" class="line" lang="plaintext">&lt;/li&gt;</span>
+<span id="LC7" class="line" lang="plaintext">&lt;/ol&gt;</span>
+<span id="LC8" class="line" lang="plaintext">&lt;/section&gt;</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<h2 data-sourcepos="15271:1-15271:10" dir="auto">
+<a id="user-content-interop" class="anchor" href="#interop" aria-hidden="true"></a>Interop</h2>
+<p data-sourcepos="15273:1-15273:27" dir="auto">Autolink and strikethrough.</p>
+<div>
+<div><a href="#example-758">Example 758</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15278:1-15282:32" data-canonical-lang="example" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">~~www.google.com~~</span>
+<span id="LC2" class="line" lang="plaintext"></span>
+<span id="LC3" class="line" lang="plaintext">~~http://google.com~~</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15284:1-15287:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;del&gt;&lt;a href="http://www.google.com"&gt;www.google.com&lt;/a&gt;&lt;/del&gt;&lt;/p&gt;</span>
+<span id="LC2" class="line" lang="plaintext">&lt;p&gt;&lt;del&gt;&lt;a href="http://google.com"&gt;http://google.com&lt;/a&gt;&lt;/del&gt;&lt;/p&gt;</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<p data-sourcepos="15290:1-15290:20" dir="auto">Autolink and tables.</p>
+<div>
+<div><a href="#example-759">Example 759</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15295:1-15299:32" data-canonical-lang="example" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">| a | b |</span>
+<span id="LC2" class="line" lang="plaintext">| --- | --- |</span>
+<span id="LC3" class="line" lang="plaintext">| https://github.com www.github.com | http://pokemon.com |</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15301:1-15316:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;table&gt;</span>
+<span id="LC2" class="line" lang="plaintext">&lt;thead&gt;</span>
+<span id="LC3" class="line" lang="plaintext">&lt;tr&gt;</span>
+<span id="LC4" class="line" lang="plaintext">&lt;th&gt;a&lt;/th&gt;</span>
+<span id="LC5" class="line" lang="plaintext">&lt;th&gt;b&lt;/th&gt;</span>
+<span id="LC6" class="line" lang="plaintext">&lt;/tr&gt;</span>
+<span id="LC7" class="line" lang="plaintext">&lt;/thead&gt;</span>
+<span id="LC8" class="line" lang="plaintext">&lt;tbody&gt;</span>
+<span id="LC9" class="line" lang="plaintext">&lt;tr&gt;</span>
+<span id="LC10" class="line" lang="plaintext">&lt;td&gt;&lt;a href="https://github.com"&gt;https://github.com&lt;/a&gt; &lt;a href="http://www.github.com"&gt;www.github.com&lt;/a&gt;&lt;/td&gt;</span>
+<span id="LC11" class="line" lang="plaintext">&lt;td&gt;&lt;a href="http://pokemon.com"&gt;http://pokemon.com&lt;/a&gt;&lt;/td&gt;</span>
+<span id="LC12" class="line" lang="plaintext">&lt;/tr&gt;</span>
+<span id="LC13" class="line" lang="plaintext">&lt;/tbody&gt;</span>
+<span id="LC14" class="line" lang="plaintext">&lt;/table&gt;</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<h2 data-sourcepos="15319:1-15319:13" dir="auto">
+<a id="user-content-task-lists" class="anchor" href="#task-lists" aria-hidden="true"></a>Task lists</h2>
+<div>
+<div><a href="#example-760">Example 760</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15324:1-15327:32" data-canonical-lang="example" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- [ ] foo</span>
+<span id="LC2" class="line" lang="plaintext">- [x] bar</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15329:1-15334:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;ul&gt;</span>
+<span id="LC2" class="line" lang="plaintext">&lt;li&gt;&lt;input type="checkbox" disabled="" /&gt; foo&lt;/li&gt;</span>
+<span id="LC3" class="line" lang="plaintext">&lt;li&gt;&lt;input type="checkbox" checked="" disabled="" /&gt; bar&lt;/li&gt;</span>
+<span id="LC4" class="line" lang="plaintext">&lt;/ul&gt;</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<p data-sourcepos="15337:1-15342:37" dir="auto">Show that a task list and a regular list get processed the same in
+the way that sublists are created. If something works in a list
+item, then it should work the same way with a task.  The only
+difference should be the tasklist marker. So, if we use something
+other than a space or x, it won't be recognized as a task item, and
+so will be treated as a regular item.</p>
+<div>
+<div><a href="#example-761">Example 761</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15347:1-15358:32" data-canonical-lang="example" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- [x] foo</span>
+<span id="LC2" class="line" lang="plaintext">  - [ ] bar</span>
+<span id="LC3" class="line" lang="plaintext">  - [x] baz</span>
+<span id="LC4" class="line" lang="plaintext">- [ ] bim</span>
+<span id="LC5" class="line" lang="plaintext"></span>
+<span id="LC6" class="line" lang="plaintext">Show a regular (non task) list to show that it has the same structure</span>
+<span id="LC7" class="line" lang="plaintext">- [@] foo</span>
+<span id="LC8" class="line" lang="plaintext">  - [@] bar</span>
+<span id="LC9" class="line" lang="plaintext">  - [@] baz</span>
+<span id="LC10" class="line" lang="plaintext">- [@] bim</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15360:1-15380:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;ul&gt;</span>
+<span id="LC2" class="line" lang="plaintext">&lt;li&gt;&lt;input type="checkbox" checked="" disabled="" /&gt; foo</span>
+<span id="LC3" class="line" lang="plaintext">&lt;ul&gt;</span>
+<span id="LC4" class="line" lang="plaintext">&lt;li&gt;&lt;input type="checkbox" disabled="" /&gt; bar&lt;/li&gt;</span>
+<span id="LC5" class="line" lang="plaintext">&lt;li&gt;&lt;input type="checkbox" checked="" disabled="" /&gt; baz&lt;/li&gt;</span>
+<span id="LC6" class="line" lang="plaintext">&lt;/ul&gt;</span>
+<span id="LC7" class="line" lang="plaintext">&lt;/li&gt;</span>
+<span id="LC8" class="line" lang="plaintext">&lt;li&gt;&lt;input type="checkbox" disabled="" /&gt; bim&lt;/li&gt;</span>
+<span id="LC9" class="line" lang="plaintext">&lt;/ul&gt;</span>
+<span id="LC10" class="line" lang="plaintext">&lt;p&gt;Show a regular (non task) list to show that it has the same structure&lt;/p&gt;</span>
+<span id="LC11" class="line" lang="plaintext">&lt;ul&gt;</span>
+<span id="LC12" class="line" lang="plaintext">&lt;li&gt;[@] foo</span>
+<span id="LC13" class="line" lang="plaintext">&lt;ul&gt;</span>
+<span id="LC14" class="line" lang="plaintext">&lt;li&gt;[@] bar&lt;/li&gt;</span>
+<span id="LC15" class="line" lang="plaintext">&lt;li&gt;[@] baz&lt;/li&gt;</span>
+<span id="LC16" class="line" lang="plaintext">&lt;/ul&gt;</span>
+<span id="LC17" class="line" lang="plaintext">&lt;/li&gt;</span>
+<span id="LC18" class="line" lang="plaintext">&lt;li&gt;[@] bim&lt;/li&gt;</span>
+<span id="LC19" class="line" lang="plaintext">&lt;/ul&gt;</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+Use a larger indent -- a task list and a regular list should produce
+the same structure.
+<div>
+<div><a href="#example-762">Example 762</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15388:1-15399:32" data-canonical-lang="example" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- [x] foo</span>
+<span id="LC2" class="line" lang="plaintext">    - [ ] bar</span>
+<span id="LC3" class="line" lang="plaintext">    - [x] baz</span>
+<span id="LC4" class="line" lang="plaintext">- [ ] bim</span>
+<span id="LC5" class="line" lang="plaintext"></span>
+<span id="LC6" class="line" lang="plaintext">Show a regular (non task) list to show that it has the same structure</span>
+<span id="LC7" class="line" lang="plaintext">- [@] foo</span>
+<span id="LC8" class="line" lang="plaintext">    - [@] bar</span>
+<span id="LC9" class="line" lang="plaintext">    - [@] baz</span>
+<span id="LC10" class="line" lang="plaintext">- [@] bim</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15401:1-15421:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;ul&gt;</span>
+<span id="LC2" class="line" lang="plaintext">&lt;li&gt;&lt;input type="checkbox" checked="" disabled="" /&gt; foo</span>
+<span id="LC3" class="line" lang="plaintext">&lt;ul&gt;</span>
+<span id="LC4" class="line" lang="plaintext">&lt;li&gt;&lt;input type="checkbox" disabled="" /&gt; bar&lt;/li&gt;</span>
+<span id="LC5" class="line" lang="plaintext">&lt;li&gt;&lt;input type="checkbox" checked="" disabled="" /&gt; baz&lt;/li&gt;</span>
+<span id="LC6" class="line" lang="plaintext">&lt;/ul&gt;</span>
+<span id="LC7" class="line" lang="plaintext">&lt;/li&gt;</span>
+<span id="LC8" class="line" lang="plaintext">&lt;li&gt;&lt;input type="checkbox" disabled="" /&gt; bim&lt;/li&gt;</span>
+<span id="LC9" class="line" lang="plaintext">&lt;/ul&gt;</span>
+<span id="LC10" class="line" lang="plaintext">&lt;p&gt;Show a regular (non task) list to show that it has the same structure&lt;/p&gt;</span>
+<span id="LC11" class="line" lang="plaintext">&lt;ul&gt;</span>
+<span id="LC12" class="line" lang="plaintext">&lt;li&gt;[@] foo</span>
+<span id="LC13" class="line" lang="plaintext">&lt;ul&gt;</span>
+<span id="LC14" class="line" lang="plaintext">&lt;li&gt;[@] bar&lt;/li&gt;</span>
+<span id="LC15" class="line" lang="plaintext">&lt;li&gt;[@] baz&lt;/li&gt;</span>
+<span id="LC16" class="line" lang="plaintext">&lt;/ul&gt;</span>
+<span id="LC17" class="line" lang="plaintext">&lt;/li&gt;</span>
+<span id="LC18" class="line" lang="plaintext">&lt;li&gt;[@] bim&lt;/li&gt;</span>
+<span id="LC19" class="line" lang="plaintext">&lt;/ul&gt;</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+
 
 </body>
 </html>

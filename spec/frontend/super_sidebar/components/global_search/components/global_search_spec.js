@@ -25,7 +25,14 @@ import {
 } from '~/super_sidebar/components/global_search/constants';
 import { truncate } from '~/lib/utils/text_utility';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { ENTER_KEY } from '~/lib/utils/keys';
+import {
+  ENTER_KEY,
+  ARROW_DOWN_KEY,
+  ARROW_UP_KEY,
+  END_KEY,
+  HOME_KEY,
+  NUMPAD_ENTER_KEY,
+} from '~/lib/utils/keys';
 import {
   MOCK_SEARCH,
   MOCK_SEARCH_QUERY,
@@ -415,7 +422,7 @@ describe('GlobalSearchModal', () => {
                   class="gl-new-dropdown-item"
                   tabindex="0"
                   :data-testid="'test-result-' + n"
-                >Result {{ n }}</li>
+                ><a href="#">Result {{ n }}</a></li>
               </ul>`,
           },
         },
@@ -429,26 +436,26 @@ describe('GlobalSearchModal', () => {
       });
 
       it('Home key keeps focus in input', () => {
-        const event = triggerKeydownEvent(findSearchInput().element, 'Home');
+        const event = triggerKeydownEvent(findSearchInput().element, HOME_KEY);
         expect(document.activeElement).toBe(findSearchInput().element);
         expect(event.defaultPrevented).toBe(false);
       });
 
       it('End key keeps focus on input', () => {
-        const event = triggerKeydownEvent(findSearchInput().element, 'End');
-        findSearchInput().trigger('keydown', { code: 'End' });
+        const event = triggerKeydownEvent(findSearchInput().element, END_KEY);
+        findSearchInput().trigger('keydown', { code: END_KEY });
         expect(document.activeElement).toBe(findSearchInput().element);
         expect(event.defaultPrevented).toBe(false);
       });
 
       it('ArrowUp keeps focus on input', () => {
-        const event = triggerKeydownEvent(findSearchInput().element, 'ArrowUp');
+        const event = triggerKeydownEvent(findSearchInput().element, ARROW_UP_KEY);
         expect(document.activeElement).toBe(findSearchInput().element);
         expect(event.defaultPrevented).toBe(false);
       });
 
       it('ArrowDown focuses the first item', () => {
-        const event = triggerKeydownEvent(findSearchInput().element, 'ArrowDown');
+        const event = triggerKeydownEvent(findSearchInput().element, ARROW_DOWN_KEY);
         expect(document.activeElement).toBe(wrapper.findByTestId('test-result-1').element);
         expect(event.defaultPrevented).toBe(true);
       });
@@ -460,30 +467,42 @@ describe('GlobalSearchModal', () => {
       });
 
       it('Home key focuses first item', () => {
-        const event = triggerKeydownEvent(document.activeElement, 'Home');
+        const event = triggerKeydownEvent(document.activeElement, HOME_KEY);
         expect(document.activeElement).toBe(wrapper.findByTestId('test-result-1').element);
         expect(event.defaultPrevented).toBe(true);
       });
 
       it('End key focuses last item', () => {
-        const event = triggerKeydownEvent(document.activeElement, 'End');
+        const event = triggerKeydownEvent(document.activeElement, END_KEY);
         expect(document.activeElement).toBe(wrapper.findByTestId('test-result-5').element);
         expect(event.defaultPrevented).toBe(true);
       });
 
       it('ArrowUp focuses previous item if any, else input', () => {
-        let event = triggerKeydownEvent(document.activeElement, 'ArrowUp');
+        let event = triggerKeydownEvent(document.activeElement, ARROW_UP_KEY);
         expect(document.activeElement).toBe(wrapper.findByTestId('test-result-1').element);
         expect(event.defaultPrevented).toBe(true);
 
-        event = triggerKeydownEvent(document.activeElement, 'ArrowUp');
+        event = triggerKeydownEvent(document.activeElement, ARROW_UP_KEY);
         expect(document.activeElement).toBe(findSearchInput().element);
         expect(event.defaultPrevented).toBe(true);
       });
 
       it('ArrowDown focuses next item', () => {
-        const event = triggerKeydownEvent(document.activeElement, 'ArrowDown');
+        const event = triggerKeydownEvent(document.activeElement, ARROW_DOWN_KEY);
         expect(document.activeElement).toBe(wrapper.findByTestId('test-result-3').element);
+        expect(event.defaultPrevented).toBe(true);
+      });
+
+      it('NumpadEnter clicks the current item child', () => {
+        const focusedElement = document.activeElement;
+        const focusedElementChild = focusedElement.firstChild;
+
+        const clickMock = jest.fn();
+        focusedElementChild.click = clickMock;
+
+        const event = triggerKeydownEvent(focusedElement, NUMPAD_ENTER_KEY);
+        expect(clickMock).toHaveBeenCalled();
         expect(event.defaultPrevented).toBe(true);
       });
     });

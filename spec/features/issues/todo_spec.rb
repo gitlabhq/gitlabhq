@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Manually create a todo item from issue', :js, feature_category: :team_planning do
   let!(:project) { create(:project) }
   let!(:issue)   { create(:issue, project: project) }
-  let!(:user)    { create(:user, :no_super_sidebar) }
+  let!(:user)    { create(:user) }
 
   before do
     stub_feature_flags(notifications_todos_buttons: false)
@@ -20,13 +20,13 @@ RSpec.describe 'Manually create a todo item from issue', :js, feature_category: 
       expect(page).to have_content 'Mark as done'
     end
 
-    page.within ".header-content span[aria-label='#{_('Todos count')}']" do
+    within_testid 'todos-shortcut-button' do
       expect(page).to have_content '1'
     end
 
     visit project_issue_path(project, issue)
 
-    page.within ".header-content span[aria-label='#{_('Todos count')}']" do
+    within_testid 'todos-shortcut-button' do
       expect(page).to have_content '1'
     end
   end
@@ -37,10 +37,10 @@ RSpec.describe 'Manually create a todo item from issue', :js, feature_category: 
       click_button 'Mark as done'
     end
 
-    expect(page).to have_selector(".header-content span[aria-label='#{_('Todos count')}']", visible: false)
+    expect(page).to have_selector("[data-testid='todos-shortcut-button']", text: '')
 
     visit project_issue_path(project, issue)
 
-    expect(page).to have_selector(".header-content span[aria-label='#{_('Todos count')}']", visible: false)
+    expect(page).to have_selector("[data-testid='todos-shortcut-button']", text: '')
   end
 end

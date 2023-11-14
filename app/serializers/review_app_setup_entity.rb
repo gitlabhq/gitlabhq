@@ -13,6 +13,8 @@ class ReviewAppSetupEntity < Grape::Entity
     YAML.safe_load(File.read(Rails.root.join('lib', 'gitlab', 'ci', 'snippets', 'review_app_default.yml'))).to_s
   end
 
+  expose :has_review_app?, as: :has_review_app
+
   private
 
   def current_user

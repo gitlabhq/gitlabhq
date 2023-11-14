@@ -28,5 +28,19 @@ RSpec.describe BulkImportWorker, feature_category: :importers do
         end
       end
     end
+
+    it_behaves_like 'an idempotent worker'
+  end
+
+  describe '#sidekiq_retries_exhausted' do
+    it 'logs export failure and marks entity as failed' do
+      exception = StandardError.new('Exhausted error!')
+
+      expect(Gitlab::ErrorTracking).to receive(:track_exception).with(exception, bulk_import_id: bulk_import.id)
+
+      described_class.sidekiq_retries_exhausted_block.call({ 'args' => job_args }, exception)
+
+      expect(bulk_import.reload.failed?).to eq(true)
+    end
   end
 end

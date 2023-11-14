@@ -67,7 +67,7 @@ RSpec.describe API::ContainerRepositories, feature_category: :container_registry
         let(:url) { "/registry/repositories/#{repository.id}?tags=true" }
 
         before do
-          stub_container_registry_tags(repository: repository.path, tags: %w(rootA latest), with_manifest: true)
+          stub_container_registry_tags(repository: repository.path, tags: %w[rootA latest], with_manifest: true)
         end
 
         it 'returns a repository and its tags' do
@@ -102,7 +102,7 @@ RSpec.describe API::ContainerRepositories, feature_category: :container_registry
         let(:url) { "/registry/repositories/#{repository.id}?tags_count=true" }
 
         before do
-          stub_container_registry_tags(repository: repository.path, tags: %w(rootA latest), with_manifest: true)
+          stub_container_registry_tags(repository: repository.path, tags: %w[rootA latest], with_manifest: true)
         end
 
         it 'returns a repository and its tags_count' do

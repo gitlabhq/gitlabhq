@@ -39,6 +39,7 @@ export default {
       viewDiffsFileByFile,
       mrReviews,
       diffViewType,
+      perPage,
     } = options;
     Object.assign(state, {
       endpoint,
@@ -54,6 +55,7 @@ export default {
       viewDiffsFileByFile,
       mrReviews,
       diffViewType,
+      perPage,
     });
   },
 
@@ -198,9 +200,10 @@ export default {
       return {
         ...line,
         discussionsExpanded:
-          line.discussions && line.discussions.length
+          line.discussionsExpanded ||
+          (line.discussions && line.discussions.length
             ? line.discussions.some((disc) => !disc.resolved) || isLineNoteTargeted
-            : false,
+            : false),
       };
     };
 

@@ -235,11 +235,15 @@
 }
 
 .twitter-icon {
-  color: $twitter;
+  color: var(--gl-text-color, $gl-text-color);
 }
 
 .discord-icon {
   color: $discord;
+}
+
+.mastodon-icon {
+  color: $mastodon;
 }
 
 .key-created-at {

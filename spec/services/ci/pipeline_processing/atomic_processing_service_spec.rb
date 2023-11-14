@@ -139,7 +139,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
 
         fail_running_or_pending
 
-        expect(builds_statuses).to eq %w(failed pending)
+        expect(builds_statuses).to eq %w[failed pending]
 
         fail_running_or_pending
 
@@ -166,22 +166,22 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
 
           succeed_running_or_pending
 
-          expect(builds_names).to eq %w(build test)
-          expect(builds_statuses).to eq %w(success pending)
+          expect(builds_names).to eq %w[build test]
+          expect(builds_statuses).to eq %w[success pending]
 
           succeed_running_or_pending
 
-          expect(builds_names).to eq %w(build test deploy production)
-          expect(builds_statuses).to eq %w(success success pending manual)
+          expect(builds_names).to eq %w[build test deploy production]
+          expect(builds_statuses).to eq %w[success success pending manual]
 
           succeed_running_or_pending
 
-          expect(builds_names).to eq %w(build test deploy production cleanup clear:cache)
-          expect(builds_statuses).to eq %w(success success success manual pending manual)
+          expect(builds_names).to eq %w[build test deploy production cleanup clear:cache]
+          expect(builds_statuses).to eq %w[success success success manual pending manual]
 
           succeed_running_or_pending
 
-          expect(builds_statuses).to eq %w(success success success manual success manual)
+          expect(builds_statuses).to eq %w[success success success manual success manual]
           expect(pipeline.reload.status).to eq 'success'
         end
       end
@@ -194,22 +194,22 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
 
           succeed_running_or_pending
 
-          expect(builds_names).to eq %w(build test)
-          expect(builds_statuses).to eq %w(success pending)
+          expect(builds_names).to eq %w[build test]
+          expect(builds_statuses).to eq %w[success pending]
 
           fail_running_or_pending
 
-          expect(builds_names).to eq %w(build test test_failure)
-          expect(builds_statuses).to eq %w(success failed pending)
+          expect(builds_names).to eq %w[build test test_failure]
+          expect(builds_statuses).to eq %w[success failed pending]
 
           succeed_running_or_pending
 
-          expect(builds_names).to eq %w(build test test_failure cleanup)
-          expect(builds_statuses).to eq %w(success failed success pending)
+          expect(builds_names).to eq %w[build test test_failure cleanup]
+          expect(builds_statuses).to eq %w[success failed success pending]
 
           succeed_running_or_pending
 
-          expect(builds_statuses).to eq %w(success failed success success)
+          expect(builds_statuses).to eq %w[success failed success success]
           expect(pipeline.reload.status).to eq 'failed'
         end
       end
@@ -222,23 +222,23 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
 
           succeed_running_or_pending
 
-          expect(builds_names).to eq %w(build test)
-          expect(builds_statuses).to eq %w(success pending)
+          expect(builds_names).to eq %w[build test]
+          expect(builds_statuses).to eq %w[success pending]
 
           fail_running_or_pending
 
-          expect(builds_names).to eq %w(build test test_failure)
-          expect(builds_statuses).to eq %w(success failed pending)
+          expect(builds_names).to eq %w[build test test_failure]
+          expect(builds_statuses).to eq %w[success failed pending]
 
           fail_running_or_pending
 
-          expect(builds_names).to eq %w(build test test_failure cleanup)
-          expect(builds_statuses).to eq %w(success failed failed pending)
+          expect(builds_names).to eq %w[build test test_failure cleanup]
+          expect(builds_statuses).to eq %w[success failed failed pending]
 
           succeed_running_or_pending
 
-          expect(builds_names).to eq %w(build test test_failure cleanup)
-          expect(builds_statuses).to eq %w(success failed failed success)
+          expect(builds_names).to eq %w[build test test_failure cleanup]
+          expect(builds_statuses).to eq %w[success failed failed success]
           expect(pipeline.reload.status).to eq('failed')
         end
       end
@@ -251,22 +251,22 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
 
           succeed_running_or_pending
 
-          expect(builds_names).to eq %w(build test)
-          expect(builds_statuses).to eq %w(success pending)
+          expect(builds_names).to eq %w[build test]
+          expect(builds_statuses).to eq %w[success pending]
 
           succeed_running_or_pending
 
-          expect(builds_names).to eq %w(build test deploy production)
-          expect(builds_statuses).to eq %w(success success pending manual)
+          expect(builds_names).to eq %w[build test deploy production]
+          expect(builds_statuses).to eq %w[success success pending manual]
 
           fail_running_or_pending
 
-          expect(builds_names).to eq %w(build test deploy production cleanup)
-          expect(builds_statuses).to eq %w(success success failed manual pending)
+          expect(builds_names).to eq %w[build test deploy production cleanup]
+          expect(builds_statuses).to eq %w[success success failed manual pending]
 
           succeed_running_or_pending
 
-          expect(builds_statuses).to eq %w(success success failed manual success)
+          expect(builds_statuses).to eq %w[success success failed manual success]
           expect(pipeline.reload).to be_failed
         end
       end
@@ -280,8 +280,8 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
           succeed_running_or_pending
 
           expect(builds.running_or_pending).not_to be_empty
-          expect(builds_names).to eq %w(build test)
-          expect(builds_statuses).to eq %w(success pending)
+          expect(builds_names).to eq %w[build test]
+          expect(builds_statuses).to eq %w[success pending]
 
           cancel_running_or_pending
 
@@ -801,25 +801,25 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
       it 'when linux:* finishes first it runs it out of order' do
         expect(process_pipeline).to be_truthy
 
-        expect(stages).to eq(%w(pending created created))
+        expect(stages).to eq(%w[pending created created])
         expect(builds.pending).to contain_exactly(linux_build, mac_build)
 
         # we follow the single path of linux
         linux_build.reset.success!
 
-        expect(stages).to eq(%w(running pending created))
+        expect(stages).to eq(%w[running pending created])
         expect(builds.success).to contain_exactly(linux_build)
         expect(builds.pending).to contain_exactly(mac_build, linux_rspec, linux_rubocop)
 
         linux_rspec.reset.success!
 
-        expect(stages).to eq(%w(running running created))
+        expect(stages).to eq(%w[running running created])
         expect(builds.success).to contain_exactly(linux_build, linux_rspec)
         expect(builds.pending).to contain_exactly(mac_build, linux_rubocop)
 
         linux_rubocop.reset.success!
 
-        expect(stages).to eq(%w(running running created))
+        expect(stages).to eq(%w[running running created])
         expect(builds.success).to contain_exactly(linux_build, linux_rspec, linux_rubocop)
         expect(builds.pending).to contain_exactly(mac_build)
 
@@ -827,7 +827,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
         mac_rspec.reset.success!
         mac_rubocop.reset.success!
 
-        expect(stages).to eq(%w(success success pending))
+        expect(stages).to eq(%w[success success pending])
         expect(builds.success).to contain_exactly(
           linux_build, linux_rspec, linux_rubocop, mac_build, mac_rspec, mac_rubocop)
         expect(builds.pending).to contain_exactly(deploy)
@@ -866,13 +866,13 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
         it 'runs deploy_pages without waiting prior stages' do
           expect(process_pipeline).to be_truthy
 
-          expect(stages).to eq(%w(pending created pending))
+          expect(stages).to eq(%w[pending created pending])
           expect(builds.pending).to contain_exactly(linux_build, mac_build, deploy_pages)
 
           linux_build.reset.success!
           deploy_pages.reset.success!
 
-          expect(stages).to eq(%w(running pending running))
+          expect(stages).to eq(%w[running pending running])
           expect(builds.success).to contain_exactly(linux_build, deploy_pages)
           expect(builds.pending).to contain_exactly(mac_build, linux_rspec, linux_rubocop)
 
@@ -882,7 +882,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
           mac_rspec.reset.success!
           mac_rubocop.reset.success!
 
-          expect(stages).to eq(%w(success success running))
+          expect(stages).to eq(%w[success success running])
           expect(builds.pending).to contain_exactly(deploy)
         end
       end
@@ -900,12 +900,12 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
       it 'skips the jobs depending on it' do
         expect(process_pipeline).to be_truthy
 
-        expect(stages).to eq(%w(pending created created))
+        expect(stages).to eq(%w[pending created created])
         expect(all_builds.pending).to contain_exactly(linux_build)
 
         linux_build.reset.drop!
 
-        expect(stages).to eq(%w(failed skipped skipped))
+        expect(stages).to eq(%w[failed skipped skipped])
         expect(all_builds.failed).to contain_exactly(linux_build)
         expect(all_builds.skipped).to contain_exactly(linux_rspec, deploy)
       end
@@ -922,7 +922,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
       it 'makes deploy DAG to be skipped' do
         expect(process_pipeline).to be_truthy
 
-        expect(stages).to eq(%w(skipped skipped))
+        expect(stages).to eq(%w[skipped skipped])
         expect(all_builds.manual).to contain_exactly(linux_build)
         expect(all_builds.skipped).to contain_exactly(deploy)
       end
@@ -1460,7 +1460,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
     end
 
     def delayed_options
-      { when: 'delayed', options: { script: %w(echo), start_in: '1 minute' } }
+      { when: 'delayed', options: { script: %w[echo], start_in: '1 minute' } }
     end
 
     def unschedule

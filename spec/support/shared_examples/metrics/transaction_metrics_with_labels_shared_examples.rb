@@ -95,7 +95,7 @@ RSpec.shared_examples 'transaction metrics with labels' do
         expect(prometheus_metric).to receive(:increment).with(labels.merge(sane: 'yes'), 1)
 
         transaction_obj.increment(:block_labels, 1, sane: 'yes') do
-          label_keys %i(sane)
+          label_keys %i[sane]
         end
       end
 
@@ -145,7 +145,7 @@ RSpec.shared_examples 'transaction metrics with labels' do
         expect(prometheus_metric).to receive(:set).with(labels.merge(sane: 'yes'), 99)
 
         transaction_obj.set(:block_labels_set, 99, sane: 'yes') do
-          label_keys %i(sane)
+          label_keys %i[sane]
         end
       end
 
@@ -195,7 +195,7 @@ RSpec.shared_examples 'transaction metrics with labels' do
         expect(prometheus_metric).to receive(:observe).with(labels.merge(sane: 'yes'), 2.0)
 
         transaction_obj.observe(:block_labels_observe, 2.0, sane: 'yes') do
-          label_keys %i(sane)
+          label_keys %i[sane]
         end
       end
 

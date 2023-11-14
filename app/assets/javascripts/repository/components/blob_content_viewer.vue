@@ -122,6 +122,7 @@ export default {
       blobInfo: {},
       isEmptyRepository: false,
       projectId: null,
+      showBlame: this.$route?.query?.blame === '1',
     };
   },
   computed: {
@@ -201,6 +202,9 @@ export default {
     },
     isUsingLfs() {
       return this.blobInfo.storedExternally && this.blobInfo.externalStorage === LFS_STORAGE;
+    },
+    isBlameEnabled() {
+      return this.glFeatures.blobBlameInfo && this.blobInfo.language === 'json'; // This feature is currently scoped to JSON files
     },
   },
   watch: {
@@ -289,6 +293,14 @@ export default {
     onCopy() {
       navigator.clipboard.writeText(this.blobInfo.rawTextBlob);
     },
+    handleToggleBlame() {
+      this.switchViewer(SIMPLE_BLOB_VIEWER);
+      this.showBlame = !this.showBlame;
+
+      const blame = this.showBlame === true ? '1' : '0';
+      if (this.$route?.query?.blame === blame) return;
+      this.$router.push({ path: this.$route.path, query: { ...this.$route.query, blame } });
+    },
   },
 };
 </script>
@@ -299,19 +311,21 @@ export default {
     <div v-if="blobInfo && !isLoading" id="fileHolder" class="file-holder">
       <blob-header
         :blob="blobInfo"
-        :hide-viewer-switcher="!hasRichViewer || isBinaryFileType || isUsingLfs"
+        :hide-viewer-switcher="isBinaryFileType || isUsingLfs"
         :is-binary="isBinaryFileType"
         :active-viewer-type="viewer.type"
         :has-render-error="hasRenderError"
         :show-path="false"
         :override-copy="true"
         :show-fork-suggestion="showForkSuggestion"
+        :show-blame-toggle="isBlameEnabled"
         :project-path="projectPath"
         :project-id="projectId"
         @viewer-changed="handleViewerChanged"
         @copy="onCopy"
         @edit="editBlob"
         @error="displayError"
+        @blame="handleToggleBlame"
       >
         <template #actions>
           <blob-button-group
@@ -354,6 +368,7 @@ export default {
         v-else
         :blob="blobInfo"
         :chunks="chunks"
+        :show-blame="showBlame"
         :project-path="projectPath"
         :current-ref="currentRef"
         class="blob-viewer"

@@ -22,6 +22,7 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::UpdateService, feature_cat
     end
 
     let(:expected_error_message) { error_parameter_missing }
+    let(:expected_custom_email_enabled) { false }
     let(:logger_params) { { category: 'custom_email_verification' } }
 
     before do
@@ -30,7 +31,7 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::UpdateService, feature_cat
     end
 
     shared_examples 'a failing verification process' do |expected_error_identifier|
-      it 'refuses to verify and sends result emails' do
+      it 'refuses to verify and sends result emails', :aggregate_failures do
         expect(Notify).to receive(:service_desk_verification_result_email).twice
 
         expect(Gitlab::AppLogger).to receive(:info).with(logger_params.merge(
@@ -52,7 +53,7 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::UpdateService, feature_cat
     end
 
     shared_examples 'an early exit from the verification process' do |expected_state|
-      it 'exits early' do
+      it 'exits early', :aggregate_failures do
         expect(Notify).to receive(:service_desk_verification_result_email).exactly(0).times
 
         expect(Gitlab::AppLogger).to receive(:warn).with(logger_params.merge(
@@ -65,7 +66,7 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::UpdateService, feature_cat
         verification.reset
 
         expect(response).to be_error
-        expect(settings).not_to be_custom_email_enabled
+        expect(settings.custom_email_enabled).to eq expected_custom_email_enabled
         expect(verification.state).to eq expected_state
       end
     end
@@ -178,6 +179,26 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::UpdateService, feature_cat
           end
 
           it_behaves_like 'a failing verification process', 'mail_not_received_within_timeframe'
+        end
+
+        context 'when already verified' do
+          let(:expected_error_message) { error_already_finished }
+
+          before do
+            verification.mark_as_finished!
+          end
+
+          it_behaves_like 'an early exit from the verification process', 'finished'
+
+          context 'when enabled' do
+            let(:expected_custom_email_enabled) { true }
+
+            before do
+              settings.update!(custom_email_enabled: true)
+            end
+
+            it_behaves_like 'an early exit from the verification process', 'finished'
+          end
         end
       end
     end

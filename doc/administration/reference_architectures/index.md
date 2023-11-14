@@ -12,36 +12,37 @@ GitLab Quality Engineering and Support teams to provide recommended deployments 
 
 ## Available reference architectures
 
-Depending on your workflow, the following recommended reference architectures
-may need to be adapted accordingly. Your workload is influenced by factors
-including how active your users are, how much automation you use, mirroring,
-and repository/change size. Additionally, the displayed memory values are
-provided by [GCP machine types](https://cloud.google.com/compute/docs/machine-resource).
-For different cloud vendors, attempt to select options that best match the
-provided architecture.
+The following Reference Architectures are available as recommended starting points for your environment.
+
+The architectures are named in terms of user count, which in this case means the architecture is designed against
+the _total_ load that comes with such a user count based on real data along with substantial headroom added to cover most scenarios such as CI or other automated workloads.
+
+However, it should be noted that in some cases, known heavy scenarios such as [large monorepos](#large-monorepos) or notable [additional workloads](#additional-workloads) may require adjustments to be made.
+
+For each Reference Architecture, the details of what they have been tested against can be found respectively in the "Testing Methodology" section of each page.
 
 ### GitLab package (Omnibus)
 
-The following reference architectures, where the GitLab package is used, are available:
+Below is a list of Linux package based architectures:
 
-- [Up to 1,000 users](1k_users.md)
-- [Up to 2,000 users](2k_users.md)
-- [Up to 3,000 users](3k_users.md)
-- [Up to 5,000 users](5k_users.md)
-- [Up to 10,000 users](10k_users.md)
-- [Up to 25,000 users](25k_users.md)
-- [Up to 50,000 users](50k_users.md)
+- [Up to 1,000 users](1k_users.md) <span style="color: darkgrey;">_API: 20 RPS, Web: 2 RPS, Git (Pull): 2 RPS, Git (Push): 1 RPS_</span>
+- [Up to 2,000 users](2k_users.md) <span style="color: darkgrey;">_API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS_</span>
+- [Up to 3,000 users](3k_users.md) <span style="color: darkgrey;">_API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS_</span>
+- [Up to 5,000 users](5k_users.md) <span style="color: darkgrey;">_API: 100 RPS, Web: 10 RPS, Git (Pull): 10 RPS, Git (Push): 2 RPS_</span>
+- [Up to 10,000 users](10k_users.md) <span style="color: darkgrey;">_API: 200 RPS, Web: 20 RPS, Git (Pull): 20 RPS, Git (Push): 4 RPS_</span>
+- [Up to 25,000 users](25k_users.md) <span style="color: darkgrey;">_API: 500 RPS, Web: 50 RPS, Git (Pull): 50 RPS, Git (Push): 10 RPS_</span>
+- [Up to 50,000 users](50k_users.md) <span style="color: darkgrey;">_API: 1000 RPS, Web: 100 RPS, Git (Pull): 100 RPS, Git (Push): 20 RPS_</span>
 
 ### Cloud native hybrid
 
-The following Cloud Native Hybrid reference architectures, where select recommended components can be run in Kubernetes, are available:
+Below is a list of Cloud Native Hybrid reference architectures, where select recommended components can be run in Kubernetes:
 
-- [Up to 2,000 users](2k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
-- [Up to 3,000 users](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
-- [Up to 5,000 users](5k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
-- [Up to 10,000 users](10k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
-- [Up to 25,000 users](25k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
-- [Up to 50,000 users](50k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
+- [Up to 2,000 users](2k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS_</span>
+- [Up to 3,000 users](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS_</span>
+- [Up to 5,000 users](5k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 100 RPS, Web: 10 RPS, Git (Pull): 10 RPS, Git (Push): 2 RPS_</span>
+- [Up to 10,000 users](10k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 200 RPS, Web: 20 RPS, Git (Pull): 20 RPS, Git (Push): 4 RPS_</span>
+- [Up to 25,000 users](25k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 500 RPS, Web: 50 RPS, Git (Pull): 50 RPS, Git (Push): 10 RPS_</span>
+- [Up to 50,000 users](50k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 1000 RPS, Web: 100 RPS, Git (Pull): 100 RPS, Git (Push): 20 RPS_</span>
 
 ## Before you start
 
@@ -62,6 +63,19 @@ While they are designed to make it easier to set up GitLab at scale, it can stil
 As a general guide, **the more performant and/or resilient you want your environment to be, the more complex it is**.
 
 This section explains the designs you can choose from. It begins with the least complexity, goes to the most, and ends with a decision tree.
+
+### Expected Load (RPS)
+
+The first thing to check is what the expected load is your environment would be expected to serve.
+
+The Reference Architectures have been designed with substantial headroom by default, but it's recommended to also check the
+load of what each architecture has been tested against under the "Testing Methodology" section found on each page,
+comparing those values with what load you are expecting against your existing GitLab environment to help select the right Reference Architecture
+size.
+
+Load is given in terms of Requests per Section (RPS) for each endpoint type (API, Web, Git). This information on your existing infrastructure
+can typically be surfaced by most reputable monitoring solutions or in some other ways such as load balancer metrics. For example, on existing GitLab environments,
+[Prometheus metrics](../monitoring/prometheus/gitlab_metrics.md) such as `gitlab_transaction_duration_seconds` can be used to see this data.
 
 ### Standalone (non-HA)
 
@@ -144,10 +158,11 @@ Below you can find the above guidance in the form of a decision tree. It's recom
 ```mermaid
 %%{init: { 'theme': 'base' } }%%
 graph TD
-   L1A(<b>What Reference Architecture should I use?</b>)
+   L0A(<b>What Reference Architecture should I use?</b>)
+   L1A(<b>What is your <a href=#expected-load-rps>expected load</a>?</b>)
 
-   L2A(3,000 users or more?)
-   L2B(2,000 users or less?)
+   L2A("Equivalent to <a href=3k_users.md#testing-methodology>3,000 users</a> or more?")
+   L2B("Equivalent to <a href=2k_users.md#testing-methodology>2,000 users</a> or less?")
 
    L3A("<a href=#do-you-need-high-availability-ha>Do you need HA?</a><br>(or Zero-Downtime Upgrades)")
    L3B[Do you have experience with<br/>and want additional resilience<br/>with select components in Kubernetes?]
@@ -157,6 +172,7 @@ graph TD
    L4C><b>Recommendation</b><br><br>Cloud Native Hybrid architecture<br>closest to user count]
    L4D>"<b>Recommendation</b><br><br>Standalone 1K or 2K<br/>architecture with Backups"]
 
+   L0A --> L1A
    L1A --> L2A
    L1A --> L2B
    L2A -->|Yes| L3B
@@ -191,12 +207,21 @@ Before implementing a reference architecture, refer to the following requirement
 These reference architectures were built and tested on Google Cloud Platform (GCP) using the
 [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
 CPU platform as a lowest common denominator baseline ([Sysbench benchmark](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks)).
+Newer, similarly-sized CPUs are supported and may have improved performance as a result.
 
-Newer, similarly-sized CPUs are supported and may have improved performance as a result. For Linux package environments,
-ARM-based equivalents are also supported.
+ARM CPUs are supported for Linux package environments as well as for any [Cloud Provider services](#cloud-provider-services) where applicable.
 
 NOTE:
 Any "burstable" instance types are not recommended due to inconsistent performance.
+
+### Supported disk types
+
+As a general guidance, most standard disk types are expected to work for GitLab, but be aware of the following specific call outs:
+
+- [Gitaly](../gitaly/index.md#disk-requirements) requires at least 8,000 input/output operations per second (IOPS) for read operations, and 2,000 IOPS for write operations.
+- We don't recommend the use of any disk types that are "burstable" due to inconsistent performance.
+
+Outside the above standard, disk types are expected to work for GitLab and the choice of each depends on your specific requirements around areas, such as durability or costs.
 
 ### Supported infrastructure
 
@@ -355,6 +380,12 @@ If you choose to use a third party external service:
 [When selecting to use an external Redis service](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider), it should run a standard, performant, and supported version.
 
 Redis is primarily single threaded. For the 10,000 user and above Reference Architectures, separate out the instances as specified into Cache and Persistent data to achieve optimum performance at this scale.
+
+### Recommendation notes for Object Storage
+
+GitLab has been tested against [various Object Storage providers](../object_storage.md#supported-object-storage-providers) that are expected to work.
+
+As a general guidance, it's recommended to use a reputable solution that has full S3 compatibility.
 
 #### Unsupported database services
 
@@ -649,22 +680,35 @@ You should upgrade a Reference Architecture in the same order as you created it.
 
 ### Scaling an environment
 
-Scaling a GitLab environment is designed to be as seamless as possible.
+Scaling a GitLab environment is designed to be as flexible and seamless as possible.
 
-In terms of the Reference Architectures, you would look to the next size and adjust accordingly.
-Most setups would only need vertical scaling, but there are some specific areas that can be adjusted depending on the setup:
+This can be done iteratively or wholesale to the next size of architecture depending on your circumstances.
+For example, if any of your GitLab Rails, Sidekiq, Gitaly, Redis or PostgreSQL nodes are consistently oversaturated, then increase their resources accordingly while leaving the rest of the environment as is.
+
+If expecting a large increase in users, you may elect to scale up the whole environment to the next
+size of architecture.
+
+If the overall design is being followed, you can scale the environment vertically as required.
+
+If robust metrics are in place that show the environment is over-provisioned, you can apply the same process for
+scaling downwards. You should take an iterative approach when scaling downwards to ensure there are no issues.
+
+#### Scaling from a non-HA to an HA architecture
+
+While in most cases vertical scaling is only required to increase an environment's resources, if you are moving to an HA environment,
+there may be some additional steps required as shown below:
 
 - If you're scaling from a non-HA environment to an HA environment, various components are recommended to be deployed in their HA forms:
-  - Redis to multi-node Redis w/ Redis Sentinel
-  - Postgres to multi-node Postgres w/ Consul + PgBouncer
-  - Gitaly to Gitaly Cluster w/ Praefect
+  - [Redis to multi-node Redis w/ Redis Sentinel](../redis/replication_and_failover.md#switching-from-an-existing-single-machine-installation)
+  - [Postgres to multi-node Postgres w/ Consul + PgBouncer](../postgresql/moving.md)
+  - [Gitaly to Gitaly Cluster w/ Praefect](../gitaly/index.md#migrate-to-gitaly-cluster)
 - From 10k users and higher, Redis is recommended to be split into multiple HA servers as it's single threaded.
 
 Conversely, if you have robust metrics in place that show the environment is over-provisioned, you can apply the same process for
 scaling downwards. You should take an iterative approach when scaling downwards, however, to ensure there are no issues.
 
-### How to monitor your environment
+### Monitoring
 
-To monitor your GitLab environment, you can use the tools
-[bundled with GitLab](../monitoring/index.md), but it's also possible to use third-party
-options if desired.
+There are numerous options available to monitor your infrastructure, as well as [GitLab itself](../monitoring/index.md), and you should refer to your chosen monitoring solution's documentation for more information.
+
+Of note, the GitLab application is bundled with [Prometheus as well as various Prometheus compatible exporters](../monitoring/prometheus/index.md) that could be hooked into your solution.

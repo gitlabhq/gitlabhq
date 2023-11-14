@@ -387,6 +387,43 @@ If Git pushes are too slow when Dynatrace is enabled, disable Dynatrace.
 
 One way to resolve this is to make sure the entry is correct for the GitLab internal API URL configured in `gitlab.rb` with `gitlab_rails['internal_api_url']`.
 
+### Changes (diffs) don't load for new merge requests when using Gitaly TLS
+
+After enabling [Gitaly with TLS](configure_gitaly.md#enable-tls-support), changes (diffs) for new merge requests are not generated
+and you see the following message in GitLab:
+
+```plaintext
+Building your merge request... This page will update when the build is complete
+```
+
+Gitaly must be able to connect to itself to complete some operations. If the Gitaly certificate is not trusted by the Gitaly server,
+merge request diffs can't be generated.
+
+If Gitaly can't connect to itself, you see messages in the [Gitaly logs](../../administration/logs/index.md#gitaly-logs) like the following messages:
+
+```json
+{
+   "level":"warning",
+   "msg":"[core] [Channel #16 SubChannel #17] grpc: addrConn.createTransport failed to connect to {Addr: \"ext-gitaly.example.com:9999\", ServerName: \"ext-gitaly.example.com:9999\", }. Err: connection error: desc = \"transport: authentication handshake failed: tls: failed to verify certificate: x509: certificate signed by unknown authority\"",
+   "pid":820,
+   "system":"system",
+   "time":"2023-11-06T05:40:04.169Z"
+}
+{
+   "level":"info",
+   "msg":"[core] [Server #3] grpc: Server.Serve failed to create ServerTransport: connection error: desc = \"ServerHandshake(\\\"x.x.x.x:x\\\") failed: wrapped server handshake: remote error: tls: bad certificate\"",
+   "pid":820,
+   "system":"system",
+   "time":"2023-11-06T05:40:04.169Z"
+}
+```
+
+To resolve the problem, ensure that you have added your Gitaly certificate to the `/etc/gitlab/trusted-certs` folder on the Gitaly server
+and:
+
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) so the certificates are symlinked
+1. Restart Gitaly manually `sudo gitlab-ctl restart gitaly` for the certificates to be loaded by the Gitaly process.
+
 ## Gitaly fails to fork processes stored on `noexec` file systems
 
 Because of changes [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5999) in GitLab 14.10, applying the `noexec` option to a mount

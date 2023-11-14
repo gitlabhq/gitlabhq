@@ -14,7 +14,8 @@ module QA
         :github_personal_access_token,
         :github_repository_path,
         :gitlab_repository_path,
-        :personal_namespace
+        :personal_namespace,
+        :import_wait_duration
 
       attr_reader :repository_storage
 
@@ -65,6 +66,7 @@ module QA
         @template_name = nil
         @personal_namespace = nil
         @import = false
+        @import_wait_duration = 60
 
         self.name = "the_awesome_project"
       end
@@ -123,13 +125,13 @@ module QA
         resource_web_url(api_get)
       rescue ResourceNotFoundError
         response = super
-        return response unless template_name || import
+        return response unless @template_name || import
 
         # If a project is being imported, wait until it completes before we let the test continue.
         # Otherwise we see Git repository errors
         # See https://gitlab.com/gitlab-org/gitlab/-/issues/356101
         Support::Retrier.retry_until(
-          max_duration: 60,
+          max_duration: import_wait_duration,
           sleep_interval: 5,
           retry_on_exception: true,
           message: "Wait for project to be imported"

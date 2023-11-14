@@ -2,16 +2,28 @@
 
 module SearchHelpers
   def fill_in_search(text)
-    page.within('.header-search') do
-      find('#search').click
-      fill_in 'search', with: text
+    within_testid('super-sidebar') do
+      click_button "Search or go to…"
     end
+    fill_in 'search', with: text
 
     wait_for_all_requests
   end
 
   def submit_search(query)
-    page.within('.header-search-form, .search-page-form') do
+    # Forms directly on the search page
+    if page.has_css?('.search-page-form')
+      search_form = '.search-page-form'
+    # Open search modal from super sidebar
+    elsif has_testid?('super-sidebar-search-button')
+      find_by_testid('super-sidebar-search-button').click
+      search_form = '#super-sidebar-search-modal'
+    # Open legacy search dropdown in navigation
+    else
+      search_form = '.header-search-form'
+    end
+
+    page.within(search_form) do
       field = find_field('search')
       field.click
       field.fill_in(with: query)
@@ -27,7 +39,7 @@ module SearchHelpers
   end
 
   def select_search_scope(scope)
-    page.within '[data-testid="search-filter"]' do
+    within_testid('search-filter') do
       click_link scope
 
       wait_for_all_requests
@@ -35,9 +47,9 @@ module SearchHelpers
   end
 
   def has_search_scope?(scope)
-    return false unless page.has_selector?('[data-testid="search-filter"]')
+    return false unless has_testid?('search-filter')
 
-    page.within '[data-testid="search-filter"]' do
+    within_testid('search-filter') do
       has_link?(scope)
     end
   end

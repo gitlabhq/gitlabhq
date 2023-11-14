@@ -75,7 +75,8 @@ RSpec.describe Ci::PipelineSuccessUnlockArtifactsWorker, feature_category: :buil
       expect(described_class.database_health_check_attrs).to eq(
         gitlab_schema: :gitlab_ci,
         delay_by: described_class::DEFAULT_DEFER_DELAY,
-        tables: [:ci_job_artifacts]
+        tables: [:ci_job_artifacts],
+        block: nil
       )
     end
   end

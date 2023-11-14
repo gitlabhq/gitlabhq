@@ -46,6 +46,8 @@ module API
                                 desc: 'Return packages of a certain type'
         optional :package_name, type: String,
                                 desc: 'Return packages with this name'
+        optional :package_version, type: String,
+                                desc: 'Return packages with this version'
         optional :include_versionless, type: Boolean,
                                        desc: 'Returns packages without a version'
         optional :status, type: String, values: Packages::Package.statuses.keys,
@@ -55,7 +57,7 @@ module API
       get ':id/packages' do
         packages = ::Packages::PackagesFinder.new(
           user_project,
-          declared_params.slice(:order_by, :sort, :package_type, :package_name, :include_versionless, :status)
+          declared_params.slice(:order_by, :sort, :package_type, :package_name, :package_version, :include_versionless, :status)
         ).execute
 
         present paginate(packages), with: ::API::Entities::Package, user: current_user, namespace: user_project.namespace

@@ -49,14 +49,10 @@ class MergeRequestNoteableEntity < IssuableEntity
     expose :can_update do |merge_request|
       can?(current_user, :update_merge_request, merge_request)
     end
-
-    expose :can_approve do |merge_request|
-      merge_request.eligible_for_approval_by?(current_user)
-    end
   end
 
   expose :locked_discussion_docs_path, if: -> (merge_request) { merge_request.discussion_locked? } do |merge_request|
-    help_page_path('user/discussions/index.md', anchor: 'prevent-comments-by-locking-an-issue')
+    help_page_path('user/discussions/index', anchor: 'prevent-comments-by-locking-an-issue')
   end
 
   expose :is_project_archived do |merge_request|
@@ -66,7 +62,7 @@ class MergeRequestNoteableEntity < IssuableEntity
   expose :project_id
 
   expose :archived_project_docs_path, if: -> (merge_request) { merge_request.project.archived? } do |merge_request|
-    help_page_path('user/project/settings/index.md', anchor: 'archive-a-project')
+    help_page_path('user/project/settings/index', anchor: 'archive-a-project')
   end
 
   private

@@ -18,7 +18,7 @@ RSpec.describe Gitlab::HashedPath do
     end
 
     context 'when path contains multiple values' do
-      let(:path) { %w(path1 path2) }
+      let(:path) { %w[path1 path2] }
 
       it 'returns the disk path' do
         expect(subject).to match(%r[\h{2}/\h{2}/\h{64}/path1/path2])

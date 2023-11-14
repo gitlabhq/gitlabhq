@@ -40,15 +40,14 @@ export default {
   },
   methods: {
     getModalInfoCopyStr() {
-      const stateNameEncoded = this.stateName
-        ? encodeURIComponent(this.stateName)
-        : '<YOUR-STATE-NAME>';
+      const stateNameEncoded = this.stateName ? encodeURIComponent(this.stateName) : 'default';
 
       return `export GITLAB_ACCESS_TOKEN=<YOUR-ACCESS-TOKEN>
+export TF_STATE_NAME=${stateNameEncoded}
 terraform init \\
-    -backend-config="address=${this.terraformApiUrl}/${stateNameEncoded}" \\
-    -backend-config="lock_address=${this.terraformApiUrl}/${stateNameEncoded}/lock" \\
-    -backend-config="unlock_address=${this.terraformApiUrl}/${stateNameEncoded}/lock" \\
+    -backend-config="address=${this.terraformApiUrl}/$TF_STATE_NAME" \\
+    -backend-config="lock_address=${this.terraformApiUrl}/$TF_STATE_NAME/lock" \\
+    -backend-config="unlock_address=${this.terraformApiUrl}/$TF_STATE_NAME/lock" \\
     -backend-config="username=${this.username}" \\
     -backend-config="password=$GITLAB_ACCESS_TOKEN" \\
     -backend-config="lock_method=POST" \\

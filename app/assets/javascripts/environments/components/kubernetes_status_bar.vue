@@ -37,11 +37,6 @@ export default {
       required: true,
       type: String,
     },
-    namespace: {
-      required: false,
-      type: String,
-      default: '',
-    },
     fluxResourcePath: {
       required: false,
       type: String,
@@ -54,14 +49,12 @@ export default {
       variables() {
         return {
           configuration: this.configuration,
-          namespace: this.namespace,
-          environmentName: this.environmentName.toLowerCase(),
           fluxResourcePath: this.fluxResourcePath,
         };
       },
       skip() {
         return Boolean(
-          !this.namespace || this.fluxResourcePath?.includes(HELM_RELEASES_RESOURCE_TYPE),
+          !this.fluxResourcePath || this.fluxResourcePath?.includes(HELM_RELEASES_RESOURCE_TYPE),
         );
       },
       error(err) {
@@ -73,17 +66,12 @@ export default {
       variables() {
         return {
           configuration: this.configuration,
-          namespace: this.namespace,
-          environmentName: this.environmentName.toLowerCase(),
           fluxResourcePath: this.fluxResourcePath,
         };
       },
       skip() {
         return Boolean(
-          !this.namespace ||
-            this.$apollo.queries.fluxKustomizationStatus.loading ||
-            this.hasKustomizations ||
-            this.fluxResourcePath?.includes(KUSTOMIZATIONS_RESOURCE_TYPE),
+          !this.fluxResourcePath || this.fluxResourcePath?.includes(KUSTOMIZATIONS_RESOURCE_TYPE),
         );
       },
       error(err) {

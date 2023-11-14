@@ -98,6 +98,26 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
           let(:expected_count) { checks.count - 1 }
         end
       end
+
+      context 'when one check is inactive' do
+        let(:inactive_result) { Gitlab::MergeRequests::Mergeability::CheckResult.inactive }
+
+        before do
+          allow_next_instance_of(MergeRequests::Mergeability::CheckOpenStatusService) do |service|
+            allow(service).to receive(:skip?).and_return(false)
+            allow(service).to receive(:execute).and_return(inactive_result)
+          end
+        end
+
+        it 'is still a success' do
+          expect(execute.success?).to eq(true)
+        end
+
+        it_behaves_like 'checks are all executed' do
+          let(:success?) { true }
+          let(:expected_count) { checks.count - 1 }
+        end
+      end
     end
 
     context 'when a check is not skipped' do

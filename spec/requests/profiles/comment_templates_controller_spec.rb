@@ -10,26 +10,14 @@ RSpec.describe Profiles::CommentTemplatesController, feature_category: :user_pro
   end
 
   describe 'GET #index' do
-    describe 'feature flag disabled' do
-      before do
-        stub_feature_flags(saved_replies: false)
-
-        get '/-/profile/comment_templates'
-      end
-
-      it { expect(response).to have_gitlab_http_status(:not_found) }
+    before do
+      get '/-/profile/comment_templates'
     end
 
-    describe 'feature flag enabled' do
-      before do
-        get '/-/profile/comment_templates'
-      end
+    it { expect(response).to have_gitlab_http_status(:ok) }
 
-      it { expect(response).to have_gitlab_http_status(:ok) }
-
-      it 'sets hide search settings ivar' do
-        expect(assigns(:hide_search_settings)).to eq(true)
-      end
+    it 'sets hide search settings ivar' do
+      expect(assigns(:hide_search_settings)).to eq(true)
     end
   end
 end

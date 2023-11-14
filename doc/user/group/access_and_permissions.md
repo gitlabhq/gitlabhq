@@ -118,7 +118,7 @@ To allow runner downloading, add the [outbound runner CIDR ranges](../gitlab_com
 > - Support for restricting access to projects in the group [added](https://gitlab.com/gitlab-org/gitlab/-/issues/14004) in GitLab 14.1.2.
 > - Support for restricting group memberships to groups with a subset of the allowed email domains [added](https://gitlab.com/gitlab-org/gitlab/-/issues/354791) in GitLab 15.1.1
 
-You can prevent users with email addresses in specific domains from being added to a group and its projects.
+You can prevent users with email addresses in specific domains from being added to a group and its projects. You can define an email domain allowlist at the top-level namespace only. Subgroups do not offer the ability to define an alternative allowlist.
 
 To restrict group access by domain:
 
@@ -259,6 +259,13 @@ After you lock the membership for a group:
 Group syncing allows LDAP groups to be mapped to GitLab groups. This provides more control over per-group user management. To configure group syncing, edit the `group_base` **DN** (`'OU=Global Groups,OU=GitLab INT,DC=GitLab,DC=org'`). This **OU** contains all groups that are associated with GitLab groups.
 
 Group links can be created by using either a CN or a filter. To create these group links, go to the group's **Settings > LDAP Synchronization** page. After configuring the link, it may take more than an hour for the users to sync with the GitLab group.
+
+If a user is a member of two configured LDAP groups for the same GitLab group, they are granted the higher of the roles associated with the two LDAP groups.
+For example:
+
+- User is a member of LDAP groups `Owner` and `Dev`.
+- The GitLab Group is configured with these two LDAP groups.
+- When group sync is completed, the user is granted the Owner role as this is the higher of the two LDAP group roles.
 
 For more information on the administration of LDAP and group sync, refer to the [main LDAP documentation](../../administration/auth/ldap/ldap_synchronization.md#group-sync).
 

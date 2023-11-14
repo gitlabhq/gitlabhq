@@ -4,11 +4,17 @@ module API
   # Internal access API
   module Internal
     class Base < ::API::Base
+      include Gitlab::RackLoadBalancingHelpers
+
       before { authenticate_by_gitlab_shell_token! }
 
       before do
         api_endpoint = env['api.endpoint']
         feature_category = api_endpoint.options[:for].try(:feature_category_for_app, api_endpoint).to_s
+
+        if actor.user
+          load_balancer_stick_request(::User, :user, actor.user.id)
+        end
 
         Gitlab::ApplicationContext.push(
           user: -> { actor&.user },
@@ -49,6 +55,11 @@ module API
           env = parse_env
           Gitlab::Git::HookEnv.set(gl_repository, env) if container
 
+          # Snapshot repositories have different relative path than the main repository. For access
+          # checks that need quarantined objects the relative path in also sent with Gitaly RPCs
+          # calls as a header.
+          populate_relative_path(params[:relative_path])
+
           actor.update_last_used_at!
 
           check_result = access_check_result
@@ -66,7 +77,8 @@ module API
               git_config_options: ["uploadpack.allowFilter=true",
                                    "uploadpack.allowAnySHA1InWant=true"],
               gitaly: gitaly_payload(params[:action]),
-              gl_console_messages: check_result.console_messages
+              gl_console_messages: check_result.console_messages,
+              need_audit: need_git_audit_event?
             }.merge!(actor.key_details)
 
             # Custom option for git-receive-pack command
@@ -77,7 +89,9 @@ module API
               payload[:git_config_options] << "receive.maxInputSize=#{receive_max_input_size.megabytes}"
             end
 
-            send_git_audit_streaming_event(protocol: params[:protocol], action: params[:action])
+            unless Feature.enabled?(:log_git_streaming_audit_events, project)
+              send_git_audit_streaming_event(protocol: params[:protocol], action: params[:action])
+            end
 
             response_with_status(**payload)
           when ::Gitlab::GitAccessResult::CustomAction
@@ -87,6 +101,12 @@ module API
           end
         end
         # rubocop: enable Metrics/AbcSize
+
+        def populate_relative_path(relative_path)
+          return unless Gitlab::SafeRequestStore.active?
+
+          Gitlab::SafeRequestStore[:gitlab_git_relative_path] = relative_path
+        end
 
         def validate_actor(actor)
           return 'Could not find the given key' unless actor.key
@@ -112,6 +132,7 @@ module API
         #   username - user name for Git over SSH in keyless SSH cert mode
         #   protocol - Git access protocol being used, e.g. HTTP or SSH
         #   project - project full_path (not path on disk)
+        #   relative_path - relative path of repository having access checks performed.
         #   action - git action (git-upload-pack or git-receive-pack)
         #   changes - changes as "oldrev newrev ref", see Gitlab::ChangesList
         #   check_ip - optional, only in EE version, may limit access to

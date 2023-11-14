@@ -30,8 +30,15 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
   describe '/api/v4/jobs' do
     let(:job) do
-      create(:ci_build, :artifacts, :extended_options,
-             pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0)
+      create(
+        :ci_build,
+        :artifacts,
+        :extended_options,
+        pipeline: pipeline,
+        name: 'spinach',
+        stage: 'test',
+        stage_idx: 0
+      )
     end
 
     describe 'artifacts' do

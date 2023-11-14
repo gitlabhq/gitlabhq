@@ -309,4 +309,76 @@ RSpec.describe WorkItemPolicy, feature_category: :team_planning do
       end
     end
   end
+
+  describe 'read_note' do
+    context 'when work item is associated with a project' do
+      context 'when project is public' do
+        let(:work_item_subject) { public_work_item }
+
+        context 'when user is not a member of the project' do
+          let(:current_user) { non_member_user }
+
+          it { is_expected.to be_allowed(:read_note) }
+        end
+
+        context 'when user is a member of the project' do
+          let(:current_user) { guest_author }
+
+          it { is_expected.to be_allowed(:read_note) }
+
+          context 'when work_item is confidential' do
+            let(:work_item_subject) { create(:work_item, :confidential, project: project) }
+
+            it { is_expected.not_to be_allowed(:read_note) }
+          end
+        end
+      end
+    end
+
+    context 'when work item is associated with a group' do
+      context 'when group is public' do
+        let_it_be(:public_group) { create(:group, :public) }
+        let_it_be(:public_group_work_item) { create(:work_item, :group_level, namespace: public_group) }
+        let_it_be(:public_group_member) { create(:user).tap { |u| public_group.add_reporter(u) } }
+        let(:work_item_subject) { public_group_work_item }
+
+        context 'when user is not a member of the group' do
+          let(:current_user) { non_member_user }
+
+          it { is_expected.not_to be_allowed(:read_note) }
+        end
+
+        context 'when user is a member of the group' do
+          let(:current_user) { public_group_member }
+
+          it { is_expected.to be_allowed(:read_note) }
+        end
+      end
+
+      context 'when group is not public' do
+        let_it_be(:private_group) { create(:group, :private) }
+        let_it_be(:private_group_work_item) { create(:work_item, :group_level, namespace: private_group) }
+        let_it_be(:private_group_reporter) { create(:user).tap { |u| private_group.add_reporter(u) } }
+        let(:work_item_subject) { private_group_work_item }
+
+        context 'when user is not a member of the group' do
+          let(:current_user) { non_member_user }
+
+          it { is_expected.not_to be_allowed(:read_note) }
+        end
+
+        context 'when user is a member of the group' do
+          let(:current_user) { private_group_reporter }
+
+          it { is_expected.to be_allowed(:read_note) }
+
+          context 'when work_item is confidential' do
+            let(:work_item_subject) { create(:work_item, :group_level, :confidential, namespace: private_group) }
+
+            it { is_expected.to be_allowed(:read_note) }
+          end
+        end
+      end
+    end
+  end
 end

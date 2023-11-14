@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Group Packages', feature_category: :package_registry do
-  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
 
@@ -32,7 +32,7 @@ RSpec.describe 'Group Packages', feature_category: :package_registry do
     end
 
     it 'sidebar menu is open' do
-      sidebar = find('.nav-sidebar')
+      sidebar = find_by_testid('super-sidebar')
       expect(sidebar).to have_link _('Package Registry')
     end
 

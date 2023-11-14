@@ -6,6 +6,10 @@ class Import::BulkImportsController < ApplicationController
   before_action :ensure_bulk_import_enabled
   before_action :verify_blocked_uri, only: :status
 
+  before_action only: [:history] do
+    push_frontend_feature_flag(:bulk_import_details_page)
+  end
+
   feature_category :importers
   urgency :low
 
@@ -47,6 +51,10 @@ class Import::BulkImportsController < ApplicationController
         @source_url = session[url_key]
       end
     end
+  end
+
+  def details
+    render_404 unless Feature.enabled?(:bulk_import_details_page)
   end
 
   def create

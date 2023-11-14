@@ -10,7 +10,7 @@ RSpec.describe BulkImports::RelationBatchExportService, feature_category: :impor
   let_it_be(:batch) { create(:bulk_import_export_batch, export: export) }
   let_it_be(:cache_key) { BulkImports::BatchedRelationExportService.cache_key(export.id, batch.id) }
 
-  subject(:service) { described_class.new(user.id, batch.id) }
+  subject(:service) { described_class.new(user, batch) }
 
   before_all do
     Gitlab::Cache::Import::Caching.set_add(cache_key, label.id)
@@ -34,10 +34,7 @@ RSpec.describe BulkImports::RelationBatchExportService, feature_category: :impor
     end
 
     it 'removes exported contents after export' do
-      double = instance_double(BulkImports::FileTransfer::ProjectConfig, export_path: 'foo')
-
-      allow(BulkImports::FileTransfer).to receive(:config_for).and_return(double)
-      allow(double).to receive(:export_service_for).and_raise(StandardError, 'Error!')
+      allow(subject).to receive(:export_path).and_return('foo')
       allow(FileUtils).to receive(:remove_entry)
 
       expect(FileUtils).to receive(:remove_entry).with('foo')
@@ -53,28 +50,9 @@ RSpec.describe BulkImports::RelationBatchExportService, feature_category: :impor
         allow(subject).to receive(:export_path).and_return('foo')
         allow(FileUtils).to receive(:remove_entry)
 
-        expect(FileUtils).to receive(:touch).with('foo/milestones.ndjson')
+        expect(FileUtils).to receive(:touch).with('foo/milestones.ndjson').and_call_original
 
         subject.execute
-      end
-    end
-
-    context 'when exception occurs' do
-      before do
-        allow(service).to receive(:gzip).and_raise(StandardError, 'Error!')
-      end
-
-      it 'marks batch as failed' do
-        expect(Gitlab::ErrorTracking)
-          .to receive(:track_exception)
-          .with(StandardError, portable_id: project.id, portable_type: 'Project')
-
-        service.execute
-        batch.reload
-
-        expect(batch.failed?).to eq(true)
-        expect(batch.objects_count).to eq(0)
-        expect(batch.error).to eq('Error!')
       end
     end
   end

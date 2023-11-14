@@ -799,8 +799,7 @@ export function mountAssigneesDropdown() {
   });
 }
 
-const isAssigneesWidgetShown =
-  (isInIssuePage() || isInDesignPage() || isInMRPage()) && gon.features.issueAssigneesWidget;
+const isAssigneesWidgetShown = isInIssuePage() || isInDesignPage() || isInMRPage();
 
 export function mountSidebar(mediator, store) {
   mountSidebarTodoWidget();

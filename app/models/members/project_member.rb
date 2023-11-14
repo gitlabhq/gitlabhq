@@ -48,6 +48,12 @@ class ProjectMember < Member
       end
     end
 
+    def permissible_access_level_roles_for_project_access_token(current_user, project)
+      permissible_access_level_roles(current_user, project).filter do |_, value|
+        value <= project.project_authorizations.find_by(user: current_user).access_level
+      end
+    end
+
     def access_level_roles
       Gitlab::Access.options
     end

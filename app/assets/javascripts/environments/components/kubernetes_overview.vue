@@ -64,6 +64,7 @@ export default {
         headers: {
           'GitLab-Agent-Id': this.gitlabAgentId,
           'Content-Type': 'application/json',
+          Accept: 'application/json',
           ...csrf.headers,
         },
         credentials: 'include',
@@ -110,7 +111,6 @@ export default {
         <kubernetes-status-bar
           :cluster-health-status="clusterHealthStatus"
           :configuration="k8sAccessConfiguration"
-          :namespace="namespace"
           :environment-name="environmentName"
           :flux-resource-path="fluxResourcePath"
           class="gl-mb-3" />

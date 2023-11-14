@@ -4,7 +4,7 @@ import NO_PIPELINES_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-
 import ERROR_STATE_SVG from '@gitlab/svgs/dist/illustrations/pipelines_failed.svg?url';
 import { GlEmptyState, GlIcon, GlLoadingIcon, GlCollapsibleListbox } from '@gitlab/ui';
 import { isEqual } from 'lodash';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert, VARIANT_INFO, VARIANT_WARNING } from '~/alert';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
@@ -87,11 +87,6 @@ export default {
     params: {
       type: Object,
       required: true,
-    },
-    registrationToken: {
-      type: String,
-      required: false,
-      default: null,
     },
     defaultVisibilityPipelineIdType: {
       type: String,
@@ -311,6 +306,12 @@ export default {
     },
     changeVisibilityPipelineIDType(idType) {
       this.visibilityPipelineIdType = idType;
+      if (idType === PIPELINE_IID_KEY) {
+        this.track('pipelines_display_options', {
+          label: TRACKING_CATEGORIES.listbox,
+          property: idType,
+        });
+      }
 
       if (isLoggedIn()) {
         this.saveVisibilityPipelineIDType(idType);
@@ -404,7 +405,6 @@ export default {
         v-else-if="stateToRender === $options.stateMap.emptyState"
         :empty-state-svg-path="$options.noPipelinesSvgPath"
         :can-set-ci="canCreatePipeline"
-        :registration-token="registrationToken"
       />
 
       <gl-empty-state

@@ -60,7 +60,7 @@ RSpec.describe Gitlab::ImportExport::LfsSaver do
       describe 'saving a json file' do
         before do
           # Create two more LfsObjectProject records with different `repository_type`s
-          %w(wiki design).each do |repository_type|
+          %w[wiki design].each do |repository_type|
             create(
               :lfs_objects_project,
               project: project,

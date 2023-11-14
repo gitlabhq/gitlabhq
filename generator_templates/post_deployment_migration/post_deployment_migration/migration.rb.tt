@@ -23,6 +23,7 @@ class <%= migration_class_name %> < Gitlab::Database::Migration[<%= Gitlab::Data
 
   # Add dependent 'batched_background_migrations.queued_migration_version' values.
   # DEPENDENT_BATCHED_BACKGROUND_MIGRATIONS = []
+  milestone '<%= Gitlab.current_milestone %>'
 
   def up
   end

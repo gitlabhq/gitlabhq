@@ -371,11 +371,7 @@ export default {
       </gl-form-group>
       <!--Variable List-->
       <gl-form-group class="gl-mb-0" :label="$options.i18n.variables">
-        <div
-          v-for="(variable, index) in variables"
-          :key="`var-${index}`"
-          data-qa-selector="ci_variable_row_container"
-        >
+        <div v-for="(variable, index) in variables" :key="`var-${index}`">
           <div
             v-if="!variable.destroy"
             class="gl-display-flex gl-align-items-stretch gl-flex-direction-column gl-md-flex-direction-row gl-mb-3 gl-pb-2"

@@ -2,7 +2,7 @@
 
 require 'cloud_profiler_agent'
 
-RSpec.describe CloudProfilerAgent::PprofBuilder, feature_category: :application_performance do
+RSpec.describe CloudProfilerAgent::PprofBuilder, feature_category: :cloud_connector do
   subject { described_class.new(profile, start_time, end_time) }
 
   # load_profile loads one of the example profiles created by

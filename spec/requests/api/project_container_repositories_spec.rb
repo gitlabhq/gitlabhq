@@ -168,7 +168,7 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
           let(:api_user) { reporter }
 
           before do
-            stub_container_registry_tags(repository: root_repository.path, tags: %w(rootA latest))
+            stub_container_registry_tags(repository: root_repository.path, tags: %w[rootA latest])
           end
 
           it_behaves_like 'a package tracking event', described_class.name, 'list_tags'
@@ -177,7 +177,7 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
             subject
 
             expect(json_response.length).to eq(2)
-            expect(json_response.map { |repository| repository['name'] }).to eq %w(latest rootA)
+            expect(json_response.map { |repository| repository['name'] }).to eq %w[latest rootA]
           end
 
           it 'returns a matching schema' do
@@ -362,7 +362,7 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
           let(:api_user) { reporter }
 
           before do
-            stub_container_registry_tags(repository: root_repository.path, tags: %w(rootA), with_manifest: true)
+            stub_container_registry_tags(repository: root_repository.path, tags: %w[rootA], with_manifest: true)
           end
 
           it 'returns a details of tag' do
@@ -408,7 +408,7 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
 
           context 'when there are multiple tags' do
             before do
-              stub_container_registry_tags(repository: root_repository.path, tags: %w(rootA rootB), with_manifest: true)
+              stub_container_registry_tags(repository: root_repository.path, tags: %w[rootA rootB], with_manifest: true)
             end
 
             it 'properly removes tag' do
@@ -427,7 +427,7 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
 
           context 'when there\'s only one tag' do
             before do
-              stub_container_registry_tags(repository: root_repository.path, tags: %w(rootA), with_manifest: true)
+              stub_container_registry_tags(repository: root_repository.path, tags: %w[rootA], with_manifest: true)
             end
 
             it 'properly removes tag' do

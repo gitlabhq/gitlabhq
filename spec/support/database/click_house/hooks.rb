@@ -2,12 +2,16 @@
 
 # rubocop: disable Gitlab/NamespacedClass
 class ClickHouseTestRunner
+  include ClickHouseTestHelpers
+
   def truncate_tables
     ClickHouse::Client.configuration.databases.each_key do |db|
       # Select tables with at least one row
       query = tables_for(db).map do |table|
         "(SELECT '#{table}' AS table FROM #{table} LIMIT 1)"
       end.join(' UNION ALL ')
+
+      next if query.empty?
 
       tables_with_data = ClickHouse::Client.select(query, db).pluck('table')
       tables_with_data.each do |table|
@@ -19,17 +23,13 @@ class ClickHouseTestRunner
   def ensure_schema
     return if @ensure_schema
 
-    ClickHouse::Client.configuration.databases.each_key do |db|
-      # drop all tables
-      lookup_tables(db).each do |table|
-        ClickHouse::Client.execute("DROP TABLE IF EXISTS #{table}", db)
-      end
+    clear_db
 
-      # run the schema SQL files
-      Dir[Rails.root.join("db/click_house/#{db}/*.sql")].each do |file|
-        ClickHouse::Client.execute(File.read(file), db)
-      end
-    end
+    # run the schema SQL files
+    migrations_paths = ClickHouse::MigrationSupport::Migrator.migrations_paths
+    schema_migration = ClickHouse::MigrationSupport::SchemaMigration
+    migration_context = ClickHouse::MigrationSupport::MigrationContext.new(migrations_paths, schema_migration)
+    migrate(nil, migration_context)
 
     @ensure_schema = true
   end
@@ -38,11 +38,7 @@ class ClickHouseTestRunner
 
   def tables_for(db)
     @tables ||= {}
-    @tables[db] ||= lookup_tables(db)
-  end
-
-  def lookup_tables(db)
-    ClickHouse::Client.select('SHOW TABLES', db).pluck('name')
+    @tables[db] ||= lookup_tables(db) - [ClickHouse::MigrationSupport::SchemaMigration.table_name]
   end
 end
 # rubocop: enable Gitlab/NamespacedClass
@@ -52,8 +48,12 @@ RSpec.configure do |config|
 
   config.around(:each, :click_house) do |example|
     with_net_connect_allowed do
-      click_house_test_runner.ensure_schema
-      click_house_test_runner.truncate_tables
+      if example.example.metadata[:click_house] == :without_migrations
+        click_house_test_runner.clear_db
+      else
+        click_house_test_runner.ensure_schema
+        click_house_test_runner.truncate_tables
+      end
 
       example.run
     end

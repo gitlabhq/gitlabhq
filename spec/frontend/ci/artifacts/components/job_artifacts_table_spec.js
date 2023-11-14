@@ -2,7 +2,7 @@ import { GlLoadingIcon, GlTable, GlLink, GlPagination, GlModal, GlFormCheckbox }
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import getJobArtifactsResponse from 'test_fixtures/graphql/ci/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import JobArtifactsTable from '~/ci/artifacts/components/job_artifacts_table.vue';
 import ArtifactsTableRowDetails from '~/ci/artifacts/components/artifacts_table_row_details.vue';
@@ -51,7 +51,7 @@ describe('JobArtifactsTable component', () => {
 
   const findStatuses = () => wrapper.findAllByTestId('job-artifacts-job-status');
   const findSuccessfulJobStatus = () => findStatuses().at(0);
-  const findCiBadgeLink = () => findSuccessfulJobStatus().findComponent(CiBadgeLink);
+  const findCiIcon = () => findSuccessfulJobStatus().findComponent(CiIcon);
 
   const findLinks = () => wrapper.findAllComponents(GlLink);
   const findJobLink = () => findLinks().at(0);
@@ -201,12 +201,11 @@ describe('JobArtifactsTable component', () => {
     });
 
     it('shows the job status as an icon for a successful job', () => {
-      expect(findCiBadgeLink().props()).toMatchObject({
+      expect(findCiIcon().props()).toMatchObject({
         status: {
           group: 'success',
         },
-        size: 'sm',
-        showText: false,
+        showStatusText: false,
       });
     });
 

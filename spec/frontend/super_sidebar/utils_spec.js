@@ -1,5 +1,5 @@
-import * as Sentry from '@sentry/browser';
 import MockAdapter from 'axios-mock-adapter';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import {
   getTopFrequentItems,
   trackContextAccess,
@@ -16,7 +16,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { unsortedFrequentItems, sortedFrequentItems } from '../frequent_items/mock_data';
 import { cachedFrequentProjects } from './mock_data';
 
-jest.mock('@sentry/browser');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 useLocalStorageSpy();
 

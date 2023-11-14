@@ -196,7 +196,7 @@ export default {
         text: __('Create issue'),
         action: this.createIssue,
         extraAttrs: {
-          'data-qa-selector': 'create_issue_button',
+          'data-testid': 'create-issue-button',
         },
       };
     },
@@ -309,7 +309,7 @@ export default {
         <div
           v-if="!loadingStacktrace && stacktrace"
           class="gl-my-auto gl-text-truncate"
-          data-qa-selector="reported_text"
+          data-testid="reported-text"
         >
           <gl-sprintf :message="__('Reported %{timeAgo} by %{reportedBy}')">
             <template #reportedBy>
@@ -367,7 +367,7 @@ export default {
                 category="primary"
                 variant="confirm"
                 :loading="issueCreationInProgress"
-                data-qa-selector="create_issue_button"
+                data-testid="create-issue-button"
                 @click="createIssue"
               >
                 {{ __('Create issue') }}

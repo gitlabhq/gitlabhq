@@ -78,14 +78,17 @@ module Spam
         when BLOCK_USER
           target.spam!
           create_spam_log
+          create_spam_abuse_event(result)
           ban_user!
         when DISALLOW
           target.spam!
           create_spam_log
+          create_spam_abuse_event(result)
         when CONDITIONAL_ALLOW
           # This means "require a CAPTCHA to be solved"
           target.needs_recaptcha!
           create_spam_log
+          create_spam_abuse_event(result)
         when OVERRIDE_VIA_ALLOW_POSSIBLE_SPAM
           create_spam_log
         when ALLOW
@@ -116,6 +119,22 @@ module Spam
       )
 
       target.spam_log = spam_log
+    end
+
+    def create_spam_abuse_event(result)
+      params = {
+        user_id: user.id,
+        title: target.spam_title,
+        description: target.spam_description,
+        source_ip: spam_params&.ip_address,
+        user_agent: spam_params&.user_agent,
+        noteable_type: noteable_type,
+        verdict: result
+      }
+
+      target.run_after_commit_or_now do
+        Abuse::SpamAbuseEventsWorker.perform_async(params)
+      end
     end
 
     def ban_user!

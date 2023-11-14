@@ -74,7 +74,7 @@ RSpec.describe 'projects/commits/_commit.html.haml' do
           commit: commit
         }
 
-        expect(rendered).not_to have_css("[data-testid='ci-status-badge-legacy']")
+        expect(rendered).not_to have_css("[data-testid='ci-icon']")
       end
     end
 
@@ -91,7 +91,7 @@ RSpec.describe 'projects/commits/_commit.html.haml' do
             commit: commit
           }
 
-          expect(rendered).to have_css("[data-testid='ci-status-badge-legacy']")
+          expect(rendered).to have_css("[data-testid='ci-icon']")
         end
       end
 
@@ -103,7 +103,7 @@ RSpec.describe 'projects/commits/_commit.html.haml' do
             commit: commit
           }
 
-          expect(rendered).not_to have_css("[data-testid='ci-status-badge-legacy']")
+          expect(rendered).not_to have_css("[data-testid='ci-icon']")
         end
       end
     end

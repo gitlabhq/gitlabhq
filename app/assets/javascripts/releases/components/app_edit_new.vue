@@ -176,8 +176,7 @@ export default {
     </p>
     <form v-if="showForm" class="js-quick-submit" @submit.prevent="submitForm">
       <tag-field />
-      <gl-form-group>
-        <label for="release-title">{{ __('Release title') }}</label>
+      <gl-form-group :label="__('Release title')">
         <gl-form-input
           id="release-title"
           ref="releaseTitleInput"
@@ -186,17 +185,14 @@ export default {
           class="form-control"
         />
       </gl-form-group>
-      <gl-form-group class="w-50" data-testid="milestones-field">
-        <label>{{ __('Milestones') }}</label>
-        <div class="d-flex flex-column col-md-6 col-sm-10 pl-0">
-          <milestone-combobox
-            v-model="releaseMilestones"
-            :project-id="projectId"
-            :group-id="groupId"
-            :group-milestones-available="groupMilestonesAvailable"
-            :extra-links="milestoneComboboxExtraLinks"
-          />
-        </div>
+      <gl-form-group :label="__('Milestones')" class="gl-w-30" data-testid="milestones-field">
+        <milestone-combobox
+          v-model="releaseMilestones"
+          :project-id="projectId"
+          :group-id="groupId"
+          :group-milestones-available="groupMilestonesAvailable"
+          :extra-links="milestoneComboboxExtraLinks"
+        />
       </gl-form-group>
       <gl-form-group :label="__('Release date')" label-for="release-released-at">
         <template #label-description>
@@ -214,8 +210,7 @@ export default {
         </template>
         <gl-datepicker id="release-released-at" v-model="releasedAt" :default-date="releasedAt" />
       </gl-form-group>
-      <gl-form-group data-testid="release-notes">
-        <label for="release-notes">{{ __('Release notes') }}</label>
+      <gl-form-group :label="__('Release notes')" data-testid="release-notes">
         <div class="common-note-form">
           <markdown-field
             :can-attach-file="true"

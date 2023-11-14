@@ -8,7 +8,7 @@ module QA
           extend QA::Page::PageConcern
 
           def click_project
-            click_element(:nav_item_link, submenu_item: 'project-overview')
+            click_element('nav-item-link', submenu_item: 'project-overview')
           end
         end
       end

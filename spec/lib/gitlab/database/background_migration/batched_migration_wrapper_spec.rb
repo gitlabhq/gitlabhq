@@ -32,17 +32,17 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
   end
 
   it 'runs the migration job' do
-    expect(job_class).to receive(:new)
-      .with(start_id: 1,
-            end_id: 10,
-            batch_table: 'events',
-            batch_column: 'id',
-            sub_batch_size: 1,
-            pause_ms: pause_ms,
-            job_arguments: active_migration.job_arguments,
-            connection: connection,
-            sub_batch_exception: sub_batch_exception)
-      .and_return(job_instance)
+    expect(job_class).to receive(:new).with(
+      start_id: 1,
+      end_id: 10,
+      batch_table: 'events',
+      batch_column: 'id',
+      sub_batch_size: 1,
+      pause_ms: pause_ms,
+      job_arguments: active_migration.job_arguments,
+      connection: connection,
+      sub_batch_exception: sub_batch_exception
+    ).and_return(job_instance)
 
     expect(job_instance).to receive(:perform).with(no_args)
 

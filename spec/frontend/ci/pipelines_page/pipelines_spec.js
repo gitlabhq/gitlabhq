@@ -7,11 +7,11 @@ import {
   GlPagination,
   GlCollapsibleListbox,
 } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { chunk } from 'lodash';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import mockPipelinesResponse from 'test_fixtures/pipelines/pipelines.json';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -19,6 +19,7 @@ import { mockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Api from '~/api';
 import { createAlert, VARIANT_WARNING } from '~/alert';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
@@ -28,7 +29,12 @@ import NavigationControls from '~/ci/pipelines_page/components/nav_controls.vue'
 import PipelinesComponent from '~/ci/pipelines_page/pipelines.vue';
 import PipelinesCiTemplates from '~/ci/pipelines_page/components/empty_state/pipelines_ci_templates.vue';
 import PipelinesTableComponent from '~/ci/common/pipelines_table.vue';
-import { PIPELINE_IID_KEY, RAW_TEXT_WARNING, TRACKING_CATEGORIES } from '~/ci/constants';
+import {
+  PIPELINE_ID_KEY,
+  PIPELINE_IID_KEY,
+  RAW_TEXT_WARNING,
+  TRACKING_CATEGORIES,
+} from '~/ci/constants';
 import Store from '~/ci/pipeline_details/stores/pipelines_store';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
@@ -36,11 +42,12 @@ import {
   setIdTypePreferenceMutationResponse,
   setIdTypePreferenceMutationResponseWithErrors,
 } from 'jest/issues/list/mock_data';
-
 import { stageReply } from 'jest/ci/pipeline_mini_graph/mock_data';
 import { users, mockSearch, branches } from '../pipeline_details/mock_data';
 
-jest.mock('@sentry/browser');
+Vue.use(VueApollo);
+
+jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/alert');
 
 const mockProjectPath = 'twitter/flight';
@@ -372,6 +379,8 @@ describe('Pipelines', () => {
 
         beforeEach(() => {
           gon.current_user_id = 1;
+
+          trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
         });
 
         it('should change the text to Show Pipeline IID', async () => {
@@ -382,6 +391,25 @@ describe('Pipelines', () => {
           await waitForPromises();
 
           expect(findPipelineUrlLinks().at(0).text()).toBe(`#${mockFilteredPipeline.iid}`);
+        });
+
+        it('tracks the iid usage of the ID/IID dropdown', async () => {
+          findPipelineKeyCollapsibleBox().vm.$emit('select', PIPELINE_IID_KEY);
+
+          await waitForPromises();
+
+          expect(trackingSpy).toHaveBeenCalledWith(undefined, 'pipelines_display_options', {
+            label: TRACKING_CATEGORIES.listbox,
+            property: 'iid',
+          });
+        });
+
+        it('does not track the id usage of the ID/IID dropdown', async () => {
+          findPipelineKeyCollapsibleBox().vm.$emit('select', PIPELINE_ID_KEY);
+
+          await waitForPromises();
+
+          expect(trackingSpy).not.toHaveBeenCalled();
         });
 
         it('calls mutation to save idType preference', () => {

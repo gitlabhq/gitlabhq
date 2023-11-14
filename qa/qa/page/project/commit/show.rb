@@ -6,41 +6,41 @@ module QA
       module Commit
         class Show < Page::Base
           view 'app/views/projects/commit/_commit_box.html.haml' do
-            element :commit_sha_content
+            element 'commit-sha-content'
           end
 
           view 'app/assets/javascripts/projects/commit/components/commit_options_dropdown.vue' do
-            element :options_button
-            element :revert_button
-            element :cherry_pick_button
-            element :email_patches
-            element :plain_diff
+            element 'commit-options-dropdown'
+            element 'revert-link'
+            element 'cherry-pick-link'
+            element 'email-patches-link'
+            element 'plain-diff-link'
           end
 
           def revert_commit
-            click_element(:options_button)
-            click_element(:revert_button, Page::Component::CommitModal)
-            click_element(:submit_commit_button)
+            click_element('commit-options-dropdown')
+            click_element('revert-link', Page::Component::CommitModal)
+            click_element('submit-commit')
           end
 
           def cherry_pick_commit
-            click_element(:options_button)
-            click_element(:cherry_pick_button, Page::Component::CommitModal)
-            click_element(:submit_commit_button)
+            click_element('commit-options-dropdown')
+            click_element('cherry-pick-link', Page::Component::CommitModal)
+            click_element('submit-commit')
           end
 
           def select_email_patches
-            click_element :options_button
-            visit_link_in_element :email_patches
+            click_element 'commit-options-dropdown'
+            visit_link_in_element 'email-patches-link'
           end
 
           def select_plain_diff
-            click_element :options_button
-            visit_link_in_element :plain_diff
+            click_element 'commit-options-dropdown'
+            visit_link_in_element 'plain-diff-link'
           end
 
           def commit_sha
-            find_element(:commit_sha_content).text
+            find_element('commit-sha-content').text
           end
         end
       end

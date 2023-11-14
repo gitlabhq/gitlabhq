@@ -118,7 +118,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     it 'cannot add unacceptable column names' do
       expect do
         model.add_timestamps_with_timezone(:foo, columns: [:bar])
-      end.to raise_error %r/Illegal timestamp column name/
+      end.to raise_error %r{Illegal timestamp column name}
     end
   end
 
@@ -1753,8 +1753,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
   describe '#indexes_for' do
     it 'returns the indexes for a column' do
-      idx1 = double(:idx, columns: %w(project_id))
-      idx2 = double(:idx, columns: %w(user_id))
+      idx1 = double(:idx, columns: %w[project_id])
+      idx2 = double(:idx, columns: %w[user_id])
 
       allow(model).to receive(:indexes).with('table').and_return([idx1, idx2])
 
@@ -1777,7 +1777,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     context 'when index name is too long' do
       it 'does not fail' do
         index = double(:index,
-                       columns: %w(uuid),
+                       columns: %w[uuid],
                        name: 'index_vuln_findings_on_uuid_including_vuln_id_1',
                        using: nil,
                        where: nil,
@@ -1791,7 +1791,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
         expect(model).to receive(:add_concurrent_index)
           .with(:vulnerability_occurrences,
-               %w(tmp_undo_cleanup_column_8cbf300838),
+               %w[tmp_undo_cleanup_column_8cbf300838],
               {
                unique: true,
                name: 'idx_copy_191a1af1a0',
@@ -1806,7 +1806,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     context 'using a regular index using a single column' do
       it 'copies the index' do
         index = double(:index,
-                       columns: %w(project_id),
+                       columns: %w[project_id],
                        name: 'index_on_issues_project_id',
                        using: nil,
                        where: nil,
@@ -1820,7 +1820,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
-               %w(gl_project_id),
+               %w[gl_project_id],
               {
                unique: false,
                name: 'index_on_issues_gl_project_id',
@@ -1835,7 +1835,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     context 'using a regular index with multiple columns' do
       it 'copies the index' do
         index = double(:index,
-                       columns: %w(project_id foobar),
+                       columns: %w[project_id foobar],
                        name: 'index_on_issues_project_id_foobar',
                        using: nil,
                        where: nil,
@@ -1849,7 +1849,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
-               %w(gl_project_id foobar),
+               %w[gl_project_id foobar],
               {
                unique: false,
                name: 'index_on_issues_gl_project_id_foobar',
@@ -1864,7 +1864,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     context 'using an index with a WHERE clause' do
       it 'copies the index' do
         index = double(:index,
-                       columns: %w(project_id),
+                       columns: %w[project_id],
                        name: 'index_on_issues_project_id',
                        using: nil,
                        where: 'foo',
@@ -1878,7 +1878,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
-               %w(gl_project_id),
+               %w[gl_project_id],
               {
                unique: false,
                name: 'index_on_issues_gl_project_id',
@@ -1894,7 +1894,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     context 'using an index with a USING clause' do
       it 'copies the index' do
         index = double(:index,
-                       columns: %w(project_id),
+                       columns: %w[project_id],
                        name: 'index_on_issues_project_id',
                        where: nil,
                        using: 'foo',
@@ -1908,7 +1908,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
-               %w(gl_project_id),
+               %w[gl_project_id],
               {
                unique: false,
                name: 'index_on_issues_gl_project_id',
@@ -1924,7 +1924,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     context 'using an index with custom operator classes' do
       it 'copies the index' do
         index = double(:index,
-                       columns: %w(project_id),
+                       columns: %w[project_id],
                        name: 'index_on_issues_project_id',
                        using: nil,
                        where: nil,
@@ -1938,7 +1938,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
-               %w(gl_project_id),
+               %w[gl_project_id],
               {
                unique: false,
                name: 'index_on_issues_gl_project_id',
@@ -1955,7 +1955,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
       it 'copies the index' do
         index = double(:index,
                        {
-                         columns: %w(project_id foobar),
+                         columns: %w[project_id foobar],
                          name: 'index_on_issues_project_id_foobar',
                          using: :gin,
                          where: nil,
@@ -1970,7 +1970,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
-               %w(gl_project_id foobar),
+               %w[gl_project_id foobar],
               {
                unique: false,
                name: 'index_on_issues_gl_project_id_foobar',
@@ -1988,7 +1988,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
       it 'copies the index' do
         index = double(:index,
                        {
-                         columns: %w(project_id foobar),
+                         columns: %w[project_id foobar],
                          name: 'index_on_issues_project_id_foobar',
                          using: :gin,
                          where: nil,
@@ -2003,7 +2003,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
-               %w(gl_project_id foobar),
+               %w[gl_project_id foobar],
               {
                unique: false,
                name: 'index_on_issues_gl_project_id_foobar',
@@ -2020,7 +2020,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     describe 'using an index of which the name does not contain the source column' do
       it 'raises RuntimeError' do
         index = double(:index,
-                       columns: %w(project_id),
+                       columns: %w[project_id],
                        name: 'index_foobar_index',
                        using: nil,
                        where: nil,

@@ -35,6 +35,7 @@ export const WORK_ITEM_TYPE_ENUM_TEST_CASE = 'TEST_CASE';
 export const WORK_ITEM_TYPE_ENUM_REQUIREMENTS = 'REQUIREMENTS';
 export const WORK_ITEM_TYPE_ENUM_OBJECTIVE = 'OBJECTIVE';
 export const WORK_ITEM_TYPE_ENUM_KEY_RESULT = 'KEY_RESULT';
+export const WORK_ITEM_TYPE_ENUM_EPIC = 'EPIC';
 
 export const WORK_ITEM_TYPE_VALUE_EPIC = 'Epic';
 export const WORK_ITEM_TYPE_VALUE_INCIDENT = 'Incident';
@@ -44,6 +45,8 @@ export const WORK_ITEM_TYPE_VALUE_TEST_CASE = 'Test case';
 export const WORK_ITEM_TYPE_VALUE_REQUIREMENTS = 'Requirements';
 export const WORK_ITEM_TYPE_VALUE_KEY_RESULT = 'Key Result';
 export const WORK_ITEM_TYPE_VALUE_OBJECTIVE = 'Objective';
+
+export const WORK_ITEM_TITLE_MAX_LENGTH = 255;
 
 export const i18n = {
   fetchErrorTitle: s__('WorkItem|Work item not found'),
@@ -91,8 +94,9 @@ export const I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR = s__(
 export const I18N_WORK_ITEM_CREATE_BUTTON_LABEL = s__('WorkItem|Create %{workItemType}');
 export const I18N_WORK_ITEM_ADD_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}');
 export const I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}s');
-export const I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER = s__(
-  'WorkItem|Search existing %{workItemType}s',
+export const I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER = s__('WorkItem|Search existing items');
+export const I18N_WORK_ITEM_SEARCH_ERROR = s__(
+  'WorkItem|Something went wrong while fetching the %{workItemType}. Please try again.',
 );
 export const I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL = s__(
   'WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least Reporter access',
@@ -106,6 +110,11 @@ export const I18N_WORK_ITEM_ERROR_COPY_REFERENCE = s__(
 );
 export const I18N_WORK_ITEM_ERROR_COPY_EMAIL = s__(
   'WorkItem|Something went wrong while copying the %{workItemType} email address. Please try again.',
+);
+
+export const I18N_MAX_CHARS_IN_WORK_ITEM_TITLE_MESSAGE = sprintf(
+  s__('WorkItem|Title cannot have more than %{WORK_ITEM_TITLE_MAX_LENGTH} characters.'),
+  { WORK_ITEM_TITLE_MAX_LENGTH },
 );
 
 export const I18N_WORK_ITEM_COPY_CREATE_NOTE_EMAIL = s__(
@@ -122,6 +131,7 @@ export const I18N_MAX_WORK_ITEMS_NOTE_LABEL = sprintf(
   s__('WorkItem|Add a maximum of %{MAX_WORK_ITEMS} items at a time.'),
   { MAX_WORK_ITEMS },
 );
+export const I18N_WORK_ITEM_SHOW_LABELS = s__('WorkItem|Show labels');
 
 export const sprintfWorkItem = (msg, workItemTypeArg, parentWorkItemType = '') => {
   const workItemType = workItemTypeArg || s__('WorkItem|item');
@@ -177,6 +187,11 @@ export const WORK_ITEMS_TYPE_MAP = {
     icon: `issue-type-keyresult`,
     name: s__('WorkItem|Key result'),
     value: WORK_ITEM_TYPE_VALUE_KEY_RESULT,
+  },
+  [WORK_ITEM_TYPE_ENUM_EPIC]: {
+    icon: `epic`,
+    name: s__('WorkItem|Epic'),
+    value: WORK_ITEM_TYPE_VALUE_EPIC,
   },
 };
 
@@ -246,12 +261,12 @@ export const WORK_ITEM_ACTIVITY_SORT_OPTIONS = [
 ];
 
 export const TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION = 'confidentiality-toggle-action';
-export const TEST_ID_NOTIFICATIONS_TOGGLE_ACTION = 'notifications-toggle-action';
 export const TEST_ID_NOTIFICATIONS_TOGGLE_FORM = 'notifications-toggle-form';
 export const TEST_ID_DELETE_ACTION = 'delete-action';
 export const TEST_ID_PROMOTE_ACTION = 'promote-action';
 export const TEST_ID_COPY_REFERENCE_ACTION = 'copy-reference-action';
 export const TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION = 'copy-create-note-email-action';
+export const TEST_ID_TOGGLE_ACTION = 'state-toggle-action';
 
 export const TODO_ADD_ICON = 'todo-add';
 export const TODO_DONE_ICON = 'todo-done';
@@ -287,4 +302,10 @@ export const LINK_ITEM_FORM_HEADER_LABEL = {
   [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: s__('WorkItem|The current objective'),
   [WORK_ITEM_TYPE_VALUE_KEY_RESULT]: s__('WorkItem|The current key result'),
   [WORK_ITEM_TYPE_VALUE_TASK]: s__('WorkItem|The current task'),
+};
+
+export const SUPPORTED_PARENT_TYPE_MAP = {
+  [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
+  [WORK_ITEM_TYPE_VALUE_KEY_RESULT]: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
+  [WORK_ITEM_TYPE_VALUE_TASK]: [WORK_ITEM_TYPE_ENUM_ISSUE],
 };

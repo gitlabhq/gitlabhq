@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Govern', :requires_admin, :skip_live_env, :reliable do
-    describe '2FA', product_group: :authentication_and_authorization do
+    describe '2FA', product_group: :authentication do
       let(:owner_user) { create(:user, api_client: admin_api_client) }
 
       let(:developer_user) { create(:user, api_client: admin_api_client) }

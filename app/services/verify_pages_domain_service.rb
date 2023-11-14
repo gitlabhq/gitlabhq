@@ -79,7 +79,7 @@ class VerifyPagesDomainService < BaseService
 
   # A domain is only expired until `disable!` has been called
   def expired?
-    domain.enabled_until && domain.enabled_until < Time.current
+    domain.enabled_until&.past?
   end
 
   def dns_record_present?

@@ -8,11 +8,14 @@ class Deployment < ApplicationRecord
   include Importable
   include Gitlab::Utils::StrongMemoize
   include FastDestroyAll
+  include IgnorableColumns
 
   StatusUpdateError = Class.new(StandardError)
   StatusSyncError = Class.new(StandardError)
 
   ARCHIVABLE_OFFSET = 50_000
+
+  ignore_column :cluster_id, remove_with: '16.8', remove_after: '2023-12-21'
 
   belongs_to :project, optional: false
   belongs_to :environment, optional: false

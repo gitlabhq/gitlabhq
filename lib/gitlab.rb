@@ -16,6 +16,11 @@ module Gitlab
     Gitlab::VersionInfo.parse(Gitlab::VERSION)
   end
 
+  def self.current_milestone
+    v = version_info
+    "#{v.major}.#{v.minor}"
+  end
+
   def self.pre_release?
     VERSION.include?('pre')
   end

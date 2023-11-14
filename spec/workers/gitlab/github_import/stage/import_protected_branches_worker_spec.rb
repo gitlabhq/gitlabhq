@@ -25,12 +25,9 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportProtectedBranchesWorker, featu
         .to receive(:execute)
         .and_return(waiter)
 
-      expect(import_state)
-        .to receive(:refresh_jid_expiration)
-
       expect(Gitlab::GithubImport::AdvanceStageWorker)
         .to receive(:perform_async)
-        .with(project.id, { '123' => 2 }, :lfs_objects)
+        .with(project.id, { '123' => 2 }, 'lfs_objects')
 
       worker.import(client, project)
     end

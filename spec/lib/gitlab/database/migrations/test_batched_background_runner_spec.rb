@@ -80,8 +80,11 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
       end
 
       subject(:sample_migration) do
-        described_class.new(result_dir: result_dir, connection: connection,
-                            from_id: from_id).run_jobs(for_duration: 1.minute)
+        described_class.new(
+          result_dir: result_dir,
+          connection: connection,
+          from_id: from_id
+        ).run_jobs(for_duration: 1.minute)
       end
 
       it 'runs sampled jobs from the batched background migration' do
@@ -125,12 +128,19 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
           calls << args
         end
 
-        queue_migration(migration_name, table_name, :id,
-                        job_interval: 5.minutes,
-                        batch_size: 100)
+        queue_migration(
+          migration_name,
+          table_name,
+          :id,
+          job_interval: 5.minutes,
+          batch_size: 100
+        )
 
-        described_class.new(result_dir: result_dir, connection: connection,
-                            from_id: from_id).run_jobs(for_duration: 3.minutes)
+        described_class.new(
+          result_dir: result_dir,
+          connection: connection,
+          from_id: from_id
+        ).run_jobs(for_duration: 3.minutes)
 
         expect(calls).not_to be_empty
       end
@@ -142,13 +152,19 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
           calls << args
         end
 
-        queue_migration(migration_name, table_name, :id,
-                        job_interval: 5.minutes,
-                        batch_size: num_rows_in_table * 2,
-                        sub_batch_size: num_rows_in_table * 2)
+        queue_migration(
+          migration_name,
+          table_name, :id,
+          job_interval: 5.minutes,
+          batch_size: num_rows_in_table * 2,
+          sub_batch_size: num_rows_in_table * 2
+        )
 
-        described_class.new(result_dir: result_dir, connection: connection,
-                            from_id: from_id).run_jobs(for_duration: 3.minutes)
+        described_class.new(
+          result_dir: result_dir,
+          connection: connection,
+          from_id: from_id
+        ).run_jobs(for_duration: 3.minutes)
 
         expect(calls.size).to eq(1)
       end
@@ -161,13 +177,20 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
           calls << args
         end
 
-        queue_migration(migration_name, table_name, :id,
-                        job_interval: 5.minutes,
-                        batch_size: num_rows_in_table * 2,
-                        sub_batch_size: num_rows_in_table * 2)
+        queue_migration(
+          migration_name,
+          table_name,
+          :id,
+          job_interval: 5.minutes,
+          batch_size: num_rows_in_table * 2,
+          sub_batch_size: num_rows_in_table * 2
+        )
 
-        described_class.new(result_dir: result_dir, connection: connection,
-                            from_id: from_id).run_jobs(for_duration: 3.minutes)
+        described_class.new(
+          result_dir: result_dir,
+          connection: connection,
+          from_id: from_id
+        ).run_jobs(for_duration: 3.minutes)
 
         expect(calls.count).to eq(0)
       end
@@ -181,26 +204,41 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
 
         it 'runs all pending jobs based on the last migration id' do
           old_migration = define_background_migration(migration_name)
-          queue_migration(migration_name, table_name, :id,
-                          job_interval: 5.minutes,
-                          batch_size: 100)
+          queue_migration(
+            migration_name,
+            table_name,
+            :id,
+            job_interval: 5.minutes,
+            batch_size: 100
+          )
 
           last_id
           new_migration = define_background_migration('NewMigration') { travel 1.second }
-          queue_migration('NewMigration', table_name, :id,
-                          job_interval: 5.minutes,
-                          batch_size: 10,
-                          sub_batch_size: 5)
+          queue_migration(
+            'NewMigration',
+            table_name,
+            :id,
+            job_interval: 5.minutes,
+            batch_size: 10,
+            sub_batch_size: 5
+          )
 
           other_new_migration = define_background_migration('NewMigration2') { travel 2.seconds }
-          queue_migration('NewMigration2', table_name, :id,
-                          job_interval: 5.minutes,
-                          batch_size: 10,
-                          sub_batch_size: 5)
+          queue_migration(
+            'NewMigration2',
+            table_name,
+            :id,
+            job_interval: 5.minutes,
+            batch_size: 10,
+            sub_batch_size: 5
+          )
 
           expect_migration_runs(new_migration => 3, other_new_migration => 2, old_migration => 0) do
-            described_class.new(result_dir: result_dir, connection: connection,
-                                from_id: last_id).run_jobs(for_duration: 5.seconds)
+            described_class.new(
+              result_dir: result_dir,
+              connection: connection,
+              from_id: last_id
+            ).run_jobs(for_duration: 5.seconds)
           end
         end
       end

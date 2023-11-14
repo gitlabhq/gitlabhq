@@ -1,10 +1,13 @@
 import MockAdapter from 'axios-mock-adapter';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { buildClient } from '~/observability/client';
 import axios from '~/lib/utils/axios_utils';
+import { logError } from '~/lib/logger';
+import { DEFAULT_SORTING_OPTION, SORTING_OPTIONS } from '~/observability/constants';
 
 jest.mock('~/lib/utils/axios_utils');
-jest.mock('@sentry/browser');
+jest.mock('~/sentry/sentry_browser_wrapper');
+jest.mock('~/lib/logger');
 
 describe('buildClient', () => {
   let client;
@@ -14,52 +17,58 @@ describe('buildClient', () => {
   const provisioningUrl = 'https://example.com/provisioning';
   const servicesUrl = 'https://example.com/services';
   const operationsUrl = 'https://example.com/services/$SERVICE_NAME$/operations';
+  const metricsUrl = 'https://example.com/metrics';
   const FETCHING_TRACES_ERROR = 'traces are missing/invalid in the response';
+
+  const apiConfig = {
+    tracingUrl,
+    provisioningUrl,
+    servicesUrl,
+    operationsUrl,
+    metricsUrl,
+  };
+
+  const getQueryParam = () => decodeURIComponent(axios.get.mock.calls[0][1].params.toString());
 
   beforeEach(() => {
     axiosMock = new MockAdapter(axios);
     jest.spyOn(axios, 'get');
 
-    client = buildClient({
-      tracingUrl,
-      provisioningUrl,
-      servicesUrl,
-      operationsUrl,
-    });
+    client = buildClient(apiConfig);
   });
 
   afterEach(() => {
     axiosMock.restore();
   });
 
+  const expectErrorToBeReported = (e) => {
+    expect(Sentry.captureException).toHaveBeenCalledWith(e);
+    expect(logError).toHaveBeenCalledWith(e);
+  };
+
   describe('buildClient', () => {
-    it('rejects if params are missing', () => {
-      const e = new Error(
-        'missing required params. provisioningUrl, tracingUrl, servicesUrl, operationsUrl are required',
-      );
+    it('throws is option is missing', () => {
+      expect(() => buildClient()).toThrow(new Error('No options object provided'));
+    });
+    it.each(Object.keys(apiConfig))('throws if %s is missing', (param) => {
+      const e = new Error(`${param} param must be a string`);
+
       expect(() =>
-        buildClient({ tracingUrl: 'test', servicesUrl: 'test', operationsUrl: 'test' }),
+        buildClient({
+          ...apiConfig,
+          [param]: undefined,
+        }),
       ).toThrow(e);
-      expect(() =>
-        buildClient({ provisioningUrl: 'test', servicesUrl: 'test', operationsUrl: 'test' }),
-      ).toThrow(e);
-      expect(() =>
-        buildClient({ provisioningUrl: 'test', tracingUrl: 'test', operationsUrl: 'test' }),
-      ).toThrow(e);
-      expect(() =>
-        buildClient({ provisioningUrl: 'test', tracingUrl: 'test', servicesUrl: 'test' }),
-      ).toThrow(e);
-      expect(() => buildClient({})).toThrow(e);
     });
   });
 
-  describe('isTracingEnabled', () => {
+  describe('isObservabilityEnabled', () => {
     it('returns true if requests succeedes', async () => {
       axiosMock.onGet(provisioningUrl).reply(200, {
         status: 'ready',
       });
 
-      const enabled = await client.isTracingEnabled();
+      const enabled = await client.isObservabilityEnabled();
 
       expect(enabled).toBe(true);
     });
@@ -67,7 +76,7 @@ describe('buildClient', () => {
     it('returns false if response is 404', async () => {
       axiosMock.onGet(provisioningUrl).reply(404);
 
-      const enabled = await client.isTracingEnabled();
+      const enabled = await client.isObservabilityEnabled();
 
       expect(enabled).toBe(false);
     });
@@ -79,7 +88,7 @@ describe('buildClient', () => {
         status: 'not ready',
       });
 
-      const enabled = await client.isTracingEnabled();
+      const enabled = await client.isObservabilityEnabled();
 
       expect(enabled).toBe(true);
     });
@@ -88,20 +97,20 @@ describe('buildClient', () => {
       axiosMock.onGet(provisioningUrl).reply(500);
 
       const e = 'Request failed with status code 500';
-      await expect(client.isTracingEnabled()).rejects.toThrow(e);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
+      await expect(client.isObservabilityEnabled()).rejects.toThrow(e);
+      expectErrorToBeReported(new Error(e));
     });
 
     it('throws in case of unexpected response', async () => {
       axiosMock.onGet(provisioningUrl).reply(200, {});
 
       const e = 'Failed to check provisioning';
-      await expect(client.isTracingEnabled()).rejects.toThrow(e);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
+      await expect(client.isObservabilityEnabled()).rejects.toThrow(e);
+      expectErrorToBeReported(new Error(e));
     });
   });
 
-  describe('enableTraces', () => {
+  describe('enableObservability', () => {
     it('makes a PUT request to the provisioning URL', async () => {
       let putConfig;
       axiosMock.onPut(provisioningUrl).reply((config) => {
@@ -109,7 +118,7 @@ describe('buildClient', () => {
         return [200];
       });
 
-      await client.enableTraces();
+      await client.enableObservability();
 
       expect(putConfig.withCredentials).toBe(true);
     });
@@ -119,51 +128,31 @@ describe('buildClient', () => {
 
       const e = 'Request failed with status code 401';
 
-      await expect(client.enableTraces()).rejects.toThrow(e);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
+      await expect(client.enableObservability()).rejects.toThrow(e);
+      expectErrorToBeReported(new Error(e));
     });
   });
 
   describe('fetchTrace', () => {
     it('fetches the trace from the tracing URL', async () => {
-      const mockTraces = [
-        {
-          trace_id: 'trace-1',
-          duration_nano: 3000,
-          spans: [{ duration_nano: 1000 }, { duration_nano: 2000 }],
-        },
-      ];
-
-      axiosMock.onGet(tracingUrl).reply(200, {
-        traces: mockTraces,
-      });
+      const mockTrace = {
+        trace_id: 'trace-1',
+        duration_nano: 3000,
+        spans: [{ duration_nano: 1000 }, { duration_nano: 2000 }],
+      };
+      axiosMock.onGet(`${tracingUrl}/trace-1`).reply(200, mockTrace);
 
       const result = await client.fetchTrace('trace-1');
 
       expect(axios.get).toHaveBeenCalledTimes(1);
-      expect(axios.get).toHaveBeenCalledWith(tracingUrl, {
+      expect(axios.get).toHaveBeenCalledWith(`${tracingUrl}/trace-1`, {
         withCredentials: true,
-        params: { trace_id: 'trace-1' },
       });
-      expect(result).toEqual(mockTraces[0]);
+      expect(result).toEqual(mockTrace);
     });
 
     it('rejects if trace id is missing', () => {
       return expect(client.fetchTrace()).rejects.toThrow('traceId is required.');
-    });
-
-    it('rejects if traces are empty', async () => {
-      axiosMock.onGet(tracingUrl).reply(200, { traces: [] });
-
-      await expect(client.fetchTrace('trace-1')).rejects.toThrow(FETCHING_TRACES_ERROR);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(FETCHING_TRACES_ERROR));
-    });
-
-    it('rejects if traces are invalid', async () => {
-      axiosMock.onGet(tracingUrl).reply(200, { traces: 'invalid' });
-
-      await expect(client.fetchTraces()).rejects.toThrow(FETCHING_TRACES_ERROR);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(FETCHING_TRACES_ERROR));
     });
   });
 
@@ -187,7 +176,7 @@ describe('buildClient', () => {
       expect(axios.get).toHaveBeenCalledTimes(1);
       expect(axios.get).toHaveBeenCalledWith(tracingUrl, {
         withCredentials: true,
-        params: new URLSearchParams(),
+        params: expect.any(URLSearchParams),
       });
       expect(result).toEqual(mockResponse);
     });
@@ -196,14 +185,39 @@ describe('buildClient', () => {
       axiosMock.onGet(tracingUrl).reply(200, {});
 
       await expect(client.fetchTraces()).rejects.toThrow(FETCHING_TRACES_ERROR);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(FETCHING_TRACES_ERROR));
+      expectErrorToBeReported(new Error(FETCHING_TRACES_ERROR));
     });
 
     it('rejects if traces are invalid', async () => {
       axiosMock.onGet(tracingUrl).reply(200, { traces: 'invalid' });
 
       await expect(client.fetchTraces()).rejects.toThrow(FETCHING_TRACES_ERROR);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(FETCHING_TRACES_ERROR));
+      expectErrorToBeReported(new Error(FETCHING_TRACES_ERROR));
+    });
+
+    describe('sort order', () => {
+      beforeEach(() => {
+        axiosMock.onGet(tracingUrl).reply(200, {
+          traces: [],
+        });
+      });
+      it('appends sort param if specified', async () => {
+        await client.fetchTraces({ sortBy: SORTING_OPTIONS.DURATION_DESC });
+
+        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.DURATION_DESC}`);
+      });
+
+      it('defaults to DEFAULT_SORTING_OPTION if no sortBy param is specified', async () => {
+        await client.fetchTraces();
+
+        expect(getQueryParam()).toBe(`sort=${DEFAULT_SORTING_OPTION}`);
+      });
+
+      it('defaults to timestamp_desc if sortBy param is not an accepted value', async () => {
+        await client.fetchTraces({ sortBy: 'foo-bar' });
+
+        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.TIMESTAMP_DESC}`);
+      });
     });
 
     describe('query filter', () => {
@@ -213,24 +227,22 @@ describe('buildClient', () => {
         });
       });
 
-      const getQueryParam = () => decodeURIComponent(axios.get.mock.calls[0][1].params.toString());
-
       it('does not set any query param without filters', async () => {
         await client.fetchTraces();
 
-        expect(getQueryParam()).toBe('');
+        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.TIMESTAMP_DESC}`);
       });
 
       it('appends page_token if specified', async () => {
         await client.fetchTraces({ pageToken: 'page-token' });
 
-        expect(getQueryParam()).toBe('page_token=page-token');
+        expect(getQueryParam()).toContain('page_token=page-token');
       });
 
       it('appends page_size if specified', async () => {
         await client.fetchTraces({ pageSize: 10 });
 
-        expect(getQueryParam()).toBe('page_size=10');
+        expect(getQueryParam()).toContain('page_size=10');
       });
 
       it('converts filter to proper query params', async () => {
@@ -244,7 +256,7 @@ describe('buildClient', () => {
               { operator: '=', value: 'op' },
               { operator: '!=', value: 'not-op' },
             ],
-            serviceName: [
+            service: [
               { operator: '=', value: 'service' },
               { operator: '!=', value: 'not-service' },
             ],
@@ -253,14 +265,16 @@ describe('buildClient', () => {
               { operator: '=', value: 'trace-id' },
               { operator: '!=', value: 'not-trace-id' },
             ],
+            attribute: [{ operator: '=', value: 'name1=value1' }],
           },
         });
-        expect(getQueryParam()).toBe(
+        expect(getQueryParam()).toContain(
           'gt[duration_nano]=100000000&lt[duration_nano]=1000000000' +
             '&operation=op&not[operation]=not-op' +
             '&service_name=service&not[service_name]=not-service' +
             '&period=5m' +
-            '&trace_id=trace-id&not[trace_id]=not-trace-id',
+            '&trace_id=trace-id&not[trace_id]=not-trace-id' +
+            '&attr_name=name1&attr_value=value1',
         );
       });
 
@@ -273,7 +287,7 @@ describe('buildClient', () => {
             ],
           },
         });
-        expect(getQueryParam()).toBe('operation=op&operation=op2');
+        expect(getQueryParam()).toContain('operation=op&operation=op2');
       });
 
       it('ignores unsupported filters', async () => {
@@ -283,7 +297,7 @@ describe('buildClient', () => {
           },
         });
 
-        expect(getQueryParam()).toBe('');
+        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.TIMESTAMP_DESC}`);
       });
 
       it('ignores empty filters', async () => {
@@ -294,7 +308,7 @@ describe('buildClient', () => {
           },
         });
 
-        expect(getQueryParam()).toBe('');
+        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.TIMESTAMP_DESC}`);
       });
 
       it('ignores unsupported operators', async () => {
@@ -309,7 +323,7 @@ describe('buildClient', () => {
               { operator: '>', value: 'foo' },
               { operator: '<', value: 'foo' },
             ],
-            serviceName: [
+            service: [
               { operator: '>', value: 'foo' },
               { operator: '<', value: 'foo' },
             ],
@@ -321,7 +335,7 @@ describe('buildClient', () => {
           },
         });
 
-        expect(getQueryParam()).toBe('');
+        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.TIMESTAMP_DESC}`);
       });
     });
   });
@@ -348,7 +362,7 @@ describe('buildClient', () => {
 
       const e = 'failed to fetch services. invalid response';
       await expect(client.fetchServices()).rejects.toThrow(e);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
+      expectErrorToBeReported(new Error(e));
     });
   });
 
@@ -375,19 +389,17 @@ describe('buildClient', () => {
     it('rejects if serviceName is missing', async () => {
       const e = 'fetchOperations() - serviceName is required.';
       await expect(client.fetchOperations()).rejects.toThrow(e);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
+      expectErrorToBeReported(new Error(e));
     });
 
     it('rejects if operationUrl does not contain $SERVICE_NAME$', async () => {
       client = buildClient({
-        tracingUrl,
-        provisioningUrl,
-        servicesUrl,
+        ...apiConfig,
         operationsUrl: 'something',
       });
       const e = 'fetchOperations() - operationsUrl must contain $SERVICE_NAME$';
       await expect(client.fetchOperations(serviceName)).rejects.toThrow(e);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
+      expectErrorToBeReported(new Error(e));
     });
 
     it('rejects if operations are missing', async () => {
@@ -395,7 +407,44 @@ describe('buildClient', () => {
 
       const e = 'failed to fetch operations. invalid response';
       await expect(client.fetchOperations(serviceName)).rejects.toThrow(e);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
+      expectErrorToBeReported(new Error(e));
+    });
+  });
+
+  describe('fetchMetrics', () => {
+    const FETCHING_METRICS_ERROR = 'metrics are missing/invalid in the response';
+
+    it('fetches metrics from the metrics URL', async () => {
+      const mockResponse = {
+        metrics: [
+          { name: 'metric A', description: 'a counter metric called A', type: 'COUNTER' },
+          { name: 'metric B', description: 'a gauge metric called B', type: 'GAUGE' },
+        ],
+      };
+
+      axiosMock.onGet(metricsUrl).reply(200, mockResponse);
+
+      const result = await client.fetchMetrics();
+
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(axios.get).toHaveBeenCalledWith(metricsUrl, {
+        withCredentials: true,
+      });
+      expect(result).toEqual(mockResponse);
+    });
+
+    it('rejects if metrics are missing', async () => {
+      axiosMock.onGet(metricsUrl).reply(200, {});
+
+      await expect(client.fetchMetrics()).rejects.toThrow(FETCHING_METRICS_ERROR);
+      expectErrorToBeReported(new Error(FETCHING_METRICS_ERROR));
+    });
+
+    it('rejects if metrics are invalid', async () => {
+      axiosMock.onGet(metricsUrl).reply(200, { traces: 'invalid' });
+
+      await expect(client.fetchMetrics()).rejects.toThrow(FETCHING_METRICS_ERROR);
+      expectErrorToBeReported(new Error(FETCHING_METRICS_ERROR));
     });
   });
 });

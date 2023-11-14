@@ -287,6 +287,45 @@ You can also delete a user and their contributions, such as merge requests, issu
 NOTE:
 Before 15.1, additionally groups of which deleted user were the only owner among direct members were deleted.
 
+## Trust and untrust users
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132402) in GitLab 16.5.
+
+You can trust and untrust users from the Admin Area.
+
+By default, a user is not trusted and is blocked from creating issues, notes, and snippets considered to be spam. When you trust a user, they can create issues, notes, and snippets without being blocked.
+
+Prerequisite:
+
+- You must be an administrator.
+
+::Tabs
+
+:::TabTitle Trust a user
+
+1. On the left sidebar, select **Search or go to**.
+1. Select **Admin Area**.
+1. Select **Overview > Users**.
+1. Select a user.
+1. From the **User administration** dropdown list, select **Trust user**.
+1. On the confirmation dialog, select **Trust user**.
+
+The user is trusted.
+
+:::TabTitle Untrust a user
+
+1. On the left sidebar, select **Search or go to**.
+1. Select **Admin Area**.
+1. Select **Overview > Users**.
+1. Select the **Trusted** tab.
+1. Select a user.
+1. From the **User administration** dropdown list, select **Untrust user**.
+1. On the confirmation dialog, select **Untrust user**.
+
+The user is untrusted.
+
+::EndTabs
+
 ## Troubleshooting
 
 When moderating users, you may need to perform bulk actions on them based on certain conditions. The following rails console scripts show some examples of this. You may [start a rails console session](../administration/operations/rails_console.md#starting-a-rails-console-session) and use scripts similar to the following:

@@ -53,6 +53,8 @@ export default class Issue {
 
       $(document).trigger('issuable:change', isClosed);
 
+      // TODO: Remove this with the removal of the old navigation.
+      // See https://gitlab.com/groups/gitlab-org/-/epics/11875.
       let numProjectIssues = Number(
         projectIssuesCounter.first().text().trim().replace(/[^\d]/, ''),
       );

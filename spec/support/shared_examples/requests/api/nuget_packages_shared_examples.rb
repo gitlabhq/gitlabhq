@@ -699,6 +699,7 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
   end
 
   context 'when package duplicates are not allowed' do
+    let(:params) { { package: temp_file(file_name, content: File.open(expand_fixture_path('packages/nuget/package.nupkg'))) } }
     let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_headers) }
     let_it_be(:existing_package) { create(:nuget_package, project: project) }
     let_it_be(:metadata) { { package_name: existing_package.name, package_version: existing_package.version } }
@@ -718,14 +719,6 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
     context 'when exception_regex is set' do
       before do
         package_settings.update_column(:nuget_duplicate_exception_regex, ".*#{existing_package.name.last(3)}.*")
-      end
-
-      it_behaves_like 'returning response status', :created
-    end
-
-    context 'when nuget_duplicates_option feature flag is disabled' do
-      before do
-        stub_feature_flags(nuget_duplicates_option: false)
       end
 
       it_behaves_like 'returning response status', :created

@@ -258,15 +258,15 @@ $tabs-holder-z-index: 250;
 
   position: sticky;
   top: calc(#{$calc-application-header-height} + #{$mr-tabs-height} + #{$diff-file-header-top});
+  // height calc is fully delegated to the tree_list_height.vue component
+  height: 0;
   min-height: 300px;
-  height: calc(#{$calc-application-viewport-height} - (#{$mr-tabs-height} + #{$diff-file-header-top}));
 
   .drag-handle {
     bottom: 16px;
   }
 
   &.is-sidebar-moved {
-    height: calc(#{$calc-application-viewport-height} - (#{$mr-sticky-header-height} + #{$diff-file-header-top}));
     top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} + #{$diff-file-header-top});
   }
 }
@@ -378,6 +378,10 @@ $tabs-holder-z-index: 250;
 
     .deployment-info {
       margin-bottom: $gl-padding-8;
+    }
+
+    .gl-button {
+      margin-left: 0;
     }
   }
 
@@ -645,6 +649,9 @@ $tabs-holder-z-index: 250;
     // to the end of the line or to force it to a
     // new line if there is not enough space.
     flex-grow: 999;
+    // Avoid layout shift of title when Mini Graph
+    // moves below title
+    padding-top: 5px;
   }
 
   .label-branch {
@@ -981,7 +988,7 @@ $tabs-holder-z-index: 250;
   .merge-request-tabs-container {
     &.is-merge-request {
       @include gl-mx-auto;
-      max-width: $fixed-layout-width - ($gl-padding * 2);
+      max-width: $fixed-layout-width - ($container-margin-xl * 2);
     }
   }
 }
@@ -994,24 +1001,13 @@ $tabs-holder-z-index: 250;
   }
 }
 
-.submit-review-dropdown {
-  &.show .dropdown-menu {
-    width: calc(100vw - 20px);
-    max-width: 680px;
-    max-height: calc(100vh - 50px);
+.submit-review-dropdown .gl-new-dropdown-panel {
+  max-width: none;
+}
 
-    .gl-dropdown-inner {
-      max-height: none !important;
-    }
-  }
-
-  .gl-dropdown-contents {
-    padding: $gl-spacing-scale-4 !important;
-  }
-
-  .md-preview-holder {
-    max-height: 182px;
-  }
+.submit-review-dropdown-form {
+  width: calc(100vw - 20px);
+  max-width: 680px;
 }
 
 .submit-review-dropdown-animated {
@@ -1112,7 +1108,7 @@ $tabs-holder-z-index: 250;
   display: flex;
   align-items: center;
   width: 100%;
-  height: $toggle-sidebar-height;
+  height: var(--mr-review-bar-height);
   padding-left: $contextual-sidebar-width;
   padding-right: $right-sidebar-collapsed-width;
   background: var(--white, $white);
@@ -1128,14 +1124,14 @@ $tabs-holder-z-index: 250;
     padding-right: 0;
   }
 
-  .dropdown {
+  .submit-review-dropdown {
     margin-left: $grid-size;
   }
 }
 
 .review-bar-content {
   max-width: $limited-layout-width;
-  padding: 0 $gl-padding;
+  padding: 0 $container-margin;
   width: 100%;
   margin: 0 auto;
 }
@@ -1196,63 +1192,6 @@ $tabs-holder-z-index: 250;
   .gl-skeleton-loader {
     max-width: 334px;
   }
-}
-
-.mr-system-note-icon {
-  width: 20px;
-  height: 20px;
-  margin-left: 6px;
-
-  &.gl-bg-green-100 {
-    --bg-color: var(--green-100, #{$green-100});
-  }
-
-  &.gl-bg-red-100 {
-    --bg-color: var(--red-100, #{$red-100});
-  }
-
-  &.gl-bg-blue-100 {
-    --bg-color: var(--blue-100, #{$blue-100});
-  }
-}
-
-.mr-system-note-icon:not(.mr-system-note-empty)::before {
-  content: '';
-  display: block;
-  position: absolute;
-  left: calc(50% - 1px);
-  bottom: 100%;
-  width: 2px;
-  height: 20px;
-  background: linear-gradient(to bottom, transparent, var(--bg-color));
-
-  .system-note:first-child & {
-    display: none;
-  }
-}
-
-.mr-system-note-icon:not(.mr-system-note-empty)::after {
-  content: '';
-  display: block;
-  position: absolute;
-  left: calc(50% - 1px);
-  top: 100%;
-  width: 2px;
-  height: 20px;
-  background: linear-gradient(to bottom, var(--bg-color), transparent);
-
-  .system-note:last-child & {
-    display: none;
-  }
-}
-
-.mr-system-note-empty {
-  width: 8px;
-  height: 8px;
-  margin-top: 6px;
-  margin-left: 12px;
-  margin-right: 8px;
-  border: 2px solid var(--gray-50, $gray-50);
 }
 
 .diff-file-discussions-wrapper {

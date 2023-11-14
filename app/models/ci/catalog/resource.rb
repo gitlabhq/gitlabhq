@@ -8,29 +8,55 @@ module Ci
     # dependency on the Project model and its need to join with that table
     # in order to generate the CI/CD catalog.
     class Resource < ::ApplicationRecord
+      include Gitlab::SQL::Pattern
+
       self.table_name = 'catalog_resources'
 
       belongs_to :project
-      has_many :components, class_name: 'Ci::Catalog::Resources::Component', inverse_of: :catalog_resource
-      has_many :versions, class_name: 'Ci::Catalog::Resources::Version', inverse_of: :catalog_resource
+      has_many :components, class_name: 'Ci::Catalog::Resources::Component', foreign_key: :catalog_resource_id,
+        inverse_of: :catalog_resource
+      has_many :versions, class_name: 'Ci::Catalog::Resources::Version', foreign_key: :catalog_resource_id,
+        inverse_of: :catalog_resource
 
       scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
+      scope :search, ->(query) { fuzzy_search(query, [:name, :description], use_minimum_char_limit: false) }
+
       scope :order_by_created_at_desc, -> { reorder(created_at: :desc) }
-      scope :order_by_name_desc, -> { joins(:project).merge(Project.sorted_by_name_desc) }
-      scope :order_by_name_asc, -> { joins(:project).merge(Project.sorted_by_name_asc) }
+      scope :order_by_created_at_asc, -> { reorder(created_at: :asc) }
+      scope :order_by_name_desc, -> { reorder(arel_table[:name].desc.nulls_last) }
+      scope :order_by_name_asc, -> { reorder(arel_table[:name].asc.nulls_last) }
       scope :order_by_latest_released_at_desc, -> { reorder(arel_table[:latest_released_at].desc.nulls_last) }
       scope :order_by_latest_released_at_asc, -> { reorder(arel_table[:latest_released_at].asc.nulls_last) }
 
-      delegate :avatar_path, :description, :name, :star_count, :forks_count, to: :project
+      delegate :avatar_path, :star_count, :forks_count, to: :project
 
       enum state: { draft: 0, published: 1 }
 
-      def versions
-        project.releases.order_released_desc
+      before_create :sync_with_project
+
+      def unpublish!
+        update!(state: :draft)
       end
 
-      def latest_version
-        project.releases.latest
+      def publish!
+        update!(state: :published)
+      end
+
+      def sync_with_project!
+        sync_with_project
+        save!
+      end
+
+      private
+
+      # These columns are denormalized from the `projects` table. We first sync these
+      # columns when the catalog resource record is created. Then any updates to the
+      # `projects` columns will be synced to the `catalog_resources` table by a worker
+      # (to be implemented in https://gitlab.com/gitlab-org/gitlab/-/issues/429376.)
+      def sync_with_project
+        self.name = project.name
+        self.description = project.description
+        self.visibility_level = project.visibility_level
       end
     end
   end

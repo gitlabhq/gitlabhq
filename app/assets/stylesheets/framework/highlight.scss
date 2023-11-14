@@ -33,7 +33,7 @@
         padding-right: 10px;
         white-space: pre;
 
-        &:empty::before {
+        &:empty::before, span:empty::before {
           content: '\200b';
         }
       }

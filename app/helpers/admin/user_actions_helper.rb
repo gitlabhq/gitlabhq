@@ -16,6 +16,7 @@ module Admin
       unlock_actions
       delete_actions
       ban_actions
+      trust_actions
 
       @actions
     end
@@ -65,6 +66,20 @@ module Admin
       unless @user.blocked?
         @actions << 'ban'
       end
+    end
+
+    def trust_actions
+      return if @user.internal? ||
+        @user.blocked_pending_approval? ||
+        @user.banned? ||
+        @user.blocked? ||
+        @user.deactivated?
+
+      @actions << if @user.trusted?
+                    'untrust'
+                  else
+                    'trust'
+                  end
     end
   end
 end

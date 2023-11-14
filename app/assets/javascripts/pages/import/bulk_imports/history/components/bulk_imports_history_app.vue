@@ -14,13 +14,14 @@ import { createAlert } from '~/alert';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { getBulkImportsHistory } from '~/rest_api';
-import ImportStatus from '~/import_entities/components/import_status.vue';
+import ImportStatus from '~/import_entities/import_groups/components/import_status.vue';
 import { StatusPoller } from '~/import_entities/import_groups/services/status_poller';
 
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import { isImporting } from '../utils';
 import { DEFAULT_ERROR } from '../utils/error_messages';
@@ -56,6 +57,8 @@ export default {
   directives: {
     GlTooltip,
   },
+
+  mixins: [glFeatureFlagMixin()],
 
   inject: ['realtimeChangesPath'],
 
@@ -102,6 +105,10 @@ export default {
       return this.historyItems
         .filter((item) => isImporting(item.status))
         .map((item) => item.bulk_import_id);
+    },
+
+    showDetailsLink() {
+      return this.glFeatures.bulkImportDetailsPage;
     },
   },
 
@@ -225,12 +232,7 @@ export default {
       :description="s__('BulkImport|Your imported groups and projects will appear here.')"
     />
     <template v-else>
-      <gl-table-lite
-        :fields="$options.fields"
-        :items="historyItems"
-        data-qa-selector="import_history_table"
-        class="gl-w-full"
-      >
+      <gl-table-lite :fields="$options.fields" :items="historyItems" class="gl-w-full">
         <template #cell(destination_name)="{ item }">
           <gl-icon
             v-gl-tooltip
@@ -252,14 +254,23 @@ export default {
           <time-ago :time="value" />
         </template>
         <template #cell(status)="{ value, item, toggleDetails, detailsShowing }">
-          <import-status :status="value" class="gl-display-inline-block gl-w-13" />
-          <gl-button
-            v-if="item.failures.length"
-            class="gl-ml-3"
-            :selected="detailsShowing"
-            @click="toggleDetails"
-            >{{ __('Details') }}</gl-button
+          <div
+            class="gl-display-flex gl-flex-direction-column gl-lg-flex-direction-row gl-align-items-flex-start gl-justify-content-space-between gl-gap-3"
           >
+            <import-status
+              :id="item.bulk_import_id"
+              :entity-id="item.id"
+              :has-failures="item.has_failures"
+              :show-details-link="showDetailsLink"
+              :status="value"
+            />
+            <gl-button
+              v-if="!showDetailsLink && item.failures.length"
+              :selected="detailsShowing"
+              @click="toggleDetails"
+              >{{ __('Details') }}</gl-button
+            >
+          </div>
         </template>
         <template #row-details="{ item }">
           <pre><code>{{ item.failures }}</code></pre>

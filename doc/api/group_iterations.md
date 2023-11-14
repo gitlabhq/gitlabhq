@@ -16,6 +16,10 @@ There's a separate [project iterations API](iterations.md) page.
 
 Returns a list of group iterations.
 
+Iterations created by **Enable automatic scheduling** in
+[Iteration cadences](../user/group/iterations/index.md#iteration-cadences) return `null` for
+the `title` and `description` fields.
+
 ```plaintext
 GET /groups/:id/iterations
 GET /groups/:id/iterations?state=opened

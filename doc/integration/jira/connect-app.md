@@ -107,9 +107,7 @@ After you connect the GitLab for Jira Cloud app, you might get this error:
 Failed to link group. Please try again.
 ```
 
-`403` status code is returned if:
+`403` status code is returned if the user information cannot be fetched from Jira due to insufficient permissions.
 
-- The user information cannot be fetched from Jira.
-- The authenticated Jira user does not have [site administrator](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Make-someone-a-site-admin) access.
-
-To resolve this issue, ensure the authenticated user is a Jira site administrator and try again.
+To resolve this issue, ensure that the Jira user that installs and configures the GitLab for Jira Cloud app meets certain
+[requirements](../../administration/settings/jira_cloud_app.md#jira-user-requirements).

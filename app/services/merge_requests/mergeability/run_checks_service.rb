@@ -65,7 +65,7 @@ module MergeRequests
       end
 
       def all_results_success?
-        results.all?(&:success?)
+        results.none?(&:failed?)
       end
 
       def failure_reason

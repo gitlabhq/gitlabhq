@@ -29,7 +29,8 @@ class ProjectsController < Projects::ApplicationController
   before_action :authorize_read_code!, only: [:refs]
 
   # Authorize
-  before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping, :download_export, :export, :remove_export, :generate_new_export]
+  before_action :authorize_admin_project_or_custom_permissions!, only: :edit
+  before_action :authorize_admin_project!, only: [:update, :housekeeping, :download_export, :export, :remove_export, :generate_new_export]
   before_action :authorize_archive_project!, only: [:archive, :unarchive]
   before_action :event_filter, only: [:show, :activity]
 
@@ -37,11 +38,14 @@ class ProjectsController < Projects::ApplicationController
   before_action :check_export_rate_limit!, only: [:export, :download_export, :generate_new_export]
 
   before_action do
+    push_frontend_feature_flag(:blob_blame_info, @project)
     push_frontend_feature_flag(:highlight_js_worker, @project)
     push_frontend_feature_flag(:remove_monitor_metrics, @project)
     push_frontend_feature_flag(:explain_code_chat, current_user)
     push_frontend_feature_flag(:service_desk_custom_email, @project)
     push_frontend_feature_flag(:issue_email_participants, @project)
+    # TODO: We need to remove the FF eventually when we rollout page_specific_styles
+    push_frontend_feature_flag(:page_specific_styles, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
     push_licensed_feature(:security_orchestration_policies) if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
     push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
@@ -594,6 +598,11 @@ class ProjectsController < Projects::ApplicationController
 
   def render_edit
     render 'edit'
+  end
+
+  # Overridden in EE
+  def authorize_admin_project_or_custom_permissions!
+    authorize_admin_project!
   end
 end
 

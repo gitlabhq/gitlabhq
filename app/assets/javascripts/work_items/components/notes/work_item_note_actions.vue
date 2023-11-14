@@ -5,7 +5,7 @@ import {
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
 } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __, sprintf } from '~/locale';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
@@ -207,7 +207,6 @@ export default {
     <gl-button
       v-if="showEdit"
       v-gl-tooltip
-      data-testid="edit-work-item-note"
       data-track-action="click_button"
       data-track-label="edit_button"
       category="tertiary"
@@ -219,7 +218,6 @@ export default {
     <gl-disclosure-dropdown
       ref="dropdown"
       v-gl-tooltip
-      data-testid="work-item-note-actions"
       icon="ellipsis_v"
       text-sr-only
       placement="right"

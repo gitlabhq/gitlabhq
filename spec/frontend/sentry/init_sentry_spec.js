@@ -87,7 +87,7 @@ describe('SentryConfig', () => {
         expect(mockBrowserClient).toHaveBeenCalledWith(
           expect.objectContaining({
             dsn: mockDsn,
-            release: mockVersion,
+            release: mockRevision,
             allowUrls: [mockGitlabUrl, 'webpack-internal://'],
             environment: mockEnvironment,
             tracesSampleRate: mockSentryClientsideTracesSampleRate,
@@ -115,7 +115,7 @@ describe('SentryConfig', () => {
         expect(mockSetTags).toHaveBeenCalledTimes(1);
         expect(mockSetTags).toHaveBeenCalledWith({
           page: mockPage,
-          revision: mockRevision,
+          version: mockVersion,
           feature_category: mockFeatureCategory,
         });
       });

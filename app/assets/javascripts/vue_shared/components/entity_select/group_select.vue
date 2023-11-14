@@ -1,6 +1,6 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
 import Api, { DEFAULT_PER_PAGE } from '~/api';

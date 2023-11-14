@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/browser';
 import {
   GlAlert,
   GlLink,
@@ -10,6 +9,7 @@ import {
 } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';

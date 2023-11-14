@@ -2435,7 +2435,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
 
     it 'deletes all refs except those with the specified prefixes' do
-      repository.delete_all_refs_except(%w(refs/keep refs/also-keep refs/heads))
+      repository.delete_all_refs_except(%w[refs/keep refs/also-keep refs/heads])
       expect(repository.ref_exists?("refs/delete/a")).to be(false)
       expect(repository.ref_exists?("refs/also-delete/b")).to be(false)
       expect(repository.ref_exists?("refs/keep/c")).to be(true)
@@ -2722,15 +2722,15 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
   describe '#check_objects_exist' do
     it 'returns hash specifying which object exists in repo' do
-      refs_exist = %w(
+      refs_exist = %w[
         b83d6e391c22777fca1ed3012fce84f633d7fed0
         498214de67004b1da3d820901307bed2a68a8ef6
         1b12f15a11fc6e62177bef08f47bc7b5ce50b141
-      )
-      refs_dont_exist = %w(
+      ]
+      refs_dont_exist = %w[
         1111111111111111111111111111111111111111
         2222222222222222222222222222222222222222
-      )
+      ]
       object_existence_map = repository.check_objects_exist(refs_exist + refs_dont_exist)
       expect(object_existence_map).to eq({
         'b83d6e391c22777fca1ed3012fce84f633d7fed0' => true,

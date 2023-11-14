@@ -14,6 +14,7 @@ RSpec.shared_examples 'validate dictionary' do |objects, directory_path, require
         introduced_by_url
         milestone
         gitlab_schema
+        schema_inconsistencies
       ]
     end
 
@@ -169,7 +170,8 @@ RSpec.shared_examples 'validate dictionary' do |objects, directory_path, require
 end
 
 RSpec.describe 'Views documentation', feature_category: :database do
-  database_base_models = Gitlab::Database.database_base_models.select { |k, _| k != 'geo' }
+  excluded = %w[geo jh]
+  database_base_models = Gitlab::Database.database_base_models.reject { |k, _| k.in?(excluded) }
   views = database_base_models.flat_map { |_, m| m.connection.views }.sort.uniq
   directory_path = File.join('db', 'docs', 'views')
   required_fields = %i[feature_categories view_name gitlab_schema]
@@ -178,7 +180,8 @@ RSpec.describe 'Views documentation', feature_category: :database do
 end
 
 RSpec.describe 'Tables documentation', feature_category: :database do
-  database_base_models = Gitlab::Database.database_base_models.select { |k, _| k != 'geo' }
+  excluded = %w[geo jh]
+  database_base_models = Gitlab::Database.database_base_models.reject { |k, _| k.in?(excluded) }
   tables = database_base_models.flat_map { |_, m| m.connection.tables }.sort.uniq
   directory_path = File.join('db', 'docs')
   required_fields = %i[feature_categories table_name gitlab_schema]

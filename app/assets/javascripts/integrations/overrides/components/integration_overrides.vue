@@ -1,6 +1,6 @@
 <script>
 import { GlLink, GlLoadingIcon, GlPagination, GlTable, GlAlert } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 import { DEFAULT_PER_PAGE } from '~/api';
 import { fetchOverrides } from '~/integrations/overrides/api';

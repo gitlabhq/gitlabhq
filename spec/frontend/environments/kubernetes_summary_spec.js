@@ -16,7 +16,11 @@ describe('~/environments/components/kubernetes_summary.vue', () => {
   const namespace = 'my-kubernetes-namespace';
   const configuration = {
     basePath: mockKasTunnelUrl,
-    headers: { 'GitLab-Agent-Id': '1', 'Content-Type': 'application/json' },
+    headers: {
+      'GitLab-Agent-Id': '1',
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
   };
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);

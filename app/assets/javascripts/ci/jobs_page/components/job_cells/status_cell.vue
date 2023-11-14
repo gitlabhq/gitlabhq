@@ -1,14 +1,14 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
 import { formatTime } from '~/lib/utils/datetime_utility';
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 export default {
   iconSize: 12,
   components: {
-    CiBadgeLink,
+    CiIcon,
     GlIcon,
     TimeAgoTooltip,
   },
@@ -38,7 +38,7 @@ export default {
 
 <template>
   <div>
-    <ci-badge-link :status="job.detailedStatus" />
+    <ci-icon :status="job.detailedStatus" show-status-text />
     <div class="gl-font-sm gl-text-secondary gl-mt-2 gl-ml-3">
       <div v-if="duration" data-testid="job-duration">
         <gl-icon name="timer" :size="$options.iconSize" data-testid="duration-icon" />

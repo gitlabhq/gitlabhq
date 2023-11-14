@@ -8,6 +8,13 @@ module NavbarStructureHelper
     structure.insert(index + 1, new_nav_item)
   end
 
+  def insert_before_nav_item(after_nav_item_name, new_nav_item:)
+    expect(structure).to include(a_hash_including(nav_item: after_nav_item_name))
+
+    index = structure.find_index { |h| h[:nav_item] == after_nav_item_name if h }
+    structure.insert(index, new_nav_item)
+  end
+
   def insert_after_sub_nav_item(before_sub_nav_item_name, within:, new_sub_nav_item_name:)
     expect(structure).to include(a_hash_including(nav_item: within))
     hash = structure.find { |h| h[:nav_item] == within if h }
@@ -30,49 +37,57 @@ module NavbarStructureHelper
     hash[:nav_sub_items].insert(index, new_sub_nav_item_name)
   end
 
-  def insert_package_nav(within)
-    insert_after_nav_item(
-      within,
+  def insert_package_nav
+    insert_after_sub_nav_item(
+      _("Feature flags"),
+      within: _('Deploy'),
+      new_sub_nav_item_name: _("Package Registry")
+    )
+  end
+
+  def create_package_nav(before)
+    insert_before_nav_item(
+      before,
       new_nav_item: {
-        nav_item: _('Packages and registries'),
-        nav_sub_items: [_('Package Registry')]
+        nav_item: _("Deploy"),
+        nav_sub_items: [_("Package Registry")]
       }
     )
   end
 
-  def insert_customer_relations_nav(within)
-    insert_after_nav_item(
-      within,
-      new_nav_item: {
-        nav_item: _('Customer relations'),
-        nav_sub_items: [
-          _('Contacts'),
-          _('Organizations')
-        ]
-      }
+  def insert_customer_relations_nav(after)
+    insert_after_sub_nav_item(
+      after,
+      within: _('Plan'),
+      new_sub_nav_item_name: _("Customer contacts")
+    )
+    insert_after_sub_nav_item(
+      _("Customer contacts"),
+      within: _('Plan'),
+      new_sub_nav_item_name: _("Customer organizations")
     )
   end
 
   def insert_container_nav
     insert_after_sub_nav_item(
       _('Package Registry'),
-      within: _('Packages and registries'),
+      within: _('Deploy'),
       new_sub_nav_item_name: _('Container Registry')
     )
   end
 
   def insert_dependency_proxy_nav
-    insert_after_sub_nav_item(
-      _('Package Registry'),
-      within: _('Packages and registries'),
+    insert_before_sub_nav_item(
+      _('Kubernetes'),
+      within: _('Operate'),
       new_sub_nav_item_name: _('Dependency Proxy')
     )
   end
 
   def insert_infrastructure_registry_nav
     insert_after_sub_nav_item(
-      _('Package Registry'),
-      within: _('Packages and registries'),
+      s_('Terraform|Terraform states'),
+      within: _('Operate'),
       new_sub_nav_item_name: _('Terraform modules')
     )
   end
@@ -80,15 +95,15 @@ module NavbarStructureHelper
   def insert_harbor_registry_nav(within)
     insert_after_sub_nav_item(
       within,
-      within: _('Packages and registries'),
+      within: _('Operate'),
       new_sub_nav_item_name: _('Harbor Registry')
     )
   end
 
   def insert_infrastructure_google_cloud_nav
     insert_after_sub_nav_item(
-      s_('Terraform|Terraform states'),
-      within: _('Infrastructure'),
+      s_('Terraform|Terraform modules'),
+      within: _('Operate'),
       new_sub_nav_item_name: _('Google Cloud')
     )
   end
@@ -96,7 +111,7 @@ module NavbarStructureHelper
   def insert_infrastructure_aws_nav
     insert_after_sub_nav_item(
       _('Google Cloud'),
-      within: _('Infrastructure'),
+      within: _('Operate'),
       new_sub_nav_item_name: _('AWS')
     )
   end
@@ -104,25 +119,24 @@ module NavbarStructureHelper
   def insert_model_experiments_nav(within)
     insert_after_sub_nav_item(
       within,
-      within: _('Packages and registries'),
+      within: _('Analyze'),
       new_sub_nav_item_name: _('Model experiments')
     )
   end
 
   def project_analytics_sub_nav_item
     [
-      _('Value stream'),
-      _('CI/CD'),
-      (_('Code review') if Gitlab.ee?),
-      (_('Merge request') if Gitlab.ee?),
-      _('Repository')
+      _('Value stream analytics'),
+      _('Contributor statistics'),
+      _('CI/CD analytics'),
+      _('Repository analytics'),
+      (_('Code review analytics') if Gitlab.ee?),
+      (_('Merge request analytics') if Gitlab.ee?)
     ]
   end
 
   def group_analytics_sub_nav_item
-    [
-      _('Contribution')
-    ]
+    [_("Contribution analytics")]
   end
 end
 

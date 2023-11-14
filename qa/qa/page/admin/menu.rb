@@ -21,7 +21,7 @@ module QA
         end
 
         def go_to_applications
-          click_element(:nav_item_link, submenu_item: 'Applications')
+          click_element('nav-item-link', submenu_item: 'Applications')
         end
 
         private

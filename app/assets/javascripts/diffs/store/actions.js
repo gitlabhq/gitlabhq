@@ -49,6 +49,7 @@ import {
   TRACKING_MULTIPLE_FILES_MODE,
   EVT_MR_PREPARED,
   FILE_DIFF_POSITION_TYPE,
+  EVT_DISCUSSIONS_ASSIGNED,
 } from '../constants';
 import {
   DISCUSSION_SINGLE_DIFF_FAILED,
@@ -89,6 +90,7 @@ export const setBaseConfig = ({ commit }, options) => {
     viewDiffsFileByFile,
     mrReviews,
     diffViewType,
+    perPage,
   } = options;
   commit(types.SET_BASE_CONFIG, {
     endpoint,
@@ -104,6 +106,7 @@ export const setBaseConfig = ({ commit }, options) => {
     viewDiffsFileByFile,
     mrReviews,
     diffViewType,
+    perPage,
   });
 
   Array.from(new Set(Object.values(mrReviews).flat())).forEach((id) => {
@@ -206,7 +209,7 @@ export const fetchFileByFile = async ({ state, getters, commit }) => {
 };
 
 export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
-  let perPage = state.viewDiffsFileByFile ? 1 : 5;
+  let perPage = state.viewDiffsFileByFile ? 1 : state.perPage;
   let increaseAmount = 1.4;
   const startPage = 0;
   const id = window?.location?.hash;
@@ -413,12 +416,16 @@ export const assignDiscussionsToDiff = (
   }
 
   Vue.nextTick(() => {
-    notesEventHub.$emit('scrollToDiscussion');
+    eventHub.$emit(EVT_DISCUSSIONS_ASSIGNED);
   });
 };
 
 export const removeDiscussionsFromDiff = ({ commit }, removeDiscussion) => {
-  const { file_hash: fileHash, line_code: lineCode, id } = removeDiscussion;
+  const {
+    diff_file: { file_hash: fileHash },
+    line_code: lineCode,
+    id,
+  } = removeDiscussion;
   commit(types.REMOVE_LINE_DISCUSSIONS_FOR_FILE, { fileHash, lineCode, id });
 };
 

@@ -77,6 +77,7 @@ class Snippet < ApplicationRecord
   scope :inc_relations_for_view, -> { includes(author: :status) }
   scope :inc_statistics, -> { includes(:statistics) }
   scope :with_statistics, -> { joins(:statistics) }
+  scope :with_repository_storage_moves, -> { joins(:repository_storage_moves) }
   scope :inc_projects_namespace_route, -> { includes(project: [:route, :namespace]) }
 
   scope :without_created_by_banned_user, -> do

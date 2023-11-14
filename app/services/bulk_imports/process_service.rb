@@ -20,10 +20,6 @@ module BulkImports
 
       process_bulk_import
       re_enqueue
-    rescue StandardError => e
-      Gitlab::ErrorTracking.track_exception(e, bulk_import_id: bulk_import.id)
-
-      bulk_import.fail_op
     end
 
     private
@@ -114,16 +110,15 @@ module BulkImports
         bulk_import_id: entity.bulk_import_id,
         bulk_import_entity_type: entity.source_type,
         source_full_path: entity.source_full_path,
-        pipeline_name: pipeline[:pipeline],
+        pipeline_class: pipeline[:pipeline],
         minimum_source_version: minimum_version,
         maximum_source_version: maximum_version,
-        source_version: entity.source_version.to_s,
-        importer: 'gitlab_migration'
+        source_version: entity.source_version.to_s
       )
     end
 
     def logger
-      @logger ||= Gitlab::Import::Logger.build
+      @logger ||= Logger.build
     end
   end
 end

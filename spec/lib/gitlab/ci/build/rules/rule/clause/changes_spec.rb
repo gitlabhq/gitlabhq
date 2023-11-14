@@ -95,8 +95,11 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes do
 
     context 'when using compare_to' do
       let_it_be(:project) do
-        create(:project, :custom_repo,
-               files: { 'README.md' => 'readme' })
+        create(
+          :project,
+          :custom_repo,
+          files: { 'README.md' => 'readme' }
+        )
       end
 
       let_it_be(:user) { project.owner }

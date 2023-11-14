@@ -76,7 +76,7 @@ In GitLab 14.10, a [flag](../../../../administration/feature_flags.md) named `ce
 Prerequisites:
 
 - For a [GitLab CI/CD workflow](../ci_cd_workflow.md), ensure that
-  [GitLab CI/CD is not disabled](../../../../ci/enable_or_disable_ci.md#disable-cicd-in-a-project).
+  [GitLab CI/CD is not disabled](../../../../ci/pipelines/settings.md#disable-gitlab-cicd-pipelines).
 
 You must register an agent before you can install the agent in your cluster. To register an agent:
 
@@ -220,7 +220,7 @@ The following example projects can help you get started with the agent.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340882) in GitLab 14.8, GitLab warns you on the agent's list page to update the agent version installed on your cluster.
 
-For the best experience, the version of the agent installed in your cluster should match the GitLab major and minor version. The previous minor version is also supported. For example, if your GitLab version is v14.9.4 (major version 14, minor version 9), then versions v14.9.0 and v14.9.1 of the agent are ideal, but any v14.8.x version of the agent is also supported. See [the release page](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/releases) of the GitLab agent.
+For the best experience, the version of the agent installed in your cluster should match the GitLab major and minor version. The previous and next minor versions are also supported. For example, if your GitLab version is v14.9.4 (major version 14, minor version 9), then versions v14.9.0 and v14.9.1 of the agent are ideal, but any v14.8.x or v14.10.x version of the agent is also supported. See [the release page](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/releases) of the GitLab agent.
 
 ### Update the agent version
 

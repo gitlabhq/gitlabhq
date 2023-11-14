@@ -1,4 +1,4 @@
-import { isUndefined } from 'lodash';
+import { isUndefined, uniqueId } from 'lodash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { getParameterByName, setUrlParams } from '~/lib/utils/url_utility';
 import {
@@ -34,6 +34,36 @@ export const generateBadges = ({ member, isCurrentUser, canManageMembers }) => [
     variant: 'info',
   },
 ];
+
+/**
+ * Creates the dropdowns options for static roles
+ *
+ * @param {object} member
+ *   @param {Map<string, number>} member.validRoles
+ */
+export const roleDropdownItems = ({ validRoles }) => {
+  const staticRoleDropdownItems = Object.entries(validRoles).map(([name, value]) => ({
+    accessLevel: value,
+    memberRoleId: null, // The value `null` is need to downgrade from custom role to static role. See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133430#note_1595153555
+    text: name,
+    value: uniqueId('role-static-'),
+  }));
+
+  return { flatten: staticRoleDropdownItems, formatted: staticRoleDropdownItems };
+};
+
+/**
+ * Finds and returns unique value
+ *
+ * @param {Array<{accessLevel: number, memberRoleId: null, text: string, value: string}>} flattenDropdownItems
+ * @param {object} member
+ *   @param {{integerValue: number}} member.accessLevel
+ */
+export const initialSelectedRole = (flattenDropdownItems, member) => {
+  return flattenDropdownItems.find(
+    ({ accessLevel }) => accessLevel === member.accessLevel.integerValue,
+  )?.value;
+};
 
 export const isGroup = (member) => {
   return Boolean(member.sharedWithGroup);
@@ -128,6 +158,7 @@ export const parseDataAttributes = (el) => {
 
 export const baseRequestFormatter = (basePropertyName, accessLevelPropertyName) => ({
   accessLevel,
+  memberRoleId,
   ...otherProperties
 }) => {
   const accessLevelProperty = !isUndefined(accessLevel)
@@ -137,6 +168,7 @@ export const baseRequestFormatter = (basePropertyName, accessLevelPropertyName) 
   return {
     [basePropertyName]: {
       ...accessLevelProperty,
+      member_role_id: memberRoleId ?? null,
       ...otherProperties,
     },
   };

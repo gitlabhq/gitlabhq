@@ -30,7 +30,7 @@ graph LR
    R -- Write/read metadata --> B
 ```
 
-Client applications (for example, GitLab Rails and Docker CLI) interact with the Container Registry through its [HTTP API](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md). The most common operations are pushing and pulling images to/from the registry, which require a series of HTTP requests in a specific order. The request flow for these operations is detailed in the [Request flow](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/push-pull-request-flow.md).
+Client applications (for example, GitLab Rails and Docker CLI) interact with the Container Registry through its [HTTP API](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/api.md). The most common operations are pushing and pulling images to/from the registry, which require a series of HTTP requests in a specific order. The request flow for these operations is detailed in the [Request flow](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/push-pull-request-flow.md).
 
 The registry supports multiple [storage backends](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md#storage), including Google Cloud Storage (GCS) which is used for the GitLab.com registry. In the storage backend, images are stored as blobs, deduplicated, and shared across repositories. These are then linked (like a symlink) to each repository that relies on them, giving them access to the central storage location.
 
@@ -69,7 +69,7 @@ Please refer to the [Docker documentation](https://docs.docker.com/registry/spec
 
 ##### Push and Pull
 
-Push and pull commands are used to upload and download images, more precisely manifests and blobs. The push/pull flow is described in the [documentation](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/push-pull-request-flow.md).
+Push and pull commands are used to upload and download images, more precisely manifests and blobs. The push/pull flow is described in the [documentation](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/push-pull-request-flow.md).
 
 #### GitLab Rails
 
@@ -86,7 +86,7 @@ The single entrypoint for the registry is the [HTTP API](https://gitlab.com/gitl
 | [Check if manifest exists](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#existing-manifests) | **{check-circle}** Yes | **{dotted-circle}** No | Used to get the digest of a manifest by tag. This is then used to pull the manifest and show the tag details in the UI. |
 | [Pull manifest](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#pulling-an-image-manifest) | **{check-circle}** Yes | **{dotted-circle}** No | Used to show the image size and the manifest digest in the tag details UI. |
 | [Pull blob](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#pulling-a-layer) | **{check-circle}** Yes | **{dotted-circle}** No | Used to show the configuration digest and the creation date in the tag details UI. |
-| [Delete tag](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#deleting-a-tag) | **{check-circle}** Yes | **{check-circle}** Yes | Used to delete a tag from the UI and in background (cleanup policies). |
+| [Delete tag](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#delete-tag) | **{check-circle}** Yes | **{check-circle}** Yes | Used to delete a tag from the UI and in background (cleanup policies). |
 
 A valid authentication token is generated in GitLab Rails and embedded in all these requests before sending them to the registry.
 
@@ -154,7 +154,7 @@ Following the GitLab [Go standards and style guidelines](../../../development/go
 
 The design and development of the registry database adhere to the GitLab [database guidelines](../../../development/database/index.md). Being a Go application, the required tooling to support the database will have to be developed, such as for running database migrations.
 
-Running *online* and [*post deployment*](../../../development/database/post_deployment_migrations.md) migrations is already supported by the registry CLI, as described in the [documentation](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/database-migrations.md).
+Running *online* and [*post deployment*](../../../development/database/post_deployment_migrations.md) migrations is already supported by the registry CLI, as described in the [documentation](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/database-migrations.md).
 
 #### Partitioning
 
@@ -224,7 +224,7 @@ This is a list of all the registry HTTP API operations and how they depend on th
 | [Check API version](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#api-version-check)         | `GET`    | `/v2/`                                  | **{dotted-circle}** No                 | **{dotted-circle}** No                | **{check-circle}** Yes                      |
 | [List repositories](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#listing-repositories)      | `GET`    | `/v2/_catalog`                          | **{check-circle}** Yes                 | **{dotted-circle}** No                | **{dotted-circle}** No                      |
 | [List repository tags](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#listing-image-tags)     | `GET`    | `/v2/<name>/tags/list`                  | **{check-circle}** Yes                 | **{dotted-circle}** No                | **{check-circle}** Yes                      |
-| [Delete tag](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#deleting-a-tag)                   | `DELETE` | `/v2/<name>/tags/reference/<reference>` | **{check-circle}** Yes                 | **{dotted-circle}** No                | **{check-circle}** Yes                      |
+| [Delete tag](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#delete-tag)                   | `DELETE` | `/v2/<name>/manifests/<reference>` | **{check-circle}** Yes                 | **{dotted-circle}** No                | **{check-circle}** Yes                      |
 | [Check if manifest exists](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#existing-manifests) | `HEAD`   | `/v2/<name>/manifests/<reference>`      | **{check-circle}** Yes                 | **{dotted-circle}** No                | **{check-circle}** Yes                      |
 | [Pull manifest](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#pulling-an-image-manifest)     | `GET`    | `/v2/<name>/manifests/<reference>`      | **{check-circle}** Yes                 | **{dotted-circle}** No                | **{check-circle}** Yes                      |
 | [Push manifest](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#pushing-an-image-manifest)     | `PUT`    | `/v2/<name>/manifests/<reference>`      | **{check-circle}** Yes                 | **{dotted-circle}** No                | **{dotted-circle}** No                      |

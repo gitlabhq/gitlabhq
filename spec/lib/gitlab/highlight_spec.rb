@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Highlight do
     it 'returns plain version for unknown lexer context' do
       result = described_class.highlight(plain_text_file_name, plain_text_content)
 
-      expect(result).to eq(%[<span id="LC1" class="line" lang="plaintext">plain text contents</span>])
+      expect(result).to eq(%(<span id="LC1" class="line" lang="plaintext">plain text contents</span>))
     end
 
     context 'when content is too long to be highlighted' do

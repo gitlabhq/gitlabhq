@@ -1,46 +1,9 @@
 <script>
 import { GlAccordion, GlAccordionItem, GlBadge, GlIcon, GlLink } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
+import { s__ } from '~/locale';
 
 import { STATISTIC_ITEMS } from '~/import/constants';
-import { STATUSES } from '../constants';
-
-const SCHEDULED_STATUS = {
-  icon: 'status-scheduled',
-  text: __('Pending'),
-  variant: 'muted',
-};
-
-const STATUS_MAP = {
-  [STATUSES.NONE]: {
-    icon: 'status-waiting',
-    text: __('Not started'),
-    variant: 'muted',
-  },
-  [STATUSES.SCHEDULING]: SCHEDULED_STATUS,
-  [STATUSES.SCHEDULED]: SCHEDULED_STATUS,
-  [STATUSES.CREATED]: SCHEDULED_STATUS,
-  [STATUSES.STARTED]: {
-    icon: 'status-running',
-    text: __('Importing...'),
-    variant: 'info',
-  },
-  [STATUSES.FAILED]: {
-    icon: 'status-failed',
-    text: __('Failed'),
-    variant: 'danger',
-  },
-  [STATUSES.TIMEOUT]: {
-    icon: 'status-failed',
-    text: __('Timeout'),
-    variant: 'danger',
-  },
-  [STATUSES.CANCELED]: {
-    icon: 'status-stopped',
-    text: __('Cancelled'),
-    variant: 'neutral',
-  },
-};
+import { STATUSES, STATUS_ICON_MAP } from '../constants';
 
 function isIncompleteImport(stats) {
   return Object.keys(stats?.fetched ?? []).some(
@@ -96,21 +59,11 @@ export default {
     },
 
     mappedStatus() {
-      if (this.status === STATUSES.FINISHED) {
-        return this.isIncomplete
-          ? {
-              icon: 'status-alert',
-              text: s__('Import|Partially completed'),
-              variant: 'warning',
-            }
-          : {
-              icon: 'status-success',
-              text: __('Complete'),
-              variant: 'success',
-            };
+      if (this.isIncomplete) {
+        return STATUS_ICON_MAP[STATUSES.PARTIAL];
       }
 
-      return STATUS_MAP[this.status];
+      return STATUS_ICON_MAP[this.status];
     },
 
     showDetails() {

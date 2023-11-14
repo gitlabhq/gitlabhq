@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Memory::Reporter, :aggregate_failures, feature_category: :application_performance do
+RSpec.describe Gitlab::Memory::Reporter, :aggregate_failures, feature_category: :cloud_connector do
   let(:fake_report) do
     Class.new do
       def name

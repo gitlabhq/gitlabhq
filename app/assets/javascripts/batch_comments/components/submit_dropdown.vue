@@ -1,39 +1,69 @@
 <script>
-import { GlDropdown, GlButton, GlIcon, GlForm, GlFormCheckbox } from '@gitlab/ui';
+import {
+  GlDisclosureDropdown,
+  GlButton,
+  GlIcon,
+  GlForm,
+  GlFormCheckbox,
+  GlFormRadioGroup,
+} from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapActions, mapState } from 'vuex';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
+import { fetchPolicies } from '~/lib/graphql';
 import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '~/vue_shared/constants';
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
+import userCanApproveQuery from '../queries/can_approve.query.graphql';
 
 export default {
+  apollo: {
+    userPermissions: {
+      fetchPolicy: fetchPolicies.NETWORK_ONLY,
+      query: userCanApproveQuery,
+      variables() {
+        return {
+          projectPath: this.projectPath.replace(/^\//, ''),
+          iid: `${this.getNoteableData.iid}`,
+        };
+      },
+      update: (data) => data.project?.mergeRequest?.userPermissions,
+      skip() {
+        return !this.dropdownVisible;
+      },
+    },
+  },
   components: {
-    GlDropdown,
+    GlDisclosureDropdown,
     GlButton,
     GlIcon,
     GlForm,
+    GlFormRadioGroup,
     GlFormCheckbox,
     MarkdownEditor,
     ApprovalPassword: () => import('ee_component/batch_comments/components/approval_password.vue'),
     SummarizeMyReview: () =>
       import('ee_component/batch_comments/components/summarize_my_review.vue'),
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: {
     canSummarize: { default: false },
   },
   data() {
     return {
       isSubmitting: false,
+      dropdownVisible: false,
       noteData: {
         noteable_type: '',
         noteable_id: '',
         note: '',
         approve: false,
         approval_password: '',
+        reviewer_state: 'reviewed',
       },
       formFieldProps: {
         id: 'review-note-body',
@@ -42,16 +72,50 @@ export default {
         'aria-label': __('Comment'),
         'data-testid': 'comment-textarea',
       },
+      userPermissions: {},
     };
   },
   computed: {
     ...mapGetters(['getNotesData', 'getNoteableData', 'noteableType', 'getCurrentUserLastNote']),
     ...mapState('batchComments', ['shouldAnimateReviewButton']),
+    ...mapState('diffs', ['projectPath']),
     autocompleteDataSources() {
       return gl.GfmAutoComplete?.dataSources;
     },
     autosaveKey() {
       return `submit_review_dropdown/${this.getNoteableData.id}`;
+    },
+    radioGroupOptions() {
+      return [
+        {
+          html: [
+            __('Comment'),
+            `<p class="help-text">
+              ${__('Submit general feedback without explicit approval.')}
+            </p>`,
+          ].join('<br />'),
+          value: 'reviewed',
+        },
+        {
+          html: [
+            __('Approve'),
+            `<p class="help-text">
+              ${__('Submit feedback and approve these changes.')}
+            </p>`,
+          ].join('<br />'),
+          value: 'approved',
+          disabled: !this.userPermissions.canApprove,
+        },
+        {
+          html: [
+            __('Request changes'),
+            `<p class="help-text">
+              ${__('Submit feedback that should be addressed before merging.')}
+            </p>`,
+          ].join('<br />'),
+          value: 'requested_changes',
+        },
+      ];
     },
   },
   watch: {
@@ -60,21 +124,21 @@ export default {
         this.repositionDropdown();
       });
     },
+    dropdownVisible(val) {
+      if (!val) {
+        this.userPermissions = {};
+      }
+    },
+    userPermissions: {
+      handler() {
+        this.repositionDropdown();
+      },
+      deep: true,
+    },
   },
   mounted() {
     this.noteData.noteable_type = this.noteableType;
     this.noteData.noteable_id = this.getNoteableData.id;
-
-    // We override the Bootstrap Vue click outside behaviour
-    // to allow for clicking in the autocomplete dropdowns
-    // without this override the submit dropdown will close
-    // whenever a item in the autocomplete dropdown is clicked
-    const originalClickOutHandler = this.$refs.submitDropdown.$refs.dropdown.clickOutHandler;
-    this.$refs.submitDropdown.$refs.dropdown.clickOutHandler = (e) => {
-      if (!e.target.closest('.atwho-container')) {
-        originalClickOutHandler(e);
-      }
-    };
   },
   methods: {
     ...mapActions('batchComments', ['publishReview']),
@@ -113,86 +177,115 @@ export default {
     updateNote(note) {
       this.noteData.note = note;
     },
+    onBeforeClose({ originalEvent: { target }, preventDefault }) {
+      if (
+        target &&
+        [document.querySelector('.atwho-container'), document.querySelector('.dz-hidden-input')]
+          .filter(Boolean)
+          .some((el) => el.contains(target))
+      ) {
+        preventDefault();
+      }
+    },
+    setDropdownVisible(val) {
+      this.dropdownVisible = val;
+    },
   },
   restrictedToolbarItems: ['full-screen'],
 };
 </script>
 
 <template>
-  <gl-dropdown
+  <gl-disclosure-dropdown
     ref="submitDropdown"
-    right
-    dropup
+    placement="right"
     class="submit-review-dropdown"
     :class="{ 'submit-review-dropdown-animated': shouldAnimateReviewButton }"
     data-testid="submit-review-dropdown"
-    variant="info"
-    category="primary"
+    fluid-width
+    @beforeClose="onBeforeClose"
+    @shown="setDropdownVisible(true)"
+    @hidden="setDropdownVisible(false)"
   >
-    <template #button-content>
-      {{ __('Finish review') }}
-      <gl-icon class="dropdown-chevron" name="chevron-up" />
+    <template #toggle>
+      <gl-button variant="info" category="primary">
+        {{ __('Finish review') }}
+        <gl-icon class="dropdown-chevron" name="chevron-up" />
+      </gl-button>
     </template>
-    <gl-form data-testid="submit-gl-form" @submit.prevent="submitReview">
-      <div class="gl-display-flex gl-mb-4 gl-align-items-center">
-        <label for="review-note-body" class="gl-mb-0">
-          {{ __('Summary comment (optional)') }}
-        </label>
-        <summarize-my-review
-          v-if="canSummarize"
-          :id="getNoteableData.id"
-          class="gl-ml-auto"
-          @input="updateNote"
-        />
-      </div>
-      <div class="common-note-form gfm-form">
-        <markdown-editor
-          ref="markdownEditor"
-          v-model="noteData.note"
-          class="js-no-autosize"
-          :is-submitting="isSubmitting"
-          :render-markdown-path="getNoteableData.preview_note_path"
-          :markdown-docs-path="getNotesData.markdownDocsPath"
-          :form-field-props="formFieldProps"
-          enable-autocomplete
-          :autocomplete-data-sources="autocompleteDataSources"
-          :disabled="isSubmitting"
-          :restricted-tool-bar-items="$options.restrictedToolbarItems"
-          :force-autosize="false"
-          :autosave-key="autosaveKey"
-          supports-quick-actions
-          @input="$emit('input', $event)"
-          @keydown.meta.enter="submitReview"
-          @keydown.ctrl.enter="submitReview"
-        />
-      </div>
-      <template v-if="getNoteableData.current_user.can_approve">
-        <gl-form-checkbox
-          v-model="noteData.approve"
-          data-testid="approve_merge_request"
+    <template #default>
+      <gl-form
+        class="submit-review-dropdown-form gl-p-4"
+        data-testid="submit-gl-form"
+        @submit.prevent="submitReview"
+      >
+        <div class="gl-display-flex gl-mb-4 gl-align-items-center">
+          <label for="review-note-body" class="gl-mb-0">
+            {{ __('Summary comment (optional)') }}
+          </label>
+          <summarize-my-review
+            v-if="canSummarize"
+            :id="getNoteableData.id"
+            class="gl-ml-auto"
+            @input="updateNote"
+          />
+        </div>
+        <div class="common-note-form gfm-form">
+          <markdown-editor
+            ref="markdownEditor"
+            v-model="noteData.note"
+            class="js-no-autosize"
+            :is-submitting="isSubmitting"
+            :render-markdown-path="getNoteableData.preview_note_path"
+            :markdown-docs-path="getNotesData.markdownDocsPath"
+            :form-field-props="formFieldProps"
+            enable-autocomplete
+            :autocomplete-data-sources="autocompleteDataSources"
+            :disabled="isSubmitting"
+            :restricted-tool-bar-items="$options.restrictedToolbarItems"
+            :force-autosize="false"
+            :autosave-key="autosaveKey"
+            supports-quick-actions
+            @input="$emit('input', $event)"
+            @keydown.meta.enter="submitReview"
+            @keydown.ctrl.enter="submitReview"
+          />
+        </div>
+        <gl-form-radio-group
+          v-if="glFeatures.mrRequestChanges"
+          v-model="noteData.reviewer_state"
+          :options="radioGroupOptions"
           class="gl-mt-4"
-        >
-          {{ __('Approve merge request') }}
-        </gl-form-checkbox>
+          data-testid="reviewer_states"
+        />
+        <template v-else-if="userPermissions.canApprove">
+          <gl-form-checkbox
+            v-model="noteData.approve"
+            data-testid="approve_merge_request"
+            class="gl-mt-4"
+          >
+            {{ __('Approve merge request') }}
+          </gl-form-checkbox>
+        </template>
         <approval-password
-          v-if="getNoteableData.require_password_to_approve"
-          v-show="noteData.approve"
+          v-if="userPermissions.canApprove && getNoteableData.require_password_to_approve"
+          v-show="noteData.approve || noteData.reviewer_state === 'approved'"
           v-model="noteData.approval_password"
           class="gl-mt-3"
           data-testid="approve_password"
         />
-      </template>
-      <div class="gl-display-flex gl-justify-content-start gl-mt-4">
-        <gl-button
-          :loading="isSubmitting"
-          variant="confirm"
-          type="submit"
-          class="js-no-auto-disable"
-          data-testid="submit-review-button"
-        >
-          {{ __('Submit review') }}
-        </gl-button>
-      </div>
-    </gl-form>
-  </gl-dropdown>
+        <div class="gl-display-flex gl-justify-content-start gl-mt-4">
+          <gl-button
+            :loading="isSubmitting"
+            variant="confirm"
+            type="submit"
+            class="js-no-auto-disable"
+            data-testid="submit-review-button"
+          >
+            {{ __('Submit review') }}
+          </gl-button>
+        </div>
+      </gl-form>
+    </template>
+  </gl-disclosure-dropdown>
 </template>

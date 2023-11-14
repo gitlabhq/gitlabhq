@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe API::VsCode::Settings::VsCodeSettingsSync, :aggregate_failures, factory_default: :keep, feature_category: :web_ide do
+  include GrapePathHelpers::NamedRouteMatcher
+
   let_it_be(:user) { create_default(:user) }
   let_it_be(:user_token) { create(:personal_access_token) }
 
@@ -18,6 +20,14 @@ RSpec.describe API::VsCode::Settings::VsCodeSettingsSync, :aggregate_failures, f
     it "returns #{http_status || :ok} when authenticated" do
       get api(path, personal_access_token: user_token)
       expect(response).to have_gitlab_http_status(http_status || :ok)
+    end
+  end
+
+  shared_examples "returns 400" do
+    it 'returns 400' do
+      get api(path, personal_access_token: user_token)
+
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
   end
 
@@ -80,6 +90,12 @@ RSpec.describe API::VsCode::Settings::VsCodeSettingsSync, :aggregate_failures, f
     it_behaves_like "returns 20x when authenticated", :no_content
     it_behaves_like "returns unauthorized when not authenticated"
 
+    context "when resource type is invalid" do
+      let(:path) { "/vscode/settings_sync/v1/resource/foo/1" }
+
+      it_behaves_like "returns 400"
+    end
+
     context 'when settings with that type are not present' do
       it 'returns 204 no content and no content ETag header' do
         get api(path, personal_access_token: user_token)
@@ -98,6 +114,55 @@ RSpec.describe API::VsCode::Settings::VsCodeSettingsSync, :aggregate_failures, f
         expect(json_response).to have_key('version')
         expect(json_response).to have_key('machineId')
         expect(json_response['content']).to eq('{ "key": "value" }')
+      end
+    end
+  end
+
+  describe 'GET /vscode/settings_sync/v1/resource/:resource_name/' do
+    let(:path) { "/vscode/settings_sync/v1/resource/settings/" }
+
+    context "when resource type is invalid" do
+      let(:path) { "/vscode/settings_sync/v1/resource/foo" }
+
+      it_behaves_like "returns 400"
+    end
+
+    it_behaves_like "returns unauthorized when not authenticated"
+    it_behaves_like "returns 20x when authenticated", :ok
+
+    context 'when settings with that type are not present' do
+      it "returns empty array response" do
+        get api(path, personal_access_token: user_token)
+
+        expect(json_response.length).to eq(0)
+      end
+    end
+
+    context 'when settings with that type are present' do
+      let_it_be(:settings) { create(:vscode_setting, content: '{ "key": "value" }') }
+
+      it 'returns settings with the correct json content' do
+        get api(path, personal_access_token: user_token)
+
+        setting_type = settings[:setting_type]
+        uuid = settings[:uuid]
+
+        resource_ref = "/api/v4/vscode/settings_sync/v1/resource/#{setting_type}/#{uuid}"
+
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['url']).to eq(resource_ref)
+        expect(json_response.first['created']).to eq(settings.updated_at.to_i)
+      end
+    end
+
+    context 'when setting type is machine' do
+      let(:path) { "/vscode/settings_sync/v1/resource/machines/" }
+
+      it 'created field is nil' do
+        get api(path, personal_access_token: user_token)
+
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['created']).to be_nil
       end
     end
   end
@@ -136,6 +201,30 @@ RSpec.describe API::VsCode::Settings::VsCodeSettingsSync, :aggregate_failures, f
     it 'fails if required fields not passed' do
       post api(path, personal_access_token: user_token), params: {}
       expect(response).to have_gitlab_http_status(:bad_request)
+    end
+  end
+
+  describe 'DELETE /vscode/settings_sync/v1/collection' do
+    let(:path) { "/vscode/settings_sync/v1/collection" }
+
+    subject(:request) do
+      delete api(path, personal_access_token: user_token)
+    end
+
+    it 'returns unauthorized when not authenticated' do
+      delete api(path)
+      expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+
+    context 'when user has one or more setting resources' do
+      before do
+        create(:vscode_setting, setting_type: 'globalState')
+        create(:vscode_setting, setting_type: 'extensions')
+      end
+
+      it 'deletes all user setting resources' do
+        expect { request }.to change { User.find(user.id).vscode_settings.count }.from(2).to(0)
+      end
     end
   end
 end

@@ -10,6 +10,9 @@ RSpec.describe Resolvers::DataTransfer::ProjectDataTransferResolver, feature_cat
 
   let(:from) { Date.new(2022, 1, 1) }
   let(:to) { Date.new(2023, 1, 1) }
+
+  let(:finder) { instance_double(::DataTransfer::ProjectDataTransferFinder) }
+
   let(:finder_results) do
     [
       {
@@ -44,21 +47,12 @@ RSpec.describe Resolvers::DataTransfer::ProjectDataTransferResolver, feature_cat
 
     include_examples 'Data transfer resolver'
 
-    context 'when data_transfer_monitoring_mock_data is disabled' do
-      let(:finder) { instance_double(::DataTransfer::ProjectDataTransferFinder) }
+    it 'calls ProjectDataTransferFinder with expected arguments' do
+      expect(::DataTransfer::ProjectDataTransferFinder).to receive(:new).with(
+        project: project, from: from, to: to, user: current_user).once.and_return(finder)
+      allow(finder).to receive(:execute).once.and_return(finder_results)
 
-      before do
-        stub_feature_flags(data_transfer_monitoring_mock_data: false)
-      end
-
-      it 'calls ProjectDataTransferFinder with expected arguments' do
-        expect(::DataTransfer::ProjectDataTransferFinder).to receive(:new).with(
-          project: project, from: from, to: to, user: current_user
-        ).once.and_return(finder)
-        allow(finder).to receive(:execute).once.and_return(finder_results)
-
-        expect(resolve_egress).to eq({ egress_nodes: finder_results })
-      end
+      expect(resolve_egress).to eq({ egress_nodes: finder_results })
     end
   end
 

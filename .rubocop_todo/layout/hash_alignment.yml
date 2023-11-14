@@ -9,5 +9,3 @@ Layout/HashAlignment:
     - 'spec/helpers/projects/ml/experiments_helper_spec.rb'
     - 'spec/lib/gitlab/metrics/requests_rack_middleware_spec.rb'
     - 'spec/requests/projects/merge_requests/creations_spec.rb'
-    - 'spec/support/redis/redis_new_instance_shared_examples.rb'
-    - 'spec/support/redis/redis_shared_examples.rb'

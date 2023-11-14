@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Users::CalloutsHelper do
+RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
   let_it_be(:user, refind: true) { create(:user) }
 
   before do
@@ -162,26 +162,6 @@ RSpec.describe Users::CalloutsHelper do
       end
 
       it { is_expected.to be true }
-    end
-  end
-
-  describe '.show_pages_menu_callout?' do
-    subject { helper.show_pages_menu_callout? }
-
-    before do
-      allow(helper).to receive(:user_dismissed?).with(described_class::PAGES_MOVED_CALLOUT) { dismissed }
-    end
-
-    context 'when user has not dismissed' do
-      let(:dismissed) { false }
-
-      it { is_expected.to be true }
-    end
-
-    context 'when user dismissed' do
-      let(:dismissed) { true }
-
-      it { is_expected.to be false }
     end
   end
 

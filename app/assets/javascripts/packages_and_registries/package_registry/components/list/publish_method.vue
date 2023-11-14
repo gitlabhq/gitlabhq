@@ -39,9 +39,12 @@ export default {
       <span data-testid="pipeline-ref" class="gl-mr-2">{{ pipeline.ref }}</span>
 
       <gl-icon name="commit" class="gl-mr-2" />
-      <gl-link data-testid="pipeline-sha" :href="pipeline.commitPath" class="gl-mr-2">{{
-        packageShaShort
-      }}</gl-link>
+      <gl-link
+        data-testid="pipeline-sha"
+        :href="pipeline.commitPath"
+        class="gl-mr-2 gl-text-decoration-underline"
+        >{{ packageShaShort }}</gl-link
+      >
 
       <clipboard-button
         :text="pipeline.sha"

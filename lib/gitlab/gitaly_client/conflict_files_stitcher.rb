@@ -43,10 +43,14 @@ module Gitlab
 
       def conflict_from_gitaly_file_header(header)
         {
-          ancestor: { path: header.ancestor_path },
-          ours: { path: header.our_path, mode: header.our_mode },
-          theirs: { path: header.their_path }
+          ancestor: { path: encode_path(header.ancestor_path) },
+          ours: { path: encode_path(header.our_path), mode: header.our_mode },
+          theirs: { path: encode_path(header.their_path) }
         }
+      end
+
+      def encode_path(path)
+        Gitlab::EncodingHelper.encode_utf8(path)
       end
     end
   end

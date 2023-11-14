@@ -48,7 +48,7 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
 
         deploy_status = GenericCommitStatus.last
         expect(deploy_status.description).not_to be_present
-        expect(project.pages_metadatum).to be_deployed
+        expect(project.pages_deployed?).to eq(true)
       end
 
       it_behaves_like 'old deployments'
@@ -116,15 +116,14 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
       it "doesn't delete artifacts after deploying" do
         expect(service.execute[:status]).to eq(:success)
 
-        expect(project.pages_metadatum).to be_deployed
+        expect(project.pages_deployed?).to eq(true)
         expect(build.artifacts?).to eq(true)
       end
 
       it 'succeeds' do
-        expect(project.pages_deployed?).to be_falsey
-        expect(service.execute[:status]).to eq(:success)
-        expect(project.pages_metadatum).to be_deployed
-        expect(project.pages_deployed?).to be_truthy
+        expect { expect(service.execute[:status]).to eq(:success) }
+          .to change { project.pages_deployed? }
+          .from(false).to(true)
       end
 
       it 'publishes a PageDeployedEvent event with project id and namespace id' do
@@ -137,10 +136,10 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
         expect { service.execute }.to publish_event(Pages::PageDeployedEvent).with(expected_data)
       end
 
-      it 'creates pages_deployment and saves it in the metadata' do
-        expect do
-          expect(service.execute[:status]).to eq(:success)
-        end.to change { project.pages_deployments.count }.by(1)
+      it 'creates pages_deployment' do
+        expect { expect(service.execute[:status]).to eq(:success) }
+          .to change { project.pages_deployments.count }
+          .by(1)
 
         deployment = project.pages_deployments.last
 
@@ -148,7 +147,6 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
         expect(deployment.file).to be_present
         expect(deployment.file_count).to eq(3)
         expect(deployment.file_sha256).to eq(artifacts_archive.file_sha256)
-        expect(project.pages_metadatum.reload.pages_deployment_id).to eq(deployment.id)
         expect(deployment.ci_build_id).to eq(build.id)
         expect(deployment.root_directory).to be_nil
       end
@@ -157,11 +155,9 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
         project.pages_metadatum.destroy!
         project.reload
 
-        expect do
-          expect(service.execute[:status]).to eq(:success)
-        end.to change { project.pages_deployments.count }.by(1)
-
-        expect(project.pages_metadatum.reload.pages_deployment).to eq(project.pages_deployments.last)
+        expect { expect(service.execute[:status]).to eq(:success) }
+          .to change { project.pages_deployments.count }
+          .by(1)
       end
 
       context 'when archive does not have pages directory' do
@@ -171,7 +167,10 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
         it 'returns an error' do
           expect(service.execute[:status]).not_to eq(:success)
 
-          expect(GenericCommitStatus.last.description).to eq("Error: You need to either include a `public/` folder in your artifacts, or specify which one to use for Pages using `publish` in `.gitlab-ci.yml`")
+          expect(GenericCommitStatus.last.description)
+            .to eq(
+              "Error: You need to either include a `public/` folder in your artifacts, " \
+              "or specify which one to use for Pages using `publish` in `.gitlab-ci.yml`")
         end
       end
 
@@ -196,7 +195,10 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
           it 'returns an error' do
             expect(service.execute[:status]).not_to eq(:success)
 
-            expect(GenericCommitStatus.last.description).to eq("Error: You need to either include a `public/` folder in your artifacts, or specify which one to use for Pages using `publish` in `.gitlab-ci.yml`")
+            expect(GenericCommitStatus.last.description)
+              .to eq(
+                "Error: You need to either include a `public/` folder in your artifacts, " \
+                "or specify which one to use for Pages using `publish` in `.gitlab-ci.yml`")
           end
         end
 
@@ -208,7 +210,10 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
           it 'returns an error' do
             expect(service.execute[:status]).not_to eq(:success)
 
-            expect(GenericCommitStatus.last.description).to eq("Error: You need to either include a `public/` folder in your artifacts, or specify which one to use for Pages using `publish` in `.gitlab-ci.yml`")
+            expect(GenericCommitStatus.last.description)
+              .to eq(
+                "Error: You need to either include a `public/` folder in your artifacts, " \
+                "or specify which one to use for Pages using `publish` in `.gitlab-ci.yml`")
           end
         end
       end
@@ -223,7 +228,8 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
 
         expect(service.execute[:status]).not_to eq(:success)
 
-        expect(GenericCommitStatus.last.description).to eq("pages site contains 3 file entries, while limit is set to 2")
+        expect(GenericCommitStatus.last.description)
+          .to eq("pages site contains 3 file entries, while limit is set to 2")
       end
 
       context 'when timeout happens by DNS error' do
@@ -240,13 +246,13 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
 
           deploy_status = GenericCommitStatus.last
           expect(deploy_status).to be_failed
-          expect(project.pages_metadatum).not_to be_deployed
+          expect(project.pages_deployed?).to eq(false)
         end
       end
 
       context 'when missing artifacts metadata' do
         before do
-          expect(build).to receive(:artifacts_metadata?).and_return(false)
+          allow(build).to receive(:artifacts_metadata?).and_return(false)
         end
 
         it 'does not raise an error as failed job' do
@@ -256,7 +262,7 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
 
           deploy_status = GenericCommitStatus.last
           expect(deploy_status).to be_failed
-          expect(project.pages_metadatum).not_to be_deployed
+          expect(project.pages_deployed?).to eq(false)
         end
       end
 
@@ -275,10 +281,9 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
           end
         end
 
-        it 'creates a new pages deployment and mark it as deployed' do
-          expect do
-            expect(service.execute[:status]).to eq(:success)
-          end.to change { project.pages_deployments.count }.by(1)
+        it 'creates a new pages deployment' do
+          expect { expect(service.execute[:status]).to eq(:success) }
+            .to change { project.pages_deployments.count }.by(1)
 
           deployment = project.pages_deployments.last
           expect(deployment.ci_build_id).to eq(build.id)
@@ -287,16 +292,12 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
         it_behaves_like 'old deployments'
 
         context 'when newer deployment present' do
-          before do
+          it 'fails with outdated reference message' do
             new_pipeline = create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha)
             new_build = create(:ci_build, name: 'pages', pipeline: new_pipeline, ref: 'HEAD')
-            new_deployment = create(:pages_deployment, ci_build: new_build, project: project)
-            project.update_pages_deployment!(new_deployment)
-          end
+            create(:pages_deployment, project: project, ci_build: new_build)
 
-          it 'fails with outdated reference message' do
             expect(service.execute[:status]).to eq(:error)
-            expect(project.reload.pages_metadatum).not_to be_deployed
 
             deploy_status = GenericCommitStatus.last
             expect(deploy_status).to be_failed
@@ -308,16 +309,14 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
       it 'fails when uploaded deployment size is wrong' do
         allow_next_instance_of(PagesDeployment) do |deployment|
           allow(deployment)
-            .to receive(:size)
-            .and_return(file.size + 1)
+            .to receive(:file)
+            .and_return(instance_double(Pages::DeploymentUploader, size: file.size + 1))
         end
 
         expect(service.execute[:status]).not_to eq(:success)
 
-        expect(GenericCommitStatus.last.description).to eq('The uploaded artifact size does not match the expected value')
-        project.pages_metadatum.reload
-        expect(project.pages_metadatum).not_to be_deployed
-        expect(project.pages_metadatum.pages_deployment).to be_nil
+        expect(GenericCommitStatus.last.description)
+          .to eq('The uploaded artifact size does not match the expected value')
       end
     end
   end
@@ -335,9 +334,8 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
     end
 
     it 'fails with exception raised' do
-      expect do
-        service.execute
-      end.to raise_error("Validation failed: File sha256 can't be blank")
+      expect { service.execute }
+        .to raise_error("Validation failed: File sha256 can't be blank")
     end
   end
 

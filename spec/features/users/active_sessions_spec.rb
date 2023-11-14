@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe 'Active user sessions', :clean_gitlab_redis_sessions, feature_category: :system_access do
-  it 'successful login adds a new active user login' do
-    user = create(:user, :no_super_sidebar)
+  it 'successful login adds a new active user login', :js do
+    user = create(:user)
 
-    now = Time.zone.parse('2018-03-12 09:06')
+    now = Time.zone.now.change(usec: 0)
     travel_to(now) do
       gitlab_sign_in(user)
       expect(page).to have_current_path root_path, ignore_query: true
@@ -24,14 +24,14 @@ RSpec.describe 'Active user sessions', :clean_gitlab_redis_sessions, feature_cat
 
       sessions = ActiveSession.list(user)
       expect(sessions.first).to have_attributes(
-        created_at: Time.zone.parse('2018-03-12 09:06'),
-        updated_at: Time.zone.parse('2018-03-12 09:07')
+        created_at: now,
+        updated_at: now + 1.minute
       )
     end
   end
 
   it 'successful login cleans up obsolete entries' do
-    user = create(:user, :no_super_sidebar)
+    user = create(:user)
 
     Gitlab::Redis::Sessions.with do |redis|
       redis.sadd?("session:lookup:user:gitlab:#{user.id}", '59822c7d9fcdfa03725eff41782ad97d')
@@ -45,7 +45,7 @@ RSpec.describe 'Active user sessions', :clean_gitlab_redis_sessions, feature_cat
   end
 
   it 'sessionless login does not clean up obsolete entries' do
-    user = create(:user, :no_super_sidebar)
+    user = create(:user)
     personal_access_token = create(:personal_access_token, user: user)
 
     Gitlab::Redis::Sessions.with do |redis|
@@ -60,8 +60,8 @@ RSpec.describe 'Active user sessions', :clean_gitlab_redis_sessions, feature_cat
     end
   end
 
-  it 'logout deletes the active user login' do
-    user = create(:user, :no_super_sidebar)
+  it 'logout deletes the active user login', :js do
+    user = create(:user)
     gitlab_sign_in(user)
     expect(page).to have_current_path root_path, ignore_query: true
 

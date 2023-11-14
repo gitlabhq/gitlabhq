@@ -9,7 +9,7 @@ RSpec.describe JiraConnectSubscriptions::CreateService, feature_category: :integ
 
   let(:path) { group.full_path }
   let(:params) { { namespace_path: path, jira_user: jira_user } }
-  let(:jira_user) { double(:JiraUser, site_admin?: true) }
+  let(:jira_user) { double(:JiraUser, jira_admin?: true) }
 
   subject { described_class.new(installation, current_user, params).execute }
 
@@ -29,11 +29,11 @@ RSpec.describe JiraConnectSubscriptions::CreateService, feature_category: :integ
   end
 
   context 'remote user does not have access' do
-    let(:jira_user) { double(site_admin?: false) }
+    let(:jira_user) { double(jira_admin?: false) }
 
     it_behaves_like 'a failed execution',
       http_status: 403,
-      message: 'The Jira user is not a site administrator. Check the permissions in Jira and try again.'
+      message: 'The Jira user is not a site or organization administrator. Check the permissions in Jira and try again.'
   end
 
   context 'remote user cannot be retrieved' do

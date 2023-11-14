@@ -139,11 +139,11 @@ class AbuseReport < ApplicationRecord
   def reported_content
     case report_type
     when :issue
-      project.issues.iid_in(route_hash[:id]).pick(:description_html)
+      reported_project.issues.iid_in(route_hash[:id]).pick(:description_html)
     when :merge_request
-      project.merge_requests.iid_in(route_hash[:id]).pick(:description_html)
+      reported_project.merge_requests.iid_in(route_hash[:id]).pick(:description_html)
     when :comment
-      project.notes.id_in(note_id_from_url).pick(:note_html)
+      reported_project.notes.id_in(note_id_from_url).pick(:note_html)
     end
   end
 
@@ -157,13 +157,19 @@ class AbuseReport < ApplicationRecord
     user.abuse_reports.open.by_category(category).id_not_in(id).includes(:reporter)
   end
 
+  # createNote mutation calls noteable.project,
+  # which in case of abuse reports is nil
+  def project
+    nil
+  end
+
   private
 
-  def project
+  def reported_project
     Project.find_by_full_path(route_hash.values_at(:namespace_id, :project_id).join('/'))
   end
 
-  def group
+  def reported_group
     Group.find_by_full_path(route_hash[:group_id])
   end
 

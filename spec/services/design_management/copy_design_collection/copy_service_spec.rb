@@ -267,7 +267,7 @@ RSpec.describe DesignManagement::CopyDesignCollection::CopyService, :clean_gitla
     let_it_be(:config_file) { Rails.root.join('lib/gitlab/design_management/copy_design_collection_model_attributes.yml') }
     let_it_be(:config) { YAML.load_file(config_file).symbolize_keys }
 
-    %w(Design Action Version).each do |model|
+    %w[Design Action Version].each do |model|
       specify do
         attributes = config["#{model.downcase}_attributes".to_sym] || []
         ignored_attributes = config["ignore_#{model.downcase}_attributes".to_sym]

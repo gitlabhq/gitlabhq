@@ -9,30 +9,47 @@ class Projects::GroupLinksController < Projects::ApplicationController
   feature_category :groups_and_projects
 
   def update
-    Projects::GroupLinks::UpdateService.new(group_link, current_user).execute(group_link_params)
+    result = Projects::GroupLinks::UpdateService.new(group_link, current_user).execute(group_link_params)
 
-    if group_link.expires?
-      render json: {
-        expires_in: helpers.time_ago_with_tooltip(group_link.expires_at),
-        expires_soon: group_link.expires_soon?
-      }
-    else
-      render json: {}
+    if result.success?
+      if group_link.expires?
+        render json: {
+          expires_in: helpers.time_ago_with_tooltip(group_link.expires_at),
+          expires_soon: group_link.expires_soon?
+        }
+      else
+        render json: {}
+      end
+    elsif result.reason == :not_found
+      render json: { message: result.message }, status: :not_found
     end
   end
 
   def destroy
-    ::Projects::GroupLinks::DestroyService.new(project, current_user).execute(group_link)
+    result = ::Projects::GroupLinks::DestroyService.new(project, current_user).execute(group_link)
 
-    respond_to do |format|
-      format.html do
-        if can?(current_user, :admin_group, group_link.group)
-          redirect_to group_path(group_link.group), status: :found
-        elsif can?(current_user, :admin_project, group_link.project)
-          redirect_to project_project_members_path(project), status: :found
+    if result.success?
+      respond_to do |format|
+        format.html do
+          if can?(current_user, :admin_group, group_link.group)
+            redirect_to group_path(group_link.group), status: :found
+          elsif can?(current_user, :admin_project, group_link.project)
+            redirect_to project_project_members_path(project), status: :found
+          end
+        end
+        format.js { head :ok }
+      end
+    else
+      respond_to do |format|
+        format.html do
+          redirect_to project_project_members_path(project, tab: :groups), status: :found,
+            alert: _('The project-group link could not be removed.')
+        end
+
+        format.js do
+          render json: { message: result.message }, status: :not_found if result.reason == :not_found
         end
       end
-      format.js { head :ok }
     end
   end
 

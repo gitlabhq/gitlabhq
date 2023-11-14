@@ -190,6 +190,11 @@ export default {
       deep: true,
     },
   },
+  beforeMount() {
+    // reset to default environments list every time we open the drawer
+    // and re-render the environments scope dropdown
+    this.$emit('search-environment-scope', '');
+  },
   mounted() {
     if (this.isProtectedByDefault && !this.isEditing) {
       this.variable = { ...this.variable, protected: true };
@@ -371,7 +376,6 @@ export default {
         :label-text="$options.i18n.key"
         class="gl-border-none gl-pb-0! gl-mb-n5"
         data-testid="ci-variable-key"
-        data-qa-selector="ci_variable_key_field"
       />
       <gl-form-group
         :label="$options.i18n.value"
@@ -388,7 +392,6 @@ export default {
           rows="3"
           max-rows="10"
           data-testid="ci-variable-value"
-          data-qa-selector="ci_variable_value_field"
           spellcheck="false"
         />
         <p
@@ -419,15 +422,14 @@ export default {
           variant="danger"
           category="secondary"
           class="gl-mr-3"
-          data-testid="ci-variable-delete-btn"
+          data-testid="ci-variable-delete-button"
           >{{ $options.i18n.deleteVariable }}</gl-button
         >
         <gl-button
           category="primary"
           variant="confirm"
           :disabled="!canSubmit"
-          data-testid="ci-variable-confirm-btn"
-          data-qa-selector="ci_variable_save_button"
+          data-testid="ci-variable-confirm-button"
           @click="submit"
           >{{ modalActionText }}
         </gl-button>

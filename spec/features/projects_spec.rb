@@ -7,7 +7,7 @@ RSpec.describe 'Project', feature_category: :groups_and_projects do
   include MobileHelpers
 
   describe 'template' do
-    let(:user) { create(:user, :no_super_sidebar) }
+    let(:user) { create(:user) }
 
     before do
       sign_in user
@@ -78,7 +78,7 @@ RSpec.describe 'Project', feature_category: :groups_and_projects do
   end
 
   describe 'shows tip about push to create git command' do
-    let(:user)    { create(:user, :no_super_sidebar) }
+    let(:user)    { create(:user) }
 
     before do
       sign_in user
@@ -214,7 +214,7 @@ RSpec.describe 'Project', feature_category: :groups_and_projects do
   end
 
   describe 'showing information about source of a project fork', :js do
-    let(:user) { create(:user, :no_super_sidebar) }
+    let(:user) { create(:user) }
     let(:base_project) { create(:project, :public, :repository) }
     let(:forked_project) { fork_project(base_project, user, repository: true) }
 
@@ -265,7 +265,7 @@ RSpec.describe 'Project', feature_category: :groups_and_projects do
   end
 
   describe 'when the project repository is disabled', :js do
-    let(:user)    { create(:user, :no_super_sidebar) }
+    let(:user)    { create(:user) }
     let(:project) { create(:project, :repository_disabled, :repository, namespace: user.namespace) }
 
     before do
@@ -282,7 +282,7 @@ RSpec.describe 'Project', feature_category: :groups_and_projects do
   end
 
   describe 'removal', :js do
-    let(:user)    { create(:user, :no_super_sidebar) }
+    let(:user)    { create(:user) }
     let(:project) { create(:project, namespace: user.namespace) }
 
     before do
@@ -307,7 +307,7 @@ RSpec.describe 'Project', feature_category: :groups_and_projects do
   end
 
   describe 'tree view (default view is set to Files)', :js do
-    let(:user) { create(:user, :no_super_sidebar, project_view: 'files') }
+    let(:user) { create(:user, project_view: 'files') }
     let(:project) { create(:forked_project_with_submodules) }
 
     before do
@@ -379,7 +379,7 @@ RSpec.describe 'Project', feature_category: :groups_and_projects do
   end
 
   describe 'activity view' do
-    let(:user) { create(:user, :no_super_sidebar, project_view: 'activity') }
+    let(:user) { create(:user, project_view: 'activity') }
     let(:project) { create(:project, :repository) }
 
     before do
@@ -410,7 +410,7 @@ RSpec.describe 'Project', feature_category: :groups_and_projects do
   end
 
   describe 'edit' do
-    let(:user) { create(:user, :no_super_sidebar) }
+    let(:user) { create(:user) }
     let(:project) { create(:project, :public) }
     let(:path) { edit_project_path(project) }
 
@@ -425,9 +425,9 @@ RSpec.describe 'Project', feature_category: :groups_and_projects do
 
   describe 'view for a user without an access to a repo' do
     let(:project) { create(:project, :repository) }
-    let(:user) { create(:user, :no_super_sidebar) }
+    let(:user) { create(:user) }
 
-    it 'does not contain default branch information in its content' do
+    it 'does not contain default branch information in its content', :js do
       default_branch = 'merge-commit-analyze-side-branch'
 
       project.add_guest(user)
@@ -436,8 +436,10 @@ RSpec.describe 'Project', feature_category: :groups_and_projects do
       sign_in(user)
       visit project_path(project)
 
-      lines_with_default_branch = page.html.lines.select { |line| line.include?(default_branch) }
-      expect(lines_with_default_branch).to eq([])
+      page.within('#content-body') do
+        lines_with_default_branch = page.html.lines.select { |line| line.include?(default_branch) }
+        expect(lines_with_default_branch).to eq([])
+      end
     end
   end
 

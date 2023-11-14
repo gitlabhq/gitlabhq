@@ -56,7 +56,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
   end
 
   context 'when configuration is a hash' do
-    let(:config) { { name: 'image:1.0', entrypoint: %w(/bin/sh run) } }
+    let(:config) { { name: 'image:1.0', entrypoint: %w[/bin/sh run] } }
 
     describe '#value' do
       it 'returns image hash' do
@@ -84,13 +84,13 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
 
     describe '#entrypoint' do
       it "returns image's entrypoint" do
-        expect(entry.entrypoint).to eq %w(/bin/sh run)
+        expect(entry.entrypoint).to eq %w[/bin/sh run]
       end
     end
 
     context 'when configuration has ports' do
       let(:ports) { [{ number: 80, protocol: 'http', name: 'foobar' }] }
-      let(:config) { { name: 'image:1.0', entrypoint: %w(/bin/sh run), ports: ports } }
+      let(:config) { { name: 'image:1.0', entrypoint: %w[/bin/sh run], ports: ports } }
       let(:entry) { described_class.new(config, with_image_ports: image_ports) }
       let(:image_ports) { false }
 

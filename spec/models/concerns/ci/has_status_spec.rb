@@ -55,6 +55,22 @@ RSpec.describe Ci::HasStatus, feature_category: :continuous_integration do
         it { is_expected.to eq 'waiting_for_resource' }
       end
 
+      context 'all waiting for callback' do
+        let!(:statuses) do
+          [create(type, status: :waiting_for_callback), create(type, status: :waiting_for_callback)]
+        end
+
+        it { is_expected.to eq 'waiting_for_callback' }
+      end
+
+      context 'at least one waiting for callback' do
+        let!(:statuses) do
+          [create(type, status: :success), create(type, status: :waiting_for_callback)]
+        end
+
+        it { is_expected.to eq 'waiting_for_callback' }
+      end
+
       context 'all preparing' do
         let!(:statuses) do
           [create(type, status: :preparing), create(type, status: :preparing)]
@@ -225,7 +241,7 @@ RSpec.describe Ci::HasStatus, feature_category: :continuous_integration do
       end
     end
 
-    %i[created waiting_for_resource preparing running pending success
+    %i[created waiting_for_callback waiting_for_resource preparing running pending success
        failed canceled skipped].each do |status|
       it_behaves_like 'having a job', status
     end
@@ -271,7 +287,7 @@ RSpec.describe Ci::HasStatus, feature_category: :continuous_integration do
     describe '.alive' do
       subject { CommitStatus.alive }
 
-      %i[running pending waiting_for_resource preparing created].each do |status|
+      %i[running pending waiting_for_callback waiting_for_resource preparing created].each do |status|
         it_behaves_like 'containing the job', status
       end
 
@@ -283,7 +299,7 @@ RSpec.describe Ci::HasStatus, feature_category: :continuous_integration do
     describe '.alive_or_scheduled' do
       subject { CommitStatus.alive_or_scheduled }
 
-      %i[running pending waiting_for_resource preparing created scheduled].each do |status|
+      %i[running pending waiting_for_callback waiting_for_resource preparing created scheduled].each do |status|
         it_behaves_like 'containing the job', status
       end
 
@@ -319,7 +335,7 @@ RSpec.describe Ci::HasStatus, feature_category: :continuous_integration do
     describe '.cancelable' do
       subject { CommitStatus.cancelable }
 
-      %i[running pending waiting_for_resource preparing created scheduled].each do |status|
+      %i[running pending waiting_for_callback waiting_for_resource preparing created scheduled].each do |status|
         it_behaves_like 'containing the job', status
       end
 

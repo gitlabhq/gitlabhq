@@ -30,20 +30,9 @@ module MembersHelper
     "#{text} #{action} the #{member.source.human_name} #{source_text(member)}?"
   end
 
-  def remove_member_title(member)
-    action = member.request? ? 'Deny access request' : 'Remove user'
-
-    "#{action} from #{source_text(member)}"
-  end
-
   def leave_confirmation_message(member_source)
     "Are you sure you want to leave the " \
     "\"#{member_source.human_name}\" #{member_source.model_name.to_s.humanize(capitalize: false)}?"
-  end
-
-  def filter_group_project_member_path(options = {})
-    options = params.slice(:search, :sort).merge(options).permit!
-    "#{request.path}?#{options.to_param}"
   end
 
   def member_path(member)

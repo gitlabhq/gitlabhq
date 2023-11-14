@@ -151,15 +151,66 @@ Prerequisite:
 
 - You have an agent configured with the `user_access` entry.
 
-To grant Kubernetes API access:
+### Configure local access with the GitLab CLI (recommended)
+
+You can use the [GitLab CLI `glab`](../../../editor_extensions/gitlab_cli/index.md) to create or update
+a Kubernetes configuration file to access the agent Kubernetes API.
+
+Use `glab cluster agent` commands to manage cluster connections:
+
+1. View a list of all the agents associated with your project:
+
+```shell
+glab cluster agent list --repo '<group>/<project>'
+
+# If your current working directory is the Git repository of the project with the agent, you can omit the --repo option:
+glab cluster agent list
+```
+
+1. Use the numerical agent ID presented in the first column of the output to update your `kubeconfig`:
+
+```shell
+glab cluster agent update-kubeconfig --repo '<group>/<project>' --agent '<agent-id>' --use-context
+```
+
+1. Verify the update with `kubectl` or your preferred Kubernetes tooling:
+
+```shell
+kubectl get nodes
+```
+
+The `update-kubeconfig` command sets `glab cluster agent get-token` as a
+[credential plugin](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#client-go-credential-plugins)
+for Kubernetes tools to retrieve a token. The `get-token` command creates and
+returns a personal access token that is valid until the end of the current day.
+Kubernetes tools cache the token until it expires, the API returns an authorization error, or the process exits. Expect all subsequent calls to your Kubernetes tooling to create a new token.
+
+The `glab cluster agent update-kubeconfig` command supports a number of command line flags. You can view all supported flags with `glab cluster agent update-kubeconfig --help`.
+
+Some examples:
+
+```shell
+# When the current working directory is the Git repository where the agent is registered the --repo / -R flag can be omitted
+glab cluster agent update-kubeconfig --agent '<agent-id>'
+
+# When the --use-context option is specified the `current-context` of the kubeconfig file is changed to the agent context
+glab cluster agent update-kubeconfig --agent '<agent-id>' --use-context
+
+# The --kubeconfig flag can be used to specify an alternative kubeconfig path
+glab cluster agent update-kubeconfig --agent '<agent-id>' --kubeconfig ~/gitlab.kubeconfig
+```
+
+### Configure local access manually using a personal access token
+
+You can configure access to a Kubernetes cluster using a long-lived personal access token:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Kubernetes clusters** and retrieve the numerical ID of the agent you want to access. You need the ID to construct the full API token.
 1. Create a [personal access token](../../profile/personal_access_tokens.md) with the `k8s_proxy` scope. You need the access token to construct the full API token.
-1. Construct `kube config` entries to access the cluster:
-   1. Make sure that the proper `kube config` is selected.
+1. Construct `kubeconfig` entries to access the cluster:
+   1. Make sure that the proper `kubeconfig` is selected.
       For example, you can set the `KUBECONFIG` environment variable.
-   1. Add the GitLab KAS proxy cluster to the `kube config`:
+   1. Add the GitLab KAS proxy cluster to the `kubeconfig`:
 
       ```shell
       kubectl config set-cluster <cluster_name> --server "https://kas.gitlab.com/k8s-proxy"

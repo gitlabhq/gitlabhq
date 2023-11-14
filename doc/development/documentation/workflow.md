@@ -36,6 +36,13 @@ A member of the Technical Writing team adds these labels:
   `docs::` prefix. For example, `~docs::improvement`.
 - The [`~Technical Writing` team label](../labels/index.md#team-labels).
 
+NOTE:
+With the exception of `/doc/development/documentation`,
+technical writers do not review content in the `doc/development` directory.
+Any Maintainer can merge content in the `doc/development` directory.
+If you would like a technical writer review of content in the `doc/development` directory,
+ask in the `#docs` Slack channel.
+
 ## Post-merge reviews
 
 If not assigned to a Technical Writer for review prior to merging, a review must be scheduled
@@ -64,6 +71,11 @@ Remember:
   can address the feedback provided by the Technical Writer in a follow-up MR.
 - The Technical Writer can also help decide that documentation can be merged without Technical
   writer review, with the review to occur soon after merge.
+
+## Pages with no tech writer review
+
+The documentation under `/doc/solutions` is created, maintained, copy edited,
+and merged by the Solutions Architect team.
 
 ## Do not use ChatGPT or AI-generated content for the docs
 

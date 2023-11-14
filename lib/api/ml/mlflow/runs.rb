@@ -9,6 +9,11 @@ module API
       class Runs < ::API::Base
         feature_category :mlops
 
+        before do
+          check_api_read!
+          check_api_write! unless request.get? || request.head?
+        end
+
         resource :runs do
           desc 'Creates a Run.' do
             success Entities::Ml::Mlflow::Run

@@ -34,7 +34,8 @@ Prorated charges are not possible without a quarterly usage report.
 
 ## View user totals
 
-You can view users for your license and determine if you've gone over your subscription.
+View the amount of users in your instance to determine if they exceed the amount
+paid for in your subscription.
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
@@ -44,17 +45,19 @@ The lists of users are displayed.
 
 ### Billable users
 
-A _billable user_ counts against the number of subscription seats. Every user is considered a
-billable user, with the following exceptions:
+Billable users count toward the number of subscription seats purchased in your subscription.
 
-- [Deactivated users](../../administration/moderate_users.md#deactivate-a-user) and
-  [blocked users](../../administration/moderate_users.md#block-a-user) don't count as billable users in the current subscription. When they are either deactivated or blocked they release a _billable user_ seat. However, they may
-  count toward overages in the subscribed seat count.
-- Users who are [pending approval](../../administration/moderate_users.md#users-pending-approval).
-- Users with only the [Minimal Access role](../../user/permissions.md#users-with-minimal-access) on self-managed Ultimate subscriptions or any GitLab.com subscriptions.
-- Users with only the [Guest or Minimal Access roles on an Ultimate subscription](#free-guest-users).
-- Users without project or group memberships on an Ultimate subscription.
-- GitLab-created service accounts:
+A user is not counted as a billable user if:
+
+- They are [deactivated](../../administration/moderate_users.md#deactivate-a-user) or
+  [blocked](../../administration/moderate_users.md#block-a-user).
+  If the user occupied a seat prior to being deactivated or blocked,
+  the user is included in the number of [maximum users](#maximum-users).
+- They are [pending approval](../../administration/moderate_users.md#users-pending-approval).
+- They have only the [Minimal Access role](../../user/permissions.md#users-with-minimal-access) on self-managed Ultimate subscriptions or any GitLab.com subscriptions.
+- They have the [Guest or Minimal Access roles on an Ultimate subscription](#free-guest-users).
+- They have project or group memberships on an Ultimate subscription.
+- The account is a GitLab-created service account:
   - [Ghost User](../../user/profile/account/delete_account.md#associated-records).
   - Bots such as:
     - [Support Bot](../../user/project/service_desk/configure.md#support-bot-user).
@@ -62,7 +65,7 @@ billable user, with the following exceptions:
     - [Bot users for groups](../../user/group/settings/group_access_tokens.md#bot-users-for-groups).
     - Other [internal users](../../development/internal_users.md#internal-users).
 
-**Billable users** as reported in the `/admin` section is updated once per day.
+The amount of **Billable users** is reported once a day in the Admin Area.
 
 ### Maximum users
 
@@ -373,14 +376,12 @@ An invoice is generated for the renewal and available for viewing or download on
 
 ### Automatic subscription renewal
 
-When a subscription is set to auto-renew, it renews automatically on the
-expiration date (at midnight UTC) without a gap in available service. Subscriptions purchased through Customers Portal are set to auto-renew by default.
-The number of user licenses is adjusted to fit the [number of billable users in your instance](#view-user-totals) at the time of renewal, if that number is higher than the current subscription quantity.
-Before auto-renewal you should [prepare for the renewal](#prepare-for-renewal-by-reviewing-your-account) at least 2 days before the renewal date, so that your changes synchronize to GitLab in time for your renewal. To auto-renew your subscription,
+When a subscription is set to auto-renew, it renews automatically on the expiration date (at midnight UTC) without a gap in available service. Subscriptions purchased through Customers Portal are set to auto-renew by default.
+
+The number of user licenses is adjusted to fit the [number of billable users in your instance](#view-user-totals) at the time of renewal, if that number is higher than the current subscription quantity. Before auto-renewal you should [prepare for the renewal](#prepare-for-renewal-by-reviewing-your-account) at least 2 days before the renewal date, so that your changes synchronize to GitLab in time for your renewal. To auto-renew your subscription,
 you must have enabled the [synchronization of subscription data](#subscription-data-synchronization).
 
-You can view and download your renewal invoice on the Customers Portal
-[View invoices](https://customers.gitlab.com/receipts) page. If your account has a [saved credit card](../customers_portal.md#change-your-payment-method), the card is charged for the invoice amount. If we are unable to process a payment or the auto-renewal fails for any other reason, you have 14 days to renew your subscription, after which your GitLab tier is downgraded.
+You can view and download your renewal invoice on the Customers Portal [View invoices](https://customers.gitlab.com/receipts) page. If your account has a [saved credit card](../customers_portal.md#change-your-payment-method), the card is charged for the invoice amount. If we are unable to process a payment or the auto-renewal fails for any other reason, you have 14 days to renew your subscription, after which your GitLab tier is downgraded.
 
 #### Email notifications
 

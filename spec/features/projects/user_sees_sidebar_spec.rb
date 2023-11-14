@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > User sees sidebar', feature_category: :groups_and_projects do
-  let(:user) { create(:user, :no_super_sidebar) }
+RSpec.describe 'Projects > User sees sidebar', :js, feature_category: :groups_and_projects do
+  let(:user) { create(:user) }
   let(:project) { create(:project, :private, public_builds: false, namespace: user.namespace) }
 
   # NOTE: See documented behaviour https://design.gitlab.com/regions/navigation#contextual-navigation
@@ -14,44 +14,25 @@ RSpec.describe 'Projects > User sees sidebar', feature_category: :groups_and_pro
       sign_in(user)
     end
 
-    shared_examples 'has a expanded nav sidebar' do
-      it 'has a expanded desktop nav-sidebar on load' do
-        expect(page).to have_content('Collapse sidebar')
-        expect(page).not_to have_selector('.sidebar-collapsed-desktop')
-        expect(page).not_to have_selector('.sidebar-expanded-mobile')
+    shared_examples 'has an expanded nav sidebar' do
+      it 'has an expanded nav sidebar on load' do
+        expect(page).to have_selector('[data-testid="super-sidebar-collapse-button"]', visible: :visible)
       end
 
-      it 'can collapse the nav-sidebar' do
-        page.find('.nav-sidebar .js-toggle-sidebar').click
-        expect(page).to have_selector('.sidebar-collapsed-desktop')
-        expect(page).not_to have_content('Collapse sidebar')
-        expect(page).not_to have_selector('.sidebar-expanded-mobile')
+      it 'can collapse the nav sidebar' do
+        find_by_testid('super-sidebar-collapse-button').click
+        expect(page).to have_selector('[data-testid="super-sidebar-collapse-button"]', visible: :hidden)
       end
     end
 
     shared_examples 'has a collapsed nav sidebar' do
-      it 'has a collapsed desktop nav-sidebar on load' do
-        expect(page).not_to have_content('Collapse sidebar')
-        expect(page).not_to have_selector('.sidebar-expanded-mobile')
+      it 'has a collapsed nav sidebar on load' do
+        expect(page).to have_selector('[data-testid="super-sidebar-collapse-button"]', visible: :hidden)
       end
 
-      it 'can expand the nav-sidebar' do
-        page.find('.nav-sidebar .js-toggle-sidebar').click
-        expect(page).to have_selector('.sidebar-expanded-mobile')
-        expect(page).to have_content('Collapse sidebar')
-      end
-    end
-
-    shared_examples 'has a mobile nav-sidebar' do
-      it 'has a hidden nav-sidebar on load' do
-        expect(page).not_to have_content('.mobile-nav-open')
-        expect(page).not_to have_selector('.sidebar-expanded-mobile')
-      end
-
-      it 'can expand the nav-sidebar' do
-        page.find('.toggle-mobile-nav').click
-        expect(page).to have_selector('.mobile-nav-open')
-        expect(page).to have_selector('.sidebar-expanded-mobile')
+      it 'can expand the nav sidebar' do
+        page.find('.js-super-sidebar-toggle-expand').click
+        expect(page).to have_selector('[data-testid="super-sidebar-collapse-button"]', visible: :visible)
       end
     end
 
@@ -59,29 +40,24 @@ RSpec.describe 'Projects > User sees sidebar', feature_category: :groups_and_pro
       before do
         resize_screen_xs
         visit project_path(project)
-        expect(page).to have_selector('.nav-sidebar')
-        expect(page).to have_selector('.toggle-mobile-nav')
       end
 
-      it_behaves_like 'has a mobile nav-sidebar'
+      it_behaves_like 'has a collapsed nav sidebar'
     end
 
     context 'with a small size viewport' do
       before do
         resize_screen_sm
         visit project_path(project)
-        expect(page).to have_selector('.nav-sidebar')
-        expect(page).to have_selector('.toggle-mobile-nav')
       end
 
-      it_behaves_like 'has a mobile nav-sidebar'
+      it_behaves_like 'has a collapsed nav sidebar'
     end
 
     context 'with medium size viewport' do
       before do
         resize_window(768, 800)
         visit project_path(project)
-        expect(page).to have_selector('.nav-sidebar')
       end
 
       it_behaves_like 'has a collapsed nav sidebar'
@@ -91,7 +67,6 @@ RSpec.describe 'Projects > User sees sidebar', feature_category: :groups_and_pro
       before do
         resize_window(1199, 800)
         visit project_path(project)
-        expect(page).to have_selector('.nav-sidebar')
       end
 
       it_behaves_like 'has a collapsed nav sidebar'
@@ -101,10 +76,9 @@ RSpec.describe 'Projects > User sees sidebar', feature_category: :groups_and_pro
       before do
         resize_window(1200, 800)
         visit project_path(project)
-        expect(page).to have_selector('.nav-sidebar')
       end
 
-      it_behaves_like 'has a expanded nav sidebar'
+      it_behaves_like 'has an expanded nav sidebar'
     end
   end
 
@@ -121,8 +95,8 @@ RSpec.describe 'Projects > User sees sidebar', feature_category: :groups_and_pro
       it 'does not display a "Snippets" link' do
         visit project_path(project)
 
-        within('.nav-sidebar') do
-          expect(page).not_to have_content 'Snippets'
+        within_testid('super-sidebar') do
+          expect(page).not_to have_button 'Code'
         end
       end
     end
@@ -182,7 +156,7 @@ RSpec.describe 'Projects > User sees sidebar', feature_category: :groups_and_pro
   end
 
   context 'as guest' do
-    let(:guest) { create(:user, :no_super_sidebar) }
+    let(:guest) { create(:user) }
     let!(:issue) { create(:issue, :opened, project: project, author: guest) }
 
     before do
@@ -194,15 +168,19 @@ RSpec.describe 'Projects > User sees sidebar', feature_category: :groups_and_pro
     it 'shows allowed tabs only' do
       visit project_path(project)
 
-      within('.nav-sidebar') do
-        expect(page).to have_content 'Project'
-        expect(page).to have_content 'Issues'
-        expect(page).to have_content 'Wiki'
-        expect(page).to have_content 'Monitor'
+      within_testid('super-sidebar') do
+        expect(page).to have_button 'Pinned'
+        expect(page).to have_button 'Manage'
+        expect(page).to have_button 'Plan'
+        expect(page).to have_button 'Code'
+        expect(page).to have_button 'Monitor'
+        expect(page).to have_button 'Analyze'
 
-        expect(page).not_to have_content 'Repository'
-        expect(page).not_to have_content 'CI/CD'
-        expect(page).not_to have_content 'Merge Requests'
+        expect(page).not_to have_button 'Build'
+
+        click_button 'Code'
+        expect(page).not_to have_link 'Repository'
+        expect(page).not_to have_link 'Merge requests'
       end
     end
 
@@ -212,8 +190,8 @@ RSpec.describe 'Projects > User sees sidebar', feature_category: :groups_and_pro
 
       visit project_path(project)
 
-      within('.nav-sidebar') do
-        expect(page).to have_content 'CI/CD'
+      within_testid('super-sidebar') do
+        expect(page).to have_button 'Build'
       end
     end
 

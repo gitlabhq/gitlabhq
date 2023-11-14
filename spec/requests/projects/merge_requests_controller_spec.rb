@@ -187,21 +187,6 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         expect(response).to have_gitlab_http_status(:ok)
         expect(Gitlab::Json.parse(response.body)['count']['all']).to eq(2)
       end
-
-      context 'when the FF ci_fix_performance_pipelines_json_endpoint is disabled' do
-        before do
-          stub_feature_flags(ci_fix_performance_pipelines_json_endpoint: false)
-        end
-
-        it 'returns the failed builds' do
-          get pipelines_project_merge_request_path(project, merge_request, format: :json)
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(Gitlab::Json.parse(response.body)['pipelines'].size).to eq(1)
-          expect(Gitlab::Json.parse(response.body)['pipelines'][0]['failed_builds_count']).to eq(2)
-          expect(Gitlab::Json.parse(response.body)['pipelines'][0]['failed_builds'].size).to eq(2)
-        end
-      end
     end
 
     private

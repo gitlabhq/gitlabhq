@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe 'layouts/header/_super_sidebar_logged_out', feature_category: :navigation do
   before do
     allow(view).to receive(:current_user_mode).and_return(Gitlab::Auth::CurrentUserMode.new(nil))
-    Feature.enable(:super_sidebar_logged_out)
   end
 
   context 'on gitlab.com' do

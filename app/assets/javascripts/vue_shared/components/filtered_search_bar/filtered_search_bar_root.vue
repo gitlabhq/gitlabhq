@@ -292,7 +292,9 @@ export default {
       this.recentSearchesService.save(resultantSearches);
       this.recentSearches = [];
     },
-    handleFilterSubmit() {
+    async handleFilterSubmit() {
+      this.blurSearchInput();
+      await this.$nextTick();
       const filterTokens = uniqueTokens(this.filterValue);
       this.filterValue = filterTokens;
 
@@ -309,7 +311,6 @@ export default {
             // https://gitlab.com/gitlab-org/gitlab-foss/issues/30821
           });
       }
-      this.blurSearchInput();
       this.$emit('onFilter', this.removeQuotesEnclosure(filterTokens));
     },
     historyTokenOptionTitle(historyToken) {

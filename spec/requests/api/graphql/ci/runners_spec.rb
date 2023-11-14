@@ -35,28 +35,16 @@ RSpec.describe 'Query.runners', feature_category: :runner_fleet do
     end
 
     context 'with filters' do
-      let(:query) do
-        %(
-          query {
-            runners(type: #{runner_type}, status: #{status}) {
-              #{fields}
-            }
-          }
-        )
-      end
-
-      before do
-        allow_next_instance_of(::Gitlab::Ci::RunnerUpgradeCheck) do |instance|
-          allow(instance).to receive(:check_runner_upgrade_suggestion)
+      shared_examples 'a working graphql query returning expected runner' do
+        it_behaves_like 'a working graphql query' do
+          before do
+            post_graphql(query, current_user: current_user)
+          end
         end
 
-        post_graphql(query, current_user: current_user)
-      end
-
-      shared_examples 'a working graphql query returning expected runner' do
-        it_behaves_like 'a working graphql query'
-
         it 'returns expected runner' do
+          post_graphql(query, current_user: current_user)
+
           expect(runners_graphql_data['nodes']).to contain_exactly(a_graphql_entity_for(expected_runner))
         end
 
@@ -86,22 +74,63 @@ RSpec.describe 'Query.runners', feature_category: :runner_fleet do
         end
       end
 
-      context 'runner_type is INSTANCE_TYPE and status is ACTIVE' do
-        let(:runner_type) { 'INSTANCE_TYPE' }
-        let(:status) { 'ACTIVE' }
+      context 'when filtered on type and status' do
+        let(:query) do
+          %(
+            query {
+              runners(type: #{runner_type}, status: #{status}) {
+                #{fields}
+              }
+            }
+          )
+        end
 
-        let!(:expected_runner) { instance_runner }
+        before do
+          allow_next_instance_of(::Gitlab::Ci::RunnerUpgradeCheck) do |instance|
+            allow(instance).to receive(:check_runner_upgrade_suggestion)
+          end
+        end
 
-        it_behaves_like 'a working graphql query returning expected runner'
+        context 'runner_type is INSTANCE_TYPE and status is ACTIVE' do
+          let(:runner_type) { 'INSTANCE_TYPE' }
+          let(:status) { 'ACTIVE' }
+
+          let!(:expected_runner) { instance_runner }
+
+          it_behaves_like 'a working graphql query returning expected runner'
+        end
+
+        context 'runner_type is PROJECT_TYPE and status is NEVER_CONTACTED' do
+          let(:runner_type) { 'PROJECT_TYPE' }
+          let(:status) { 'NEVER_CONTACTED' }
+
+          let!(:expected_runner) { project_runner }
+
+          it_behaves_like 'a working graphql query returning expected runner'
+        end
       end
 
-      context 'runner_type is PROJECT_TYPE and status is NEVER_CONTACTED' do
-        let(:runner_type) { 'PROJECT_TYPE' }
-        let(:status) { 'NEVER_CONTACTED' }
+      context 'when filtered on version prefix' do
+        let_it_be(:version_runner) { create(:ci_runner, :project, active: false, description: 'Runner with machine') }
+        let_it_be(:version_runner_machine) { create(:ci_runner_machine, runner: version_runner, version: '15.11.0') }
 
-        let!(:expected_runner) { project_runner }
+        let(:query) do
+          %(
+            query {
+              runners(versionPrefix: "#{version_prefix}") {
+                #{fields}
+              }
+            }
+          )
+        end
 
-        it_behaves_like 'a working graphql query returning expected runner'
+        context 'version_prefix is "15."' do
+          let(:version_prefix) { '15.' }
+
+          let!(:expected_runner) { version_runner }
+
+          it_behaves_like 'a working graphql query returning expected runner'
+        end
       end
     end
 

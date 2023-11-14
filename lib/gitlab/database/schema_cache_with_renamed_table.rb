@@ -11,26 +11,26 @@ module Gitlab
         clear_renamed_tables_cache!
       end
 
-      def clear_data_source_cache!(name)
-        super(name)
+      def clear_data_source_cache!(connection, table_name)
+        super(connection, table_name)
 
         clear_renamed_tables_cache!
       end
 
-      def primary_keys(table_name)
-        super(underlying_table(table_name))
+      def primary_keys(connection, table_name)
+        super(connection, underlying_table(table_name))
       end
 
-      def columns(table_name)
-        super(underlying_table(table_name))
+      def columns(connection, table_name)
+        super(connection, underlying_table(table_name))
       end
 
-      def columns_hash(table_name)
-        super(underlying_table(table_name))
+      def columns_hash(connection, table_name)
+        super(connection, underlying_table(table_name))
       end
 
-      def indexes(table_name)
-        super(underlying_table(table_name))
+      def indexes(connection, table_name)
+        super(connection, underlying_table(table_name))
       end
 
       private
@@ -40,7 +40,7 @@ module Gitlab
       end
 
       def renamed_tables_cache
-        @renamed_tables ||= Gitlab::Database::TABLES_TO_BE_RENAMED.select do |old_name, new_name|
+        @renamed_tables ||= Gitlab::Database::TABLES_TO_BE_RENAMED.select do |old_name, _new_name|
           connection.view_exists?(old_name)
         end
       end

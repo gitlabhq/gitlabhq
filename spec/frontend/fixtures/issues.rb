@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::IssuesController, '(JavaScript fixtures)', :with_license, type: :controller do
   include JavaScriptFixturesHelpers
 
-  let(:user) { create(:user, :no_super_sidebar, feed_token: 'feedtoken:coldfeed') }
+  let(:user) { create(:user, feed_token: 'feedtoken:coldfeed') }
   let(:namespace) { create(:namespace, name: 'frontend-fixtures') }
   let(:project) { create(:project_empty_repo, namespace: namespace, path: 'issues-project') }
 

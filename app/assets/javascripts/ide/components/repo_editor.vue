@@ -8,7 +8,6 @@ import {
   EDITOR_TYPE_CODE,
   EDITOR_CODE_INSTANCE_FN,
   EDITOR_DIFF_INSTANCE_FN,
-  EXTENSION_CI_SCHEMA_FILE_NAME_MATCH,
 } from '~/editor/constants';
 import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
 import { EditorWebIdeExtension } from '~/editor/extensions/source_editor_webide_ext';
@@ -30,6 +29,7 @@ import { viewerInformationForPath } from '~/vue_shared/components/content_viewer
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
 import { readFileAsDataURL } from '~/lib/utils/file_utility';
+import { isDefaultCiConfig, hasCiConfigExtension } from '~/lib/utils/common_utils';
 
 import {
   leftSidebarViews,
@@ -152,8 +152,9 @@ export default {
     },
     isCiConfigFile() {
       return (
-        this.file.path === EXTENSION_CI_SCHEMA_FILE_NAME_MATCH &&
-        this.editor?.getEditorType() === EDITOR_TYPE_CODE
+        // For CI config schemas the filename must match '*.gitlab-ci.yml' regardless of project configuration.
+        // https://gitlab.com/gitlab-org/gitlab/-/issues/293641
+        hasCiConfigExtension(this.file.path) && this.editor?.getEditorType() === EDITOR_TYPE_CODE
       );
     },
   },
@@ -162,7 +163,7 @@ export default {
       handler() {
         this.stopWatchingCiYaml();
 
-        if (this.file.name === '.gitlab-ci.yml') {
+        if (isDefaultCiConfig(this.file.name)) {
           this.startWatchingCiYaml();
         }
       },

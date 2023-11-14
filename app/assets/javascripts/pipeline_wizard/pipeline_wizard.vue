@@ -1,5 +1,6 @@
 <script>
 import { parseDocument } from 'yaml';
+import { DEFAULT_CI_CONFIG_PATH } from '~/lib/utils/constants';
 import WizardWrapper from './components/wrapper.vue';
 
 export default {
@@ -23,7 +24,7 @@ export default {
     defaultFilename: {
       type: String,
       required: false,
-      default: '.gitlab-ci.yml',
+      default: DEFAULT_CI_CONFIG_PATH,
     },
   },
   computed: {

@@ -55,7 +55,7 @@ RSpec.describe MigrationsHelpers, feature_category: :database do
       end
 
       it 'create a class based on the CI base model' do
-        klass = helper.table(:ci_builds, database: :ci)
+        klass = helper.table(:p_ci_builds, database: :ci) { |model| model.primary_key = :id }
         expect(klass.connection_specification_name).to eq('Ci::ApplicationRecord')
       end
     end
@@ -66,7 +66,7 @@ RSpec.describe MigrationsHelpers, feature_category: :database do
       end
 
       it 'creates a class based on main base model' do
-        klass = helper.table(:ci_builds, database: :ci)
+        klass = helper.table(:p_ci_builds, database: :ci) { |model| model.primary_key = :id }
         expect(klass.connection_specification_name).to eq('ActiveRecord::Base')
       end
     end

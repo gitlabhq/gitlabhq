@@ -1,14 +1,43 @@
-export const mockJobLog = [
+export const mockJobLines = [
   {
-    offset: 1000,
-    content: [{ text: 'Running with gitlab-runner 12.1.0 (de7731dd)' }],
+    offset: 0,
+    content: [
+      {
+        text: 'Running with gitlab-runner 12.1.0 (de7731dd)',
+        style: 'term-fg-l-cyan term-bold',
+      },
+    ],
   },
   {
     offset: 1001,
     content: [{ text: ' on docker-auto-scale-com 8a6210b8' }],
   },
+];
+
+export const mockEmptySection = [
   {
     offset: 1002,
+    content: [
+      {
+        text: 'Resolving secrets',
+        style: 'term-fg-l-cyan term-bold',
+      },
+    ],
+    section: 'resolve-secrets',
+    section_header: true,
+  },
+  {
+    offset: 1003,
+    content: [],
+    section: 'resolve-secrets',
+    section_footer: true,
+    section_duration: '00:00',
+  },
+];
+
+export const mockContentSection = [
+  {
+    offset: 1004,
     content: [
       {
         text: 'Using Docker executor with image dev.gitlab.org3',
@@ -18,50 +47,27 @@ export const mockJobLog = [
     section_header: true,
   },
   {
-    offset: 1003,
+    offset: 1005,
     content: [{ text: 'Docker executor with image registry.gitlab.com ...' }],
     section: 'prepare-executor',
   },
   {
-    offset: 1004,
+    offset: 1006,
     content: [{ text: 'Starting service ...', style: 'term-fg-l-green' }],
     section: 'prepare-executor',
   },
   {
-    offset: 1005,
+    offset: 1007,
     content: [],
     section: 'prepare-executor',
+    section_footer: true,
     section_duration: '00:09',
-  },
-  {
-    offset: 1006,
-    content: [
-      {
-        text: 'Getting source from Git repository',
-      },
-    ],
-    section: 'get-sources',
-    section_header: true,
-  },
-  {
-    offset: 1007,
-    content: [{ text: 'Fetching changes with git depth set to 20...' }],
-    section: 'get-sources',
-  },
-  {
-    offset: 1008,
-    content: [{ text: 'Initialized empty Git repository', style: 'term-fg-l-green' }],
-    section: 'get-sources',
-  },
-  {
-    offset: 1009,
-    content: [],
-    section: 'get-sources',
-    section_duration: '00:19',
   },
 ];
 
-export const mockJobLogLineCount = 8; // `text` entries in mockJobLog
+export const mockJobLog = [...mockJobLines, ...mockEmptySection, ...mockContentSection];
+
+export const mockJobLogLineCount = 6; // `text` entries in mockJobLog
 
 export const originalTrace = [
   {

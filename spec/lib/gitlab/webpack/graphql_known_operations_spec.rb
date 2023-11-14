@@ -30,7 +30,7 @@ RSpec.describe Gitlab::Webpack::GraphqlKnownOperations do
 
         2.times { ::Gitlab::Webpack::GraphqlKnownOperations.load }
 
-        expect(::Gitlab::Webpack::GraphqlKnownOperations.load).to eq(%w(hello world test))
+        expect(::Gitlab::Webpack::GraphqlKnownOperations.load).to eq(%w[hello world test])
       end
     end
 

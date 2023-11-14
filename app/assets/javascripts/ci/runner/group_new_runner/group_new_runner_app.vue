@@ -4,7 +4,6 @@ import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 
 import RegistrationCompatibilityAlert from '~/ci/runner/components/registration/registration_compatibility_alert.vue';
-import RegistrationFeedbackBanner from '~/ci/runner/components/registration/registration_feedback_banner.vue';
 import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
 import { DEFAULT_PLATFORM, GROUP_TYPE, PARAM_KEY_PLATFORM } from '../constants';
@@ -14,7 +13,6 @@ export default {
   name: 'GroupNewRunnerApp',
   components: {
     RegistrationCompatibilityAlert,
-    RegistrationFeedbackBanner,
     RunnerPlatformsRadioGroup,
     RunnerCreateForm,
   },
@@ -50,8 +48,6 @@ export default {
 
 <template>
   <div>
-    <registration-feedback-banner />
-
     <h1 class="gl-font-size-h2">{{ s__('Runners|New group runner') }}</h1>
 
     <registration-compatibility-alert :alert-key="groupId" />

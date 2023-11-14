@@ -234,9 +234,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
 
         raw_repo = excluded_project.repository.raw
 
-        # The restore will not find the repository in the backup, but will create
-        # an empty one in its place
-        expect(raw_repo.empty?).to be(true)
+        expect(raw_repo).not_to exist
       end
     end
 

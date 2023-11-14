@@ -22,7 +22,7 @@ module Sidebars
         override :extra_container_html_options
         def extra_container_html_options
           {
-            class: 'shortcuts-project rspec-project-link'
+            class: 'shortcuts-project'
           }
         end
 

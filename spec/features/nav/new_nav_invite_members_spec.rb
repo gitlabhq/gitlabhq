@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'new navigation toggle', :js, feature_category: :navigation do
   include Features::InviteMembersModalHelpers
 
-  let_it_be(:user) { create(:user, use_new_navigation: true) }
+  let_it_be(:user) { create(:user) }
 
   before do
     sign_in(user)

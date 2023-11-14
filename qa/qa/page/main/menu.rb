@@ -14,6 +14,10 @@ module QA
           element :navbar, required: true # TODO: rename to sidebar once it's default implementation
         end
 
+        view 'app/assets/javascripts/super_sidebar/components/user_bar.vue' do
+          element 'canary-badge-link'
+        end
+
         view 'app/assets/javascripts/super_sidebar/components/user_menu.vue' do
           element 'user-dropdown', required: !Runtime::Env.phone_layout?
           element :user_avatar_content, required: !Runtime::Env.phone_layout?
@@ -78,23 +82,23 @@ module QA
         end
 
         def go_to_projects
-          click_element(:nav_item_link, submenu_item: 'Projects')
+          click_element('nav-item-link', submenu_item: 'Projects')
         end
 
         def go_to_groups
           # This needs to be fixed in the tests themselves. Fullfillment tests try to go to groups view from the
           # group. Instead of having a global hack, explicit test should navigate to correct view first.
           # see: https://gitlab.com/gitlab-org/gitlab/-/issues/403589#note_1383040061
-          go_to_your_work unless has_element?(:nav_item_link, submenu_item: 'Groups', wait: 0)
-          click_element(:nav_item_link, submenu_item: 'Groups')
+          go_to_your_work unless has_element?('nav-item-link', submenu_item: 'Groups', wait: 0)
+          click_element('nav-item-link', submenu_item: 'Groups')
         end
 
         def go_to_snippets
-          click_element(:nav_item_link, submenu_item: 'Snippets')
+          click_element('nav-item-link', submenu_item: 'Snippets')
         end
 
         def go_to_workspaces
-          click_element(:nav_item_link, submenu_item: 'Workspaces')
+          click_element('nav-item-link', submenu_item: 'Workspaces')
         end
 
         def go_to_menu_dropdown_option(option_name)
@@ -112,7 +116,7 @@ module QA
         end
 
         def signed_in_as_user?(user)
-          return false unless has_personal_area?
+          return false unless signed_in?
 
           within_user_menu do
             has_element?('user-profile-link', text: /#{user.username}/)
@@ -176,13 +180,13 @@ module QA
         end
 
         # To verify whether the user has been directed to a canary web node
-        # @return [Boolean] result of checking existence of :canary_badge_link element
+        # @return [Boolean] result of checking existence of 'canary-badge-link' element
         # @example:
         #   Menu.perform do |menu|
         #     expect(menu.canary?).to be(true)
         #   end
         def canary?
-          has_element?(:canary_badge_link)
+          has_element?('canary-badge-link')
         end
 
         private

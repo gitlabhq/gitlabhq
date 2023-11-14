@@ -6,12 +6,7 @@ class MergeRequestDiffCommit < ApplicationRecord
   include BulkInsertSafe
   include ShaAttribute
   include CachedCommit
-  include IgnorableColumns
   include FromUnion
-
-  ignore_column %i[author_name author_email committer_name committer_email],
-    remove_with: '14.6',
-    remove_after: '2021-11-22'
 
   belongs_to :merge_request_diff
 
@@ -33,7 +28,6 @@ class MergeRequestDiffCommit < ApplicationRecord
   belongs_to :committer, class_name: 'MergeRequest::DiffCommitUser'
 
   sha_attribute :sha
-  alias_attribute :id, :sha
 
   attribute :trailers, :ind_jsonb
   validates :trailers, json_schema: { filename: 'git_trailers' }
@@ -128,5 +122,9 @@ class MergeRequestDiffCommit < ApplicationRecord
 
   def committer_email
     committer&.email
+  end
+
+  def to_hash
+    super.merge({ 'id' => sha })
   end
 end

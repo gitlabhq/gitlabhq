@@ -278,10 +278,14 @@ The method used to mask variables [limits what can be included in a masked varia
 The value of the variable must:
 
 - Be a single line.
-- Be 8 characters or longer, consisting only of:
-  - Characters from the Base64 alphabet (RFC4648).
-  - The `@`, `:`, `.`, or `~` characters.
+- Be 8 characters or longer.
 - Not match the name of an existing predefined or custom CI/CD variable.
+
+Additionally, if [variable expansion](#prevent-cicd-variable-expansion) is enabled,
+the value can contain only:
+
+- Characters from the Base64 alphabet (RFC4648).
+- The `@`, `:`, `.`, or `~` characters.
 
 Different versions of [GitLab Runner](../runners/index.md) have different masking limitations:
 
@@ -702,6 +706,68 @@ to enable the `restrict_user_defined_variables` setting. The setting is `disable
 
 If you [store your CI/CD configurations in a different repository](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file),
 use this setting for control over the environment the pipeline runs in.
+
+## Exporting variables
+
+Scripts executed in separate shell contexts do not share exports, aliases,
+local function definitions, or any other local shell updates.
+
+This means that if a job fails, variables created by user-defined scripts are not
+exported.
+
+When runners execute jobs defined in `.gitlab-ci.yml`:
+
+- Scripts specified in `before_script` and the main script are executed together in
+  a single shell context, and are concatenated.
+- Scripts specified in `after_script` run in a shell context completely separate to
+  the `before_script` and the specified scripts.
+
+Regardless of the shell the scripts are executed in, the runner output includes:
+
+- Predefined variables.
+- Variables defined in:
+  - Instance, group, or project CI/CD settings.
+  - The `.gitlab-ci.yml` file in the `variables:` section.
+  - The `.gitlab-ci.yml` file in the `secrets:` section.
+  - The `config.toml`.
+
+The runner cannot handle manual exports, shell aliases, and functions executed in the body of the script, like `export MY_VARIABLE=1`.
+
+For example, in the following `.gitlab-ci.yml` file, the following scripts are defined:
+
+```yaml
+    job:
+     variables:
+       JOB_DEFINED_VARIABLE: "job variable"
+     before_script:
+       - echo "This is the 'before_script' script"
+       - export MY_VARIABLE="variable"
+     script:
+       - echo "This is the 'script' script"
+       - echo "JOB_DEFINED_VARIABLE's value is ${JOB_DEFINED_VARIABLE}"
+       - echo "CI_COMMIT_SHA's value is ${CI_COMMIT_SHA}"
+       - echo "MY_VARIABLE's value is ${MY_VARIABLE}"
+     after_script:
+       - echo "JOB_DEFINED_VARIABLE's value is ${JOB_DEFINED_VARIABLE}"
+       - echo "CI_COMMIT_SHA's value is ${CI_COMMIT_SHA}"
+       - echo "MY_VARIABLE's value is ${MY_VARIABLE}"
+```
+
+When the runner executes the job:
+
+1. `before_script` is executed:
+    1. Prints to the output.
+    1. Defines the variable for `MY_VARIABLE`.
+1. `script` is executed:
+    1. Prints to the output.
+    1. Prints the value of `JOB_DEFINED_VARIABLE`.
+    1. Prints the value of `CI_COMMIT_SHA`.
+    1. Prints the value of `MY_VARIABLE`.
+1. `after_script` is executed in a new, separate shell context:
+    1. Prints to the output.
+    1. Prints the value of `JOB_DEFINED_VARIABLE`.
+    1. Prints the value of `CI_COMMIT_SHA`.
+    1. Prints an empty value of `MY_VARIABLE`. The variable value cannot be detected because `after_script` is in a separate shell context to `before_script`.
 
 ## Related topics
 

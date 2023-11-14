@@ -108,7 +108,7 @@ RSpec.describe Gitlab::I18n::TranslationEntry do
 
   describe '#msgid_contains_newlines' do
     it 'is true when the msgid is an array' do
-      data = { msgid: %w(hello world) }
+      data = { msgid: %w[hello world] }
       entry = described_class.new(entry_data: data, nplurals: 2)
 
       expect(entry.msgid_has_multiple_lines?).to be_truthy
@@ -117,7 +117,7 @@ RSpec.describe Gitlab::I18n::TranslationEntry do
 
   describe '#plural_id_contains_newlines' do
     it 'is true when the msgid is an array' do
-      data = { msgid_plural: %w(hello world) }
+      data = { msgid_plural: %w[hello world] }
       entry = described_class.new(entry_data: data, nplurals: 2)
 
       expect(entry.plural_id_has_multiple_lines?).to be_truthy
@@ -126,7 +126,7 @@ RSpec.describe Gitlab::I18n::TranslationEntry do
 
   describe '#translations_contain_newlines' do
     it 'is true when the msgid is an array' do
-      data = { msgstr: %w(hello world) }
+      data = { msgstr: %w[hello world] }
       entry = described_class.new(entry_data: data, nplurals: 2)
 
       expect(entry.translations_have_multiple_lines?).to be_truthy

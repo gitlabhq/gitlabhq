@@ -47,7 +47,7 @@ module Gitlab
     end
 
     def repository_path_match
-      strong_memoize(:repository_path_match) { repository_path.match(Gitlab::PathRegex.full_project_git_path_regex) || {} }
+      strong_memoize(:repository_path_match) { repository_path&.match(Gitlab::PathRegex.full_project_git_path_regex) || {} }
     end
 
     def ensure_project_on_push!

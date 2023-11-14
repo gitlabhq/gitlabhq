@@ -204,7 +204,7 @@ Version Check and Service Ping improve the GitLab user experience and ensure tha
 users are on the most up-to-date instances of GitLab. These two services can be turned off for offline
 environments so that they do not attempt and fail to reach out to GitLab services.
 
-For more information, see [Enable or disable usage statistics](../../administration/settings/usage_statistics.md#enable-or-disable-usage-statistics).
+For more information, see [Enable or disable service ping](../../administration/settings/usage_statistics.md#enable-or-disable-service-ping).
 
 ### Configure NTP
 

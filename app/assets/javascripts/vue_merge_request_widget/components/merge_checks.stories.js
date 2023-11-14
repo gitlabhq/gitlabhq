@@ -15,9 +15,9 @@ const defaultRender = (apolloProvider) => ({
   components: { MergeChecks },
   apolloProvider,
   data() {
-    return { mr: { conflictResolutionPath: 'https://gitlab.com' } };
+    return { service: {}, mr: { conflictResolutionPath: 'https://gitlab.com' } };
   },
-  template: '<merge-checks :mr="mr" />',
+  template: '<merge-checks :mr="mr" :service="service" />',
 });
 
 const Template = ({ canMerge, failed, pushToSourceBranch }) => {
@@ -32,16 +32,14 @@ const Template = ({ canMerge, failed, pushToSourceBranch }) => {
               mergeRequest: {
                 id: 1,
                 userPermissions: { canMerge },
-                mergeChecks: [
+                mergeabilityChecks: [
                   {
-                    failureReason: 'Unresolved discussions',
-                    identifier: 'unresolved_discussions',
-                    result: failed ? 'failed' : 'passed',
+                    identifier: 'DISCUSSIONS_NOT_RESOLVED',
+                    status: failed ? 'FAILED' : 'SUCCESS',
                   },
                   {
-                    failureReason: 'Resolve conflicts',
-                    identifier: 'conflicts',
-                    result: failed ? 'failed' : 'passed',
+                    identifier: 'CONFLICT',
+                    status: failed ? 'FAILED' : 'SUCCESS',
                   },
                 ],
               },

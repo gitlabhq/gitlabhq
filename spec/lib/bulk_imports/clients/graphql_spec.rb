@@ -8,13 +8,13 @@ RSpec.describe BulkImports::Clients::Graphql, feature_category: :importers do
   subject { described_class.new(url: config.url, token: config.access_token) }
 
   describe '#execute' do
-    let(:graphql_client_double) { double }
     let(:response_double) { double }
 
     describe 'network errors' do
       before do
         allow(Gitlab::HTTP)
           .to receive(:post)
+          .with(an_instance_of(String), a_hash_including(timeout: 60))
           .and_return(response_double)
       end
 

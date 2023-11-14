@@ -4,14 +4,12 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# CI/CD components **(FREE ALL EXPERIMENT)**
+# CI/CD components **(FREE ALL BETA)**
 
 > - Introduced as an [experimental feature](../../policy/experiment-beta-support.md) in GitLab 16.0, [with a flag](../../administration/feature_flags.md) named `ci_namespace_catalog_experimental`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/groups/gitlab-org/-/epics/9897) in GitLab 16.2.
 > - [Feature flag `ci_namespace_catalog_experimental` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/394772) in GitLab 16.3.
-
-This feature is an experimental feature and [an epic exists](https://gitlab.com/groups/gitlab-org/-/epics/9897)
-to track future work. Tell us about your use case by leaving comments in the epic.
+> - [Moved](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/130824) to [Beta status](../../policy/experiment-beta-support.md) in GitLab 16.6.
 
 A CI/CD component is a reusable single pipeline configuration unit. Use them to compose an entire pipeline configuration or a small part of a larger pipeline.
 
@@ -28,6 +26,8 @@ CI/CD components are similar to the other kinds of [configuration added with the
 A components repository is a GitLab project with a repository that hosts one or more pipeline components. All components in the project are versioned and released together.
 
 If a component requires different versioning from other components, the component should be migrated to its own components repository.
+
+One component repository can have a maximum of 10 components.
 
 ## Create a components repository
 
@@ -65,17 +65,17 @@ the file structure should be similar to:
 
 ```plaintext
 ├── templates/
-│   └── only_template.yml
+│   └── secret-detection.yml
 ├── README.md
 └── .gitlab-ci.yml
 ```
 
-This example component could be referenced with a path similar to `gitlab.com/my-username/my-component/only_template@<version>`,
+This example component could be referenced with a path similar to `gitlab.com/my-namespace/my-project/secret-detection@<version>`,
 if the project is:
 
 - On GitLab.com
-- Named `my-component`
-- In a personal namespace named `my-username`
+- Named `my-project`
+- In a personal namespace or group named `my-namespace`
 
 The templates directory and the suffix of the configuration file should be excluded from the referenced path.
 
@@ -85,25 +85,31 @@ If the project contains multiple components, then the file structure should be s
 ├── README.md
 ├── .gitlab-ci.yml
 └── templates/
-    └── all-scans.yml
+    ├── all-scans.yml
     └── secret-detection.yml
 ```
 
 These components would be referenced with these paths:
 
-- `gitlab.com/my-username/my-component/all-scans`
-- `gitlab.com/my-username/my-component/secret-detection`
+- `gitlab.com/my-namespace/my-project/all-scans@<version>`
+- `gitlab.com/my-namespace/my-project/secret-detection@<version>`
 
-You can omit the filename in the path if the configuration file is named `template.yml`.
-For example, the following component could be referenced with `gitlab.com/my-username/my-component/dast`:
+You can also have components defined as a directory if you want to bundle together multiple related files.
+In this case GitLab expects a `template.yml` file to be present:
+
+For example:
 
 ```plaintext
 ├── README.md
 ├── .gitlab-ci.yml
-├── templates/
-│   └── dast
-│       └── template.yml
+└── templates/
+    └── dast
+        ├── docs.md
+        ├── Dockerfile
+        └── template.yml
 ```
+
+In this example, the component could be referenced with `gitlab.com/my-namespace/my-project/dast@<version>`.
 
 #### Component configurations saved in any directory (deprecated)
 
@@ -117,8 +123,8 @@ Components configurations can be saved through the following directory structure
   components, each file must be in a separate subdirectory.
 - `README.md`: A documentation file explaining the details of all the components in the repository.
 
-For example, if the project is on GitLab.com, named `my-component`, and in a personal
-namespace named `my-username`:
+For example, if the project is on GitLab.com, named `my-project`, and in a personal
+namespace named `my-namespace`:
 
 - Containing a single component and a simple pipeline to test the component, then
   the file structure might be:
@@ -132,7 +138,7 @@ namespace named `my-username`:
   The `.gitlab-ci.yml` file is not required for a CI/CD component to work, but
   [testing the component](#test-the-component) in a pipeline in the project is recommended.
 
-  This component is referenced with the path `gitlab.com/my-username/my-component@<version>`.
+  This component is referenced with the path `gitlab.com/my-namespace/my-project@<version>`.
 
 - Containing one default component and multiple sub-components, then the file structure
   might be:
@@ -149,9 +155,9 @@ namespace named `my-username`:
 
   These components are identified by these paths:
 
-  - `gitlab.com/my-username/my-component`
-  - `gitlab.com/my-username/my-component/unit`
-  - `gitlab.com/my-username/my-component/integration`
+  - `gitlab.com/my-namespace/my-project`
+  - `gitlab.com/my-namespace/my-project/unit`
+  - `gitlab.com/my-namespace/my-project/integration`
 
 It is possible to have a components repository with no default component, by having
 no `template.yml` in the root directory.
@@ -169,19 +175,41 @@ Nesting of components is not possible. For example:
 
 ## Release a component
 
-To create a release for a CI/CD component, use either:
+To create a release for a CI/CD component, use the [`release`](../yaml/index.md#release)
+keyword in a CI/CD pipeline.
 
-- The [`release`](../yaml/index.md#release) keyword in a CI/CD pipeline. Like in the
-  [component testing example](#test-the-component), you can set a component to automatically
-  be released after all tests pass in pipelines for new tags.
-- The [UI for creating a release](../../user/project/releases/index.md#create-a-release).
+For example:
 
-All released versions of the components are displayed in the [CI/CD Catalog](catalog.md)
-page for the given resource, providing users with information about official releases.
+```yaml
+create-release:
+  stage: deploy
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v\d+/
+  script: echo "Creating release $CI_COMMIT_TAG"
+  release:
+    tag_name: $CI_COMMIT_TAG
+    description: "Release $CI_COMMIT_TAG of components repository $CI_PROJECT_PATH"
+```
+
+In this example, the job runs only for tags formatted as `v` + version number.
+If all previous jobs succeed, the release is created.
+
+Like in the [component testing example](#test-the-component), you can set a component to automatically
+be released after all tests pass in pipelines for new tags.
+
+All released versions of the components repositories are displayed in the [CI/CD Catalog](catalog.md),
+providing users with information about official releases.
 
 Components [can be used](#use-a-component-in-a-cicd-configuration) without being released,
-but only with a commit SHA or a branch name. To enable the use of tags or the `~latest` version keyword,
-you must create a release.
+by using the commit SHA or ref. However, the `~latest` version keyword can only be used with released tags.
+
+NOTE:
+The `~latest` keyword always returns the most recent release, not the release with
+the latest semantic version. For example, if you first release `v2.0.0`, and later release
+a patch fix like `v1.5.1`, then `~latest` returns the `v1.5.1` release.
+[Issue #427286](https://gitlab.com/gitlab-org/gitlab/-/issues/427286) proposes to
+change this behavior.
 
 ## Use a component in a CI/CD configuration
 
@@ -190,7 +218,7 @@ For example:
 
 ```yaml
 include:
-  - component: gitlab.example.com/my-namespace/my-component@1.0
+  - component: gitlab.example.com/my-namespace/my-project@1.0
     inputs:
       stage: build
 ```
@@ -395,7 +423,7 @@ For example:
 ```yaml
 include:
   # include the component located in the current project from the current SHA
-  - component: gitlab.com/$CI_PROJECT_PATH@$CI_COMMIT_SHA
+  - component: gitlab.com/$CI_PROJECT_PATH/my-project@$CI_COMMIT_SHA
     inputs:
       stage: build
 

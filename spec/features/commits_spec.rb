@@ -41,13 +41,13 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
         end
 
         it 'contains commit short id' do
-          page.within('[data-testid="pipeline-details-header"]') do
+          within_testid('pipeline-details-header') do
             expect(page).to have_content pipeline.sha[0..7]
           end
         end
 
         it 'contains generic commit status build' do
-          page.within('[data-testid="jobs-tab-table"]') do
+          within_testid('jobs-tab-table') do
             expect(page).to have_content "##{status.id}" # build id
             expect(page).to have_content 'generic'       # build name
           end
@@ -81,8 +81,8 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
 
           it 'shows correct build status from default branch' do
             page.within("//li[@id='commit-#{pipeline.short_sha}']") do
-              expect(page).to have_css("[data-testid='ci-status-badge-legacy']")
-              expect(page).to have_css('.ci-status-icon-success')
+              expect(page).to have_css("[data-testid='ci-icon']")
+              expect(page).to have_css('[data-testid="status_success_borderless-icon"]')
             end
           end
         end
@@ -122,7 +122,7 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
         describe 'Cancel build' do
           it 'cancels build', :js, :sidekiq_might_not_need_inline do
             visit pipeline_path(pipeline)
-            find('[data-testid="cancel-pipeline"]').click
+            find_by_testid('cancel-pipeline').click
             expect(page).to have_content 'Canceled'
           end
         end

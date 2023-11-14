@@ -101,14 +101,16 @@ RSpec.describe Gitlab::Ci::Config::Entry::Bridge do
 
       describe '#value' do
         it 'is returns a bridge job configuration' do
-          expect(subject.value).to eq(name: :my_bridge,
-                                      trigger: { project: 'some/project' },
-                                      ignore: false,
-                                      stage: 'test',
-                                      only: { refs: %w[branches tags] },
-                                      job_variables: {},
-                                      root_variables_inheritance: true,
-                                      scheduling_type: :stage)
+          expect(subject.value).to eq(
+            name: :my_bridge,
+            trigger: { project: 'some/project' },
+            ignore: false,
+            stage: 'test',
+            only: { refs: %w[branches tags] },
+            job_variables: {},
+            root_variables_inheritance: true,
+            scheduling_type: :stage
+          )
         end
       end
     end
@@ -124,15 +126,16 @@ RSpec.describe Gitlab::Ci::Config::Entry::Bridge do
 
       describe '#value' do
         it 'is returns a bridge job configuration hash' do
-          expect(subject.value).to eq(name: :my_bridge,
-                                      trigger: { project: 'some/project',
-                                                 branch: 'feature' },
-                                      ignore: false,
-                                      stage: 'test',
-                                      only: { refs: %w[branches tags] },
-                                      job_variables: {},
-                                      root_variables_inheritance: true,
-                                      scheduling_type: :stage)
+          expect(subject.value).to eq(
+            name: :my_bridge,
+            trigger: { project: 'some/project', branch: 'feature' },
+            ignore: false,
+            stage: 'test',
+            only: { refs: %w[branches tags] },
+            job_variables: {},
+            root_variables_inheritance: true,
+            scheduling_type: :stage
+          )
         end
       end
     end
@@ -283,8 +286,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Bridge do
               ignore: false,
               stage: 'test',
               only: { refs: %w[branches tags] },
-              parallel: { matrix: [{ 'PROVIDER' => ['aws'], 'STACK' => %w(monitoring app1) },
-                                   { 'PROVIDER' => ['gcp'], 'STACK' => %w(data) }] },
+              parallel: { matrix: [{ 'PROVIDER' => ['aws'], 'STACK' => %w[monitoring app1] },
+                                   { 'PROVIDER' => ['gcp'], 'STACK' => %w[data] }] },
               job_variables: {},
               root_variables_inheritance: true,
               scheduling_type: :stage
@@ -305,15 +308,16 @@ RSpec.describe Gitlab::Ci::Config::Entry::Bridge do
 
       describe '#value' do
         it 'returns a bridge job configuration hash' do
-          expect(subject.value).to eq(name: :my_bridge,
-                                      trigger: { project: 'some/project',
-                                                 forward: { pipeline_variables: true } },
-                                      ignore: false,
-                                      stage: 'test',
-                                      only: { refs: %w[branches tags] },
-                                      job_variables: {},
-                                      root_variables_inheritance: true,
-                                      scheduling_type: :stage)
+          expect(subject.value).to eq(
+            name: :my_bridge,
+            trigger: { project: 'some/project', forward: { pipeline_variables: true } },
+            ignore: false,
+            stage: 'test',
+            only: { refs: %w[branches tags] },
+            job_variables: {},
+            root_variables_inheritance: true,
+            scheduling_type: :stage
+          )
         end
       end
     end

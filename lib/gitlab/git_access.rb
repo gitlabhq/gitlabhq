@@ -101,7 +101,7 @@ module Gitlab
     end
 
     def guest_can_download?
-      Guest.can?(download_ability, container)
+      ::Users::Anonymous.can?(download_ability, container)
     end
 
     def deploy_key_can_download_code?
@@ -395,7 +395,7 @@ module Gitlab
         user.can?(:read_project, project)
       elsif ci?
         false
-      end || Guest.can?(:read_project, project)
+      end || ::Users::Anonymous.can?(:read_project, project)
     end
 
     def http?

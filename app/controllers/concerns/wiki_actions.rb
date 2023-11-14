@@ -246,7 +246,7 @@ module WikiActions
     @sidebar_page = wiki.find_sidebar(params[:version_id])
 
     unless @sidebar_page # Fallback to default sidebar
-      @sidebar_wiki_entries, @sidebar_limited = wiki.sidebar_entries
+      @sidebar_wiki_entries, @sidebar_limited = wiki.sidebar_entries(load_content: Feature.enabled?(:wiki_front_matter_title, container))
     end
   rescue ::Gitlab::Git::CommandTimedOut => e
     @sidebar_error = e
@@ -326,7 +326,9 @@ module WikiActions
   end
 
   def load_content?
-    return false if %w[history destroy diff show].include?(params[:action])
+    skip_actions = Feature.enabled?(:wiki_front_matter_title, container) ? %w[history destroy diff] : %w[history destroy diff show]
+
+    return false if skip_actions.include?(params[:action])
 
     true
   end

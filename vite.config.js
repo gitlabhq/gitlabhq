@@ -1,6 +1,5 @@
 import path from 'path';
 import { defineConfig } from 'vite';
-import svgLoader from 'vite-svg-loader';
 import vue from '@vitejs/plugin-vue2';
 import graphql from '@rollup/plugin-graphql';
 import RubyPlugin from 'vite-plugin-ruby';
@@ -69,6 +68,10 @@ export default defineConfig({
         find: '~/',
         replacement: javascriptsPath,
       },
+      {
+        find: '~katex',
+        replacement: 'katex',
+      },
     ],
   },
   plugins: [
@@ -81,9 +84,6 @@ export default defineConfig({
       },
     }),
     graphql(),
-    svgLoader({
-      defaultImport: 'raw',
-    }),
     viteCommonjs({
       include: [path.resolve(javascriptsPath, 'locale/ensure_single_line.cjs')],
     }),

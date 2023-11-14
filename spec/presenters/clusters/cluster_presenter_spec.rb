@@ -123,7 +123,7 @@ RSpec.describe Clusters::ClusterPresenter do
           'clusters-path': clusterable_presenter.index_path,
           'dashboard-endpoint': clusterable_presenter.metrics_dashboard_path(cluster),
           'documentation-path': help_page_path('user/infrastructure/clusters/manage/clusters_health'),
-          'add-dashboard-documentation-path': help_page_path('operations/metrics/dashboards/index.md', anchor: 'add-a-new-dashboard-to-your-project'),
+          'add-dashboard-documentation-path': help_page_path('operations/metrics/dashboards/index', anchor: 'add-a-new-dashboard-to-your-project'),
           'empty-getting-started-svg-path': match_asset_path('/assets/illustrations/monitoring/getting_started.svg'),
           'empty-loading-svg-path': match_asset_path('/assets/illustrations/monitoring/loading.svg'),
           'empty-no-data-svg-path': match_asset_path('/assets/illustrations/monitoring/no_data.svg'),

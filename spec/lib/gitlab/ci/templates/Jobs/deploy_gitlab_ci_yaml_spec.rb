@@ -58,7 +58,7 @@ RSpec.describe 'Jobs/Deploy.gitlab-ci.yml' do
 
     context 'with no cluster or agent' do
       it 'does not create any kubernetes deployment jobs' do
-        expect(build_names).to eq %w(placeholder)
+        expect(build_names).to eq %w[placeholder]
       end
     end
 
@@ -68,7 +68,7 @@ RSpec.describe 'Jobs/Deploy.gitlab-ci.yml' do
       end
 
       it 'does not create any kubernetes deployment jobs' do
-        expect(build_names).to eq %w(placeholder)
+        expect(build_names).to eq %w[placeholder]
       end
     end
 
@@ -81,7 +81,7 @@ RSpec.describe 'Jobs/Deploy.gitlab-ci.yml' do
 
         it 'when CI_DEPLOY_FREEZE is present' do
           create(:ci_variable, project: project, key: 'CI_DEPLOY_FREEZE', value: 'true')
-          expect(build_names).to eq %w(placeholder)
+          expect(build_names).to eq %w[placeholder]
         end
 
         it 'when CANARY_ENABLED' do

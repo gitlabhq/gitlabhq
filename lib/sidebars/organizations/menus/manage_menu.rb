@@ -30,6 +30,15 @@ module Sidebars
               item_id: :organization_groups_and_projects
             )
           )
+          add_item(
+            ::Sidebars::MenuItem.new(
+              title: _('Users'),
+              link: users_organization_path(context.container),
+              super_sidebar_parent: ::Sidebars::Organizations::Menus::ManageMenu,
+              active_routes: { path: 'organizations/organizations#users' },
+              item_id: :organization_users
+            )
+          )
         end
       end
     end

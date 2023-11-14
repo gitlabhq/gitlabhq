@@ -40,7 +40,9 @@ def metric_definitions_from_args
 end
 
 def red(text)
-  "\e[31m#{text}\e[0m"
+  @pastel ||= Pastel.new
+
+  @pastel.red(text)
 end
 
 def snowplow_data
@@ -133,6 +135,26 @@ def generate_metrics_table
   )
 end
 
+def render_screen(paused)
+  metrics_table = generate_metrics_table
+  events_table = generate_snowplow_table
+
+  print TTY::Cursor.clear_screen
+  print TTY::Cursor.move_to(0, 0)
+
+  puts "Updated at #{Time.current} #{'[PAUSED]' if paused}"
+  puts "Monitored events: #{ARGV.join(', ')}"
+  puts
+
+  puts metrics_table
+
+  puts events_table
+
+  puts
+  puts "Press \"p\" to toggle refresh. (It makes it easier to select and copy the tables)"
+  puts "Press \"q\" to quit"
+end
+
 begin
   snowplow_data
 rescue Errno::ECONNREFUSED
@@ -142,29 +164,23 @@ rescue Errno::ECONNREFUSED
   exit 1
 end
 
-print "\e[?1049h" # Stores the original screen buffer
-print "\e[H" # Moves the cursor home
+reader = TTY::Reader.new
+paused = false
+
 begin
   loop do
-    metrics_table = generate_metrics_table
-    events_table = generate_snowplow_table
+    case reader.read_keypress(nonblock: true)
+    when 'p'
+      paused = !paused
+      render_screen(paused)
+    when 'q'
+      break
+    end
 
-    print "\e[H" # Moves the cursor home
-    print "\e[2J" # Clears the screen buffer
-
-    puts "Updated at #{Time.current}"
-    puts "Monitored events: #{ARGV.join(', ')}"
-    puts
-
-    puts metrics_table
-
-    puts events_table
+    render_screen(paused) unless paused
 
     sleep 1
   end
 rescue Interrupt
   # Quietly shut down
-ensure
-  print "\e[?1049l" # Restores the original screen buffer
-  print "\e[H" # Moves the cursor home
 end

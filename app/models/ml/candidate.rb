@@ -12,12 +12,14 @@ module Ml
 
     validates :eid, :experiment, presence: true
     validates :status, inclusion: { in: statuses.keys }
+    validates :model_version_id, uniqueness: { allow_nil: true }
 
     belongs_to :experiment, class_name: 'Ml::Experiment'
     belongs_to :user
     belongs_to :package, class_name: 'Packages::Package'
     belongs_to :project
     belongs_to :ci_build, class_name: 'Ci::Build', optional: true
+    belongs_to :model_version, class_name: 'Ml::ModelVersion', optional: true, inverse_of: :candidate
     has_many :metrics, class_name: 'Ml::CandidateMetric'
     has_many :params, class_name: 'Ml::CandidateParam'
     has_many :metadata, class_name: 'Ml::CandidateMetadata'

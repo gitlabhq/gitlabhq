@@ -164,6 +164,26 @@ class Admin::UsersController < Admin::ApplicationController
     end
   end
 
+  def trust
+    result = Users::TrustService.new(current_user).execute(user)
+
+    if result[:status] == :success
+      redirect_back_or_admin_user(notice: _("Successfully trusted"))
+    else
+      redirect_back_or_admin_user(alert: _("Error occurred. User was not updated"))
+    end
+  end
+
+  def untrust
+    result = Users::UntrustService.new(current_user).execute(user)
+
+    if result[:status] == :success
+      redirect_back_or_admin_user(notice: _("Successfully untrusted"))
+    else
+      redirect_back_or_admin_user(alert: _("Error occurred. User was not updated"))
+    end
+  end
+
   def confirm
     if update_user(&:force_confirm)
       redirect_back_or_admin_user(notice: _("Successfully confirmed"))
@@ -290,7 +310,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def users_with_included_associations(users)
-    users.includes(:authorized_projects) # rubocop: disable CodeReuse/ActiveRecord
+    users.includes(:authorized_projects, :trusted_with_spam_attribute) # rubocop: disable CodeReuse/ActiveRecord
   end
 
   def admin_making_changes_for_another_user?
@@ -342,6 +362,7 @@ class Admin::UsersController < Admin::ApplicationController
       :bio,
       :can_create_group,
       :color_scheme_id,
+      :discord,
       :email,
       :extern_uid,
       :external,
@@ -350,6 +371,7 @@ class Admin::UsersController < Admin::ApplicationController
       :hide_no_ssh_key,
       :key_id,
       :linkedin,
+      :mastodon,
       :name,
       :password_expires_at,
       :projects_limit,
@@ -358,7 +380,6 @@ class Admin::UsersController < Admin::ApplicationController
       :skype,
       :theme_id,
       :twitter,
-      :discord,
       :username,
       :website_url,
       :note,

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Users > User browses projects on user page', :js, feature_category: :groups_and_projects do
-  let!(:user) { create(:user, :no_super_sidebar) }
+  let!(:user) { create(:user) }
   let!(:private_project) do
     create :project, :private, name: 'private', namespace: user.namespace do |project|
       project.add_maintainer(user)
@@ -23,13 +23,13 @@ RSpec.describe 'Users > User browses projects on user page', :js, feature_catego
   end
 
   def click_nav_link(name)
-    page.within '.nav-links' do
+    within_testid('super-sidebar') do
       click_link name
     end
   end
 
   before do
-    stub_feature_flags(profile_tabs_vue: false, super_sidebar_logged_out: false)
+    stub_feature_flags(profile_tabs_vue: false)
   end
 
   it 'hides loading spinner after load', :js do
@@ -87,7 +87,7 @@ RSpec.describe 'Users > User browses projects on user page', :js, feature_catego
   end
 
   context 'when signed in as another user' do
-    let(:another_user) { create(:user, :no_super_sidebar) }
+    let(:another_user) { create(:user) }
 
     before do
       sign_in(another_user)

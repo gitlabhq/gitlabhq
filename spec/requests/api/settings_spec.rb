@@ -79,7 +79,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['slack_app_secret']).to be_nil
       expect(json_response['slack_app_signing_secret']).to be_nil
       expect(json_response['slack_app_verification_token']).to be_nil
-      expect(json_response['valid_runner_registrars']).to match_array(%w(project group))
+      expect(json_response['valid_runner_registrars']).to match_array(%w[project group])
       expect(json_response['ci_max_includes']).to eq(150)
       expect(json_response['allow_account_deletion']).to eq(true)
       expect(json_response['gitlab_shell_operation_limit']).to eq(600)
@@ -261,7 +261,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['max_decompressed_archive_size']).to eq(20000)
         expect(json_response['max_terraform_state_size_bytes']).to eq(1_000)
         expect(json_response['disabled_oauth_sign_in_sources']).to eq([])
-        expect(json_response['import_sources']).to match_array(%w(github bitbucket))
+        expect(json_response['import_sources']).to match_array(%w[github bitbucket])
         expect(json_response['wiki_page_max_content_bytes']).to eq(12345)
         expect(json_response['wiki_asciidoc_allow_uri_includes']).to be(true)
         expect(json_response['personal_access_token_prefix']).to eq("GL-")
@@ -418,12 +418,12 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       end
 
       it 'does not allow unrestricted key lengths' do
-        types = %w(dsa_key_restriction
+        types = %w[dsa_key_restriction
                    ecdsa_key_restriction
                    ecdsa_sk_key_restriction
                    ed25519_key_restriction
                    ed25519_sk_key_restriction
-                   rsa_key_restriction)
+                   rsa_key_restriction]
 
         types.each do |type|
           put api("/application/settings", admin), params: { type => 0 }
@@ -519,7 +519,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
 
     context 'EKS integration settings' do
       let(:attribute_names) { settings.keys.map(&:to_s) }
-      let(:sensitive_attributes) { %w(eks_secret_access_key) }
+      let(:sensitive_attributes) { %w[eks_secret_access_key] }
       let(:exposed_attributes) { attribute_names - sensitive_attributes }
 
       let(:settings) do

@@ -13,34 +13,17 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Ability to view a vulnerability report [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123835) in GitLab 16.1.
 > - [Feature flag `custom_roles_vulnerability` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124049) in GitLab 16.2.
 > - Ability to create and remove a custom role with the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393235) in GitLab 16.4.
-> - Ability to manage group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17364) in GitLab 16.5 under `admin_group_member` Feature flag.
-> - Ability to manage project access tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421778) in GitLab 16.5 under `manage_project_access_tokens` Feature flag.
+> - Ability to manage group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17364) in GitLab 16.5.
+> - Ability to manage project access tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421778) in GitLab 16.5 [with a flag](../administration/feature_flags.md) named `manage_project_access_tokens`.
+> - Ability to archive projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425957) in GitLab 16.6 in [with a flag](../administration/feature_flags.md) named `archive_project`. Disabled by default.
 
-Custom roles allow group members who are assigned the Owner role to create roles
+Custom roles allow group Owners or instance administrators to create roles
 specific to the needs of their organization.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo of the custom roles feature, see [[Demo] Ultimate Guest can view code on private repositories via custom role](https://www.youtube.com/watch?v=46cp_-Rtxps).
 
-The following granular permissions are available. You can add these permissions to any base role, and add them in combination with each other to create a customized role:
-
-- The Guest+1 role, which allows users with the Guest role to view code.
-- In GitLab 16.1 and later, you can create a custom role that can view vulnerability reports and change the status of the vulnerabilities.
-- In GitLab 16.3 and later, you can create a custom role that can view the dependency list.
-- In GitLab 16.4 and later, you can create a custom role that can approve merge requests.
-- In GitLab 16.5 and later, you can create a custom role that can manage group members.
-
 You can discuss individual custom role and permission requests in [issue 391760](https://gitlab.com/gitlab-org/gitlab/-/issues/391760).
-
-When you enable a custom role for a user with the Guest role, that user has
-access to elevated permissions, and therefore:
-
-- Is considered a [billable user](../subscriptions/self_managed/index.md#billable-users) on self-managed GitLab.
-- [Uses a seat](../subscriptions/gitlab_com/index.md#how-seat-usage-is-determined) on GitLab.com.
-
-This does not apply to Guest+1, a Guest custom role that only enables the `read_code`
-permission. Users with that specific custom role are not considered billable users
-and do not use a seat.
 
 ## Create a custom role
 
@@ -51,9 +34,19 @@ Prerequisites:
 - The group must be in the Ultimate tier.
 - You must have:
   - At least one private project so that you can see the effect of giving a
-    user with the Guest role a custom role. The project can be in the group itself
+    user a custom role. The project can be in the group itself
     or one of that group's subgroups.
-  - A [personal access token with the API scope](profile/personal_access_tokens.md#create-a-personal-access-token).
+  - If you are using the API to create the custom role, a [personal access token with the API scope](profile/personal_access_tokens.md#create-a-personal-access-token).
+
+You create a custom role by selecting [permissions](#available-permissions) to add
+to a base role.
+
+You can select any number of permissions. For example, you can create a custom role
+with the ability to:
+
+- View vulnerability reports.
+- Change the status of vulnerabilities.
+- Approve merge requests.
 
 ### GitLab SaaS
 
@@ -64,7 +57,7 @@ Prerequisite:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Roles and Permissions**.
 1. Select **Add new role**.
-1. In **Base role to use as template**, select **Guest**.
+1. In **Base role to use as template**, select an existing non-custom role.
 1. In **Role name**, enter the custom role's title.
 1. Select the **Permissions** for the new custom role.
 1. Select **Create new role**.
@@ -80,30 +73,44 @@ Prerequisite:
 1. Select **Settings > Roles and Permissions**.
 1. From the top dropdown list, select the group you want to create a custom role in.
 1. Select **Add new role**.
-1. In **Base role to use as template**, select **Guest**.
+1. In **Base role to use as template**, select an existing non-custom role.
 1. In **Role name**, enter the custom role's title.
 1. Select the **Permissions** for the new custom role.
 1. Select **Create new role**.
 
 To create a custom role, you can also [use the API](../api/member_roles.md#add-a-member-role-to-a-group).
 
-### Custom role requirements
+### Available permissions
 
-For every ability, a minimal access level is defined. To be able to create a custom role which enables a certain ability, the `member_roles` table record has to have the associated minimal access level. For all abilities, the minimal access level is Guest. Only users who have at least the Guest role can be assigned to a custom role.
+The following permissions are available. You can add these permissions in any combination
+to a base role to create a custom role.
 
-Some roles and abilities require having other abilities enabled. For example, a custom role can only have administration of vulnerabilities (`admin_vulnerability`) enabled if reading vulnerabilities (`read_vulnerability`) is also enabled.
+Some permissions require having other permissions enabled first. For example, administration of vulnerabilities (`admin_vulnerability`) can only be enabled if reading vulnerabilities (`read_vulnerability`) is also enabled.
 
-You can see the abilities requirements in the following table.
+These requirements are documented in the `Required permission` column in the following table.
 
-| Ability  | Required ability |
-| -- | -- |
-| `read_code` | - |
-| `read_dependency` | - |
-| `read_vulnerability` | - |
-| `admin_merge_request` | - |
-| `admin_vulnerability` | `read_vulnerability` |
-| `admin_group_member` | - |
-| `manage_project_access_tokens` | - |
+| Permission                      | Version                | Required permission  | Description |
+| ------------------------------- | -----------------------| -------------------- | ----------- |
+| `read_code`                     | GitLab 15.7 and later  | Not applicable       | View project code. Does not include the ability to pull code.  |
+| `read_vulnerability`            | GitLab 16.1 and later  | Not applicable       | View [vulnerability reports](application_security/vulnerability_report/index.md).  |
+| `admin_vulnerability`           | GitLab 16.1 and later  | `read_vulnerability` | Change the [status of vulnerabilities](application_security/vulnerabilities/index.md#vulnerability-status-values).  |
+| `read_dependency`               | GitLab 16.3 and later  | Not applicable       | View [project dependencies](application_security/dependency_list/index.md).  |
+| `admin_merge_request`           | GitLab 16.4 and later  | Not applicable       | View and approve [merge requests](project/merge_requests/index.md), and view the associated merge request code. <br> Does not allow users to view or change merge request approval rules.  |
+| `manage_project_access_tokens`  | GitLab 16.5 and later  | Not applicable       | Create, delete, and list [project access tokens](project/settings/project_access_tokens.md).  |
+| `admin_group_member`            | GitLab 16.5 and later  | Not applicable       | Add or remove [group members](group/manage.md).  |
+| `archive_project`               | GitLab 16.6 and later  | Not applicable       | Archive and unarchive [projects](project/settings/index.md#archive-a-project).  |
+
+## Billing and seat usage
+
+When you enable a custom role for a user with the Guest role, that user has
+access to elevated permissions over the base role, and therefore:
+
+- Is considered a [billable user](../subscriptions/self_managed/index.md#billable-users) on self-managed GitLab.
+- [Uses a seat](../subscriptions/gitlab_com/index.md#how-seat-usage-is-determined) on GitLab.com.
+
+This does not apply when the user's custom role only has the `read_code` permission
+enabled. Guest users with that specific permission only are not considered billable users
+and do not use a seat.
 
 ## Associate a custom role with an existing group member
 
@@ -147,14 +154,14 @@ To do this, you can either remove the custom role from all group members with th
 ### Remove a custom role from a group member
 
 To remove a custom role from a group member, use the [Group and Project Members API endpoint](../api/members.md#edit-a-member-of-a-group-or-project)
-and pass an empty `member_role_id` value.
+and pass an empty `member_role_id` value:
 
 ```shell
 # to update a project membership
-curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"member_role_id": "", "access_level": 10}' "https://gitlab.example.com/api/v4/projects/<project_id>/members/<user_id>"
+curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"member_role_id": null, "access_level": 10}' "https://gitlab.example.com/api/v4/projects/<project_id>/members/<user_id>"
 
 # to update a group membership
-curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"member_role_id": "", "access_level": 10}' "https://gitlab.example.com/api/v4/groups/<group_id>/members/<user_id>"
+curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"member_role_id": null, "access_level": 10}' "https://gitlab.example.com/api/v4/groups/<group_id>/members/<user_id>"
 ```
 
 ### Remove a group member with a custom role from the group

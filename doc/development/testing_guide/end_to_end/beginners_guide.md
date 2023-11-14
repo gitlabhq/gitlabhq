@@ -127,7 +127,7 @@ Assign `product_group` metadata and specify what product group this test belongs
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Login', product_group: :authentication_and_authorization do
+    describe 'Login', product_group: :authentication do
 
     end
   end
@@ -142,7 +142,7 @@ writing end-to-end tests is to write test case descriptions as `it` blocks:
 ```ruby
 module QA
   RSpec.describe 'Manage' do
-    describe 'Login', product_group: :authentication_and_authorization do
+    describe 'Login', product_group: :authentication do
       it 'can login' do
 
       end
@@ -166,7 +166,7 @@ Begin by logging in.
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Login', product_group: :authentication_and_authorization do
+    describe 'Login', product_group: :authentication do
       it 'can login' do
         Flow::Login.sign_in
 
@@ -189,7 +189,7 @@ should answer the question "What do we test?"
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Login', product_group: :authentication_and_authorization do
+    describe 'Login', product_group: :authentication do
       it 'can login' do
         Flow::Login.sign_in
 
@@ -236,7 +236,7 @@ a call to `sign_in`.
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Login', product_group: :authentication_and_authorization do
+    describe 'Login', product_group: :authentication do
       before do
         Flow::Login.sign_in
       end

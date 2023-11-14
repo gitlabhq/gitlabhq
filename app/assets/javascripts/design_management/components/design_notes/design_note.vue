@@ -7,12 +7,13 @@ import {
   GlLink,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
 import { produce } from 'immer';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { __ } from '~/locale';
+import { setUrlFragment } from '~/lib/utils/url_utility';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import EmojiPicker from '~/emoji/components/picker.vue';
@@ -29,6 +30,7 @@ export default {
     editCommentLabel: __('Edit comment'),
     moreActionsLabel: __('More actions'),
     deleteCommentText: __('Delete comment'),
+    copyCommentLink: __('Copy link'),
   },
   components: {
     DesignNoteAwardsList,
@@ -129,9 +131,19 @@ export default {
             this.isEditing = true;
           },
           extraAttrs: {
-            'data-testid': 'delete-note-button',
-            'data-qa-selector': 'delete_design_note_button',
             class: 'gl-sm-display-none!',
+          },
+        },
+        {
+          text: this.$options.i18n.copyCommentLink,
+          action: () => {
+            this.$toast.show(__('Link copied to clipboard.'));
+          },
+          extraAttrs: {
+            'data-clipboard-text': setUrlFragment(
+              window.location.href,
+              `note_${this.noteAnchorId}`,
+            ),
           },
         },
         {
@@ -140,8 +152,6 @@ export default {
             this.$emit('delete-note', this.note);
           },
           extraAttrs: {
-            'data-testid': 'delete-note-button',
-            'data-qa-selector': 'delete_design_note_button',
             class: 'gl-text-red-500!',
           },
         },
@@ -311,7 +321,6 @@ export default {
           v-gl-tooltip.hover
           icon="ellipsis_v"
           category="tertiary"
-          data-qa-selector="design_discussion_actions_ellipsis_dropdown"
           text-sr-only
           :title="$options.i18n.moreActionsLabel"
           :aria-label="$options.i18n.moreActionsLabel"
@@ -322,12 +331,7 @@ export default {
       </div>
     </div>
     <template v-if="!isEditing">
-      <div
-        v-safe-html="note.bodyHtml"
-        class="note-text md"
-        data-qa-selector="note_content"
-        data-testid="note-text"
-      ></div>
+      <div v-safe-html="note.bodyHtml" class="note-text md" data-testid="note-text"></div>
       <slot name="resolved-status"></slot>
     </template>
     <design-note-awards-list

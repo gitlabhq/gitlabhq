@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# DEPRECATED. Consider using using Internal Events tracking framework
+# https://docs.gitlab.com/ee/development/internal_analytics/internal_event_instrumentation/quick_start.html
+
 require 'rails/generators'
 
 module Gitlab
@@ -30,7 +33,7 @@ module Gitlab
 
     source_root File.expand_path('../../../generator_templates/usage_metric_definition', __dir__)
 
-    desc 'Generates metric definitions yml files'
+    desc '[DEPRECATED] Generates metric definitions yml files'
 
     class_option :ee, type: :boolean, optional: true, default: false, desc: 'Indicates if metric is for ee'
     class_option :dir,
@@ -40,6 +43,13 @@ module Gitlab
     argument :key_paths, type: :array, desc: 'Unique JSON key paths for the metrics'
 
     def create_metric_file
+      say("This generator is DEPRECATED. Use Internal Events tracking framework instead.")
+      # rubocop: disable Gitlab/DocUrl -- link for developers, not users
+      say("https://docs.gitlab.com/ee/development/internal_analytics/internal_event_instrumentation/quick_start.html")
+      # rubocop: enable Gitlab/DocUrl
+      desc = ask("Would you like to continue anyway? y/N") || 'n'
+      return unless desc.casecmp('y') == 0
+
       validate!
 
       key_paths.each do |key_path|

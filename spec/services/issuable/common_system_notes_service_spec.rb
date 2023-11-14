@@ -42,7 +42,7 @@ RSpec.describe Issuable::CommonSystemNotesService, feature_category: :team_plann
   context 'on issuable update' do
     it_behaves_like 'system note creation', { title: 'New title' }, 'changed title'
     it_behaves_like 'system note creation', { description: 'New description' }, 'changed the description'
-    it_behaves_like 'system note creation', { discussion_locked: true }, 'locked this issue'
+    it_behaves_like 'system note creation', { discussion_locked: true }, 'locked the discussion in this issue'
     it_behaves_like 'system note creation', { time_estimate: 5 }, 'changed time estimate'
 
     context 'when new label is added' do

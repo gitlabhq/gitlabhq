@@ -13,7 +13,7 @@
     = gitlab_ui_form_for @project, url: project_settings_merge_requests_path(@project), html: { multipart: true, class: "merge-request-settings-form js-mr-settings-form" }, authenticity_token: true do |f|
       %input{ name: 'update_section', type: 'hidden', value: 'js-merge-request-settings' }
       = render 'projects/settings/merge_requests/merge_request_settings', form: f
-      = f.submit _('Save changes'), class: "rspec-save-merge-request-changes", data: { qa_selector: 'save_merge_request_changes_button' }, pajamas_button: true
+      = f.submit _('Save changes'), class: "rspec-save-merge-request-changes", data: { testid: 'save-merge-request-changes-button' }, pajamas_button: true
 
 = render_if_exists 'projects/settings/merge_requests/merge_request_approvals_settings', expanded: true
 = render_if_exists 'projects/settings/merge_requests/suggested_reviewers_settings', expanded: true

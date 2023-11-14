@@ -27,13 +27,18 @@ The following video gives you an overview of GitLab scan result policies:
   <iframe src="https://www.youtube-nocookie.com/embed/w5I9gcUgr9U" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
+## Requirements and limitations
+
+- You must add the respective [security scanning tools](../index.md#application-coverage).
+  Otherwise, scan result policies do not have any effect.
+- The maximum number of policies is five.
+- Each policy can have a maximum of five rules.
+- All configured scanners must be present in the merge request's latest pipeline. If not, approvals are required even if some vulnerability criteria have not been met.
+
 ## Merge request with multiple pipelines
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/379108) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `multi_pipeline_scan_result_policies`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/409482) in GitLab 16.3.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `multi_pipeline_scan_result_policies`. On GitLab.com, this feature is available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/409482) in GitLab 16.3. Feature flag `multi_pipeline_scan_result_policies` removed.
 
 A project can have multiple pipeline types configured. A single commit can initiate multiple
 pipelines, each of which may contain a security scan.
@@ -78,36 +83,31 @@ When you save a new policy, GitLab validates its contents against [this JSON sch
 If you're not familiar with how to read [JSON schemas](https://json-schema.org/),
 the following sections and tables provide an alternative.
 
-| Field | Type | Required | Possible values | Description |
-|-------|------|----------|-----------------|-------------|
-| `scan_result_policy` | `array` of Scan Result Policy | true |  | List of scan result policies (maximum 5). |
+| Field                | Type                          | Required | Possible values | Description                               |
+|----------------------|-------------------------------|----------|-----------------|------------------------------------------|
+| `scan_result_policy` | `array` of Scan Result Policy | true     |                 | List of scan result policies (maximum 5). |
 
 ## Scan result policy schema
 
-> The `approval_settings` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `scan_result_policy_settings`. Disabled by default.
+> The `approval_settings` fields was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4 [with flags](../../../administration/feature_flags.md) named `scan_result_policies_block_unprotecting_branches`, `scan_result_any_merge_request`, or `scan_result_policies_block_force_push`. All are disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `scan_result_policy_settings`.
-On GitLab.com, this feature is not available.
+On self-managed GitLab, by default the `approval_settings` field is unavailable. To show the feature, an administrator can [enable the feature flags](../../../administration/feature_flags.md) named `scan_result_policies_block_unprotecting_branches`, `scan_result_any_merge_request`, or `scan_result_policies_block_force_push`. See the `approval_settings` section below for more information.
 
 | Field | Type | Required |Possible values | Description |
-|-------|------|----------|----------------|-------------|
+|--------|------|----------|----------------|-------------|
 | `name` | `string` | true |  | Name of the policy. Maximum of 255 characters.|
-| `description` (optional) | `string` | true |  | Description of the policy. |
+| `description` | `string` | false |  | Description of the policy. |
 | `enabled` | `boolean` | true | `true`, `false` | Flag to enable (`true`) or disable (`false`) the policy. |
 | `rules` | `array` of rules | true |  | List of rules that the policy applies. |
-| `actions` | `array` of actions | false|  | List of actions that the policy enforces. |
-| `approval_settings` | `object` | false | `{prevent_approval_by_author: boolean, prevent_approval_by_commit_author: boolean, remove_approvals_with_new_commit: boolean, require_password_to_approve: boolean}` | Project settings that the policy overrides. |
+| `actions` | `array` of actions | false |  | List of actions that the policy enforces. |
+| `approval_settings` | `object` | false |  | Project settings that the policy overrides. |
 
 ## `scan_finding` rule type
 
-> - The scan result policy field `vulnerability_attributes` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123052) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `enforce_vulnerability_attributes_rules`. [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/418784) in GitLab 16.3. Feature flag `enforce_vulnerability_attributes_rules` removed in GitLab 16.5.
+> - The scan result policy field `vulnerability_attributes` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123052) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `enforce_vulnerability_attributes_rules`. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/418784) in GitLab 16.3. Feature flag removed.
 > - The scan result policy field `vulnerability_age` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123956) in GitLab 16.2.
-> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Generally available in GitLab 16.5. Feature flag removed.
-
-FLAG:
-On self-managed GitLab, by default the `branch_exceptions` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
-On GitLab.com, this feature is available.
+> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133753) in GitLab 16.5. Feature flag removed.
 
 This rule enforces the defined actions based on security scan findings.
 
@@ -128,11 +128,7 @@ This rule enforces the defined actions based on security scan findings.
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8092) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `license_scanning_policies`.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/397644) in GitLab 15.11. Feature flag `license_scanning_policies` removed.
-> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Enabled by default.
-
-FLAG:
-On self-managed GitLab, by default the `branch_exceptions` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
-On GitLab.com, this feature is available.
+> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Enabled by default. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133753) in GitLab 16.5. Feature flag removed.
 
 This rule enforces the defined actions based on license findings.
 
@@ -148,12 +144,11 @@ This rule enforces the defined actions based on license findings.
 
 ## `any_merge_request` rule type
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4.
-> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Enabled by default.
+> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Enabled by default. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133753) in GitLab 16.5. Feature flag removed.
+> - The `any_merge_request` rule type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default the `branch_exceptions` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
-On GitLab.com, this feature is available.
+On self-managed GitLab, by default the `any_merge_request` field is not available. To show the feature, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `any_merge_request`.
 
 This rule enforces the defined actions for any merge request based on the commits signature.
 
@@ -180,13 +175,28 @@ the defined policy.
 | `group_approvers_ids` | `array` of `integer` | false | ID of one of more groups | The IDs of groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
 | `role_approvers` | `array` of `string` | false | One or more [roles](../../../user/permissions.md#roles) (for example: `owner`, `maintainer`)  | The roles to consider as approvers that are eligible to approve. |
 
-Requirements and limitations:
+## `approval_settings`
 
-- You must add the respective [security scanning tools](../index.md#application-coverage).
-  Otherwise, scan result policies do not have any effect.
-- The maximum number of policies is five.
-- Each policy can have a maximum of five rules.
-- All configured scanners must be present in the merge request's latest pipeline. If not, approvals are required even if some vulnerability criteria have not been met.
+> - The `block_unprotecting_branches` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423101) in GitLab 16.4 [with flag](../../../administration/feature_flags.md) named `scan_result_policy_settings`. Disabled by default.
+> - The `scan_result_policy_settings` feature flag was replaced by the `scan_result_policies_block_unprotecting_branches` feature flag in 16.4.
+> - The `prevent_approval_by_author`, `prevent_approval_by_commit_author`, `remove_approvals_with_new_commit`, and `require_password_to_approve` fields were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4 [with flag](../../../administration/feature_flags.md) named `scan_result_any_merge_request`. Disabled by default.
+> - The `prevent_force_pushing` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420629) in GitLab 16.4 [with flag](../../../administration/feature_flags.md) named `scan_result_policies_block_force_push`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default the `block_unprotecting_branches` field is unavailable. To show the feature, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `scan_result_policies_block_unprotecting_branches`. On GitLab.com, this feature is unavailable.
+On self-managed GitLab, by default the  `prevent_approval_by_author`, `prevent_approval_by_commit_author`, `remove_approvals_with_new_commit`, and `require_password_to_approve` fields are unavailable. To show the feature, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `scan_result_any_merge_request`. On GitLab.com, this feature is available.
+On self-managed GitLab, by default the `prevent_force_pushing` field is unavailable. To show the feature, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. On GitLab.com, this feature is unavailable.
+
+The settings set in the policy overwrite settings in the project.
+
+| Field | Type | Required | Possible values | Description |
+|-------|------|----------|-----------------|-------------|
+| `block_unprotecting_branches`       | `boolean` | false | `true`, `false` | Prevent a user from removing a branch from the protected branches list, deleting a protected branch, or changing the default branch if that branch is included in the security policy. |
+| `prevent_approval_by_author`        | `boolean` | false | `true`, `false` | When enabled, two person approval is required on all MRs as merge request authors cannot approve their own MRs and merge them unilaterally. |
+| `prevent_approval_by_commit_author` | `boolean` | false | `true`, `false` | When enabled, users who have contributed code to the MR are ineligible for approval, ensuring code committers cannot introduce vulnerabilities and approve code to merge. |
+| `remove_approvals_with_new_commit`  | `boolean` | false | `true`, `false` | If an MR receives all necessary approvals to merge, but then a new commit is added, new approvals are required. This ensures new commits that may include vulnerabilities cannot be introduced. |
+| `require_password_to_approve`       | `boolean` | false | `true`, `false` | Password confirmation on approvals provides an additional level of security. Enabling this enforces the setting on all projects targeted by this policy. |
+| `prevent_force_pushing`             | `boolean` | false | `true`, `false` | Prevent pushing and force pushing to a protected branch. |
 
 ## Example security scan result policies project
 
@@ -257,28 +267,47 @@ You can use this example in the YAML mode of the [Scan Result Policy editor](#sc
 It corresponds to a single object from the previous example:
 
 ```yaml
-- name: critical vulnerability CS approvals
-  description: critical severity level only for container scanning
-  enabled: true
-  rules:
-  - type: scan_finding
-    branches:
-    - main
-    scanners:
-    - container_scanning
-    vulnerabilities_allowed: 1
-    severity_levels:
-    - critical
-    vulnerability_states:
-    - newly_detected
-  actions:
-  - type: require_approval
-    approvals_required: 1
-    user_approvers:
-    - adalberto.dare
+type: scan_result_policy
+name: critical vulnerability CS approvals
+description: critical severity level only for container scanning
+enabled: true
+rules:
+- type: scan_finding
+  branches:
+  - main
+  scanners:
+  - container_scanning
+  vulnerabilities_allowed: 1
+  severity_levels:
+  - critical
+  vulnerability_states:
+  - newly_detected
+actions:
+- type: require_approval
+  approvals_required: 1
+  user_approvers:
+  - adalberto.dare
 ```
 
-## Example situations where scan result policies require additional approval
+## Understanding scan result policy approvals
+
+### Scope of scan result policy comparison
+
+- To determine when approval is required on a merge request, we compare the latest completed pipelines for each supported pipeline source for the source and target branch (for example, `feature`/`main`). This ensures the most comprehensive evaluation of scan results.
+- We compare findings from the latest completed pipelines that ran on `HEAD` of the source and target branch.
+- Scan result policies considers all supported pipeline sources (based on the [`CI_PIPELINE_SOURCE` variable](../../../ci/variables/predefined_variables.md)) when comparing results from both the source and target branches when determining if a merge request requires approval. Pipeline sources `webide` and `parent_pipeline` are not supported.
+
+### Accepting risk and ignoring vulnerabilities in future merge requests
+
+For scan result policies that are scoped to `newly_detected` findings, it's important to understand the implications of this vulnerability state. A finding is considered `newly_detected` if it exists on the merge request's branch but not on the default branch. When a merge request whose branch contains `newly_detected` findings is approved and merged, approvers are "accepting the risk" of those vulnerabilities. If one or more of the same vulnerabilities were detected after this time, their status would be `previously_detected` and so not be out of scope of a policy aimed at `newly_detected` findings. For example:
+
+- A scan result policy is created to block critical SAST findings. If a SAST finding for CVE-1234 is approved, future merge requests with the same violation will not require approval in the project.
+
+When using license approval policies, the combination of project, component (dependency), and license are considered in the evaluation. If a license is approved as an exception, future merge requests don't require approval for the same combination of project, component (dependency), and license. The component's version is not be considered in this case. If a previously approved package is updated to a new version, approvers will not need to re-approve. For example:
+
+- A license approval policy is created to block merge requests with newly detected licenses matching `AGPL-1.0`. A change is made in project `demo` for component `osframework` that violates the policy. If approved and merged, future merge requests to `osframework` in project `demo` with the license `AGPL-1.0` don't require approval.
+
+### Multiple approvals
 
 There are several situations where the scan result policy requires an additional approval step. For example:
 
@@ -295,3 +324,43 @@ There are several situations where the scan result policy requires an additional
 - Someone stops a pipeline security job, and users can't skip the security scan.
 - A job in a merge request fails and is configured with `allow_failure: false`. As a result, the pipeline is in a blocked state.
 - A pipeline has a manual job that must run successfully for the entire pipeline to pass.
+
+### Known issues
+
+We have identified in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/11020) common areas of confusion in scan result findings that need to be addressed. Below are a few of the known issues:
+
+- When using `newly_detected`, some findings may require approval when they are not introduced by the merge request (such as a new CVE on a related dependency). We currently use `main tip` of the target branch for comparison. In the future, we plan to use `merge base` for `newly_detected` policies (see [issue 428518](https://gitlab.com/gitlab-org/gitlab/-/issues/428518)).
+- Findings or errors that cause approval to be required on a scan result policy may not be evident in the Security MR Widget. By using `merge base` in [issue 428518](https://gitlab.com/gitlab-org/gitlab/-/issues/428518) some cases will be addressed. We will additionally be [displaying more granular details](https://gitlab.com/groups/gitlab-org/-/epics/11185) about what caused security policy violations.
+- Security policy violations are distinct compared to findings displayed in the MR widgets. Some violations may not be present in the MR widget. We are working to harmonize our features in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/11020) and to display policy violations explicitly in merge requests in [epic 11185](https://gitlab.com/groups/gitlab-org/-/epics/11185).
+
+## Troubleshooting
+
+### Merge request rules widget shows a scan result policy is invalid or duplicated **(ULTIMATE SELF)**
+
+On GitLab self-managed from 15.0 to 16.4, the most likely cause is that the project was exported from a
+group and imported into another, and had scan result policy rules. These rules are stored in a
+separate project to the one that was exported. As a result, the project contains policy rules that
+reference entities that don't exist in the imported project's group. The result is policy rules that
+are invalid, duplicated, or both.
+
+To remove all invalid scan result policy rules from a GitLab instance, an administrator can run
+the following script in the [Rails console](../../../administration/operations/rails_console.md).
+
+```ruby
+Project.joins(:approval_rules).where(approval_rules: { report_type: %i[scan_finding license_scanning] }).where.not(approval_rules: { security_orchestration_policy_configuration_id: nil }).find_in_batches.flat_map do |batch|
+  batch.map do |project|
+    # Get projects and their configuration_ids for applicable project rules
+    [project, project.approval_rules.where(report_type: %i[scan_finding license_scanning]).pluck(:security_orchestration_policy_configuration_id).uniq]
+  end.uniq.map do |project, configuration_ids| # We take only unique combinations of project + configuration_ids
+    # If we find more configurations than what is available for the project, we take records with the extra configurations
+    [project, configuration_ids - project.all_security_orchestration_policy_configurations.pluck(:id)]
+  end.select { |_project, configuration_ids| configuration_ids.any? }
+end.each do |project, configuration_ids|
+  # For each found pair project + ghost configuration, we remove these rules for a given project
+  Security::OrchestrationPolicyConfiguration.where(id: configuration_ids).each do |configuration|
+    configuration.delete_scan_finding_rules_for_project(project.id)
+  end
+  # Ensure we sync any potential rules from new group's policy
+  Security::ScanResultPolicies::SyncProjectWorker.perform_async(project.id)
+end
+```

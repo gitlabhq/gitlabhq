@@ -22,11 +22,11 @@ describe('content_editor/extensions/word_break', () => {
 
   it.each`
     input      | insertedNode
-    ${'<wbr>'} | ${() => p(wordBreak())}
-    ${'<wbr'}  | ${() => p()}
-    ${'wbr>'}  | ${() => p()}
+    ${'<wbr>'} | ${() => [p(wordBreak()), p()]}
+    ${'<wbr'}  | ${() => [p()]}
+    ${'wbr>'}  | ${() => [p()]}
   `('with input=$input, then should insert a $insertedNode', ({ input, insertedNode }) => {
-    const expectedDoc = doc(insertedNode());
+    const expectedDoc = doc(...insertedNode());
 
     triggerNodeInputRule({ tiptapEditor, inputRuleText: input });
 

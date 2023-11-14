@@ -102,6 +102,28 @@ This change is a breaking change. You should [create a runner in the UI](../ci/r
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Running a single database is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.1</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/411239).
+</div>
+
+From GitLab 18.0, we will require a [separate database for CI features](https://gitlab.com/groups/gitlab-org/-/epics/7509).
+We recommend running both databases on the same Postgres instance(s) due to ease of management for most deployments.
+
+We are providing this as an informational advance notice but we do not recommend taking action yet.
+We will have another update communicated (as well as the deprecation note) when we recommend admins to start the migration process.
+
+This change provides additional scalability for the largest of GitLab instances, like GitLab.com.
+This change applies to all installation methods: Omnibus GitLab, GitLab Helm chart, GitLab Operator, GitLab Docker images, and installation from source.
+Before upgrading to GitLab 18.0, please ensure you have [migrated](https://docs.gitlab.com/ee/administration/postgresql/multiple_databases.html) to two databases.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Support for REST API endpoints that reset runner registration tokens
 
 <div class="deprecation-notes">
@@ -187,6 +209,26 @@ Because Cloud Native Buildpacks do not support automatic testing, the Auto Test 
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Breaking change to the Maven repository group permissions
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.6</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/393933).
+</div>
+
+The Maven repository exposes an API endpoint at the group level that allows Maven clients to download files from a specific package. The package finder first locates the package within the group, and then finds the file within the package.
+However, there is a limitation that affects duplicate package names hosted in different projects. The Maven package finder always returns the most recent package, but the "most recent" filter depends on user permissions. It is possible for a user with different permissions in different projects to download the wrong Maven package.
+
+In GitLab 17.0, the package finder logic will be fixed so that the "most recent" package is the last updated name and version of a package in a group. User permissions will be checked after the most recent package is found.
+After the change, download requests for users without correct permissions will be rejected. If your workflow depends on the current bugged behavior, this fix will introduce a breaking change.
+
+The change will be introduced in GitLab 16.6 behind a feature flag. If you are interested in enabling the feature flag for your group, leave a comment in [issue 393933](https://gitlab.com/gitlab-org/gitlab/-/issues/393933).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### CiRunner.projects default sort is changing to `id_desc`
 
 <div class="deprecation-notes">
@@ -212,6 +254,24 @@ If you rely on the order of the returned projects to be `id_asc`, change your sc
 
 The `CiRunnerUpgradeStatusType` GraphQL type has been renamed to `CiRunnerUpgradeStatus`. In GitLab 17.0,
 the aliasing for the `CiRunnerUpgradeStatusType` type will be removed.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### Container Registry support for the Swift and OSS storage drivers
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.6</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/container-registry/-/issues/1141).
+</div>
+
+The container registry uses storage drivers to work with various object storage platforms. While each driver's code is relatively self-contained, there is a high maintenance burden for these drivers. Each driver implementation is unique and making changes to a driver requires a high level of domain expertise with that specific driver.
+
+As we look to reduce maintenance costs, we are deprecating support for OSS (Object Storage Service) and OpenStack Swift. Both have already been removed from the upstream Docker Distribution. This helps align the container registry with the broader GitLab product offering with regards to [object storage support](https://docs.gitlab.com/ee/administration/object_storage.html#supported-object-storage-providers).
+
+OSS has an [S3 compatibility mode](https://www.alibabacloud.com/help/en/oss/developer-reference/compatibility-with-amazon-s3), so consider using that if you can't migrate to a supported driver. Swift is [compatible with S3 API operations](https://docs.openstack.org/swift/latest/s3_compat.html), required by the S3 storage driver as well.
 
 </div>
 
@@ -382,6 +442,24 @@ The parameters, `sign_in_text` and `help_text`, are deprecated in the [Settings 
 
 The `omniauth-dingtalk` gem that provides GitLab with the DingTalk OmniAuth provider will be removed in our next
 major release, GitLab 17.0. This gem sees very little use and is better suited for JiHu edition.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### File type variable expansion fixed in downstream pipelines
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.6</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/419445).
+</div>
+
+Previously, if you tried to reference a [file type CI/CD variable](https://docs.gitlab.com/ee/ci/variables/#use-file-type-cicd-variables) in another CI/CD variable, the CI/CD variable would expand to contain the contents of the file. This behavior was incorrect because it did not comply with typical shell variable expansion rules. The CI/CD variable reference should expand to only contain the path to the file, not the contents of the file itself. This was [fixed for most use cases in GitLab 15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/29407). Unfortunately, passing CI/CD variables to downstream pipelines was an edge case not yet fixed, but which will now be fixed in GitLab 17.0.
+
+With this change, a variable configured in the `.gitlab-ci.yml` file can reference a file variable and be passed to a downstream pipeline, and the file variable will be passed to the downstream pipeline as well. The downstream pipeline will expand the variable reference to the file path, not the file contents.
+
+This breaking change could disrupt user workflows that depend on expanding a file variable in a downstream pipeline.
 
 </div>
 
@@ -560,6 +638,24 @@ In GitLab 17.0, the `DISABLED_WITH_OVERRIDE` value of the `SharedRunnersSetting`
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### GraphQL: deprecate support for `canDestroy` and `canDelete`
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.6</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390754).
+</div>
+
+The Package Registry user interface relies on the GitLab GraphQL API. To make it easy for everyone to contribute, it's important that the frontend is coded consistently across all GitLab product areas. Before GitLab 16.6, however, the Package Registry UI handled permissions differently from other areas of the product.
+
+In 16.6, we added a new `UserPermissions` field under the `Types::PermissionTypes::Package` type to align the Package Registry with the rest of GitLab. This new field replaces the `canDestroy` field under the `Package`, `PackageBase`, and `PackageDetailsType` types. It also replaces the field `canDelete` for `ContainerRepository`, `ContainerRepositoryDetails`, and `ContainerRepositoryTag`. In GitLab 17.0, the `canDestroy` and `canDelete` fields will be removed.
+
+This is a breaking change that will be completed in 17.0.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### HashiCorp Vault integration will no longer use CI_JOB_JWT by default
 
 <div class="deprecation-notes">
@@ -610,6 +706,33 @@ Support for the custom GitLab tag delete endpoint is deprecated in GitLab 16.4, 
 This endpoint is used by the **internal** Container Registry application API, not the public [GitLab Container Registry API](https://docs.gitlab.com/ee/api/container_registry.html). No action should be required by the majority of container registry users. All the GitLab UI and API functionality related to tag deletions will remain intact as we transition to the new OCI-compliant endpoint.
 
 If you do access the internal container registry API and use the original tag deletion endpoint, you must update to the new endpoint.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### Legacy Geo Prometheus metrics
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.6</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/430192).
+</div>
+
+Following the migration of projects to the [Geo self-service framework](https://docs.gitlab.com/ee/development/geo/framework.html) we have deprecated a number of [Prometheus](https://docs.gitlab.com/ee/administration/monitoring/prometheus/) metrics.
+The following Geo-related Prometheus metrics are deprecated and will be removed in 17.0.
+The table below lists the deprecated metrics and their respective replacements. The replacements are available in GitLab 16.3.0 and later.
+
+| Deprecated metric                        |  Replacement metric                            |
+| ---------------------------------------- | ---------------------------------------------- |
+| `geo_repositories_synced`                | `geo_project_repositories_synced`              |
+| `geo_repositories_failed`                | `geo_project_repositories_failed`              |
+| `geo_repositories_checksummed`           | `geo_project_repositories_checksummed`         |
+| `geo_repositories_checksum_failed`       | `geo_project_repositories_checksum_failed`     |
+| `geo_repositories_verified`              | `geo_project_repositories_verified`            |
+| `geo_repositories_verification_failed`   | `geo_project_repositories_verification_failed` |
+| `geo_repositories_checksum_mismatch`     |  None available                                |
+| `geo_repositories_retrying_verification` |  None available                                |
 
 </div>
 
@@ -757,6 +880,20 @@ PostgreSQL 14 will also be supported for instances that want to upgrade prior to
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Proxy-based DAST deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.6</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/430966).
+</div>
+
+As of GitLab 17.0, Proxy-based DAST will not be supported. Please migrate to Browser-based DAST to continue analyzing your projects for security findings via dynamic analysis.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Queue selector for running Sidekiq is deprecated
 
 <div class="deprecation-notes">
@@ -822,28 +959,6 @@ that is available now. We recommend this alternative solution because it provide
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Running a single database is deprecated
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">16.1</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/411239).
-</div>
-
-From GitLab 17.0, we will require a [separate database for CI features](https://gitlab.com/groups/gitlab-org/-/epics/7509).
-We recommend running both databases on the same Postgres instance(s) due to ease of management for most deployments.
-
-We are providing this as an informational advance notice but we do not recommend taking action yet.
-We will have another update communicated (as well as the deprecation note) when we recommend admins to start the migration process.
-
-This change provides additional scalability for the largest of GitLab instances, like GitLab.com.
-This change applies to all installation methods: Omnibus GitLab, GitLab Helm chart, GitLab Operator, GitLab Docker images, and installation from source.
-Before upgrading to GitLab 17.0, please ensure you have [migrated](https://docs.gitlab.com/ee/administration/postgresql/multiple_databases.html) to two databases.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
 ### Security policy field `newly_detected` is deprecated
 
 <div class="deprecation-notes">
@@ -892,8 +1007,6 @@ For updates and details about this deprecation, follow [this epic](https://gitla
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387898).
 </div>
 
-This deprecation is now superseded by another [deprecation notice](#running-a-single-database-is-deprecated).
-
 Previously, [GitLab's database](https://docs.gitlab.com/omnibus/settings/database.html)
 configuration had a single `main:` section. This is being deprecated. The new
 configuration has both a `main:` and a `ci:` section.
@@ -921,6 +1034,24 @@ integration](https://gitlab.com/gitlab-org/gitlab/-/issues/372411).
 GitLab.com users can now use the GitLab for Slack app to manage notifications
 to their Slack workspace. For self-managed users of the Slack notifications integration,
 we'll be introducing support in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/1211).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### The GitHub importer Rake task
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.6</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/428225).
+</div>
+
+In GitLab 16.6 the [GitHub importer Rake task](https://docs.gitlab.com/ee/administration/raketasks/github_import.html) is deprecated. The Rake task lacks several features that are supported by the API and is not actively maintained.
+
+In GitLab 17.0, the Rake task will be removed.
+
+Instead, GitHub repositories can be imported by using the [API](https://docs.gitlab.com/ee/api/import.html#import-repository-from-github) or the [UI](https://docs.gitlab.com/ee/user/project/import/github.html).
 
 </div>
 
@@ -1142,6 +1273,29 @@ Previous work helped [align the vulnerabilities calls for pipeline security tabs
 </div>
 </div>
 
+<div class="milestone-wrapper" data-milestone="16.9">
+
+## GitLab 16.9
+
+<div class="deprecation " data-milestone="16.9">
+
+### Deprecation of `lfs_check` feature flag
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.6</span>
+- Removal in GitLab <span class="milestone">16.9</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/233550).
+</div>
+
+In GitLab 16.9, we will remove the `lfs_check` feature flag. This feature flag was [introduced 4 years ago](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/60588) and controls whether the LFS integrity check is enabled. The feature flag is enabled by default, but some customers experienced performance issues with the LFS integrity check and explicitly disabled it.
+
+After [dramatically improving the performance](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61355) of the LFS integrity check, we are ready to remove the feature flag. After the flag is removed, the feature will automatically be turned on for any environment in which it is currently disabled.
+
+If this feature flag is disabled for your environment, and you are concerned about performance issues, please enable it and monitor the performance before it is removed in 16.9. If you see any performance issues after enabling it, please let us know in [this feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/233550).
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="16.8">
 
 ## GitLab 16.8
@@ -1204,6 +1358,33 @@ If you have [public or internal](https://docs.gitlab.com/ee/user/public_access.h
 </div>
 
 Enabling the `ldap_settings_unlock_groups_by_owners` feature flag allowed non-LDAP synced users to be added to a locked LDAP group. This [feature](https://gitlab.com/gitlab-org/gitlab/-/issues/1793) has always been disabled by default and behind a feature flag. We are removing this feature to keep continuity with our SAML integration, and because allowing non-synced group members defeats the "single source of truth" principle of using a directory service. Once this feature is removed, any LDAP group members that are not synced with LDAP will lose access to that group.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="16.5">
+
+### Geo: Housekeeping Rake tasks
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.3</span>
+- Removal in GitLab <span class="milestone">16.5</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/416384).
+</div>
+
+As part of the migration of the replication and verification to the
+[Geo self-service framework (SSF)](https://docs.gitlab.com/ee/development/geo/framework.html),
+the legacy replication for project repositories has been
+[removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130565).
+As a result, the following Rake tasks that relied on legacy code have also been removed. The work invoked by these Rake tasks are now triggered automatically either periodically or based on trigger events.
+
+| Rake task | Replacement |
+| --------- | ----------- |
+| `geo:git:housekeeping:full_repack` | [Moved to UI](https://docs.gitlab.com/ee/administration/housekeeping.html#heuristical-housekeeping). No equivalent Rake task in the SSF. |
+| `geo:git:housekeeping:gc` | Always executed for new repositories, and then when it's needed. No equivalent Rake task in the SSF. |
+| `geo:git:housekeeping:incremental_repack` | Executed when needed. No equivalent Rake task in the SSF. |
+| `geo:run_orphaned_project_registry_cleaner` | Executed regularly by a registry [consistency worker](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/geo/secondary/registry_consistency_worker.rb) which removes orphaned registries. No equivalent Rake task in the SSF. |
+| `geo:verification:repository:reset` | Moved to UI.  No equivalent Rake task in the SSF. |
+| `geo:verification:wiki:reset` | Moved to UI.  No equivalent Rake task in the SSF. |
 
 </div>
 </div>

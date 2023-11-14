@@ -17,7 +17,8 @@
     "statusMessage",
     "canDestroy",
     "lastDownloadedAt",
-    "_links"
+    "_links",
+    "userPermissions"
   ],
   "properties": {
     "id": {
@@ -270,6 +271,15 @@
             "string",
             "null"
           ]
+        }
+      }
+    },
+    "userPermissions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "destroyPackage": {
+          "type": "boolean"
         }
       }
     }

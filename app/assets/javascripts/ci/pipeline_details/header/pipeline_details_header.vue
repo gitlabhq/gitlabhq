@@ -17,7 +17,7 @@ import { setUrlFragment, redirectTo } from '~/lib/utils/url_utility'; // eslint-
 import { __, s__, sprintf, formatNumber } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { LOAD_FAILURE, POST_FAILURE, DELETE_FAILURE, DEFAULT } from '../constants';
@@ -38,7 +38,7 @@ export default {
   pipelineRetry: 'pipelineRetry',
   finishedStatuses: ['FAILED', 'SUCCESS', 'CANCELED'],
   components: {
-    CiBadgeLink,
+    CiIcon,
     ClipboardButton,
     GlAlert,
     GlBadge,
@@ -58,13 +58,17 @@ export default {
   i18n: {
     scheduleBadgeText: s__('Pipelines|Scheduled'),
     scheduleBadgeTooltip: __('This pipeline was created by a schedule'),
+    triggerBadgeText: __('trigger token'),
+    triggerBadgeTooltip: __(
+      'This pipeline was created by an API call authenticated with a trigger token',
+    ),
     childBadgeText: s__('Pipelines|Child pipeline (%{linkStart}parent%{linkEnd})'),
     childBadgeTooltip: __('This is a child pipeline within the parent pipeline'),
     latestBadgeText: s__('Pipelines|latest'),
     latestBadgeTooltip: __('Latest pipeline for the most recent commit on this branch'),
     mergeTrainBadgeText: s__('Pipelines|merge train'),
     mergeTrainBadgeTooltip: s__(
-      'Pipelines|This pipeline ran on the contents of this merge request combined with the contents of all other merge requests queued for merging into the target branch.',
+      'Pipelines|This pipeline ran on the contents of the merge request combined with the contents of all other merge requests queued for merging into the target branch.',
     ),
     invalidBadgeText: s__('Pipelines|yaml invalid'),
     failedBadgeText: s__('Pipelines|error'),
@@ -74,7 +78,11 @@ export default {
     ),
     detachedBadgeText: s__('Pipelines|merge request'),
     detachedBadgeTooltip: s__(
-      "Pipelines|This pipeline ran on the contents of this merge request's source branch, not the target branch.",
+      "Pipelines|This pipeline ran on the contents of the merge request's source branch, not the target branch.",
+    ),
+    mergedResultsBadgeText: s__('Pipelines|merged results'),
+    mergedResultsBadgeTooltip: s__(
+      'Pipelines|This pipeline ran on the contents of the merge request combined with the contents of the target branch.',
     ),
     stuckBadgeText: s__('Pipelines|stuck'),
     stuckBadgeTooltip: s__('Pipelines|This pipeline is stuck'),
@@ -403,7 +411,7 @@ export default {
           {{ commitTitle }}
         </h3>
         <div>
-          <ci-badge-link :status="detailedStatus" class="gl-display-inline-block gl-mb-3" />
+          <ci-icon :status="detailedStatus" show-status-text :show-link="false" class="gl-mb-3" />
           <div class="gl-ml-2 gl-mb-3 gl-display-inline-block gl-h-6">
             <gl-link
               v-if="user"
@@ -456,6 +464,15 @@ export default {
               size="sm"
             >
               {{ $options.i18n.scheduleBadgeText }}
+            </gl-badge>
+            <gl-badge
+              v-if="badges.trigger"
+              v-gl-tooltip
+              :title="$options.i18n.triggerBadgeTooltip"
+              variant="info"
+              size="sm"
+            >
+              {{ $options.i18n.triggerBadgeText }}
             </gl-badge>
             <gl-badge
               v-if="badges.child"
@@ -525,6 +542,15 @@ export default {
               size="sm"
             >
               {{ $options.i18n.detachedBadgeText }}
+            </gl-badge>
+            <gl-badge
+              v-if="badges.mergedResultsPipeline"
+              v-gl-tooltip
+              :title="$options.i18n.mergedResultsBadgeTooltip"
+              variant="info"
+              size="sm"
+            >
+              {{ $options.i18n.mergedResultsBadgeText }}
             </gl-badge>
             <gl-badge
               v-if="badges.stuck"

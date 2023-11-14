@@ -2,7 +2,7 @@ PATH
   remote: ../gitlab-rspec
   specs:
     gitlab-rspec (0.1.0)
-      activesupport (>= 6.1, < 7.1)
+      activesupport (>= 6.1, < 8)
       rspec (~> 3.0)
 
 PATH
@@ -20,6 +20,7 @@ PATH
   specs:
     gitlab-http (0.1.0)
       activesupport (~> 7)
+      concurrent-ruby (~> 1.2)
       httparty (~> 0.21.0)
       ipaddress (~> 0.8.3)
       nokogiri (~> 1.15.4)

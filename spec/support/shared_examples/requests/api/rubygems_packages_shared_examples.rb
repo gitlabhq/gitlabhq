@@ -151,7 +151,7 @@ RSpec.shared_examples 'dependency endpoint success' do |user_type, status, add_m
 
     context 'with gems params' do
       let(:params) { { gems: 'foo,bar' } }
-      let(:expected_response) { Marshal.dump(%w(result result)) }
+      let(:expected_response) { Marshal.dump(%w[result result]) }
 
       it 'returns successfully', :aggregate_failures do
         service_result = double('DependencyResolverService', execute: ServiceResponse.success(payload: 'result'))

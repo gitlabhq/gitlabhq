@@ -1,24 +1,24 @@
 import CopyPaste from '~/content_editor/extensions/copy_paste';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
-import Loading from '~/content_editor/extensions/loading';
+import Loading, { findAllLoaders } from '~/content_editor/extensions/loading';
 import Diagram from '~/content_editor/extensions/diagram';
 import Frontmatter from '~/content_editor/extensions/frontmatter';
+import Selection from '~/content_editor/extensions/selection';
 import Heading from '~/content_editor/extensions/heading';
 import Bold from '~/content_editor/extensions/bold';
 import BulletList from '~/content_editor/extensions/bullet_list';
 import ListItem from '~/content_editor/extensions/list_item';
 import Italic from '~/content_editor/extensions/italic';
+import Table from '~/content_editor/extensions/table';
+import TableCell from '~/content_editor/extensions/table_cell';
+import TableRow from '~/content_editor/extensions/table_row';
+import TableHeader from '~/content_editor/extensions/table_header';
 import { VARIANT_DANGER } from '~/alert';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import { ALERT_EVENT } from '~/content_editor/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import MarkdownSerializer from '~/content_editor/services/markdown_serializer';
-import {
-  createTestEditor,
-  createDocBuilder,
-  waitUntilNextDocTransaction,
-  sleep,
-} from '../test_utils';
+import { createTestEditor, createDocBuilder, waitUntilNextDocTransaction } from '../test_utils';
 
 const CODE_BLOCK_HTML = '<pre class="js-syntax-highlight" lang="javascript">var a = 2;</pre>';
 const CODE_SUGGESTION_HTML =
@@ -35,13 +35,11 @@ describe('content_editor/extensions/copy_paste', () => {
   let p;
   let bold;
   let italic;
-  let loading;
   let heading;
   let codeBlock;
   let bulletList;
   let listItem;
   let renderMarkdown;
-  let resolveRenderMarkdownPromise;
   let resolveRenderMarkdownPromiseAndWait;
 
   let eventHub;
@@ -52,7 +50,6 @@ describe('content_editor/extensions/copy_paste', () => {
     renderMarkdown = jest.fn().mockImplementation(
       () =>
         new Promise((resolve) => {
-          resolveRenderMarkdownPromise = resolve;
           resolveRenderMarkdownPromiseAndWait = (data) =>
             waitUntilNextDocTransaction({ tiptapEditor, action: () => resolve(data) });
         }),
@@ -65,28 +62,34 @@ describe('content_editor/extensions/copy_paste', () => {
         Bold,
         Italic,
         Loading,
+        Selection,
         CodeBlockHighlight,
         Diagram,
         Frontmatter,
         Heading,
         BulletList,
         ListItem,
+        Table,
+        TableCell,
+        TableRow,
+        TableHeader,
         CopyPaste.configure({ renderMarkdown, eventHub, serializer: new MarkdownSerializer() }),
       ],
     });
 
     ({
-      builders: { doc, p, bold, italic, heading, loading, codeBlock, bulletList, listItem },
+      builders: { doc, p, bold, italic, heading, codeBlock, bulletList, listItem },
     } = createDocBuilder({
       tiptapEditor,
       names: {
         bold: { markType: Bold.name },
         italic: { markType: Italic.name },
-        loading: { nodeType: Loading.name },
         heading: { nodeType: Heading.name },
         bulletList: { nodeType: BulletList.name },
         listItem: { nodeType: ListItem.name },
         codeBlock: { nodeType: CodeBlockHighlight.name },
+        diagram: { nodeType: Diagram.name },
+        frontmatter: { nodeType: Frontmatter.name },
       },
     }));
   });
@@ -107,17 +110,6 @@ describe('content_editor/extensions/copy_paste', () => {
       tiptapEditor.view.someProp('handlePaste', (eventHandler) => {
         resolve(eventHandler(tiptapEditor.view, event));
       });
-    });
-  };
-
-  const triggerPasteEventHandlerAndWaitForTransaction = (event) => {
-    return waitUntilNextDocTransaction({
-      tiptapEditor,
-      action: () => {
-        tiptapEditor.view.someProp('handlePaste', (eventHandler) => {
-          return eventHandler(tiptapEditor.view, event);
-        });
-      },
     });
   };
 
@@ -183,37 +175,57 @@ describe('content_editor/extensions/copy_paste', () => {
     });
   });
 
+  describe('when copying content with a single table cell', () => {
+    it('sets the clipboard data properly', () => {
+      const event = buildClipboardEvent({ eventName: 'copy' });
+
+      tiptapEditor.commands.insertContent('<table><tr><td>Cell 1</td></tr></table>');
+      tiptapEditor.commands.selectAll();
+      tiptapEditor.view.dispatchEvent(event);
+
+      expect(event.clipboardData.setData).toHaveBeenCalledWith('text/x-gfm', 'Cell 1');
+    });
+  });
+
+  describe('when copying content with a table with multiple cells', () => {
+    it('sets the clipboard data properly', () => {
+      const event = buildClipboardEvent({ eventName: 'copy' });
+
+      tiptapEditor.commands.insertContent('<table><tr><td>Cell 1</td><td>Cell 2</td></tr></table>');
+      tiptapEditor.commands.selectAll();
+      tiptapEditor.view.dispatchEvent(event);
+
+      expect(event.clipboardData.setData).toHaveBeenCalledWith(
+        'text/x-gfm',
+        `<table>
+<tr>
+<td>Cell 1</td>
+<td>Cell 2</td>
+</tr>
+</table>
+
+`,
+      );
+    });
+  });
+
   describe('when pasting raw markdown source', () => {
     it('shows a loading indicator while markdown is being processed', async () => {
-      const expectedDoc = doc(p(loading({ id: expect.any(String) })));
+      await triggerPasteEventHandler(buildClipboardEvent());
 
-      await triggerPasteEventHandlerAndWaitForTransaction(buildClipboardEvent());
-
-      expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
+      expect(findAllLoaders(tiptapEditor.state)).toHaveLength(1);
     });
 
     it('pastes in the correct position if some content is added before the markdown is processed', async () => {
       const expectedDoc = doc(p(bold('some markdown'), 'some content'));
       const resolvedValue = '<strong>some markdown</strong>';
 
-      await triggerPasteEventHandlerAndWaitForTransaction(buildClipboardEvent());
+      await triggerPasteEventHandler(buildClipboardEvent());
 
       tiptapEditor.commands.insertContent('some content');
+
       await resolveRenderMarkdownPromiseAndWait(resolvedValue);
 
-      expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
-      expect(tiptapEditor.state.selection.from).toEqual(26); // end of the document
-    });
-
-    it('does not paste anything if the loading indicator is deleted before the markdown is processed', async () => {
-      const expectedDoc = doc(p());
-
-      await triggerPasteEventHandlerAndWaitForTransaction(buildClipboardEvent());
-      tiptapEditor.chain().selectAll().deleteSelection().run();
-      resolveRenderMarkdownPromise('some markdown');
-
-      // wait some time to be sure no transaction happened
-      await sleep();
       expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
     });
 
@@ -227,7 +239,7 @@ describe('content_editor/extensions/copy_paste', () => {
       it('transforms pasted text into a prosemirror node', async () => {
         const expectedDoc = doc(p(bold('bold text')));
 
-        await triggerPasteEventHandlerAndWaitForTransaction(buildClipboardEvent());
+        await triggerPasteEventHandler(buildClipboardEvent());
         await resolveRenderMarkdownPromiseAndWait(resolvedValue);
 
         expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
@@ -239,7 +251,7 @@ describe('content_editor/extensions/copy_paste', () => {
 
           tiptapEditor.commands.setContent('Initial text and ');
 
-          await triggerPasteEventHandlerAndWaitForTransaction(buildClipboardEvent());
+          await triggerPasteEventHandler(buildClipboardEvent());
           await resolveRenderMarkdownPromiseAndWait(resolvedValue);
 
           expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
@@ -253,7 +265,7 @@ describe('content_editor/extensions/copy_paste', () => {
           tiptapEditor.commands.setContent('Initial text and ');
           tiptapEditor.commands.setTextSelection({ from: 13, to: 17 });
 
-          await triggerPasteEventHandlerAndWaitForTransaction(buildClipboardEvent());
+          await triggerPasteEventHandler(buildClipboardEvent());
           await resolveRenderMarkdownPromiseAndWait(resolvedValue);
 
           expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
@@ -274,7 +286,7 @@ describe('content_editor/extensions/copy_paste', () => {
 
           tiptapEditor.commands.setContent('Initial text and ');
 
-          await triggerPasteEventHandlerAndWaitForTransaction(buildClipboardEvent());
+          await triggerPasteEventHandler(buildClipboardEvent());
           await resolveRenderMarkdownPromiseAndWait(resolvedValue);
 
           expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
@@ -289,7 +301,7 @@ describe('content_editor/extensions/copy_paste', () => {
 
         const expectedDoc = doc(p(bold('bold text')), p('some code'));
 
-        await triggerPasteEventHandlerAndWaitForTransaction(
+        await triggerPasteEventHandler(
           buildClipboardEvent({
             types: ['text/html'],
             data: {
@@ -309,7 +321,7 @@ describe('content_editor/extensions/copy_paste', () => {
         const resolvedValue = '<strong>bold text</strong>';
         const expectedDoc = doc(p(bold('bold text')));
 
-        await triggerPasteEventHandlerAndWaitForTransaction(
+        await triggerPasteEventHandler(
           buildClipboardEvent({
             types: ['text/x-gfm', 'text/plain', 'text/html'],
             data: {
@@ -332,7 +344,7 @@ describe('content_editor/extensions/copy_paste', () => {
           bulletList(listItem(p('Cat')), listItem(p('Dog')), listItem(p('Turtle'))),
         );
 
-        await triggerPasteEventHandlerAndWaitForTransaction(
+        await triggerPasteEventHandler(
           buildClipboardEvent({
             types: ['text/plain', 'text/html'],
             data: {
@@ -359,7 +371,7 @@ describe('content_editor/extensions/copy_paste', () => {
           ),
         );
 
-        await triggerPasteEventHandlerAndWaitForTransaction(
+        await triggerPasteEventHandler(
           buildClipboardEvent({
             types: ['vscode-editor-data', 'text/plain', 'text/html'],
             data: {
@@ -380,7 +392,7 @@ describe('content_editor/extensions/copy_paste', () => {
 
         const expectedDoc = doc(p(bold('bold text')));
 
-        await triggerPasteEventHandlerAndWaitForTransaction(
+        await triggerPasteEventHandler(
           buildClipboardEvent({
             types: ['vscode-editor-data', 'text/plain', 'text/html'],
             data: {

@@ -4,6 +4,7 @@ module Packages
   module Nuget
     class Symbol < ApplicationRecord
       include FileStoreMounter
+      include ShaAttribute
 
       belongs_to :package, -> { where(package_type: :nuget) }, inverse_of: :nuget_symbols
 
@@ -12,6 +13,8 @@ module Packages
       validates :package, :file, :file_path, :signature, :object_storage_key, :size, presence: true
       validates :signature, uniqueness: { scope: :file_path }
       validates :object_storage_key, uniqueness: true
+
+      sha256_attribute :file_sha256
 
       mount_file_store_uploader SymbolUploader
 

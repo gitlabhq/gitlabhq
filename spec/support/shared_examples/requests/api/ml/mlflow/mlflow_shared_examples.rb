@@ -74,6 +74,37 @@ RSpec.shared_examples 'MLflow|shared error cases' do
   end
 end
 
+RSpec.shared_examples 'MLflow|shared model registry error cases' do
+  context 'when not authenticated' do
+    let(:headers) { {} }
+
+    it "is Unauthorized" do
+      is_expected.to have_gitlab_http_status(:unauthorized)
+    end
+  end
+
+  context 'when user does not have access' do
+    let(:access_token) { tokens[:different_user] }
+
+    it "is Not Found" do
+      is_expected.to have_gitlab_http_status(:not_found)
+    end
+  end
+
+  context 'when model registry is unavailable' do
+    before do
+      allow(Ability).to receive(:allowed?).and_call_original
+      allow(Ability).to receive(:allowed?)
+                          .with(current_user, :read_model_registry, project)
+                          .and_return(false)
+    end
+
+    it "is Not Found" do
+      is_expected.to have_gitlab_http_status(:not_found)
+    end
+  end
+end
+
 RSpec.shared_examples 'MLflow|Bad Request on missing required' do |keys|
   keys.each do |key|
     context "when \"#{key}\" is missing" do

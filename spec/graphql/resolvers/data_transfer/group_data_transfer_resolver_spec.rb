@@ -10,6 +10,7 @@ RSpec.describe Resolvers::DataTransfer::GroupDataTransferResolver, feature_categ
 
   let(:from) { Date.new(2022, 1, 1) }
   let(:to) { Date.new(2023, 1, 1) }
+  let(:finder) { instance_double(::DataTransfer::GroupDataTransferFinder) }
   let(:finder_results) do
     [
       build(:project_data_transfer, date: to, repository_egress: 250000)
@@ -41,21 +42,12 @@ RSpec.describe Resolvers::DataTransfer::GroupDataTransferResolver, feature_categ
 
     include_examples 'Data transfer resolver'
 
-    context 'when data_transfer_monitoring_mock_data is disabled' do
-      let(:finder) { instance_double(::DataTransfer::GroupDataTransferFinder) }
+    it 'calls GroupDataTransferFinder with expected arguments' do
+      expect(::DataTransfer::GroupDataTransferFinder).to receive(:new).with(
+        group: group, from: from, to: to, user: current_user).once.and_return(finder)
+      allow(finder).to receive(:execute).once.and_return(finder_results)
 
-      before do
-        stub_feature_flags(data_transfer_monitoring_mock_data: false)
-      end
-
-      it 'calls GroupDataTransferFinder with expected arguments' do
-        expect(::DataTransfer::GroupDataTransferFinder).to receive(:new).with(
-          group: group, from: from, to: to, user: current_user
-        ).once.and_return(finder)
-        allow(finder).to receive(:execute).once.and_return(finder_results)
-
-        expect(resolve_egress).to eq({ egress_nodes: finder_results.map(&:attributes) })
-      end
+      expect(resolve_egress).to eq({ egress_nodes: finder_results.map(&:attributes) })
     end
   end
 

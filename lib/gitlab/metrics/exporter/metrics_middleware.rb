@@ -9,10 +9,10 @@ module Gitlab
           default_labels = {
             pid: pid
           }
-          @requests_total = Gitlab::Metrics.counter(
+          @requests_total = ::Gitlab::Metrics.counter(
             :exporter_http_requests_total, 'Total number of HTTP requests', default_labels
           )
-          @request_durations = Gitlab::Metrics.histogram(
+          @request_durations = ::Gitlab::Metrics.histogram(
             :exporter_http_request_duration_seconds,
             'HTTP request duration histogram (seconds)',
             default_labels,
@@ -21,9 +21,9 @@ module Gitlab
         end
 
         def call(env)
-          start = Gitlab::Metrics::System.monotonic_time
+          start = ::Gitlab::Metrics::System.monotonic_time
           @app.call(env).tap do |response|
-            duration = Gitlab::Metrics::System.monotonic_time - start
+            duration = ::Gitlab::Metrics::System.monotonic_time - start
 
             labels = {
               method: env['REQUEST_METHOD'].downcase,

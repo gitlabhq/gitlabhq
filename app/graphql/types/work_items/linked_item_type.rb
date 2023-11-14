@@ -2,21 +2,29 @@
 
 module Types
   module WorkItems
-    # rubocop:disable Graphql/AuthorizeTypes
     class LinkedItemType < BaseObject
       graphql_name 'LinkedWorkItemType'
 
+      authorize :read_work_item
+
       field :link_created_at, Types::TimeType,
-        description: 'Timestamp the link was created.', null: false
+        description: 'Timestamp the link was created.', null: false,
+        method: :issue_link_created_at
       field :link_id, ::Types::GlobalIDType[::WorkItems::RelatedWorkItemLink],
-        description: 'Global ID of the link.', null: false
+        description: 'Global ID of the link.', null: false,
+        method: :issue_link_id
       field :link_type, GraphQL::Types::String,
-        description: 'Type of link.', null: false
+        description: 'Type of link.', null: false,
+        method: :issue_link_type
       field :link_updated_at, Types::TimeType,
-        description: 'Timestamp the link was updated.', null: false
+        description: 'Timestamp the link was updated.', null: false,
+        method: :issue_link_updated_at
       field :work_item, Types::WorkItemType,
-        description: 'Linked work item.', null: false
+        description: 'Linked work item.', null: true
+
+      def work_item
+        object
+      end
     end
-    # rubocop:enable Graphql/AuthorizeTypes
   end
 end

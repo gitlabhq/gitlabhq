@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Ci::Ansi2json::State, feature_category: :continuous_integ
       state.offset = 1
       state.new_line!(style: { fg: 'some-fg', bg: 'some-bg', mask: 1234 })
       state.set_last_line_offset
-      state.open_section('hello', 111, {})
+      state.open_section('hello', 100, {})
     end
   end
 
@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Ci::Ansi2json::State, feature_category: :continuous_integ
         fg: 'some-fg',
         mask: 1234
       })
-      expect(new_state.open_sections).to eq({ 'hello' => 111 })
+      expect(new_state.open_sections).to eq({ 'hello' => 100 })
     end
 
     it 'ignores unsigned prior state', :aggregate_failures do
@@ -42,6 +42,23 @@ RSpec.describe Gitlab::Ci::Ansi2json::State, feature_category: :continuous_integ
       expect(new_state.offset).to eq(0)
       expect(new_state.inherited_style).to eq({})
       expect(new_state.open_sections).to eq({})
+    end
+
+    it 'opens and closes a section', :aggregate_failures do
+      new_state = described_class.new('', 1000)
+
+      new_state.new_line!(style: {})
+      new_state.open_section('hello', 100, {})
+
+      expect(new_state.current_line.section_header).to eq(true)
+      expect(new_state.current_line.section_footer).to eq(false)
+
+      new_state.new_line!(style: {})
+      new_state.close_section('hello', 101)
+
+      expect(new_state.current_line.section_header).to eq(false)
+      expect(new_state.current_line.section_duration).to eq('00:01')
+      expect(new_state.current_line.section_footer).to eq(true)
     end
 
     it 'ignores bad input', :aggregate_failures do

@@ -35,13 +35,15 @@ module Gitlab
         end
 
         attr_reader :offset, :sections, :segments, :current_segment,
-                    :section_header, :section_duration, :section_options
+                    :section_header, :section_footer, :section_duration,
+                    :section_options
 
         def initialize(offset:, style:, sections: [])
           @offset = offset
           @segments = []
           @sections = sections
           @section_header = false
+          @section_footer = false
           @duration = nil
           @current_segment = Segment.new(style: style)
         end
@@ -79,6 +81,10 @@ module Gitlab
           @section_header = true
         end
 
+        def set_as_section_footer
+          @section_footer = true
+        end
+
         def set_section_duration(duration_in_seconds)
           normalized_duration_in_seconds = duration_in_seconds.to_i.clamp(0, 1.year)
           duration = ActiveSupport::Duration.build(normalized_duration_in_seconds)
@@ -103,6 +109,7 @@ module Gitlab
           { offset: offset, content: @segments }.tap do |result|
             result[:section] = sections.last if sections.any?
             result[:section_header] = true if @section_header
+            result[:section_footer] = true if @section_footer
             result[:section_duration] = @section_duration if @section_duration
             result[:section_options] = @section_options if @section_options
           end

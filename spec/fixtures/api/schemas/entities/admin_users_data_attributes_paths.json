@@ -1,19 +1,51 @@
 {
   "type": "object",
   "properties": {
-    "edit": { "type": "string" },
-    "approve": { "type": "string" },
-    "reject": { "type": "string" },
-    "unblock": { "type": "string" },
-    "block": { "type": "string" },
-    "deactivate": { "type": "string" },
-    "activate": { "type": "string" },
-    "unlock": { "type": "string" },
-    "delete": { "type": "string" },
-    "delete_with_contributions": { "type": "string" },
-    "admin_user": { "type": "string" },
-    "ban": { "type": "string" },
-    "unban": { "type": "string" }
+    "edit": {
+      "type": "string"
+    },
+    "approve": {
+      "type": "string"
+    },
+    "reject": {
+      "type": "string"
+    },
+    "unblock": {
+      "type": "string"
+    },
+    "block": {
+      "type": "string"
+    },
+    "deactivate": {
+      "type": "string"
+    },
+    "activate": {
+      "type": "string"
+    },
+    "unlock": {
+      "type": "string"
+    },
+    "delete": {
+      "type": "string"
+    },
+    "delete_with_contributions": {
+      "type": "string"
+    },
+    "admin_user": {
+      "type": "string"
+    },
+    "ban": {
+      "type": "string"
+    },
+    "unban": {
+      "type": "string"
+    },
+    "trust": {
+      "type": "string"
+    },
+    "untrust": {
+      "type": "string"
+    }
   },
   "required": [
     "edit",
@@ -28,7 +60,9 @@
     "delete_with_contributions",
     "admin_user",
     "ban",
-    "unban"
+    "unban",
+    "trust",
+    "untrust"
   ],
   "additionalProperties": false
 }

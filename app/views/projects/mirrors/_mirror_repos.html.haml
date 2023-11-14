@@ -3,14 +3,14 @@
 - mirror_settings_enabled = can?(current_user, :admin_remote_mirror, @project)
 - mirror_settings_class = "#{'expanded' if expanded} #{'js-mirror-settings' if mirror_settings_enabled}".strip
 
-%section.settings.project-mirror-settings.no-animate#js-push-remote-settings{ class: mirror_settings_class, data: { qa_selector: 'mirroring_repositories_settings_content' } }
+%section.settings.project-mirror-settings.no-animate#js-push-remote-settings{ class: mirror_settings_class, data: { testid: 'mirroring-repositories-settings-content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Mirroring repositories')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
     %p.gl-text-secondary
       = _('Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically.')
-      = link_to _('How do I mirror repositories?'), help_page_path('user/project/repository/mirror/index.md'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('How do I mirror repositories?'), help_page_path('user/project/repository/mirror/index'), target: '_blank', rel: 'noopener noreferrer'
 
 
   .settings-content
@@ -35,7 +35,7 @@
               %div= form_errors(@project)
               .form-group.has-feedback
                 = label_tag :url, _('Git repository URL'), class: 'label-light'
-                = text_field_tag :url, nil, class: 'form-control gl-form-input js-mirror-url js-repo-url gl-form-input-xl', placeholder: _('Input the remote repository URL'), required: true, pattern: "(#{protocols}):\/\/.+", autocomplete: 'new-password', data: { qa_selector: 'mirror_repository_url_field' }
+                = text_field_tag :url, nil, class: 'form-control gl-form-input js-mirror-url js-repo-url gl-form-input-xl', placeholder: _('Input the remote repository URL'), required: true, pattern: "(#{protocols}):\/\/.+", autocomplete: 'new-password', data: { testid: 'mirror-repository-url-field' }
 
               = render 'projects/mirrors/instructions'
 
@@ -43,7 +43,7 @@
 
               = render 'projects/mirrors/branch_filter'
 
-              = f.submit _('Mirror repository'), class: 'js-mirror-submit', name: :update_remote_mirror, pajamas_button: true, data: { qa_selector: 'mirror_repository_button' }
+              = f.submit _('Mirror repository'), class: 'js-mirror-submit', name: :update_remote_mirror, pajamas_button: true, data: { testid: 'mirror-repository-button' }
 
               = render Pajamas::ButtonComponent.new(button_options: { type: 'reset', class: 'gl-ml-2 js-toggle-button' }) do
                 = _('Cancel')

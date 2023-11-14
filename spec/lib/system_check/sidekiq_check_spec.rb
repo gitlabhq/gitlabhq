@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe SystemCheck::SidekiqCheck do
   describe '#multi_check' do
     def stub_ps_output(output)
-      allow(Gitlab::Popen).to receive(:popen).with(%w(ps uxww)).and_return([output, nil])
+      allow(Gitlab::Popen).to receive(:popen).with(%w[ps uxww]).and_return([output, nil])
     end
 
     def expect_check_output(matcher)

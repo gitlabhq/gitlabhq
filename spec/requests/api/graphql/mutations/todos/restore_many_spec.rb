@@ -20,15 +20,17 @@ RSpec.describe 'Restoring many Todos', feature_category: :team_planning do
   let(:input) { { ids: input_ids } }
 
   let(:mutation) do
-    graphql_mutation(:todo_restore_many, input,
-                     <<-QL.strip_heredoc
-                       clientMutationId
-                       errors
-                       todos {
-                         id
-                         state
-                       }
-                     QL
+    graphql_mutation(
+      :todo_restore_many,
+      input,
+      <<-QL.strip_heredoc
+        clientMutationId
+        errors
+        todos {
+          id
+          state
+        }
+      QL
     )
   end
 

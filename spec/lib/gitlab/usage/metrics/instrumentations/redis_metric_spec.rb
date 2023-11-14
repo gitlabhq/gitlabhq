@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisMetric, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisMetric, :clean_gitlab_redis_shared_state,
+  feature_category: :service_ping do
   before do
     4.times do
       Gitlab::UsageDataCounters::SourceCodeCounter.count(:pushes)

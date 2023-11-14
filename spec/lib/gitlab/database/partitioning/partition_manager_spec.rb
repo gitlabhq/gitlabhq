@@ -6,6 +6,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
   include ActiveSupport::Testing::TimeHelpers
   include Database::PartitioningHelpers
   include ExclusiveLeaseHelpers
+  using RSpec::Parameterized::TableSyntax
 
   let(:partitioned_table_name) { :_test_gitlab_main_my_model_example_table }
 
@@ -107,14 +108,88 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       end
     end
 
-    before do
-      my_model.table_name = partitioned_table_name
+    context 'when single database is configured' do
+      before do
+        skip_if_database_exists(:ci)
 
-      create_partitioned_table(connection, partitioned_table_name)
+        my_model.table_name = partitioned_table_name
+
+        create_partitioned_table(connection, partitioned_table_name)
+      end
+
+      it 'creates partitions' do
+        expect { sync_partitions }.to change { find_partitions(my_model.table_name, schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA).size }.from(0)
+      end
     end
 
-    it 'creates partitions' do
-      expect { sync_partitions }.to change { find_partitions(my_model.table_name, schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA).size }.from(0)
+    context 'when multiple databases are configured' do
+      before do
+        skip_if_shared_database(:ci)
+
+        my_model.table_name = partitioned_table_name
+
+        create_partitioned_table(connection, partitioned_table_name)
+
+        stub_feature_flags(automatic_lock_writes_on_partition_tables: ff_enabled)
+
+        sync_partitions
+      end
+
+      where(:gitlab_schema, :database, :expectation) do
+        :gitlab_main | :main | false
+        :gitlab_main | :ci   | true
+        :gitlab_ci   | :main | true
+        :gitlab_ci   | :ci   | false
+      end
+      with_them do
+        subject(:sync_partitions) { described_class.new(my_model, connection: connection).sync_partitions }
+
+        let(:partitioned_table_name) { "_test_gitlab_#{database}_my_model_example_#{gitlab_schema}" }
+        let(:base_model) { Gitlab::Database.schemas_to_base_models[gitlab_schema].first }
+        let(:connection) { Gitlab::Database.database_base_models[database.to_s].connection }
+
+        let(:my_model) do
+          Class.new(base_model) do
+            include PartitionedTable
+
+            partitioned_by :created_at, strategy: :monthly
+          end
+        end
+
+        let(:partitions) do
+          Gitlab::Database::PostgresPartition.using_connection(connection) { Gitlab::Database::PostgresPartition.for_parent_table(partitioned_table_name).to_a }
+        end
+
+        let(:partitions_locked_for_writes?) do
+          partitions.map do |partition|
+            Gitlab::Database::LockWritesManager.new(
+              table_name: "#{partition.schema}.#{partition.name}",
+              connection: connection,
+              database_name: gitlab_schema
+            ).table_locked_for_writes?
+          end.all?(true)
+        end
+
+        context 'when feature flag is enabled' do
+          let(:ff_enabled) { true }
+
+          it "matches expectation" do
+            sync_partitions
+
+            expect(partitions_locked_for_writes?).to eq(expectation)
+          end
+        end
+
+        context 'when feature flag is disabled' do
+          let(:ff_enabled) { false }
+
+          it "will not lock created partition" do
+            sync_partitions
+
+            expect(partitions_locked_for_writes?).to eq(false)
+          end
+        end
+      end
     end
   end
 

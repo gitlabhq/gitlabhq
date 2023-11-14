@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
-import { captureException } from '@sentry/browser';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import PipelineWizard from '~/pipeline_wizard/pipeline_wizard.vue';
 import PagesWizardTemplate from '~/pipeline_wizard/templates/pages.yml?raw';
 import { logError } from '~/lib/logger';

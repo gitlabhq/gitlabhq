@@ -8,10 +8,10 @@ RSpec.describe Gitlab::UrlSanitizer do
   describe '.sanitize' do
     def sanitize_url(url)
       # We want to try with multi-line content because is how error messages are formatted
-      described_class.sanitize(%{
+      described_class.sanitize(%(
          remote: Not Found
          fatal: repository `#{url}` not found
-      })
+      ))
     end
 
     where(:input, :output) do
@@ -50,7 +50,7 @@ RSpec.describe Gitlab::UrlSanitizer do
       false | '123://invalid:url'
       false | 'valid@project:url.git'
       false | 'valid:pass@project:url.git'
-      false | %w(test array)
+      false | %w[test array]
       true  | 'ssh://example.com'
       true  | 'ssh://:@example.com'
       true  | 'ssh://foo@example.com'
@@ -74,7 +74,7 @@ RSpec.describe Gitlab::UrlSanitizer do
       false | '123://invalid:url'
       false | 'valid@project:url.git'
       false | 'valid:pass@project:url.git'
-      false | %w(test array)
+      false | %w[test array]
       false | 'ssh://example.com'
       false | 'ssh://:@example.com'
       false | 'ssh://foo@example.com'

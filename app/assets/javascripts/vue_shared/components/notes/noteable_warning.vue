@@ -64,7 +64,7 @@ export default {
       });
     },
     lockedContextText() {
-      return sprintf(__('This %{noteableTypeText} is locked.'), {
+      return sprintf(__('The discussion in this %{noteableTypeText} is locked.'), {
         noteableTypeText: this.noteableTypeText,
       });
     },
@@ -80,7 +80,7 @@ export default {
         <gl-sprintf
           :message="
             __(
-              'This %{noteableTypeText} is %{confidentialLinkStart}confidential%{confidentialLinkEnd} and %{lockedLinkStart}locked%{lockedLinkEnd}.',
+              'This %{noteableTypeText} is %{confidentialLinkStart}confidential%{confidentialLinkEnd} and its %{lockedLinkStart}discussion is locked%{lockedLinkEnd}.',
             )
           "
         >

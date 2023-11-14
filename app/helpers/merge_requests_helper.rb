@@ -3,6 +3,7 @@
 module MergeRequestsHelper
   include Gitlab::Utils::StrongMemoize
   include CompareHelper
+  DIFF_BATCH_ENDPOINT_PER_PAGE = 5
 
   def create_mr_button_from_event?(event)
     create_mr_button?(from: event.branch_name, source_project: event.project)
@@ -176,7 +177,7 @@ module MergeRequestsHelper
   end
 
   def notifications_todos_buttons_enabled?
-    Feature.enabled?(:notifications_todos_buttons, @project)
+    Feature.enabled?(:notifications_todos_buttons, current_user)
   end
 
   def diffs_tab_pane_data(project, merge_request, params)
@@ -187,7 +188,7 @@ module MergeRequestsHelper
       endpoint_batch: diffs_batch_project_json_merge_request_path(project, merge_request, 'json', params),
       endpoint_coverage: @coverage_path,
       endpoint_diff_for_path: diff_for_path_namespace_project_merge_request_path(format: 'json', id: merge_request.iid, namespace_id: project.namespace.to_param, project_id: project.path),
-      help_page_path: help_page_path('user/project/merge_requests/reviews/suggestions.md'),
+      help_page_path: help_page_path('user/project/merge_requests/reviews/suggestions'),
       current_user_data: @current_user_data,
       update_current_user_path: @update_current_user_path,
       project_path: project_path(merge_request.project),
@@ -202,7 +203,8 @@ module MergeRequestsHelper
       source_project_full_path: merge_request.source_project&.full_path,
       is_forked: project.forked?.to_s,
       new_comment_template_path: profile_comment_templates_path,
-      iid: merge_request.iid
+      iid: merge_request.iid,
+      per_page: DIFF_BATCH_ENDPOINT_PER_PAGE
     }
   end
 
@@ -219,7 +221,7 @@ module MergeRequestsHelper
       source_project_full_path: merge_request.source_project&.full_path,
       source_project_default_url: merge_request.source_project && default_url_to_repo(merge_request.source_project),
       target_branch: merge_request.target_branch,
-      reviewing_docs_path: help_page_path('user/project/merge_requests/reviews/index.md', anchor: "checkout-merge-requests-locally-through-the-head-ref")
+      reviewing_docs_path: help_page_path('user/project/merge_requests/reviews/index', anchor: "checkout-merge-requests-locally-through-the-head-ref")
     }
   end
 
@@ -288,6 +290,7 @@ module MergeRequestsHelper
     data = {
       iid: @merge_request.iid,
       projectPath: @project.full_path,
+      sourceProjectPath: @merge_request.source_project_path,
       title: markdown_field(@merge_request, :title),
       isFluidLayout: fluid_layout.to_s,
       tabs: [

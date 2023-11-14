@@ -12,8 +12,8 @@ import {
   WORKSPACE_PROJECT,
 } from '~/issues/constants';
 import updateAlertAssigneesMutation from '~/vue_shared/alert_details/graphql/mutations/alert_set_assignees.mutation.graphql';
-import abuseReportLabelsQuery from '~/admin/abuse_report/components/graphql/abuse_report_labels.query.graphql';
-import createAbuseReportLabelMutation from '~/admin/abuse_report/components/graphql/create_abuse_report_label.mutation.graphql';
+import abuseReportLabelsQuery from '~/admin/abuse_report/graphql/abuse_report_labels.query.graphql';
+import createAbuseReportLabelMutation from '~/admin/abuse_report/graphql/create_abuse_report_label.mutation.graphql';
 import createGroupOrProjectLabelMutation from '../components/labels/labels_select_widget/graphql/create_label.mutation.graphql';
 import updateTestCaseLabelsMutation from '../components/labels/labels_select_widget/graphql/update_test_case_labels.mutation.graphql';
 import epicLabelsQuery from '../components/labels/labels_select_widget/graphql/epic_labels.query.graphql';

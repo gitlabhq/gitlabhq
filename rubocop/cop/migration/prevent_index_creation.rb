@@ -8,11 +8,11 @@ module RuboCop
       class PreventIndexCreation < RuboCop::Cop::Base
         include MigrationHelpers
 
-        FORBIDDEN_TABLES = %i[ci_builds namespaces].freeze
+        FORBIDDEN_TABLES = %i[ci_builds namespaces projects users].freeze
 
         MSG = "Adding new index to #{FORBIDDEN_TABLES.join(", ")} is forbidden. " \
               "For `ci_builds` see https://gitlab.com/gitlab-org/gitlab/-/issues/332886, " \
-              "for `namespaces` see https://gitlab.com/groups/gitlab-org/-/epics/11543".freeze
+              "for `namespaces`, `projects`, and `users` see https://gitlab.com/groups/gitlab-org/-/epics/11543".freeze
 
         def on_new_investigation
           super

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import ProtectedTagEdit from './protected_tag_edit.vue';
 
 export default class ProtectedTagEditList {

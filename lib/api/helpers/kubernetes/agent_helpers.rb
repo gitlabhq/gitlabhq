@@ -41,7 +41,7 @@ module API
         end
 
         def agent_has_access_to_project?(project)
-          Guest.can?(:download_code, project) || agent.has_access_to?(project)
+          ::Users::Anonymous.can?(:download_code, project) || agent.has_access_to?(project)
         end
 
         def increment_unique_events

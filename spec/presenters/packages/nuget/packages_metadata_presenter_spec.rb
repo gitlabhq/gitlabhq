@@ -17,7 +17,7 @@ RSpec.describe Packages::Nuget::PackagesMetadataPresenter, feature_category: :pa
   end
 
   describe '#items' do
-    let(:tag_names) { %w(tag1 tag2) }
+    let(:tag_names) { %w[tag1 tag2] }
 
     subject { presenter.items }
 

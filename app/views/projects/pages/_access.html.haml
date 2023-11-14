@@ -1,7 +1,7 @@
 - if @project.pages_deployed?
   - pages_url = build_pages_url(@project, with_unique_domain: true)
 
-  = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5', data: { qa_selector: 'access_page_container' } }, footer_options: { class: 'gl-alert-warning' }) do |c|
+  = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5', data: { testid: 'access-page-container' } }, footer_options: { class: 'gl-alert-warning' }) do |c|
     - c.with_header do
       = s_('GitLabPages|Access pages')
     - c.with_body do

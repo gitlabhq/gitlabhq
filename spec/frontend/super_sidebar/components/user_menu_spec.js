@@ -3,8 +3,6 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import UserMenu from '~/super_sidebar/components/user_menu.vue';
 import UserMenuProfileItem from '~/super_sidebar/components/user_menu_profile_item.vue';
-import NewNavToggle from '~/nav/components/new_nav_toggle.vue';
-import invalidUrl from '~/lib/utils/invalid_url';
 import { mockTracking } from 'helpers/tracking_helper';
 import PersistentUserCallout from '~/persistent_user_callout';
 import { userMenuMockData, userMenuMockStatus, userMenuMockPipelineMinutes } from '../mock_data';
@@ -14,7 +12,6 @@ describe('UserMenu component', () => {
   let trackingSpy;
 
   const GlEmoji = { template: '<img/>' };
-  const toggleNewNavEndpoint = invalidUrl;
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const showDropdown = () => findDropdown().vm.$emit('shown');
 
@@ -34,7 +31,6 @@ describe('UserMenu component', () => {
         ...stubs,
       },
       provide: {
-        toggleNewNavEndpoint,
         isImpersonating: false,
         ...provide,
       },
@@ -456,15 +452,6 @@ describe('UserMenu component', () => {
         const item = wrapper.findByTestId('gitlab-next-item');
         expect(item.exists()).toBe(false);
       });
-    });
-  });
-
-  describe('New navigation toggle item', () => {
-    it('should render menu item with new navigation toggle', () => {
-      createWrapper();
-      const toggleItem = wrapper.findComponent(NewNavToggle);
-      expect(toggleItem.exists()).toBe(true);
-      expect(toggleItem.props('endpoint')).toBe(toggleNewNavEndpoint);
     });
   });
 

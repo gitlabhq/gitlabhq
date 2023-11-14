@@ -11,6 +11,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 
 import RunnerHeader from '~/ci/runner/components/runner_header.vue';
+import RunnerCreatedAt from '~/ci/runner/components/runner_created_at.vue';
 import RunnerTypeBadge from '~/ci/runner/components/runner_type_badge.vue';
 import RunnerStatusBadge from '~/ci/runner/components/runner_status_badge.vue';
 
@@ -25,7 +26,6 @@ describe('RunnerHeader', () => {
   const findRunnerTypeBadge = () => wrapper.findComponent(RunnerTypeBadge);
   const findRunnerStatusBadge = () => wrapper.findComponent(RunnerStatusBadge);
   const findRunnerLockedIcon = () => wrapper.findByTestId('lock-icon');
-  const findTimeAgo = () => wrapper.findComponent(TimeAgo);
 
   const createComponent = ({ runner = {}, options = {}, mountFn = shallowMountExtended } = {}) => {
     wrapper = mountFn(RunnerHeader, {
@@ -86,24 +86,10 @@ describe('RunnerHeader', () => {
     expect(findRunnerLockedIcon().exists()).toBe(true);
   });
 
-  it('displays the runner creation time', () => {
+  it('displays the runner creation data', () => {
     createComponent();
 
-    expect(wrapper.text()).toMatch(/created .+/);
-    expect(findTimeAgo().props('time')).toBe(mockRunner.createdAt);
-  });
-
-  it('does not display runner creation time if "createdAt" is missing', () => {
-    createComponent({
-      runner: {
-        id: convertToGraphQLId(TYPENAME_CI_RUNNER, 99),
-        createdAt: null,
-      },
-    });
-
-    expect(wrapper.text()).toContain(`#99 (${mockRunnerSha})`);
-    expect(wrapper.text()).not.toMatch(/created .+/);
-    expect(findTimeAgo().exists()).toBe(false);
+    expect(wrapper.findComponent(RunnerCreatedAt).props('runner')).toEqual(mockRunner);
   });
 
   it('displays actions in a slot', () => {

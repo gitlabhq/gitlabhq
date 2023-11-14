@@ -67,7 +67,7 @@ module GoogleCloud
     end
 
     def default_branch_gitlab_ci_yml
-      @default_branch_gitlab_ci_yml ||= project.repository.gitlab_ci_yml_for(project.default_branch)
+      @default_branch_gitlab_ci_yml ||= project.ci_config_for(project.default_branch)
     end
 
     def pipeline_content(include_path)

@@ -3,23 +3,28 @@
 require 'spec_helper'
 
 RSpec.describe 'User reverts a merge request', :js, feature_category: :code_review_workflow do
+  include Spec::Support::Helpers::ModalHelpers
+
   let(:merge_request) { create(:merge_request, :simple, source_project: project) }
   let(:project) { create(:project, :public, :repository) }
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(unbatch_graphql_queries: false)
     project.add_developer(user)
     sign_in(user)
 
+    set_cookie('new-actions-popover-viewed', 'true')
     visit(merge_request_path(merge_request))
 
     page.within('.mr-state-widget') do
       click_button 'Merge'
     end
 
-    wait_for_requests
+    wait_for_all_requests
 
+    page.refresh
+
+    wait_for_requests
     # do not reload the page by visiting, let javascript update the page as it will validate we have loaded the modal
     # code correctly on page update that adds the `revert` button
   end
@@ -55,11 +60,11 @@ RSpec.describe 'User reverts a merge request', :js, feature_category: :code_revi
   end
 
   def revert_commit(create_merge_request: false)
-    click_button('Revert')
+    click_button 'Revert'
 
-    page.within('[data-testid="modal-commit"]') do
+    within_modal do
       uncheck('create_merge_request') unless create_merge_request
-      click_button('Revert')
+      click_button 'Revert'
     end
   end
 end

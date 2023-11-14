@@ -67,9 +67,11 @@
   ],
   "MemberInterface": [
     "GroupMember",
+    "PendingGroupMember",
     "ProjectMember"
   ],
   "NoteableInterface": [
+    "AbuseReport",
     "AlertManagementAlert",
     "BoardEpic",
     "Design",

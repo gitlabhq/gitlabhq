@@ -10,8 +10,8 @@ module BulkImports
 
         extractor ::BulkImports::Common::Extractors::NdjsonExtractor, relation: relation
 
-        def after_run(_)
-          context.portable.merge_requests.set_latest_merge_request_diff_ids!
+        def on_finish
+          ::Projects::ImportExport::AfterImportMergeRequestsWorker.perform_async(context.portable.id)
         end
       end
     end

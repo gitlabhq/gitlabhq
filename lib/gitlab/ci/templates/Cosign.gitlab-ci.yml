@@ -12,9 +12,9 @@ include:
 
 docker-build:
   variables:
-    COSIGN_YES: "true" # Used by Cosign to skip confirmation prompts for non-destructive operations
+    COSIGN_YES: "true"  # Used by Cosign to skip confirmation prompts for non-destructive operations
   id_tokens:
-    SIGSTORE_ID_TOKEN: # Used by Cosign to get certificate from Fulcio
+    SIGSTORE_ID_TOKEN:  # Used by Cosign to get certificate from Fulcio
       aud: sigstore
   after_script:
     - apk add --update cosign

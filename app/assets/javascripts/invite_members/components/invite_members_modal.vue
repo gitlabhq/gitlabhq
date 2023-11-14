@@ -1,13 +1,17 @@
 <script>
-import { GlAlert, GlButton, GlCollapse, GlIcon } from '@gitlab/ui';
+import { GlAlert, GlButton, GlCollapse, GlLink, GlIcon, GlSprintf } from '@gitlab/ui';
 import { partition, isString, uniqueId, isEmpty } from 'lodash';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import InviteModalBase from 'ee_else_ce/invite_members/components/invite_modal_base.vue';
 import Api from '~/api';
 import Tracking from '~/tracking';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
-import { n__, sprintf } from '~/locale';
-import { memberName, triggerExternalAlert } from 'ee_else_ce/invite_members/utils/member_utils';
+import { n__, s__, sprintf } from '~/locale';
+import {
+  memberName,
+  triggerExternalAlert,
+  inviteMembersTrackingOptions,
+} from 'ee_else_ce/invite_members/utils/member_utils';
 import { captureException } from '~/ci/runner/sentry_utils';
 import {
   USERS_FILTER_ALL,
@@ -31,7 +35,9 @@ export default {
     GlAlert,
     GlButton,
     GlCollapse,
+    GlLink,
     GlIcon,
+    GlSprintf,
     InviteModalBase,
     MembersTokenSelect,
     ModalConfetti,
@@ -43,6 +49,17 @@ export default {
     SafeHtml,
   },
   mixins: [Tracking.mixin({ category: INVITE_MEMBER_MODAL_TRACKING_CATEGORY })],
+  inject: {
+    isCurrentUserAdmin: {
+      default: false,
+    },
+    isEmailSignupEnabled: {
+      default: true,
+    },
+    newUsersUrl: {
+      default: '',
+    },
+  },
   props: {
     id: {
       type: String,
@@ -122,6 +139,12 @@ export default {
     isCelebration() {
       return this.mode === 'celebrate';
     },
+    baseTrackingDetails() {
+      return { label: this.source, celebrate: this.isCelebration };
+    },
+    isTextForAdmin() {
+      return this.isCurrentUserAdmin && Boolean(this.newUsersUrl);
+    },
     modalTitle() {
       return this.$options.labels.modal[this.mode].title;
     },
@@ -130,6 +153,11 @@ export default {
     },
     labelIntroText() {
       return this.$options.labels[this.inviteTo][this.mode].introText;
+    },
+    labelSearchField() {
+      return this.isEmailSignupEnabled
+        ? this.$options.labels.searchField
+        : s__('InviteMembersModal|Username');
     },
     isEmptyInvites() {
       return Boolean(this.newUsersToInvite.length);
@@ -143,6 +171,14 @@ export default {
         "InviteMembersModal|The following %d members couldn't be invited",
         this.errorList.length,
       );
+    },
+    signupDisabledText() {
+      return s__(
+        "InviteMembersModal|Administrators can %{linkStart}add new users by email manually%{linkEnd}. After they've been added, you can invite them to this group with their username.",
+      );
+    },
+    signupDisabledTitle() {
+      return s__('InviteMembersModal|Inviting users by email is disabled');
     },
     showUserLimitNotification() {
       return !isEmpty(this.usersLimitDataset.alertVariant);
@@ -173,8 +209,13 @@ export default {
         count: this.errorsExpanded.length,
       });
     },
+    formGroupDescriptionText() {
+      return this.isEmailSignupEnabled
+        ? this.$options.labels.placeHolder
+        : s__('InviteMembersModal|Select members');
+    },
     formGroupDescription() {
-      return this.invalidFeedbackMessage ? null : this.$options.labels.placeHolder;
+      return this.invalidFeedbackMessage ? null : this.formGroupDescriptionText;
     },
   },
   watch: {
@@ -218,13 +259,13 @@ export default {
       this.source = source;
 
       this.$root.$emit(BV_SHOW_MODAL, this.modalId);
-      this.track('render', { label: this.source });
+      this.track('render', inviteMembersTrackingOptions(this.baseTrackingDetails));
     },
     closeModal() {
       this.$root.$emit(BV_HIDE_MODAL, this.modalId);
     },
     showEmptyInvitesAlert() {
-      this.invalidFeedbackMessage = this.$options.labels.placeHolder;
+      this.invalidFeedbackMessage = this.formGroupDescriptionText;
       this.shouldShowEmptyInvitesAlert = true;
       this.$refs.alerts.focus();
     },
@@ -287,10 +328,10 @@ export default {
       return this.newUsersToInvite.find((member) => memberName(member) === username)?.name;
     },
     onCancel() {
-      this.track('click_cancel', { label: this.source });
+      this.track('click_cancel', inviteMembersTrackingOptions(this.baseTrackingDetails));
     },
     onClose() {
-      this.track('click_x', { label: this.source });
+      this.track('click_x', inviteMembersTrackingOptions(this.baseTrackingDetails));
     },
     resetFields() {
       this.clearValidation();
@@ -299,7 +340,7 @@ export default {
       this.newUsersToInvite = [];
     },
     onInviteSuccess() {
-      this.track('invite_successful', { label: this.source });
+      this.track('invite_successful', inviteMembersTrackingOptions(this.baseTrackingDetails));
 
       if (this.reloadPageOnSubmit) {
         reloadOnInvitationSuccess();
@@ -345,7 +386,7 @@ export default {
     :default-access-level="defaultAccessLevel"
     :help-link="helpLink"
     :label-intro-text="labelIntroText"
-    :label-search-field="$options.labels.searchField"
+    :label-search-field="labelSearchField"
     :form-group-description="formGroupDescription"
     :invalid-feedback-message="invalidFeedbackMessage"
     :is-loading="isLoading"
@@ -429,6 +470,24 @@ export default {
             </gl-button>
           </template>
         </gl-alert>
+        <gl-alert
+          v-if="!isEmailSignupEnabled"
+          id="signup-disabled-alert"
+          :dismissible="false"
+          :title="signupDisabledTitle"
+          class="gl-mb-4"
+          variant="warning"
+          data-testid="email-signup-disabled-alert"
+        >
+          <gl-sprintf :message="signupDisabledText">
+            <template #link="{ content }">
+              <gl-link v-if="isTextForAdmin" :href="newUsersUrl" target="_blank">{{
+                content
+              }}</gl-link>
+              <span v-else>{{ content }}</span>
+            </template>
+          </gl-sprintf>
+        </gl-alert>
         <user-limit-notification
           v-else-if="showUserLimitNotification"
           class="gl-mb-5"
@@ -447,6 +506,7 @@ export default {
         v-model="newUsersToInvite"
         class="gl-mb-2"
         aria-labelledby="empty-invites-alert"
+        :can-use-email-token="isEmailSignupEnabled"
         :input-id="inputId"
         :exception-state="exceptionState"
         :users-filter="usersFilter"

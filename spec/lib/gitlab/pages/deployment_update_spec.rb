@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Pages::DeploymentUpdate do
+RSpec.describe Gitlab::Pages::DeploymentUpdate, feature_category: :pages do
   let_it_be(:project, refind: true) { create(:project, :repository) }
 
   let_it_be(:old_pipeline) { create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha) }

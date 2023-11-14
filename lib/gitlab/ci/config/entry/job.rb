@@ -14,7 +14,7 @@ module Gitlab
           ALLOWED_KEYS = %i[tags script image services start_in artifacts
                             cache dependencies before_script after_script hooks
                             coverage retry parallel interruptible timeout
-                            release id_tokens publish].freeze
+                            release id_tokens publish pages].freeze
 
           validations do
             validates :config, allowed_keys: Gitlab::Ci::Config::Entry::Job.allowed_keys + PROCESSABLE_ALLOWED_KEYS
@@ -40,13 +40,19 @@ module Gitlab
               if needs_value[:job].nil? && needs_value[:cross_dependency].present?
                 errors.add(:needs, "corresponding to dependencies must be from the same pipeline")
               else
-                missing_needs = dependencies - needs_value[:job].pluck(:name) # rubocop:disable CodeReuse/ActiveRecord (Array#pluck)
+                missing_needs = dependencies - needs_value[:job].pluck(:name) # rubocop:disable CodeReuse/ActiveRecord -- Array#pluck
 
                 errors.add(:dependencies, "the #{missing_needs.join(", ")} should be part of needs") if missing_needs.any?
               end
             end
 
-            validates :publish, absence: { message: "can only be used within a `pages` job" }, unless: -> { pages_job? }
+            validates :publish,
+              absence: { message: "can only be used within a `pages` job" },
+              unless: -> { pages_job? }
+
+            validates :pages,
+              absence: { message: "can only be used within a `pages` job" },
+              unless: -> { pages_job? }
           end
 
           entry :before_script, Entry::Commands,
@@ -127,10 +133,14 @@ module Gitlab
             description: 'Path to be published with Pages',
             inherit: false
 
+          entry :pages, ::Gitlab::Ci::Config::Entry::Pages,
+            inherit: false,
+            description: 'Pages configuration.'
+
           attributes :script, :tags, :when, :dependencies,
                      :needs, :retry, :parallel, :start_in,
-                     :interruptible, :timeout,
-                     :release, :allow_failure, :publish
+                     :interruptible, :timeout, :release,
+                     :allow_failure, :publish, :pages
 
           def self.matching?(name, config)
             !name.to_s.start_with?('.') &&
@@ -170,7 +180,8 @@ module Gitlab
               needs: needs_defined? ? needs_value : nil,
               scheduling_type: needs_defined? ? :dag : :stage,
               id_tokens: id_tokens_value,
-              publish: publish
+              publish: publish,
+              pages: pages
             ).compact
           end
 

@@ -3,8 +3,8 @@
 import { GlIcon, GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
 import { findLastIndex } from 'lodash';
 import VirtualList from 'vue-virtual-scroll-list';
-import { CATEGORY_NAMES, getEmojiCategoryMap, state } from '~/emoji';
-import { CATEGORY_ICON_MAP, FREQUENTLY_USED_KEY } from '../constants';
+import { getEmojiCategoryMap, state } from '~/emoji';
+import { CATEGORY_NAMES, CATEGORY_ICON_MAP, FREQUENTLY_USED_KEY } from '../constants';
 import Category from './category.vue';
 import EmojiList from './emoji_list.vue';
 import { addToFrequentlyUsed, getEmojiCategories, hasFrequentlyUsedEmojis } from './utils';

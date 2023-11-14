@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Group Package and registry settings', feature_category: :package_registry do
   include WaitForRequests
 
-  let(:user) { create(:user, :no_super_sidebar) }
+  let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:sub_group) { create(:group, parent: group) }
 
@@ -20,12 +20,13 @@ RSpec.describe 'Group Package and registry settings', feature_category: :package
       stub_packages_setting(enabled: false)
     end
 
-    it 'the menu item is not visible' do
+    it 'the menu item is not visible', :js do
       visit group_path(group)
 
-      settings_menu = find_settings_menu
-
-      expect(settings_menu).not_to have_content 'Packages and registries'
+      within_testid('super-sidebar') do
+        click_button 'Settings'
+        expect(page).not_to have_content 'Packages and registries'
+      end
     end
 
     it 'renders 404 when navigating to page' do
@@ -36,11 +37,13 @@ RSpec.describe 'Group Package and registry settings', feature_category: :package
   end
 
   context 'when packages feature is enabled on the group' do
-    it 'the menu item is visible' do
+    it 'the menu item is visible', :js do
       visit group_path(group)
 
-      settings_menu = find_settings_menu
-      expect(settings_menu).to have_content 'Packages and registries'
+      within_testid('super-sidebar') do
+        click_button 'Settings'
+        expect(page).to have_content 'Packages and registries'
+      end
     end
 
     it 'has a page title set' do
@@ -49,11 +52,12 @@ RSpec.describe 'Group Package and registry settings', feature_category: :package
       expect(page).to have_title _('Packages and registries settings')
     end
 
-    it 'sidebar menu is open' do
+    it 'sidebar menu is open', :js do
       visit_settings_page
 
-      sidebar = find('.nav-sidebar')
-      expect(sidebar).to have_link _('Packages and registries')
+      within_testid('super-sidebar') do
+        expect(page).to have_link _('Packages and registries')
+      end
     end
 
     it 'passes axe automated accessibility testing', :js do
@@ -62,7 +66,7 @@ RSpec.describe 'Group Package and registry settings', feature_category: :package
       wait_for_requests
 
       expect(page).to be_axe_clean.within('[data-testid="packages-and-registries-group-settings"]')
-                                  .skipping :'link-in-text-block'
+                                  .skipping :'link-in-text-block', :'heading-order'
     end
 
     it 'has a Duplicate packages section', :js do
@@ -122,10 +126,6 @@ RSpec.describe 'Group Package and registry settings', feature_category: :package
         end
       end
     end
-  end
-
-  def find_settings_menu
-    find('.shortcuts-settings ul')
   end
 
   def visit_settings_page

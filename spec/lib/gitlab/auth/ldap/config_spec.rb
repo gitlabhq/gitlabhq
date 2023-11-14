@@ -90,7 +90,7 @@ AtlErSqafbECNDSwS5BX8yDpu5yRBJ4xegO/rNlmb8ICRYkuJapD1xXicFOsmfUK
     end
 
     it 'returns one provider' do
-      expect(described_class.available_providers).to match_array(%w(ldapmain))
+      expect(described_class.available_providers).to match_array(%w[ldapmain])
     end
   end
 
@@ -552,15 +552,15 @@ AtlErSqafbECNDSwS5BX8yDpu5yRBJ4xegO/rNlmb8ICRYkuJapD1xXicFOsmfUK
       stub_ldap_config(
         options: {
           'attributes' => {
-            'username' => %w(sAMAccountName),
-            'email' => %w(userPrincipalName)
+            'username' => %w[sAMAccountName],
+            'email' => %w[userPrincipalName]
           }
         }
       )
 
       expect(config.attributes).to include({
-        'username' => %w(sAMAccountName),
-        'email' => %w(userPrincipalName),
+        'username' => %w[sAMAccountName],
+        'email' => %w[userPrincipalName],
         'name' => 'cn'
       })
     end

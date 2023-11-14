@@ -5,7 +5,7 @@ import JobItem from '~/ci/pipeline_details/graph/components/job_item.vue';
 import axios from '~/lib/utils/axios_utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import ActionComponent from '~/ci/common/private/job_action_component.vue';
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
@@ -31,7 +31,7 @@ describe('pipeline graph job item', () => {
   const findActionComponent = () => wrapper.findByTestId('ci-action-button');
   const findBadge = () => wrapper.findByTestId('job-bridge-badge');
   const findJobLink = () => wrapper.findByTestId('job-with-link');
-  const findJobCiBadge = () => wrapper.findComponent(CiBadgeLink);
+  const findJobCiIcon = () => wrapper.findComponent(CiIcon);
   const findModal = () => wrapper.findComponent(GlModal);
 
   const clickOnModalPrimaryBtn = () => findModal().vm.$emit('primary');
@@ -60,7 +60,7 @@ describe('pipeline graph job item', () => {
         ...mocks,
       },
       stubs: {
-        CiBadgeLink,
+        CiIcon,
       },
     });
   };
@@ -86,8 +86,10 @@ describe('pipeline graph job item', () => {
 
       expect(link.attributes('title')).toBe(`${mockJob.name} - ${mockJob.status.label}`);
 
-      expect(findJobCiBadge().exists()).toBe(true);
-      expect(findJobCiBadge().find('.ci-status-icon-success').exists()).toBe(true);
+      expect(findJobCiIcon().exists()).toBe(true);
+      expect(findJobCiIcon().find('[data-testid="status_success_borderless-icon"]').exists()).toBe(
+        true,
+      );
 
       expect(wrapper.text()).toBe(mockJob.name);
     });
@@ -105,8 +107,10 @@ describe('pipeline graph job item', () => {
     });
 
     it('should render status and name', () => {
-      expect(findJobCiBadge().exists()).toBe(true);
-      expect(findJobCiBadge().find('.ci-status-icon-success').exists()).toBe(true);
+      expect(findJobCiIcon().exists()).toBe(true);
+      expect(findJobCiIcon().find('[data-testid="status_success_borderless-icon"]').exists()).toBe(
+        true,
+      );
       expect(findJobLink().exists()).toBe(false);
 
       expect(wrapper.text()).toBe(mockJobWithoutDetails.name);
@@ -117,12 +121,12 @@ describe('pipeline graph job item', () => {
     });
   });
 
-  describe('CiBadgeLink', () => {
+  describe('CiIcon', () => {
     it('should not render a link', () => {
       createWrapper();
 
-      expect(findJobCiBadge().exists()).toBe(true);
-      expect(findJobCiBadge().props('useLink')).toBe(false);
+      expect(findJobCiIcon().exists()).toBe(true);
+      expect(findJobCiIcon().props('useLink')).toBe(false);
     });
   });
 

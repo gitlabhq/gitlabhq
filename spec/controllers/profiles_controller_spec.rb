@@ -128,6 +128,16 @@ RSpec.describe ProfilesController, :request_store do
       expect(user.reload.discord).to eq(discord_user_id)
       expect(response).to have_gitlab_http_status(:found)
     end
+
+    it 'allows updating user specified mastodon username', :aggregate_failures do
+      mastodon_username = '@robin@example.com'
+      sign_in(user)
+
+      put :update, params: { user: { mastodon: mastodon_username } }
+
+      expect(user.reload.mastodon).to eq(mastodon_username)
+      expect(response).to have_gitlab_http_status(:found)
+    end
   end
 
   describe 'GET audit_log' do

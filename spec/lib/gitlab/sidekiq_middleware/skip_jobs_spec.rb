@@ -185,6 +185,21 @@ RSpec.describe Gitlab::SidekiqMiddleware::SkipJobs, feature_category: :scalabili
           TestWorker.perform_async(*job['args'])
         end
       end
+
+      context 'when a block is provided' do
+        before do
+          TestWorker.defer_on_database_health_signal(*health_signal_attrs.values) do
+            [:gitlab_ci, [:ci_pipelines]]
+          end
+        end
+
+        it 'uses the lazy evaluated schema and tables returned by the block' do
+          expect(Gitlab::Database::HealthStatus::Context).to receive(:new)
+            .with(anything, anything, [:ci_pipelines], :gitlab_ci).and_call_original
+
+          expect { |b| subject.call(TestWorker.new, job, queue, &b) }.to yield_control
+        end
+      end
     end
   end
 end

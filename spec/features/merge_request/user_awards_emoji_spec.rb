@@ -50,7 +50,7 @@ RSpec.describe 'Merge request > User awards emoji', :js, feature_category: :code
         # make sure emoji popup is visible
         execute_script("window.scrollBy(0, 200)")
 
-        find('gl-emoji[data-name="8ball"]').click
+        find('gl-emoji[data-name="grinning"]').click
       end
 
       wait_for_requests

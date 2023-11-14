@@ -14,10 +14,6 @@
 // - app/assets/javascripts/commit/pipelines/pipelines_bundle.js
 
 .pipelines {
-  .badge {
-    margin-bottom: 3px;
-  }
-
   .pipeline-actions {
     min-width: 170px; //Guarantees buttons don't break in several lines.
 

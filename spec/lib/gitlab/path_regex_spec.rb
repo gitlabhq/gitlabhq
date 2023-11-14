@@ -103,21 +103,27 @@ RSpec.describe Gitlab::PathRegex do
       .concat(Array(API::API.prefix.to_s))
       .concat(sitemap_words)
       .concat(deprecated_routes)
+      .concat(reserved_routes)
       .compact
       .uniq
   end
 
   let(:sitemap_words) do
-    %w(sitemap sitemap.xml sitemap.xml.gz)
+    %w[sitemap sitemap.xml sitemap.xml.gz]
   end
 
   let(:deprecated_routes) do
     # profile was deprecated in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51646
-    %w(profile s)
+    %w[profile s]
+  end
+
+  let(:reserved_routes) do
+    # login was reserved in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134791
+    ['login']
   end
 
   let(:ee_top_level_words) do
-    %w(unsubscribes v2)
+    %w[unsubscribes v2]
   end
 
   let(:files_in_public) do
@@ -126,7 +132,7 @@ RSpec.describe Gitlab::PathRegex do
       .split("\n")
       .map { |entry| entry.start_with?('public/-/') ? '-' : entry.gsub('public/', '') }
       .uniq
-    tracked + %w(assets uploads)
+    tracked + %w[assets uploads]
   end
 
   # All routes that start with a namespaced path, that have 1 or more

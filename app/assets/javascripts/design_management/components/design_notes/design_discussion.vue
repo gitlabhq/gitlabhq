@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlLink, GlTooltipDirective, GlFormCheckbox } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
@@ -293,7 +293,6 @@ export default {
     <ul
       class="design-discussion bordered-box gl-relative gl-p-0 gl-list-style-none"
       :class="{ 'gl-bg-blue-50': isDiscussionActive }"
-      data-qa-selector="design_discussion_content"
       data-testid="design-discussion-content"
     >
       <design-note

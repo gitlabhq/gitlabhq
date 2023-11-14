@@ -106,6 +106,7 @@ module Types
     mount_mutation Mutations::Notes::Update::ImageDiffNote
     mount_mutation Mutations::Notes::RepositionImageDiffNote
     mount_mutation Mutations::Notes::Destroy
+    mount_mutation Mutations::Organizations::Create, alpha: { milestone: '16.6' }
     mount_mutation Mutations::Projects::SyncFork, calls_gitaly: true, alpha: { milestone: '15.9' }
     mount_mutation Mutations::Releases::Create
     mount_mutation Mutations::Releases::Update
@@ -134,33 +135,36 @@ module Types
     mount_mutation Mutations::DesignManagement::Move
     mount_mutation Mutations::DesignManagement::Update
     mount_mutation Mutations::ContainerExpirationPolicies::Update
+    mount_mutation Mutations::ContainerRegistry::Protection::Rule::Create, alpha: { milestone: '16.6' }
     mount_mutation Mutations::ContainerRepositories::Destroy
     mount_mutation Mutations::ContainerRepositories::DestroyTags
+    mount_mutation Mutations::Ci::Catalog::Resources::Create, alpha: { milestone: '15.11' }
+    mount_mutation Mutations::Ci::Catalog::Resources::Unpublish, alpha: { milestone: '16.6' }
+    mount_mutation Mutations::Ci::Job::Cancel
+    mount_mutation Mutations::Ci::Job::Play
+    mount_mutation Mutations::Ci::Job::Retry
+    mount_mutation Mutations::Ci::Job::ArtifactsDestroy
+    mount_mutation Mutations::Ci::Job::Unschedule
+    mount_mutation Mutations::Ci::JobTokenScope::AddProject
+    mount_mutation Mutations::Ci::JobArtifact::BulkDestroy, alpha: { milestone: '15.10' }
+    mount_mutation Mutations::Ci::JobArtifact::Destroy
+    mount_mutation Mutations::Ci::JobTokenScope::RemoveProject
     mount_mutation Mutations::Ci::Pipeline::Cancel
     mount_mutation Mutations::Ci::Pipeline::Destroy
     mount_mutation Mutations::Ci::Pipeline::Retry
-    mount_mutation Mutations::Ci::PipelineSchedule::Delete
-    mount_mutation Mutations::Ci::PipelineSchedule::TakeOwnership
-    mount_mutation Mutations::Ci::PipelineSchedule::Play
     mount_mutation Mutations::Ci::PipelineSchedule::Create
+    mount_mutation Mutations::Ci::PipelineSchedule::Delete
+    mount_mutation Mutations::Ci::PipelineSchedule::Play
+    mount_mutation Mutations::Ci::PipelineSchedule::TakeOwnership
     mount_mutation Mutations::Ci::PipelineSchedule::Update
     mount_mutation Mutations::Ci::PipelineTrigger::Create, alpha: { milestone: '16.3' }
-    mount_mutation Mutations::Ci::PipelineTrigger::Update, alpha: { milestone: '16.3' }
     mount_mutation Mutations::Ci::PipelineTrigger::Delete, alpha: { milestone: '16.3' }
+    mount_mutation Mutations::Ci::PipelineTrigger::Update, alpha: { milestone: '16.3' }
     mount_mutation Mutations::Ci::ProjectCiCdSettingsUpdate
-    mount_mutation Mutations::Ci::Job::ArtifactsDestroy
-    mount_mutation Mutations::Ci::Job::Play
-    mount_mutation Mutations::Ci::Job::Retry
-    mount_mutation Mutations::Ci::Job::Cancel
-    mount_mutation Mutations::Ci::Job::Unschedule
-    mount_mutation Mutations::Ci::JobArtifact::Destroy
-    mount_mutation Mutations::Ci::JobArtifact::BulkDestroy, alpha: { milestone: '15.10' }
-    mount_mutation Mutations::Ci::JobTokenScope::AddProject
-    mount_mutation Mutations::Ci::JobTokenScope::RemoveProject
-    mount_mutation Mutations::Ci::Runner::Create, alpha: { milestone: '15.10' }
-    mount_mutation Mutations::Ci::Runner::Update
-    mount_mutation Mutations::Ci::Runner::Delete
     mount_mutation Mutations::Ci::Runner::BulkDelete, alpha: { milestone: '15.3' }
+    mount_mutation Mutations::Ci::Runner::Create, alpha: { milestone: '15.10' }
+    mount_mutation Mutations::Ci::Runner::Delete
+    mount_mutation Mutations::Ci::Runner::Update
     mount_mutation Mutations::Ci::RunnersRegistrationToken::Reset
     mount_mutation Mutations::Namespace::PackageSettings::Update
     mount_mutation Mutations::Groups::Update
@@ -171,6 +175,7 @@ module Types
                    extensions: [::Gitlab::Graphql::Limit::FieldCallCount => { limit: 1 }]
     mount_mutation Mutations::Packages::DestroyFile
     mount_mutation Mutations::Packages::Protection::Rule::Create, alpha: { milestone: '16.5' }
+    mount_mutation Mutations::Packages::Protection::Rule::Delete, alpha: { milestone: '16.6' }
     mount_mutation Mutations::Packages::DestroyFiles
     mount_mutation Mutations::Packages::Cleanup::Policy::Update
     mount_mutation Mutations::Echo

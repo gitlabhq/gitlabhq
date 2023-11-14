@@ -523,14 +523,14 @@ and resumed at any point. This capability is demonstrated in the following code 
 stop_at = Time.current + 3.minutes
 
 count, last_value = Issue.each_batch_count do
-  Time.current > stop_at # condition for stopping the counting
+  stop_at.past? # condition for stopping the counting
 end
 
 # Continue the counting later
 stop_at = Time.current + 3.minutes
 
 count, last_value = Issue.each_batch_count(last_count: count, last_value: last_value) do
-  Time.current > stop_at
+  stop_at.past?
 end
 ```
 

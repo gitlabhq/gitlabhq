@@ -34,9 +34,12 @@ To configure deletion of inactive projects:
 1. Select **Save changes**.
 
 Inactive projects that meet the criteria are scheduled for deletion and a warning email is sent. If the
-projects remain inactive, they are deleted after the specified duration.
+projects remain inactive, they are deleted after the specified duration. These projects are deleted even if
+[the project is archived](../user/project/settings/index.md#archive-a-project).
 
 ### Configuration example
+
+#### Example 1
 
 If you use these settings:
 
@@ -51,6 +54,20 @@ If a project is more than 50 MB and it is inactive for:
 
 - More than 6 months: A deletion warning email is sent. This mail includes the date that the project will be deleted.
 - More than 12 months: The project is scheduled for deletion.
+
+#### Example 2
+
+If you use these settings:
+
+- **Delete inactive projects** enabled.
+- **Delete inactive projects that exceed** set to `0`.
+- **Delete project after** set to `12`.
+- **Send warning email** set to `11`.
+
+If a project exists that has already been inactive for more than 12 months when you configure these settings:
+
+- A deletion warning email is sent immediately. This email includes the date that the project will be deleted.
+- The project is scheduled for deletion 1 month (12 months - 11 months) after warning email.
 
 ## Determine when a project was last active
 

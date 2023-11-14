@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlLink, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { logError } from '~/lib/logger';
 import SafeHtml from '~/vue_shared/directives/safe_html';

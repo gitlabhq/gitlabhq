@@ -26,7 +26,7 @@ RSpec.describe API::Metadata, feature_category: :shared do
       let(:personal_access_token) { create(:personal_access_token, scopes: scopes) }
 
       context 'with api scope' do
-        let(:scopes) { %i(api) }
+        let(:scopes) { %i[api] }
 
         it 'returns the metadata information' do
           get api(endpoint, personal_access_token: personal_access_token)
@@ -42,7 +42,7 @@ RSpec.describe API::Metadata, feature_category: :shared do
       end
 
       context 'with ai_features scope' do
-        let(:scopes) { %i(ai_features) }
+        let(:scopes) { %i[ai_features] }
 
         it 'returns the metadata information' do
           get api(endpoint, personal_access_token: personal_access_token)
@@ -58,7 +58,7 @@ RSpec.describe API::Metadata, feature_category: :shared do
       end
 
       context 'with read_user scope' do
-        let(:scopes) { %i(read_user) }
+        let(:scopes) { %i[read_user] }
 
         it 'returns the metadata information' do
           get api(endpoint, personal_access_token: personal_access_token)
@@ -74,7 +74,7 @@ RSpec.describe API::Metadata, feature_category: :shared do
       end
 
       context 'with neither api, ai_features nor read_user scope' do
-        let(:scopes) { %i(read_repository) }
+        let(:scopes) { %i[read_repository] }
 
         it 'returns authorization error' do
           get api(endpoint, personal_access_token: personal_access_token)

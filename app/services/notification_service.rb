@@ -358,7 +358,7 @@ class NotificationService
   def review_requested_of_merge_request(merge_request, current_user, reviewer)
     recipients = NotificationRecipients::BuildService.build_requested_review_recipients(merge_request, current_user, reviewer)
 
-    deliver_option = review_request_deliver_options(merge_request.project, reviewer)
+    deliver_option = review_request_deliver_options(merge_request.project)
 
     recipients.each do |recipient|
       mailer
@@ -975,7 +975,7 @@ class NotificationService
     {}
   end
 
-  def review_request_deliver_options(project, user)
+  def review_request_deliver_options(project)
     # Overridden in EE
     {}
   end

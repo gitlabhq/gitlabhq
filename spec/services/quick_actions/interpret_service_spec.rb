@@ -80,7 +80,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       it 'returns the title message' do
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq(%{Changed the title to "A brand new title".})
+        expect(message).to eq(%(Changed the title to "A brand new title".))
       end
     end
 
@@ -695,7 +695,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         _, _, message = service.execute(content, issuable)
 
         if tag_message.present?
-          expect(message).to eq(%{Tagged this commit to #{tag_name} with "#{tag_message}".})
+          expect(message).to eq(%(Tagged this commit to #{tag_name} with "#{tag_message}".))
         else
           expect(message).to eq("Tagged this commit to #{tag_name}.")
         end
@@ -1979,7 +1979,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
     context '/board_move command' do
       let_it_be(:todo) { create(:label, project: project, title: 'To Do') }
       let_it_be(:inreview) { create(:label, project: project, title: 'In Review') }
-      let(:content) { %{/board_move ~"#{inreview.title}"} }
+      let(:content) { %(/board_move ~"#{inreview.title}") }
 
       let_it_be(:board) { create(:board, project: project) }
       let_it_be(:todo_list) { create(:list, board: board, label: todo) }
@@ -2043,14 +2043,14 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
 
       context 'if multiple labels are given' do
         let(:issuable) { issue }
-        let(:content) { %{/board_move ~"#{inreview.title}" ~"#{todo.title}"} }
+        let(:content) { %(/board_move ~"#{inreview.title}" ~"#{todo.title}") }
 
         it_behaves_like 'failed command', 'Failed to move this issue because only a single label can be provided.'
       end
 
       context 'if the given label is not a list on the board' do
         let(:issuable) { issue }
-        let(:content) { %{/board_move ~"#{bug.title}"} }
+        let(:content) { %(/board_move ~"#{bug.title}") }
 
         it_behaves_like 'failed command', 'Failed to move this issue because label was not found.'
       end
@@ -2184,6 +2184,67 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           expect { draft_note.reload }.to raise_error(ActiveRecord::RecordNotFound)
           expect(message).to eq('Submitted the current review.')
         end
+      end
+    end
+
+    context 'request_changes command' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+      let(:content) { '/request_changes' }
+
+      context "when `mr_request_changes` feature flag is disabled" do
+        before do
+          stub_feature_flags(mr_request_changes: false)
+        end
+
+        it 'does not call MergeRequests::UpdateReviewerStateService' do
+          expect(MergeRequests::UpdateReviewerStateService).not_to receive(:new)
+
+          service.execute(content, merge_request)
+        end
+      end
+
+      context "when the user is a reviewer" do
+        before do
+          create(:merge_request_reviewer, merge_request: merge_request, reviewer: current_user)
+        end
+
+        it 'calls MergeRequests::UpdateReviewerStateService with requested_changes' do
+          expect_next_instance_of(
+            MergeRequests::UpdateReviewerStateService,
+            project: project, current_user: current_user
+          ) do |service|
+            expect(service).to receive(:execute).with(merge_request, "requested_changes").and_return({ status: :success })
+          end
+
+          _, _, message = service.execute(content, merge_request)
+
+          expect(message).to eq('Changes requested to the current merge request.')
+        end
+
+        it 'returns error message from MergeRequests::UpdateReviewerStateService' do
+          expect_next_instance_of(
+            MergeRequests::UpdateReviewerStateService,
+            project: project, current_user: current_user
+          ) do |service|
+            expect(service).to receive(:execute).with(merge_request, "requested_changes").and_return({ status: :error, message: 'Error' })
+          end
+
+          _, _, message = service.execute(content, merge_request)
+
+          expect(message).to eq('Error')
+        end
+      end
+
+      context "when the user is not a reviewer" do
+        it 'does not call MergeRequests::UpdateReviewerStateService' do
+          expect(MergeRequests::UpdateReviewerStateService).not_to receive(:new)
+
+          service.execute(content, merge_request)
+        end
+      end
+
+      it_behaves_like 'approve command unavailable' do
+        let(:issuable) { issue }
       end
     end
 
@@ -2420,6 +2481,17 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         service.execute(content, merge_request)
 
         expect(merge_request.approved_by_users).to be_empty
+      end
+
+      it 'calls MergeRequests::UpdateReviewerStateService' do
+        expect_next_instance_of(
+          MergeRequests::UpdateReviewerStateService,
+          project: project, current_user: current_user
+        ) do |service|
+          expect(service).to receive(:execute).with(merge_request, "unreviewed")
+        end
+
+        service.execute(content, merge_request)
       end
 
       context "when the user can't unapprove" do

@@ -2750,7 +2750,7 @@ Kit:
   language_id: 188
 Kotlin:
   type: programming
-  color: "#F18E33"
+  color: "#7F52FF"
   extensions:
   - ".kt"
   - ".ktm"

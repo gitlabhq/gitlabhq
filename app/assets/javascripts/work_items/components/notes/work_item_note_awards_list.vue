@@ -1,5 +1,5 @@
 <script>
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import AwardsList from '~/vue_shared/components/awards_list.vue';
 import { getMutation, optimisticAwardUpdate } from '../../notes/award_utils';

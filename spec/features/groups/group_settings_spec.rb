@@ -329,7 +329,7 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
   end
 
   def updated_emails_disabled?
-    group.reload.clear_memoization(:emails_disabled_memoized)
+    group.reload.clear_memoization(:emails_enabled_memoized)
     group.emails_disabled?
   end
 end

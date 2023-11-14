@@ -29,6 +29,7 @@ class UserPolicy < BasePolicy
     enable :read_user_personal_access_tokens
     enable :read_group_count
     enable :read_user_groups
+    enable :read_user_organizations
     enable :read_saved_replies
     enable :read_user_email_address
     enable :admin_user_email_address

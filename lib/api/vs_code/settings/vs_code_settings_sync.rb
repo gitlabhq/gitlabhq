@@ -8,6 +8,14 @@ module API
 
         feature_category :web_ide
 
+        helpers do
+          def find_settings
+            return [DEFAULT_MACHINE] if params[:resource_name] == DEFAULT_MACHINE[:setting_type]
+
+            SettingsFinder.new(current_user, [params[:resource_name]]).execute
+          end
+        end
+
         before do
           authenticate!
 
@@ -21,6 +29,9 @@ module API
 
             desc 'Get the settings manifest for Settings Sync' do
               success [Entities::VsCodeManifest]
+              failure [
+                { code: 401, message: '401 Unauthorized' }
+              ]
               tags %w[vscode]
             end
             get '/v1/manifest' do
@@ -31,44 +42,71 @@ module API
             end
 
             desc 'Get a specific setting resource' do
-              success [Entities::VsCodeSetting]
+              success [
+                Entities::VsCodeSetting,
+                { code: 204, message: 'No content' }
+              ]
+              failure [
+                { code: 400, message: '400 bad request' },
+                { code: 401, message: '401 Unauthorized' }
+              ]
               tags %w[vscode]
             end
             params do
-              requires :resource_name, type: String, desc: 'Name of the resource such as settings'
+              requires :resource_name, type: String, desc: 'Name of the resource such as settings',
+                values: SETTINGS_TYPES
               requires :id, type: String, desc: 'ID of the resource to retrieve'
             end
             get '/v1/resource/:resource_name/:id' do
-              authenticate!
+              settings = find_settings
 
-              setting_name = params[:resource_name]
-              setting = nil
-
-              if params[:resource_name] == 'machines'
-                setting = DEFAULT_MACHINE
-              else
-                settings = SettingsFinder.new(current_user, [setting_name]).execute
-                setting = settings.first if settings.present?
-              end
-
-              if setting.nil?
+              if settings.blank?
                 status :no_content
                 header :etag, NO_CONTENT_ETAG
                 body false
               else
+                # This endpoint does not use the :id parameter
+                # because the first iteration of this API only
+                # supports storing a single record of a given setting_type.
+                # We can rely on obtaining the first record of the setting
+                # result.
+                setting = settings.first
                 header :etag, setting[:uuid]
                 presenter = VsCodeSettingPresenter.new setting
                 present presenter, with: Entities::VsCodeSetting
               end
             end
 
-            desc 'Update a specific setting'
+            desc 'Get a list of references to one or more vscode setting resources' do
+              success [Entities::VsCodeSettingReference]
+              failure [
+                { code: 400, message: '400 bad request' },
+                { code: 401, message: '401 Unauthorized' }
+              ]
+              tags %w[vscode]
+            end
             params do
-              requires :resource_name, type: String, desc: 'Name of the resource such as settings'
+              requires :resource_name, type: String, desc: 'Name of the resource such as settings',
+                values: SETTINGS_TYPES
+            end
+            get '/v1/resource/:resource_name' do
+              settings = find_settings
+
+              present settings, with: Entities::VsCodeSettingReference
+            end
+
+            desc 'Creates or updates a specific setting' do
+              success [{ code: 200, message: 'OK' }]
+              failure [
+                { code: 400, message: 'Bad request' },
+                { code: 401, message: '401 Unauthorized' }
+              ]
+            end
+            params do
+              requires :resource_name, type: String, desc: 'Name of the resource such as settings',
+                values: SETTINGS_TYPES
             end
             post '/v1/resource/:resource_name' do
-              authenticate!
-
               response = CreateOrUpdateService.new(current_user: current_user, params: {
                 content: params[:content],
                 version: params[:version],
@@ -82,6 +120,19 @@ module API
               else
                 error!(response.message, 400)
               end
+            end
+
+            desc 'Deletes all user vscode setting resources' do
+              success [{ code: 200, message: 'OK' }]
+              failure [
+                { code: 401, message: '401 Unauthorized' }
+              ]
+              tags %w[vscode]
+            end
+            delete '/v1/collection' do
+              DeleteService.new(current_user: current_user).execute
+
+              present "OK"
             end
           end
         end

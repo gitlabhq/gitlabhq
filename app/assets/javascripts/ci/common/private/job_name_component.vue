@@ -30,7 +30,7 @@ export default {
 </script>
 <template>
   <span class="mw-100 gl-display-flex gl-align-items-center gl-flex-grow-1">
-    <ci-icon :size="iconSize" :status="status" class="gl-line-height-0" />
+    <ci-icon :size="iconSize" :status="status" :show-tooltip="false" class="gl-line-height-0" />
     <span class="gl-text-truncate mw-70p gl-pl-3 gl-display-inline-block">
       {{ name }}
     </span>

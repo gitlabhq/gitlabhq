@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Notes::CreateService, feature_category: :team_planning do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, :repository, group: group) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:user) { create(:user) }
 
@@ -13,11 +14,43 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
   describe '#execute' do
     subject(:note) { described_class.new(project, user, opts).execute }
 
-    before do
-      project.add_maintainer(user)
+    before_all do
+      group.add_maintainer(user)
     end
 
     context "valid params" do
+      context 'when noteable is an issue that belongs directly to a group' do
+        it 'creates a note without a project and correct namespace', :aggregate_failures do
+          group_issue = create(:issue, :group_level, namespace: group)
+          note_params = { note: 'test note', noteable: group_issue }
+
+          expect do
+            described_class.new(nil, user, note_params).execute
+          end.to change { Note.count }.by(1)
+
+          created_note = Note.last
+
+          expect(created_note.namespace).to eq(group)
+          expect(created_note.project).to be_nil
+        end
+      end
+
+      context 'when noteable is a work item that belongs directly to a group' do
+        it 'creates a note without a project and correct namespace', :aggregate_failures do
+          group_work_item = create(:work_item, :group_level, namespace: group)
+          note_params = { note: 'test note', noteable: group_work_item }
+
+          expect do
+            described_class.new(nil, user, note_params).execute
+          end.to change { Note.count }.by(1)
+
+          created_note = Note.last
+
+          expect(created_note.namespace).to eq(group)
+          expect(created_note.project).to be_nil
+        end
+      end
+
       it_behaves_like 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
         let(:action) { note }
       end
@@ -195,21 +228,35 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
 
         let(:new_opts) { opts.merge(noteable_type: 'MergeRequest', noteable_id: merge_request.id) }
 
-        it 'calls MergeRequests::MarkReviewerReviewedService service' do
-          expect_next_instance_of(
-            MergeRequests::MarkReviewerReviewedService,
-            project: project_with_repo, current_user: user
-          ) do |service|
-            expect(service).to receive(:execute).with(merge_request)
+        context 'when mr_request_changes feature flag is disabled' do
+          before do
+            stub_feature_flags(mr_request_changes: false)
           end
 
-          described_class.new(project_with_repo, user, new_opts).execute
+          it 'calls MergeRequests::UpdateReviewerStateService service' do
+            expect_next_instance_of(
+              MergeRequests::UpdateReviewerStateService,
+              project: project_with_repo, current_user: user
+            ) do |service|
+              expect(service).to receive(:execute).with(merge_request, "reviewed")
+            end
+
+            described_class.new(project_with_repo, user, new_opts).execute
+          end
+
+          it 'does not call MergeRequests::UpdateReviewerStateService service when skip_set_reviewed is true' do
+            expect(MergeRequests::UpdateReviewerStateService).not_to receive(:new)
+
+            described_class.new(project_with_repo, user, new_opts).execute(skip_set_reviewed: true)
+          end
         end
 
-        it 'does not call MergeRequests::MarkReviewerReviewedService service when skip_set_reviewed is true' do
-          expect(MergeRequests::MarkReviewerReviewedService).not_to receive(:new)
+        context 'when mr_request_changes feature flag is enabled' do
+          it 'does not call MergeRequests::UpdateReviewerStateService service when skip_set_reviewed is true' do
+            expect(MergeRequests::UpdateReviewerStateService).not_to receive(:new)
 
-          described_class.new(project_with_repo, user, new_opts).execute(skip_set_reviewed: true)
+            described_class.new(project_with_repo, user, new_opts).execute(skip_set_reviewed: true)
+          end
         end
 
         context 'noteable highlight cache clearing' do

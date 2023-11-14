@@ -23,8 +23,8 @@ RSpec.describe 'Create a new cluster agent token', feature_category: :deployment
 
   context 'without user permissions' do
     it_behaves_like 'a mutation that returns top-level errors',
-                    errors: ["The resource that you are attempting to access does not exist "\
-                             "or you don't have permission to perform this action"]
+      errors: ["The resource that you are attempting to access does not exist "\
+               "or you don't have permission to perform this action"]
 
     it 'does not create a token' do
       expect { post_graphql_mutation(mutation, current_user: current_user) }.not_to change(Clusters::AgentToken, :count)

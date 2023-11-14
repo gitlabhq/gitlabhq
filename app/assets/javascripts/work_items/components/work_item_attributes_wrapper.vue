@@ -13,6 +13,7 @@ import {
   WIDGET_TYPE_WEIGHT,
   WORK_ITEM_TYPE_VALUE_KEY_RESULT,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  WORK_ITEM_TYPE_VALUE_TASK,
 } from '../constants';
 import WorkItemDueDate from './work_item_due_date.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
@@ -98,7 +99,8 @@ export default {
     showWorkItemParent() {
       return (
         this.workItemType === WORK_ITEM_TYPE_VALUE_OBJECTIVE ||
-        this.workItemType === WORK_ITEM_TYPE_VALUE_KEY_RESULT
+        this.workItemType === WORK_ITEM_TYPE_VALUE_KEY_RESULT ||
+        this.workItemType === WORK_ITEM_TYPE_VALUE_TASK
       );
     },
     workItemParent() {

@@ -141,6 +141,10 @@ module API
         params do
           requires :id, type: String, desc: "The #{source_type} ID"
           requires :token_id, type: String, desc: "The ID of the token"
+          optional :expires_at,
+                   type: Date,
+                   desc: "The expiration date of the token",
+                   documentation: { example: '2021-01-31' }
         end
         post ':id/access_tokens/:token_id/rotate' do
           resource = find_source(source_type, params[:id])
@@ -149,7 +153,7 @@ module API
           token = find_token(resource, params[:token_id]) if resource_accessible
 
           if token
-            response = ::PersonalAccessTokens::RotateService.new(current_user, token).execute
+            response = ::PersonalAccessTokens::RotateService.new(current_user, token).execute(declared_params)
 
             if response.success?
               status :ok

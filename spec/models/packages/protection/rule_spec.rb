@@ -34,6 +34,32 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
       it { is_expected.to validate_presence_of(:package_name_pattern) }
       it { is_expected.to validate_uniqueness_of(:package_name_pattern).scoped_to(:project_id, :package_type) }
       it { is_expected.to validate_length_of(:package_name_pattern).is_at_most(255) }
+
+      [
+        '@my-scope/my-package',
+        '@my-scope/*my-package-with-wildcard-inbetween',
+        '@my-scope/*my-package-with-wildcard-start',
+        '@my-scope/my-*package-*with-wildcard-multiple-*',
+        '@my-scope/my-package-with_____underscore',
+        '@my-scope/my-package-with-regex-characters.+',
+        '@my-scope/my-package-with-wildcard-end*'
+      ].each do |package_name_pattern|
+        it { is_expected.to allow_value(package_name_pattern).for(:package_name_pattern) }
+      end
+
+      [
+        '@my-scope/my-package-with-percent-sign-%',
+        '*@my-scope/my-package-with-wildcard-start',
+        '@my-scope/my-package-with-backslash-\*'
+      ].each do |package_name_pattern|
+        it {
+          is_expected.not_to(
+            allow_value(package_name_pattern)
+            .for(:package_name_pattern)
+            .with_message(_('should be a valid NPM package name with optional wildcard characters.'))
+          )
+        }
+      end
     end
 
     describe '#package_type' do
@@ -51,14 +77,13 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
 
       context 'with different package name patterns' do
         where(:package_name_pattern, :expected_pattern_query) do
-          '@my-scope/my-package'                              | '@my-scope/my-package'
-          '*@my-scope/my-package-with-wildcard-start'         | '%@my-scope/my-package-with-wildcard-start'
-          '@my-scope/my-package-with-wildcard-end*'           | '@my-scope/my-package-with-wildcard-end%'
-          '@my-scope/*my-package-with-wildcard-inbetween'     | '@my-scope/%my-package-with-wildcard-inbetween'
-          '**@my-scope/**my-package-with-wildcard-multiple**' | '%%@my-scope/%%my-package-with-wildcard-multiple%%'
-          '@my-scope/my-package-with_____underscore'          | '@my-scope/my-package-with\_\_\_\_\_underscore'
-          '@my-scope/my-package-with-percent-sign-%'          | '@my-scope/my-package-with-percent-sign-\%'
-          '@my-scope/my-package-with-regex-characters.+'      | '@my-scope/my-package-with-regex-characters.+'
+          '@my-scope/my-package'                               | '@my-scope/my-package'
+          '@my-scope/*my-package-with-wildcard-start'          | '@my-scope/%my-package-with-wildcard-start'
+          '@my-scope/my-package-with-wildcard-end*'            | '@my-scope/my-package-with-wildcard-end%'
+          '@my-scope/my-package*with-wildcard-inbetween'       | '@my-scope/my-package%with-wildcard-inbetween'
+          '@my-scope/**my-package-**-with-wildcard-multiple**' | '@my-scope/%%my-package-%%-with-wildcard-multiple%%'
+          '@my-scope/my-package-with_____underscore'           | '@my-scope/my-package-with\_\_\_\_\_underscore'
+          '@my-scope/my-package-with-regex-characters.+'       | '@my-scope/my-package-with-regex-characters.+'
         end
 
         with_them do
@@ -74,7 +99,7 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
     end
 
     let_it_be(:ppr_with_wildcard_start) do
-      create(:package_protection_rule, package_name_pattern: '*@my-scope/my_package-with-wildcard-start')
+      create(:package_protection_rule, package_name_pattern: '@my-scope/*my_package-with-wildcard-start')
     end
 
     let_it_be(:ppr_with_wildcard_end) do
@@ -82,11 +107,11 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
     end
 
     let_it_be(:ppr_with_wildcard_inbetween) do
-      create(:package_protection_rule, package_name_pattern: '@my-scope/*my_package-with-wildcard-inbetween')
+      create(:package_protection_rule, package_name_pattern: '@my-scope/my_package*with-wildcard-inbetween')
     end
 
     let_it_be(:ppr_with_wildcard_multiples) do
-      create(:package_protection_rule, package_name_pattern: '**@my-scope/**my_package-with-wildcard-multiple**')
+      create(:package_protection_rule, package_name_pattern: '@my-scope/**my_package**with-wildcard-multiple**')
     end
 
     let_it_be(:ppr_with_underscore) do
@@ -103,46 +128,47 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
 
     context 'with several package protection rule scenarios' do
       where(:package_name, :expected_package_protection_rules) do
-        '@my-scope/my_package'                                          | [ref(:package_protection_rule)]
-        '@my-scope/my2package'                                          | []
-        '@my-scope/my_package-2'                                        | []
+        '@my-scope/my_package'                                       | [ref(:package_protection_rule)]
+        '@my-scope/my2package'                                       | []
+        '@my-scope/my_package-2'                                     | []
 
         # With wildcard pattern at the start
-        '@my-scope/my_package-with-wildcard-start'                      | [ref(:ppr_with_wildcard_start)]
-        '@my-scope/my_package-with-wildcard-start-any'                  | []
-        'prefix-@my-scope/my_package-with-wildcard-start'               | [ref(:ppr_with_wildcard_start)]
-        'prefix-@my-scope/my_package-with-wildcard-start-any'           | []
+        '@my-scope/my_package-with-wildcard-start'                   | [ref(:ppr_with_wildcard_start)]
+        '@my-scope/my_package-with-wildcard-start-any'               | []
+        '@my-scope/any-my_package-with-wildcard-start'               | [ref(:ppr_with_wildcard_start)]
+        '@my-scope/any-my_package-with-wildcard-start-any'           | []
 
         # With wildcard pattern at the end
-        '@my-scope/my_package-with-wildcard-end'                        | [ref(:ppr_with_wildcard_end)]
-        '@my-scope/my_package-with-wildcard-end:1234567890'             | [ref(:ppr_with_wildcard_end)]
-        'prefix-@my-scope/my_package-with-wildcard-end'                 | []
-        'prefix-@my-scope/my_package-with-wildcard-end:1234567890'      | []
+        '@my-scope/my_package-with-wildcard-end'                     | [ref(:ppr_with_wildcard_end)]
+        '@my-scope/my_package-with-wildcard-end:1234567890'          | [ref(:ppr_with_wildcard_end)]
+        '@my-scope/any-my_package-with-wildcard-end'                 | []
+        '@my-scope/any-my_package-with-wildcard-end:1234567890'      | []
 
         # With wildcard pattern inbetween
-        '@my-scope/my_package-with-wildcard-inbetween'                  | [ref(:ppr_with_wildcard_inbetween)]
-        '@my-scope/any-my_package-with-wildcard-inbetween'              | [ref(:ppr_with_wildcard_inbetween)]
-        '@my-scope/any-my_package-my_package-wildcard-inbetween-any'    | []
+        '@my-scope/my_packagewith-wildcard-inbetween'                | [ref(:ppr_with_wildcard_inbetween)]
+        '@my-scope/my_package-any-with-wildcard-inbetween'           | [ref(:ppr_with_wildcard_inbetween)]
+        '@my-scope/any-my_package-my_package-wildcard-inbetween-any' | []
 
         # With multiple wildcard pattern are used
-        '@my-scope/my_package-with-wildcard-multiple'                   | [ref(:ppr_with_wildcard_multiples)]
-        'prefix-@my-scope/any-my_package-with-wildcard-multiple-any'    | [ref(:ppr_with_wildcard_multiples)]
-        '****@my-scope/****my_package-with-wildcard-multiple****'       | [ref(:ppr_with_wildcard_multiples)]
-        'prefix-@other-scope/any-my_package-with-wildcard-multiple-any' | []
+        '@my-scope/my_packagewith-wildcard-multiple'                 | [ref(:ppr_with_wildcard_multiples)]
+        '@my-scope/any-my_package-any-with-wildcard-multiple-any'    | [ref(:ppr_with_wildcard_multiples)]
+        '@my-scope/****my_package****with-wildcard-multiple****'     | [ref(:ppr_with_wildcard_multiples)]
+        '@other-scope/any-my_package-with-wildcard-multiple-any'     | []
 
         # With underscore
-        '@my-scope/my_package-with_____underscore'                      | [ref(:ppr_with_underscore)]
-        '@my-scope/my_package-with_any_underscore'                      | []
+        '@my-scope/my_package-with_____underscore'                   | [ref(:ppr_with_underscore)]
+        '@my-scope/my_package-with_any_underscore'                   | []
 
-        '@my-scope/my_package-with-regex-characters.+'                  | [ref(:ppr_with_regex_characters)]
-        '@my-scope/my_package-with-regex-characters.'                   | []
-        '@my-scope/my_package-with-regex-characters'                    | []
-        '@my-scope/my_package-with-regex-characters-any'                | []
+        # With regex pattern
+        '@my-scope/my_package-with-regex-characters.+'               | [ref(:ppr_with_regex_characters)]
+        '@my-scope/my_package-with-regex-characters.'                | []
+        '@my-scope/my_package-with-regex-characters'                 | []
+        '@my-scope/my_package-with-regex-characters-any'             | []
 
         # Special cases
-        nil                                                             | []
-        ''                                                              | []
-        'any_package'                                                   | []
+        nil                                                          | []
+        ''                                                           | []
+        'any_package'                                                | []
       end
 
       with_them do
@@ -209,7 +235,7 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
         )
     end
 
-    describe "with different users and protection levels" do
+    describe 'with different users and protection levels' do
       # rubocop:disable Layout/LineLength
       where(:project, :access_level, :package_name, :package_type, :push_protected) do
         ref(:project_with_ppr)    | Gitlab::Access::REPORTER  | '@my-scope/my-package-stage-sha-1234' | :npm   | true

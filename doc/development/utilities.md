@@ -206,7 +206,7 @@ Refer to [`strong_memoize.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/maste
 
   # good
   def expensive_method(arg)
-    strong_memoize_with(:expensive_method, arg)
+    strong_memoize_with(:expensive_method, arg) do
       # ...
     end
   end

@@ -2,6 +2,7 @@
 import './gon';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import Vuex from 'vuex'; // eslint-disable-line no-restricted-imports
 import translateMixin from '~/vue_shared/translate';
 import { initializeGitLabAPIAccess } from './addons/gitlab_api_access/preview';
 
@@ -15,6 +16,7 @@ initializeGitLabAPIAccess();
 
 translateMixin(Vue);
 Vue.use(VueApollo);
+Vue.use(Vuex);
 
 stylesheetsRequireCtx('./application.scss');
 stylesheetsRequireCtx('./application_utilities.scss');

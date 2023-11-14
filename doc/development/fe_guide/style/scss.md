@@ -6,18 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # SCSS style guide
 
-This style guide recommends best practices for SCSS to make styles easy to read,
-easy to maintain, and performant for the end-user.
-
-## Rules
-
-Our CSS is a mixture of current and legacy approaches. That means sometimes it may be difficult to follow this guide to the letter; it means you are likely to run into exceptions, where following the guide is difficult to impossible without major effort. In those cases, you may work with your reviewers and maintainers to identify an approach that does not fit these rules. Try to limit these cases.
-
-### Utility Classes
+## Utility Classes
 
 In order to reduce the generation of more CSS as our site grows, prefer the use of utility classes over adding new CSS. In complex cases, CSS can be addressed by adding component classes.
 
-#### Where are utility classes defined?
+### Where are utility classes defined?
 
 Prefer the use of [utility classes defined in GitLab UI](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/css.md#utilities).
 
@@ -26,6 +19,8 @@ Prefer the use of [utility classes defined in GitLab UI](https://gitlab.com/gitl
 An easy list of classes can also be [seen on Unpkg](https://unpkg.com/browse/@gitlab/ui/src/scss/utilities.scss).
 
 <!-- vale gitlab.Spelling = YES -->
+
+Or using an extension like [CSS Class completion](https://marketplace.visualstudio.com/items?itemName=Zignd.html-css-class-completion).
 
 Classes in [`utilities.scss`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/stylesheets/utilities.scss) and [`common.scss`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/stylesheets/framework/common.scss) are being deprecated.
 Classes in [`common.scss`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/stylesheets/framework/common.scss) that use non-design-system values should be avoided. Use classes with conforming values instead.
@@ -40,13 +35,13 @@ GitLab differs from the scale used in the Bootstrap library. For a Bootstrap pad
 utility, you may need to double the size of the applied utility to achieve the same visual
 result (such as `ml-1` becoming `gl-ml-2`).
 
-#### Where should you put new utility classes?
+### Where should you put new utility classes?
 
 If a class you need has not been added to GitLab UI, you get to add it! Follow the naming patterns documented in the [utility files](https://gitlab.com/gitlab-org/gitlab-ui/-/tree/main/src/scss/utility-mixins) and refer to the [GitLab UI CSS documentation](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/contributing/adding_css.md#adding-utility-mixins) for more details, especially about adding responsive and stateful rules.
 
 If it is not possible to wait for a GitLab UI update (generally one day), add the class to [`utilities.scss`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/stylesheets/utilities.scss) following the same naming conventions documented in GitLab UI. A follow-up issue to backport the class to GitLab UI and delete it from GitLab should be opened.
 
-#### When should you create component classes?
+### When should you create component classes?
 
 We recommend a "utility-first" approach.
 
@@ -60,7 +55,7 @@ Inspiration:
 - <https://tailwindcss.com/docs/utility-first>
 - <https://tailwindcss.com/docs/extracting-components>
 
-#### Utility mixins
+### Utility mixins
 
 In addition to utility classes GitLab UI provides utility mixins named after the utility classes.
 
@@ -95,7 +90,7 @@ For example prefer `display: flex` over `@include gl-display-flex`. Utility mixi
 }
 ```
 
-### Naming
+## Naming
 
 Filenames should use `snake_case`.
 
@@ -111,6 +106,23 @@ CSS classes should use the `lowercase-hyphenated` format rather than
 // Bad
 .className {
   color: #fff;
+}
+
+// Good
+.class-name {
+  color: #fff;
+}
+```
+
+Avoid making compound class names with SCSS `&` features. It makes
+searching for usages harder, and provides limited benefit.
+
+```scss
+// Bad
+.class {
+  &-name {
+    color: orange;
+  }
 }
 
 // Good
@@ -154,52 +166,46 @@ the page.
 }
 ```
 
-### Selectors with a `js-` Prefix
+## Nesting
+
+Avoid unnecessary nesting. The extra specificity of a wrapper component
+makes things harder to override.
+
+```scss
+// Bad
+.component-container {
+  .component-header {
+    /* ... */
+  }
+
+  .component-body {
+    /* ... */
+  }
+}
+
+// Good
+.component-container {
+  /* ... */
+}
+
+.component-header {
+  /* ... */
+}
+
+.component-body {
+  /* ... */
+}
+```
+
+## Selectors with a `js-` Prefix
 
 Do not use any selector prefixed with `js-` for styling purposes. These
 selectors are intended for use only with JavaScript to allow for removal or
 renaming without breaking styling.
 
-### Variables
+## Using `extend` at-rule
 
-Before adding a new variable for a color or a size, guarantee:
-
-- There isn't an existing one.
-- There isn't a similar one we can use instead.
-
-### Using `extend` at-rule
-
-Usage of the `extend` at-rule is prohibited due to [memory leaks](https://gitlab.com/gitlab-org/gitlab/-/issues/323021) and [the rule doesn't work as it should to](https://sass-lang.com/documentation/breaking-changes/extend-compound). Use mixins instead:
-
-```scss
-// Bad
-.gl-pt-3 {
-  padding-top: 12px;
-}
-
-.my-element {
-  @extend .gl-pt-3;
-}
-
-// compiles to
-.gl-pt-3, .my-element {
-  padding-top: 12px;
-}
-
-// Good
-@mixin gl-pt-3 {
-  padding-top: 12px;
-}
-
-.my-element {
-  @include gl-pt-3;
-}
-
-// compiles to
-.my-element {
-  padding-top: 12px;
-}
-```
+Usage of the `extend` at-rule is prohibited due to [memory leaks](https://gitlab.com/gitlab-org/gitlab/-/issues/323021) and [the rule doesn't work as it should](https://sass-lang.com/documentation/breaking-changes/extend-compound).
 
 ## Linting
 

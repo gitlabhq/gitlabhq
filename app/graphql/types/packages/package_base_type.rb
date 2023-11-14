@@ -10,11 +10,19 @@ module Types
 
       authorize :read_package
 
+      expose_permissions Types::PermissionTypes::Package
+
       field :id, ::Types::GlobalIDType[::Packages::Package], null: false, description: 'ID of the package.'
 
       field :_links, Types::Packages::PackageLinksType, null: false, method: :itself,
                                                         description: 'Map of links to perform actions on the package.'
-      field :can_destroy, GraphQL::Types::Boolean, null: false, description: 'Whether the user can destroy the package.'
+      field :can_destroy, GraphQL::Types::Boolean,
+        null: false,
+        deprecated: {
+          reason: 'Superseded by `user_permissions` field. See `Types::PermissionTypes::Package` type',
+          milestone: '16.6'
+        },
+        description: 'Whether the user can destroy the package.'
       field :created_at, Types::TimeType, null: false, description: 'Date of creation.'
       field :metadata, Types::Packages::MetadataType,
         null: true,

@@ -3,7 +3,7 @@
 module Pages
   class DeleteService < BaseService
     def execute
-      project.mark_pages_as_not_deployed
+      PagesDeployment.deactivate_all(project)
 
       # project.pages_domains.delete_all will just nullify project_id:
       # > If no :dependent option is given, then it will follow the default

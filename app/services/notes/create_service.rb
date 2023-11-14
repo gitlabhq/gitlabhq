@@ -226,8 +226,10 @@ module Notes
     end
 
     def set_reviewed(note)
-      ::MergeRequests::MarkReviewerReviewedService.new(project: project, current_user: current_user)
-        .execute(note.noteable)
+      return if Feature.enabled?(:mr_request_changes, current_user)
+
+      ::MergeRequests::UpdateReviewerStateService.new(project: project, current_user: current_user)
+        .execute(note.noteable, "reviewed")
     end
   end
 end

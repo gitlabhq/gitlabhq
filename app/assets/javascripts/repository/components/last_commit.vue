@@ -3,7 +3,7 @@ import { GlTooltipDirective, GlButton, GlButtonGroup, GlLoadingIcon } from '@git
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import pathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
 import { sprintf, s__ } from '~/locale';
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import SignatureBadge from '~/commit/components/signature_badge.vue';
 import getRefMixin from '../mixins/get_ref';
@@ -17,7 +17,7 @@ export default {
     CommitInfo,
     ClipboardButton,
     SignatureBadge,
-    CiBadgeLink,
+    CiIcon,
     GlButtonGroup,
     GlButton,
     GlLoadingIcon,
@@ -49,9 +49,6 @@ export default {
           ...lastCommit,
           pipeline: pipelines?.length && pipelines[0].node,
         };
-      },
-      context: {
-        isSingleRequest: true,
       },
       error(error) {
         throw error;
@@ -115,12 +112,10 @@ export default {
       class="commit-actions gl-display-flex gl-flex-align gl-align-items-center gl-flex-direction-row"
     >
       <signature-badge v-if="commit.signature" :signature="commit.signature" />
-      <div v-if="commit.pipeline" class="ci-status-link">
-        <ci-badge-link
+      <div v-if="commit.pipeline" class="gl-ml-5">
+        <ci-icon
           :status="commit.pipeline.detailedStatus"
-          :details-path="commit.pipeline.detailedStatus.detailsPath"
           :aria-label="statusTitle"
-          :show-text="false"
           class="js-commit-pipeline"
         />
       </div>

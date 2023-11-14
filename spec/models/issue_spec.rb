@@ -373,10 +373,10 @@ RSpec.describe Issue, feature_category: :team_planning do
   describe '.simple_sorts' do
     it 'includes all keys' do
       expect(described_class.simple_sorts.keys).to include(
-        *%w(created_asc created_at_asc created_date created_desc created_at_desc
+        *%w[created_asc created_at_asc created_date created_desc created_at_desc
             closest_future_date closest_future_date_asc due_date due_date_asc due_date_desc
             id_asc id_desc relative_position relative_position_asc updated_desc updated_asc
-            updated_at_asc updated_at_desc title_asc title_desc))
+            updated_at_asc updated_at_desc title_asc title_desc])
     end
   end
 
@@ -390,7 +390,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
 
     it 'returns issues with the given issue types' do
-      expect(described_class.with_issue_type(%w(issue incident)))
+      expect(described_class.with_issue_type(%w[issue incident]))
         .to contain_exactly(issue, incident)
     end
 
@@ -439,7 +439,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
 
     it 'returns issues without the given issue types' do
-      expect(described_class.without_issue_type(%w(issue incident)))
+      expect(described_class.without_issue_type(%w[issue incident]))
         .to contain_exactly(task)
     end
 

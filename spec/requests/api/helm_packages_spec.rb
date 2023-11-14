@@ -101,6 +101,12 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
     end
 
     it_behaves_like 'deploy token for package GET requests'
+
+    context 'when format param is not nil' do
+      let(:url) { "/projects/#{project.id}/packages/helm/stable/charts/#{package.name}-#{package.version}.tgz.prov" }
+
+      it_behaves_like 'rejects helm packages access', :maintainer, :not_found, '{"message":"404 Format prov Not Found"}'
+    end
   end
 
   describe 'POST /api/v4/projects/:id/packages/helm/api/:channel/charts/authorize' do

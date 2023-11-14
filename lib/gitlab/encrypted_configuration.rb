@@ -30,7 +30,7 @@ module Gitlab
     end
 
     def initialize(content_path: nil, base_key: nil, previous_keys: [])
-      @content_path = Pathname.new(content_path).yield_self { |path| path.symlink? ? path.realpath : path } if content_path
+      @content_path = Pathname.new(content_path).then { |path| path.symlink? ? path.realpath : path } if content_path
       @key = self.class.generate_key(base_key) if base_key
       @previous_keys = previous_keys
     end

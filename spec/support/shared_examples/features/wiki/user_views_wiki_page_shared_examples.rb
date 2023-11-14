@@ -39,12 +39,12 @@ RSpec.shared_examples 'User views a wiki page' do
     end
 
     it 'shows the history of a page that has a path' do
-      expect(page).to have_current_path(%r(one/two/three-test))
+      expect(page).to have_current_path(%r{one/two/three-test})
 
       first(:link, text: 'three').click
       click_on('Page history')
 
-      expect(page).to have_current_path(%r(one/two/three-test))
+      expect(page).to have_current_path(%r{one/two/three-test})
 
       page.within(:css, '.wiki-page-header') do
         expect(page).to have_content('History')
@@ -52,7 +52,7 @@ RSpec.shared_examples 'User views a wiki page' do
     end
 
     it 'shows an old version of a page', :js do
-      expect(page).to have_current_path(%r(one/two/three-test))
+      expect(page).to have_current_path(%r{one/two/three-test})
       expect(find('.wiki-pages')).to have_content('three')
 
       first(:link, text: 'three').click
@@ -61,7 +61,7 @@ RSpec.shared_examples 'User views a wiki page' do
 
       click_on('Edit')
 
-      expect(page).to have_current_path(%r(one/two/three-test))
+      expect(page).to have_current_path(%r{one/two/three-test})
       expect(page).to have_content('Edit Page')
 
       fill_in('Content', with: 'Updated Wiki Content')
@@ -100,7 +100,7 @@ RSpec.shared_examples 'User views a wiki page' do
 
         click_on('image')
 
-        expect(page).to have_current_path(%r(wikis/#{path}))
+        expect(page).to have_current_path(%r{wikis/#{path}})
       end
     end
 
@@ -109,7 +109,7 @@ RSpec.shared_examples 'User views a wiki page' do
 
       click_on('image')
 
-      expect(page).to have_current_path(%r(wikis/#{path}))
+      expect(page).to have_current_path(%r{wikis/#{path}})
       expect(page).to have_content('Create New Page')
     end
   end
@@ -264,7 +264,10 @@ RSpec.shared_examples 'User views a wiki page' do
   it 'opens a default wiki page', :js do
     visit wiki.container.web_url
 
-    find('.shortcuts-wiki').click
+    within_testid('super-sidebar') do
+      click_button 'Plan'
+      click_link 'Wiki'
+    end
 
     wait_for_svg_to_be_loaded
 

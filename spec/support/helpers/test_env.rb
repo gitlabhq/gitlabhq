@@ -305,7 +305,7 @@ module TestEnv
 
     unless File.directory?(repo_path)
       start = Time.now
-      system(*%W(#{Gitlab.config.git.bin_path} clone --quiet -- #{clone_url} #{repo_path}))
+      system(*%W[#{Gitlab.config.git.bin_path} clone --quiet -- #{clone_url} #{repo_path}])
       puts "==> #{repo_path} set up in #{Time.now - start} seconds...\n"
     end
 
@@ -316,7 +316,7 @@ module TestEnv
       # set all the required local branches. This would happen when a new
       # branch is added to BRANCH_SHA, in which case we want to update
       # everything.
-      unless system(*%W(#{Gitlab.config.git.bin_path} -C #{repo_path} fetch origin))
+      unless system(*%W[#{Gitlab.config.git.bin_path} -C #{repo_path} fetch origin])
         raise 'Could not fetch test seed repository.'
       end
 
@@ -329,7 +329,7 @@ module TestEnv
 
     if create_bundle
       start = Time.now
-      system(git_env, *%W(#{Gitlab.config.git.bin_path} -C #{repo_path} bundle create #{repo_bundle_path} --exclude refs/remotes/* --all))
+      system(git_env, *%W[#{Gitlab.config.git.bin_path} -C #{repo_path} bundle create #{repo_bundle_path} --exclude refs/remotes/* --all])
       puts "==> #{repo_bundle_path} generated in #{Time.now - start} seconds...\n"
     end
   end
@@ -530,7 +530,7 @@ module TestEnv
 
     return false unless Dir.exist?(component_folder)
 
-    sha, exit_status = Gitlab::Popen.popen(%W(#{Gitlab.config.git.bin_path} rev-parse HEAD), component_folder)
+    sha, exit_status = Gitlab::Popen.popen(%W[#{Gitlab.config.git.bin_path} rev-parse HEAD], component_folder)
     return false if exit_status != 0
 
     expected_version == sha.chomp

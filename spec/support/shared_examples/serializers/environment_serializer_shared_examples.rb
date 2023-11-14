@@ -48,7 +48,7 @@ RSpec.shared_examples 'avoid N+1 on environments serialization' do
     query ||= { page: 1, per_page: 20 }
     request = double(url: "#{Gitlab.config.gitlab.url}:8080/api/v4/projects?#{query.to_query}", query_parameters: query)
 
-    EnvironmentSerializer.new(current_user: user, project: project).yield_self do |serializer|
+    EnvironmentSerializer.new(current_user: user, project: project).then do |serializer|
       serializer.within_folders if grouping
       serializer.with_pagination(request, spy('response'))
       serializer.represent(Environment.where(project: project))

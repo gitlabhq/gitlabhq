@@ -14,8 +14,9 @@ Get a list of jobs in a project. Jobs are sorted in descending order of their ID
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination)
 
-This endpoint supports both offset-based and [keyset-based](rest/index.md#keyset-based-pagination) pagination. Keyset-based
-pagination is recommended when requesting consecutive pages of results.
+NOTE:
+This endpoint supports both offset-based and [keyset-based](rest/index.md#keyset-based-pagination) pagination, but keyset-based
+pagination is strongly recommended when requesting consecutive pages of results.
 
 ```plaintext
 GET /projects/:id/jobs

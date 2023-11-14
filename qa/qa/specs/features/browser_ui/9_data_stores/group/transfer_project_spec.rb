@@ -9,10 +9,9 @@ module QA
       let(:readme_content) { 'Here is the edited content.' }
 
       before do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.add_files([{ file_path: 'README.md', content: readme_content }])
-        end
+        create(:commit, project: project, actions: [
+          { action: 'create', file_path: 'README.md', content: readme_content }
+        ])
 
         Flow::Login.sign_in
 

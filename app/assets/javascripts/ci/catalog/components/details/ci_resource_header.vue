@@ -2,13 +2,13 @@
 import { GlAvatar, GlAvatarLink, GlBadge } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isNumeric } from '~/lib/utils/number_utils';
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import CiResourceAbout from './ci_resource_about.vue';
 import CiResourceHeaderSkeletonLoader from './ci_resource_header_skeleton_loader.vue';
 
 export default {
   components: {
-    CiBadgeLink,
+    CiIcon,
     CiResourceAbout,
     CiResourceHeaderSkeletonLoader,
     GlAvatar,
@@ -102,12 +102,11 @@ export default {
             {{ versionBadgeText }}
           </gl-badge>
         </span>
-        <ci-badge-link
+        <ci-icon
           v-if="hasPipelineStatus"
-          class="gl-mt-2"
           :status="pipelineStatus"
-          size="sm"
-          show-text
+          show-status-text
+          class="gl-mt-2"
         />
       </div>
     </div>

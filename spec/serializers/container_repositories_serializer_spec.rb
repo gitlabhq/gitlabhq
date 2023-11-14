@@ -12,7 +12,7 @@ RSpec.describe ContainerRepositoriesSerializer do
     project.add_developer(user)
 
     stub_container_registry_config(enabled: true)
-    stub_container_registry_tags(repository: /image/, tags: %w(rootA latest))
+    stub_container_registry_tags(repository: /image/, tags: %w[rootA latest])
   end
 
   describe '#represent' do

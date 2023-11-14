@@ -4,7 +4,6 @@ Layout/ParameterAlignment:
   Exclude:
     - 'lib/gitlab/cross_project_access.rb'
     - 'lib/gitlab/data_builder/push.rb'
-    - 'spec/lib/gitlab/background_migration/remove_occurrence_pipelines_and_duplicate_vulnerabilities_findings_spec.rb'
     - 'spec/support/helpers/content_security_policy_helpers.rb'
     - 'spec/support/helpers/migrations_helpers/vulnerabilities_helper.rb'
     - 'spec/support/helpers/repo_helpers.rb'

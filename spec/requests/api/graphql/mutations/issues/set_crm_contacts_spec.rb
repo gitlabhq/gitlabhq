@@ -26,18 +26,20 @@ RSpec.describe 'Setting issues crm contacts', feature_category: :service_desk do
       contact_ids: contact_ids
     }
 
-    graphql_mutation(:issue_set_crm_contacts, variables,
-                     <<-QL.strip_heredoc
-                       clientMutationId
-                       errors
-                       issue {
-                         customerRelationsContacts {
-                           nodes {
-                             id
-                           }
-                         }
-                       }
-                     QL
+    graphql_mutation(
+      :issue_set_crm_contacts,
+      variables,
+      <<-QL.strip_heredoc
+        clientMutationId
+        errors
+        issue {
+          customerRelationsContacts {
+            nodes {
+              id
+            }
+          }
+        }
+      QL
     )
   end
 

@@ -1492,7 +1492,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
                 subject
 
                 expect(response).to have_gitlab_http_status(:ok)
-                expect(returned_milestones).to match_array(%w(milestone2 milestone3))
+                expect(returned_milestones).to match_array(%w[milestone2 milestone3])
               end
             end
 

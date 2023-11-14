@@ -31,7 +31,7 @@ module Gitlab
       private
 
       def instrument_call(commands, pipelined = false)
-        start = Gitlab::Metrics::System.monotonic_time # must come first so that 'start' is always defined
+        start = ::Gitlab::Metrics::System.monotonic_time # must come first so that 'start' is always defined
         instrumentation_class.instance_count_request(commands.size)
         instrumentation_class.instance_count_pipelined_request(commands.size) if pipelined
 
@@ -50,7 +50,7 @@ module Gitlab
         instrumentation_class.log_exception(ex)
         raise ex
       ensure
-        duration = Gitlab::Metrics::System.monotonic_time - start
+        duration = ::Gitlab::Metrics::System.monotonic_time - start
 
         unless exclude_from_apdex?(commands)
           commands.each { instrumentation_class.instance_observe_duration(duration / commands.size) }

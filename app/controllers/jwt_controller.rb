@@ -33,7 +33,7 @@ class JwtController < ApplicationController
     @authentication_result = Gitlab::Auth::Result.new(nil, nil, :none, Gitlab::Auth.read_only_authentication_abilities)
 
     authenticate_with_http_basic do |login, password|
-      @authentication_result = Gitlab::Auth.find_for_git_client(login, password, project: nil, ip: request.ip)
+      @authentication_result = Gitlab::Auth.find_for_git_client(login, password, project: nil, request: request)
 
       if @authentication_result.failed?
         log_authentication_failed(login, @authentication_result)
@@ -98,11 +98,7 @@ class JwtController < ApplicationController
     return unless params[:scope].present?
 
     scopes = Array(Rack::Utils.parse_query(request.query_string)['scope'])
-    if Feature.enabled?(:jwt_auth_space_delimited_scopes, Feature.current_request)
-      scopes.flat_map(&:split)
-    else
-      scopes
-    end
+    scopes.flat_map(&:split)
   end
 
   def auth_user

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { GlDropdown } from '@gitlab/ui';
+import { GlDisclosureDropdown } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import MRSecurityWidget from '~/vue_merge_request_widget/extensions/security_reports/mr_widget_security_reports.vue';
 import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
@@ -27,8 +27,7 @@ describe('vue_merge_request_widget/extensions/security_reports/mr_widget_securit
   };
 
   const findWidget = () => wrapper.findComponent(Widget);
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findDropdownItem = (name) => wrapper.findByTestId(name);
+  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
 
   describe('with data', () => {
     beforeEach(async () => {
@@ -55,24 +54,52 @@ describe('vue_merge_request_widget/extensions/security_reports/mr_widget_securit
     });
 
     it.each`
-      artifactName       | exists   | downloadPath
-      ${'sam_scan'}      | ${true}  | ${'/root/security-reports/-/jobs/14/artifacts/download?file_type=sast'}
-      ${'sast-spotbugs'} | ${true}  | ${'/root/security-reports/-/jobs/11/artifacts/download?file_type=sast'}
-      ${'sast-sobelow'}  | ${false} | ${''}
-      ${'sast-pmd-apex'} | ${false} | ${''}
-      ${'sast-eslint'}   | ${true}  | ${'/root/security-reports/-/jobs/8/artifacts/download?file_type=sast'}
-      ${'secrets'}       | ${true}  | ${'/root/security-reports/-/jobs/7/artifacts/download?file_type=secret_detection'}
+      artifactName       | downloadPath
+      ${'sam_scan'}      | ${'/root/security-reports/-/jobs/14/artifacts/download?file_type=sast'}
+      ${'sast-spotbugs'} | ${'/root/security-reports/-/jobs/11/artifacts/download?file_type=sast'}
+      ${'sast-eslint'}   | ${'/root/security-reports/-/jobs/8/artifacts/download?file_type=sast'}
+      ${'secrets'}       | ${'/root/security-reports/-/jobs/7/artifacts/download?file_type=secret_detection'}
     `(
-      'has a dropdown to download $artifactName artifacts',
-      ({ artifactName, exists, downloadPath }) => {
+      'has a dropdown item to download $artifactName artifacts',
+      ({ artifactName, downloadPath }) => {
         expect(findDropdown().exists()).toBe(true);
-        expect(wrapper.findByText(`Download ${artifactName}`).exists()).toBe(exists);
 
-        if (exists) {
-          const dropdownItem = findDropdownItem(`download-${artifactName}`);
-          expect(dropdownItem.attributes('download')).toBe('');
-          expect(dropdownItem.attributes('href')).toBe(downloadPath);
-        }
+        expect(findDropdown().props('items')).toEqual(
+          expect.arrayContaining([
+            {
+              href: downloadPath,
+              text: `Download ${artifactName}`,
+              extraAttrs: {
+                download: '',
+                rel: 'nofollow',
+              },
+            },
+          ]),
+        );
+      },
+    );
+
+    it.each`
+      artifactName       | downloadPath
+      ${'sast-sobelow'}  | ${''}
+      ${'sast-pmd-apex'} | ${''}
+    `(
+      'does not have a dropdown item to download $artifactName artifacts',
+      ({ artifactName, downloadPath }) => {
+        expect(findDropdown().exists()).toBe(true);
+
+        expect(findDropdown().props('items')).not.toEqual(
+          expect.arrayContaining([
+            {
+              href: downloadPath,
+              text: `Download ${artifactName}`,
+              extraAttrs: {
+                download: '',
+                rel: 'nofollow',
+              },
+            },
+          ]),
+        );
       },
     );
   });

@@ -136,8 +136,8 @@ export default {
         v-if="triggered"
         variant="info"
         :size="$options.badgeSize"
-        data-testid="triggered-job-badge"
-        >{{ s__('Job|triggered') }}
+        data-testid="trigger-token-job-badge"
+        >{{ s__('Job|trigger token') }}
       </gl-badge>
       <gl-badge
         v-if="showAllowedToFailBadge"

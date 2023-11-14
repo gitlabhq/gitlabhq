@@ -10,16 +10,6 @@ RSpec.describe 'gitlab:feature_categories:index', :silence_stdout, feature_categ
   it 'outputs objects by stage group' do
     # Sample items that _hopefully_ won't change very often.
     expected = {
-      'controller_actions' => a_hash_including(
-        'integrations' => a_collection_including(
-          klass: 'Oauth::JiraDvcs::AuthorizationsController',
-          action: 'new',
-          source_location: [
-            'app/controllers/oauth/jira_dvcs/authorizations_controller.rb',
-            an_instance_of(Integer)
-          ]
-        )
-      ),
       'api_endpoints' => a_hash_including(
         'system_access' => a_collection_including(
           klass: 'API::AccessRequests',

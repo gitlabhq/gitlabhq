@@ -10,7 +10,8 @@ module API
       expose :project_creation_level_str, as: :project_creation_level
       expose :auto_devops_enabled
       expose :subgroup_creation_level_str, as: :subgroup_creation_level
-      expose :emails_disabled
+      expose(:emails_disabled, documentation: { type: 'boolean' }) { |group, options| group.emails_disabled? }
+      expose :emails_enabled, documentation: { type: 'boolean' }
       expose :mentions_disabled
       expose :lfs_enabled?, as: :lfs_enabled
       expose :default_branch_protection

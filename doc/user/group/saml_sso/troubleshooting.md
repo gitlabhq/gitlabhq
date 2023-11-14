@@ -222,7 +222,7 @@ to [reset their password](https://gitlab.com/users/password/new) if both:
 Users might get an error that states "SAML Name ID and email address do not match your user account. Contact an administrator."
 This means:
 
-- The NameID value sent by SAML does not match the existing SAML identity `extern_uid` value.
+- The NameID value sent by SAML does not match the existing SAML identity `extern_uid` value. Both the NameID and the `extern_uid` are case sensitive. For more information, see  [manage user SAML identity](index.md#manage-user-saml-identity). 
 - Either the SAML response did not include an email address or the email address did not match the user's GitLab email address.
 
 The workaround is that a GitLab group Owner uses the [SAML API](../../../api/saml.md) to update the user's SAML `extern_uid`.
@@ -356,3 +356,21 @@ If you see this message after trying to invite a user to a group:
 1. Ensure the user is a [member of the top-level group](../index.md#search-a-group).
 
 Additionally, see [troubleshooting users receiving a 404 after sign in](#users-receive-a-404).
+
+## Message: The SAML response did not contain an email address. Either the SAML identity provider is not configured to send the attribute, or the identity provider directory does not have an email address value for your user
+
+This error appears when the SAML response does not contain the user's email address in an **email** or **mail** attribute as shown in the following example:
+
+```xml
+<Attribute Name="email">
+  <AttributeValue>user@domain.com‹/AttributeValue>
+</Attribute>
+```
+
+Attribute names starting with phrases such as `http://schemas.microsoft.com/ws/2008/06/identity/claims/` like in the following example are not supported. Remove this type of attribute name from the SAML response on the IDP side.
+
+```xml
+<Attribute Name="http://schemas.microsoft.com/ws/2008/06/identity/claims/email">
+  <AttributeValue>user@domain.com‹/AttributeValue>
+</Attribute>
+```

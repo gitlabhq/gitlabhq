@@ -5,7 +5,11 @@ module Types
     graphql_name 'MergeRequestReviewState'
     description 'State of a review of a GitLab merge request.'
 
-    from_rails_enum(::MergeRequestReviewer.states,
-                    description: "The merge request is %{name}.")
+    value 'UNREVIEWED', value: 'unreviewed',
+      description: 'Awaiting review from merge request reviewer.'
+    value 'REVIEWED', value: 'reviewed',
+      description: 'Merge request reviewer has reviewed.'
+    value 'REQUESTED_CHANGES', value: 'requested_changes',
+      description: 'Merge request reviewer has requested changes.'
   end
 end

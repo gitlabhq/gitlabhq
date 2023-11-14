@@ -66,12 +66,4 @@ RSpec.describe 'Commit', feature_category: :source_code_management do
   end
 
   it_behaves_like "single commit view"
-
-  context "when super sidebar is enabled" do
-    before do
-      user.update!(use_new_navigation: true)
-    end
-
-    it_behaves_like "single commit view"
-  end
 end

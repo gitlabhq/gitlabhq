@@ -59,7 +59,7 @@ RSpec.describe BulkImports::RelationExportService, feature_category: :importers 
       let(:relation) { 'milestones' }
 
       it 'creates empty file on disk' do
-        expect(FileUtils).to receive(:touch).with("#{export_path}/#{relation}.ndjson")
+        expect(FileUtils).to receive(:touch).with("#{export_path}/#{relation}.ndjson").and_call_original
 
         subject.execute
       end
@@ -115,39 +115,6 @@ RSpec.describe BulkImports::RelationExportService, feature_category: :importers 
           expect(export.status).to eq(1)
           expect(export.updated_at).to eq(updated_at)
         end
-      end
-    end
-
-    context 'when exception occurs during export' do
-      shared_examples 'tracks exception' do |exception_class|
-        it 'tracks exception' do
-          expect(Gitlab::ErrorTracking)
-            .to receive(:track_exception)
-            .with(exception_class, portable_id: group.id, portable_type: group.class.name)
-            .and_call_original
-
-          subject.execute
-        end
-      end
-
-      before do
-        allow_next_instance_of(BulkImports::ExportUpload) do |upload|
-          allow(upload).to receive(:save!).and_raise(StandardError)
-        end
-      end
-
-      it 'marks export as failed' do
-        subject.execute
-
-        expect(export.reload.failed?).to eq(true)
-      end
-
-      include_examples 'tracks exception', StandardError
-
-      context 'when passed relation is not supported' do
-        let(:relation) { 'unsupported' }
-
-        include_examples 'tracks exception', ActiveRecord::RecordInvalid
       end
     end
 

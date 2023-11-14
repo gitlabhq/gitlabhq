@@ -1,13 +1,5 @@
 <script>
-import {
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownSectionHeader,
-  GlInfiniteScroll,
-  GlLoadingIcon,
-  GlSearchBoxByType,
-  GlTooltipDirective,
-} from '@gitlab/ui';
+import { GlCollapsibleListbox, GlTooltipDirective } from '@gitlab/ui';
 import { produce } from 'immer';
 import { historyPushState } from '~/lib/utils/common_utils';
 import { setUrlParams } from '~/lib/utils/url_utility';
@@ -25,17 +17,11 @@ import getLastCommitBranch from '~/ci/pipeline_editor/graphql/queries/client/las
 export default {
   i18n: {
     dropdownHeader: __('Switch branch'),
-    title: __('Branches'),
     fetchError: __('Unable to fetch branch list for this project.'),
   },
   inputDebounce: BRANCH_SEARCH_DEBOUNCE,
   components: {
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownSectionHeader,
-    GlInfiniteScroll,
-    GlLoadingIcon,
-    GlSearchBoxByType,
+    GlCollapsibleListbox,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -66,6 +52,7 @@ export default {
       pageCounter: 0,
       searchTerm: '',
       lastCommitBranch: '',
+      infiniteScrollLoading: false,
     };
   },
   apollo: {
@@ -112,6 +99,18 @@ export default {
     },
   },
   computed: {
+    infiniteScrollEnabled() {
+      return this.availableBranches.length > 0;
+    },
+    branchesData() {
+      return this.availableBranches.map((branch) => ({
+        text: branch,
+        extraAttrs: {
+          'data-qa-selector': 'branch_menu_item_button',
+        },
+        value: branch,
+      }));
+    },
     availableBranchesVariables() {
       if (this.searchTerm.length > 0) {
         return {
@@ -128,7 +127,7 @@ export default {
     enableBranchSwitcher() {
       return this.availableBranches.length > 0 || this.searchTerm.length > 0;
     },
-    isBranchesLoading() {
+    areBranchesLoading() {
       return this.$apollo.queries.availableBranches.loading;
     },
   },
@@ -143,7 +142,7 @@ export default {
     // if there is no searchPattern, paginate by {paginationLimit} branches
     fetchNextBranches() {
       if (
-        this.isBranchesLoading ||
+        this.areBranchesLoading ||
         this.searchTerm.length > 0 ||
         this.availableBranches.length >= this.totalBranches
       ) {
@@ -178,16 +177,14 @@ export default {
       this.$emit('refetchContent');
     },
     selectBranch(newBranch) {
-      if (newBranch !== this.currentBranch) {
-        // If there are unsaved changes, we want to show the user
-        // a modal to confirm what to do with these before changing
-        // branches.
-        if (this.hasUnsavedChanges) {
-          this.branchSelected = newBranch;
-          this.$emit('select-branch', newBranch);
-        } else {
-          this.changeBranch(newBranch);
-        }
+      // If there are unsaved changes, we want to show the user
+      // a modal to confirm what to do with these before changing
+      // branches.
+      if (this.hasUnsavedChanges) {
+        this.branchSelected = newBranch;
+        this.$emit('select-branch', newBranch);
+      } else {
+        this.changeBranch(newBranch);
       }
     },
     async setSearchTerm(newSearchTerm) {
@@ -211,41 +208,23 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown
+  <gl-collapsible-listbox
+    v-model="currentBranch"
     v-gl-tooltip.hover
+    data-qa-selector="branch_selector_button"
+    searchable
+    :items="branchesData"
     :title="$options.i18n.dropdownHeader"
     :header-text="$options.i18n.dropdownHeader"
-    :text="currentBranch"
+    :toggle-text="currentBranch"
     :disabled="!enableBranchSwitcher"
     icon="branch"
     data-testid="branch-selector"
-  >
-    <gl-search-box-by-type :debounce="$options.inputDebounce" @input="setSearchTerm" />
-    <gl-dropdown-section-header>
-      {{ $options.i18n.title }}
-    </gl-dropdown-section-header>
-
-    <gl-infinite-scroll
-      :fetched-items="availableBranches.length"
-      :max-list-height="250"
-      @bottomReached="fetchNextBranches"
-    >
-      <template #items>
-        <gl-dropdown-item
-          v-for="branch in availableBranches"
-          :key="branch"
-          :is-checked="currentBranch === branch"
-          is-check-item
-          @click="selectBranch(branch)"
-        >
-          {{ branch }}
-        </gl-dropdown-item>
-      </template>
-      <template #default>
-        <gl-dropdown-item v-if="isBranchesLoading" key="loading">
-          <gl-loading-icon size="lg" />
-        </gl-dropdown-item>
-      </template>
-    </gl-infinite-scroll>
-  </gl-dropdown>
+    :no-results-text="$options.i18n.fetchError"
+    :infinite-scroll-loading="areBranchesLoading"
+    :infinite-scroll="infiniteScrollEnabled"
+    @select="selectBranch"
+    @search="setSearchTerm"
+    @bottom-reached="fetchNextBranches"
+  />
 </template>

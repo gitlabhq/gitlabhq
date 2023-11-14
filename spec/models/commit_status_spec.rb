@@ -27,7 +27,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
   it { is_expected.to belong_to(:auto_canceled_by) }
 
   it { is_expected.to validate_presence_of(:name) }
-  it { is_expected.to validate_inclusion_of(:status).in_array(%w(pending running failed success canceled)) }
+  it { is_expected.to validate_inclusion_of(:status).in_array(%w[pending running failed success canceled]) }
 
   it { is_expected.to validate_length_of(:stage).is_at_most(255) }
   it { is_expected.to validate_length_of(:ref).is_at_most(255) }
@@ -43,24 +43,6 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
   it { is_expected.to respond_to :pending? }
   it { is_expected.not_to be_retried }
   it { expect(described_class.primary_key).to eq('id') }
-
-  describe '.switch_table_names' do
-    before do
-      stub_env('USE_CI_BUILDS_ROUTING_TABLE', flag_value)
-    end
-
-    context 'with the env flag disabled' do
-      let(:flag_value) { 'false' }
-
-      it { expect(described_class.switch_table_names).to eq(:ci_builds) }
-    end
-
-    context 'with the env flag enabled' do
-      let(:flag_value) { 'true' }
-
-      it { expect(described_class.switch_table_names).to eq(:p_ci_builds) }
-    end
-  end
 
   describe '#author' do
     subject { commit_status.author }
@@ -174,7 +156,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
   describe '.cancelable' do
     subject { described_class.cancelable }
 
-    %i[running pending waiting_for_resource preparing created scheduled].each do |status|
+    %i[running pending waiting_for_resource waiting_for_callback preparing created scheduled].each do |status|
       context "when #{status} commit status" do
         let!(:commit_status) { create(:commit_status, status, pipeline: pipeline) }
 

@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlDatepicker, GlFormGroup } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { getDateWithUTC, newDateAsLocaleTime } from '~/lib/utils/datetime/date_calculation_utility';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';

@@ -27,5 +27,8 @@ export default {
 </script>
 
 <template>
-  <div v-safe-html="signedOutText" class="disabled-comment gl-text-center gl-relative"></div>
+  <div
+    v-safe-html="signedOutText"
+    class="disabled-comment gl-text-center gl-text-secondary gl-relative"
+  ></div>
 </template>

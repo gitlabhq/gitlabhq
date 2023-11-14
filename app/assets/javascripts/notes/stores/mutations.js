@@ -318,11 +318,6 @@ export default {
     const note = noteData;
     const selectedDiscussion = state.discussions.find((disc) => disc.id === note.id);
     note.expanded = true; // override expand flag to prevent collapse
-    if (note.diff_file) {
-      Object.assign(note, {
-        file_hash: note.diff_file.file_hash,
-      });
-    }
     Object.assign(selectedDiscussion, { ...note });
   },
 

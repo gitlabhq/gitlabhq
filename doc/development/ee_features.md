@@ -38,10 +38,10 @@ context rich definitions around the reason the feature is SaaS-only.
 1. Add the new feature to `FEATURE` in `ee/lib/ee/gitlab/saas.rb`.
 
    ```ruby
-   FEATURES = %w[purchases/additional_minutes some_domain/new_feature_name].freeze
+   FEATURES = %i[purchases_additional_minutes some_domain_new_feature_name].freeze
    ```
 
-1. Use the new feature in code with `Gitlab::Saas.feature_available?('some_domain/new_feature_name')`.
+1. Use the new feature in code with `Gitlab::Saas.feature_available?(:some_domain_new_feature_name)`.
 
 #### SaaS-only feature definition and validation
 
@@ -68,7 +68,7 @@ Each SaaS feature is defined in a separate YAML file consisting of a number of f
 Prepend the `ee/lib/ee/gitlab/saas.rb` module and override the `Gitlab::Saas.feature_available?` method.
 
 ```ruby
-JH_DISABLED_FEATURES = %w[some_domain/new_feature_name].freeze
+JH_DISABLED_FEATURES = %i[some_domain_new_feature_name].freeze
 
 override :feature_available?
 def feature_available?(feature)
@@ -78,7 +78,7 @@ end
 
 ### Do not use SaaS-only features for functionality in CE
 
-`Gitlab::Saas.feature_vailable?` must not appear in CE.
+`Gitlab::Saas.feature_available?` must not appear in CE.
 See [extending CE with EE guide](#extend-ce-features-with-ee-backend-code).
 
 ### SaaS-only features in tests
@@ -88,30 +88,30 @@ It is strongly advised to include automated tests for all code affected by a Saa
 to ensure the feature works properly.
 
 To enable a SaaS-only feature in a test, use the `stub_saas_features`
-helper. For example, to globally disable the `purchases/additional_minutes` feature
+helper. For example, to globally disable the `purchases_additional_minutes` feature
 flag in a test:
 
 ```ruby
-stub_saas_features('purchases/additional_minutes' => false)
+stub_saas_features(purchases_additional_minutes: false)
 
-::Gitlab::Saas.feature_available?('purchases/additional_minutes') # => false
+::Gitlab::Saas.feature_available?(:purchases_additional_minutes) # => false
 ```
 
 A common pattern of testing both paths looks like:
 
 ```ruby
 it 'purchases/additional_minutes is not available' do
-  # tests assuming purchases/additional_minutes is not enabled by default
-  ::Gitlab::Saas.feature_available?('purchases/additional_minutes') # => false
+  # tests assuming purchases_additional_minutes is not enabled by default
+  ::Gitlab::Saas.feature_available?(:purchases_additional_minutes) # => false
 end
 
-context 'when purchases/additional_minutes is available' do
+context 'when purchases_additional_minutes is available' do
   before do
-    stub_saas_features('purchases/additional_minutes' => true)
+    stub_saas_features(purchases_additional_minutes: true)
   end
 
   it 'returns true' do
-    ::Gitlab::Saas.feature_available?('purchases/additional_minutes') # => true
+    ::Gitlab::Saas.feature_available?(:purchases_additional_minutes) # => true
   end
 end
 ```

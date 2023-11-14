@@ -2,9 +2,9 @@ import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 export const CREATE_EXPERIMENT_HELP_PATH = helpPagePath(
-  'user/project/ml/experiment_tracking/index.md',
+  'user/project/ml/experiment_tracking/index',
   {
-    anchor: 'tracking-new-experiments-and-trials',
+    anchor: 'track-new-experiments-and-candidates',
   },
 );
 

@@ -39,7 +39,7 @@ to our Sentry instance under the project
 The most common way to report errors to Sentry is to call `captureException(error)`, for example:
 
 ```javascript
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 try {
   // Code that may fail in runtime
@@ -52,6 +52,9 @@ try {
 about, or have no control over. For example, we shouldn't report validation errors when a user fills
 out a form incorrectly. However, if that form submission fails because or a server error,
 this is an error we want Sentry to know about.
+
+By default your local development instance does not have Sentry configured. Calls to Sentry are
+stubbed and shown in the console with a `[Sentry stub]` prefix for debugging.
 
 ### Unhandled/unknown errors
 

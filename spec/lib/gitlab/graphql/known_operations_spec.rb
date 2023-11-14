@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Graphql::KnownOperations do
   using RSpec::Parameterized::TableSyntax
 
   # Include duplicated operation names to test that we are unique-ifying them
-  let(:fake_operations) { %w(foo foo bar bar) }
+  let(:fake_operations) { %w[foo foo bar bar] }
   let(:fake_schema) do
     Class.new(GraphQL::Schema) do
       query Graphql::FakeQueryType
@@ -34,7 +34,7 @@ RSpec.describe Gitlab::Graphql::KnownOperations do
 
   describe "#operations" do
     it "returns array of known operations" do
-      expect(subject.operations.map(&:name)).to match_array(%w(unknown foo bar))
+      expect(subject.operations.map(&:name)).to match_array(%w[unknown foo bar])
     end
   end
 

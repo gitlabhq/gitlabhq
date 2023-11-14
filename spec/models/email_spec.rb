@@ -89,7 +89,7 @@ RSpec.describe Email do
     end
 
     context 'when the confirmation period has expired' do
-      let(:confirmation_sent_at) {  expired_confirmation_sent_at }
+      let(:confirmation_sent_at) { expired_confirmation_sent_at }
 
       it_behaves_like 'unconfirmed email'
 
@@ -101,7 +101,7 @@ RSpec.describe Email do
     end
 
     context 'when the confirmation period has not expired' do
-      let(:confirmation_sent_at) {  extant_confirmation_sent_at }
+      let(:confirmation_sent_at) { extant_confirmation_sent_at }
 
       it_behaves_like 'unconfirmed email'
 
@@ -138,7 +138,7 @@ RSpec.describe Email do
     end
 
     context 'when the confirmation period has expired' do
-      let(:confirmation_sent_at) {  expired_confirmation_sent_at }
+      let(:confirmation_sent_at) { expired_confirmation_sent_at }
 
       it_behaves_like 'unconfirmed email'
       it_behaves_like 'confirms the email on force_confirm'

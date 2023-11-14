@@ -32,7 +32,7 @@ RSpec.describe Gitlab::BitbucketImport::AdvanceStageWorker, :clean_gitlab_redis_
 
           expect(described_class)
             .to receive(:perform_in)
-            .with(described_class::INTERVAL, project.id, { '123' => 1 }, :finish, Time.zone.now, 1)
+            .with(described_class::INTERVAL, project.id, { '123' => 1 }, 'finish', Time.zone.now.to_s, 1)
 
           worker.perform(project.id, { '123' => 2 }, :finish)
         end

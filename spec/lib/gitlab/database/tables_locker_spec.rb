@@ -33,30 +33,40 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
       FOR VALUES IN (0)
     SQL
 
-    ApplicationRecord.connection.execute(create_partition_sql)
-    Ci::ApplicationRecord.connection.execute(create_partition_sql)
-
     create_detached_partition_sql = <<~SQL
       CREATE TABLE IF NOT EXISTS #{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}._test_gitlab_main_part_202201 (
         id bigserial primary key not null
       )
     SQL
 
-    ApplicationRecord.connection.execute(create_detached_partition_sql)
-    Ci::ApplicationRecord.connection.execute(create_detached_partition_sql)
+    [ApplicationRecord, Ci::ApplicationRecord]
+      .map(&:connection)
+      .each do |conn|
+        conn.execute(create_partition_sql)
+        conn.execute(
+          "DROP TABLE IF EXISTS #{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}._test_gitlab_main_part_202201"
+        )
+        conn.execute(create_detached_partition_sql)
 
-    Gitlab::Database::SharedModel.using_connection(ApplicationRecord.connection) do
-      Postgresql::DetachedPartition.create!(
-        table_name: '_test_gitlab_main_part_20220101',
-        drop_after: Time.current
-      )
-    end
-    Gitlab::Database::SharedModel.using_connection(Ci::ApplicationRecord.connection) do
-      Postgresql::DetachedPartition.create!(
-        table_name: '_test_gitlab_main_part_20220101',
-        drop_after: Time.current
-      )
-    end
+        Gitlab::Database::SharedModel.using_connection(conn) do
+          Postgresql::DetachedPartition.delete_all
+          Postgresql::DetachedPartition.create!(
+            table_name: '_test_gitlab_main_part_20220101',
+            drop_after: Time.current
+          )
+        end
+      end
+  end
+
+  after(:all) do
+    [ApplicationRecord, Ci::ApplicationRecord]
+      .map(&:connection)
+      .each do |conn|
+        conn.execute(
+          "DROP TABLE IF EXISTS #{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}._test_gitlab_main_part_202201"
+        )
+        Gitlab::Database::SharedModel.using_connection(conn) { Postgresql::DetachedPartition.delete_all }
+      end
   end
 
   shared_examples "lock tables" do |gitlab_schema, database_name|

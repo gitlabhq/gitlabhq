@@ -1,0 +1,53 @@
+{
+  "description": "ActivityPub Follow activity payload",
+  "type": "object",
+  "required": [
+    "@context",
+    "id",
+    "type",
+    "actor",
+    "object"
+  ],
+  "properties": {
+    "@context": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array"
+        }
+      ]
+    },
+    "id": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    },
+    "actor": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "id": {
+            "type": "string"
+          },
+          "inbox": {
+            "type": "string"
+          },
+          "additionalProperties": true
+        }
+      ]
+    },
+    "object": {
+      "type": "string"
+    },
+    "additionalProperties": true
+  }
+}

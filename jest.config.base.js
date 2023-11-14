@@ -17,6 +17,9 @@ module.exports = (path, options = {}) => {
     moduleNameMapper: extModuleNameMapper = {},
     moduleNameMapperEE: extModuleNameMapperEE = {},
     moduleNameMapperJH: extModuleNameMapperJH = {},
+    roots: extRoots = [],
+    rootsEE: extRootsEE = [],
+    rootsJH: extRootsJH = [],
   } = options;
 
   const reporters = ['default'];
@@ -120,7 +123,6 @@ module.exports = (path, options = {}) => {
     '^jest/(.*)$': '<rootDir>/spec/frontend/$1',
     '^ee_else_ce_jest/(.*)$': '<rootDir>/spec/frontend/$1',
     '^jquery$': '<rootDir>/node_modules/jquery/dist/jquery.slim.js',
-    '^@sentry/browser$': '<rootDir>/app/assets/javascripts/sentry/sentry_browser_wrapper.js',
     '^dexie$': '<rootDir>/node_modules/dexie/dist/dexie.min.js',
     ...extModuleNameMapper,
     ...vueModuleNameMappers,
@@ -266,6 +268,12 @@ module.exports = (path, options = {}) => {
     snapshotSerializers: [
       '<rootDir>/spec/frontend/__helpers__/html_string_serializer.js',
       '<rootDir>/spec/frontend/__helpers__/clean_html_element_serializer.js',
+    ],
+    roots: [
+      '<rootDir>/app/assets/javascripts/',
+      ...extRoots,
+      ...(IS_EE ? ['<rootDir>/ee/app/assets/javascripts/', ...extRootsEE] : []),
+      ...(IS_JH ? ['<rootDir>/jh/app/assets/javascripts/', ...extRootsJH] : []),
     ],
   };
 };

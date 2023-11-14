@@ -425,7 +425,7 @@ curl --request DELETE --data-urlencode 'name_regex_delete=dev-.+' \
 Beside the group- and project-specific GitLab APIs explained above,
 the Container Registry has its own endpoints.
 To query those, follow the Registry's built-in mechanism to obtain and use an
-[authentication token](https://docs.docker.com/registry/spec/auth/token/).
+[authentication token](https://distribution.github.io/distribution/spec/auth/token/).
 
 NOTE:
 These are different from project or personal access tokens in the GitLab application.
@@ -436,7 +436,7 @@ These are different from project or personal access tokens in the GitLab applica
 GET ${CI_SERVER_URL}/jwt/auth?service=container_registry&scope=*
 ```
 
-You must specify the correct [scopes and actions](https://docs.docker.com/registry/spec/auth/scope/) to retrieve a valid token:
+You must specify the correct [scopes and actions](https://distribution.github.io/distribution/spec/auth/scope/) to retrieve a valid token:
 
 ```shell
 $ SCOPE="repository:${CI_REGISTRY_IMAGE}:delete" #or push,pull
@@ -448,17 +448,28 @@ $ curl  --request GET --user "${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD}" \
 
 ### Delete image tags by reference
 
+> Endpoint `v2/<name>/manifests/<tag>` [introduced](https://gitlab.com/gitlab-org/container-registry/-/issues/1091) and endpoint `v2/<name>/tags/reference/<tag>` [deprecated](https://gitlab.com/gitlab-org/container-registry/-/issues/1094) in GitLab 16.4.
+
+<!--- start_remove The following content will be removed on remove_date: '2024-08-15' -->
+
+WARNING:
+Endpoint `v2/<name>/tags/reference/<tag>` [deprecated](https://gitlab.com/gitlab-org/container-registry/-/issues/1095)
+in GitLab 16.4 and is planned for removal in 17.0. Use [`v2/<name>/manifests/<tag>`](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/docker/v2/api.md#delete-manifest) instead.
+This change is a breaking change.
+
+<!--- end_remove -->
+
 ```plaintext
 DELETE http(s)://${CI_REGISTRY}/v2/${CI_REGISTRY_IMAGE}/tags/reference/${CI_COMMIT_SHORT_SHA}
 ```
 
 You can use the token retrieved with the predefined `CI_REGISTRY_USER` and `CI_REGISTRY_PASSWORD` variables to delete container image tags by reference on your GitLab instance.
-The `tag_delete` [Container-Registry-Feature](https://gitlab.com/gitlab-org/container-registry/-/tree/v3.61.0-gitlab/docs-gitlab#api) must be enabled.
+The `tag_delete` [Container-Registry-Feature](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/docker/v2/api.md#delete-tag) must be enabled.
 
 ```shell
 $ curl  --request DELETE --header "Authorization: Bearer <token_from_above>" \
         --header "Accept: application/vnd.docker.distribution.manifest.v2+json" \
-        "https://gitlab.example.com:5050/v2/${CI_REGISTRY_IMAGE}/tags/reference/${CI_COMMIT_SHORT_SHA}"
+        "https://gitlab.example.com:5050/v2/${CI_REGISTRY_IMAGE}/manifests/${CI_COMMIT_SHORT_SHA}"
 ```
 
 ### Listing all container repositories

@@ -16,7 +16,9 @@ class UpdateBillableUsersIndex < Gitlab::Database::Migration[2.1]
   QUERY
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation
     add_concurrent_index(:users, :id, where: NEW_INDEX_CONDITION, name: NEW_INDEX)
+    # rubocop:enable Migration/PreventIndexCreation
     remove_concurrent_index_by_name(:users, OLD_INDEX)
   end
 

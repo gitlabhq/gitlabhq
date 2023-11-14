@@ -13,8 +13,14 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
   end
 
   let_it_be(:pipeline) do
-    create(:ci_empty_pipeline, project: project, sha: project.commit.id,
-                               ref: project.default_branch, user: user, name: 'Build pipeline')
+    create(
+      :ci_empty_pipeline,
+      project: project,
+      sha: project.commit.id,
+      ref: project.default_branch,
+      user: user,
+      name: 'Build pipeline'
+    )
   end
 
   before do
@@ -357,8 +363,13 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     let(:query) { {} }
     let(:api_user) { user }
     let_it_be(:job) do
-      create(:ci_build, :success, name: 'build', pipeline: pipeline,
-                                  artifacts_expire_at: 1.day.since)
+      create(
+        :ci_build,
+        :success,
+        name: 'build',
+        pipeline: pipeline,
+        artifacts_expire_at: 1.day.since
+      )
     end
 
     let(:guest) { create(:project_member, :guest, project: project).user }
@@ -436,7 +447,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       end
 
       context 'filter jobs with array of scope elements' do
-        let(:query) { { scope: %w(pending running) } }
+        let(:query) { { scope: %w[pending running] } }
 
         it :aggregate_failures do
           expect(response).to have_gitlab_http_status(:ok)
@@ -445,7 +456,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       end
 
       context 'respond 400 when scope contains invalid state' do
-        let(:query) { { scope: %w(unknown running) } }
+        let(:query) { { scope: %w[unknown running] } }
 
         it { expect(response).to have_gitlab_http_status(:bad_request) }
       end
@@ -540,12 +551,14 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     let(:downstream_pipeline) { create(:ci_pipeline) }
 
     let!(:pipeline_source) do
-      create(:ci_sources_pipeline,
-             source_pipeline: pipeline,
-             source_project: project,
-             source_job: bridge,
-             pipeline: downstream_pipeline,
-             project: downstream_pipeline.project)
+      create(
+        :ci_sources_pipeline,
+        source_pipeline: pipeline,
+        source_project: project,
+        source_job: bridge,
+        pipeline: downstream_pipeline,
+        project: downstream_pipeline.project
+      )
     end
 
     let(:query) { {} }
@@ -615,7 +628,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         end
 
         context 'with array of scope elements' do
-          let(:query) { { scope: %w(pending running) } }
+          let(:query) { { scope: %w[pending running] } }
 
           it :skip_before_request, :aggregate_failures do
             get api("/projects/#{project.id}/pipelines/#{pipeline.id}/bridges", api_user), params: query
@@ -623,14 +636,14 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response).to be_an Array
             expect(json_response.count).to eq 2
-            json_response.each { |r| expect(%w(pending running).include?(r['status'])).to be true }
+            json_response.each { |r| expect(%w[pending running].include?(r['status'])).to be true }
           end
         end
       end
 
       context 'respond 400 when scope contains invalid state' do
         context 'in an array' do
-          let(:query) { { scope: %w(unknown running) } }
+          let(:query) { { scope: %w[unknown running] } }
 
           it { expect(response).to have_gitlab_http_status(:bad_request) }
         end
@@ -713,12 +726,14 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     def create_bridge(pipeline, status = :created)
       create(:ci_bridge, status: status, pipeline: pipeline).tap do |bridge|
         downstream_pipeline = create(:ci_pipeline)
-        create(:ci_sources_pipeline,
-              source_pipeline: pipeline,
-              source_project: pipeline.project,
-              source_job: bridge,
-              pipeline: downstream_pipeline,
-              project: downstream_pipeline.project)
+        create(
+          :ci_sources_pipeline,
+          source_pipeline: pipeline,
+          source_project: pipeline.project,
+          source_job: bridge,
+          pipeline: downstream_pipeline,
+          project: downstream_pipeline.project
+        )
       end
     end
   end
@@ -914,13 +929,24 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       let(:second_branch) { project.repository.branches[2] }
 
       let!(:second_pipeline) do
-        create(:ci_empty_pipeline, project: project, sha: second_branch.target,
-                                   ref: second_branch.name, user: user, name: 'Build pipeline')
+        create(
+          :ci_empty_pipeline,
+          project: project,
+          sha: second_branch.target,
+          ref: second_branch.name,
+          user: user,
+          name: 'Build pipeline'
+        )
       end
 
       before do
-        create(:ci_empty_pipeline, project: project, sha: project.commit.parent.id,
-                                   ref: project.default_branch, user: user)
+        create(
+          :ci_empty_pipeline,
+          project: project,
+          sha: project.commit.parent.id,
+          ref: project.default_branch,
+          user: user
+        )
       end
 
       context 'default repository branch' do
@@ -1107,11 +1133,82 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     end
   end
 
+  describe 'PUT /projects/:id/pipelines/:pipeline_id/name' do
+    let_it_be(:pipeline_creator) { create(:user) }
+    let(:pipeline) { create(:ci_pipeline, project: project, user: pipeline_creator) }
+    let(:name) { 'A new pipeline name' }
+
+    subject(:execute) do
+      put api("/projects/#{project.id}/pipelines/#{pipeline.id}/metadata", current_user), params: { name: name }
+    end
+
+    context 'authorized user' do
+      let(:current_user) { create(:user) }
+
+      before do
+        project.add_developer(current_user)
+      end
+
+      it 'renames pipeline when name is valid', :aggregate_failures do
+        expect { execute }.to change { pipeline.reload.name }.to(name)
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      context 'when name is invalid' do
+        let(:name) { 'a' * 256 }
+
+        it 'does not rename pipeline', :aggregate_failures do
+          expect { execute }.not_to change { pipeline.reload.name }
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq('Failed to update pipeline - Name is too long (maximum is 255 characters)')
+        end
+      end
+    end
+
+    context 'unauthorized user' do
+      let(:current_user) { create(:user) }
+
+      context 'when user is not a member' do
+        it 'does not rename pipeline', :aggregate_failures do
+          expect { execute }.not_to change { pipeline.reload.name }
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when user is a member' do
+        before do
+          project.add_reporter(current_user)
+        end
+
+        it 'does not rename pipeline', :aggregate_failures do
+          expect { execute }.not_to change { pipeline.reload.name }
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+
+    context 'when authorized with job token' do
+      let(:job) { create(:ci_build, :running, pipeline: pipeline, project: project, user: pipeline.user) }
+
+      before do
+        project.add_developer(pipeline.user)
+      end
+
+      subject(:execute) do
+        put api("/projects/#{project.id}/pipelines/#{pipeline.id}/metadata", nil, job_token: job.token), params: { name: name }
+      end
+
+      it 'renames pipeline when name is valid', :aggregate_failures do
+        expect { execute }.to change { pipeline.reload.name }.to(name)
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+  end
+
   describe 'POST /projects/:id/pipelines/:pipeline_id/retry' do
     context 'authorized user' do
       let_it_be(:pipeline) do
-        create(:ci_pipeline, project: project, sha: project.commit.id,
-                             ref: project.default_branch)
+        create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
       end
 
       let_it_be(:build) { create(:ci_build, :failed, pipeline: pipeline) }
@@ -1156,8 +1253,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
   describe 'POST /projects/:id/pipelines/:pipeline_id/cancel' do
     let_it_be(:pipeline) do
-      create(:ci_empty_pipeline, project: project, sha: project.commit.id,
-                                 ref: project.default_branch)
+      create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
     end
 
     let_it_be(:build) { create(:ci_build, :running, pipeline: pipeline) }

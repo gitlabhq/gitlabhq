@@ -11,6 +11,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include SourcegraphDecorator
   include DiffHelper
   include Gitlab::Cache::Helpers
+  include MergeRequestsHelper
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   skip_before_action :merge_request, only: [:index, :bulk_update, :export_csv]
@@ -37,15 +38,15 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   before_action only: [:show, :diffs] do
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
-    push_frontend_feature_flag(:issue_assignees_widget, @project)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
     push_frontend_feature_flag(:sast_reports_in_inline_diff, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
-    push_frontend_feature_flag(:saved_replies, current_user)
     push_force_frontend_feature_flag(:summarize_my_code_review, summarize_my_code_review_enabled?)
     push_frontend_feature_flag(:ci_job_failures_in_mr, project)
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
-    push_frontend_feature_flag(:notifications_todos_buttons, project)
+    push_frontend_feature_flag(:notifications_todos_buttons, current_user)
+    push_frontend_feature_flag(:widget_pipeline_pass_subscription_update, project)
+    push_frontend_feature_flag(:mr_request_changes, current_user)
   end
 
   before_action only: [:edit] do
@@ -159,7 +160,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         .represent(
           @pipelines,
           preload: true,
-          disable_failed_builds: ::Feature.enabled?(:ci_fix_performance_pipelines_json_endpoint, @project)
+          disable_failed_builds: true
         ),
       count: {
         all: @pipelines.count
@@ -344,9 +345,16 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def discussions
-    merge_request.discussions_diffs.load_highlight
+    if Feature.enabled?(:only_highlight_discussions_requested, project)
+      super do |discussion_notes|
+        note_ids = discussion_notes.flat_map { |x| x.notes.collect(&:id) }
+        merge_request.discussions_diffs.load_highlight(diff_note_ids: note_ids)
+      end
+    else
+      merge_request.discussions_diffs.load_highlight
 
-    super
+      super
+    end
   end
 
   def export_csv
@@ -617,7 +625,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def endpoint_diff_batch_url(project, merge_request)
-    per_page = current_user&.view_diffs_file_by_file ? '1' : '5'
+    per_page = current_user&.view_diffs_file_by_file ? '1' : DIFF_BATCH_ENDPOINT_PER_PAGE.to_s
     params = request
       .query_parameters
       .merge(view: 'inline', diff_head: true, w: show_whitespace, page: '0', per_page: per_page)

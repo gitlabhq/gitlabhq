@@ -136,6 +136,14 @@
     "alternate": "rubocop/cop/{}.rb",
     "type": "test"
   },
+  "tooling/*.rb": {
+    "alternate": "spec/tooling/{}_spec.rb",
+    "type": "source"
+  },
+  "spec/tooling/*_spec.rb": {
+    "alternate": "tooling/{}.rb",
+    "type": "test"
+  },
   "ee/lib/api/*.rb": {
     "alternate": "ee/spec/requests/api/{}_spec.rb",
     "type": "source"

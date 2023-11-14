@@ -153,9 +153,10 @@ const initForkInfo = () => {
 initForkInfo();
 
 const CommitPipelineStatusEl = document.querySelector('.js-commit-pipeline-status');
-const statusLink = document.querySelector('.commit-actions .ci-status-link');
-if (statusLink) {
-  statusLink.remove();
+const legacyStatusBadge = document.querySelector('.js-ci-status-badge-legacy');
+
+if (legacyStatusBadge) {
+  legacyStatusBadge.remove();
   // eslint-disable-next-line no-new
   new Vue({
     el: CommitPipelineStatusEl,

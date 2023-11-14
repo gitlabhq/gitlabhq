@@ -11,6 +11,8 @@ module Releases
 
         execute_hooks(release, 'delete')
 
+        audit(release, action: :deleted)
+
         success(tag: existing_tag, release: release)
       else
         error(release.errors.messages || '400 Bad request', 400)

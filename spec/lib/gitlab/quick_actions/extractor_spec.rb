@@ -246,7 +246,7 @@ RSpec.describe Gitlab::QuickActions::Extractor, feature_category: :team_planning
       msg = %(hello\nworld\n/reopen\n/shrug this is great?\n/shrug meh)
       msg, commands = extractor.extract_commands(msg)
 
-      expect(commands).to eq [['reopen'], ['shrug', 'this is great?'], %w(shrug meh)]
+      expect(commands).to eq [['reopen'], ['shrug', 'this is great?'], %w[shrug meh]]
       expect(msg).to eq "hello\nworld\nthis is great? SHRUG\nmeh SHRUG"
     end
 

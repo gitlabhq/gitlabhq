@@ -1,4 +1,4 @@
-import { GlLabel, GlIcon, GlLink } from '@gitlab/ui';
+import { GlLabel, GlIcon, GlLink, GlButton } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -9,7 +9,6 @@ import { createAlert } from '~/alert';
 import RichTimestampTooltip from '~/vue_shared/components/rich_timestamp_tooltip.vue';
 
 import WorkItemLinkChildContents from '~/work_items/components/shared/work_item_link_child_contents.vue';
-import WorkItemLinksMenu from '~/work_items/components/shared/work_item_links_menu.vue';
 import { WORK_ITEM_TYPE_VALUE_OBJECTIVE } from '~/work_items/constants';
 
 import {
@@ -39,13 +38,18 @@ describe('WorkItemLinkChildContents', () => {
   const findAllLabels = () => wrapper.findAllComponents(GlLabel);
   const findRegularLabel = () => findAllLabels().at(0);
   const findScopedLabel = () => findAllLabels().at(1);
-  const findLinksMenuComponent = () => wrapper.findComponent(WorkItemLinksMenu);
+  const findRemoveButton = () => wrapper.findComponent(GlButton);
 
-  const createComponent = ({ canUpdate = true, childItem = workItemTask } = {}) => {
+  const createComponent = ({
+    canUpdate = true,
+    childItem = workItemTask,
+    showLabels = true,
+  } = {}) => {
     wrapper = shallowMountExtended(WorkItemLinkChildContents, {
       propsData: {
         canUpdate,
         childItem,
+        showLabels,
       },
     });
   };
@@ -129,8 +133,34 @@ describe('WorkItemLinkChildContents', () => {
 
       expect(findMetadataComponent().exists()).toBe(false);
     });
+  });
 
-    it('renders labels', () => {
+  describe('item menu', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('renders remove button', () => {
+      expect(findRemoveButton().exists()).toBe(true);
+    });
+
+    it('does not render work-item-links-menu when canUpdate is false', () => {
+      createComponent({ canUpdate: false });
+
+      expect(findRemoveButton().exists()).toBe(false);
+    });
+
+    it('removeChild event on menu triggers `click-remove-child` event', () => {
+      findRemoveButton().vm.$emit('click');
+
+      expect(wrapper.emitted('removeChild')).toEqual([[workItemTask]]);
+    });
+  });
+
+  describe('item labels', () => {
+    it('renders normal and scoped label', () => {
+      createComponent({ childItem: workItemObjectiveWithChild });
+
       const mockLabel = mockLabels[0];
 
       expect(findAllLabels()).toHaveLength(mockLabels.length);
@@ -142,27 +172,15 @@ describe('WorkItemLinkChildContents', () => {
       });
       expect(findScopedLabel().props('scoped')).toBe(true); // Second label is scoped
     });
-  });
 
-  describe('item menu', () => {
-    beforeEach(() => {
-      createComponent();
-    });
+    it.each`
+      expectedAssertion           | showLabels
+      ${'does not render labels'} | ${true}
+      ${'renders label'}          | ${false}
+    `('$expectedAssertion when showLabels is $showLabels', ({ showLabels }) => {
+      createComponent({ showLabels, childItem: workItemObjectiveWithChild });
 
-    it('renders work-item-links-menu', () => {
-      expect(findLinksMenuComponent().exists()).toBe(true);
-    });
-
-    it('does not render work-item-links-menu when canUpdate is false', () => {
-      createComponent({ canUpdate: false });
-
-      expect(findLinksMenuComponent().exists()).toBe(false);
-    });
-
-    it('removeChild event on menu triggers `click-remove-child` event', () => {
-      findLinksMenuComponent().vm.$emit('removeChild');
-
-      expect(wrapper.emitted('removeChild')).toEqual([[workItemTask]]);
+      expect(findAllLabels().exists()).toBe(showLabels);
     });
   });
 });

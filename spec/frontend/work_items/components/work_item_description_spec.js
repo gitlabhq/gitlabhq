@@ -92,7 +92,7 @@ describe('WorkItemDescription', () => {
     it('passes correct autocompletion data and preview markdown sources and enables quick actions', async () => {
       const {
         iid,
-        project: { fullPath },
+        namespace: { fullPath },
       } = workItemQueryResponse.data.workItem;
 
       await createComponent({ isEditing: true });

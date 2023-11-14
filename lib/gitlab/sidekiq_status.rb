@@ -94,8 +94,17 @@ module Gitlab
 
       keys = job_ids.map { |jid| key_for(jid) }
 
-      with_redis { |redis| redis.mget(*keys) }
-        .map { |result| !result.nil? }
+      status = with_redis do |redis|
+        Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+          if Gitlab::Redis::ClusterUtil.cluster?(redis)
+            Gitlab::Redis::ClusterUtil.batch_get(keys, redis)
+          else
+            redis.mget(*keys)
+          end
+        end
+      end
+
+      status.map { |result| !result.nil? }
     end
 
     # Returns the JIDs that are completed

@@ -47,28 +47,28 @@ RSpec.describe "deleting designs", feature_category: :design_management do
   context 'the designs list is empty' do
     it_behaves_like 'a failed request' do
       let(:designs) { [] }
-      let(:the_error) { a_string_matching %r/no filenames/ }
+      let(:the_error) { a_string_matching %r{no filenames} }
     end
   end
 
   context 'the designs list contains filenames we cannot find' do
     it_behaves_like 'a failed request' do
-      let(:designs) { %w/foo bar baz/.map { |fn| double('file', filename: fn) } }
-      let(:the_error) { a_string_matching %r/filenames were not found/ }
+      let(:designs) { %w[foo bar baz].map { |fn| double('file', filename: fn) } }
+      let(:the_error) { a_string_matching %r{filenames were not found} }
     end
   end
 
   context 'the current user does not have developer access' do
     it_behaves_like 'a failed request' do
       let(:current_user) { create(:user) }
-      let(:the_error) { a_string_matching %r/you don't have permission/ }
+      let(:the_error) { a_string_matching %r{you don't have permission} }
     end
   end
 
   context "when the issue does not exist" do
     it_behaves_like 'a failed request' do
       let(:variables) { { iid: "1234567890" } }
-      let(:the_error) { a_string_matching %r/does not exist/ }
+      let(:the_error) { a_string_matching %r{does not exist} }
     end
   end
 

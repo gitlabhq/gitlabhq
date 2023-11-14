@@ -65,7 +65,7 @@ RSpec.describe 'Project issue boards sidebar assignee', :js,
         wait_for_requests
 
         page.within('.dropdown-menu-user') do
-          find('[data-testid="unassign"]').click
+          find_by_testid('unassign').click
         end
 
         expect(page).to have_content('None')

@@ -33,6 +33,5 @@ export default {
     :translations="$options.i18n"
     name="project[default_branch]"
     data-testid="default-branch-dropdown"
-    data-qa-selector="default_branch_dropdown"
   />
 </template>

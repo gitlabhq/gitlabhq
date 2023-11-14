@@ -166,6 +166,37 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
     end
   end
 
+  describe '#long_stopping?' do
+    subject { environment1.long_stopping? }
+
+    let(:long_ago) { (described_class::LONG_STOP + 1.day).ago }
+    let(:not_long_ago) { (described_class::LONG_STOP - 1.day).ago }
+
+    context 'when a stopping environment has not been updated recently' do
+      let!(:environment1) { create(:environment, state: 'stopping', project: project, updated_at: long_ago) }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when a stopping environment has been updated recently' do
+      let!(:environment1) { create(:environment, state: 'stopping', project: project, updated_at: not_long_ago) }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when a non stopping environment has not been updated recently' do
+      let!(:environment1) { create(:environment, project: project, updated_at: long_ago) }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when a non stopping environment has been updated recently' do
+      let!(:environment1) { create(:environment, project: project, updated_at: not_long_ago) }
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
   describe ".stopped_review_apps" do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:old_stopped_review_env) { create(:environment, :with_review_app, :stopped, created_at: 31.days.ago, project: project) }
@@ -401,6 +432,47 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
 
     context 'when environment is not auto-deletable' do
       let!(:environment) { create(:environment) }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
+  describe '.long_stopping' do
+    subject { described_class.long_stopping }
+
+    let_it_be(:project) { create(:project) }
+    let(:environment) { create(:environment, project: project) }
+    let(:long) { (described_class::LONG_STOP + 1.day).ago }
+    let(:short) { (described_class::LONG_STOP - 1.day).ago }
+
+    context 'when a stopping environment has not been updated recently' do
+      before do
+        environment.update!(state: :stopping, updated_at: long)
+      end
+
+      it { is_expected.to eq([environment]) }
+    end
+
+    context 'when a stopping environment has been updated recently' do
+      before do
+        environment.update!(state: :stopping, updated_at: short)
+      end
+
+      it { is_expected.to be_empty }
+    end
+
+    context 'when a non stopping environment has not been updated recently' do
+      before do
+        environment.update!(state: :available, updated_at: long)
+      end
+
+      it { is_expected.to be_empty }
+    end
+
+    context 'when a non stopping environment has been updated recently' do
+      before do
+        environment.update!(state: :available, updated_at: short)
+      end
 
       it { is_expected.to be_empty }
     end
@@ -1361,7 +1433,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
     end
 
     context 'reactive cache has pod data' do
-      let(:cache_data) { Hash(pods: %w(pod1 pod2)) }
+      let(:cache_data) { Hash(pods: %w[pod1 pod2]) }
 
       before do
         stub_reactive_cache(environment, cache_data)
@@ -1390,9 +1462,9 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
 
     it 'returns cache data from the deployment platform' do
       expect(environment.deployment_platform).to receive(:calculate_reactive_cache_for)
-        .with(environment).and_return(pods: %w(pod1 pod2))
+        .with(environment).and_return(pods: %w[pod1 pod2])
 
-      is_expected.to eq(pods: %w(pod1 pod2))
+      is_expected.to eq(pods: %w[pod1 pod2])
     end
 
     context 'environment does not have terminals available' do
@@ -1863,8 +1935,8 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
     end
 
     context 'cached rollout status is present' do
-      let(:pods) { %w(pod1 pod2) }
-      let(:deployments) { %w(deployment1 deployment2) }
+      let(:pods) { %w[pod1 pod2] }
+      let(:deployments) { %w[deployment1 deployment2] }
 
       before do
         stub_reactive_cache(environment, pods: pods, deployments: deployments)

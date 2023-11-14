@@ -399,6 +399,24 @@ To turn off a check-in reminder, enter:
 /checkin_reminder never
 ```
 
+## Set an objective as a parent
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11198) in GitLab 16.6.
+
+Prerequisite:
+
+- You must have at least the Reporter role for the project.
+- The parent objective and child OKR must belong to the same project.
+
+To set an objective as a parent of an OKR:
+
+1. [Open the objective](#view-an-objective) or [key result](#view-a-key-result) that you want to edit.
+1. Next to **Parent**, from the dropdown list, select the parent to add.
+1. Select any area outside the dropdown list.
+
+To remove the parent of the objective or key result,
+next to **Parent**, select the dropdown list and then select **Unassign**.
+
 ## Confidential OKRs
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8410) in GitLab 15.3.

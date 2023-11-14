@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Groups::UpdateStatisticsService, feature_category: :groups_and_projects do
   let_it_be(:group, reload: true) { create(:group) }
 
-  let(:statistics) { %w(wiki_size) }
+  let(:statistics) { %w[wiki_size] }
 
   subject(:service) { described_class.new(group, statistics: statistics) }
 

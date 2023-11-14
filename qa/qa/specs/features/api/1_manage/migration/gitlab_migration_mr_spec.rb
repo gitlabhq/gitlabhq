@@ -37,11 +37,10 @@ module QA
 
       let(:imported_mrs) { imported_project.merge_requests }
       let(:imported_mr) do
-        Resource::MergeRequest.init do |mr|
-          mr.project = imported_project
-          mr.iid = imported_project.merge_requests.first[:iid]
-          mr.api_client = api_client
-        end
+        build(:merge_request,
+          project: imported_project,
+          iid: imported_project.merge_requests.first[:iid],
+          api_client: api_client)
       end
 
       let(:imported_mr_comments) do

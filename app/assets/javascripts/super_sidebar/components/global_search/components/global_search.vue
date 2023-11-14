@@ -15,7 +15,14 @@ import { truncate } from '~/lib/utils/text_utility';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { sprintf } from '~/locale';
-import { ARROW_DOWN_KEY, ARROW_UP_KEY, END_KEY, HOME_KEY, ESC_KEY } from '~/lib/utils/keys';
+import {
+  ARROW_DOWN_KEY,
+  ARROW_UP_KEY,
+  END_KEY,
+  HOME_KEY,
+  ESC_KEY,
+  NUMPAD_ENTER_KEY,
+} from '~/lib/utils/keys';
 import {
   COMMAND_PALETTE,
   MIN_SEARCH_TERM,
@@ -215,6 +222,8 @@ export default {
         this.focusNextItem(event, elements, 1);
       } else if (code === ESC_KEY) {
         this.$refs.searchModal.close();
+      } else if (code === NUMPAD_ENTER_KEY) {
+        event.target?.firstChild.click();
       } else {
         stop = false;
       }

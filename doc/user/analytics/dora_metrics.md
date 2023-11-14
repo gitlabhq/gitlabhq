@@ -65,9 +65,14 @@ For software leaders, Lead time for changes reflects the efficiency of CI/CD pip
 Over time, the lead time for changes should decrease, while your team's performance should increase. Low lead time for changes means more efficient CI/CD pipelines.
 In GitLab, Lead time for changes is measure by the `Median time it takes for a merge request to get merged into production (from master)`.
 
+By default, Lead time for changes measures only one-branch operations with multiple deployment jobs (for example, jobs moving from development to staging to production jobs on the main branch).
+When a merge request gets merged in staging and then merge to production, GitLab processes them as two deployed merge requests, not one.
+
 ### How lead time for changes is calculated
 
-GitLab calculates Lead time for changes base on the number of seconds to successfully deliver a commit into production - **from** code committed **to** code successfully running in production, without adding the `coding_time` to the calculation.
+GitLab calculates Lead time for changes based on the number of seconds to successfully deliver a commit into production - **from** code committed **to** code successfully running in production, without adding the `coding_time` to the calculation.
+
+By default, Lead time for changes supports measuring only one branch operation with multiple deployment jobs (for example, from development to staging to production on the default branch). When a merge request gets merged on staging, and then on production, GitLab interprets them as two deployed merge requests, not one.
 
 ### How to improve lead time for changes
 
@@ -127,40 +132,36 @@ To improve this metric, you should consider:
 - Improving the efficacy of code review processes.
 - Adding more automated testing.
 
-## DORA metrics in GitLab
+## DORA custom calculation rules **(ULTIMATE ALL EXPERIMENT)**
 
-The DORA metrics are displayed on the following charts:
-
-- [Value Streams Dashboard](value_streams_dashboard.md), which helps you identify trends, patterns, and opportunities for improvement. DORA metrics are displayed in the [metrics comparison panel](value_streams_dashboard.md#devsecops-metrics-comparison-panel) and the [DORA Performers score panel](value_streams_dashboard.md#dora-performers-score-panel).
-- [CI/CD analytics charts](ci_cd_analytics.md), which show pipeline success rates and duration, and the history of DORA metrics over time.
-- Insights reports for [groups](../group/insights/index.md) and [projects](../group/value_stream_analytics/index.md), where you can also use [DORA query parameters](../../user/project/insights/index.md#dora-query-parameters) to create custom charts.
-
-The table below provides an overview of the DORA metrics' data aggregation in different charts.
-
-| Metric name | Measured values | Data aggregation in the [Value Streams Dashboard](value_streams_dashboard.md) | Data aggregation in [CI/CD analytics charts](ci_cd_analytics.md) | Data aggregation in [Custom insights reporting](../../user/project/insights/index.md#dora-query-parameters) |
-|---------------------------|-------------------|-----------------------------------------------------|------------------------|----------|
-| Deployment frequency | Number of successful deployments | daily average per month | daily average | `day` (default) or `month` |
-| Lead time for changes | Number of seconds to successfully deliver a commit into production | daily median per month | median time |  `day` (default) or `month` |
-| Time to restore service | Number of seconds an incident was open for           | daily median per month | daily median | `day` (default) or `month` |
-| Change failure rate | percentage of deployments that cause an incident in production | daily median per month | percentage of failed deployments | `day` (default) or `month` |
-
-## Configure DORA metrics calculation **(ULTIMATE ALL BETA)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96561) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `dora_configuration`. Disabled by default. This feature is in [Beta](../../policy/experiment-beta-support.md).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96561) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `dora_configuration`. Disabled by default. This feature is an [Experiment](../../policy/experiment-beta-support.md).
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `dora_configuration`.
 On GitLab.com, this feature is not available.
-This feature is not ready for production use.
 
-You can configure the behavior of DORA metrics calculations.
+This feature is an [Experiment](../../policy/experiment-beta-support.md). 
+To join the list of users testing this feature, [here is a suggested test flow](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96561#steps-to-check-on-localhost).
+If you find a bug, [open an issue here](https://gitlab.com/groups/gitlab-org/-/epics/11490).
+To share your use cases and feedback, comment in [epic 11490](https://gitlab.com/groups/gitlab-org/-/epics/11490).
+
+### DORA Lead Time For Changes - multi-branch rule
+
+Unlike the default [calculation of Lead time for changes](#how-lead-time-for-changes-is-calculated), this calculation rule allows measuring multi-branch operations with a single deployment job for each operation.
+For example, from development job on development branch, to staging job on staging branch, to production job on production branch.
+
+This calculation rule has been implemented by updating the `dora_configurations` table with the target branches that are part of the development flow.
+This way, GitLab can recognize the branches as one, and filter out other merge requests.
+
+This configuration changes how daily DORA metrics are calculated for the selected project, but doesn't affect other projects, groups, or users.
+
+This feature supports only project-level propagation.
+
 To do this, in the Rails console run the following command:
 
 ```ruby
 Dora::Configuration.create!(project: my_project, ltfc_target_branches: \['master', 'main'\])
 ```
-
-This feature is in [Beta](../../policy/experiment-beta-support.md).
 
 ## Retrieve DORA metrics data
 
@@ -193,7 +194,9 @@ and use it to automatically:
 1. [Create an incident when an alert is triggered](../../operations/incident_management/manage_incidents.md#automatically-when-an-alert-is-triggered).
 1. [Close incidents via recovery alerts](../../operations/incident_management/manage_incidents.md#automatically-close-incidents-via-recovery-alerts).
 
-### Supported DORA metrics in GitLab
+## DORA metrics in GitLab
+
+GitLab supports the following DORA metrics:
 
 | Metric                    | Level             | API                                                 | UI chart               | Comments |
 |---------------------------|-------------------|-----------------------------------------------------|------------------------|----------|
@@ -203,3 +206,22 @@ and use it to automatically:
 | `lead_time_for_changes`   | Group             | [GitLab 13.10 and later](../../api/dora/metrics.md) | GitLab 14.0 and later  | Unit in seconds. Aggregation method is median. |
 | `time_to_restore_service` | Project and group | [GitLab 14.9 and later](../../api/dora/metrics.md)  | GitLab 15.1 and later  | Unit in days. Aggregation method is median. |
 | `change_failure_rate`     | Project and group | [GitLab 14.10 and later](../../api/dora/metrics.md) | GitLab 15.2 and later  | Percentage of deployments. |
+
+### DORA metrics charts
+
+The DORA metrics are displayed on the following charts:
+
+- [Value Streams Dashboard](value_streams_dashboard.md), which helps you identify trends, patterns, and opportunities for improvement. DORA metrics are displayed in the [metrics comparison panel](value_streams_dashboard.md#devsecops-metrics-comparison-panel) and the [DORA Performers score panel](value_streams_dashboard.md#dora-performers-score-panel).
+- [CI/CD analytics charts](ci_cd_analytics.md), which show pipeline success rates and duration, and the history of DORA metrics over time.
+- Insights reports for [groups](../group/insights/index.md) and [projects](../group/value_stream_analytics/index.md), where you can also use [DORA query parameters](../../user/project/insights/index.md#dora-query-parameters) to create custom charts.
+
+### DORA metrics data aggregation
+
+The table below provides an overview of the DORA metrics' data aggregation in different charts.
+
+| Metric name | Measured values | Data aggregation in the [Value Streams Dashboard](value_streams_dashboard.md) | Data aggregation in [CI/CD analytics charts](ci_cd_analytics.md) | Data aggregation in [Custom insights reporting](../../user/project/insights/index.md#dora-query-parameters) |
+|---------------------------|-------------------|-----------------------------------------------------|------------------------|----------|
+| Deployment frequency | Number of successful deployments | daily average per month | daily average | `day` (default) or `month` |
+| Lead time for changes | Number of seconds to successfully deliver a commit into production | daily median per month | median time |  `day` (default) or `month` |
+| Time to restore service | Number of seconds an incident was open for           | daily median per month | daily median | `day` (default) or `month` |
+| Change failure rate | percentage of deployments that cause an incident in production | daily median per month | percentage of failed deployments | `day` (default) or `month` |

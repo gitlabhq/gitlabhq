@@ -58,7 +58,17 @@ describe('Issue', () => {
         );
       });
 
-      it('updates issueCounter text', () => {
+      // TODO: Remove this with the removal of the old navigation.
+      // See https://gitlab.com/groups/gitlab-org/-/epics/11875.
+      // See also https://gitlab.com/gitlab-org/gitlab/-/issues/429678 about
+      // reimplementing this in the new navigation.
+      //
+      // Since this entire suite only tests the issue count updating, removing
+      // this test would mean removing the entire suite. But, ~/issues/issue.js
+      // does more than just that. Tests should be written to cover those other
+      // features. So we're just skipping this for now.
+      // eslint-disable-next-line jest/no-disabled-tests
+      it.skip('updates issueCounter text', () => {
         expect(testContext.issueCounter).toBeVisible();
         expect(testContext.issueCounter).toHaveText(expectedCounterText);
       });

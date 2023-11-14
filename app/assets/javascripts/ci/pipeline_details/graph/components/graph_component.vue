@@ -4,6 +4,7 @@ import {
   generateColumnsFromLayersListMemoized,
   keepLatestDownstreamPipelines,
 } from '~/ci/pipeline_details/utils/parsing_utils';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LinksLayer from '../../../common/private/job_links_layer.vue';
 import { DOWNSTREAM, MAIN, UPSTREAM, ONE_COL_WIDTH, STAGE_VIEW } from '../constants';
 import { validateConfigPaths } from '../utils';
@@ -19,6 +20,7 @@ export default {
     LinkedPipelinesColumn,
     StageColumnComponent,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     configPaths: {
       type: Object,
@@ -132,6 +134,9 @@ export default {
     upstreamPipelines() {
       return this.hasUpstreamPipelines ? this.pipeline.upstream : [];
     },
+    isNewPipelineGraph() {
+      return this.glFeatures.newPipelineGraph;
+    },
   },
   errorCaptured(err, _vm, info) {
     reportToSentry(this.$options.name, `error: ${err}, info: ${info}`);
@@ -178,10 +183,15 @@ export default {
   <div class="js-pipeline-graph">
     <div
       ref="mainPipelineContainer"
-      class="gl-display-flex gl-position-relative gl-bg-gray-10 gl-white-space-nowrap"
+      class="pipeline-graph gl-display-flex gl-position-relative gl-white-space-nowrap gl-rounded-lg"
       :class="{
-        'gl-pipeline-min-h gl-py-5 gl-overflow-auto': !isLinkedPipeline,
+        'gl-bg-gray-10': !isNewPipelineGraph,
+        'gl-pipeline-min-h gl-py-5 gl-overflow-auto': !isNewPipelineGraph && !isLinkedPipeline,
+        'pipeline-graph-container gl-bg-gray-10 gl-pipeline-min-h gl-align-items-flex-start gl-pt-3 gl-pb-8 gl-mt-3 gl-overflow-auto':
+          isNewPipelineGraph && !isLinkedPipeline,
+        'gl-bg-gray-50 gl-sm-ml-5': isNewPipelineGraph && isLinkedPipeline,
       }"
+      data-testid="pipeline-container"
     >
       <linked-graph-wrapper>
         <template #upstream>
@@ -199,7 +209,7 @@ export default {
           />
         </template>
         <template #main>
-          <div :id="containerId" :ref="containerId">
+          <div :id="containerId" :ref="containerId" class="pipeline-links-container">
             <links-layer
               :pipeline-data="layout"
               :pipeline-id="pipeline.id"
@@ -238,7 +248,7 @@ export default {
         <template #downstream>
           <linked-pipelines-column
             v-if="showDownstreamPipelines"
-            class="gl-mr-6"
+            :class="{ 'gl-sm-ml-3': isNewPipelineGraph }"
             :config-paths="configPaths"
             :linked-pipelines="downstreamPipelines"
             :column-title="__('Downstream')"

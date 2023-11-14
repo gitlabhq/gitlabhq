@@ -24,5 +24,11 @@ RSpec.describe Sidebars::Organizations::Menus::ManageMenu, feature_category: :na
 
       it { is_expected.not_to be_nil }
     end
+
+    describe 'Users' do
+      let(:item_id) { :organization_users }
+
+      it { is_expected.not_to be_nil }
+    end
   end
 end

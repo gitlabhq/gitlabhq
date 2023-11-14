@@ -145,42 +145,16 @@ RSpec.describe NavHelper, feature_category: :navigation do
         let(:user_preference) { nil }
 
         specify { expect(subject).to eq true }
-
-        context 'when the user was not enrolled into the new nav via a special feature flag' do
-          before do
-            stub_feature_flags(super_sidebar_nav_enrolled: false)
-          end
-
-          specify { expect(subject).to eq false }
-        end
       end
 
       context 'when user has new nav disabled' do
         let(:user_preference) { false }
 
-        specify { expect(subject).to eq false }
+        specify { expect(subject).to eq true }
       end
 
       context 'when user has new nav enabled' do
         let(:user_preference) { true }
-
-        specify { expect(subject).to eq true }
-      end
-    end
-
-    shared_examples 'anonymous show_super_sidebar is supposed to' do
-      before do
-        stub_feature_flags(super_sidebar_logged_out: feature_flag)
-      end
-
-      context 'when super_sidebar_logged_out feature flag is disabled' do
-        let(:feature_flag) { false }
-
-        specify { expect(subject).to eq false }
-      end
-
-      context 'when super_sidebar_logged_out feature flag is enabled' do
-        let(:feature_flag) { true }
 
         specify { expect(subject).to eq true }
       end
@@ -194,13 +168,13 @@ RSpec.describe NavHelper, feature_category: :navigation do
 
         subject { helper.show_super_sidebar? }
 
-        it_behaves_like 'anonymous show_super_sidebar is supposed to'
+        specify { expect(subject).to eq true }
       end
 
       context 'with nil provided as an argument' do
         subject { helper.show_super_sidebar?(nil) }
 
-        it_behaves_like 'anonymous show_super_sidebar is supposed to'
+        specify { expect(subject).to eq true }
       end
     end
 

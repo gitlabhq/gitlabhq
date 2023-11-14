@@ -34,7 +34,7 @@ RSpec.describe GroupLabel do
       end
 
       it 'uses id when name contains double quote' do
-        label = create(:label, name: %q{"irony"})
+        label = create(:label, name: %q("irony"))
         expect(label.to_reference(format: :name)).to eq "~#{label.id}"
       end
     end

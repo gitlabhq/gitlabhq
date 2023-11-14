@@ -1,3 +1,5 @@
+import '~/commons/gitlab_ui';
+
 export * from '@gitlab/ui';
 
 /**

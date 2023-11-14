@@ -1,6 +1,7 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import MemberSource from '~/members/components/table/member_source.vue';
+import PrivateIcon from '~/members/components/icons/private_icon.vue';
 
 describe('MemberSource', () => {
   let wrapper;
@@ -29,6 +30,20 @@ describe('MemberSource', () => {
   };
 
   const getTooltipDirective = (elementWrapper) => getBinding(elementWrapper.element, 'gl-tooltip');
+
+  describe('when source is private', () => {
+    beforeEach(() => {
+      createComponent({
+        isSharedWithGroupPrivate: true,
+        isDirectMember: false,
+      });
+    });
+
+    it('displays private with icon', () => {
+      expect(wrapper.findByText('Private').exists()).toBe(true);
+      expect(wrapper.findComponent(PrivateIcon).exists()).toBe(true);
+    });
+  });
 
   describe('direct member', () => {
     describe('when created by is available', () => {

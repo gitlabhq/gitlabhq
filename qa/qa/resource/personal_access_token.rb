@@ -11,8 +11,11 @@ module QA
       # This *could* be different than the api_client.user or the api_user provided by the QA::Resource::ApiFabricator
       attr_writer :user
 
-      attribute :id
-      attribute :token
+      attributes :id, :token
+
+      attribute :expires_at do
+        Time.now.utc.to_date + 2
+      end
 
       # Only Admins can create PAT via the API.
       # If Runtime::Env.admin_personal_access_token is provided, fabricate via the API,
@@ -49,7 +52,7 @@ module QA
         api_client = Runtime::API::Client.new(:gitlab,
           is_new_session: false,
           user: user,
-          personal_access_token: self.token)
+          personal_access_token: token)
         request_url = Runtime::API::Request.new(api_client,
           "/personal_access_tokens?user_id=#{user.id}",
           per_page: '100').url
@@ -88,12 +91,7 @@ module QA
       end
 
       def cache_token
-        QA::Resource::PersonalAccessTokenCache.set_token_for_username(user.username, self.token) if @user && self.token
-      end
-
-      # Expire in 2 days just in case the token is created just before midnight
-      def expires_at
-        @expires_at || Time.now.utc.to_date + 2
+        QA::Resource::PersonalAccessTokenCache.set_token_for_username(user.username, token) if @user && token
       end
 
       def fabricate!
@@ -115,7 +113,7 @@ module QA
 
           cache_token
 
-          self.token
+          token
         end
       end
     end

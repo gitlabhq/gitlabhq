@@ -37,7 +37,8 @@ module Packages
         model_version_params = {
           model_name: package.name,
           version: package.version,
-          package: package
+          package: package,
+          user: current_user
         }
 
         Ml::FindOrCreateModelVersionService.new(project, model_version_params).execute

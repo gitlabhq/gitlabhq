@@ -4,7 +4,7 @@ module GroupLink
   class GroupGroupLinkEntity < GroupLink::GroupLinkEntity
     include RequestAwareEntity
 
-    expose :source do |group_link|
+    expose :source, if: ->(group_link) { can_read_shared_group?(group_link) } do |group_link|
       GroupEntity.represent(group_link.shared_from, only: [:id, :full_name, :web_url])
     end
 

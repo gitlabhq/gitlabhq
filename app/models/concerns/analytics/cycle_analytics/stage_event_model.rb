@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Analytics
   module CycleAnalytics
     module StageEventModel

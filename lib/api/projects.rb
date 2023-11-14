@@ -159,6 +159,7 @@ module API
         optional :topic_id, type: Integer, desc: 'Limit results to projects with the assigned topic given by the topic ID'
         optional :updated_before, type: DateTime, desc: 'Return projects updated before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
         optional :updated_after, type: DateTime, desc: 'Return projects updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        optional :include_pending_delete, type: Boolean, desc: 'Include projects in pending delete state. Can only be set by admins'
 
         use :optional_filter_params_ee
       end
@@ -470,6 +471,7 @@ module API
         optional :description, type: String, desc: 'The description that will be assigned to the fork', documentation: { example: 'Description' }
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The visibility of the fork'
         optional :mr_default_target_self, type: Boolean, desc: 'Merge requests of this forked project targets itself by default'
+        optional :branches, type: String, desc: 'Branches to fork'
       end
       post ':id/fork', feature_category: :source_code_management do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20759')
@@ -489,6 +491,7 @@ module API
 
         service = ::Projects::ForkService.new(user_project, current_user, fork_params)
 
+        not_found!('Source Branch') if fork_params[:branches].present? && !service.valid_fork_branch?(fork_params[:branches])
         not_found!('Target Namespace') unless service.valid_fork_target?
 
         forked_project = service.execute
@@ -792,7 +795,12 @@ module API
         not_found!('Group Link') unless link
 
         destroy_conditionally!(link) do
-          ::Projects::GroupLinks::DestroyService.new(user_project, current_user).execute(link)
+          result = ::Projects::GroupLinks::DestroyService.new(user_project, current_user).execute(link)
+
+          if result.error?
+            status = :not_found if result.reason == :not_found
+            render_api_error!(result.message, status)
+          end
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord

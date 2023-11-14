@@ -34,8 +34,6 @@ RSpec.describe VsCode::Settings::SettingsFinder, feature_category: :web_ide do
       let_it_be(:setting) { create(:vscode_setting, user: user) }
 
       context 'when user has no settings with that type' do
-        subject { finder.execute }
-
         it 'returns an empty array' do
           finder = described_class.new(user, ['profile'])
           expect(finder.execute).to eq([])
@@ -43,8 +41,6 @@ RSpec.describe VsCode::Settings::SettingsFinder, feature_category: :web_ide do
       end
 
       context 'when user does have settings with the type' do
-        subject { finder.execute }
-
         it 'returns the record when a single setting exists' do
           result = described_class.new(user, ['settings']).execute
           expect(result.length).to eq(1)
@@ -53,9 +49,9 @@ RSpec.describe VsCode::Settings::SettingsFinder, feature_category: :web_ide do
         end
 
         it 'returns multiple records when more than one setting exists' do
-          create(:vscode_setting, user: user, setting_type: 'profile')
+          create(:vscode_setting, user: user, setting_type: 'globalState')
 
-          result = described_class.new(user, %w[settings profile]).execute
+          result = described_class.new(user, %w[settings globalState]).execute
           expect(result.length).to eq(2)
         end
       end

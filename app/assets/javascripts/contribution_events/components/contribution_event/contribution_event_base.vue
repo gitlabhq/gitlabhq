@@ -47,16 +47,20 @@ export default {
 
 <template>
   <li class="gl-mt-5 gl-pb-5 gl-border-b gl-relative">
-    <time-ago-tooltip :time="event.created_at" class="gl-float-right gl-text-secondary" />
+    <time-ago-tooltip
+      :time="event.created_at"
+      class="gl-float-right gl-font-sm gl-text-secondary gl-mt-2"
+    />
     <gl-avatar-link :href="author.web_url">
       <gl-avatar-labeled
         :label="author.name"
         :sub-label="authorUsername"
+        inline-labels
         :src="author.avatar_url"
-        :size="32"
+        :size="24"
       />
     </gl-avatar-link>
-    <div class="gl-pl-8 gl-mt-2" data-testid="event-body">
+    <div class="gl-pl-7" data-testid="event-body">
       <div class="gl-text-secondary">
         <gl-icon :class="iconClass" :name="iconName" />
         <gl-sprintf v-if="message" :message="message">

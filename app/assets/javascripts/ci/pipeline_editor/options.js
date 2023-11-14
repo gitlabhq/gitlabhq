@@ -55,7 +55,6 @@ export const createAppOptions = (el) => {
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(resolvers, {
       typeDefs,
-      useGet: true,
     }),
   });
   const { cache } = apolloProvider.clients.defaultClient;

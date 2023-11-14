@@ -1,10 +1,5 @@
 - @breadcrumb_link = project_pages_path(@project)
 - page_title s_('GitLabPages|Pages')
 
-- if Feature.enabled?(:use_pipeline_wizard_for_pages, @project.group)
-  #js-pages{ data: @pipeline_wizard_data }
 
-- else
-  = render 'header'
-
-  = render 'use'
+#js-pages{ data: @pipeline_wizard_data }

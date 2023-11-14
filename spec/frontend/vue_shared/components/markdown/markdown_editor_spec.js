@@ -137,7 +137,26 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     await enableContentEditor();
 
     expect(mock.history.post).toHaveLength(1);
-    expect(mock.history.post[0].url).toContain(`render_quick_actions=true`);
+    expect(mock.history.post[0].url).toBe(
+      `${window.location.origin}/api/markdown?render_quick_actions=true`,
+    );
+  });
+
+  describe('if gitlab is installed under a relative url', () => {
+    beforeEach(() => {
+      window.gon = { relative_url_root: '/gitlab' };
+    });
+
+    it('passes render_quick_actions param to renderMarkdownPath if quick actions are enabled', async () => {
+      buildWrapper({ propsData: { supportsQuickActions: true } });
+
+      await enableContentEditor();
+
+      expect(mock.history.post).toHaveLength(1);
+      expect(mock.history.post[0].url).toBe(
+        `${window.location.origin}/gitlab/api/markdown?render_quick_actions=true`,
+      );
+    });
   });
 
   it('does not pass render_quick_actions param to renderMarkdownPath if quick actions are disabled', async () => {
@@ -146,7 +165,9 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     await enableContentEditor();
 
     expect(mock.history.post).toHaveLength(1);
-    expect(mock.history.post[0].url).toContain(`render_quick_actions=false`);
+    expect(mock.history.post[0].url).toBe(
+      `${window.location.origin}/api/markdown?render_quick_actions=false`,
+    );
   });
 
   it('enables content editor switcher when contentEditorEnabled prop is true', () => {

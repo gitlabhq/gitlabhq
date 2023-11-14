@@ -569,7 +569,7 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
             allow_any_instance_of(Repository).to receive(:ancestor?).and_return(nil)
           end
 
-          %w(semi-linear ff).each do |merge_method|
+          %w[semi-linear ff].each do |merge_method|
             it "logs and saves error if merge is #{merge_method} only" do
               merge_method = 'rebase_merge' if merge_method == 'semi-linear'
               merge_request.project.update!(merge_method: merge_method)
@@ -599,6 +599,7 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
 
         context 'with failing CI' do
           before do
+            allow(merge_request.project).to receive(:only_allow_merge_if_pipeline_succeeds) { true }
             allow(merge_request).to receive(:mergeable_ci_state?) { false }
           end
 
@@ -616,6 +617,7 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
 
         context 'with unresolved discussions' do
           before do
+            allow(merge_request.project).to receive(:only_allow_merge_if_all_discussions_are_resolved) { true }
             allow(merge_request).to receive(:mergeable_discussions_state?) { false }
           end
 

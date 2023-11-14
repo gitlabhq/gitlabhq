@@ -38,9 +38,6 @@ class ProjectPolicy < BasePolicy
   desc "User is a project bot"
   condition(:project_bot) { user.project_bot? && team_member? }
 
-  desc "User is a security policy bot on the project"
-  condition(:security_policy_bot) { user&.security_policy_bot? && team_member? }
-
   desc "Project is public"
   condition(:public_project, scope: :subject, score: 0) { project.public? }
 
@@ -135,6 +132,29 @@ class ProjectPolicy < BasePolicy
   condition(:project_allowed_for_job_token) do
     !@user&.from_ci_job_token? || @user.ci_job_token_scope.accessible?(project)
   end
+
+  desc "If the user is via CI job token and project container registry visibility allows access"
+  condition(:job_token_container_registry) { job_token_access_allowed_to?(:container_registry) }
+
+  desc "If the user is via CI job token and project package registry visibility allows access"
+  condition(:job_token_package_registry) { job_token_access_allowed_to?(:package_registry) }
+
+  desc "If the user is via CI job token and project ci/cd visibility allows access"
+  condition(:job_token_builds) { job_token_access_allowed_to?(:builds) }
+
+  desc "If the user is via CI job token and project releases visibility allows access"
+  condition(:job_token_releases) { job_token_access_allowed_to?(:releases) }
+
+  desc "If the user is via CI job token and project environment visibility allows access"
+  condition(:job_token_environments) { job_token_access_allowed_to?(:environments) }
+
+  desc "If the project is either public or internal"
+  condition(:public_or_internal) do
+    project.public? || project.internal?
+  end
+
+  with_scope :subject
+  condition(:restrict_job_token_enabled) { Feature.enabled?(:restrict_ci_job_token_for_public_and_internal_projects, @subject) }
 
   with_scope :subject
   condition(:forking_allowed) do
@@ -303,6 +323,8 @@ class ProjectPolicy < BasePolicy
     enable :set_show_diff_preview_in_email
     enable :set_warn_about_potentially_unwanted_characters
     enable :manage_owners
+
+    enable :add_catalog_resource
   end
 
   rule { can?(:guest_access) }.policy do
@@ -469,6 +491,7 @@ class ProjectPolicy < BasePolicy
     enable :update_commit_status
     enable :create_build
     enable :update_build
+    enable :cancel_build
     enable :read_resource_group
     enable :update_resource_group
     enable :create_merge_request_from
@@ -512,6 +535,7 @@ class ProjectPolicy < BasePolicy
   rule { can?(:developer_access) & user_confirmed? }.policy do
     enable :create_pipeline
     enable :update_pipeline
+    enable :cancel_pipeline
     enable :create_pipeline_schedule
   end
 
@@ -640,6 +664,7 @@ class ProjectPolicy < BasePolicy
 
   rule { builds_disabled | repository_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:build))
+    prevent :cancel_build
     prevent(*create_read_update_admin_destroy(:pipeline_schedule))
     prevent(*create_read_update_admin_destroy(:environment))
     prevent(*create_read_update_admin_destroy(:deployment))
@@ -652,6 +677,7 @@ class ProjectPolicy < BasePolicy
   #   - We prevent the user from accessing Pipelines
   rule { (builds_disabled & ~internal_builds_disabled) | repository_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:pipeline))
+    prevent :cancel_pipeline
     prevent(*create_read_update_admin_destroy(:commit_status))
   end
 
@@ -679,7 +705,41 @@ class ProjectPolicy < BasePolicy
     enable :read_project_for_iids
   end
 
+  # If the project is private
   rule { ~public_project & ~internal_access & ~project_allowed_for_job_token }.prevent_all
+
+  # If this project is public or internal we want to prevent all aside from a few public policies
+  rule { public_or_internal & ~project_allowed_for_job_token & restrict_job_token_enabled }.policy do
+    prevent :guest_access
+    prevent :public_access
+    prevent :public_user_access
+    prevent :reporter_access
+    prevent :developer_access
+    prevent :maintainer_access
+    prevent :owner_access
+  end
+
+  rule { public_or_internal & job_token_container_registry & restrict_job_token_enabled }.policy do
+    enable :build_read_container_image
+    enable :read_container_image
+  end
+
+  rule { public_or_internal & job_token_package_registry & restrict_job_token_enabled }.policy do
+    enable :read_package
+    enable :read_project
+  end
+
+  rule { public_or_internal & job_token_builds & restrict_job_token_enabled }.policy do
+    enable :read_commit_status # this is additionally needed to download artifacts
+  end
+
+  rule { public_or_internal & job_token_releases & restrict_job_token_enabled }.policy do
+    enable :read_release
+  end
+
+  rule { public_or_internal & job_token_environments & restrict_job_token_enabled }.policy do
+    enable :read_environment
+  end
 
   rule { can?(:public_access) }.policy do
     enable :read_package
@@ -908,12 +968,12 @@ class ProjectPolicy < BasePolicy
     enable :read_namespace_catalog
   end
 
-  rule { can?(:owner_access) & namespace_catalog_available }.policy do
-    enable :add_catalog_resource
-  end
-
   rule { model_registry_enabled }.policy do
     enable :read_model_registry
+  end
+
+  rule { can?(:reporter_access) & model_registry_enabled }.policy do
+    enable :write_model_registry
   end
 
   rule { model_experiments_enabled }.policy do
@@ -1002,6 +1062,20 @@ class ProjectPolicy < BasePolicy
       false
     when ProjectFeature::PRIVATE
       can?(:read_all_resources) || team_access_level >= ProjectFeature.required_minimum_access_level(feature)
+    else
+      true
+    end
+  end
+
+  def job_token_access_allowed_to?(feature)
+    return false unless @user&.from_ci_job_token?
+    return false unless project.project_feature
+
+    case project.project_feature.access_level(feature)
+    when ProjectFeature::DISABLED
+      false
+    when ProjectFeature::PRIVATE
+      @user.ci_job_token_scope.accessible?(project)
     else
       true
     end

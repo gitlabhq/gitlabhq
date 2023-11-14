@@ -72,6 +72,8 @@ export default {
 
 <template>
   <merge-checks-message :check="check">
-    <action-buttons v-if="!isLoading" :tertiary-buttons="tertiaryActionsButtons" />
+    <template #failed>
+      <action-buttons v-if="!isLoading" :tertiary-buttons="tertiaryActionsButtons" />
+    </template>
   </merge-checks-message>
 </template>

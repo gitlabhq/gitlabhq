@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric do
+RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric, feature_category: :service_ping do
   let(:database_metric_class) { Class.new(described_class) }
 
   subject do

@@ -24,6 +24,9 @@ module API
                             desc: 'The status of runners to return'
           optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
                               desc: 'A list of runner tags', documentation: { example: "['macos', 'shell']" }
+          optional :version_prefix, type: String, desc: 'The version prefix of runners to return', documentation: { example: "'15.1.' or '16.'" },
+                                    regexp: /^[\d+.]+/
+
           use :pagination
         end
 
@@ -46,6 +49,7 @@ module API
           runners = filter_runners(runners, params[:type], allowed_scopes: ::Ci::Runner::AVAILABLE_TYPES)
           runners = filter_runners(runners, params[:status], allowed_scopes: ::Ci::Runner::AVAILABLE_STATUSES)
           runners = filter_runners(runners, params[:paused] ? 'paused' : 'active', allowed_scopes: %w[paused active]) if params.include?(:paused)
+          runners = runners.with_version_prefix(params[:version_prefix]) if params[:version_prefix]
           runners = runners.tagged_with(params[:tag_list]) if params[:tag_list]
 
           runners

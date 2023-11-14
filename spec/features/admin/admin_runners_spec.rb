@@ -100,7 +100,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
         visit admin_runners_path
 
         within_runner_row(runner.id) do
-          expect(find("[data-testid='job-count']")).to have_content '2'
+          expect(find_by_testid('job-count')).to have_content '2'
         end
       end
 
@@ -116,8 +116,8 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
 
         expect(current_url).to match(admin_runner_path(runner))
 
-        expect(find("[data-testid='td-status']")).to have_content "Running"
-        expect(find("[data-testid='td-job']")).to have_content "##{job.id}"
+        expect(find_by_testid('td-status')).to have_content "Running"
+        expect(find_by_testid('td-job')).to have_content "##{job.id}"
       end
 
       describe 'search' do
@@ -199,6 +199,36 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
 
           expect(page).to have_content 'runner-active'
           expect(page).not_to have_content 'runner-paused'
+        end
+      end
+
+      describe 'filter by version prefix' do
+        before_all do
+          runner_v15 = create(:ci_runner, :instance, description: 'runner-v15')
+          runner_v14 = create(:ci_runner, :instance, description: 'runner-v14')
+
+          create(:ci_runner_machine, runner: runner_v15, version: '15.0.0')
+          create(:ci_runner_machine, runner: runner_v14, version: '14.0.0')
+        end
+
+        before do
+          visit admin_runners_path
+        end
+
+        it 'shows all runners' do
+          expect(page).to have_link('All 2')
+
+          expect(page).to have_content 'runner-v15'
+          expect(page).to have_content 'runner-v14'
+        end
+
+        it 'shows filtered runner based on supplied prefix' do
+          input_filtered_search_filter_is_only(s_('Runners|Version starts with'), '15.0')
+
+          expect(page).to have_link('All 1')
+
+          expect(page).not_to have_content 'runner-v14'
+          expect(page).to have_content 'runner-v15'
         end
       end
 
@@ -291,7 +321,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
           expect(page).to have_link('Group 1')
           expect(page).to have_link('Project 1')
 
-          page.within('[data-testid="runner-type-tabs"]') do
+          within_testid('runner-type-tabs') do
             expect(page).to have_link('All', class: 'active')
           end
         end
@@ -302,7 +332,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
           expect(page).to have_content 'runner-project'
           expect(page).to have_content 'runner-group'
 
-          page.within('[data-testid="runner-type-tabs"]') do
+          within_testid('runner-type-tabs') do
             click_on('Project')
 
             expect(page).to have_link('Project', class: 'active')
@@ -315,7 +345,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
         it 'show the same counts after selecting another tab' do
           visit admin_runners_path
 
-          page.within('[data-testid="runner-type-tabs"]') do
+          within_testid('runner-type-tabs') do
             click_on('Project')
 
             expect(page).to have_link('All 2')
@@ -329,7 +359,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
 
           visit admin_runners_path
 
-          page.within('[data-testid="runner-type-tabs"]') do
+          within_testid('runner-type-tabs') do
             click_on 'Project'
           end
 
@@ -355,7 +385,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
           expect(page).to have_content 'runner-group'
           expect(page).not_to have_content 'runner-paused-project'
 
-          page.within('[data-testid="runner-type-tabs"]') do
+          within_testid('runner-type-tabs') do
             click_on 'Project'
           end
 
@@ -367,7 +397,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
         context 'when type does not match' do
           before do
             visit admin_runners_path
-            page.within('[data-testid="runner-type-tabs"]') do
+            within_testid('runner-type-tabs') do
               click_on 'Instance'
             end
           end
@@ -440,24 +470,28 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
 
         visit admin_runners_path
 
-        within '[data-testid="runner-list"] tbody tr:nth-child(1)' do
-          expect(page).to have_content 'runner-2'
-        end
+        within_testid('runner-list') do
+          within('tbody tr:nth-child(1)') do
+            expect(page).to have_content 'runner-2'
+          end
 
-        within '[data-testid="runner-list"] tbody tr:nth-child(2)' do
-          expect(page).to have_content 'runner-1'
+          within('tbody tr:nth-child(2)') do
+            expect(page).to have_content 'runner-1'
+          end
         end
 
         click_on 'Created date' # Open "sort by" dropdown
         click_on 'Last contact'
         click_on 'Sort direction: Descending'
 
-        within '[data-testid="runner-list"] tbody tr:nth-child(1)' do
-          expect(page).to have_content 'runner-1'
-        end
+        within_testid('runner-list') do
+          within('tbody tr:nth-child(1)') do
+            expect(page).to have_content 'runner-1'
+          end
 
-        within '[data-testid="runner-list"] tbody tr:nth-child(2)' do
-          expect(page).to have_content 'runner-2'
+          within('tbody tr:nth-child(2)') do
+            expect(page).to have_content 'runner-2'
+          end
         end
       end
     end
@@ -522,8 +556,8 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
 
     describe 'runner show page breadcrumbs' do
       it 'contains the current runner id and token' do
-        page.within '[data-testid="breadcrumb-links"]' do
-          expect(page.find('[data-testid="breadcrumb-current-link"]')).to have_link(
+        within_testid('breadcrumb-links') do
+          expect(find_by_testid('breadcrumb-current-link')).to have_link(
             "##{runner.id} (#{runner.short_sha})"
           )
         end
@@ -555,7 +589,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
       end
 
       it 'deletes runner and redirects to runner list' do
-        expect(page.find('[data-testid="alert-success"]')).to have_content('deleted')
+        expect(find_by_testid('alert-success')).to have_content('deleted')
         expect(current_url).to match(admin_runners_path)
       end
     end
@@ -581,9 +615,9 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
 
     describe 'breadcrumbs' do
       it 'contains the current runner id and token' do
-        page.within '[data-testid="breadcrumb-links"]' do
+        within_testid('breadcrumb-links') do
           expect(page).to have_link("##{project_runner.id} (#{project_runner.short_sha})")
-          expect(page.find('[data-testid="breadcrumb-current-link"]')).to have_content("Edit")
+          expect(find_by_testid('breadcrumb-current-link')).to have_content("Edit")
         end
       end
     end
@@ -591,7 +625,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
     describe 'runner header', :js do
       it 'contains the runner status, type and id' do
         expect(page).to have_content(
-          "##{project_runner.id} (#{project_runner.short_sha}) #{s_('Runners|Never contacted')} Project created"
+          "##{project_runner.id} (#{project_runner.short_sha}) #{s_('Runners|Never contacted')} Project Created"
         )
       end
     end
@@ -604,7 +638,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
 
       it 'show success alert and redirects to runner page' do
         expect(current_url).to match(admin_runner_path(project_runner))
-        expect(page.find('[data-testid="alert-success"]')).to have_content('saved')
+        expect(find_by_testid('alert-success')).to have_content('saved')
       end
     end
 
@@ -631,11 +665,13 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
     describe 'enable/create' do
       shared_examples 'assignable runner' do
         it 'enables a runner for a project' do
-          within find('[data-testid="unassigned-projects"] tr', text: project2.full_name) do
-            click_on 'Enable'
+          within_testid('unassigned-projects') do
+            within('tr', text: project2.full_name) do
+              click_on 'Enable'
+            end
           end
 
-          assigned_project = page.find('[data-testid="assigned-projects"]')
+          assigned_project = find_by_testid('assigned-projects')
 
           expect(page).to have_content('Runner assigned to project.')
           expect(assigned_project).to have_content(project2.name)
@@ -671,11 +707,11 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
       end
 
       it 'removed project runner from project' do
-        within '[data-testid="assigned-projects"]' do
+        within_testid('assigned-projects') do
           click_on 'Disable'
         end
 
-        new_runner_project = page.find('[data-testid="unassigned-projects"]')
+        new_runner_project = find_by_testid('unassigned-projects')
 
         expect(page).to have_content('Runner unassigned from project.')
         expect(new_runner_project).to have_content(project1.name)

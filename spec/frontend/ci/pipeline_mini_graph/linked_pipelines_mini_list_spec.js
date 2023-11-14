@@ -51,7 +51,7 @@ describe('Linked pipeline mini list', () => {
     });
 
     it('should render the correct ci status icon', () => {
-      expect(findCiIcon().classes('ci-status-icon-running')).toBe(true);
+      expect(wrapper.find('[data-testid="status_running_borderless-icon"]').exists()).toBe(true);
     });
 
     it('should have an activated tooltip', () => {
@@ -95,7 +95,7 @@ describe('Linked pipeline mini list', () => {
     });
 
     it('should render the correct ci status icon', () => {
-      expect(findCiIcon().classes('ci-status-icon-running')).toBe(true);
+      expect(wrapper.find('[data-testid="status_running_borderless-icon"]').exists()).toBe(true);
     });
 
     it('should have an activated tooltip', () => {

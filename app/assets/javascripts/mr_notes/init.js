@@ -40,6 +40,7 @@ function setupMrNotesState(store, notesDataset, diffsDataset) {
     mrReviews: getReviewsForMergeRequest(mrPath),
     diffViewType:
       getParameterValues('view')[0] || getCookie(DIFF_VIEW_COOKIE_NAME) || INLINE_DIFF_VIEW_TYPE,
+    perPage: Number(diffsDataset.perPage),
   });
 }
 

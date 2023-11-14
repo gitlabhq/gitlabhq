@@ -95,27 +95,8 @@ Updates to example must be made at:
 -->
 
    ```ruby
-   ########################################
-   #####        Services Disabled       ###
-   ########################################
-   #
-   # When running GitLab on just one server, you have a single `gitlab.rb`
-   # to enable all services you want to run.
-   # When running GitLab on N servers, you have N `gitlab.rb` files.
-   # Enable only the services you want to run on each
-   # specific server, while disabling all others.
-   #
-   gitaly['enable'] = false
-   postgresql['enable'] = false
-   redis['enable'] = false
-   nginx['enable'] = false
-   puma['enable'] = false
-   gitlab_workhorse['enable'] = false
-   prometheus['enable'] = false
-   alertmanager['enable'] = false
-   grafana['enable'] = false
-   gitlab_exporter['enable'] = false
-   gitlab_kas['enable'] = false
+   # https://docs.gitlab.com/omnibus/roles/#sidekiq-roles
+   roles(["sidekiq_role"])
 
    ##
    ## To maintain uniformity of links across nodes, the
@@ -374,20 +355,6 @@ To enable LDAP with the synchronization worker for Sidekiq:
 ## Configure SAML Groups for SAML Group Sync
 
 If you use [SAML Group Sync](../../user/group/saml_sso/group_sync.md), you must configure [SAML Groups](../../integration/saml.md#configure-users-based-on-saml-group-membership) on all your Sidekiq nodes.
-
-## Disable Rugged
-
-Calls into Rugged, Ruby bindings for `libgit2`, [lock the Sidekiq processes (GVL)](https://silverhammermba.github.io/emberb/c/#c-in-ruby-threads),
-blocking all jobs on that worker from proceeding. If Rugged calls performed by Sidekiq are slow, this can cause significant delays in
-background task processing.
-
-By default, Rugged is used when Git repository data is stored on local storage or on an NFS mount.
-Using Rugged is recommended when using NFS, but if
-you are using local storage, disabling Rugged can improve Sidekiq performance:
-
-```shell
-sudo gitlab-rake gitlab:features:disable_rugged
-```
 
 ## Related topics
 

@@ -81,17 +81,6 @@ ul.related-merge-requests > li gl-emoji {
   }
 }
 
-.related-merge-requests {
-  .ci-status-link {
-    display: block;
-    margin-right: 5px;
-  }
-
-  svg {
-    display: block;
-  }
-}
-
 @include media-breakpoint-down(xs) {
   .detail-page-header {
     .issuable-meta {
@@ -259,6 +248,14 @@ ul.related-merge-requests > li gl-emoji {
 .limit-container-width {
   .issue-sticky-header-text {
     max-width: $limited-layout-width;
+  }
+}
+
+.issue-sticky-header-text {
+  padding: 0 $container-margin;
+
+  @include media-breakpoint-up(xl) {
+    padding: 0 $container-margin-xl;
   }
 }
 

@@ -51,3 +51,12 @@ and its users.
 The migration process starts with the creation of a [`BulkImport`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/bulk_import.rb)
 record to keep track of the migration. From there all the code related to the
 GitLab Group Migration can be found under the new `BulkImports` namespace in all the application layers.
+
+### Idempotency
+
+To ensure we don't get duplicate entries when re-running the same Sidekiq job, we cache each entry as it's processed and skip entries if they're present in the cache.
+
+There are two different strategies:
+
+- `BulkImports::Pipeline::HexdigestCacheStrategy`, which caches a hexdigest representation of the data.
+- `BulkImports::Pipeline::IndexCacheStrategy`, which caches the last processed index of an entry in a pipeline.

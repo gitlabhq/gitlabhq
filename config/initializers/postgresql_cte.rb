@@ -40,6 +40,8 @@ module ActiveRecord::Querying
   delegate :with, to: :all
 end
 
+# Rails 7.1 defines #with method.
+# Therefore, this file can be either simplified or completely removed.
 module ActiveRecord
   class Relation
     # WithChain objects act as placeholder for queries in which #with does not have any parameter.
@@ -51,21 +53,21 @@ module ActiveRecord
 
       # Returns a new relation expressing WITH RECURSIVE
       def recursive(*args)
-        @scope.with_values += args
+        @scope.with_values_ += args
         @scope.recursive_value = true
         @scope.extend(Gitlab::Database::ReadOnlyRelation)
         @scope
       end
     end
 
-    def with_values
-      @values[:with] || []
+    def with_values_
+      @values[:with_values] || []
     end
 
-    def with_values=(values)
+    def with_values_=(values)
       raise ImmutableRelation if @loaded
 
-      @values[:with] = values
+      @values[:with_values] = values
     end
 
     def recursive_value=(value)
@@ -92,7 +94,7 @@ module ActiveRecord
       if opts == :chain
         WithChain.new(self)
       else
-        self.with_values += [opts] + rest
+        self.with_values_ += [opts] + rest
         self
       end
     end
@@ -100,13 +102,13 @@ module ActiveRecord
     def build_arel(aliases = nil)
       arel = super
 
-      build_with(arel) if @values[:with]
+      build_with(arel) if @values[:with_values]
 
       arel
     end
 
     def build_with(arel)
-      with_statements = with_values.flat_map do |with_value|
+      with_statements = with_values_.flat_map do |with_value|
         case with_value
         when String
           with_value

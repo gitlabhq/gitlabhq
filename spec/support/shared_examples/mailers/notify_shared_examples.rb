@@ -230,6 +230,8 @@ end
 
 RSpec.shared_examples 'an email with a labels subscriptions link in its footer' do
   it { is_expected.to have_body_text('label subscriptions') }
+
+  it { is_expected.to have_body_text(%(href="#{project_labels_url(project, subscribed: true)}")) }
 end
 
 RSpec.shared_examples 'a note email' do

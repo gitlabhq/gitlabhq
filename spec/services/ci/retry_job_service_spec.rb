@@ -270,14 +270,6 @@ RSpec.describe Ci::RetryJobService, feature_category: :continuous_integration do
         it_behaves_like 'creates associations for a deployable job', :ci_bridge
       end
 
-      context 'when `create_deployment_only_for_processable_jobs` FF is disabled' do
-        before do
-          stub_feature_flags(create_deployment_only_for_processable_jobs: false)
-        end
-
-        it_behaves_like 'creates associations for a deployable job', :ci_bridge
-      end
-
       context 'when given variables' do
         let(:new_job) { service.clone!(job, variables: job_variables_attributes) }
 
@@ -298,14 +290,6 @@ RSpec.describe Ci::RetryJobService, feature_category: :continuous_integration do
 
       context 'when the pipeline is started automatically' do
         let(:start_pipeline_on_clone) { true }
-
-        it_behaves_like 'creates associations for a deployable job', :ci_build
-      end
-
-      context 'when `create_deployment_only_for_processable_jobs` FF is disabled' do
-        before do
-          stub_feature_flags(create_deployment_only_for_processable_jobs: false)
-        end
 
         it_behaves_like 'creates associations for a deployable job', :ci_build
       end

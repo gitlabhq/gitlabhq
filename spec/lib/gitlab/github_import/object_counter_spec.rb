@@ -68,6 +68,16 @@ RSpec.describe Gitlab::GithubImport::ObjectCounter, :clean_gitlab_redis_cache, f
           'imported' => { 'issue' => 8 }
         )
       end
+
+      it 'uses the same TTL as when incrementing' do
+        expect(Gitlab::Cache::Import::Caching)
+          .to receive(:read_integer)
+          .with(anything, timeout: described_class::IMPORT_CACHING_TIMEOUT)
+          .twice
+          .and_call_original
+
+        described_class.summary(project)
+      end
     end
 
     context 'when import is in progress but cache expired' do

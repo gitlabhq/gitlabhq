@@ -12,7 +12,7 @@
       = render 'filepath_form', input_options: input_options
 
     - if current_action?(:new) || current_action?(:create)
-      - input_options = { id: 'file_name', name: 'file_name', value: params[:file_name] || (should_suggest_gitlab_ci_yml? ? '.gitlab-ci.yml' : ''), required: true, placeholder: "Filename", testid: 'file_name_field', class: 'new-file-name js-file-path-name-input' }
+      - input_options = { id: 'file_name', name: 'file_name', value: params[:file_name] || (should_suggest_gitlab_ci_yml? ? '.gitlab-ci.yml' : ''), required: true, placeholder: "Filename", testid: 'file-name-field', class: 'new-file-name js-file-path-name-input' }
       = render 'filepath_form', input_options: input_options
       - if should_suggest_gitlab_ci_yml?
         .js-suggest-gitlab-ci-yml{ data: { track_label: 'suggest_gitlab_ci_yml',
@@ -37,7 +37,7 @@
             = _("Soft wrap")
 
   .file-editor.code
-    .js-edit-mode-pane#editor{ data: { 'editor-loading': true, qa_selector: 'source_editor_preview_container' } }<
+    .js-edit-mode-pane#editor{ data: { 'editor-loading': true, testid: 'source-editor-preview-container' } }<
       %pre.editor-loading-content= params[:content] || local_assigns[:blob_data]
     - if local_assigns[:path]
       .js-edit-mode-pane#preview.hide

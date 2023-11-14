@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Usage::Metrics::Instrumentations::NumbersMetric do
+RSpec.describe Gitlab::Usage::Metrics::Instrumentations::NumbersMetric, feature_category: :service_ping do
   subject do
     described_class.tap do |metric_class|
       metric_class.operation :add

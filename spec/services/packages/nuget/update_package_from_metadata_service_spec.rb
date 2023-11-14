@@ -7,7 +7,8 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
 
   let!(:package) { create(:nuget_package, :processing, :with_symbol_package, :with_build) }
   let(:package_file) { package.package_files.first }
-  let(:service) { described_class.new(package_file) }
+  let(:package_zip_file) { Zip::File.new(package_file.file) }
+  let(:service) { described_class.new(package_file, package_zip_file) }
   let(:package_name) { 'DummyProject.DummyPackage' }
   let(:package_version) { '1.0.0' }
   let(:package_file_name) { 'dummyproject.dummypackage.1.0.0.nupkg' }
@@ -127,7 +128,7 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
 
     context 'with a nuspec file with metadata' do
       let(:nuspec_filepath) { 'packages/nuget/with_metadata.nuspec' }
-      let(:expected_tags) { %w(foo bar test tag1 tag2 tag3 tag4 tag5) }
+      let(:expected_tags) { %w[foo bar test tag1 tag2 tag3 tag4 tag5] }
 
       before do
         allow_next_instance_of(Packages::Nuget::MetadataExtractionService) do |service|
@@ -182,13 +183,15 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
 
       context 'without authors or description' do
         %i[authors description].each do |property|
-          let(:metadata) { { package_name: package_name, package_version: package_version, property => nil } }
+          context "for #{property}" do
+            let(:metadata) { { package_name: package_name, package_version: package_version, property => nil } }
 
-          before do
-            allow(service).to receive(:metadata).and_return(metadata)
+            before do
+              allow(service).to receive(:metadata).and_return(metadata)
+            end
+
+            it_behaves_like 'raising an', described_class::InvalidMetadataError, with_message: described_class::INVALID_METADATA_ERROR_MESSAGE
           end
-
-          it_behaves_like 'raising an', described_class::InvalidMetadataError, with_message: described_class::INVALID_METADATA_ERROR_MESSAGE
         end
       end
     end
@@ -245,11 +248,20 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
       context 'with existing package' do
         let!(:existing_package) { create(:nuget_package, project: package.project, name: package_name, version: package_version) }
         let(:package_id) { existing_package.id }
+        let(:package_zip_file) do
+          Zip::File.open(package_file.file.path) do |zipfile|
+            zipfile.add('package.pdb', expand_fixture_path('packages/nuget/symbol/package.pdb'))
+            zipfile
+          end
+        end
 
         it 'link existing package and updates package file', :aggregate_failures do
           expect(service).to receive(:try_obtain_lease).and_call_original
           expect(::Packages::Nuget::SyncMetadatumService).not_to receive(:new)
           expect(::Packages::UpdateTagsService).not_to receive(:new)
+          expect_next_instance_of(Packages::Nuget::Symbols::CreateSymbolFilesService, existing_package, package_zip_file) do |service|
+            expect(service).to receive(:execute).and_call_original
+          end
 
           expect { subject }
             .to change { ::Packages::Package.count }.by(-1)
@@ -257,18 +269,9 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
             .and change { Packages::DependencyLink.count }.by(0)
             .and change { Packages::Nuget::DependencyLinkMetadatum.count }.by(0)
             .and change { ::Packages::Nuget::Metadatum.count }.by(0)
+            .and change { existing_package.nuget_symbols.count }.by(1)
           expect(package_file.reload.file_name).to eq(package_file_name)
           expect(package_file.package).to eq(existing_package)
-        end
-
-        context 'with packages_nuget_symbols records' do
-          before do
-            create_list(:nuget_symbol, 2, package: package)
-          end
-
-          it 'links the symbol records to the existing package' do
-            expect { subject }.to change { existing_package.nuget_symbols.count }.by(2)
-          end
         end
 
         it_behaves_like 'taking the lease'

@@ -108,15 +108,27 @@ timeago.register(`${timeagoLanguageCode}-remaining`, memoizedLocaleRemaining());
 timeago.register(`${timeagoLanguageCode}-duration`, memoizedLocaleDuration());
 
 const setupAbsoluteFormatters = () => {
-  const cache = {};
+  let cache = {};
 
   // Intl.DateTimeFormat options (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat#using_options)
+  // For hourCycle please check https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/hourCycle
+  const hourCycle = [undefined, 'h12', 'h23'];
   const formats = {
-    [DATE_WITH_TIME_FORMAT]: () => ({ dateStyle: 'medium', timeStyle: 'short' }),
+    [DATE_WITH_TIME_FORMAT]: () => ({
+      dateStyle: 'medium',
+      timeStyle: 'short',
+      hourCycle: hourCycle[window.gon?.time_display_format || 0],
+    }),
     [DATE_ONLY_FORMAT]: () => ({ dateStyle: 'medium' }),
   };
 
   return (formatName = DEFAULT_DATE_TIME_FORMAT) => {
+    if (cache.time_display_format !== window.gon?.time_display_format) {
+      cache = {
+        time_display_format: window.gon?.time_display_format,
+      };
+    }
+
     if (cache[formatName]) {
       return cache[formatName];
     }

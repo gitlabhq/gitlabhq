@@ -32,7 +32,7 @@ Product analytics uses several tools:
 
 - [**Snowplow**](https://docs.snowplow.io/docs) - A developer-first engine for collecting behavioral data, and passing it through to ClickHouse.
 - [**ClickHouse**](https://clickhouse.com/docs) - A database suited to store, query, and retrieve analytical data.
-- [**Cube**](https://cube.dev/docs/) - An analytical graphing library that provides an API to run queries against the data stored in Clickhouse.
+- [**Cube**](https://cube.dev/docs/) - An analytical graphing library that provides an API to run queries against the data stored in ClickHouse.
 
 The following diagram illustrates the product analytics flow:
 
@@ -46,7 +46,7 @@ flowchart TB
         B --Pass data through--> C[Snowplow Enricher]
     end
     subgraph Data warehouse
-        C --Transform and enrich data--> D([Clickhouse])
+        C --Transform and enrich data--> D([ClickHouse])
     end
     subgraph Data visualization with dashboards
         E([Dashboards]) --Generated from the YAML definition--> F[Panels/Visualizations]
@@ -101,11 +101,35 @@ Prerequisites:
 1. Expand **Configure** and enter the configuration values.
 1. Select **Save changes**.
 
-## Instrument a GitLab project
+## Onboard a GitLab project
+
+Onboarding a GitLab project means preparing it to receive events that are used for product analytics.
+
+To onboard a project:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Analyze > Analytics dashboards**.
+1. Under **Product analytics**, select **Set up**.
+1. Select **Set up product analytics**.
+Your instance is being created, and the project onboarded.
+
+### Onboard an internal project
+
+GitLab team members can enable Product Analytics on their internal projects on GitLab.com (Ultimate) during the experiment phase.
+
+1. Send a message to the Product Analytics team (`#g_analyze_product_analytics`) informing them of the repository to be enabled.
+1. Using ChatOps, enable both the `product_analytics_dashboards` and `combined_analytics_dashboards`:
+
+    ```plaintext
+    /chatops run feature set product_analytics_dashboards true --project=FULLPATH_TO_PROJECT
+    /chatops run feature set combined_analytics_dashboards true --project=FULLPATH_TO_PROJECT
+    ```
+
+## Instrument your application
 
 To instrument code to collect data, use one or more of the existing SDKs:
 
-- [Browser SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-browser)
+- [Browser SDK](instrumentation/browser_sdk.md)
 - [Ruby SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-rb)
 - [Python SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-python)
 - [Node SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-node)
@@ -273,18 +297,24 @@ POST /api/v4/projects/PROJECT_ID/product_analytics/request/load?queryType=multi
 
 If the request is successful, the returned JSON includes an array of rows of results.
 
-## Onboarding GitLab internal projects
+## View product analytics usage quota
 
-GitLab team members can enable Product Analytics on their own internal projects on GitLab.com during the experiment phase.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424153) in GitLab 16.6 with a [flag](../../administration/feature_flags.md) named `product_analytics_usage_quota`. Disabled by default.
 
-1. Send a message to the Product Analytics team (`#g_analyze_product_analytics`) informing them of the repository to be enabled.
-1. Ensure that the project is within an Ultimate namespace.
-1. Using ChatOps, enable both the `product_analytics_dashboards` and `combined_analytics_dashboards`
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_usage_quota`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
 
-    ```plaintext
-    /chatops run feature set product_analytics_dashboards true --project=FULLPATH_TO_PROJECT
-    /chatops run feature set combined_analytics_dashboards true --project=FULLPATH_TO_PROJECT
-    ```
+Product analytics usage quota is calculated from the number of events received from instrumented applications.
+The tab displays the monthly totals for the group, and a breakdown of usage per project. Current month shows events counted to date.
+
+To view product analytics usage quota:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Usage quota** and select the **Product analytics** tab.
+
+The usage quota excludes projects that are not onboarded with product analytics.
 
 ## Troubleshooting
 

@@ -31,8 +31,8 @@ RSpec.describe API::Wikis, feature_category: :wiki do
 
   let(:project_wiki) { create(:project_wiki, project: project, user: user) }
   let(:payload) { { content: 'content', format: 'rdoc', title: 'title' } }
-  let(:expected_keys_with_content) { %w(content format slug title encoding) }
-  let(:expected_keys_without_content) { %w(format slug title) }
+  let(:expected_keys_with_content) { %w[content format slug title encoding front_matter] }
+  let(:expected_keys_without_content) { %w[format slug title] }
   let(:wiki) { project_wiki }
 
   shared_examples_for 'wiki API 404 Project Not Found' do
@@ -354,6 +354,18 @@ RSpec.describe API::Wikis, feature_category: :wiki do
         end
 
         include_examples 'wikis API creates wiki page'
+
+        context "with front matter title" do
+          let(:payload) { { title: 'title', front_matter: { "title" => "title in front matter" }, content: 'content' } }
+
+          it "save front matter" do
+            post(api(url, user), params: payload)
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['front_matter']).to eq(payload[:front_matter])
+            expect(json_response['content']).to include(payload[:front_matter]["title"])
+          end
+        end
       end
 
       context 'when user is maintainer' do
@@ -477,6 +489,20 @@ RSpec.describe API::Wikis, feature_category: :wiki do
           end
 
           include_examples 'wiki API 404 Wiki Page Not Found'
+        end
+
+        context "with front matter title" do
+          let(:payload) do
+            { title: 'new title', front_matter: { "title" => "title in front matter" }, content: 'new content' }
+          end
+
+          it "save front matter" do
+            put(api(url, user), params: payload)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['front_matter']).to eq(payload[:front_matter])
+            expect(json_response['content']).to include(payload[:front_matter]["title"])
+          end
         end
       end
 

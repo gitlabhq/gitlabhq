@@ -19,11 +19,7 @@ describe('GlobalSearch IssuesFilters', () => {
     currentScope: () => 'issues',
   };
 
-  const createComponent = ({
-    initialState = {},
-    searchIssueLabelAggregation = true,
-    searchIssuesHideArchivedProjects = true,
-  } = {}) => {
+  const createComponent = ({ initialState = {}, searchIssueLabelAggregation = true } = {}) => {
     const store = new Vuex.Store({
       state: {
         urlQuery: MOCK_QUERY,
@@ -39,7 +35,6 @@ describe('GlobalSearch IssuesFilters', () => {
       provide: {
         glFeatures: {
           searchIssueLabelAggregation,
-          searchIssuesHideArchivedProjects,
         },
       },
     });
@@ -52,16 +47,13 @@ describe('GlobalSearch IssuesFilters', () => {
   const findDividers = () => wrapper.findAll('hr');
 
   describe.each`
-    description                                                           | searchIssueLabelAggregation | searchIssuesHideArchivedProjects
-    ${'Renders correctly with Label Filter disabled'}                     | ${false}                    | ${true}
-    ${'Renders correctly with Archived Filter disabled'}                  | ${true}                     | ${false}
-    ${'Renders correctly with Archived Filter and Label Filter disabled'} | ${false}                    | ${false}
-    ${'Renders correctly with Archived Filter and Label Filter enabled'}  | ${true}                     | ${true}
-  `('$description', ({ searchIssueLabelAggregation, searchIssuesHideArchivedProjects }) => {
+    description                                       | searchIssueLabelAggregation
+    ${'Renders correctly with Label Filter disabled'} | ${false}
+    ${'Renders correctly with Label Filter enabled'}  | ${true}
+  `('$description', ({ searchIssueLabelAggregation }) => {
     beforeEach(() => {
       createComponent({
         searchIssueLabelAggregation,
-        searchIssuesHideArchivedProjects,
       });
     });
 
@@ -73,21 +65,18 @@ describe('GlobalSearch IssuesFilters', () => {
       expect(findConfidentialityFilter().exists()).toBe(true);
     });
 
+    it('renders correctly ArchivedFilter', () => {
+      expect(findArchivedFilter().exists()).toBe(true);
+    });
+
     it(`renders correctly LabelFilter when searchIssueLabelAggregation is ${searchIssueLabelAggregation}`, () => {
       expect(findLabelFilter().exists()).toBe(searchIssueLabelAggregation);
     });
 
-    it(`renders correctly ArchivedFilter when searchIssuesHideArchivedProjects is ${searchIssuesHideArchivedProjects}`, () => {
-      expect(findArchivedFilter().exists()).toBe(searchIssuesHideArchivedProjects);
-    });
-
     it('renders divider correctly', () => {
-      // one divider can't be disabled
-      let dividersCount = 1;
+      // two dividers can't be disabled
+      let dividersCount = 2;
       if (searchIssueLabelAggregation) {
-        dividersCount += 1;
-      }
-      if (searchIssuesHideArchivedProjects) {
         dividersCount += 1;
       }
       expect(findDividers()).toHaveLength(dividersCount);
@@ -127,7 +116,6 @@ describe('GlobalSearch IssuesFilters', () => {
           useSidebarNavigation: true,
         },
         searchIssueLabelAggregation: true,
-        searchIssuesHideArchivedProjects: true,
       });
     });
     it('renders StatusFilter', () => {

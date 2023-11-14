@@ -12,10 +12,10 @@ RSpec.describe SystemCheck::Orphans::NamespaceCheck, :silence_stdout do
 
   describe '#multi_check' do
     context 'all orphans' do
-      let(:disk_namespaces) { %w(/repos/orphan1 /repos/orphan2 repos/@hashed) }
+      let(:disk_namespaces) { %w[/repos/orphan1 /repos/orphan2 repos/@hashed] }
 
       it 'prints list of all orphaned namespaces except @hashed' do
-        expect_list_of_orphans(%w(orphan1 orphan2))
+        expect_list_of_orphans(%w[orphan1 orphan2])
 
         subject.multi_check
       end
@@ -23,10 +23,10 @@ RSpec.describe SystemCheck::Orphans::NamespaceCheck, :silence_stdout do
 
     context 'few orphans with existing namespace' do
       let!(:first_level) { create(:group, path: 'my-namespace') }
-      let(:disk_namespaces) { %w(/repos/orphan1 /repos/orphan2 /repos/my-namespace /repos/@hashed) }
+      let(:disk_namespaces) { %w[/repos/orphan1 /repos/orphan2 /repos/my-namespace /repos/@hashed] }
 
       it 'prints list of orphaned namespaces' do
-        expect_list_of_orphans(%w(orphan1 orphan2))
+        expect_list_of_orphans(%w[orphan1 orphan2])
 
         subject.multi_check
       end
@@ -35,17 +35,17 @@ RSpec.describe SystemCheck::Orphans::NamespaceCheck, :silence_stdout do
     context 'few orphans with existing namespace and parents with same name as orphans' do
       let!(:first_level) { create(:group, path: 'my-namespace') }
       let!(:second_level) { create(:group, path: 'second-level', parent: first_level) }
-      let(:disk_namespaces) { %w(/repos/orphan1 /repos/orphan2 /repos/my-namespace /repos/second-level /repos/@hashed) }
+      let(:disk_namespaces) { %w[/repos/orphan1 /repos/orphan2 /repos/my-namespace /repos/second-level /repos/@hashed] }
 
       it 'prints list of orphaned namespaces ignoring parents with same namespace as orphans' do
-        expect_list_of_orphans(%w(orphan1 orphan2 second-level))
+        expect_list_of_orphans(%w[orphan1 orphan2 second-level])
 
         subject.multi_check
       end
     end
 
     context 'no orphans' do
-      let(:disk_namespaces) { %w(@hashed) }
+      let(:disk_namespaces) { %w[@hashed] }
 
       it 'prints an empty list ignoring @hashed' do
         expect_list_of_orphans([])

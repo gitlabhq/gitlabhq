@@ -1,3 +1,5 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+
 fragment RunnerFieldsShared on CiRunner {
   id
   shortSha
@@ -10,5 +12,8 @@ fragment RunnerFieldsShared on CiRunner {
   maximumTimeout
   tagList
   createdAt
+  createdBy {
+    ...User
+  }
   status
 }

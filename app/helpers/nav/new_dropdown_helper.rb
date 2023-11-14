@@ -132,6 +132,17 @@ module Nav
         )
       end
 
+      if Feature.enabled?(:ui_for_organizations, current_user) && current_user.can?(:create_organization)
+        menu_items.push(
+          ::Gitlab::Nav::TopNavMenuItem.build(
+            id: 'general_new_organization',
+            title: s_('Organization|New organization'),
+            href: new_organization_path,
+            data: { track_action: 'click_link_new_organization_parent', track_label: 'plus_menu_dropdown', track_property: 'navigation_top', testid: 'global_new_organization_link' }
+          )
+        )
+      end
+
       if current_user.can?(:create_snippet)
         menu_items.push(
           ::Gitlab::Nav::TopNavMenuItem.build(

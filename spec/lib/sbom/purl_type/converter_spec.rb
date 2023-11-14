@@ -22,6 +22,7 @@ RSpec.describe Sbom::PurlType::Converter, feature_category: :dependency_manageme
       'nuget'               | 'nuget'
       'pip'                 | 'pypi'
       'pipenv'              | 'pypi'
+      'poetry'              | 'pypi'
       'setuptools'          | 'pypi'
       'Python (python-pkg)' | 'pypi'
       'analyzer (gobinary)' | 'golang'

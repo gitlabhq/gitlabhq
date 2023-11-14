@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard > Activity', feature_category: :user_profile do
-  let(:user) { create(:user, :no_super_sidebar) }
+RSpec.describe 'Dashboard > Activity', :js, feature_category: :user_profile do
+  let(:user) { create(:user) }
 
   before do
     sign_in(user)
@@ -46,7 +46,7 @@ RSpec.describe 'Dashboard > Activity', feature_category: :user_profile do
     it_behaves_like "an autodiscoverable RSS feed with current_user's feed token"
   end
 
-  context 'event filters', :js do
+  context 'event filters' do
     let(:project) { create(:project, :repository) }
 
     let(:merge_request) do

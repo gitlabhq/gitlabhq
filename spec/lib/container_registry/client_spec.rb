@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ContainerRegistry::Client do
+RSpec.describe ContainerRegistry::Client, feature_category: :container_registry do
   using RSpec::Parameterized::TableSyntax
 
   include_context 'container registry client'
@@ -307,12 +307,12 @@ RSpec.describe ContainerRegistry::Client do
     end
   end
 
-  describe '#delete_repository_tag_by_name' do
-    subject { client.delete_repository_tag_by_name('group/test', 'a') }
+  describe '#delete_repository_tag_by_digest' do
+    subject { client.delete_repository_tag_by_digest('group/test', 'a') }
 
     context 'when the tag exists' do
       before do
-        stub_request(:delete, "http://container-registry/v2/group/test/tags/reference/a")
+        stub_request(:delete, "http://container-registry/v2/group/test/manifests/a")
           .with(headers: headers_with_accept_types)
           .to_return(status: 200, body: "")
       end
@@ -322,7 +322,7 @@ RSpec.describe ContainerRegistry::Client do
 
     context 'when the tag does not exist' do
       before do
-        stub_request(:delete, "http://container-registry/v2/group/test/tags/reference/a")
+        stub_request(:delete, "http://container-registry/v2/group/test/manifests/a")
           .with(headers: headers_with_accept_types)
           .to_return(status: 404, body: "")
       end
@@ -332,7 +332,7 @@ RSpec.describe ContainerRegistry::Client do
 
     context 'when an error occurs' do
       before do
-        stub_request(:delete, "http://container-registry/v2/group/test/tags/reference/a")
+        stub_request(:delete, "http://container-registry/v2/group/test/manifests/a")
           .with(headers: headers_with_accept_types)
           .to_return(status: 500, body: "")
       end
@@ -485,7 +485,7 @@ RSpec.describe ContainerRegistry::Client do
 
   def stub_registry_tags_support(supported = true)
     status_code = supported ? 200 : 404
-    stub_request(:options, "#{registry_api_url}/v2/name/tags/reference/tag")
+    stub_request(:options, "#{registry_api_url}/v2/name/manifests/tag")
       .to_return(
         status: status_code,
         body: '',

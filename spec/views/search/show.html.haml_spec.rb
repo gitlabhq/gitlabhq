@@ -29,13 +29,6 @@ RSpec.describe 'search/show', feature_category: :global_search do
   end
 
   context 'when the search page is opened' do
-    it 'displays the title' do
-      render
-
-      expect(rendered).to have_selector('h1.page-title', text: 'Search')
-      expect(rendered).not_to have_selector('h1.page-title code')
-    end
-
     it 'does not render the results partial' do
       render
 

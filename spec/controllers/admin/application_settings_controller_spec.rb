@@ -66,51 +66,69 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       sign_in(admin)
     end
 
-    context 'when there are recent ServicePing reports' do
-      it 'attempts to use prerecorded data' do
-        create(:raw_usage_data)
+    context 'when there are NO recent ServicePing reports' do
+      it 'return 404' do
+        get :usage_data, format: :json
 
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when there are recent ServicePing reports' do
+      before do
+        create(:raw_usage_data)
+      end
+
+      it 'does not trigger ServicePing generation' do
         expect(Gitlab::Usage::ServicePingReport).not_to receive(:for)
 
         get :usage_data, format: :json
       end
-    end
 
-    context 'when there are NO recent ServicePing reports' do
-      it 'calculates data on the fly' do
-        allow(Gitlab::Usage::ServicePingReport).to receive(:for).and_call_original
+      it 'check cached data if present' do
+        expect(Rails.cache).to receive(:fetch).with(Gitlab::Usage::ServicePingReport::CACHE_KEY).and_return({ test: 1 })
+        expect(::RawUsageData).not_to receive(:for_current_reporting_cycle)
 
         get :usage_data, format: :json
-
-        expect(Gitlab::Usage::ServicePingReport).to have_received(:for)
-      end
-    end
-
-    it 'returns HTML data' do
-      get :usage_data, format: :html
-
-      expect(response.body).to start_with('<span')
-      expect(response).to have_gitlab_http_status(:ok)
-    end
-
-    it 'returns JSON data' do
-      get :usage_data, format: :json
-
-      body = json_response
-      expect(body["version"]).to eq(Gitlab::VERSION)
-      expect(body).to include('counts')
-      expect(response).to have_gitlab_http_status(:ok)
-    end
-
-    describe 'usage data counter' do
-      let(:counter) { Gitlab::UsageDataCounters::ServiceUsageDataCounter }
-
-      it 'incremented when json generated' do
-        expect { get :usage_data, format: :json }.to change { counter.read(:download_payload_click) }.by(1)
       end
 
-      it 'not incremented when html format requested' do
-        expect { get :usage_data }.not_to change { counter.read(:download_payload_click) }
+      context 'if no cached data available' do
+        before do
+          allow(Rails.cache).to receive(:fetch).and_return(nil)
+        end
+
+        it 'returns latest RawUsageData' do
+          expect(::RawUsageData).to receive_message_chain(:for_current_reporting_cycle, :first, :payload)
+
+          get :usage_data, format: :json
+        end
+      end
+
+      it 'returns HTML data' do
+        get :usage_data, format: :html
+
+        expect(response.body).to start_with('<span')
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'returns JSON data' do
+        get :usage_data, format: :json
+
+        expect(json_response).to be_present
+        expect(json_response['test']).to include('test')
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      describe 'usage data counter' do
+        let(:counter) { Gitlab::UsageDataCounters::ServiceUsageDataCounter }
+
+        it 'incremented when json generated' do
+          expect { get :usage_data, format: :json }.to change { counter.read(:download_payload_click) }.by(1)
+        end
+
+        it 'not incremented when html format requested' do
+          expect { get :usage_data }.not_to change { counter.read(:download_payload_click) }
+        end
       end
     end
   end
@@ -524,35 +542,37 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
     end
   end
 
-  describe 'GET #service_usage_data', feature_category: :service_ping do
+  describe 'GET #metrics_and_profiling', feature_category: :service_ping do
     before do
       stub_usage_data_connections
       stub_database_flavor_check
       sign_in(admin)
     end
 
-    it 'assigns truthy value if there are recent ServicePing reports in database' do
+    it 'assigns service_ping_data if there are recent ServicePing reports in database' do
       create(:raw_usage_data)
 
-      get :service_usage_data, format: :html
+      get :metrics_and_profiling, format: :html
 
-      expect(assigns(:service_ping_data_present)).to be_truthy
+      expect(assigns(:service_ping_data)).to be_present
       expect(response).to have_gitlab_http_status(:ok)
     end
 
-    it 'assigns truthy value if there are recent ServicePing reports in cache', :use_clean_rails_memory_store_caching do
-      Rails.cache.write('usage_data', true)
+    it 'assigns service_ping_data if there are recent ServicePing reports in cache', :use_clean_rails_memory_store_caching do
+      create(:raw_usage_data)
+      cached_data = { testKey: "testValue" }
+      Rails.cache.write('usage_data', cached_data)
 
-      get :service_usage_data, format: :html
+      get :metrics_and_profiling, format: :html
 
-      expect(assigns(:service_ping_data_present)).to be_truthy
+      expect(assigns(:service_ping_data)).to eq(cached_data)
       expect(response).to have_gitlab_http_status(:ok)
     end
 
-    it 'assigns falsey value if there are NO recent ServicePing reports' do
-      get :service_usage_data, format: :html
+    it 'does not assign service_ping_data value if there are NO recent ServicePing reports' do
+      get :metrics_and_profiling, format: :html
 
-      expect(assigns(:service_ping_data_present)).to be_falsey
+      expect(assigns(:service_ping_data)).not_to be_present
       expect(response).to have_gitlab_http_status(:ok)
     end
   end

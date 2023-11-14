@@ -160,9 +160,9 @@ The following authentication protocols are supported:
 
 | Package type                                          | Supported auth protocols                                    |
 |-------------------------------------------------------|-------------------------------------------------------------|
-| [Maven (with `mvn`)](../maven_repository/index.md)    | Headers, Basic auth ([pulling](#pulling-packages) only) (1) |
-| [Maven (with `gradle`)](../maven_repository/index.md) | Headers, Basic auth ([pulling](#pulling-packages) only) (1) |
-| [Maven (with `sbt`)](../maven_repository/index.md)    | Basic auth (1)                                              |
+| [Maven (with `mvn`)](../maven_repository/index.md)    | Headers, Basic auth                                         |
+| [Maven (with `gradle`)](../maven_repository/index.md) | Headers, Basic auth                                         |
+| [Maven (with `sbt`)](../maven_repository/index.md)    | Basic auth ([pulling](#pulling-packages) only) (1)          |
 | [npm](../npm_registry/index.md)                       | OAuth                                                       |
 | [NuGet](../nuget_repository/index.md)                 | Basic auth                                                  |
 | [PyPI](../pypi_repository/index.md)                   | Basic auth                                                  |

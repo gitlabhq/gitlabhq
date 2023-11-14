@@ -43,7 +43,7 @@ Example response:
 ```json
 [
     {
-        "extern_uid": "4",
+        "extern_uid": "yrnZW46BrtBFqM7xDzE7dddd",
         "user_id": 48
     }
 ]
@@ -67,14 +67,14 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --location --request GET "https://gitlab.example.com/api/v4/groups/33/saml/sydney_jones" --header "PRIVATE-TOKEN: <PRIVATE TOKEN>"
+curl --location --request GET "https://gitlab.example.com/api/v4/groups/33/saml/yrnZW46BrtBFqM7xDzE7dddd" --header "PRIVATE-TOKEN: <PRIVATE TOKEN>"
 ```
 
 Example response:
 
 ```json
 {
-    "extern_uid": "4",
+    "extern_uid": "yrnZW46BrtBFqM7xDzE7dddd",
     "user_id": 48
 }
 ```
@@ -101,9 +101,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --location --request PATCH "https://gitlab.example.com/api/v4/groups/33/saml/sydney_jones" \
+curl --location --request PATCH "https://gitlab.example.com/api/v4/groups/33/saml/yrnZW46BrtBFqM7xDzE7dddd" \
 --header "PRIVATE-TOKEN: <PRIVATE TOKEN>" \
---form "extern_uid=sydney_jones_new"
+--form "extern_uid=be20d8dcc028677c931e04f387"
 ```
 
 ## Delete a single SAML identity
@@ -124,7 +124,7 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/33/saml/sydney_jones"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/33/saml/be20d8dcc028677c931e04f387"
 
 ```
 

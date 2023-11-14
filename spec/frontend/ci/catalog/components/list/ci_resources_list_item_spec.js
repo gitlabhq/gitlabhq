@@ -48,7 +48,6 @@ describe('CiResourcesListItem', () => {
   const findUserLink = () => wrapper.findByTestId('user-link');
   const findTimeAgoMessage = () => wrapper.findComponent(GlSprintf);
   const findFavorites = () => wrapper.findByTestId('stats-favorites');
-  const findForks = () => wrapper.findByTestId('stats-forks');
 
   beforeEach(() => {
     router = createRouter();
@@ -161,7 +160,6 @@ describe('CiResourcesListItem', () => {
         createComponent({
           props: {
             resource: {
-              forksCount: 0,
               starCount: 0,
             },
           },
@@ -171,11 +169,6 @@ describe('CiResourcesListItem', () => {
       it('render favorites as 0', () => {
         expect(findFavorites().exists()).toBe(true);
         expect(findFavorites().text()).toBe('0');
-      });
-
-      it('render forks as 0', () => {
-        expect(findForks().exists()).toBe(true);
-        expect(findForks().text()).toBe('0');
       });
     });
 
@@ -187,11 +180,6 @@ describe('CiResourcesListItem', () => {
       it('render favorites', () => {
         expect(findFavorites().exists()).toBe(true);
         expect(findFavorites().text()).toBe(String(defaultProps.resource.starCount));
-      });
-
-      it('render forks', () => {
-        expect(findForks().exists()).toBe(true);
-        expect(findForks().text()).toBe(String(defaultProps.resource.forksCount));
       });
     });
   });

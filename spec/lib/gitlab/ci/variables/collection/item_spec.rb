@@ -123,11 +123,11 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Item, feature_category: :secre
           },
           "simple variable reference": {
             variable: { key: 'VAR', value: 'something_$VAR2' },
-            expected_depends_on: %w(VAR2)
+            expected_depends_on: %w[VAR2]
           },
           "complex expansion": {
             variable: { key: 'VAR', value: 'something_${VAR2}_$VAR3' },
-            expected_depends_on: %w(VAR2 VAR3)
+            expected_depends_on: %w[VAR2 VAR3]
           },
           "complex expansion in raw variable": {
             variable: { key: 'VAR', value: 'something_${VAR2}_$VAR3', raw: true },
@@ -135,7 +135,7 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Item, feature_category: :secre
           },
           "complex expansions for Windows": {
             variable: { key: 'variable3', value: 'key%variable%%variable2%' },
-            expected_depends_on: %w(variable variable2)
+            expected_depends_on: %w[variable variable2]
           }
         }
       end
@@ -282,7 +282,7 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Item, feature_category: :secre
       it '#depends_on contains names of dependencies' do
         runner_variable = described_class.new(key: 'CI_VAR', value: '${CI_VAR_2}-123-$CI_VAR_3')
 
-        expect(runner_variable.depends_on).to eq(%w(CI_VAR_2 CI_VAR_3))
+        expect(runner_variable.depends_on).to eq(%w[CI_VAR_2 CI_VAR_3])
       end
     end
 

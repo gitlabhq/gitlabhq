@@ -175,17 +175,12 @@ export default {
 <template>
   <gl-button
     v-gl-tooltip.hover
-    data-testid="work-item-todos-action"
     :loading="isLoading"
     :title="buttonLabel"
-    category="tertiary"
+    category="secondary"
     :aria-label="buttonLabel"
     @click="onToggle"
   >
-    <gl-icon
-      data-testid="work-item-todos-icon"
-      :class="{ 'gl-fill-blue-500': pendingTodo }"
-      :name="buttonIcon"
-    />
+    <gl-icon :class="{ 'gl-fill-blue-500': pendingTodo }" :name="buttonIcon" />
   </gl-button>
 </template>

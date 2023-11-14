@@ -18,6 +18,7 @@ class Namespace < ApplicationRecord
   include Referable
   include CrossDatabaseIgnoredTables
   include IgnorableColumns
+  include UseSqlFunctionForPrimaryKeyLookups
 
   ignore_column :unlock_membership_to_ldap, remove_with: '16.7', remove_after: '2023-11-16'
 
@@ -138,6 +139,8 @@ class Namespace < ApplicationRecord
     to: :namespace_settings
   delegate :runner_registration_enabled, :runner_registration_enabled?, :runner_registration_enabled=,
     to: :namespace_settings
+  delegate :emails_enabled, :emails_enabled=,
+    to: :namespace_settings, allow_nil: true
   delegate :allow_runner_registration_token,
     :allow_runner_registration_token=,
     to: :namespace_settings
@@ -204,7 +207,7 @@ class Namespace < ApplicationRecord
 
   # Make sure that the name is same as strong_memoize name in root_ancestor
   # method
-  attr_writer :root_ancestor, :emails_disabled_memoized
+  attr_writer :root_ancestor, :emails_enabled_memoized
 
   class << self
     def sti_class_for(type_name)
@@ -299,6 +302,14 @@ class Namespace < ApplicationRecord
     super || Gitlab::CurrentSettings.default_branch_protection
   end
 
+  def default_branch_protection_settings
+    settings = default_branch_protection_defaults
+
+    return settings unless settings.blank?
+
+    Gitlab::CurrentSettings.default_branch_protection_defaults
+  end
+
   def visibility_level_field
     :visibility_level
   end
@@ -382,17 +393,16 @@ class Namespace < ApplicationRecord
 
   # any ancestor can disable emails for all descendants
   def emails_disabled?
-    strong_memoize(:emails_disabled_memoized) do
-      if parent_id
-        self_and_ancestors.where(emails_disabled: true).exists?
-      else
-        !!emails_disabled
-      end
-    end
+    !emails_enabled?
   end
 
   def emails_enabled?
-    !emails_disabled?
+    # If no namespace_settings, we can assume it has not changed from enabled
+    return true unless namespace_settings
+
+    strong_memoize(:emails_enabled_memoized) do
+      namespace_settings.emails_enabled?
+    end
   end
 
   def lfs_enabled?
@@ -626,8 +636,7 @@ class Namespace < ApplicationRecord
       :route,
       :project_setting,
       :project_feature,
-      pages_metadatum: :pages_deployment
-    )
+      :active_pages_deployments)
   end
 
   private

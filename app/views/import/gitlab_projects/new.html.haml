@@ -2,9 +2,9 @@
 - header_title _("New project"), new_project_path
 - add_to_breadcrumbs s_('ProjectsNew|Import project'), new_project_path(anchor: 'import_project')
 
-%h1.page-title.gl-font-size-h-display.d-flex
+%h1.page-title.gl-font-size-h-display.d-flex.gl-align-items-center
   .gl-display-flex.gl-align-items-center.gl-justify-content-center
-    = sprite_icon('tanuki', css_class: 'gl-mr-2')
+    = sprite_icon('tanuki', css_class: 'gl-mr-3', size: 48)
   = _('Import an exported GitLab project')
 %hr
 
@@ -21,7 +21,7 @@
         = file_field_tag :file, class: ''
   .row
     .form-actions.col-sm-12
-      = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, button_options: { class: 'gl-mr-2', data: { qa_selector: 'import_project_button' }}) do
+      = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, button_options: { class: 'gl-mr-2', data: { testid: 'import-project-button' }}) do
         = _('Import project')
       = render Pajamas::ButtonComponent.new(href: new_project_path) do
         = _('Cancel')

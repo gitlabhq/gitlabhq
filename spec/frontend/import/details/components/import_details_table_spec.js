@@ -2,6 +2,7 @@ import { mount, shallowMount } from '@vue/test-utils';
 import { GlEmptyState, GlLoadingIcon, GlTable } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
+import { getParameterValues } from '~/lib/utils/url_utility';
 import { HTTP_STATUS_OK, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import { createAlert } from '~/alert';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -11,13 +12,32 @@ import ImportDetailsTable from '~/import/details/components/import_details_table
 import { mockImportFailures, mockHeaders } from '../mock_data';
 
 jest.mock('~/alert');
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  getParameterValues: jest.fn().mockReturnValue([]),
+}));
 
 describe('Import details table', () => {
   let wrapper;
   let mock;
 
-  const createComponent = ({ mountFn = shallowMount, provide = {} } = {}) => {
+  const mockFields = [
+    {
+      key: 'type',
+      label: 'Type',
+    },
+    {
+      key: 'title',
+      label: 'Title',
+    },
+  ];
+
+  const createComponent = ({ mountFn = shallowMount, props = {}, provide = {} } = {}) => {
     wrapper = mountFn(ImportDetailsTable, {
+      propsData: {
+        fields: mockFields,
+        ...props,
+      },
       provide,
     });
   };
@@ -106,6 +126,50 @@ describe('Import details table', () => {
 
         expect(createAlert).toHaveBeenCalledWith({
           message: ImportDetailsTable.i18n.fetchErrorMessage,
+        });
+      });
+    });
+
+    describe('when bulk_import is true', () => {
+      const mockId = 144;
+      const mockEntityId = 68;
+
+      beforeEach(() => {
+        gon.api_version = 'v4';
+        getParameterValues.mockReturnValueOnce([mockId]);
+        getParameterValues.mockReturnValueOnce([mockEntityId]);
+
+        mock
+          .onGet(`/api/v4/bulk_imports/${mockId}/entities/${mockEntityId}/failures`)
+          .reply(HTTP_STATUS_OK, mockImportFailures, mockHeaders);
+
+        createComponent({
+          mountFn: mount,
+          props: {
+            bulkImport: true,
+          },
+        });
+      });
+
+      it('renders loading icon', () => {
+        expect(findGlLoadingIcon().exists()).toBe(true);
+      });
+
+      it('does not render loading icon after fetch', async () => {
+        await waitForPromises();
+
+        expect(findGlLoadingIcon().exists()).toBe(false);
+      });
+
+      it('sets items and pagination info', async () => {
+        await waitForPromises();
+
+        expect(findGlTableRows().length).toBe(mockImportFailures.length);
+        expect(findPaginationBar().props('pageInfo')).toMatchObject({
+          page: mockHeaders['x-page'],
+          perPage: mockHeaders['x-per-page'],
+          total: mockHeaders['x-total'],
+          totalPages: mockHeaders['x-total-pages'],
         });
       });
     });

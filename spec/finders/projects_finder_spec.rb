@@ -66,6 +66,18 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
         it { is_expected.to eq([internal_project]) }
       end
 
+      describe 'with full_paths' do
+        let_it_be(:second_public_project) do
+          create(:project, :public, :merge_requests_enabled, :issues_disabled, group: group, name: 'second-public', path: 'second-public')
+        end
+
+        context 'only returns projects matching the provided full paths' do
+          let(:params) { { full_paths: [public_project.full_path, second_public_project.full_path] } }
+
+          it { is_expected.to match_array([public_project, second_public_project]) }
+        end
+      end
+
       describe 'with id_after' do
         context 'only returns projects with a project id greater than given' do
           let(:params) { { id_after: internal_project.id } }
@@ -413,12 +425,29 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
         it { is_expected.to match_array([internal_project]) }
       end
 
-      describe 'always filters by without_deleted' do
+      describe 'filters by without_deleted by default' do
         let_it_be(:pending_delete_project) { create(:project, :public, pending_delete: true) }
 
         it 'returns projects that are not pending_delete' do
           expect(subject).not_to include(pending_delete_project)
           expect(subject).to include(public_project, internal_project)
+        end
+
+        context 'when include_pending_delete param is provided' do
+          let(:params) { { include_pending_delete: true } }
+
+          it 'returns projects that are not pending_delete' do
+            expect(subject).not_to include(pending_delete_project)
+            expect(subject).to include(public_project, internal_project)
+          end
+
+          context 'when user is an admin', :enable_admin_mode do
+            let(:current_user) { create(:admin) }
+
+            it 'also return pending_delete projects' do
+              expect(subject).to include(public_project, internal_project, pending_delete_project)
+            end
+          end
         end
       end
 

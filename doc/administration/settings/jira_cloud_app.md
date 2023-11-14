@@ -37,6 +37,9 @@ To create an OAuth application on your self-managed instance:
    - If you're installing the app from the official marketplace listing, enter `https://gitlab.com/-/jira_connect/oauth_callbacks`.
    - If you're installing the app manually, enter `<instance_url>/-/jira_connect/oauth_callbacks` and replace `<instance_url>` with the URL of your instance.
 1. Clear the **Trusted** and **Confidential** checkboxes.
+
+   NOTE:
+   You must clear these checkboxes to avoid errors.
 1. In **Scopes**, select the `api` checkbox only.
 1. Select **Save application**.
 1. Copy the **Application ID** value.
@@ -44,6 +47,28 @@ To create an OAuth application on your self-managed instance:
 1. Expand **GitLab for Jira App**.
 1. Paste the **Application ID** value into **Jira Connect Application ID**.
 1. Select **Save changes**.
+
+## Jira user requirements
+
+> Support for the `org-admins` group [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420687) in GitLab 16.6.
+
+In your [Atlassian organization](https://admin.atlassian.com), you must ensure that the Jira user that is used to set up the GitLab for Jira Cloud app is a member of
+either:
+
+- The Organization Administrators (`org-admins`) group. Newer Atlassian organizations are using
+  [centralized user management](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Centralized-user-management-content),
+  which contains the `org-admins` group. Existing Atlassian organizations are being migrated to centralized user management.
+  If available, you should use the `org-admins` group to indicate which Jira users can manage the GitLab for Jira app. Alternatively you can use the
+  `site-admins` group.
+- The Site Administrators (`site-admins`) group. The `site-admins` group was used under
+  [original user management](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Original-user-management-content).
+
+If necessary:
+
+1. [Create your preferred group](https://support.atlassian.com/user-management/docs/create-groups/).
+1. [Edit the group](https://support.atlassian.com/user-management/docs/edit-a-group/) to add your Jira user as a member of it.
+1. If you customized your global permissions in Jira, you might also need to grant the
+   [`Browse users and groups` permission](https://confluence.atlassian.com/jirakb/unable-to-browse-for-users-and-groups-120521888.html) to the Jira user.
 
 ## Connect the GitLab for Jira Cloud app
 
@@ -76,6 +101,7 @@ With this method:
   - Set up an internet-facing reverse proxy in front of your self-managed instance. To secure this proxy further, only allow inbound
     traffic from [Atlassian IP addresses](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections).
   - Add [GitLab IP addresses](../../user/gitlab_com/index.md#ip-range) to the allowlist of your firewall.
+- The Jira user that installs and configures the GitLab for Jira Cloud app must meet certain [requirements](#jira-user-requirements).
 
 ### Set up your instance
 
@@ -144,6 +170,7 @@ To support your self-managed instance with Jira Cloud, do one of the following:
 
 - The instance must be publicly available.
 - You must set up [OAuth authentication](#set-up-oauth-authentication).
+- The Jira user that installs and configures the GitLab for Jira Cloud app must meet certain [requirements](#jira-user-requirements).
 
 ### Install the app in development mode
 
@@ -314,6 +341,8 @@ To resolve this issue, ensure all prerequisites for your installation method hav
 - [Prerequisites for connecting the GitLab for Jira Cloud app](#prerequisites)
 - [Prerequisites for installing the GitLab for Jira Cloud app manually](#prerequisites-1)
 
+If you have configured a Jira Connect Proxy URL and the problem persists after checking the prerequisites, review [Debugging Jira Connect Proxy issues](#debugging-jira-connect-proxy-issues).
+
 If you're using GitLab 15.8 and earlier and have previously enabled both the `jira_connect_oauth_self_managed`
 and the `jira_connect_oauth` feature flags, you must disable the `jira_connect_oauth_self_managed` flag
 due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388943). To check for these flags:
@@ -330,6 +359,46 @@ due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388943). To
    # If both flags are enabled, disable the `jira_connect_oauth_self_managed` flag.
    Feature.disable(:jira_connect_oauth_self_managed)
    ```
+
+#### Debugging Jira Connect Proxy issues
+
+If you are using a self-managed GitLab instance and you have configured `https://gitlab.com` for the Jira Connect Proxy URL when
+[setting up the OAuth authentication](#set-up-oauth-authentication), you can inspect the network traffic in your browser's development
+tools while reproducing the `Failed to update the GitLab instance` error to see a more precise error.
+
+You should see a `GET` request to `https://gitlab.com/-/jira_connect/installations`.
+
+This request should return a `200` status code, but it can return a `422` status code if there was a problem. The response body can be checked for the error.
+
+If you cannot resolve the problem and you are a GitLab customer, contact [GitLab Support](https://about.gitlab.com/support/) for assistance. Provide
+GitLab Support with:
+
+1. Your GitLab self-managed instance URL.
+1. Your GitLab.com username.
+1. If possible, the `X-Request-Id` response header for the failed `GET` request to `https://gitlab.com/-/jira_connect/installations`.
+1. Optional. [A HAR file that captured the problem](https://support.zendesk.com/hc/en-us/articles/4408828867098-Generating-a-HAR-file-for-troubleshooting).
+
+The GitLab Support team can then look up why this is failing in the GitLab.com server logs.
+
+##### Process for GitLab Support
+
+NOTE:
+These steps can only be completed by GitLab Support.
+
+In Kibana, the logs should be filtered for `json.meta.caller_id: JiraConnect::InstallationsController#update` and `NOT json.status: 200`.
+If you have been provided the `X-Request-Id` value, you can use that against `json.correlation_id` to narrow down the results.
+
+Each `GET` request to the Jira Connect Proxy URL `https://gitlab.com/-/jira_connect/installations` generates two log entries.
+
+For the first log:
+
+- `json.status` is `422`.
+- `json.params.value` should match the GitLab self-managed URL `[[FILTERED], {"instance_url"=>"https://gitlab.example.com"}]`.
+
+For the second log:
+
+- `json.message` is `Proxy lifecycle event received error response` or similar.
+- `json.jira_status_code` and `json.jira_body` might contain details on why GitLab.com wasn't able to connect back to the self-managed instance.
 
 ### `Failed to link group`
 
@@ -349,9 +418,6 @@ When you check the browser console, you might see the following message:
 Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://gitlab.example.com/-/jira_connect/oauth_application_id. (Reason: CORS header 'Access-Control-Allow-Origin' missing). Status code: 403.
 ```
 
-`403` status code is returned if:
+`403` status code is returned if the user information cannot be fetched from Jira because of insufficient permissions.
 
-- The user information cannot be fetched from Jira.
-- The authenticated Jira user does not have [site administrator](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Make-someone-a-site-admin) access.
-
-To resolve this issue, ensure the authenticated user is a Jira site administrator and try again.
+To resolve this issue, ensure that the Jira user that installs and configures the GitLab for Jira Cloud app meets certain [requirements](#jira-user-requirements).

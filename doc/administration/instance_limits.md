@@ -309,7 +309,7 @@ The number of seconds GitLab waits for an HTTP response after sending a webhook.
 
 To change the webhook timeout value:
 
-1. Edit `/etc/gitlab/gitlab.rb`:
+1. Edit `/etc/gitlab/gitlab.rb` on all GitLab nodes that are running Sidekiq:
 
    ```ruby
    gitlab_rails['webhook_timeout'] = 60
@@ -992,18 +992,19 @@ Set the limit to `0` to disable it.
 
 ## Math rendering limits
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132939) in GitLab 16.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132939) in GitLab 16.5.
+> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/368009) the 50-node limit from Wiki and repository files.
 
 GitLab imposes default limits when rendering math in Markdown fields. These limits provide better security and performance.
 
-The limits for issues, merge requests, wikis, and repositories:
+The limits for issues, merge requests, epics, wikis, and repository files:
+
+- Maximum number of macro expansions: `1000`.
+- Maximum user-specified size in [em](https://en.wikipedia.org/wiki/Em_(typography)): `20`.
+
+The limits for issues, merge requests, and epics:
 
 - Maximum number of nodes rendered: `50`.
-- Maximum number of macro expansions: `1000`.
-- Maximum user-specified size in em: `20`.
-
-The limits for issues and merge requests:
-
 - Maximum number of characters in a math block: `1000`.
 - Maximum rendering time: `2000 ms`.
 

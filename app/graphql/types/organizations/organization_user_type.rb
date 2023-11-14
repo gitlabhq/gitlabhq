@@ -13,7 +13,7 @@ module Types
       alias_method :organization_user, :object
 
       field :badges,
-        [GraphQL::Types::String],
+        [::Types::Organizations::OrganizationUserBadgeType],
         null: true,
         description: 'Badges describing the user within the organization.',
         alpha: { milestone: '16.4' }
@@ -29,7 +29,7 @@ module Types
         alpha: { milestone: '16.4' }
 
       def badges
-        user_badges_in_admin_section(organization_user.user).pluck(:text) # rubocop:disable CodeReuse/ActiveRecord
+        user_badges_in_admin_section(organization_user.user)
       end
     end
   end

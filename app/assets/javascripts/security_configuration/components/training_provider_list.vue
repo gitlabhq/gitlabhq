@@ -9,7 +9,7 @@ import {
   GlSkeletonLoader,
   GlIcon,
 } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import Tracking from '~/tracking';
 import { __, s__ } from '~/locale';

@@ -63,7 +63,7 @@ and cross-posted (with the command results) to the responsible team's Slack chan
   Cross link the issue here if it does.
 - [ ] Ensure that you or a representative in development can be available for at least 2 hours after feature flag updates in production.
   If a different developer will be covering, or an exception is needed, please inform the oncall SRE by using the `@sre-oncall` Slack alias.
-- [ ] Ensure that [documentation has been updated](https://docs.gitlab.com/ee/development/documentation/feature_flags.html).
+- [ ] Ensure that documentation exists for the feature, and the [version history text](https://docs.gitlab.com/ee/development/documentation/feature_flags.html#add-version-history-text) has been updated.
 - [ ] Leave a comment on [the feature issue][main-issue] announcing estimated time when this feature flag will be enabled on GitLab.com.
 - [ ] Ensure that any breaking changes have been announced following the [release post process](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes) to ensure GitLab customers are aware.
 - [ ] Notify the [`#support_gitlab-com` Slack channel](https://gitlab.slack.com/archives/C4XFU81LG) and your team channel ([more guidance when this is necessary in the dev docs](https://docs.gitlab.com/ee/development/feature_flags/controls.html#communicate-the-change)).
@@ -132,7 +132,7 @@ You can either [create a follow-up issue for Feature Flag Cleanup](https://gitla
       If the merge request was deployed before [the monthly release was tagged](https://about.gitlab.com/handbook/engineering/releases/#self-managed-releases-1),
       the feature can be officially announced in a release blog post: `/chatops run release check <merge-request-url> <milestone>`
 - [ ] Close [the feature issue][main-issue] to indicate the feature will be released in the current milestone.
-- [ ] Clean up the feature flag from all environments by running these chatops command in `#production` channel: `/chatops run feature delete <feature-flag-name> --dev --staging --staging-ref --production`
+- [ ] Clean up the feature flag from all environments by running these chatops command in `#production` channel: `/chatops run feature delete <feature-flag-name> --dev --ops --pre --staging --staging-ref --production`
 - [ ] Close this rollout issue.
 
 ## Rollback Steps

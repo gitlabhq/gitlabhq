@@ -159,7 +159,7 @@ export default {
 <template>
   <tr
     class="gl-h-11"
-    data-qa-selector="project_import_row"
+    data-testid="project-import-row"
     :data-qa-source-project="repo.importSource.fullName"
   >
     <td>
@@ -174,7 +174,7 @@ export default {
               :href="repo.importedProject.fullPath"
               class="gl-font-sm"
               target="_blank"
-              data-qa-selector="go_to_project_link"
+              data-testid="go-to-project-link"
             >
               {{ displayFullPath }}
             </gl-link>
@@ -182,7 +182,7 @@ export default {
         </gl-sprintf>
       </div>
     </td>
-    <td data-testid="fullPath" data-qa-selector="project_path_content">
+    <td data-testid="fullPath">
       <div class="gl-display-flex gl-sm-flex-wrap">
         <template v-if="repo.importSource.target">{{ repo.importSource.target }}</template>
         <template v-else-if="isImportNotStarted || isSelectedForReimport">
@@ -201,14 +201,14 @@ export default {
               ref="newNameInput"
               v-model="newNameInput"
               class="gl-rounded-top-left-none gl-rounded-bottom-left-none"
-              data-qa-selector="project_path_field"
+              data-testid="project-path-field"
             />
           </div>
         </template>
         <template v-else-if="repo.importedProject">{{ displayFullPath }}</template>
       </div>
     </td>
-    <td data-qa-selector="import_status_indicator">
+    <td data-testid="import-status-indicator">
       <import-status :project-id="importedProjectId" :status="importStatus" :stats="stats" />
     </td>
     <td data-testid="actions" class="gl-white-space-nowrap">
@@ -235,7 +235,7 @@ export default {
       <gl-button
         v-if="isImportNotStarted || isFinished"
         type="button"
-        data-qa-selector="import_button"
+        data-testid="import-button"
         @click="handleImportRepo()"
       >
         {{ importButtonText }}

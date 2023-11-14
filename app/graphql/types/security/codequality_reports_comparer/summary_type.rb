@@ -3,7 +3,7 @@
 module Types
   module Security
     module CodequalityReportsComparer
-      # rubocop: disable Graphql/AuthorizeTypes (The resolver authorizes the request)
+      # rubocop: disable Graphql/AuthorizeTypes -- The resolver authorizes the request
       class SummaryType < BaseObject
         graphql_name 'CodequalityReportsComparerReportSummary'
 

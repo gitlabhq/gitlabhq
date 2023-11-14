@@ -6,23 +6,19 @@ RSpec.shared_examples 'a "Your work" page with sidebar and breadcrumbs' do |page
     visit send(page_path)
   end
 
-  let(:sidebar_css) { "aside.nav-sidebar[aria-label=\"Your work\"]" }
-  let(:active_menu_item_css) { "li.active[data-track-label=\"#{menu_label}_menu\"]" }
-
   it "shows the \"Your work\" sidebar" do
-    expect(page).to have_css(sidebar_css)
+    expect(page).to have_css('#super-sidebar-context-header', text: 'Your work')
   end
 
   it "shows the correct sidebar menu item as active" do
-    within(sidebar_css) do
-      expect(page).to have_css(active_menu_item_css)
+    within_testid('super-sidebar') do
+      expect(page).to have_css("a[data-track-label='#{menu_label}_menu'][aria-current='page']")
     end
   end
 
   describe "breadcrumbs" do
     it 'has "Your work" as its root breadcrumb' do
-      breadcrumbs = page.find('[data-testid="breadcrumb-links"]')
-      within breadcrumbs do
+      within_testid('breadcrumb-links') do
         expect(page).to have_css("li:first-child a[href=\"#{root_path}\"]", text: "Your work")
       end
     end

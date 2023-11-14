@@ -8,7 +8,8 @@ module Gitlab
         include ::Gitlab::Database::MigrationHelpers
         include ::Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
 
-        ALLOWED_TABLES = %w[audit_events web_hook_logs].freeze
+        ALLOWED_TABLES = %w[audit_events web_hook_logs merge_request_diff_files merge_request_diff_commits].freeze
+
         ERROR_SCOPE = 'table partitioning'
 
         MIGRATION_CLASS_NAME = "::#{module_parent_name}::BackfillPartitionedTable"
@@ -16,6 +17,60 @@ module Gitlab
         BATCH_INTERVAL = 2.minutes.freeze
         BATCH_SIZE = 50_000
         SUB_BATCH_SIZE = 2_500
+        PARTITION_BUFFER = 6
+        MIN_ID = 1
+
+        # Creates a partitioned copy of an existing table, using a RANGE partitioning strategy on a int/bigint column.
+        # One partition is created per partition_size between 1 and MAX(column_name). Also installs a trigger on
+        # the original table to copy writes into the partitioned table. To copy over historic data from before creation
+        # of the partitioned table, use the `enqueue_partitioning_data_migration` helper in a post-deploy migration.
+        # Note: If the original table is empty the system creates 6 partitions in the new table.
+        #
+        # A copy of the original table is required as PG currently does not support partitioning existing tables.
+        #
+        # Example:
+        #
+        #   partition_table_by_int_range :merge_request_diff_commits, :merge_request_diff_id, partition_size: 500, primary_key: ['merge_request_diff_id', 'relative_order']
+        #
+        # Options are:
+        #   :partition_size - a int specifying the partition size
+        #   :primary_key - a array specifying the primary query of the new table
+        #
+        # Note: The system always adds a buffer of 6 partitions.
+        def partition_table_by_int_range(table_name, column_name, partition_size:, primary_key:)
+          Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_ddl_mode!
+
+          assert_table_is_allowed(table_name)
+
+          assert_not_in_transaction_block(scope: ERROR_SCOPE)
+
+          current_primary_key = Array.wrap(connection.primary_key(table_name))
+          raise "primary key not defined for #{table_name}" if current_primary_key.blank?
+
+          partition_column = find_column_definition(table_name, column_name)
+          raise "partition column #{column_name} does not exist on #{table_name}" if partition_column.nil?
+
+          primary_key = Array.wrap(primary_key).map(&:to_s)
+          raise "the partition column must be part of the primary key" unless primary_key.include?(column_name.to_s)
+
+          primary_key_objects = connection.columns(table_name).select { |column| primary_key.include?(column.name) }
+
+          raise 'partition_size must be greater than 1' unless partition_size > 1
+
+          max_id = Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
+            Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection.with_suppressed do
+              define_batchable_model(table_name, connection: connection).maximum(column_name) || partition_size * PARTITION_BUFFER
+            end
+          end
+
+          partitioned_table_name = make_partitioned_table_name(table_name)
+
+          with_lock_retries do
+            create_range_id_partitioned_copy(table_name, partitioned_table_name, partition_column, primary_key_objects)
+            create_int_range_partitions(partitioned_table_name, partition_size, MIN_ID, max_id)
+            create_trigger_to_sync_tables(table_name, partitioned_table_name, current_primary_key)
+          end
+        end
 
         # Creates a partitioned copy of an existing table, using a RANGE partitioning strategy on a timestamp column.
         # One partition is created per month between the given `min_date` and `max_date`. Also installs a trigger on
@@ -332,6 +387,34 @@ module Gitlab
           connection.columns(table).find { |c| c.name == column.to_s }
         end
 
+        def create_range_id_partitioned_copy(source_table_name, partitioned_table_name, partition_column, primary_keys)
+          if table_exists?(partitioned_table_name)
+            Gitlab::AppLogger.warn "Partitioned table not created because it already exists" \
+              " (this may be due to an aborted migration or similar): table_name: #{partitioned_table_name} "
+            return
+          end
+
+          tmp_partitioning_column_name = "#{partition_column.name}_tmp"
+
+          temporary_columns = primary_keys.map { |key| "#{key.name}_tmp" }.join(", ")
+          temporary_columns_statement = build_temporary_columns_statement(primary_keys)
+
+          transaction do
+            execute(<<~SQL)
+              CREATE TABLE #{partitioned_table_name} (
+                LIKE #{source_table_name} INCLUDING ALL EXCLUDING INDEXES,
+                 #{temporary_columns_statement},
+                PRIMARY KEY (#{temporary_columns})
+              ) PARTITION BY RANGE (#{tmp_partitioning_column_name})
+            SQL
+
+            primary_keys.each do |key|
+              remove_column(partitioned_table_name, key.name)
+              rename_column(partitioned_table_name, "#{key.name}_tmp", key.name)
+            end
+          end
+        end
+
         def create_range_partitioned_copy(source_table_name, partitioned_table_name, partition_column, primary_key)
           if table_exists?(partitioned_table_name)
             Gitlab::AppLogger.warn "Partitioned table not created because it already exists" \
@@ -382,6 +465,20 @@ module Gitlab
           end
         end
 
+        def create_int_range_partitions(table_name, partition_size, min_id, max_id)
+          lower_bound = min_id
+          upper_bound = min_id + partition_size
+
+          end_id = max_id + PARTITION_BUFFER * partition_size # Adds a buffer of 6 partitions
+
+          while lower_bound < end_id
+            create_range_partition_safely("#{table_name}_#{lower_bound}", table_name, lower_bound, upper_bound)
+
+            lower_bound += partition_size
+            upper_bound += partition_size
+          end
+        end
+
         def to_sql_date_literal(date)
           connection.quote(date.strftime('%Y-%m-%d'))
         end
@@ -411,19 +508,23 @@ module Gitlab
             return
           end
 
+          unique_key = Array.wrap(unique_key)
+
           delimiter = ",\n    "
           column_names = connection.columns(partitioned_table_name).map(&:name)
           set_statements = build_set_statements(column_names, unique_key)
           insert_values = column_names.map { |name| "NEW.#{name}" }
+          delete_where_statement = unique_key.map { |unique_key| "#{unique_key} = OLD.#{unique_key}" }.join(' AND ')
+          update_where_statement = unique_key.map { |unique_key| "#{partitioned_table_name}.#{unique_key} = NEW.#{unique_key}" }.join(' AND ')
 
           create_trigger_function(name, replace: false) do
             <<~SQL
               IF (TG_OP = 'DELETE') THEN
-                DELETE FROM #{partitioned_table_name} where #{unique_key} = OLD.#{unique_key};
+                DELETE FROM #{partitioned_table_name} where #{delete_where_statement};
               ELSIF (TG_OP = 'UPDATE') THEN
                 UPDATE #{partitioned_table_name}
                 SET #{set_statements.join(delimiter)}
-                WHERE #{partitioned_table_name}.#{unique_key} = NEW.#{unique_key};
+                WHERE #{update_where_statement};
               ELSIF (TG_OP = 'INSERT') THEN
                 INSERT INTO #{partitioned_table_name} (#{column_names.join(delimiter)})
                 VALUES (#{insert_values.join(delimiter)});
@@ -433,8 +534,16 @@ module Gitlab
           end
         end
 
+        def build_temporary_columns_statement(columns)
+          columns.map do |column|
+            type = column.name == 'id' || column.name.end_with?('_id') ? 'bigint' : column.sql_type
+
+            "#{column.name}_tmp #{type} NOT NULL"
+          end.join(", ")
+        end
+
         def build_set_statements(column_names, unique_key)
-          column_names.reject { |name| name == unique_key }.map { |name| "#{name} = NEW.#{name}" }
+          column_names.reject { |name| unique_key.include?(name) }.map { |name| "#{name} = NEW.#{name}" }
         end
 
         def create_sync_trigger(table_name, trigger_name, function_name)

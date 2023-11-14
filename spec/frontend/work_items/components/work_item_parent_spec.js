@@ -1,14 +1,15 @@
-import * as Sentry from '@sentry/browser';
 import { GlCollapsibleListbox, GlFormGroup } from '@gitlab/ui';
-
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import WorkItemParent from '~/work_items/components/work_item_parent.vue';
+import { removeHierarchyChild } from '~/work_items/graphql/cache_utils';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+import groupWorkItemsQuery from '~/work_items/graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
 import { WORK_ITEM_TYPE_ENUM_OBJECTIVE } from '~/work_items/constants';
 
@@ -20,7 +21,10 @@ import {
   updateWorkItemMutationErrorResponse,
 } from '../mock_data';
 
-jest.mock('@sentry/browser');
+jest.mock('~/sentry/sentry_browser_wrapper');
+jest.mock('~/work_items/graphql/cache_utils', () => ({
+  removeHierarchyChild: jest.fn(),
+}));
 
 describe('WorkItemParent component', () => {
   Vue.use(VueApollo);
@@ -29,7 +33,9 @@ describe('WorkItemParent component', () => {
 
   const workItemId = 'gid://gitlab/WorkItem/1';
   const workItemType = 'Objective';
+  const mockFullPath = 'full-path';
 
+  const groupWorkItemsSuccessHandler = jest.fn().mockResolvedValue(availableObjectivesResponse);
   const availableWorkItemsSuccessHandler = jest.fn().mockResolvedValue(availableObjectivesResponse);
   const availableWorkItemsFailureHandler = jest.fn().mockRejectedValue(new Error());
 
@@ -42,14 +48,17 @@ describe('WorkItemParent component', () => {
     parent = null,
     searchQueryHandler = availableWorkItemsSuccessHandler,
     mutationHandler = successUpdateWorkItemMutationHandler,
+    isGroup = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemParent, {
       apolloProvider: createMockApollo([
         [projectWorkItemsQuery, searchQueryHandler],
+        [groupWorkItemsQuery, groupWorkItemsSuccessHandler],
         [updateWorkItemMutation, mutationHandler],
       ]),
       provide: {
-        fullPath: 'full-path',
+        fullPath: mockFullPath,
+        isGroup,
       },
       propsData: {
         canUpdate,
@@ -81,7 +90,6 @@ describe('WorkItemParent component', () => {
         headerText: 'Assign parent',
         category: 'tertiary',
         loading: false,
-        noCaret: true,
         isCheckCentered: true,
         searchable: true,
         searching: false,
@@ -90,7 +98,6 @@ describe('WorkItemParent component', () => {
         toggleText: 'None',
         searchPlaceholder: 'Search',
         resetButtonLabel: 'Unassign',
-        block: true,
       });
     });
 
@@ -98,14 +105,12 @@ describe('WorkItemParent component', () => {
       createComponent({ canUpdate: false, parent: mockParentWidgetResponse });
 
       expect(findCollapsibleListbox().exists()).toBe(false);
-      expect(findParentText().exists()).toBe(true);
       expect(findParentText().text()).toBe('Objective 101');
     });
 
     it('shows loading while searching', async () => {
       await findCollapsibleListbox().vm.$emit('shown');
       expect(findCollapsibleListbox().props('searching')).toBe(true);
-      expect(findCollapsibleListbox().props('no-caret')).toBeUndefined();
     });
   });
 
@@ -143,15 +148,27 @@ describe('WorkItemParent component', () => {
       });
 
       await findCollapsibleListbox().vm.$emit('shown');
-      await findCollapsibleListbox().vm.$emit('search', 'Objective 101');
 
       await waitForPromises();
+
+      expect(searchedItemQueryHandler).toHaveBeenCalledWith({
+        fullPath: 'full-path',
+        searchTerm: '',
+        types: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
+        in: undefined,
+        iid: null,
+        isNumber: false,
+      });
+
+      await findCollapsibleListbox().vm.$emit('search', 'Objective 101');
 
       expect(searchedItemQueryHandler).toHaveBeenCalledWith({
         fullPath: 'full-path',
         searchTerm: 'Objective 101',
         types: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
         in: 'TITLE',
+        iid: null,
+        isNumber: false,
       });
 
       await nextTick();
@@ -164,7 +181,6 @@ describe('WorkItemParent component', () => {
 
   describe('listbox', () => {
     const selectWorkItem = async (workItem) => {
-      await findCollapsibleListbox().vm.$emit('shown');
       await findCollapsibleListbox().vm.$emit('select', workItem);
     };
 
@@ -181,6 +197,14 @@ describe('WorkItemParent component', () => {
           },
         },
       });
+
+      expect(removeHierarchyChild).toHaveBeenCalledWith({
+        cache: expect.anything(Object),
+        fullPath: mockFullPath,
+        iid: undefined,
+        isGroup: false,
+        workItem: { id: 'gid://gitlab/WorkItem/1' },
+      });
     });
 
     it('calls mutation when item is unassigned', async () => {
@@ -188,6 +212,9 @@ describe('WorkItemParent component', () => {
         .fn()
         .mockResolvedValue(updateWorkItemMutationResponseFactory({ parent: null }));
       createComponent({
+        parent: {
+          iid: '1',
+        },
         mutationHandler: unAssignParentWorkItemMutationHandler,
       });
 
@@ -202,6 +229,13 @@ describe('WorkItemParent component', () => {
             parentId: null,
           },
         },
+      });
+      expect(removeHierarchyChild).toHaveBeenCalledWith({
+        cache: expect.anything(Object),
+        fullPath: mockFullPath,
+        iid: '1',
+        isGroup: false,
+        workItem: { id: 'gid://gitlab/WorkItem/1' },
       });
     });
 
@@ -231,6 +265,36 @@ describe('WorkItemParent component', () => {
         ['Something went wrong while updating the objective. Please try again.'],
       ]);
       expect(Sentry.captureException).toHaveBeenCalledWith(error);
+    });
+  });
+
+  describe('when project context', () => {
+    beforeEach(() => {
+      createComponent();
+      findCollapsibleListbox().vm.$emit('shown');
+    });
+
+    it('calls the project work items query', () => {
+      expect(availableWorkItemsSuccessHandler).toHaveBeenCalled();
+    });
+
+    it('skips calling the group work items query', () => {
+      expect(groupWorkItemsSuccessHandler).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when group context', () => {
+    beforeEach(() => {
+      createComponent({ isGroup: true });
+      findCollapsibleListbox().vm.$emit('shown');
+    });
+
+    it('skips calling the project work items query', () => {
+      expect(availableWorkItemsSuccessHandler).not.toHaveBeenCalled();
+    });
+
+    it('calls the group work items query', () => {
+      expect(groupWorkItemsSuccessHandler).toHaveBeenCalled();
     });
   });
 });

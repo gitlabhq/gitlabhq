@@ -28,7 +28,7 @@ RSpec.describe DiffFileEntity do
     let(:code_navigation_path) { Gitlab::CodeNavigationPath.new(project, project.commit.sha) }
     let(:request) { EntityRequest.new(project: project, current_user: user) }
     let(:entity) { described_class.new(diff_file, options.merge(request: request, merge_request: merge_request, code_navigation_path: code_navigation_path)) }
-    let(:exposed_urls) { %i(edit_path view_path context_lines_path) }
+    let(:exposed_urls) { %i[edit_path view_path context_lines_path] }
 
     it_behaves_like 'diff file entity'
 

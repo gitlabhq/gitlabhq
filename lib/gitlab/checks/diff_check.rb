@@ -31,8 +31,7 @@ module Gitlab
       def treeish_objects
         objects = commits
 
-        return objects unless project.repository.empty? &&
-          Feature.enabled?(:verify_push_rules_for_first_commit, project)
+        return objects unless project.repository.empty?
 
         # It's a special case for the push to the empty repository
         #

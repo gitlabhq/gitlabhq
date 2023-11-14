@@ -7,7 +7,7 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveBackfilledJobArtifactsExpireAt
 
   describe '#perform' do
     let(:job_artifact) { table(:ci_job_artifacts, database: :ci) }
-    let(:jobs) { table(:ci_builds, database: :ci) { |model| model.primary_key = :id } }
+    let(:jobs) { table(:p_ci_builds, database: :ci) { |model| model.primary_key = :id } }
 
     let(:test_worker) do
       described_class.new(

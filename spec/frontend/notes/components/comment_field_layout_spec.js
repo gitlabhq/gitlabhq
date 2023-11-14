@@ -31,18 +31,12 @@ describe('Comment Field Layout Component', () => {
   const findAttachmentsWarning = () => wrapper.findComponent(AttachmentsWarning);
   const findErrorAlert = () => wrapper.findByTestId('comment-field-alert-container');
 
-  const createWrapper = (props = {}, provide = {}) => {
+  const createWrapper = (props = {}) => {
     wrapper = extendedWrapper(
       shallowMount(CommentFieldLayout, {
         propsData: {
           noteableData: noteableDataMock,
           ...props,
-        },
-        provide: {
-          glFeatures: {
-            serviceDeskNewNoteEmailNativeAttachments: true,
-          },
-          ...provide,
         },
       }),
     );
@@ -158,24 +152,6 @@ describe('Comment Field Layout Component', () => {
       });
 
       expect(findEmailParticipantsWarning().exists()).toBe(false);
-    });
-  });
-
-  describe('serviceDeskNewNoteEmailNativeAttachments flag', () => {
-    it('shows warning message when flag is enabled', () => {
-      createWrapper(commentFieldWithAttachmentData, {
-        glFeatures: { serviceDeskNewNoteEmailNativeAttachments: true },
-      });
-
-      expect(findAttachmentsWarning().exists()).toBe(true);
-    });
-
-    it('shows warning message when flag is disables', () => {
-      createWrapper(commentFieldWithAttachmentData, {
-        glFeatures: { serviceDeskNewNoteEmailNativeAttachments: false },
-      });
-
-      expect(findAttachmentsWarning().exists()).toBe(false);
     });
   });
 });

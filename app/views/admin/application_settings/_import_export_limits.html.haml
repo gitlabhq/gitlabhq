@@ -2,8 +2,7 @@
   = form_errors(@application_setting)
 
   %fieldset
-    = html_escape(_("Set any rate limit to %{code_open}0%{code_close} to disable the limit.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-
+    = html_escape(_("Set to 0 to disable the limits."))
 
   %fieldset
     .form-group

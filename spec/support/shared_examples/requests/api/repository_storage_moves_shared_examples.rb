@@ -80,56 +80,9 @@ RSpec.shared_examples 'repository_storage_moves API' do |container_type|
     end
   end
 
-  describe "GET /#{container_type}/:id/repository_storage_moves" do
-    let(:container_id) { container.id }
+  shared_examples 'post single container repository storage move' do
     let(:url) { "/#{container_type}/#{container_id}/repository_storage_moves" }
-
-    it_behaves_like 'get container repository storage move list'
-
-    context 'non-existent container' do
-      let(:container_id) { non_existing_record_id }
-
-      it 'returns not found' do
-        get api(url, user, admin_mode: user.admin?)
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-  end
-
-  describe "GET /#{container_type}/:id/repository_storage_moves/:repository_storage_move_id" do
     let(:container_id) { container.id }
-    let(:url) { "/#{container_type}/#{container_id}/repository_storage_moves/#{repository_storage_move_id}" }
-
-    it_behaves_like 'get single container repository storage move'
-
-    context 'non-existent container' do
-      let(:container_id) { non_existing_record_id }
-      let(:repository_storage_move_id) { storage_move.id }
-
-      it 'returns not found' do
-        get api(url, user, admin_mode: user.admin?)
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-  end
-
-  describe "GET /#{container_type.singularize}_repository_storage_moves" do
-    it_behaves_like 'get container repository storage move list' do
-      let(:url) { "/#{container_type.singularize}_repository_storage_moves" }
-    end
-  end
-
-  describe "GET /#{container_type.singularize}_repository_storage_moves/:repository_storage_move_id" do
-    it_behaves_like 'get single container repository storage move' do
-      let(:url) { "/#{container_type.singularize}_repository_storage_moves/#{repository_storage_move_id}" }
-    end
-  end
-
-  describe "POST /#{container_type}/:id/repository_storage_moves", :aggregate_failures do
-    let(:container_id) { container.id }
-    let(:url) { "/#{container_type}/#{container_id}/repository_storage_moves" }
     let(:destination_storage_name) { 'test_second_storage' }
 
     def create_container_repository_storage_move
@@ -184,6 +137,57 @@ RSpec.shared_examples 'repository_storage_moves API' do |container_type|
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+  end
+
+  describe "GET /#{container_type}/:id/repository_storage_moves" do
+    let(:container_id) { container.id }
+    let(:url) { "/#{container_type}/#{container_id}/repository_storage_moves" }
+
+    it_behaves_like 'get container repository storage move list'
+
+    context 'non-existent container' do
+      let(:container_id) { non_existing_record_id }
+
+      it 'returns not found' do
+        get api(url, user, admin_mode: user.admin?)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  describe "GET /#{container_type}/:id/repository_storage_moves/:repository_storage_move_id" do
+    let(:container_id) { container.id }
+    let(:url) { "/#{container_type}/#{container_id}/repository_storage_moves/#{repository_storage_move_id}" }
+
+    it_behaves_like 'get single container repository storage move'
+
+    context 'non-existent container' do
+      let(:container_id) { non_existing_record_id }
+      let(:repository_storage_move_id) { storage_move.id }
+
+      it 'returns not found' do
+        get api(url, user, admin_mode: user.admin?)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  describe "GET /#{container_type.singularize}_repository_storage_moves" do
+    it_behaves_like 'get container repository storage move list' do
+      let(:url) { "/#{container_type.singularize}_repository_storage_moves" }
+    end
+  end
+
+  describe "GET /#{container_type.singularize}_repository_storage_moves/:repository_storage_move_id" do
+    it_behaves_like 'get single container repository storage move' do
+      let(:url) { "/#{container_type.singularize}_repository_storage_moves/#{repository_storage_move_id}" }
+    end
+  end
+
+  describe "POST /#{container_type}/:id/repository_storage_moves", :aggregate_failures do
+    it_behaves_like 'post single container repository storage move'
   end
 
   describe "POST /#{container_type.singularize}_repository_storage_moves" do

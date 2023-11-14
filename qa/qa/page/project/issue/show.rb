@@ -89,6 +89,7 @@ module QA
 
           def open_actions_dropdown
             # We use find here because these are gitlab-ui elements
+            wait_for_requests
             find('[data-testid="desktop-dropdown"] > button').click
           end
         end

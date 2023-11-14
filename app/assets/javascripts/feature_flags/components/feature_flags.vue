@@ -206,7 +206,6 @@ export default {
             v-gl-modal="'configure-feature-flags'"
             variant="confirm"
             category="secondary"
-            data-qa-selector="configure_feature_flags_button"
             data-testid="ff-configure-button"
             class="gl-mb-0 gl-mr-3"
           >

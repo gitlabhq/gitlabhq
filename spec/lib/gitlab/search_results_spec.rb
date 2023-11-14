@@ -99,7 +99,7 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
 
     describe '#aggregations' do
       where(:scope) do
-        %w(projects issues merge_requests blobs commits wiki_blobs epics milestones users unknown)
+        %w[projects issues merge_requests blobs commits wiki_blobs epics milestones users unknown]
       end
 
       with_them do
@@ -197,7 +197,7 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
         let(:query) { 'foo' }
 
         include_examples 'search results filtered by state'
-        include_examples 'search results filtered by archived', 'search_merge_requests_hide_archived_projects'
+        include_examples 'search results filtered by archived'
       end
 
       context 'ordering' do
@@ -244,7 +244,7 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
 
         include_examples 'search results filtered by state'
         include_examples 'search results filtered by confidential'
-        include_examples 'search results filtered by archived', 'search_issues_hide_archived_projects'
+        include_examples 'search results filtered by archived'
       end
 
       context 'ordering' do

@@ -46,7 +46,7 @@ module QA
           end
 
           within_element(:menu_section, section_name: parent_menu_name) do
-            click_element(:nav_item_link, submenu_item: sub_menu)
+            click_element('nav-item-link', submenu_item: sub_menu)
           end
         end
       end

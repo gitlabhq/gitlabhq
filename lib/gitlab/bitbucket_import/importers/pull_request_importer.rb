@@ -45,6 +45,8 @@ module Gitlab
             merge_request.assignee_ids = [author_id]
             merge_request.reviewer_ids = reviewers
             merge_request.save!
+
+            metrics.merge_requests_counter.increment
           end
 
           log_info(import_stage: 'import_pull_request', message: 'finished', iid: object[:iid])

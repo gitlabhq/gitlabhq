@@ -6,7 +6,7 @@ stages:
   - deploy
   - post-deploy
   - qa
-  - post-qa
+  - report
   - dast
 
 include:
@@ -30,7 +30,7 @@ dont-interrupt-me:
 
 review-build-cng-env:
   extends:
-    - .review-build-cng-env
+    - .build-cng-env
     - .default-retry
     - .review:rules:review-build-cng
     - .fast-no-clone-job
@@ -45,14 +45,14 @@ review-build-cng-env:
       scripts/trigger-build.rb
       VERSION
   before_script:
-    - apk add --no-cache --update curl # Not present in ruby-alpine, so we add it manually
+    - apk add --no-cache --update curl  # Not present in ruby-alpine, so we add it manually
     - !reference [".fast-no-clone-job", before_script]
-    - !reference [".review-build-cng-env", before_script]
-    - mv VERSION GITLAB_WORKHORSE_VERSION # GITLAB_WORKHORSE_VERSION is a symlink to VERSION
+    - !reference [".build-cng-env", before_script]
+    - mv VERSION GITLAB_WORKHORSE_VERSION  # GITLAB_WORKHORSE_VERSION is a symlink to VERSION
 
 review-build-cng:
   extends:
-    - .review-build-cng
+    - .build-cng
     - .review:rules:review-build-cng
   needs: ["review-build-cng-env"]
 
@@ -67,7 +67,7 @@ review-build-cng:
     GITLAB_IMAGE_REPOSITORY: "registry.gitlab.com/gitlab-org/build/cng-mirror"
     GITLAB_IMAGE_SUFFIX: "ee"
     GITLAB_REVIEW_APP_BASE_CONFIG_FILE: "scripts/review_apps/base-config.yaml"
-    GITLAB_HELM_CHART_REF: "75b1486a9aec212d0f49ef1251526d8e51004bbc"  # 7.0.1: https://gitlab.com/gitlab-org/charts/gitlab/-/commit/75b1486a9aec212d0f49ef1251526d8e51004bbc
+    GITLAB_HELM_CHART_REF: "db886740f66e8dfacd7b9f0f79f640c8c2e0318a"  # 7.5.1: https://gitlab.com/gitlab-org/charts/gitlab/-/commit/db886740f66e8dfacd7b9f0f79f640c8c2e0318a
   environment:
     name: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # No separator for SCHEDULE_TYPE so it's compatible as before and looks nice without it
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
@@ -98,9 +98,9 @@ review-deploy:
       scripts/review_apps/seed-dast-test-data.sh
       VERSION
   before_script:
-    - apk add --no-cache --update curl # Not present in ruby-alpine, so we add it manually
+    - apk add --no-cache --update curl  # Not present in ruby-alpine, so we add it manually
     - !reference [".fast-no-clone-job", before_script]
-    - mv VERSION GITLAB_WORKHORSE_VERSION # GITLAB_WORKHORSE_VERSION is a symlink to VERSION
+    - mv VERSION GITLAB_WORKHORSE_VERSION  # GITLAB_WORKHORSE_VERSION is a symlink to VERSION
     - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
     - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
     - export GITLAB_WORKHORSE_VERSION=$(<GITLAB_WORKHORSE_VERSION)

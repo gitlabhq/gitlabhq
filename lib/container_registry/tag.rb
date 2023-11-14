@@ -5,14 +5,23 @@ module ContainerRegistry
     include Gitlab::Utils::StrongMemoize
 
     attr_reader :repository, :name, :updated_at
-    attr_writer :created_at
+    attr_writer :created_at, :manifest_digest, :revision, :total_size
 
     delegate :registry, :client, to: :repository
-    delegate :revision, :short_revision, to: :config_blob, allow_nil: true
 
     def initialize(repository, name)
       @repository = repository
       @name = name
+    end
+
+    def revision
+      @revision || config_blob&.revision
+    end
+
+    def short_revision
+      return unless revision
+
+      revision[0..8]
     end
 
     def valid?
@@ -53,7 +62,7 @@ module ContainerRegistry
 
     def digest
       strong_memoize(:digest) do
-        client.repository_tag_digest(repository.path, name)
+        @manifest_digest || client.repository_tag_digest(repository.path, name)
       end
     end
 
@@ -126,6 +135,8 @@ module ContainerRegistry
 
     # rubocop: disable CodeReuse/ActiveRecord
     def total_size
+      return @total_size if @total_size
+
       return unless layers
 
       layers.sum(&:size) if v2?

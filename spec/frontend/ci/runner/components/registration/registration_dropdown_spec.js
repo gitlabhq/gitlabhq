@@ -178,7 +178,7 @@ describe('RegistrationDropdown', () => {
         mountExtended,
       );
 
-      expect(findRegistrationTokenInput().element.type).toBe('password');
+      expect(findRegistrationTokenInput().classes()).toContain('input-copy-show-disc');
     });
   });
 

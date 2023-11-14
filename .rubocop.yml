@@ -153,6 +153,12 @@ Style/FrozenStringLiteralComment:
 Style/SpecialGlobalVars:
   EnforcedStyle: use_builtin_english_names
 
+Style/SignalException:
+  Exclude:
+    # Danger defines its own `fail` method
+    - '**/*/Dangerfile'
+    - 'tooling/danger/**/*.rb'
+
 RSpec/FilePath:
   Exclude:
     - 'qa/**/*'
@@ -309,6 +315,11 @@ Rails/ActiveRecordCallbacksOrder:
   Include:
     - app/models/**/*.rb
     - ee/app/models/**/*.rb
+
+# We disable this since network latency isn't an issue and schema changes execute in a few milliseconds.
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136251#note_1638949892.
+Rails/BulkChangeTable:
+  Enabled: false
 
 Cop/DefaultScope:
   Enabled: true
@@ -477,9 +488,9 @@ BackgroundMigration/FeatureCategory:
   Include:
     - 'lib/gitlab/background_migration/*.rb'
 
-BackgroundMigration/MissingDictionaryFile:
+BackgroundMigration/DictionaryFile:
   Enabled: true
-  EnforcedSince: 20230307160251
+  EnforcedSince: 20231018100907
   Include:
     - 'db/post_migrate/*.rb'
 
@@ -919,6 +930,9 @@ Cop/UserAdmin:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
 
+Style/InlineDisableAnnotation:
+  Enabled: true
+
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/327495
 Style/RegexpLiteral:
   Enabled: false
@@ -1083,3 +1097,8 @@ Cop/ExperimentsTestCoverage:
     - 'lib/**/*'
     - 'ee/app/**/*'
     - 'ee/lib/**/*'
+
+RSpec/UselessDynamicDefinition:
+  Exclude:
+    - 'spec/factories/**/*'
+    - 'ee/spec/factories/**/*'

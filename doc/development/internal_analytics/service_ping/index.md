@@ -22,7 +22,7 @@ and sales teams understand how GitLab is used. The data helps to:
 Service Ping information is not anonymous. It's linked to the instance's hostname, but does
 not contain project names, usernames, or any other specific data.
 
-Service Ping is enabled by default. However, you can [disable](../../../administration/settings/usage_statistics.md#enable-or-disable-usage-statistics) it on any self-managed instance. When Service Ping is enabled, GitLab gathers data from the other instances and can show your instance's usage statistics to your users.
+Service Ping is enabled by default. However, you can [disable](../../../administration/settings/usage_statistics.md#enable-or-disable-service-ping) certain metrics on any self-managed instance. When Service Ping is enabled, GitLab gathers data from the other instances and can show your instance's usage statistics to your users.
 
 ## Service Ping terminology
 
@@ -38,13 +38,8 @@ We use the following terminology to describe the Service Ping components:
 
 ### Limitations
 
-- Service Ping does not track frontend events things like page views, link clicks, or user sessions.
-- Service Ping focuses only on aggregated backend events.
-
-Because of these limitations we recommend you:
-
-- Instrument your products with Snowplow for more detailed analytics on GitLab.com.
-- Use Service Ping to track aggregated backend events on self-managed instances.
+- Service Ping delivers only [metrics](../index.md#metric), not individual events.
+- A metric has to be present and instrumented in the codebase for a GitLab version to be delivered in Service Pings for that version.
 
 ## Service Ping request flow
 
@@ -358,14 +353,6 @@ The following is example content of the Service Ping payload.
 }
 ```
 
-## Notable changes
-
-In GitLab 14.6, [`flavor`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75587) was added to try to detect the underlying managed database variant.
-Possible values are "Amazon Aurora PostgreSQL", "PostgreSQL on Amazon RDS", "Cloud SQL for PostgreSQL",
-"Azure Database for PostgreSQL - Flexible Server", or "null".
-
-In GitLab 13.5, `pg_system_id` was added to send the [PostgreSQL system identifier](https://www.2ndquadrant.com/en/blog/support-for-postgresqls-system-identifier-in-barman/).
-
 ## Export Service Ping data
 
 Rake tasks exist to export Service Ping data in different formats.
@@ -390,105 +377,7 @@ bin/rake gitlab:usage_data:dump_non_sql_in_json
 bin/rake gitlab:usage_data:dump_sql_in_yaml > ~/Desktop/usage-metrics-2020-09-02.yaml
 ```
 
-## Generate Service Ping
-
-To generate Service Ping, use [Teleport](https://goteleport.com/docs/) or a detached screen session on a remote server.
-
-### Triggering
-
-#### Trigger Service Ping with Teleport
-
-1. Request temporary [access](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console) to the required environment.
-1. After your approval is issued, [access the Rails console](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Rails_Console_via_Teleport.md#access-approval).
-1. Run `GitlabServicePingWorker.new.perform('triggered_from_cron' => false)`.
-
-#### Trigger Service Ping with a detached screen session
-
-1. Connect to bastion with agent forwarding:
-
-   ```shell
-   ssh -A lb-bastion.gprd.gitlab.com
-   ```
-
-1. Create named screen:
-
-   ```shell
-   screen -S <username>_usage_ping_<date>
-   ```
-
-1. Connect to console host:
-
-   ```shell
-   ssh $USER-rails@console-01-sv-gprd.c.gitlab-production.internal
-   ```
-
-1. Run:
-
-   ```shell
-   GitlabServicePingWorker.new.perform('triggered_from_cron' => false)
-   ```
-
-1. To detach from screen, press `ctrl + A`, `ctrl + D`.
-1. Exit from bastion:
-
-   ```shell
-   exit
-   ```
-
-1. Get the metrics duration from logs:
-
-Search in Google Console logs for `time_elapsed`. [Query example](https://cloudlogging.app.goo.gl/nWheZvD8D3nWazNe6).
-
-### Verification (After approx 30 hours)
-
-#### Verify with Teleport
-
-1. Follow [the steps](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console) to request a new access to the required environment and connect to the Rails console
-1. Check the last payload in `raw_usage_data` table: `RawUsageData.last.payload`
-1. Check the when the payload was sent: `RawUsageData.last.sent_at`
-
-#### Verify using detached screen session
-
-1. Reconnect to bastion:
-
-   ```shell
-   ssh -A lb-bastion.gprd.gitlab.com
-   ```
-
-1. Find your screen session:
-
-   ```shell
-   screen -ls
-   ```
-
-1. Attach to your screen session:
-
-   ```shell
-   screen -x 14226.mwawrzyniak_usage_ping_2021_01_22
-   ```
-
-1. Check the last payload in `raw_usage_data` table:
-
-   ```shell
-   RawUsageData.last.payload
-   ```
-
-1. Check the when the payload was sent:
-
-   ```shell
-   RawUsageData.last.sent_at
-   ```
-
-### Skip database write operations
-
-To skip database write operations, DevOps report creation, and storage of usage data payload, pass an optional argument:
-
-```shell
-skip_db_write:
-GitlabServicePingWorker.new.perform('triggered_from_cron' => false, 'skip_db_write' => true)
-```
-
-### Fallback values for Service Ping
+## Fallback values for Service Ping
 
 We return fallback values in these cases:
 

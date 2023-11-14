@@ -18,6 +18,7 @@ module Sidebars
         def configure_menu_items
           [
             :tracing,
+            :metrics,
             :error_tracking,
             :alert_management,
             :incidents,

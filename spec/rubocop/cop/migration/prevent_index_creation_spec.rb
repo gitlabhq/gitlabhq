@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/prevent_index_creation'
 
 RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation do
-  let(:forbidden_tables) { %w(ci_builds namespaces) }
+  let(:forbidden_tables) { %w[ci_builds namespaces projects users] }
   let(:forbidden_tables_list) { forbidden_tables.join(', ') }
 
   context 'when in migration' do

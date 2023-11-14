@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'rejects helm packages access' do |user_type, status|
+RSpec.shared_examples 'rejects helm packages access' do |user_type, status, body|
   context "for user type #{user_type}" do
     before do
       project.send("add_#{user_type}", user) if user_type != :anonymous && user_type != :not_a_member
@@ -13,6 +13,14 @@ RSpec.shared_examples 'rejects helm packages access' do |user_type, status|
         subject
 
         expect(response.headers['WWW-Authenticate']).to eq 'Basic realm="GitLab Packages Registry"'
+      end
+    end
+
+    if body
+      it 'has the correct body' do
+        subject
+
+        expect(response.body).to eq(body)
       end
     end
   end

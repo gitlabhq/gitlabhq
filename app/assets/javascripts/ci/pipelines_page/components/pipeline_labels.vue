@@ -1,7 +1,7 @@
 <script>
 import { GlLink, GlPopover, GlSprintf, GlTooltipDirective, GlBadge } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { SCHEDULE_ORIGIN } from '~/ci/pipeline_details/constants';
+import { SCHEDULE_ORIGIN, API_ORIGIN, TRIGGER_ORIGIN } from '../constants';
 
 export default {
   components: {
@@ -31,6 +31,9 @@ export default {
     isScheduled() {
       return this.pipeline.source === SCHEDULE_ORIGIN;
     },
+    isTriggered() {
+      return this.pipeline.source === TRIGGER_ORIGIN;
+    },
     isInFork() {
       return Boolean(
         this.targetProjectFullPath &&
@@ -50,6 +53,9 @@ export default {
     autoDevopsHelpPath() {
       return helpPagePath('topics/autodevops/index.md');
     },
+    isApi() {
+      return this.pipeline.source === API_ORIGIN;
+    },
   },
 };
 </script>
@@ -64,7 +70,16 @@ export default {
       variant="info"
       size="sm"
       data-testid="pipeline-url-scheduled"
-      >{{ __('Scheduled') }}</gl-badge
+      >{{ __('scheduled') }}</gl-badge
+    >
+    <gl-badge
+      v-if="isTriggered"
+      v-gl-tooltip
+      :title="__('This pipeline was created by an API call authenticated with a trigger token')"
+      variant="info"
+      size="sm"
+      data-testid="pipeline-url-triggered"
+      >{{ __('trigger token') }}</gl-badge
     >
     <gl-badge
       v-if="pipeline.flags.latest"
@@ -184,6 +199,15 @@ export default {
       size="sm"
       data-testid="pipeline-url-fork"
       >{{ __('fork') }}</gl-badge
+    >
+    <gl-badge
+      v-if="isApi"
+      v-gl-tooltip
+      :title="__('This pipeline was triggered using the api')"
+      variant="info"
+      size="sm"
+      data-testid="pipeline-api-badge"
+      >{{ s__('Pipeline|api') }}</gl-badge
     >
   </div>
 </template>

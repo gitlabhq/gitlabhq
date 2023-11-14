@@ -50,7 +50,6 @@ class StaticAnalysis
     Task.new(%w[scripts/lint-conflicts.sh], 1),
     Task.new(%w[yarn run block-dependencies], 1),
     Task.new(%w[yarn run check-dependencies], 1),
-    Task.new(%w[scripts/lint-rugged], 1),
     Task.new(%w[scripts/gemfile_lock_changed.sh], 1)
   ].compact.freeze
 

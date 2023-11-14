@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
   describe '#execute' do
-    let_it_be(:allowed_content_types) { %w(application/gzip application/octet-stream) }
+    let_it_be(:allowed_content_types) { %w[application/gzip application/octet-stream] }
     let_it_be(:file_size_limit) { 5.gigabytes }
     let_it_be(:config) { build(:bulk_import_configuration) }
     let_it_be(:content_type) { 'application/octet-stream' }
@@ -82,18 +82,17 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
 
     context 'when content-type is not valid' do
       let(:content_type) { 'invalid' }
-      let(:import_logger) { instance_double(Gitlab::Import::Logger) }
+      let(:import_logger) { instance_double(BulkImports::Logger) }
 
       before do
-        allow(Gitlab::Import::Logger).to receive(:build).and_return(import_logger)
+        allow(BulkImports::Logger).to receive(:build).and_return(import_logger)
         allow(import_logger).to receive(:warn)
       end
 
       it 'logs and raises an error' do
         expect(import_logger).to receive(:warn).once.with(
           message: 'Invalid content type',
-          response_headers: headers,
-          importer: 'gitlab_migration'
+          response_headers: headers
         )
 
         expect { subject.execute }.to raise_error(described_class::ServiceError, 'Invalid content type')

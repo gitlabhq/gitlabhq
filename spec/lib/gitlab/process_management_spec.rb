@@ -8,7 +8,7 @@ RSpec.describe Gitlab::ProcessManagement do
       expect(described_class).to receive(:trap).ordered.with(:INT)
       expect(described_class).to receive(:trap).ordered.with(:HUP)
 
-      described_class.trap_signals(%i(INT HUP))
+      described_class.trap_signals(%i[INT HUP])
     end
   end
 
@@ -17,7 +17,7 @@ RSpec.describe Gitlab::ProcessManagement do
       expect(described_class).to receive(:trap).ordered.with(:INT, 'DEFAULT')
       expect(described_class).to receive(:trap).ordered.with(:HUP, 'DEFAULT')
 
-      described_class.modify_signals(%i(INT HUP), 'DEFAULT')
+      described_class.modify_signals(%i[INT HUP], 'DEFAULT')
     end
   end
 

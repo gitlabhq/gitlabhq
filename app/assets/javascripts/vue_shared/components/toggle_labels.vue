@@ -54,7 +54,6 @@ export default {
       label-position="left"
       aria-describedby="board-labels-toggle-text"
       data-testid="show-labels-toggle"
-      data-qa-selector="show_labels_toggle"
       class="gl-flex-direction-row"
       @change="setShowLabels"
     />

@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Migration::MigrationRecord do
     end
   end
 
-  %w(ActiveRecord::Base ApplicationRecord).each do |klass|
+  %w[ActiveRecord::Base ApplicationRecord].each do |klass|
     context 'outside of a migration' do
       it_behaves_like 'a disabled cop', klass
     end

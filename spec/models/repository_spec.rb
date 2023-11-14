@@ -743,7 +743,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   describe "#merged_branch_names", :clean_gitlab_redis_cache do
     subject { repository.merged_branch_names(branch_names) }
 
-    let(:branch_names) { %w(test beep boop definitely_merged) }
+    let(:branch_names) { %w[test beep boop definitely_merged] }
     let(:already_merged) { Set.new(["definitely_merged"]) }
 
     let(:write_hash) do
@@ -1621,16 +1621,16 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
     where(:branch_names, :tag_names, :result) do
       nil | nil | false
-      %w() | %w() | false
-      %w(a b) | %w() | false
-      %w() | %w(c d) | false
-      %w(a b) | %w(c d) | false
-      %w(a/b) | %w(c/d) | false
-      %w(a b) | %w(c d a/z) | true
-      %w(a b c/z) | %w(c d) | true
-      %w(a/b/z) | %w(a/b) | false # we only consider refs ambiguous before the first slash
-      %w(a/b/z) | %w(a/b a) | true
-      %w(ab) | %w(abc/d a b) | false
+      %w[] | %w[] | false
+      %w[a b] | %w[] | false
+      %w[] | %w[c d] | false
+      %w[a b] | %w[c d] | false
+      %w[a/b] | %w[c/d] | false
+      %w[a b] | %w[c d a/z] | true
+      %w[a b c/z] | %w[c d] | true
+      %w[a/b/z] | %w[a/b] | false # we only consider refs ambiguous before the first slash
+      %w[a/b/z] | %w[a/b a] | true
+      %w[ab] | %w[abc/d a b] | false
     end
 
     with_them do
@@ -2596,7 +2596,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   describe '#expire_branches_cache' do
     it 'expires the cache' do
       expect(repository).to receive(:expire_method_caches)
-        .with(%i(branch_names merged_branch_names branch_count has_visible_content? has_ambiguous_refs?))
+        .with(%i[branch_names merged_branch_names branch_count has_visible_content? has_ambiguous_refs?])
         .and_call_original
 
       expect_next_instance_of(ProtectedBranches::CacheService) do |cache_service|
@@ -2630,7 +2630,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   describe '#expire_tags_cache' do
     it 'expires the cache' do
       expect(repository).to receive(:expire_method_caches)
-        .with(%i(tag_names tag_count has_ambiguous_refs?))
+        .with(%i[tag_names tag_count has_ambiguous_refs?])
         .and_call_original
 
       repository.expire_tags_cache
@@ -2889,7 +2889,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   describe '#expire_statistics_caches' do
     it 'expires the caches' do
       expect(repository).to receive(:expire_method_caches)
-        .with(%i(size recent_objects_size commit_count))
+        .with(%i[size recent_objects_size commit_count])
 
       repository.expire_statistics_caches
     end
@@ -3001,10 +3001,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
   it_behaves_like '#tree'
 
-  describe '#tree? with Rugged enabled', :enable_rugged do
-    it_behaves_like '#tree'
-  end
-
   describe '#size' do
     context 'with a non-existing repository' do
       it 'returns 0' do
@@ -3090,33 +3086,13 @@ RSpec.describe Repository, feature_category: :source_code_management do
   describe '#refresh_method_caches' do
     it 'refreshes the caches of the given types' do
       expect(repository).to receive(:expire_method_caches)
-        .with(%i(readme_path license_blob license_gitaly))
+        .with(%i[readme_path license_blob license_gitaly])
 
       expect(repository).to receive(:readme_path)
       expect(repository).to receive(:license_blob)
       expect(repository).to receive(:license_gitaly)
 
-      repository.refresh_method_caches(%i(readme license))
-    end
-  end
-
-  describe '#gitlab_ci_yml_for' do
-    let(:project) { create(:project, :repository) }
-
-    before do
-      repository.create_file(User.last, '.gitlab-ci.yml', 'CONTENT', message: 'Add .gitlab-ci.yml', branch_name: 'master')
-    end
-
-    context 'when there is a .gitlab-ci.yml at the commit' do
-      it 'returns the content' do
-        expect(repository.gitlab_ci_yml_for(repository.commit.sha)).to eq('CONTENT')
-      end
-    end
-
-    context 'when there is no .gitlab-ci.yml at the commit' do
-      it 'returns nil' do
-        expect(repository.gitlab_ci_yml_for(repository.commit.parent.sha)).to be_nil
-      end
+      repository.refresh_method_caches(%i[readme license])
     end
   end
 
@@ -3234,16 +3210,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
         expect(repository.ancestor?(ancestor.id, commit.id)).to eq("it's apparent")
       end
     end
-  end
-
-  describe '#ancestor? with Rugged enabled', :enable_rugged do
-    it 'calls out to the Rugged implementation' do
-      allow_any_instance_of(Rugged).to receive(:merge_base).with(repository.commit.id, Gitlab::Git::BLANK_SHA).and_call_original
-
-      repository.ancestor?(repository.commit.id, Gitlab::Git::BLANK_SHA)
-    end
-
-    it_behaves_like '#ancestor?'
   end
 
   describe '#archive_metadata' do
@@ -3842,6 +3808,13 @@ RSpec.describe Repository, feature_category: :source_code_management do
       it 'returns nil' do
         expect(repository.get_patch_id('HEAD', 'HEAD')).to be_nil
       end
+
+      it 'does not report the exception' do
+        expect(Gitlab::ErrorTracking)
+          .not_to receive(:track_exception)
+
+        repository.get_patch_id('HEAD', 'HEAD')
+      end
     end
 
     context 'when a Gitlab::Git::CommandError is raised' do
@@ -3851,7 +3824,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
 
       it 'returns nil' do
-        expect(repository.get_patch_id('HEAD', 'HEAD')).to be_nil
+        expect(repository.get_patch_id('HEAD~', 'HEAD')).to be_nil
       end
 
       it 'reports the exception' do
@@ -3860,11 +3833,11 @@ RSpec.describe Repository, feature_category: :source_code_management do
           .with(
             instance_of(Gitlab::Git::CommandError),
             project_id: repository.project.id,
-            old_revision: 'HEAD',
+            old_revision: 'HEAD~',
             new_revision: 'HEAD'
           )
 
-        repository.get_patch_id('HEAD', 'HEAD')
+        repository.get_patch_id('HEAD~', 'HEAD')
       end
     end
 

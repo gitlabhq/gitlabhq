@@ -16,11 +16,11 @@ module Integrations
       valid? && activated?
     end
 
-    def title
+    def self.title
       s_('Shimo|Shimo')
     end
 
-    def description
+    def self.description
       s_('Shimo|Link to a Shimo Workspace from the sidebar.')
     end
 

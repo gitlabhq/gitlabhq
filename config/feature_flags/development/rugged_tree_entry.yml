@@ -1,8 +1,0 @@
----
-name: rugged_tree_entry
-introduced_by_url:
-rollout_issue_url:
-milestone:
-type: development
-group: group::gitaly
-default_enabled: false

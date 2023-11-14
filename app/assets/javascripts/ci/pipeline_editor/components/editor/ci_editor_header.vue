@@ -80,7 +80,7 @@ export default {
 
 <template>
   <div
-    class="gl-display-flex gl-p-3 gl-gap-3 gl-border-solid gl-border-gray-100 gl-border-1 gl-sm-flex-direction-column"
+    class="gl-display-flex gl-p-3 gl-gap-3 gl-border-solid gl-border-gray-100 gl-border-1 gl-flex-direction-column gl-md-flex-direction-row"
   >
     <slot></slot>
     <gl-button

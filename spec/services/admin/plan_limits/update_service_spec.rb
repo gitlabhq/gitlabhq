@@ -82,9 +82,9 @@ RSpec.describe Admin::PlanLimits::UpdateService, feature_category: :shared do
           response = update_plan_limits
 
           expect(response[:status]).to eq :error
-          expect(response[:message]).to eq ["Notification limit must be greater than or equal to " \
-                                            "storage_size_limit (Dashboard limit): 5 " \
-                                            "and less than or equal to enforcement_limit: 10"]
+          expect(response[:message]).to eq [
+            "Notification limit must be greater than or equal to the dashboard limit (5)"
+          ]
         end
       end
 
@@ -102,9 +102,9 @@ RSpec.describe Admin::PlanLimits::UpdateService, feature_category: :shared do
           response = update_plan_limits
 
           expect(response[:status]).to eq :error
-          expect(response[:message]).to eq ["Notification limit must be greater than or equal to " \
-                                            "storage_size_limit (Dashboard limit): 5 " \
-                                            "and less than or equal to enforcement_limit: 10"]
+          expect(response[:message]).to eq [
+            "Notification limit must be less than or equal to the enforcement limit (10)"
+          ]
         end
       end
 
@@ -113,8 +113,8 @@ RSpec.describe Admin::PlanLimits::UpdateService, feature_category: :shared do
 
         before do
           limits.update!(
-            storage_size_limit: 12,
-            notification_limit: 12
+            storage_size_limit: 10,
+            notification_limit: 9
           )
         end
 
@@ -122,9 +122,9 @@ RSpec.describe Admin::PlanLimits::UpdateService, feature_category: :shared do
           response = update_plan_limits
 
           expect(response[:status]).to eq :error
-          expect(response[:message]).to eq ["Enforcement limit must be greater than " \
-                                            "or equal to storage_size_limit (Dashboard limit): " \
-                                            "12 and greater than or equal to notification_limit: 12"]
+          expect(response[:message]).to eq [
+            "Enforcement limit must be greater than or equal to the dashboard limit (10)"
+          ]
         end
       end
 
@@ -133,7 +133,7 @@ RSpec.describe Admin::PlanLimits::UpdateService, feature_category: :shared do
 
         before do
           limits.update!(
-            storage_size_limit: 10,
+            storage_size_limit: 9,
             notification_limit: 10
           )
         end
@@ -142,9 +142,9 @@ RSpec.describe Admin::PlanLimits::UpdateService, feature_category: :shared do
           response = update_plan_limits
 
           expect(response[:status]).to eq :error
-          expect(response[:message]).to eq ["Enforcement limit must be greater than or equal to " \
-                                            "storage_size_limit (Dashboard limit): " \
-                                            "10 and greater than or equal to notification_limit: 10"]
+          expect(response[:message]).to eq [
+            "Enforcement limit must be greater than or equal to the notification limit (10)"
+          ]
         end
       end
 
@@ -162,8 +162,9 @@ RSpec.describe Admin::PlanLimits::UpdateService, feature_category: :shared do
           response = update_plan_limits
 
           expect(response[:status]).to eq :error
-          expect(response[:message]).to eq ["Storage size limit (Dashboard limit) must be less than or " \
-                                            "equal to enforcement_limit: 12 and notification_limit: 10"]
+          expect(response[:message]).to eq [
+            "Dashboard limit must be less than or equal to the notification limit (10)"
+          ]
         end
       end
 
@@ -181,8 +182,45 @@ RSpec.describe Admin::PlanLimits::UpdateService, feature_category: :shared do
           response = update_plan_limits
 
           expect(response[:status]).to eq :error
-          expect(response[:message]).to eq ["Storage size limit (Dashboard limit) must be less than or " \
-                                            "equal to enforcement_limit: 10 and notification_limit: 11"]
+          expect(response[:message]).to eq [
+            "Dashboard limit must be less than or equal to the enforcement limit (10)"
+          ]
+        end
+
+        context 'when enforcement_limit is 0' do
+          before do
+            limits.update!(
+              enforcement_limit: 0
+            )
+          end
+
+          it 'does not return an error' do
+            response = update_plan_limits
+
+            expect(response[:status]).to eq :success
+          end
+        end
+      end
+    end
+
+    context 'when setting limit to unlimited' do
+      before do
+        limits.update!(
+          notification_limit: 10,
+          storage_size_limit: 10,
+          enforcement_limit: 10
+        )
+      end
+
+      [:notification_limit, :enforcement_limit, :storage_size_limit].each do |limit|
+        context "for #{limit}" do
+          let(:params) { { limit => 0 } }
+
+          it 'is successful' do
+            response = update_plan_limits
+
+            expect(response[:status]).to eq :success
+          end
         end
       end
     end

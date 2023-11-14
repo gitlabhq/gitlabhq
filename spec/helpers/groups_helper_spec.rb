@@ -288,13 +288,13 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
       end
 
       it 'returns false if parent group is disabling emails' do
-        allow(group).to receive(:emails_disabled?).and_return(true)
+        allow(group).to receive(:emails_enabled?).and_return(false)
 
         expect(helper.can_disable_group_emails?(subgroup)).to be_falsey
       end
 
       it 'returns true if parent group is not disabling emails' do
-        allow(group).to receive(:emails_disabled?).and_return(false)
+        allow(group).to receive(:emails_enabled?).and_return(true)
 
         expect(helper.can_disable_group_emails?(subgroup)).to be_truthy
       end

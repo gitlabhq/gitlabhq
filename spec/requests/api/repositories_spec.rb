@@ -742,7 +742,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
 
   describe 'GET :id/repository/merge_base' do
     let(:refs) do
-      %w(304d257dcb821665ab5110318fc58a007bd104ed 0031876facac3f2b2702a0e53a26e89939a42209 570e7b2abdd848b95f2f578043fc23bd6f6fd24d)
+      %w[304d257dcb821665ab5110318fc58a007bd104ed 0031876facac3f2b2702a0e53a26e89939a42209 570e7b2abdd848b95f2f578043fc23bd6f6fd24d]
     end
 
     subject(:request) do
@@ -786,7 +786,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
 
     context 'when passing refs that do not exist' do
       it_behaves_like '400 response' do
-        let(:refs) { %w(304d257dcb821665ab5110318fc58a007bd104ed missing) }
+        let(:refs) { %w[304d257dcb821665ab5110318fc58a007bd104ed missing] }
         let(:current_user) { user }
         let(:message) { 'Could not find ref: missing' }
       end
@@ -801,7 +801,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     end
 
     context 'when not enough refs are passed' do
-      let(:refs) { %w(only-one) }
+      let(:refs) { %w[only-one] }
       let(:current_user) { user }
 
       it 'renders a bad request error' do

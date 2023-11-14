@@ -22,8 +22,8 @@ RSpec.describe 'Delete a cluster agent', feature_category: :deployment_managemen
 
   context 'without project permissions' do
     it_behaves_like 'a mutation that returns top-level errors',
-                    errors: ['The resource that you are attempting to access does not exist '\
-               'or you don\'t have permission to perform this action']
+      errors: ['The resource that you are attempting to access does not exist '\
+        'or you don\'t have permission to perform this action']
 
     it 'does not delete cluster agent' do
       expect { cluster_agent.reload }.not_to raise_error

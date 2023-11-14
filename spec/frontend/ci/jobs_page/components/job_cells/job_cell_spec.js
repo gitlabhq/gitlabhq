@@ -107,11 +107,11 @@ describe('Job Cell', () => {
     });
 
     it.each`
-      testId                   | text
-      ${'manual-job-badge'}    | ${'manual'}
-      ${'triggered-job-badge'} | ${'triggered'}
-      ${'fail-job-badge'}      | ${'allowed to fail'}
-      ${'delayed-job-badge'}   | ${'delayed'}
+      testId                       | text
+      ${'manual-job-badge'}        | ${'manual'}
+      ${'trigger-token-job-badge'} | ${'trigger token'}
+      ${'fail-job-badge'}          | ${'allowed to fail'}
+      ${'delayed-job-badge'}       | ${'delayed'}
     `('displays the static $text badge', ({ testId, text }) => {
       createComponent({
         manualJob: true,

@@ -39,9 +39,9 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
       it 'creates a pipeline' do
         expect(pipeline).to be_persisted
         expect(pipeline.stages.map(&:name)).to contain_exactly(
-          *%w(.pre build .post))
+          *%w[.pre build .post])
         expect(pipeline.builds.map(&:name)).to contain_exactly(
-          *%w(validate build notify))
+          *%w[validate build notify])
       end
     end
 
@@ -54,7 +54,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         # we can validate a list of stages, as they are assigned
         # but not persisted
         expect(pipeline.stages.map(&:name)).to contain_exactly(
-          *%w(.pre .post))
+          *%w[.pre .post])
       end
     end
   end

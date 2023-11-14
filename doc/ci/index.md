@@ -21,23 +21,34 @@ If you're new to GitLab CI/CD, start by reviewing some of the commonly used term
 
 ### The `.gitlab-ci.yml` file
 
-To use GitLab CI/CD, you start with a `.gitlab-ci.yml` file at the root of your project.
-In this file, you specify the list of things you want to do, like test and deploy your application.
-This file follows the YAML format and has its own special syntax.
+To use GitLab CI/CD, you start with a `.gitlab-ci.yml` file at the root of your project
+which contains the configuration for your CI/CD pipeline. This file follows the YAML format
+and has its own special syntax.
 
 You can name this file anything you want, but `.gitlab-ci.yml` is the most common name.
-Use the pipeline editor to edit the `.gitlab-ci.yml` file and test the syntax before you commit changes.
+
+In the `.gitlab-ci.yml` file, you can define:
+
+- The tasks you want to complete, for example test and deploy your application.
+- Other configuration files and templates you want to include.
+- Dependencies and caches.
+- The commands you want to run in sequence and those you want to run in parallel.
+- The location to deploy your application to.
+- Whether you want to run the scripts automatically or trigger any of them manually.
 
 **Get started:**
 
 - [Create your first `.gitlab-ci.yml` file](quick_start/index.md).
 - [View all the possible keywords that you can use in the `.gitlab-ci.yml` file](yaml/index.md).
+the configuration.
+- Use the [pipeline editor](pipeline_editor/index.md) to edit or [visualize](pipeline_editor/index.md#visualize-ci-configuration)
+  your CI/CD configuration.
 
 ### Runners
 
 Runners are the agents that run your jobs. These agents can run on physical machines or virtual instances.
 In your `.gitlab-ci.yml` file, you can specify a container image you want to use when running the job.
-The runner loads the image and runs the job either locally or in the container.
+The runner loads the image, clones your project and runs the job either locally or in the container.
 
 If you use GitLab.com, SaaS runners on Linux, Windows, and macOS are already available for use. And you can register your own
 runners on GitLab.com if you'd like.
@@ -68,16 +79,20 @@ Pipelines are made up of jobs and stages:
 ### CI/CD variables
 
 CI/CD variables help you customize jobs by making values defined elsewhere accessible to jobs.
-They can be hard-coded in your `.gitlab-ci.yml` file, project settings, or dynamically generated
-[predefined variables](variables/predefined_variables.md).
+They can be hard-coded in your `.gitlab-ci.yml` file, project settings, or dynamically generated.
 
 **Get started:**
 
 - [Learn more about CI/CD variables](variables/index.md).
+- [Learn about dynamically generated predefined variables](variables/predefined_variables.md).
 
 ### CI/CD components
 
-A [CI/CD component](components/index.md) is a reusable single pipeline configuration unit. Use them to compose an entire pipeline configuration or a small part of a larger pipeline.
+A CI/CD component is a reusable single pipeline configuration unit. Use them to compose an entire pipeline configuration or a small part of a larger pipeline.
+
+**Get started:**
+
+- [Learn more about CI/CD components](components/index.md).
 
 ## Videos
 

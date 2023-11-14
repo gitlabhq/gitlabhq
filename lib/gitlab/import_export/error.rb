@@ -14,8 +14,8 @@ module Gitlab
         self.new('Unknown object type')
       end
 
-      def self.file_compression_error
-        self.new('File compression/decompression failed')
+      def self.file_compression_error(error)
+        self.new(format('File compression or decompression failed. %{error}', error: error))
       end
 
       def self.incompatible_import_file_error

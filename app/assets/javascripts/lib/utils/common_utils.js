@@ -7,6 +7,7 @@ import $ from 'jquery';
 import { isFunction, defer, escape, partial, toLower } from 'lodash';
 import Cookies from '~/lib/utils/cookies';
 import { SCOPED_LABEL_DELIMITER } from '~/sidebar/components/labels/labels_select_widget/constants';
+import { DEFAULT_CI_CONFIG_PATH, CI_CONFIG_PATH_EXTENSION } from '~/lib/utils/constants';
 import { convertToCamelCase, convertToSnakeCase } from './text_utility';
 import { isObject } from './type_utility';
 import { getLocationHash } from './url_utility';
@@ -736,4 +737,18 @@ export const isCurrentUser = (userId) => {
  */
 export const cloneWithoutReferences = (obj) => {
   return JSON.parse(JSON.stringify(obj));
+};
+
+/**
+ * Returns true if the given path is the default CI config path.
+ */
+export const isDefaultCiConfig = (path) => {
+  return path === DEFAULT_CI_CONFIG_PATH;
+};
+
+/**
+ * Returns true if the given path has the CI config path extension.
+ */
+export const hasCiConfigExtension = (path) => {
+  return CI_CONFIG_PATH_EXTENSION.test(path);
 };

@@ -5,7 +5,7 @@ module QA
     module Project
       module Pipeline
         class Show < QA::Page::Base
-          include Component::CiBadgeLink
+          include Component::CiIcon
 
           view 'app/assets/javascripts/ci/pipeline_details/header/pipeline_details_header.vue' do
             element 'pipeline-details-header', required: true
@@ -43,7 +43,7 @@ module QA
           def has_build?(name, status: :success, wait: nil)
             if status
               within_element('job-item-container', text: name) do
-                has_selector?(".ci-status-icon-#{status}", **{ wait: wait }.compact)
+                has_selector?("[data-testid='status_#{status}_borderless-icon']", **{ wait: wait }.compact)
               end
             else
               has_element?('job-item-container', text: name)

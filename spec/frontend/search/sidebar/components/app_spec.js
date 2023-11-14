@@ -17,6 +17,7 @@ import ProjectsFilters from '~/search/sidebar/components/projects_filters.vue';
 import NotesFilters from '~/search/sidebar/components/notes_filters.vue';
 import CommitsFilters from '~/search/sidebar/components/commits_filters.vue';
 import MilestonesFilters from '~/search/sidebar/components/milestones_filters.vue';
+import WikiBlobsFilters from '~/search/sidebar/components/wiki_blobs_filters.vue';
 import ScopeLegacyNavigation from '~/search/sidebar/components/scope_legacy_navigation.vue';
 import SmallScreenDrawerNavigation from '~/search/sidebar/components/small_screen_drawer_navigation.vue';
 import ScopeSidebarNavigation from '~/search/sidebar/components/scope_sidebar_navigation.vue';
@@ -46,9 +47,7 @@ describe('GlobalSearchSidebar', () => {
       store,
       provide: {
         glFeatures: {
-          searchNotesHideArchivedProjects: true,
-          searchCommitsHideArchivedProjects: true,
-          searchMilestonesHideArchivedProjects: true,
+          searchProjectWikisHideArchivedProjects: true,
         },
       },
     });
@@ -62,6 +61,7 @@ describe('GlobalSearchSidebar', () => {
   const findNotesFilters = () => wrapper.findComponent(NotesFilters);
   const findCommitsFilters = () => wrapper.findComponent(CommitsFilters);
   const findMilestonesFilters = () => wrapper.findComponent(MilestonesFilters);
+  const findWikiBlobsFilters = () => wrapper.findComponent(WikiBlobsFilters);
   const findScopeLegacyNavigation = () => wrapper.findComponent(ScopeLegacyNavigation);
   const findSmallScreenDrawerNavigation = () => wrapper.findComponent(SmallScreenDrawerNavigation);
   const findScopeSidebarNavigation = () => wrapper.findComponent(ScopeSidebarNavigation);
@@ -92,6 +92,8 @@ describe('GlobalSearchSidebar', () => {
       ${'commits'}        | ${findCommitsFilters}       | ${SEARCH_TYPE_ADVANCED} | ${true}
       ${'milestones'}     | ${findMilestonesFilters}    | ${SEARCH_TYPE_BASIC}    | ${true}
       ${'milestones'}     | ${findMilestonesFilters}    | ${SEARCH_TYPE_ADVANCED} | ${true}
+      ${'wiki_blobs'}     | ${findWikiBlobsFilters}     | ${SEARCH_TYPE_BASIC}    | ${true}
+      ${'wiki_blobs'}     | ${findWikiBlobsFilters}     | ${SEARCH_TYPE_ADVANCED} | ${true}
     `('with sidebar $scope scope:', ({ scope, filter, searchType, isShown }) => {
       beforeEach(() => {
         getterSpies.currentScope = jest.fn(() => scope);

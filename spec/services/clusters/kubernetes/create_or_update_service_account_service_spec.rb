@@ -221,9 +221,9 @@ RSpec.describe Clusters::Kubernetes::CreateOrUpdateServiceAccountService, featur
               namespace: namespace
             },
             rules: [{
-              apiGroups: %w(serving.knative.dev),
-              resources: %w(configurations configurationgenerations routes revisions revisionuids autoscalers services),
-              verbs: %w(get list create update delete patch watch)
+              apiGroups: %w[serving.knative.dev],
+              resources: %w[configurations configurationgenerations routes revisions revisionuids autoscalers services],
+              verbs: %w[get list create update delete patch watch]
             }]
           )
         )
@@ -239,9 +239,9 @@ RSpec.describe Clusters::Kubernetes::CreateOrUpdateServiceAccountService, featur
               namespace: namespace
             },
             rules: [{
-              apiGroups: %w(database.crossplane.io),
-              resources: %w(postgresqlinstances),
-              verbs: %w(get list create watch)
+              apiGroups: %w[database.crossplane.io],
+              resources: %w[postgresqlinstances],
+              verbs: %w[get list create watch]
             }]
           )
         )

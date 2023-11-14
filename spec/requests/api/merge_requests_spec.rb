@@ -229,7 +229,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
             merge_request_closed.id,
             merge_request.id
           ])
-        expect(json_response.last.keys).to match_array(%w(id iid title web_url created_at description project_id state updated_at))
+        expect(json_response.last.keys).to match_array(%w[id iid title web_url created_at description project_id state updated_at])
         expect(json_response.last['iid']).to eq(merge_request.iid)
         expect(json_response.last['title']).to eq(merge_request.title)
         expect(json_response.last).to have_key('web_url')
@@ -2175,7 +2175,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response['title']).to eq('Test merge_request')
-            expect(json_response['labels']).to eq(%w(label label2))
+            expect(json_response['labels']).to eq(%w[label label2])
             expect(json_response['milestone']['id']).to eq(milestone.id)
             expect(json_response['squash']).to be_truthy
             expect(json_response['force_remove_source_branch']).to be_falsy
@@ -2187,11 +2187,11 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         end
 
         it_behaves_like 'creates merge request with labels' do
-          let(:labels) { %w(label label2) }
+          let(:labels) { %w[label label2] }
         end
 
         it_behaves_like 'creates merge request with labels' do
-          let(:labels) { %w(label label2) }
+          let(:labels) { %w[label label2] }
         end
 
         it 'creates merge request with special label names' do

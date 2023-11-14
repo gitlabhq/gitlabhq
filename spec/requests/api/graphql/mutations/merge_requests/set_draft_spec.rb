@@ -15,15 +15,17 @@ RSpec.describe 'Setting Draft status of a merge request', feature_category: :cod
       project_path: project.full_path,
       iid: merge_request.iid.to_s
     }
-    graphql_mutation(:merge_request_set_draft, variables.merge(input),
-                     <<-QL.strip_heredoc
-                       clientMutationId
-                       errors
-                       mergeRequest {
-                         id
-                         title
-                       }
-                     QL
+    graphql_mutation(
+      :merge_request_set_draft,
+      variables.merge(input),
+      <<-QL.strip_heredoc
+        clientMutationId
+        errors
+        mergeRequest {
+          id
+          title
+        }
+      QL
     )
   end
 

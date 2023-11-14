@@ -56,14 +56,14 @@ For information on this, see the [general Application Security troubleshooting s
 
 For information on this, see the [GitLab Secure troubleshooting section](../index.md#error-job-is-used-for-configuration-only-and-its-script-should-not-be-executed).
 
-## Limitation when using rules:exists
+## SAST jobs are running unexpectedly
 
 The [SAST CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)
-uses the `rules:exists` parameter. For performance reasons, a maximum number of matches are made
-against the given glob pattern. If the number of matches exceeds the maximum, the `rules:exists`
+uses the `rules:exists` parameter. For performance reasons, a maximum number of 10000 matches are
+made against the given glob pattern. If the number of matches exceeds the maximum, the `rules:exists`
 parameter returns `true`. Depending on the number of files in your repository, a SAST job might be
-triggered even if the scanner doesn't support your project. For more details about this issue, see
-the [`rules:exists` documentation](../../../ci/yaml/index.md#rulesexists).
+triggered even if the scanner doesn't support your project. For more details about this limitation,
+see the [`rules:exists` documentation](../../../ci/yaml/index.md#rulesexists).
 
 ## SpotBugs UTF-8 unmappable character errors
 

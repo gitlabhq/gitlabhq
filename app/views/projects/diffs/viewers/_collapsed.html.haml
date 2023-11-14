@@ -1,3 +1,4 @@
 .nothing-here-block.diff-collapsed{ data: { diff_for_path: collapsed_diff_url(viewer.diff_file) } }
   = _("This diff is collapsed.")
-  %button.click-to-expand.gl-button.btn.btn-link= _("Click to expand it.")
+  = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'click-to-expand' }) do
+    = _("Click to expand it.")

@@ -22,7 +22,8 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
 
     it 'returns a link to the author' do
       name = user.name
-      expect(helper.link_to_author(event)).to eq(link_to(name, user_path(user.username), title: name))
+      expect(helper.link_to_author(event)).to eq(link_to(name, user_path(user.username), title: name,
+        data: { user_id: user.id, username: user.username }, class: 'js-user-link'))
     end
 
     it 'returns the author name if the author is not present' do
@@ -35,7 +36,71 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
       allow(helper).to receive(:current_user).and_return(user)
 
       name = _('You')
-      expect(helper.link_to_author(event, self_added: true)).to eq(link_to(name, user_path(user.username), title: name))
+      expect(helper.link_to_author(event, self_added: true)).to eq(link_to(name, user_path(user.username), title: name,
+        data: { user_id: user.id, username: user.username }, class: 'js-user-link'))
+    end
+  end
+
+  describe '#icon_for_profile_event' do
+    let(:event) { build(:event, :joined) }
+    let(:users_activity_page?) { true }
+
+    before do
+      allow(helper).to receive(:current_path?).and_call_original
+      allow(helper).to receive(:current_path?).with('users#activity').and_return(users_activity_page?)
+    end
+
+    context 'when on users activity page' do
+      it 'gives an icon with specialized classes' do
+        result = helper.icon_for_profile_event(event)
+
+        expect(result).to include('joined-icon')
+        expect(result).to include('<svg')
+      end
+
+      context 'with an unsupported event action_name' do
+        let(:event) { build(:event, :expired) }
+
+        it 'does not have an icon' do
+          result = helper.icon_for_profile_event(event)
+
+          expect(result).not_to include('<svg')
+        end
+      end
+    end
+
+    context 'when not on users activity page' do
+      let(:users_activity_page?) { false }
+
+      it 'gives an icon with specialized classes' do
+        result = helper.icon_for_profile_event(event)
+
+        expect(result).not_to include('joined-icon')
+        expect(result).not_to include('<svg')
+        expect(result).to include('<img')
+      end
+    end
+  end
+
+  describe '#event_user_info' do
+    let(:event) { build(:event) }
+    let(:users_activity_page?) { true }
+
+    before do
+      allow(helper).to receive(:current_path?).and_call_original
+      allow(helper).to receive(:current_path?).with('users#activity').and_return(users_activity_page?)
+    end
+
+    subject { helper.event_user_info(event) }
+
+    context 'when on users activity page' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when not on users activity page' do
+      let(:users_activity_page?) { false }
+
+      it { is_expected.to include('<div') }
     end
   end
 
@@ -268,12 +333,26 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
 
   describe '#event_wiki_title_html' do
     let(:event) { create(:wiki_page_event) }
+    let(:url) { helper.event_wiki_page_target_url(event) }
+    let(:title) { event.target_title }
 
     it 'produces a suitable title chunk' do
-      url = helper.event_wiki_page_target_url(event)
-      title = event.target_title
       html = [
-        "<span class=\"event-target-type gl-mr-2\">wiki page</span>",
+        "<span class=\"event-target-type gl-mr-2 \">wiki page</span>",
+        "<a title=\"#{title}\" class=\"has-tooltip event-target-link gl-mr-2\" href=\"#{url}\">",
+        title,
+        "</a>"
+      ].join
+
+      expect(helper.event_wiki_title_html(event)).to eq(html)
+    end
+
+    it 'produces a suitable title chunk on the user profile' do
+      allow(helper).to receive(:user_profile_activity_classes).and_return(
+        'gl-font-weight-semibold gl-text-black-normal')
+
+      html = [
+        "<span class=\"event-target-type gl-mr-2 gl-font-weight-semibold gl-text-black-normal\">wiki page</span>",
         "<a title=\"#{title}\" class=\"has-tooltip event-target-link gl-mr-2\" href=\"#{url}\">",
         title,
         "</a>"
@@ -438,6 +517,29 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
             it { is_expected.to be(false) }
           end
         end
+      end
+    end
+  end
+
+  describe '#user_profile_activity_classes' do
+    let(:users_activity_page?) { true }
+
+    before do
+      allow(helper).to receive(:current_path?).and_call_original
+      allow(helper).to receive(:current_path?).with('users#activity').and_return(users_activity_page?)
+    end
+
+    context 'when on the user activity page' do
+      it 'returns the expected class names' do
+        expect(helper.user_profile_activity_classes).to eq(' gl-font-weight-semibold gl-text-black-normal')
+      end
+    end
+
+    context 'when not on the user activity page' do
+      let(:users_activity_page?) { false }
+
+      it 'returns an empty string' do
+        expect(helper.user_profile_activity_classes).to eq('')
       end
     end
   end

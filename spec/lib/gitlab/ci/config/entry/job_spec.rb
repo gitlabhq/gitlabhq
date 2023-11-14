@@ -598,7 +598,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
       end
     end
 
-    context 'when job is not a pages job' do
+    context 'when job is not a pages job', feature_category: :pages do
       let(:name) { :rspec }
 
       context 'if the config contains a publish entry' do
@@ -609,9 +609,18 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
           expect(entry.errors).to include /job publish can only be used within a `pages` job/
         end
       end
+
+      context 'if the config contains a pages entry' do
+        let(:entry) { described_class.new({ script: 'echo', pages: { path_prefix: 'foo' } }, name: name) }
+
+        it 'is invalid' do
+          expect(entry).not_to be_valid
+          expect(entry.errors).to include /job pages can only be used within a `pages` job/
+        end
+      end
     end
 
-    context 'when job is a pages job' do
+    context 'when job is a pages job', feature_category: :pages do
       let(:name) { :pages }
 
       context 'when it does not have a publish entry' do
@@ -629,6 +638,28 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
           expect(entry).to be_valid
         end
       end
+
+      context 'when it has a pages entry' do
+        let(:entry) { described_class.new({ script: 'echo', pages: { path_prefix: 'foo' } }, name: name) }
+
+        it 'is valid' do
+          expect(entry).to be_valid
+        end
+      end
+    end
+  end
+
+  describe '#pages_job?', :aggregate_failures, feature_category: :pages do
+    where(:name, :result) do
+      :pages | true
+      :'pages:staging' | false
+      :'something:pages:else' | false
+    end
+
+    with_them do
+      subject { described_class.new({}, name: name).pages_job? }
+
+      it { is_expected.to eq(result) }
     end
   end
 
@@ -739,20 +770,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
     end
   end
 
-  describe '#pages_job?', :aggregate_failures, feature_category: :pages do
-    where(:name, :result) do
-      :pages | true
-      :'pages:staging' | false
-      :'something:pages:else' | false
-    end
-
-    with_them do
-      subject { described_class.new({}, name: name).pages_job? }
-
-      it { is_expected.to eq(result) }
-    end
-  end
-
   context 'when composed' do
     before do
       entry.compose!
@@ -773,19 +790,20 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
         end
 
         it 'returns correct value' do
-          expect(entry.value)
-            .to eq(name: :rspec,
-                   before_script: %w[ls pwd],
-                   script: %w[rspec],
-                   stage: 'test',
-                   ignore: false,
-                   after_script: %w[cleanup],
-                   hooks: { pre_get_sources_script: ['echo hello'] },
-                   only: { refs: %w[branches tags] },
-                   job_variables: {},
-                   root_variables_inheritance: true,
-                   scheduling_type: :stage,
-                   id_tokens: { TEST_ID_TOKEN: { aud: 'https://gitlab.com' } })
+          expect(entry.value).to eq(
+            name: :rspec,
+            before_script: %w[ls pwd],
+            script: %w[rspec],
+            stage: 'test',
+            ignore: false,
+            after_script: %w[cleanup],
+            hooks: { pre_get_sources_script: ['echo hello'] },
+            only: { refs: %w[branches tags] },
+            job_variables: {},
+            root_variables_inheritance: true,
+            scheduling_type: :stage,
+            id_tokens: { TEST_ID_TOKEN: { aud: 'https://gitlab.com' } }
+          )
         end
       end
     end

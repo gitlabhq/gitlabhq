@@ -12,7 +12,7 @@ class Projects::IncidentsController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items_mvc_2, @project&.work_items_mvc_2_feature_flag_enabled?)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
     push_force_frontend_feature_flag(:linked_work_items, @project&.linked_work_items_feature_flag_enabled?)
-    push_frontend_feature_flag(:notifications_todos_buttons, project)
+    push_frontend_feature_flag(:notifications_todos_buttons, current_user)
   end
 
   feature_category :incident_management

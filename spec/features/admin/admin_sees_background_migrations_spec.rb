@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe "Admin > Admin sees background migrations", feature_category: :database do
   include ListboxHelpers
 
-  let_it_be(:admin) { create(:admin, :no_super_sidebar) }
+  let_it_be(:admin) { create(:admin) }
   let(:job_class) { Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJob }
 
   let_it_be(:active_migration) { create(:batched_background_migration, :active, table_name: 'active') }
@@ -21,16 +21,18 @@ RSpec.describe "Admin > Admin sees background migrations", feature_category: :da
     gitlab_enable_admin_mode_sign_in(admin)
   end
 
-  it 'can navigate to background migrations' do
+  it 'can navigate to background migrations', :js do
     visit admin_root_path
 
-    within '.nav-sidebar' do
-      link = find_link 'Background Migrations'
+    within_testid('super-sidebar') do
+      click_on 'Monitoring'
+      click_on 'Background Migrations'
+    end
 
-      link.click
+    expect(page).to have_current_path(admin_background_migrations_path)
 
-      expect(page).to have_current_path(admin_background_migrations_path)
-      expect(link).to have_ancestor(:css, 'li.active')
+    within_testid('super-sidebar') do
+      expect(page).to have_css('a[aria-current="page"]', text: 'Background Migrations')
     end
   end
 

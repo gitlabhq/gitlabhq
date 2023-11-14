@@ -9,7 +9,7 @@ module QA
         include Shared::Editor
 
         def has_markdown_preview?(component, content)
-          within_element(:source_editor_preview_container) do
+          within_element('source-editor-preview-container') do
             has_css?(component, exact_text: content)
           end
         end

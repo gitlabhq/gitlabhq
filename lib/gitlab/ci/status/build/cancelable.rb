@@ -6,7 +6,7 @@ module Gitlab
       module Build
         class Cancelable < Status::Extended
           def has_action?
-            can?(user, :update_build, subject)
+            can?(user, :cancel_build, subject)
           end
 
           def action_icon

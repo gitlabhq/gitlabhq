@@ -27,9 +27,6 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsWorker, feature_ca
           .to receive(:execute)
           .and_return(waiter)
 
-        expect(import_state)
-          .to receive(:refresh_jid_expiration)
-
         expect(InternalId).to receive(:exists?).and_return(false)
 
         expect(client).to receive(:each_object).with(
@@ -38,7 +35,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsWorker, feature_ca
 
         expect(Gitlab::GithubImport::AdvanceStageWorker)
           .to receive(:perform_async)
-          .with(project.id, { '123' => 2 }, :collaborators)
+          .with(project.id, { '123' => 2 }, 'collaborators')
 
         expect(MergeRequest).to receive(:track_target_project_iid!)
 
@@ -59,9 +56,6 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsWorker, feature_ca
           .to receive(:execute)
           .and_return(waiter)
 
-        expect(import_state)
-          .to receive(:refresh_jid_expiration)
-
         expect(InternalId).to receive(:exists?).and_return(false)
 
         expect(client).to receive(:each_object).with(
@@ -70,7 +64,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsWorker, feature_ca
 
         expect(Gitlab::GithubImport::AdvanceStageWorker)
           .to receive(:perform_async)
-          .with(project.id, { '123' => 2 }, :collaborators)
+          .with(project.id, { '123' => 2 }, 'collaborators')
 
         expect(MergeRequest).not_to receive(:track_target_project_iid!)
 
@@ -90,9 +84,6 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsWorker, feature_ca
         expect(importer)
           .to receive(:execute)
           .and_return(waiter)
-
-        expect(import_state)
-          .to receive(:refresh_jid_expiration)
 
         expect(InternalId).to receive(:exists?).and_return(true)
 

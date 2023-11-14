@@ -75,7 +75,6 @@ Rails/InverseOf:
     - 'ee/app/models/iteration.rb'
     - 'ee/app/models/requirements_management/requirement.rb'
     - 'ee/app/models/requirements_management/test_report.rb'
-    - 'ee/app/models/sbom/vulnerable_component_version.rb'
     - 'ee/app/models/security/orchestration_policy_configuration.rb'
     - 'ee/app/models/security/orchestration_policy_rule_schedule.rb'
     - 'ee/app/models/software_license_policy.rb'

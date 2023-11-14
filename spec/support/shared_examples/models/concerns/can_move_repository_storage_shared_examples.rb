@@ -42,6 +42,12 @@ RSpec.shared_examples 'can move repository storage' do
         .to change { container.repository_read_only? }
         .from(true).to(false)
     end
+
+    it 'raises an error when the update fails' do
+      expect(container).to receive(:update_repository_read_only_column).and_return(false)
+
+      expect { container.set_repository_writable! }.to raise_error(ActiveRecord::RecordNotSaved, /Database update failed/)
+    end
   end
 
   describe '#reference_counter' do

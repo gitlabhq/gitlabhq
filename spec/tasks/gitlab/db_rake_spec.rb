@@ -7,6 +7,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/seed_fu'
     Rake.application.rake_require 'tasks/gitlab/db'
+    Rake.application.rake_require 'tasks/gitlab/db/lock_writes'
   end
 
   before do
@@ -14,6 +15,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     allow(Rake::Task['db:migrate']).to receive(:invoke).and_return(true)
     allow(Rake::Task['db:schema:load']).to receive(:invoke).and_return(true)
     allow(Rake::Task['db:seed_fu']).to receive(:invoke).and_return(true)
+    allow(Rake::Task['gitlab:db:lock_writes']).to receive(:invoke).and_return(true)
     stub_feature_flags(disallow_database_ddl_feature_flags: false)
   end
 
@@ -142,6 +144,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
             expect(Rake::Task['db:migrate']).to receive(:invoke)
             expect(Rake::Task['db:schema:load']).not_to receive(:invoke)
+            expect(Rake::Task['gitlab:db:lock_writes']).not_to receive(:invoke)
             expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
 
             run_rake_task('gitlab:db:configure')
@@ -153,6 +156,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             allow(connection).to receive(:tables).and_return([])
 
             expect(Rake::Task['db:schema:load']).to receive(:invoke)
+            expect(Rake::Task['gitlab:db:lock_writes']).to receive(:invoke)
             expect(Rake::Task['db:seed_fu']).to receive(:invoke)
             expect(Rake::Task['db:migrate']).not_to receive(:invoke)
 
@@ -165,6 +169,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             allow(connection).to receive(:tables).and_return(['default'])
 
             expect(Rake::Task['db:schema:load']).to receive(:invoke)
+            expect(Rake::Task['gitlab:db:lock_writes']).to receive(:invoke)
             expect(Rake::Task['db:seed_fu']).to receive(:invoke)
             expect(Rake::Task['db:migrate']).not_to receive(:invoke)
 
@@ -177,6 +182,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             allow(connection).to receive(:tables).and_return([])
 
             expect(Rake::Task['db:schema:load']).to receive(:invoke).and_raise('error')
+            expect(Rake::Task['gitlab:db:lock_writes']).not_to receive(:invoke)
             expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
             expect(Rake::Task['db:migrate']).not_to receive(:invoke)
 
@@ -201,6 +207,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
               expect(Gitlab::Database).to receive(:add_post_migrate_path_to_rails).and_call_original
               expect(Rake::Task['db:schema:load']).to receive(:invoke)
+              expect(Rake::Task['gitlab:db:lock_writes']).to receive(:invoke)
               expect(Rake::Task['db:seed_fu']).to receive(:invoke)
               expect(Rake::Task['db:migrate']).not_to receive(:invoke)
 
@@ -217,6 +224,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
               expect(Rake::Task['db:migrate']).to receive(:invoke)
               expect(Gitlab::Database).not_to receive(:add_post_migrate_path_to_rails)
               expect(Rake::Task['db:schema:load']).not_to receive(:invoke)
+              expect(Rake::Task['gitlab:db:lock_writes']).not_to receive(:invoke)
               expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
 
               run_rake_task('gitlab:db:configure')
@@ -280,6 +288,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             expect(Rake::Task['db:migrate:main']).not_to receive(:invoke)
             expect(Rake::Task['db:migrate:ci']).not_to receive(:invoke)
 
+            expect(Rake::Task['gitlab:db:lock_writes']).to receive(:invoke)
             expect(Rake::Task['db:seed_fu']).to receive(:invoke)
 
             run_rake_task('gitlab:db:configure')
@@ -299,6 +308,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             expect(Rake::Task['db:schema:load:main']).not_to receive(:invoke)
             expect(Rake::Task['db:schema:load:ci']).not_to receive(:invoke)
 
+            expect(Rake::Task['gitlab:db:lock_writes']).not_to receive(:invoke)
             expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
 
             run_rake_task('gitlab:db:configure')
@@ -569,6 +579,10 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
         allow(File).to receive(:open).with(Rails.root.join('ee/db/geo/structure.sql').to_s, any_args).and_yield(output)
         allow(File).to receive(:open).with(Rails.root.join('ee/db/embedding/structure.sql').to_s, any_args).and_yield(output)
       end
+
+      if Gitlab.jh?
+        allow(File).to receive(:open).with(Rails.root.join('jh/db/structure.sql').to_s, any_args).and_yield(output)
+      end
     end
 
     after do
@@ -587,8 +601,8 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   end
 
   describe 'drop_tables' do
-    let(:tables) { %w(one two schema_migrations) }
-    let(:views) { %w(three four pg_stat_statements) }
+    let(:tables) { %w[one two schema_migrations] }
+    let(:views) { %w[three four pg_stat_statements] }
     let(:schemas) { Gitlab::Database::EXTRA_SCHEMAS }
     let(:ignored_views) { double(ActiveRecord::Relation, pluck: ['pg_stat_statements']) }
 
@@ -1190,6 +1204,8 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     let(:config_hash) { { username: 'foo' } }
 
     before do
+      skip_if_shared_database(:ci)
+
       allow(Rake::Task['db:drop']).to receive(:invoke)
       allow(Rake::Task['db:create']).to receive(:invoke)
       allow(ActiveRecord::Base).to receive(:configurations).and_return(configurations)
@@ -1201,7 +1217,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     it 'migrate as nonsuperuser check with default username' do
       expect(config_hash).to receive(:merge).with({ username: 'gitlab' }).and_call_original
       expect(Gitlab::Database).to receive(:check_for_non_superuser)
-      expect(Rake::Task['db:migrate']).to receive(:invoke)
+      expect(Rake::Task['db:migrate:main']).to receive(:invoke)
 
       run_rake_task('gitlab:db:reset_as_non_superuser')
     end
@@ -1209,7 +1225,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     it 'migrate as nonsuperuser check with specified username' do
       expect(config_hash).to receive(:merge).with({ username: 'foo' }).and_call_original
       expect(Gitlab::Database).to receive(:check_for_non_superuser)
-      expect(Rake::Task['db:migrate']).to receive(:invoke)
+      expect(Rake::Task['db:migrate:main']).to receive(:invoke)
 
       run_rake_task('gitlab:db:reset_as_non_superuser', '[foo]')
     end

@@ -25,11 +25,24 @@ module Gitlab
 
       def reserved_claims
         super.merge({
-          iss: Settings.gitlab.base_url,
+          iss: Feature.enabled?(:oidc_issuer_url) ? Gitlab.config.gitlab.url : Settings.gitlab.base_url,
           sub: "project_path:#{project.full_path}:ref_type:#{ref_type}:ref:#{source_ref}",
-          aud: aud,
-          user_identities: user_identities
+          aud: aud
         }.compact)
+      end
+
+      def custom_claims
+        additional_custom_claims = {
+          runner_id: runner&.id,
+          runner_environment: runner_environment,
+          sha: pipeline.sha,
+          project_visibility: Gitlab::VisibilityLevel.string_level(project.visibility_level),
+          user_identities: user_identities
+        }.compact
+
+        mapper = ClaimMapper.new(project_config, pipeline)
+
+        super.merge(additional_custom_claims).merge(mapper.to_h)
       end
 
       def user_identities
@@ -41,17 +54,6 @@ module Gitlab
             extern_uid: identity.extern_uid.to_s
           }
         end
-      end
-
-      def custom_claims
-        mapper = ClaimMapper.new(project_config, pipeline)
-
-        super.merge({
-          runner_id: runner&.id,
-          runner_environment: runner_environment,
-          sha: pipeline.sha,
-          project_visibility: Gitlab::VisibilityLevel.string_level(project.visibility_level)
-        }).merge(mapper.to_h)
       end
 
       def project_config

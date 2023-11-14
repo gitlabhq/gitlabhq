@@ -191,8 +191,6 @@ describe('Batch comments store actions', () => {
       return actions.publishReview({ dispatch, commit, getters, rootGetters }).then(() => {
         expect(commit.mock.calls[0]).toEqual(['REQUEST_PUBLISH_REVIEW']);
         expect(commit.mock.calls[1]).toEqual(['RECEIVE_PUBLISH_REVIEW_SUCCESS']);
-
-        expect(dispatch.mock.calls[0]).toEqual(['updateDiscussionsAfterPublish']);
       });
     });
 

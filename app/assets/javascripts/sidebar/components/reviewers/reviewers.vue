@@ -62,7 +62,11 @@ export default {
     <collapsed-reviewer-list :users="sortedReviewers" :issuable-type="issuableType" />
 
     <div class="value hide-collapsed">
-      <span v-if="hasNoUsers" class="no-value" data-testid="no-value">
+      <span
+        v-if="hasNoUsers"
+        class="no-value gl-display-flex gl-font-base gl-line-height-normal"
+        data-testid="no-value"
+      >
         {{ __('None') }}
         <template v-if="editable">
           -
@@ -71,7 +75,6 @@ export default {
             variant="link"
             class="gl-ml-2"
             data-testid="assign-yourself"
-            data-qa-selector="assign_yourself_button"
             @click="assignSelf"
           >
             <span class="gl-text-gray-500 gl-hover-text-blue-800">{{ __('assign yourself') }}</span>

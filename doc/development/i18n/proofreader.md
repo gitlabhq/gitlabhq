@@ -140,7 +140,6 @@ are very appreciative of the work done by translators and proofreaders!
   - Rıfat Ünalmış (Rifat Unalmis) - [GitLab](https://gitlab.com/runalmis), [Crowdin](https://crowdin.com/profile/runalmis)
   - İsmail Arılık - [GitLab](https://gitlab.com/ismailarilik), [Crowdin](https://crowdin.com/profile/ismailarilik)
 - Ukrainian
-  - Volodymyr Sobotovych - [GitLab](https://gitlab.com/wheleph), [Crowdin](https://crowdin.com/profile/wheleph)
   - Andrew Vityuk - [GitLab](https://gitlab.com/3_1_3_u), [Crowdin](https://crowdin.com/profile/andruwa13)
 - Welsh
   - Delyth Prys - [GitLab](https://gitlab.com/Delyth), [Crowdin](https://crowdin.com/profile/DelythPrys)

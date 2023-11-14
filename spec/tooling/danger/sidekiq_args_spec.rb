@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 require 'rspec-parameterized'
-require 'gitlab-dangerfiles'
-require 'danger'
-require 'danger/plugins/internal/helper'
+require 'fast_spec_helper'
 require 'gitlab/dangerfiles/spec_helper'
 
 require_relative '../../../tooling/danger/sidekiq_args'

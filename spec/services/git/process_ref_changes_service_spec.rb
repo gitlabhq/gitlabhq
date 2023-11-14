@@ -236,7 +236,7 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
 
       before do
         allow(MergeRequests::PushedBranchesService).to receive(:new).and_return(
-          double(execute: %w(create1 create2)), double(execute: %w(changed1)), double(execute: %w(removed2))
+          double(execute: %w[create1 create2]), double(execute: %w[changed1]), double(execute: %w[removed2])
         )
 
         allow(Gitlab::Git::Commit).to receive(:between).and_return([])

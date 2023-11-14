@@ -3,24 +3,43 @@
 module Projects
   module Ml
     class ModelsController < ::Projects::ApplicationController
-      before_action :check_feature_enabled
-      before_action :set_model, only: [:show]
+      before_action :authorize_read_model_registry!
+      before_action :authorize_write_model_registry!, only: [:destroy]
+      before_action :set_model, only: [:show, :destroy]
       feature_category :mlops
 
       MAX_MODELS_PER_PAGE = 20
 
       def index
-        @paginator = ::Projects::Ml::ModelFinder.new(@project)
-                                                .execute
-                                                .keyset_paginate(cursor: params[:cursor], per_page: MAX_MODELS_PER_PAGE)
+        find_params = params
+                        .transform_keys(&:underscore)
+                        .permit(:name, :order_by, :sort)
+
+        finder = ::Projects::Ml::ModelFinder.new(@project, find_params)
+
+        @paginator = finder.execute.keyset_paginate(cursor: params[:cursor], per_page: MAX_MODELS_PER_PAGE)
+
+        @model_count = finder.count
       end
 
       def show; end
 
+      def destroy
+        @model.destroy!
+
+        redirect_to project_ml_models_path(@project),
+          status: :found,
+          notice: s_("MlExperimentTracking|Model removed")
+      end
+
       private
 
-      def check_feature_enabled
+      def authorize_read_model_registry!
         render_404 unless can?(current_user, :read_model_registry, @project)
+      end
+
+      def authorize_write_model_registry!
+        render_404 unless can?(current_user, :write_model_registry, @project)
       end
 
       def set_model

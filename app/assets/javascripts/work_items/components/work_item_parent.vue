@@ -1,18 +1,20 @@
 <script>
 import { GlFormGroup, GlCollapsibleListbox } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
 import { debounce } from 'lodash';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 
+import { removeHierarchyChild } from '../graphql/cache_utils';
+import groupWorkItemsQuery from '../graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '../graphql/project_work_items.query.graphql';
 import {
   I18N_WORK_ITEM_ERROR_UPDATING,
   sprintfWorkItem,
-  WORK_ITEM_TYPE_ENUM_OBJECTIVE,
+  SUPPORTED_PARENT_TYPE_MAP,
 } from '../constants';
 
 export default {
@@ -31,7 +33,7 @@ export default {
     GlCollapsibleListbox,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['fullPath'],
+  inject: ['fullPath', 'isGroup'],
   props: {
     workItemId: {
       type: String,
@@ -60,7 +62,7 @@ export default {
       searchStarted: false,
       availableWorkItems: [],
       localSelectedItem: this.parent?.id,
-      isNotFocused: true,
+      oldParent: this.parent,
     };
   },
   computed: {
@@ -80,13 +82,8 @@ export default {
     workItems() {
       return this.availableWorkItems.map(({ id, title }) => ({ text: title, value: id }));
     },
-    listboxCategory() {
-      return this.searchStarted ? 'secondary' : 'tertiary';
-    },
-    listboxClasses() {
-      return {
-        'is-not-focused': this.isNotFocused && !this.searchStarted,
-      };
+    parentType() {
+      return SUPPORTED_PARENT_TYPE_MAP[this.workItemType];
     },
   },
   watch: {
@@ -101,13 +98,17 @@ export default {
   },
   apollo: {
     availableWorkItems: {
-      query: projectWorkItemsQuery,
+      query() {
+        return this.isGroup ? groupWorkItemsQuery : projectWorkItemsQuery;
+      },
       variables() {
         return {
           fullPath: this.fullPath,
           searchTerm: this.search,
-          types: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
+          types: this.parentType,
           in: this.search ? 'TITLE' : undefined,
+          iid: null,
+          isNumber: false,
         };
       },
       skip() {
@@ -146,6 +147,14 @@ export default {
               },
             },
           },
+          update: (cache) =>
+            removeHierarchyChild({
+              cache,
+              fullPath: this.fullPath,
+              iid: this.oldParent?.iid,
+              isGroup: this.isGroup,
+              workItem: { id: this.workItemId },
+            }),
         });
 
         if (errors.length) {
@@ -171,19 +180,10 @@ export default {
     },
     onListboxShown() {
       this.searchStarted = true;
-      this.isNotFocused = false;
     },
     onListboxHide() {
       this.searchStarted = false;
       this.search = '';
-      this.isNotFocused = true;
-    },
-    setListboxFocused() {
-      // This is to match the caret behaviour of parent listbox
-      // to the other dropdown fields of work items
-      if (document.activeElement.parentElement.id !== 'work-item-parent-listbox-value') {
-        this.isNotFocused = true;
-      }
     },
   },
 };
@@ -206,30 +206,20 @@ export default {
     >
       {{ listboxText }}
     </span>
-    <div
-      v-else
-      :class="{ 'gl-max-w-max-content': !workItemsMvc2Enabled }"
-      @mouseover="isNotFocused = false"
-      @mouseleave="setListboxFocused"
-      @focusout="isNotFocused = true"
-      @focusin="isNotFocused = false"
-    >
+    <div v-else :class="{ 'gl-max-w-max-content': !workItemsMvc2Enabled }">
       <gl-collapsible-listbox
         id="work-item-parent-listbox-value"
         class="gl-max-w-max-content"
         data-testid="work-item-parent-listbox"
-        block
         searchable
-        :no-caret="isNotFocused && !searchStarted"
         is-check-centered
-        :category="listboxCategory"
+        category="tertiary"
         :searching="isLoading"
         :header-text="$options.i18n.assignParentLabel"
         :no-results-text="$options.i18n.noMatchingResults"
         :loading="updateInProgress"
         :items="workItems"
         :toggle-text="listboxText"
-        :toggle-class="listboxClasses"
         :selected="localSelectedItem"
         :reset-button-label="$options.i18n.unAssign"
         @reset="unAssignParent"

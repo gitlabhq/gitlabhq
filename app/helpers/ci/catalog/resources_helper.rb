@@ -3,8 +3,8 @@
 module Ci
   module Catalog
     module ResourcesHelper
-      def can_add_catalog_resource?(_project)
-        false
+      def can_add_catalog_resource?(project)
+        can?(current_user, :add_catalog_resource, project)
       end
 
       def can_view_namespace_catalog?(_project)

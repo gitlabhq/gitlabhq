@@ -47,7 +47,7 @@ RSpec.describe ActiveRecord::QueryRecorder do
 
       query_a = start_with(%q[QueryRecorder SQL:  --> SELECT COUNT(*) FROM "schema_migrations"])
 
-      query_b = start_with(%q[QueryRecorder SQL:  --> SELECT "schema_migrations".* FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC LIMIT 1])
+      query_b = start_with(%q(QueryRecorder SQL:  --> SELECT "schema_migrations".* FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC LIMIT 1))
 
       query_c_a = eq(%q[QueryRecorder SQL:  --> SELECT "schema_migrations".* FROM "schema_migrations" WHERE (version = 'foo'])
       query_c_b = eq(%q(QueryRecorder SQL:  -->  OR))

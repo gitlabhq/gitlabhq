@@ -49,10 +49,20 @@ The usage of schema enforces the base class to be used:
 
 ### Guidelines on choosing between `gitlab_main_cell` and `gitlab_main_clusterwide` schema
 
+Depending on the use case, your feature may be [cell-local or clusterwide](../../architecture/blueprints/cells/index.md#how-do-i-decide-whether-to-move-my-feature-to-the-cluster-cell-or-organization-level) and hence the tables used for the feature should also use the appropriate schema.
+
 When you choose the appropriate schema for tables, consider the following guidelines as part of the [Cells](../../architecture/blueprints/cells/index.md) architecture:
 
 - Default to `gitlab_main_cell`: We expect most tables to be assigned to the `gitlab_main_cell` schema by default. Choose this schema if the data in the table is related to `projects` or `namespaces`.
 - Consult with the Tenant Scale group: If you believe that the `gitlab_main_clusterwide` schema is more suitable for a table, seek approval from the Tenant Scale group This is crucial because it has scaling implications and may require reconsideration of the schema choice.
+
+To understand how existing tables are classified, you can use [this dashboard](https://manojmj.gitlab.io/tenant-scale-schema-progress/).
+
+After a schema has been assigned, the merge request pipeline might fail due to one or more of the following reasons, which can be rectified by following the linked guidelines:
+
+- [Cross-database joins](#suggestions-for-removing-cross-database-joins)
+- [Cross-database transactions](#fixing-cross-database-transactions)
+- [Cross-database foreign keys](#foreign-keys-that-cross-databases)
 
 ### The impact of `gitlab_schema`
 

@@ -4,6 +4,7 @@ import { GlButton, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { createMockSubscription as createMockApolloSubscription } from 'mock-apollo-client';
 import approvedByCurrentUser from 'test_fixtures/graphql/merge_requests/approvals/approvals.query.graphql.json';
+import { visitUrl } from '~/lib/utils/url_utility';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -27,6 +28,10 @@ jest.mock('~/alert', () => ({
   createAlert: jest.fn().mockImplementation(() => ({
     dismiss: mockAlertDismiss,
   })),
+}));
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  visitUrl: jest.fn(),
 }));
 
 const TEST_HELP_PATH = 'help/path';
@@ -113,6 +118,7 @@ describe('MRWidget approvals', () => {
       targetProjectFullPath: 'gitlab-org/gitlab',
       id: 1,
       iid: '1',
+      requireSamlAuthToApprove: false,
     };
 
     jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
@@ -172,6 +178,22 @@ describe('MRWidget approvals', () => {
             category: 'primary',
           });
         });
+
+        describe('with SAML auth requried for approval', () => {
+          beforeEach(async () => {
+            const response = createCanApproveResponse();
+            mr.requireSamlAuthToApprove = true;
+            createComponent({}, { query: response });
+            await waitForPromises();
+          });
+          it('approve action is rendered with correct text', () => {
+            expect(findActionData()).toEqual({
+              variant: 'confirm',
+              text: 'Approve with SAML',
+              category: 'primary',
+            });
+          });
+        });
       });
 
       describe('and MR is approved', () => {
@@ -194,6 +216,25 @@ describe('MRWidget approvals', () => {
           });
         });
 
+        describe('with approvers, with SAML auth requried for approval', () => {
+          beforeEach(async () => {
+            canApproveResponse.data.project.mergeRequest.approvedBy.nodes =
+              approvedByCurrentUser.data.project.mergeRequest.approvedBy.nodes;
+            canApproveResponse.data.project.mergeRequest.approvedBy.nodes[0].id = 69;
+            mr.requireSamlAuthToApprove = true;
+            createComponent({}, { query: canApproveResponse });
+            await waitForPromises();
+          });
+
+          it('approve additionally action is rendered with correct text', () => {
+            expect(findActionData()).toEqual({
+              variant: 'confirm',
+              text: 'Approve additionally with SAML',
+              category: 'secondary',
+            });
+          });
+        });
+
         describe('with approvers', () => {
           beforeEach(async () => {
             canApproveResponse.data.project.mergeRequest.approvedBy.nodes =
@@ -212,6 +253,25 @@ describe('MRWidget approvals', () => {
               category: 'secondary',
             });
           });
+        });
+      });
+
+      describe('when SAML auth is required and user clicks Approve with SAML', () => {
+        const fakeGroupSamlPath = '/example_group_saml';
+
+        beforeEach(async () => {
+          mr.requireSamlAuthToApprove = true;
+          mr.samlApprovalPath = fakeGroupSamlPath;
+
+          createComponent({}, { query: createCanApproveResponse() });
+          await waitForPromises();
+        });
+
+        it('redirects the user to the group SAML path', async () => {
+          const action = findAction();
+          action.vm.$emit('click');
+          await nextTick();
+          expect(visitUrl).toHaveBeenCalledWith(fakeGroupSamlPath);
         });
       });
 

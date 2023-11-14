@@ -30,9 +30,11 @@ module Ci
     PROJECT_ROUTE_AND_NAMESPACE_ROUTE = {
       project: [:project_feature, :route, { namespace: :route }]
     }.freeze
-    CONFIG_EXTENSION = '.gitlab-ci.yml'
-    DEFAULT_CONFIG_PATH = CONFIG_EXTENSION
+
+    DEFAULT_CONFIG_PATH = '.gitlab-ci.yml'
+
     CANCELABLE_STATUSES = (Ci::HasStatus::CANCELABLE_STATUSES + ['manual']).freeze
+    UNLOCKABLE_STATUSES = (Ci::Pipeline.completed_statuses + [:manual]).freeze
 
     paginates_per 15
 
@@ -189,6 +191,7 @@ module Ci
 
         # this is needed to ensure tests to be covered
         transition [:running] => :running
+        transition [:waiting_for_callback] => :waiting_for_callback
       end
 
       event :request_resource do
@@ -201,6 +204,10 @@ module Ci
 
       event :run do
         transition any - [:running] => :running
+      end
+
+      event :wait_for_callback do
+        transition any - [:waiting_for_callback] => :waiting_for_callback
       end
 
       event :skip do
@@ -264,6 +271,32 @@ module Ci
 
       after_transition any => [:success] do |pipeline|
         pipeline.run_after_commit { PipelineMetricsWorker.perform_async(pipeline.id) }
+      end
+
+      after_transition any => UNLOCKABLE_STATUSES do |pipeline|
+        # This is a temporary flag that we added just in case we need to totally
+        # stop unlocking pipelines due to unexpected issues during rollout.
+        next if Feature.enabled?(:ci_stop_unlock_pipelines, pipeline.project)
+
+        next unless Feature.enabled?(:ci_unlock_non_successful_pipelines, pipeline.project)
+
+        pipeline.run_after_commit do
+          Ci::Refs::UnlockPreviousPipelinesWorker.perform_async(pipeline.ci_ref_id)
+        end
+      end
+
+      # TODO: Remove this block once we've completed roll-out of ci_unlock_non_successful_pipelines
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/428408
+      after_transition any => :success do |pipeline|
+        # This is a temporary flag that we added just in case we need to totally
+        # stop unlocking pipelines due to unexpected issues during rollout.
+        next if Feature.enabled?(:ci_stop_unlock_pipelines, pipeline.project)
+
+        next unless Feature.disabled?(:ci_unlock_non_successful_pipelines, pipeline.project)
+
+        pipeline.run_after_commit do
+          Ci::Refs::UnlockPreviousPipelinesWorker.perform_async(pipeline.ci_ref_id)
+        end
       end
 
       after_transition [:created, :waiting_for_resource, :preparing, :pending, :running] => :success do |pipeline|
@@ -380,7 +413,7 @@ module Ci
 
         pipeline.run_after_commit do
           next if pipeline.child?
-          next unless project.only_allow_merge_if_pipeline_succeeds?(inherit_group_setting: true)
+          next unless Feature.enabled?(:widget_pipeline_pass_subscription_update, project) || project.only_allow_merge_if_pipeline_succeeds?(inherit_group_setting: true)
 
           pipeline.all_merge_requests.opened.each do |merge_request|
             GraphqlTriggers.merge_request_merge_status_updated(merge_request)
@@ -389,6 +422,7 @@ module Ci
       end
     end
 
+    scope :with_unlockable_status, -> { with_status(*UNLOCKABLE_STATUSES) }
     scope :internal, -> { where(source: internal_sources) }
     scope :no_child, -> { where.not(source: :parent_pipeline) }
     scope :ci_sources, -> { where(source: Enums::Ci::Pipeline.ci_sources.values) }
@@ -554,7 +588,7 @@ module Ci
     end
 
     def self.bridgeable_statuses
-      ::Ci::Pipeline::AVAILABLE_STATUSES - %w[created waiting_for_resource preparing pending]
+      ::Ci::Pipeline::AVAILABLE_STATUSES - %w[created waiting_for_resource waiting_for_callback preparing pending]
     end
 
     def self.auto_devops_pipelines_completed_total
@@ -850,6 +884,7 @@ module Ci
         when 'created' then nil
         when 'waiting_for_resource' then request_resource
         when 'preparing' then prepare
+        when 'waiting_for_callback' then wait_for_callback
         when 'pending' then enqueue
         when 'running' then run
         when 'success' then succeed
@@ -1365,11 +1400,6 @@ module Ci
 
       merge_request.merge_request_diff_for(merge_request_diff_sha)
     end
-
-    def reduced_build_attributes_list_for_rules?
-      ::Feature.enabled?(:reduced_build_attributes_list_for_rules, project)
-    end
-    strong_memoize_attr :reduced_build_attributes_list_for_rules?
 
     private
 

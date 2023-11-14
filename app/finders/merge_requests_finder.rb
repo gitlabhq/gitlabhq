@@ -46,6 +46,7 @@ class MergeRequestsFinder < IssuableFinder
       :merged_before,
       :reviewer_id,
       :reviewer_username,
+      :source_branch,
       :target_branch,
       :wip
     ]
@@ -73,7 +74,6 @@ class MergeRequestsFinder < IssuableFinder
     items = by_deployments(items)
     items = by_reviewer(items)
     items = by_source_project_id(items)
-    items = items.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417462")
 
     by_approved(items)
   end
@@ -82,7 +82,8 @@ class MergeRequestsFinder < IssuableFinder
     items = super(items)
     items = by_negated_reviewer(items)
     items = by_negated_approved_by(items)
-    by_negated_target_branch(items)
+    items = by_negated_target_branch(items)
+    by_negated_source_branch(items)
   end
 
   private
@@ -132,6 +133,12 @@ class MergeRequestsFinder < IssuableFinder
     return items unless not_params[:target_branch]
 
     items.where.not(target_branch: not_params[:target_branch])
+  end
+
+  def by_negated_source_branch(items)
+    return items unless not_params[:source_branch]
+
+    items.where.not(source_branch: not_params[:source_branch])
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

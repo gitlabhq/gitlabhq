@@ -394,7 +394,7 @@ RSpec.describe API::BulkImports, feature_category: :importers do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response.pluck('id')).to contain_exactly(entity_3.id)
-      expect(json_response.first['failures'].first['exception_class']).to eq(failure_3.exception_class)
+      expect(json_response.first['failures'].first['exception_message']).to eq(failure_3.exception_message)
     end
 
     it_behaves_like 'disabled feature'
@@ -419,5 +419,18 @@ RSpec.describe API::BulkImports, feature_category: :importers do
 
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
+  end
+
+  describe 'GET /bulk_imports/:id/entities/:entity_id/failures' do
+    let(:request) { get api("/bulk_imports/#{import_2.id}/entities/#{entity_3.id}/failures", user) }
+
+    it 'returns specified entity failures' do
+      request
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.first['exception_message']).to eq(failure_3.exception_message)
+    end
+
+    it_behaves_like 'disabled feature'
   end
 end

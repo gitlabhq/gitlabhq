@@ -82,6 +82,7 @@ or:
 > - Filtering by `reviewer` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47605) in GitLab 13.7.
 > - Filtering by potential approvers was moved to GitLab Premium in 13.9.
 > - Filtering by `approved-by` moved to GitLab Premium in 13.9.
+> - Filtering by `source-branch` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134555) in GitLab 16.6.
 
 To filter the list of merge requests:
 
@@ -489,3 +490,31 @@ p = Project.find_by_full_path('<namespace/project>')
 m = p.merge_requests.find_by(iid: <iid>)
 Issuable::DestroyService.new(container: m.project, current_user: u).execute(m)
 ```
+
+### Merge request pre-receive hook failed
+
+If a merge request times out, you might see messages that indicate a Puma worker
+timeout problem:
+
+- In the GitLab UI:
+
+  ```plaintext
+  Something went wrong during merge pre-receive hook.
+  500 Internal Server Error. Try again.
+  ```
+
+- In the `gitlab-rails/api_json.log` log file:
+
+  ```plaintext
+  Rack::Timeout::RequestTimeoutException
+  Request ran for longer than 60000ms
+  ```
+
+This error can happen if your merge request:
+
+- Contains many diffs.
+- Is many commits behind the target branch.
+
+Users in self-managed installations can request an administrator review server logs
+to determine the cause of the error. GitLab SaaS users should
+[contact Support](https://about.gitlab.com/support/#contact-support) for help.

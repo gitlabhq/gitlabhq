@@ -1,0 +1,8 @@
+---
+name: github_importer_raise_max_interruptions
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134949
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/429306
+milestone: '16.6'
+type: development
+group: group::import and integrate
+default_enabled: false

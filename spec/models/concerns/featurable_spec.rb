@@ -9,7 +9,7 @@ RSpec.describe Featurable do
 
       self.table_name = 'project_features'
 
-      set_available_features %i(feature1 feature2 feature3)
+      set_available_features %i[feature1 feature2 feature3]
 
       def feature1_access_level
         Featurable::DISABLED

@@ -1,0 +1,8 @@
+---
+name: log_git_streaming_audit_events
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123486
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/415138
+milestone: "16.5"
+type: development
+group: group::source code
+default_enabled: false

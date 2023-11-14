@@ -167,7 +167,7 @@ export default {
 
     <gl-tabs>
       <gl-tab :title="__('Detail')">
-        <div data-qa-selector="package_information_content">
+        <div>
           <package-history :package-entity="packageEntity" :project-name="projectName" />
           <terraform-installation />
         </div>

@@ -5,11 +5,15 @@ module BulkImports
     include ApplicationWorker
 
     idempotent!
-    deduplicate :until_executed
+    deduplicate :until_executed, if_deduplicated: :reschedule_once
     data_consistency :always
     feature_category :importers
-    sidekiq_options retry: false, dead: false
+    sidekiq_options retry: 3, dead: false
     worker_has_external_dependencies!
+
+    sidekiq_retries_exhausted do |msg, exception|
+      new.perform_failure(exception, msg['args'].first)
+    end
 
     PERFORM_DELAY = 5.seconds
 
@@ -27,10 +31,17 @@ module BulkImports
       end
 
       re_enqueue
-    rescue StandardError => e
-      Gitlab::ErrorTracking.track_exception(e, log_params(message: 'Entity failed'))
+    end
 
-      @entity.fail_op!
+    def perform_failure(exception, entity_id)
+      @entity = ::BulkImports::Entity.find(entity_id)
+
+      Gitlab::ErrorTracking.track_exception(
+        exception,
+        log_params(message: "Request to export #{entity.source_type} failed")
+      )
+
+      entity.fail_op!
     end
 
     private
@@ -68,7 +79,7 @@ module BulkImports
     end
 
     def logger
-      @logger ||= Gitlab::Import::Logger.build
+      @logger ||= Logger.build
     end
 
     def log_exception(exception, payload)
@@ -88,7 +99,7 @@ module BulkImports
         bulk_import_entity_type: entity.source_type,
         source_full_path: entity.source_full_path,
         source_version: source_version,
-        importer: 'gitlab_migration'
+        importer: Logger::IMPORTER_NAME
       }
 
       defaults.merge(extra)

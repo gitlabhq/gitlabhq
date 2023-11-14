@@ -32,6 +32,11 @@ module QA
           CMD
         end
 
+        # Copy logs for GitLab services from the Docker container to the test framework's tmp folder
+        def extract_service_logs
+          copy(from: "#{@name}:/var/log/gitlab", to: Runtime::Path.qa_tmp(@name))
+        end
+
         private
 
         def release_variables_available?

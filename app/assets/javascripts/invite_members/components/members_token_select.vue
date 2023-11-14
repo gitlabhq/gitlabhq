@@ -21,6 +21,11 @@ export default {
     GlSprintf,
   },
   props: {
+    canUseEmailToken: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     placeholder: {
       type: String,
       required: false,
@@ -68,6 +73,10 @@ export default {
   },
   computed: {
     emailIsValid() {
+      if (!this.canUseEmailToken) {
+        return false;
+      }
+
       const regex = /^\S+@\S+$/;
 
       return this.originalInput.match(regex) !== null;
@@ -137,9 +146,8 @@ export default {
             username: token.username,
             avatar_url: token.avatar_url,
           }));
-          this.loading = false;
         })
-        .catch(() => {
+        .finally(() => {
           this.loading = false;
         });
     }, SEARCH_DELAY),

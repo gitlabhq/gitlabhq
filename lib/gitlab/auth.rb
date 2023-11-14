@@ -60,10 +60,10 @@ module Gitlab
         Gitlab.config.omniauth.enabled
       end
 
-      def find_for_git_client(login, password, project:, ip:)
-        raise "Must provide an IP for rate limiting" if ip.nil?
+      def find_for_git_client(login, password, project:, request:)
+        raise "Must provide an IP for rate limiting" if request.ip.nil?
 
-        rate_limiter = Gitlab::Auth::IpRateLimiter.new(ip)
+        rate_limiter = Gitlab::Auth::IpRateLimiter.new(request.ip)
 
         raise IpBlocked if !skip_rate_limit?(login: login) && rate_limiter.banned?
 
@@ -80,7 +80,7 @@ module Gitlab
           user_with_password_for_git(login, password) ||
           Gitlab::Auth::Result::EMPTY
 
-        rate_limit!(rate_limiter, success: result.success?, login: login)
+        rate_limit!(rate_limiter, success: result.success?, login: login, request: request)
         look_to_limit_user(result.actor)
 
         return result if result.success? || authenticate_using_internal_or_ldap_password?
@@ -142,7 +142,7 @@ module Gitlab
 
       private
 
-      def rate_limit!(rate_limiter, success:, login:)
+      def rate_limit!(rate_limiter, success:, login:, request:)
         return if skip_rate_limit?(login: login)
 
         if success
@@ -155,8 +155,18 @@ module Gitlab
           # request from this IP if needed.
           # This returns true when the failures are over the threshold and the IP
           # is banned.
-          Gitlab::AppLogger.info "IP #{rate_limiter.ip} failed to login " \
-              "as #{login} but has been temporarily banned from Git auth"
+
+          message = "Rack_Attack: Git auth failures has exceeded the threshold. " \
+            "IP has been temporarily banned from Git auth."
+
+          Gitlab::AuthLogger.error(
+            message: message,
+            env: :blocklist,
+            remote_ip: request.ip,
+            request_method: request.request_method,
+            path: request.fullpath,
+            login: login
+          )
         end
       end
 

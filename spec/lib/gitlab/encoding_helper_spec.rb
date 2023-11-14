@@ -214,7 +214,7 @@ RSpec.describe Gitlab::EncodingHelper, feature_category: :shared do
       [nil, ""],
       ["", ""],
       ["  ", "  "],
-      %w(a1 a1),
+      %w[a1 a1],
       ["编码", "\xE7\xBC\x96\xE7\xA0\x81".b]
     ].each do |input, result|
       it "encodes #{input.inspect} to #{result.inspect}" do

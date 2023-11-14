@@ -6,19 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Secret Detection **(FREE ALL)**
 
-> - In GitLab 13.1, Secret Detection was split from the [SAST configuration](../sast/index.md#configuration)
->   into its own CI/CD template. If you're using GitLab 13.0 or earlier and SAST is enabled, then
->   Secret Detection is already enabled.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/222788) from GitLab Ultimate to GitLab
->   Free in 13.3.
-> - [In GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/297269), Secret Detection jobs
->   `secret_detection_default_branch` and `secret_detection` were consolidated into one job,
->   `secret_detection`.
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an interactive reading and how-to demo of this Secret Detection doc, see [How to enable secret detection in GitLab Application Security Part 1/2](https://youtu.be/dbMxeO6nJCE?feature=shared) and [How to enable secret detection in GitLab Application Security Part 2/2](https://youtu.be/VL-_hdiTazo?feature=shared)
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an interactive reading and how-to demo playlist, see [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9)
+> [In GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/297269), Secret Detection jobs `secret_detection_default_branch` and `secret_detection` were consolidated into one job, `secret_detection`.
 
 People sometimes accidentally commit secrets like keys or API tokens to Git repositories.
 After a sensitive value is pushed to a remote repository, anyone with access to the repository can impersonate the authorized user of the secret for malicious purposes.
@@ -36,6 +24,13 @@ With GitLab Ultimate, Secret Detection results are also processed so you can:
 - Use them in approval workflows.
 - Review them in the security dashboard.
 - [Automatically respond](automatic_response.md) to leaks in public repositories.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For an interactive reading and how-to demo of this Secret Detection documentation see:
+
+- [How to enable secret detection in GitLab Application Security Part 1/2](https://youtu.be/dbMxeO6nJCE?feature=shared)
+- [How to enable secret detection in GitLab Application Security Part 2/2](https://youtu.be/VL-_hdiTazo?feature=shared)
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For other interactive reading and how-to demos, see the [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9).
 
 ## Detected secrets
 
@@ -111,26 +106,13 @@ Secret Detection can detect if a secret was added in one commit and removed in a
 - Merge request
 
   In a merge request, Secret Detection scans every commit made on the source branch. To use this
-  feature, you must use the [`latest` Secret Detection template](#templates), as it supports
+  feature, you must use the [`latest` Secret Detection template](../index.md#use-security-scanning-tools-with-merge-request-pipelines), as it supports
   [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md). Secret Detection's
   results are only available after the pipeline is completed.
 
-## Templates
+## Running jobs in merge request pipelines
 
-Secret Detection default configuration is defined in CI/CD templates. Updates to the template are
-provided with GitLab upgrades, allowing you to benefit from any improvements and additions.
-
-Available templates:
-
-- [`Secret-Detection.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.gitlab-ci.yml): Stable, default version of the Secret Detection CI/CD template.
-- [`Secret-Detection.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.latest.gitlab-ci.yml): Latest version of the Secret Detection template.
-
-WARNING:
-The latest version of the template may include breaking changes. Use the stable template unless you
-need a feature provided only in the latest template.
-
-For more information about template versioning, see the
-[CI/CD documentation](../../../development/cicd/templates.md#latest-version).
+See [Use security scanning tools with merge request pipelines](../index.md#use-security-scanning-tools-with-merge-request-pipelines)
 
 ## Enable Secret Detection
 
@@ -166,7 +148,7 @@ your GitLab CI/CD configuration file is complex.
 
    ```yaml
    include:
-     - template: Security/Secret-Detection.gitlab-ci.yml
+     - template: Jobs/Secret-Detection.gitlab-ci.yml
    ```
 
 1. Select the **Validate** tab, then select **Validate pipeline**.
@@ -232,7 +214,7 @@ This example uses a specific minor version of the analyzer:
 
 ```yaml
 include:
-  - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
 
 secret_detection:
   variables:
@@ -262,7 +244,7 @@ In the following example _extract_ of a `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
 
 secret_detection:
   variables:
@@ -322,7 +304,7 @@ variables:
   SECRET_DETECTION_IMAGE_SUFFIX: '-fips'
 
 include:
-  - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
 ```
 
 ## Full history Secret Detection
@@ -576,7 +558,7 @@ Prerequisites:
 
    ```yaml
    include:
-     - template: Security/Secret-Detection.gitlab-ci.yml
+     - template: Jobs/Secret-Detection.gitlab-ci.yml
 
    variables:
      SECURE_ANALYZERS_PREFIX: "localhost:5000/analyzers"

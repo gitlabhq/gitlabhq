@@ -5,9 +5,9 @@
 .event-title.d-flex.flex-wrap
   = inline_event_icon(event)
   - if event.target
-    %span.event-type.d-inline-block.gl-mr-2{ class: event.action_name }
+    %span.event-type.d-inline-block.gl-mr-2{ class: event.action_name + user_profile_activity_classes }
       = localized_action_name(event)
-    %span.event-target-type.gl-mr-2= event.target_type_name
+    %span.event-target-type.gl-mr-2{ class: user_profile_activity_classes }= event.target_type_name
     = link_to event_target_path(event), class: 'has-tooltip event-target-link gl-mr-2', title: event.target_title do
       = event.target.reference_link_text
     - unless event.milestone?

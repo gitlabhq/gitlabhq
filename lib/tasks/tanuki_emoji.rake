@@ -30,9 +30,9 @@ namespace :tanuki_emoji do
     require 'digest/sha2'
 
     digest_emoji_map = {}
-    emojis_map = {}
+    emojis_array = []
 
-    TanukiEmoji.index.all.each do |emoji|
+    TanukiEmoji.index.all.sort_by(&:sort_key).each do |emoji|
       emoji_path = Gitlab::Emoji.emoji_public_absolute_path.join("#{emoji.name}.png")
 
       digest_entry = {
@@ -47,13 +47,14 @@ namespace :tanuki_emoji do
 
       # Our new map is only characters to make the json substantially smaller
       emoji_entry = {
+        n: emoji.name,
         c: emoji.category,
         e: emoji.codepoints,
         d: emoji.description,
         u: emoji.unicode_version
       }
 
-      emojis_map[emoji.name] = emoji_entry
+      emojis_array << emoji_entry
     end
 
     digests_json = File.join(Rails.root, 'fixtures', 'emojis', 'digests.json')
@@ -63,7 +64,7 @@ namespace :tanuki_emoji do
 
     emojis_json = Gitlab::Emoji.emoji_public_absolute_path.join('emojis.json')
     File.open(emojis_json, 'w') do |handle|
-      handle.write(Gitlab::Json.pretty_generate(emojis_map))
+      handle.write(Gitlab::Json.pretty_generate(emojis_array))
     end
   end
 

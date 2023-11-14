@@ -97,7 +97,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestsImpor
               { id: 4, login: 'alice' },
               { id: 5, login: 'bob' }
             ]
-          },
+          }.deep_stringify_keys,
           instance_of(String)
         ],
         [
@@ -108,7 +108,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestsImpor
             users: [
               { id: 4, login: 'alice' }
             ]
-          },
+          }.deep_stringify_keys,
           instance_of(String)
         ]
       ]
@@ -116,10 +116,10 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestsImpor
 
     it 'schedule import for each merge request reviewers' do
       expect(Gitlab::GithubImport::PullRequests::ImportReviewRequestWorker)
-        .to receive(:perform_in).with(1.second, *expected_worker_payload.first)
+        .to receive(:perform_in).with(1, *expected_worker_payload.first)
 
       expect(Gitlab::GithubImport::PullRequests::ImportReviewRequestWorker)
-        .to receive(:perform_in).with(1.second, *expected_worker_payload.second)
+        .to receive(:perform_in).with(1, *expected_worker_payload.second)
 
       expect(Gitlab::GithubImport::ObjectCounter)
         .to receive(:increment).twice.with(project, :pull_request_review_request, :fetched)
@@ -137,7 +137,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestsImpor
 
       it "doesn't schedule import this merge request reviewers" do
         expect(Gitlab::GithubImport::PullRequests::ImportReviewRequestWorker)
-          .to receive(:perform_in).with(1.second, *expected_worker_payload.second)
+          .to receive(:perform_in).with(1, *expected_worker_payload.second)
 
         expect(Gitlab::GithubImport::ObjectCounter)
           .to receive(:increment).once.with(project, :pull_request_review_request, :fetched)

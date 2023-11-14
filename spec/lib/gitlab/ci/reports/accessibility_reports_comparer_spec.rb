@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Ci::Reports::AccessibilityReportsComparer do
         "type" => "error",
         "typeCode" => 1,
         "message" => "Anchor element found with a valid href attribute, but no link content has been supplied.",
-        "context" => %{<a href="/" class="navbar-brand animated"><svg height="36" viewBox="0 0 1...</a>},
+        "context" => %(<a href="/" class="navbar-brand animated"><svg height="36" viewBox="0 0 1...</a>),
         "selector" => "#main-nav > div:nth-child(1) > a",
         "runner" => "htmlcs",
         "runnerExtras" => {}
@@ -29,7 +29,7 @@ RSpec.describe Gitlab::Ci::Reports::AccessibilityReportsComparer do
         "type" => "error",
         "typeCode" => 1,
         "message" => "This element has insufficient contrast at this conformance level.",
-        "context" => %{<a href="/stages-devops-lifecycle/" class="main-nav-link">Product</a>},
+        "context" => %(<a href="/stages-devops-lifecycle/" class="main-nav-link">Product</a>),
         "selector" => "#main-nav > div:nth-child(2) > ul > li:nth-child(1) > a",
         "runner" => "htmlcs",
         "runnerExtras" => {}

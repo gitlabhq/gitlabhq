@@ -51,13 +51,14 @@ gitlab_git_test:
   script:
     - spec/support/prepare-gitlab-git-test-for-commit --check-for-changes
 
-verify-ruby-3.0:
+verify-default-ruby:
   extends:
     - .absolutely-predictive-job
-    - .setup:rules:verify-ruby-3.0
+    - .setup:rules:verify-default-ruby
   stage: prepare
   script:
-    - echo 'Please remove label ~"pipeline:run-in-ruby3_1" so we do test against Ruby 3.0 (default version) before merging the merge request'
+    - echo 'Please remove label ~"pipeline:run-in-ruby3_2" so we do test against default Ruby version before merging the merge request'
+    - echo 'This does not work yet. See https://gitlab.com/gitlab-org/gitlab/-/issues/428537'
     - exit 1
 
 verify-tests-yml:

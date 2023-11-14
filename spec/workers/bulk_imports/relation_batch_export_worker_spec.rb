@@ -15,12 +15,29 @@ RSpec.describe BulkImports::RelationBatchExportWorker, feature_category: :import
 
         expect(BulkImports::RelationBatchExportService)
           .to receive(:new)
-          .with(user.id, batch.id)
+          .with(user, batch)
           .twice.and_return(service)
         expect(service).to receive(:execute).twice
 
         perform_multiple(job_args)
       end
+    end
+  end
+
+  describe '.sidekiq_retries_exhausted' do
+    let(:job) { { 'args' => job_args } }
+
+    it 'sets export status to failed and tracks the exception' do
+      portable = batch.export.portable
+
+      expect(Gitlab::ErrorTracking)
+        .to receive(:track_exception)
+        .with(kind_of(StandardError), portable_id: portable.id, portable_type: portable.class.name)
+
+      described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new('*' * 300))
+
+      expect(batch.reload.failed?).to eq(true)
+      expect(batch.error.size).to eq(255)
     end
   end
 end

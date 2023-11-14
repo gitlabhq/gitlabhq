@@ -39,8 +39,8 @@ RSpec.describe ImportExportUploader do
     include_context 'with storage', described_class::Store::REMOTE
 
     patterns = {
-      store_dir: %r[import_export_upload/import_file/],
-      upload_path: %r[import_export_upload/import_file/]
+      store_dir: %r{import_export_upload/import_file/},
+      upload_path: %r{import_export_upload/import_file/}
     }
 
     it_behaves_like 'builds correct paths', patterns do

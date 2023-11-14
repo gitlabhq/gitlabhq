@@ -20,15 +20,15 @@ module Integrations
         'automatically inspect. Leave blank to include all branches.')
       end
 
-    def title
+    def self.title
       'Pivotal Tracker'
     end
 
-    def description
+    def self.description
       s_('PivotalTrackerService|Add commit messages as comments to Pivotal Tracker stories.')
     end
 
-    def help
+    def self.help
       docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/pivotal_tracker'), target: '_blank', rel: 'noopener noreferrer'
       s_('Add commit messages as comments to Pivotal Tracker stories. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end

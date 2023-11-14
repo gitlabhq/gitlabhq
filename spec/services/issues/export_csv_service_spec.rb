@@ -160,7 +160,7 @@ RSpec.describe Issues::ExportCsvService, :with_license, feature_category: :team_
       context 'with issues filtered by labels and project' do
         subject do
           described_class.new(
-            IssuesFinder.new(user, project_id: project.id, label_name: %w(Idea Feature)).execute,
+            IssuesFinder.new(user, project_id: project.id, label_name: %w[Idea Feature]).execute,
             project
           )
         end

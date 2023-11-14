@@ -115,7 +115,6 @@ export default {
     :search-placeholder="$options.i18n.searchPlaceholder"
     :no-results-text="$options.i18n.emptySearchResult"
     data-testid="project-select-dropdown"
-    data-qa-selector="project_select_dropdown"
     class="gl-collapsible-listbox-w-full"
     @search="searchTerm = $event"
     @select="selectProject"

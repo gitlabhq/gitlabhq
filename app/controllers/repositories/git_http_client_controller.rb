@@ -129,7 +129,7 @@ module Repositories
 
     def handle_basic_authentication(login, password)
       @authentication_result = Gitlab::Auth.find_for_git_client(
-        login, password, project: project, ip: request.ip)
+        login, password, project: project, request: request)
 
       @authentication_result.success?
     end
@@ -142,7 +142,7 @@ module Repositories
       Gitlab::ProtocolAccess.allowed?('http') &&
       download_request? &&
       container &&
-      Guest.can?(repo_type.guest_read_ability, container)
+      ::Users::Anonymous.can?(repo_type.guest_read_ability, container)
     end
 
     def bypass_admin_mode!(&block)

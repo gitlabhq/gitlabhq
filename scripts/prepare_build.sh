@@ -21,6 +21,7 @@ sed -i 's|url:.*$|url: redis://redis:6379|g' config/resque.yml
 if [[ "$USE_REDIS_CLUSTER" != "false" ]] && [[ "$SETUP_DB" != "false" ]]; then
   cp config/redis.yml.example config/redis.yml
   sed -i 's|- .*$|- redis://rediscluster:7001|g' config/redis.yml
+  sed -i 's|url:.*$|url: redis://redis:6379|g' config/redis.yml
 fi
 
 setup_database_yml

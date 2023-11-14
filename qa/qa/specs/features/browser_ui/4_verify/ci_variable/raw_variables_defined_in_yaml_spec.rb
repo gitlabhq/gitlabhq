@@ -77,7 +77,7 @@ module QA
       end
 
       it(
-        'expands variables according to expand: true/false',
+        'expands variables according to expand: true/false', :reliable,
         :aggregate_failures,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/381487'
       ) do

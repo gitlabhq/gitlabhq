@@ -119,6 +119,7 @@ export default {
     ref="button"
     :class="cssClass"
     :disabled="isDisabled"
+    size="small"
     class="js-ci-action gl-ci-action-icon-container ci-action-icon-container ci-action-icon-wrapper gl-display-flex gl-align-items-center gl-justify-content-center"
     data-testid="ci-action-button"
     @click.stop="onClickAction"
@@ -129,8 +130,17 @@ export default {
       class="gl-display-flex gl-align-items-center gl-justify-content-center gl-h-full"
       data-testid="ci-action-icon-tooltip-wrapper"
     >
-      <gl-loading-icon v-if="isLoading" size="sm" class="js-action-icon-loading" />
-      <gl-icon v-else :name="actionIcon" class="gl-mr-0!" :aria-label="actionIcon" />
+      <gl-loading-icon
+        v-if="isLoading"
+        size="sm"
+        class="gl-button-icon gl-m-2 js-action-icon-loading"
+      />
+      <gl-icon
+        v-else
+        :name="actionIcon"
+        class="gl-button-icon gl-p-1 gl-mr-0!"
+        :aria-label="actionIcon"
+      />
     </div>
   </gl-button>
 </template>

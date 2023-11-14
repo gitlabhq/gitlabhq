@@ -347,12 +347,6 @@ RSpec.describe Integrations::BaseChatNotification, feature_category: :integratio
     end
   end
 
-  describe '#help' do
-    it 'raises an error' do
-      expect { subject.help }.to raise_error(NotImplementedError)
-    end
-  end
-
   describe '#event_channel_name' do
     it 'returns the channel field name for the given event' do
       expect(subject.event_channel_name(:event)).to eq('event_channel')

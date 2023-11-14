@@ -4,10 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Silent Mode **(FREE SELF EXPERIMENT)**
+# GitLab Silent Mode **(FREE SELF)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9826) in GitLab 15.11. This feature is an [Experiment](../../policy/experiment-beta-support.md#experiment).
-> - Enabling and disabling Silent Mode through the web UI was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131090) in GitLab 16.4
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9826) in GitLab 15.11. This feature was an [Experiment](../../policy/experiment-beta-support.md#experiment).
+> - Enabling and disabling Silent Mode through the web UI was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131090) in GitLab 16.4.
+> - Silent Mode was updated to [Generally Available (GA)](../../policy/experiment-beta-support.md#generally-available-ga) in GitLab 16.6.
 
 Silent Mode allows you to silence outbound communication, such as emails, from GitLab. Silent Mode is not intended to be used on environments which are in-use. Two use-cases are:
 
@@ -76,7 +77,7 @@ It may take up to a minute to take effect. [Issue 405433](https://gitlab.com/git
 
 ## Behavior of GitLab features in Silent Mode
 
-This section documents the current behavior of GitLab when Silent Mode is enabled. While Silent Mode is an Experiment, the behavior may change without notice. The work for the first iteration of Silent Mode is tracked by [Epic 9826](https://gitlab.com/groups/gitlab-org/-/epics/9826).
+This section documents the current behavior of GitLab when Silent Mode is enabled. The work for the first iteration of Silent Mode is tracked by [Epic 9826](https://gitlab.com/groups/gitlab-org/-/epics/9826).
 
 When Silent Mode is enabled, a banner is displayed at the top of the page for all users stating the setting is enabled and **All outbound communications are blocked.**.
 

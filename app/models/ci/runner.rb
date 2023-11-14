@@ -123,6 +123,8 @@ module Ci
       joins(:runner_namespaces).where(ci_runner_namespaces: { namespace_id: group_id })
     }
 
+    scope :with_creator_id, -> (value) { where(creator_id: value) }
+
     scope :belonging_to_group_or_project_descendants, -> (group_id) {
       group_ids = Ci::NamespaceMirror.by_group_and_descendants(group_id).select(:namespace_id)
       project_ids = Ci::ProjectMirror.by_namespace_id(group_ids).select(:project_id)
@@ -216,6 +218,8 @@ module Ci
     validate :no_groups, unless: :group_type?
     validate :any_project, if: :project_type?
     validate :exactly_one_group, if: :group_type?
+
+    scope :with_version_prefix, ->(value) { joins(:runner_managers).merge(RunnerManager.with_version_prefix(value)) }
 
     acts_as_taggable
 

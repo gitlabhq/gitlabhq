@@ -31,17 +31,9 @@ module Gitlab
       end
 
       def self.disk_access_denied?
-        return false if rugged_enabled?
-
         !temporarily_allowed?(ALLOW_KEY)
       rescue StandardError
         false # Err on the side of caution, don't break gitlab for people
-      end
-
-      def self.rugged_enabled?
-        Gitlab::Git::RuggedImpl::Repository::FEATURE_FLAGS.any? do |flag|
-          Feature.enabled?(flag)
-        end
       end
 
       def initialize(storage)

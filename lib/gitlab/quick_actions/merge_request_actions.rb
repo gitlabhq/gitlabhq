@@ -172,6 +172,25 @@ module Gitlab
                                                end
         end
 
+        desc { _('Request changes') }
+        explanation { _('Request changes to the current merge request.') }
+        types MergeRequest
+        condition do
+          Feature.enabled?(:mr_request_changes, current_user) &&
+            quick_action_target.persisted? &&
+            quick_action_target.find_reviewer(current_user)
+        end
+        command :request_changes do
+          result = ::MergeRequests::UpdateReviewerStateService.new(project: quick_action_target.project, current_user: current_user)
+            .execute(quick_action_target, "requested_changes")
+
+          @execution_message[:request_changes] = if result[:status] == :success
+                                                   _('Changes requested to the current merge request.')
+                                                 else
+                                                   result[:message]
+                                                 end
+        end
+
         desc { _('Approve a merge request') }
         explanation { _('Approve the current merge request.') }
         types MergeRequest
@@ -196,6 +215,10 @@ module Gitlab
           success = ::MergeRequests::RemoveApprovalService.new(project: quick_action_target.project, current_user: current_user).execute(quick_action_target)
 
           next unless success
+
+          ::MergeRequests::UpdateReviewerStateService
+            .new(project: quick_action_target.project, current_user: current_user)
+            .execute(quick_action_target, "unreviewed")
 
           @execution_message[:unapprove] = _('Unapproved the current merge request.')
         end

@@ -72,11 +72,17 @@ module API
         detail 'Roates a personal access token.'
         success Entities::PersonalAccessTokenWithToken
       end
+      params do
+        optional :expires_at,
+                 type: Date,
+                 desc: "The expiration date of the token",
+                 documentation: { example: '2021-01-31' }
+      end
       post ':id/rotate' do
         token = PersonalAccessToken.find_by_id(params[:id])
 
         if Ability.allowed?(current_user, :manage_user_personal_access_token, token&.user)
-          response = ::PersonalAccessTokens::RotateService.new(current_user, token).execute
+          response = ::PersonalAccessTokens::RotateService.new(current_user, token).execute(declared_params)
 
           if response.success?
             status :ok

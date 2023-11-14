@@ -4,10 +4,14 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitHub import Rake task **(FREE SELF)**
+# GitHub import Rake task (deprecated) **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390690) in GitLab 15.9, Rake task no longer automatically creates namespaces or groups that don't exist.
 > - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/428225) in GitLab 16.6 and is planned for
+removal in GitLab 17.0. Use the [GitHub import feature](../../user/project/import/github.md) instead.
 
 To retrieve and import GitHub repositories, you need a [GitHub personal access token](https://github.com/settings/tokens).
 A username should be passed as the second argument to the Rake task,

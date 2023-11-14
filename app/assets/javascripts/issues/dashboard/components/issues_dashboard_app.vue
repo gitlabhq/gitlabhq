@@ -5,7 +5,7 @@ import {
   GlFilteredSearchToken,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import getIssuesQuery from 'ee_else_ce/issues/dashboard/queries/get_issues.query.graphql';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
@@ -164,9 +164,6 @@ export default {
       },
       skip() {
         return !this.hasSearch;
-      },
-      context: {
-        isSingleRequest: true,
       },
     },
   },

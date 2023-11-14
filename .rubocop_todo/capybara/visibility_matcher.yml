@@ -70,4 +70,3 @@ Capybara/VisibilityMatcher:
     - 'spec/views/layouts/nav/sidebar/_project.html.haml_spec.rb'
     - 'spec/views/profiles/preferences/show.html.haml_spec.rb'
     - 'spec/views/projects/merge_requests/edit.html.haml_spec.rb'
-    - 'spec/views/projects/merge_requests/show.html.haml_spec.rb'

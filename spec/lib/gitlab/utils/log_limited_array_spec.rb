@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Utils::LogLimitedArray do
     context 'when the argument is an array' do
       context 'when the array is under the limit' do
         it 'returns the array unchanged' do
-          expect(described_class.log_limited_array(%w(a b))).to eq(%w(a b))
+          expect(described_class.log_limited_array(%w[a b])).to eq(%w[a b])
         end
       end
 

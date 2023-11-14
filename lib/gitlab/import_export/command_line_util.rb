@@ -40,13 +40,12 @@ module Gitlab
         cmd = %W[gzip #{filepath}]
         cmd << "-#{options}" if options
 
-        _, status = Gitlab::Popen.popen(cmd)
+        output, status = Gitlab::Popen.popen(cmd)
 
-        if status == 0
-          status
-        else
-          raise Gitlab::ImportExport::Error.file_compression_error
-        end
+        return status if status == 0
+
+        message = cmd_error_message(output, status)
+        raise Gitlab::ImportExport::Error.file_compression_error(message)
       end
 
       def mkdir_p(path)
@@ -104,9 +103,7 @@ module Gitlab
 
         return true if status == 0
 
-        output = output&.strip
-        message = "command exited with error code #{status}"
-        message += ": #{output}" if output.present?
+        message = cmd_error_message(output, status)
 
         if @shared.respond_to?(:error)
           @shared.error(Gitlab::ImportExport::Error.new(message))
@@ -148,6 +145,12 @@ module Gitlab
       rescue HardLinkError
         FileUtils.remove_dir(dir)
         raise
+      end
+
+      def cmd_error_message(output, status)
+        message = "Command exited with error code #{status}"
+        message << ": #{output.strip}" unless output.blank?
+        message
       end
     end
   end

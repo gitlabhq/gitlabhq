@@ -7,9 +7,10 @@ import {
   GlDropdownText,
   GlLoadingIcon,
 } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce, last } from 'lodash';
 
 import { stripQuotes } from '~/lib/utils/text_utility';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DEBOUNCE_DELAY, FILTERS_NONE_ANY, OPERATOR_NOT, OPERATOR_OR } from '../constants';
 import { getRecentlyUsedSuggestions, setTokenValueToRecentlyUsed } from '../filtered_search_utils';
 
@@ -22,6 +23,7 @@ export default {
     GlDropdownText,
     GlLoadingIcon,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     config: {
       type: Object,
@@ -70,6 +72,11 @@ export default {
       required: false,
       default: undefined,
     },
+    multiSelectValues: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -94,7 +101,11 @@ export default {
       return this.preloadedSuggestions.map((tokenValue) => tokenValue[this.valueIdentifier]);
     },
     activeTokenValue() {
-      return this.getActiveTokenValue(this.suggestions, this.value.data);
+      const data =
+        this.glFeatures.groupMultiSelectTokens && Array.isArray(this.value.data)
+          ? last(this.value.data)
+          : this.value.data;
+      return this.getActiveTokenValue(this.suggestions, data);
     },
     availableDefaultSuggestions() {
       if ([OPERATOR_NOT, OPERATOR_OR].includes(this.value.operator)) {
@@ -146,10 +157,14 @@ export default {
   watch: {
     active: {
       immediate: true,
-      handler(newValue) {
-        if (!newValue && !this.suggestions.length) {
-          const search = this.searchTerm ? this.searchTerm : this.value.data;
-          this.$emit('fetch-suggestions', search);
+      handler(active) {
+        if (!active && !this.suggestions.length) {
+          // data could be a string or an array of strings
+          const selectedItems = [this.value.data].flat();
+          selectedItems.forEach((item) => {
+            const search = this.searchTerm ? this.searchTerm : item;
+            this.$emit('fetch-suggestions', search);
+          });
         }
       },
     },
@@ -163,6 +178,9 @@ export default {
   },
   methods: {
     handleInput: debounce(function debouncedSearch({ data, operator }) {
+      // in multiSelect mode, data could be an array
+      if (Array.isArray(data)) return;
+
       // Prevent fetching suggestions when data or operator is not present
       if (data || operator) {
         this.searchKey = data;
@@ -181,8 +199,11 @@ export default {
       }
     }, DEBOUNCE_DELAY),
     handleTokenValueSelected(selectedValue) {
-      const activeTokenValue = this.getActiveTokenValue(this.suggestions, selectedValue);
+      if (this.glFeatures.groupMultiSelectTokens) {
+        this.$emit('token-selected', selectedValue);
+      }
 
+      const activeTokenValue = this.getActiveTokenValue(this.suggestions, selectedValue);
       // Make sure that;
       // 1. Recently used values feature is enabled
       // 2. User has actually selected a value
@@ -210,6 +231,7 @@ export default {
     :config="config"
     :value="value"
     :active="active"
+    :multi-select-values="multiSelectValues"
     v-bind="$attrs"
     v-on="$listeners"
     @input="handleInput"

@@ -10,7 +10,7 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
 
   describe '#all_active_routes' do
     it 'gathers all active routes of items and the current menu' do
-      menu.add_item(Sidebars::MenuItem.new(title: 'foo1', link: 'foo1', active_routes: { path: %w(bar test) }))
+      menu.add_item(Sidebars::MenuItem.new(title: 'foo1', link: 'foo1', active_routes: { path: %w[bar test] }))
       menu.add_item(Sidebars::MenuItem.new(title: 'foo2', link: 'foo2', active_routes: { controller: 'fooc' }))
       menu.add_item(Sidebars::MenuItem.new(title: 'foo3', link: 'foo3', active_routes: { controller: 'barc' }))
       menu.add_item(nil_menu_item)
@@ -18,7 +18,7 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
       allow(menu).to receive(:active_routes).and_return({ path: 'foo' })
 
       expect(menu).to receive(:renderable_items).and_call_original
-      expect(menu.all_active_routes).to eq({ path: %w(foo bar test), controller: %w(fooc barc) })
+      expect(menu.all_active_routes).to eq({ path: %w[foo bar test], controller: %w[fooc barc] })
     end
   end
 
@@ -53,6 +53,7 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
         {
           title: "Title",
           icon: nil,
+          id: 'menu',
           avatar: nil,
           avatar_shape: 'rect',
           entity_id: nil,
@@ -94,6 +95,7 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
         {
           title: "Title",
           icon: nil,
+          id: 'menu',
           avatar: nil,
           avatar_shape: 'rect',
           entity_id: nil,

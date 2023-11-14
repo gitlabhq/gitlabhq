@@ -117,7 +117,7 @@ module System
     end
 
     def ended?
-      ends_at < Time.current
+      ends_at.past?
     end
 
     def now?

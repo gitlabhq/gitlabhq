@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require 'gitlab-dangerfiles'
-require 'danger'
-require 'danger/plugins/internal/helper'
-require 'gitlab/dangerfiles/spec_helper'
+require 'fast_spec_helper'
 require 'rspec-parameterized'
+require 'gitlab/dangerfiles/spec_helper'
 
 require_relative '../../../tooling/danger/bulk_database_actions'
 require_relative '../../../tooling/danger/project_helper'

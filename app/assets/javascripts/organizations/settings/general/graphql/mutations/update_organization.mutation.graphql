@@ -1,0 +1,9 @@
+mutation updateOrganization($input: LocalUpdateOrganizationInput!) {
+  updateOrganization(input: $input) @client {
+    organization {
+      id
+      name
+    }
+    errors
+  }
+}

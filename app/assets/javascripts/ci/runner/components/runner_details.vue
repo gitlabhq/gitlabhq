@@ -120,12 +120,9 @@ export default {
                 }}
               </p>
               <p class="gl-mb-0">
-                <gl-link
-                  :href="tokenExpirationHelpUrl"
-                  target="_blank"
-                  class="gl-reset-font-size"
-                  >{{ __('Learn more') }}</gl-link
-                >
+                <gl-link :href="tokenExpirationHelpUrl" target="_blank">{{
+                  __('Learn more')
+                }}</gl-link>
               </p>
             </help-popover>
           </template>
@@ -156,12 +153,9 @@ export default {
                 "
               >
                 <template #link="{ content }"
-                  ><gl-link
-                    :href="$options.RUNNER_MANAGERS_HELP_URL"
-                    target="_blank"
-                    class="gl-reset-font-size"
-                    >{{ content }}</gl-link
-                  ></template
+                  ><gl-link :href="$options.RUNNER_MANAGERS_HELP_URL" target="_blank">{{
+                    content
+                  }}</gl-link></template
                 >
               </gl-sprintf>
             </help-popover>

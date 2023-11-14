@@ -1,15 +1,13 @@
 ---
 # Cop supports --autocorrect.
 Style/StringLiteralsInInterpolation:
+  Details: grace period
   Exclude:
-    - 'app/graphql/mutations/base_mutation.rb'
-    - 'app/helpers/colors_helper.rb'
     - 'app/models/application_setting_implementation.rb'
     - 'app/models/ci/namespace_mirror.rb'
     - 'app/services/draft_notes/publish_service.rb'
     - 'app/services/projects/create_service.rb'
     - 'app/validators/nested_attributes_duplicates_validator.rb'
-    - 'app/views/events/_event.atom.builder'
     - 'app/workers/concerns/application_worker.rb'
     - 'config/initializers/validate_database_config.rb'
     - 'ee/app/helpers/ee/merge_requests_helper.rb'
@@ -17,8 +15,7 @@ Style/StringLiteralsInInterpolation:
     - 'ee/app/services/epics/tree_reorder_service.rb'
     - 'ee/lib/ee/api/helpers/issues_helpers.rb'
     - 'ee/spec/features/admin/admin_settings_spec.rb'
-    - 'ee/spec/features/subscriptions/expiring_subscription_message_spec.rb'
-    - 'ee/spec/lib/gitlab/expiring_subscription_message_spec.rb'
+    - 'ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_real_requests_spec.rb'
     - 'lib/api/helpers/snippets_helpers.rb'
     - 'lib/api/validations/validators/check_assignees_count.rb'
     - 'lib/banzai/filter/references/abstract_reference_filter.rb'
@@ -39,15 +36,12 @@ Style/StringLiteralsInInterpolation:
     - 'lib/tasks/gitlab/info.rake'
     - 'lib/tasks/gitlab/sidekiq.rake'
     - 'qa/qa/ee/page/component/secure_report.rb'
-    - 'qa/qa/ee/page/group/secure/show.rb'
     - 'qa/qa/resource/events/base.rb'
     - 'qa/qa/service/cluster_provider/base.rb'
     - 'qa/qa/service/cluster_provider/gcloud.rb'
-    - 'qa/qa/specs/helpers/context_selector.rb'
     - 'qa/qa/tools/generate_perf_testdata.rb'
     - 'rubocop/cop/migration/prevent_index_creation.rb'
     - 'spec/features/commits_spec.rb'
-    - 'spec/features/dashboard/merge_requests_spec.rb'
     - 'spec/features/users/login_spec.rb'
     - 'spec/lib/banzai/filter/references/commit_reference_filter_spec.rb'
     - 'spec/lib/banzai/filter/references/issue_reference_filter_spec.rb'

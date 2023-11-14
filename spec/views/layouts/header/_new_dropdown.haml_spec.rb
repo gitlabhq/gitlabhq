@@ -185,6 +185,11 @@ RSpec.describe 'layouts/header/_new_dropdown', feature_category: :navigation do
     context 'when the user is not allowed to do anything' do
       let(:user) { create(:user, :external) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
 
+      before do
+        allow(user).to receive(:can?).and_call_original
+        allow(user).to receive(:can?).with(:create_organization).and_return(false)
+      end
+
       it 'is nil' do
         # We have to use `view.render` because `render` causes issues
         # https://github.com/rails/rails/issues/41320

@@ -4,8 +4,6 @@ module Pages
   class LookupPath
     include Gitlab::Utils::StrongMemoize
 
-    LegacyStorageDisabledError = Class.new(::StandardError)
-
     def initialize(project, trim_prefix: nil, domain: nil)
       @project = project
       @domain = domain
@@ -15,6 +13,7 @@ module Pages
     def project_id
       project.id
     end
+    strong_memoize_attr :project_id
 
     def access_control
       project.private_pages?
@@ -76,8 +75,15 @@ module Pages
 
     attr_reader :project, :trim_prefix, :domain
 
+    # project.active_pages_deployments is already loaded from the database,
+    # so selecting from the array to avoid N+1
+    # this will change with when serving multiple versions on
+    # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133261
     def deployment
-      project.pages_metadatum.pages_deployment
+      project
+        .active_pages_deployments
+        .to_a
+        .find { |deployment| deployment.path_prefix.blank? }
     end
     strong_memoize_attr :deployment
 

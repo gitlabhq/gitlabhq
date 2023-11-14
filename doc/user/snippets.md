@@ -17,7 +17,7 @@ and you can maintain your snippets with the [snippets API](../api/snippets.md).
 You can create and manage your snippets through the GitLab user interface, or by
 using the [GitLab Workflow VS Code extension](project/repository/vscode.md).
 
-![Example of snippet](img/snippet_intro_v13_11.png)
+![Example of a snippet](img/snippet_sample_v16_6.png)
 
 GitLab provides two types of snippets:
 
@@ -168,10 +168,11 @@ To delete a file from your snippet through the GitLab UI:
 ## Clone snippets
 
 To ensure you receive updates, clone the snippet instead of copying it locally. Cloning
-maintains the snippet's connection with the repository. Select **Clone** on a snippet
-to display the URLs to clone with SSH or HTTPS:
+maintains the snippet's connection with the repository.
 
-![Clone snippet](img/snippet_clone_button_v13_0.png)
+To clone a snippet:
+
+- Select **Clone**, then copy the URL to clone with SSH or HTTPS.
 
 You can commit changes to a cloned snippet, and push the changes to GitLab.
 

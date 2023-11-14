@@ -72,40 +72,26 @@ export const fetchDrafts = ({ commit, getters, state, dispatch }) =>
       }),
     );
 
-export const publishSingleDraft = ({ commit, dispatch, getters }, draftId) => {
+export const publishSingleDraft = ({ commit, getters }, draftId) => {
   commit(types.REQUEST_PUBLISH_DRAFT, draftId);
 
   service
     .publishDraft(getters.getNotesData.draftsPublishPath, draftId)
-    .then(() => dispatch('updateDiscussionsAfterPublish'))
     .then(() => commit(types.RECEIVE_PUBLISH_DRAFT_SUCCESS, draftId))
     .catch(() => commit(types.RECEIVE_PUBLISH_DRAFT_ERROR, draftId));
 };
 
-export const publishReview = ({ commit, dispatch, getters }, noteData = {}) => {
+export const publishReview = ({ commit, getters }, noteData = {}) => {
   commit(types.REQUEST_PUBLISH_REVIEW);
 
   return service
     .publish(getters.getNotesData.draftsPublishPath, noteData)
-    .then(() => dispatch('updateDiscussionsAfterPublish'))
     .then(() => commit(types.RECEIVE_PUBLISH_REVIEW_SUCCESS))
     .catch((e) => {
       commit(types.RECEIVE_PUBLISH_REVIEW_ERROR);
 
       throw e.response;
     });
-};
-
-export const updateDiscussionsAfterPublish = async ({ dispatch, getters, rootGetters }) => {
-  await dispatch(
-    'fetchDiscussions',
-    { path: getters.getNotesData.discussionsPath },
-    { root: true },
-  );
-
-  dispatch('diffs/assignDiscussionsToDiff', rootGetters.discussionsStructuredByLineCode, {
-    root: true,
-  });
 };
 
 export const updateDraft = (

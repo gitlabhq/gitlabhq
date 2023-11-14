@@ -384,7 +384,6 @@ class MergeRequest < ApplicationRecord
   }
 
   scope :with_csv_entity_associations, -> { preload(:assignees, :approved_by_users, :author, :milestone, metrics: [:merged_by]) }
-  scope :with_jira_integration_associations, -> { preload_routables.preload(:metrics, :assignees, :author) }
   scope :recently_unprepared, -> { where(prepared_at: nil).where(created_at: 2.hours.ago..).order(:created_at, :id) } # id is the tie-breaker
 
   scope :by_target_branch_wildcard, ->(wildcard_branch_name) do
@@ -528,6 +527,14 @@ class MergeRequest < ApplicationRecord
       .reorder(arel_table[:updated_at].maximum.desc)
       .limit(limit)
       .pluck(:target_branch)
+  end
+
+  def self.recent_source_branches(limit: 100)
+    group(:source_branch)
+      .select(:source_branch)
+      .reorder(arel_table[:updated_at].maximum.desc)
+      .limit(limit)
+      .pluck(:source_branch)
   end
 
   def self.sort_by_attribute(method, excluded_labels: [])
@@ -1235,17 +1242,14 @@ class MergeRequest < ApplicationRecord
     }
   end
 
-  def mergeable?(
-    skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false, check_mergeability_retry_lease: false,
-    skip_draft_check: false, skip_rebase_check: false, skip_blocked_check: false)
-
-    return false unless mergeable_state?(
-      skip_ci_check: skip_ci_check,
-      skip_discussions_check: skip_discussions_check,
-      skip_draft_check: skip_draft_check,
-      skip_approved_check: skip_approved_check,
-      skip_blocked_check: skip_blocked_check
-    )
+  # mergeable_state_check_params allows a hash of merge checks to skip or not
+  # skip_ci_check
+  # skip_discussions_check
+  # skip_draft_check
+  # skip_approved_check
+  # skip_blocked_check
+  def mergeable?(check_mergeability_retry_lease: false, skip_rebase_check: false, **mergeable_state_check_params)
+    return false unless mergeable_state?(**mergeable_state_check_params)
 
     check_mergeability(sync_retry_lease: check_mergeability_retry_lease)
     mergeable_git_state?(skip_rebase_check: skip_rebase_check)
@@ -1275,18 +1279,16 @@ class MergeRequest < ApplicationRecord
     mergeable_state_checks + mergeable_git_state_checks
   end
 
-  def mergeable_state?(
-    skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false,
-    skip_draft_check: false, skip_blocked_check: false)
+  # mergeable_state_check_params allows a hash of merge checks to skip or not
+  # skip_ci_check
+  # skip_discussions_check
+  # skip_draft_check
+  # skip_approved_check
+  # skip_blocked_check
+  def mergeable_state?(**mergeable_state_check_params)
     additional_checks = execute_merge_checks(
       self.class.mergeable_state_checks,
-      params: {
-        skip_ci_check: skip_ci_check,
-        skip_discussions_check: skip_discussions_check,
-        skip_approved_check: skip_approved_check,
-        skip_draft_check: skip_draft_check,
-        skip_blocked_check: skip_blocked_check
-      }
+      params: mergeable_state_check_params
     )
     additional_checks.success?
   end
@@ -1386,7 +1388,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def mergeable_discussions_state?
-    return true unless project.only_allow_merge_if_all_discussions_are_resolved?(inherit_group_setting: true)
+    return true unless only_allow_merge_if_all_discussions_are_resolved?
 
     unresolved_notes.none?(&:to_be_resolved?)
   end
@@ -1566,8 +1568,16 @@ class MergeRequest < ApplicationRecord
     access.can_push_to_branch?(target_branch)
   end
 
+  def only_allow_merge_if_pipeline_succeeds?
+    project.only_allow_merge_if_pipeline_succeeds?(inherit_group_setting: true)
+  end
+
+  def only_allow_merge_if_all_discussions_are_resolved?
+    project.only_allow_merge_if_all_discussions_are_resolved?(inherit_group_setting: true)
+  end
+
   def mergeable_ci_state?
-    return true unless project.only_allow_merge_if_pipeline_succeeds?(inherit_group_setting: true)
+    return true unless only_allow_merge_if_pipeline_succeeds?
     return false unless actual_head_pipeline
     return true if project.allow_merge_on_skipped_pipeline?(inherit_group_setting: true) && actual_head_pipeline.skipped?
 

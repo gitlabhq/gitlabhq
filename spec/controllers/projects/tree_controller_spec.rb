@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe Projects::TreeController, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
-  let(:redirect_with_ref_type) { true }
 
   before do
     sign_in(user)
@@ -25,20 +24,31 @@ RSpec.describe Projects::TreeController, feature_category: :source_code_manageme
 
     let(:ref_type) { nil }
 
+    let(:redirect_with_ref_type) { true }
+
     # Make sure any errors accessing the tree in our views bubble up to this spec
     render_views
 
-    before do
-      expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
-      project.repository.add_tag(project.creator, 'ambiguous_ref', RepoHelpers.sample_commit.id)
-      project.repository.add_branch(project.creator, 'ambiguous_ref', RepoHelpers.another_sample_commit.id)
+    include_context 'with ambiguous refs for controllers'
 
-      stub_feature_flags(redirect_with_ref_type: redirect_with_ref_type)
-    end
+    describe '#set_is_ambiguous_ref before action' do
+      let(:redirect_with_ref_type) { false }
 
-    after do
-      project.repository.rm_tag(project.creator, 'ambiguous_ref')
-      project.repository.rm_branch(project.creator, 'ambiguous_ref')
+      before do
+        request
+      end
+
+      context 'when ref requested is ambiguous with no ref type' do
+        let(:id) { 'ambiguous_ref' }
+
+        it_behaves_like '#set_is_ambiguous_ref when ref is ambiguous'
+      end
+
+      context 'when ref requested is not ambiguous' do
+        let(:id) { 'master' }
+
+        it_behaves_like '#set_is_ambiguous_ref when ref is not ambiguous'
+      end
     end
 
     context 'when the redirect_with_ref_type flag is disabled' do

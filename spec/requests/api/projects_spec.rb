@@ -286,6 +286,32 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response.map { |p| p['id'] }).not_to include(project.id)
       end
 
+      context 'when user requests pending_delete projects' do
+        before do
+          project.update!(pending_delete: true)
+        end
+
+        let(:params) { { include_pending_delete: true } }
+
+        it 'does not return projects marked for deletion' do
+          get api(path, user), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an Array
+          expect(json_response.map { |p| p['id'] }).not_to include(project.id)
+        end
+
+        context 'when user is an admin' do
+          it 'returns projects marked for deletion' do
+            get api(path, admin, admin_mode: true), params: params
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to be_an Array
+            expect(json_response.map { |p| p['id'] }).to include(project.id)
+          end
+        end
+      end
+
       it 'does not include open_issues_count if issues are disabled' do
         project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
 
@@ -299,7 +325,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       context 'filter by topic (column topic_list)' do
         before do
-          project.update!(topic_list: %w(ruby javascript))
+          project.update!(topic_list: %w[ruby javascript])
         end
 
         it 'returns no projects' do
@@ -868,7 +894,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
     context 'sorting' do
       context 'by project statistics' do
-        %w(repository_size storage_size wiki_size packages_size).each do |order_by|
+        %w[repository_size storage_size wiki_size packages_size].each do |order_by|
           context "sorting by #{order_by}" do
             before do
               ProjectStatistics.update_all(order_by => 100)
@@ -1400,13 +1426,14 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     it 'disallows creating a project with an import_url that is not reachable' do
       url = 'http://example.com'
       endpoint_url = "#{url}/info/refs?service=git-upload-pack"
-      stub_full_request(endpoint_url, method: :get).to_return({ status: 301, body: '', headers: nil })
+      error_response = { status: 301, body: '', headers: nil }
+      stub_full_request(endpoint_url, method: :get).to_return(error_response)
       project_params = { import_url: url, path: 'path-project-Foo', name: 'Foo Project' }
 
       expect { post api(path, user), params: project_params }.not_to change { Project.count }
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
-      expect(json_response['message']).to eq("#{url} is not a valid HTTP Git repository")
+      expect(json_response['message']).to eq("#{url} endpoint error: #{error_response[:status]}")
     end
 
     it 'creates a project with an import_url that is valid' do
@@ -2533,7 +2560,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       context 'and the project has a private repository' do
         let(:project) { create(:project, :repository, :public, :repository_private) }
-        let(:protected_attributes) { %w(default_branch ci_config_path) }
+        let(:protected_attributes) { %w[default_branch ci_config_path] }
 
         it 'hides protected attributes of private repositories if user is not a member' do
           get api(path, user)
@@ -2782,10 +2809,20 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['shared_with_groups'][0]['expires_at']).to eq(expires_at.to_s)
       end
 
-      it 'returns a project by path name' do
-        get api(path, user)
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['name']).to eq(project.name)
+      context 'when path name is specified' do
+        it 'returns a project' do
+          get api("/projects/#{CGI.escape(project.full_path)}", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['name']).to eq(project.name)
+        end
+
+        it 'returns a project using case-insensitive search' do
+          get api("/projects/#{CGI.escape(project.full_path.swapcase)}", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['name']).to eq(project.name)
+        end
       end
 
       context 'when a project is moved' do
@@ -3688,6 +3725,16 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       it_behaves_like '412 response' do
         subject(:request) { api("/projects/#{project.id}/share/#{group.id}", user) }
       end
+
+      it "returns an error when link is not destroyed" do
+        allow(::Projects::GroupLinks::DestroyService).to receive_message_chain(:new, :execute)
+          .and_return(ServiceResponse.error(message: '404 Not Found', reason: :not_found))
+
+        delete api("/projects/#{project.id}/share/#{group.id}", user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq '404 Not Found'
+      end
     end
 
     it 'returns a 400 when group id is not an integer' do
@@ -3893,7 +3940,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(Project.find_by(path: project[:path]).analytics_access_level).to eq(ProjectFeature::PRIVATE)
     end
 
-    %i(releases_access_level environments_access_level feature_flags_access_level infrastructure_access_level monitor_access_level model_experiments_access_level).each do |field|
+    %i[releases_access_level environments_access_level feature_flags_access_level infrastructure_access_level monitor_access_level model_experiments_access_level].each do |field|
       it "sets #{field}" do
         put api(path, user), params: { field => 'private' }
 

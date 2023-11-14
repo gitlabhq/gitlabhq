@@ -6,18 +6,17 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Reference architecture: up to 2,000 users **(FREE SELF)**
 
-This page describes GitLab reference architecture for up to 2,000 users.
+This page describes the GitLab reference architecture designed for the load of up to 2,000 users
+with notable headroom (non-HA).
+
 For a full list of reference architectures, see
 [Available reference architectures](index.md#available-reference-architectures).
 
-> - **Supported users (approximate):** 2,000
+> - **Target Load:** API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS
 > - **High Availability:** No. For a highly-available environment, you can
 >   follow a modified [3K reference architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
 > - **Estimated Costs:** [See cost table](index.md#cost-to-run)
 > - **Cloud Native Hybrid:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
-> - **Validation and test results:** The Quality Engineering team does [regular smoke and performance tests](index.md#validation-and-test-results) to ensure the reference architectures remain compliant
->   - **Test requests per second (RPS) rates:** API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS
->   - **[Latest Results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/2k)**
 > - **Unsure which Reference Architecture to use?** [Go to this guide for more info](index.md#deciding-which-architecture-to-use).
 
 | Service                    | Nodes | Configuration          | GCP             | AWS          | Azure    |
@@ -80,6 +79,27 @@ monitor .[#7FFFD4,norank]u--> elb
 ## Requirements
 
 Before starting, see the [requirements](index.md#requirements) for reference architectures.
+
+## Testing methodology
+
+The 2k architecture is designed to cover a large majority of workflows and is regularly
+[smoke and performance tested](index.md#validation-and-test-results) by the Quality Engineering team
+against the following endpoint throughput targets:
+
+- API: 40 RPS
+- Web: 4 RPS
+- Git (Pull): 4 RPS
+- Git (Push): 1 RPS
+
+The above targets were selected based on real customer data of total environmental loads corresponding to the user count,
+including CI and other workloads along with additional substantial headroom added.
+
+If you have metrics to suggest that you have regularly higher throughput against the above endpoint targets, [large monorepos](index.md#large-monorepos)
+or notable [additional workloads](index.md#additional-workloads) these can notably impact the performance environment and [further adjustments may be required](index.md#scaling-an-environment).
+If this applies to you, we strongly recommended referring to the linked documentation as well as reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
+
+Testing is done regularly via our [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance) and its dataset, which is available for anyone to use.
+The results of this testing are [available publicly on the GPT wiki](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest). For more information on our testing strategy [refer to this section of the documentation](index.md#validation-and-test-results).
 
 ## Setup components
 
@@ -609,7 +629,8 @@ Updates to example must be made at:
 -->
 
    ```ruby
-   roles ["sidekiq_role"]
+   # https://docs.gitlab.com/omnibus/roles/#sidekiq-roles
+   roles(["sidekiq_role"])
 
    # External URL
    external_url 'https://gitlab.example.com'

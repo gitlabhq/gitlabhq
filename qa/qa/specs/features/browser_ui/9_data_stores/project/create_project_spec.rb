@@ -31,11 +31,7 @@ module QA
 
       context(
         'in personal namespace',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347643',
-        quarantine: {
-          type: :investigating,
-          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/425904'
-        }
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347643'
       ) do
         let(:project_name) { "project-in-personal-namespace-#{SecureRandom.hex(8)}" }
         let(:project) do

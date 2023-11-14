@@ -12,7 +12,7 @@
     %h3.gl-new-card-title.h5
       = panel_title
   - c.with_body do
-    %ul.content-list.branches-list.all-branches{ data: { qa_selector: 'all_branches_container' } }
+    %ul.content-list.branches-list.all-branches{ data: { testid: 'all-branches-container' } }
       - branches.first(overview_max_branches).each do |branch|
         = render "projects/branches/branch", branch: branch, merged: project.repository.merged_to_root_ref?(branch), commit_status: @branch_pipeline_statuses[branch.name], show_commit_status: @branch_pipeline_statuses.any?
   - if branches.size > overview_max_branches

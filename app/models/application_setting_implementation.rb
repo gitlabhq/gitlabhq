@@ -57,6 +57,7 @@ module ApplicationSettingImplementation
         default_artifacts_expire_in: '30 days',
         default_branch_name: nil,
         default_branch_protection: Settings.gitlab['default_branch_protection'],
+        default_branch_protection_defaults: Settings.gitlab['default_branch_protection_defaults'],
         default_ci_config_path: nil,
         default_group_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         default_project_creation: Settings.gitlab['default_project_creation'],
@@ -158,7 +159,6 @@ module ApplicationSettingImplementation
         recaptcha_enabled: false,
         repository_checks_enabled: true,
         repository_storages_weighted: { 'default' => 100 },
-        repository_storages: ['default'],
         require_admin_approval_after_user_signup: true,
         require_two_factor_authentication: false,
         restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
@@ -433,10 +433,6 @@ module ApplicationSettingImplementation
     read_attribute(:asset_proxy_whitelist)
   end
 
-  def repository_storages
-    Array(read_attribute(:repository_storages))
-  end
-
   def commit_email_hostname
     super.presence || self.class.default_commit_email_hostname
   end
@@ -642,12 +638,6 @@ module ApplicationSettingImplementation
     return if uuid?
 
     self.uuid = SecureRandom.uuid
-  end
-
-  def check_repository_storages
-    invalid = repository_storages - Gitlab.config.repositories.storages.keys
-    errors.add(:repository_storages, "can't include: #{invalid.join(", ")}") unless
-      invalid.empty?
   end
 
   def coerce_repository_storages_weighted

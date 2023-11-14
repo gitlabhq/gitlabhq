@@ -51,11 +51,11 @@ module Integrations
       false
     end
 
-    def title
+    def self.title
       'Prometheus'
     end
 
-    def description
+    def self.description
       s_('PrometheusService|Monitor application health with Prometheus metrics and dashboards')
     end
 

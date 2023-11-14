@@ -68,14 +68,6 @@ module WikiHelper
     render Pajamas::ButtonComponent.new(href: wiki_path(wiki, **link_options), icon: "sort-#{icon_class}", button_options: { class: link_class, title: title })
   end
 
-  def wiki_sort_title(key)
-    if key == Wiki::CREATED_AT_ORDER
-      s_("Wiki|Created date")
-    else
-      s_("Wiki|Title")
-    end
-  end
-
   def wiki_empty_state_messages(wiki)
     case wiki.container
     when Project

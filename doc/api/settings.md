@@ -19,6 +19,8 @@ For information on how to control the application settings cache for an instance
 
 > - `always_perform_delayed_deletion` feature flag [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113332) in GitLab 15.11.
 > - `delayed_project_deletion` and `delayed_group_deletion` attributes removed in GitLab 16.0.
+> - `in_product_marketing_emails_enabled` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/418137) in GitLab 16.6.
+> - `repository_storages` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/429675) in GitLab 16.6.
 
 List the current [application settings](#list-of-settings-that-can-be-accessed-via-api-calls)
 of the GitLab instance.
@@ -215,7 +217,6 @@ Example response:
   "container_registry_token_expire_delay": 5,
   "decompress_archive_file_timeout": 210,
   "package_registry_cleanup_policies_worker_capacity": 2,
-  "repository_storages": ["default"],
   "plantuml_enabled": false,
   "plantuml_url": null,
   "diagramsnet_enabled": true,
@@ -433,6 +434,7 @@ listed in the descriptions of the relevant settings.
 | `gitaly_timeout_fast`                    | integer          | no                                   | Gitaly fast operation timeout, in seconds. Some Gitaly operations are expected to be fast. If they exceed this threshold, there may be a problem with a storage shard and 'failing fast' can help maintain the stability of the GitLab instance. Set to `0` to disable timeouts. |
 | `gitaly_timeout_medium`                  | integer          | no                                   | Medium Gitaly timeout, in seconds. This should be a value between the Fast and the Default timeout. Set to `0` to disable timeouts. |
 | `gitlab_dedicated_instance`              | boolean          | no                                   | Indicates whether the instance was provisioned for GitLab Dedicated. |
+| `gitlab_shell_operation_limit`           | integer          | no                                   | Maximum number of Git operations per minute a user can perform. Default: `600`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412088) in GitLab 16.2. |
 | `grafana_enabled`                        | boolean          | no                                   | Enable Grafana. |
 | `grafana_url`                            | string           | no                                   | Grafana URL. |
 | `gravatar_enabled`                       | boolean          | no                                   | Enable Gravatar. |
@@ -452,9 +454,10 @@ listed in the descriptions of the relevant settings.
 | `housekeeping_optimize_repository_period`| integer          | no                                   | Number of Git pushes after which an incremental `git repack` is run. |
 | `html_emails_enabled`                    | boolean          | no                                   | Enable HTML emails. |
 | `import_sources`                         | array of strings | no                                   | Sources to allow project import from, possible values: `github`, `bitbucket`, `bitbucket_server`, `fogbugz`, `git`, `gitlab_project`, `gitea`, and `manifest`. |
-| `in_product_marketing_emails_enabled`    | boolean          | no                                   | Enable [in-product marketing emails](../user/profile/notifications.md#global-notification-settings). Enabled by default. |
 | `invisible_captcha_enabled`              | boolean          | no                                   | Enable Invisible CAPTCHA spam detection during sign-up. Disabled by default. |
 | `issues_create_limit`                    | integer          | no                                   | Max number of issue creation requests per minute per user. Disabled by default.|
+| `jira_connect_application_key`           | String           | no                                   | Application ID of the OAuth application that should be used to authenticate with the GitLab for Jira Cloud app |
+| `jira_connect_proxy_url`                 | String           | no                                   | URL of the GitLab instance that should be used as a proxy for the GitLab for Jira Cloud app |
 | `keep_latest_artifact`                   | boolean          | no                                   | Prevent the deletion of the artifacts from the most recent successful jobs, regardless of the expiry time. Enabled by default. |
 | `local_markdown_version`                 | integer          | no                                   | Increase this value when any cached Markdown should be invalidated. |
 | `mailgun_signing_key`                    | string           | no                                   | The Mailgun HTTP webhook signing key for receiving events from webhook. |
@@ -534,13 +537,13 @@ listed in the descriptions of the relevant settings.
 | `repository_checks_enabled`              | boolean          | no                                   | GitLab periodically runs `git fsck` in all project and wiki repositories to look for silent disk corruption issues. |
 | `repository_size_limit` **(PREMIUM ALL)**    | integer          | no                                   | Size limit per repository (MB) |
 | `repository_storages_weighted`           | hash of strings to integers | no                        | (GitLab 13.1 and later) Hash of names of taken from `gitlab.yml` to [weights](../administration/repository_storage_paths.md#configure-where-new-repositories-are-stored). New projects are created in one of these stores, chosen by a weighted random selection. |
-| `repository_storages`                    | array of strings | no                                   | (GitLab 13.0 and earlier) List of names of enabled storage paths, taken from `gitlab.yml`. New projects are created in one of these stores, chosen at random. |
 | `require_admin_approval_after_user_signup` | boolean        | no                                   | When enabled, any user that signs up for an account using the registration form is placed under a **Pending approval** state and has to be explicitly [approved](../administration/moderate_users.md) by an administrator. |
 | `require_two_factor_authentication`      | boolean          | no                                   | (**If enabled, requires:** `two_factor_grace_period`) Require all users to set up Two-factor authentication. |
 | `restricted_visibility_levels`           | array of strings | no                                   | Selected levels cannot be used by non-Administrator users for groups, projects or snippets. Can take `private`, `internal` and `public` as a parameter. Default is `null` which means there is no restriction.[Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131203) in GitLab 16.4: cannot select levels that are set as `default_project_visibility` and `default_group_visibility`. |
 | `rsa_key_restriction`                    | integer          | no                                   | The minimum allowed bit length of an uploaded RSA key. Default is `0` (no restriction). `-1` disables RSA keys. |
 | `session_expire_delay`                   | integer          | no                                   | Session duration in minutes. GitLab restart is required to apply changes. |
 | `security_policy_global_group_approvers_enabled` | boolean  | no                                   | Whether to look up scan result policy approval groups globally or within project hierarchies. |
+| `service_access_tokens_expiration_enforced` | boolean | no | Flag to indicate if token expiry date can be optional for service account users |
 | `shared_runners_enabled`                 | boolean          | no                                   | (**If enabled, requires:** `shared_runners_text` and `shared_runners_minutes`) Enable shared runners for new projects. |
 | `shared_runners_minutes` **(PREMIUM ALL)**   | integer          | required by: `shared_runners_enabled` | Set the maximum number of compute minutes that a group can use on shared runners per month. |
 | `shared_runners_text`                    | string           | required by: `shared_runners_enabled` | Shared runners text. |
@@ -572,6 +575,7 @@ listed in the descriptions of the relevant settings.
 | `spam_check_endpoint_url`                | string           | no                                   | URL of the external Spamcheck service endpoint. Valid URI schemes are `grpc` or `tls`. Specifying `tls` forces communication to be encrypted.|
 | `spam_check_api_key`                     | string           | no                                   | API key used by GitLab for accessing the Spam Check service endpoint. |
 | `suggest_pipeline_enabled`               | boolean          | no                                   | Enable pipeline suggestion banner. |
+| `enable_artifact_external_redirect_warning_page` | boolean          | no                                   | Show the external redirect page that warns you about user-generated content in GitLab Pages. |
 | `terminal_max_session_time`              | integer          | no                                   | Maximum time for web terminal websocket connection (in seconds). Set to `0` for unlimited time. |
 | `terms`                                  | text             | required by: `enforce_terms`         | (**Required by:** `enforce_terms`) Markdown content for the ToS. |
 | `throttle_authenticated_api_enabled`                      | boolean | no                                                              | (**If enabled, requires:** `throttle_authenticated_api_period_in_seconds` and `throttle_authenticated_api_requests_per_period`) Enable authenticated API request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). |
@@ -613,9 +617,6 @@ listed in the descriptions of the relevant settings.
 | `valid_runner_registrars`                | array of strings | no                                   | List of types which are allowed to register a GitLab Runner. Can be `[]`, `['group']`, `['project']` or `['group', 'project']`. |
 | `whats_new_variant`                      | string           | no                                   | What's new variant, possible values: `all_tiers`, `current_tier`, and `disabled`. |
 | `wiki_page_max_content_bytes`            | integer          | no                                   | Maximum wiki page content size in **bytes**. Default: 52428800 Bytes (50 MB). The minimum value is 1024 bytes. |
-| `jira_connect_application_key`           | String           | no                                   | Application ID of the OAuth application that should be used to authenticate with the GitLab for Jira Cloud app |
-| `jira_connect_proxy_url`                 | String           | no                                   | URL of the GitLab instance that should be used as a proxy for the GitLab for Jira Cloud app |
-| `gitlab_shell_operation_limit`           | integer          | no                                   | Maximum number of Git operations per minute a user can perform. Default: `600`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412088) in GitLab 16.2. |
 
 ### Configure inactive project deletion
 

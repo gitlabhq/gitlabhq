@@ -1,55 +1,37 @@
-@mixin icon-styles($primary-color, $svg-color) {
+@mixin icon-styles($color) {
   svg,
   .gl-icon {
-    fill: $primary-color;
-  }
-
-  // For the pipeline mini graph, we pass a custom 'gl-border' so that we can enforce
-  // a border of 1px instead of the thicker svg borders to adhere to design standards.
-  // If we implement the component with 'isBorderless' and also pass that border,
-  // this css is to dynamically apply the correct border color for those specific icons.
-  &.borderless {
-    border-color: $primary-color;
-  }
-
-  &.interactive {
-    &:hover {
-      background: $svg-color;
-    }
-
-    &:hover,
-    &.active {
-      box-shadow: 0 0 0 1px $primary-color;
-    }
+    fill: $color;
   }
 }
 
 .ci-status-icon-success,
 .ci-status-icon-passed {
-  @include icon-styles($green-500, $green-100);
+  @include icon-styles($green-500);
 }
 
 .ci-status-icon-error,
 .ci-status-icon-failed {
-  @include icon-styles($red-500, $red-100);
+  @include icon-styles($red-500);
 }
 
 .ci-status-icon-pending,
 .ci-status-icon-waiting-for-resource,
+.ci-status-icon-waiting-for-callback,
 .ci-status-icon-failed-with-warnings,
 .ci-status-icon-success-with-warnings {
-  @include icon-styles($orange-500, $orange-100);
+  @include icon-styles($orange-500);
 }
 
 .ci-status-icon-running {
-  @include icon-styles($blue-500, $blue-100);
+  @include icon-styles($blue-500);
 }
 
 .ci-status-icon-canceled,
 .ci-status-icon-disabled,
 .ci-status-icon-scheduled,
 .ci-status-icon-manual {
-  @include icon-styles($gray-900, $gray-100);
+  @include icon-styles($gray-900);
 }
 
 .ci-status-icon-notification,
@@ -57,7 +39,58 @@
 .ci-status-icon-created,
 .ci-status-icon-skipped,
 .ci-status-icon-notfound {
-  @include icon-styles($gray-500, $gray-100);
+  @include icon-styles($gray-500);
+}
+
+.ci-icon {
+  // .ci-icon class is used at
+  // - app/assets/javascripts/vue_shared/components/ci_icon.vue
+  // - app/helpers/ci/status_helper.rb
+  .ci-icon-gl-icon-wrapper {
+    @include gl-rounded-full;
+    @include gl-line-height-0;
+  }
+
+  // Makes the borderless CI icons appear slightly bigger than the default 16px.
+  // Could be fixed by making the SVG fill up the canvas in a follow up issue.
+  .gl-icon {
+    // fill: currentColor;
+    width: 20px;
+    height: 20px;
+    margin: -2px;
+  }
+
+  @mixin ci-icon-style($bg-color, $color, $gl-dark-bg-color: null, $gl-dark-color: null) {
+    .ci-icon-gl-icon-wrapper {
+      background-color: $bg-color;
+      color: $color;
+
+      .gl-dark & {
+        background-color: $gl-dark-bg-color;
+        color: $gl-dark-color;
+      }
+    }
+  }
+
+  &.ci-icon-variant-success {
+    @include ci-icon-style($green-500, $white, $green-600, $green-50)
+  }
+
+  &.ci-icon-variant-warning {
+    @include ci-icon-style($orange-500, $white, $orange-600, $orange-50)
+  }
+
+  &.ci-icon-variant-danger {
+    @include ci-icon-style($red-500, $white, $red-600, $red-50)
+  }
+
+  &.ci-icon-variant-info {
+    @include ci-icon-style($white, $blue-500, $blue-600, $blue-50)
+  }
+
+  &.ci-icon-variant-neutral {
+    @include ci-icon-style($white, $gray-500)
+  }
 }
 
 .password-status-icon-success {

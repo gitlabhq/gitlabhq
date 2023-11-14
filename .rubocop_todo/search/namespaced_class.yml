@@ -39,7 +39,6 @@ Search/NamespacedClass:
     - 'ee/app/models/elasticsearch_indexed_namespace.rb'
     - 'ee/app/models/elasticsearch_indexed_project.rb'
     - 'ee/app/models/zoekt/indexed_namespace.rb'
-    - 'ee/app/models/zoekt/shard.rb'
     - 'ee/app/presenters/ee/search_service_presenter.rb'
     - 'ee/app/services/ee/search_service.rb'
     - 'ee/app/services/elastic/bookkeeping_shard_service.rb'

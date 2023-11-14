@@ -3,6 +3,7 @@
 module CreatesCommit
   extend ActiveSupport::Concern
   include Gitlab::Utils::StrongMemoize
+  include SafeFormatHelper
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def create_commit(service, success_path:, failure_path:, failure_view: nil, success_notice: nil, target_project: nil)
@@ -31,9 +32,9 @@ module CreatesCommit
     result = service.new(@project_to_commit_into, current_user, commit_params).execute
 
     if result[:status] == :success
-      update_flash_notice(success_notice)
-
       success_path = final_success_path(success_path, target_project)
+
+      update_flash_notice(success_notice, success_path)
 
       respond_to do |format|
         format.html { redirect_to success_path }
@@ -65,8 +66,13 @@ module CreatesCommit
 
   private
 
-  def update_flash_notice(success_notice)
-    flash[:notice] = success_notice || _("Your changes have been successfully committed.")
+  def update_flash_notice(success_notice, success_path)
+    changes_link = ActionController::Base.helpers.link_to _('changes'), success_path, class: 'gl-link'
+
+    default_message = safe_format(_("Your %{changes_link} have been committed successfully."),
+      changes_link: changes_link)
+
+    flash[:notice] = success_notice || default_message
 
     if create_merge_request?
       flash[:notice] =

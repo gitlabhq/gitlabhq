@@ -442,9 +442,18 @@ That's all of the required database changes.
       end
 
       trait :verification_succeeded do
+        synced
         verification_checksum { 'e079a831cab27bcda7d81cd9b48296d0c3dd92ef' }
         verification_state { Geo::CoolWidgetRegistry.verification_state_value(:verification_succeeded) }
         verified_at { 5.days.ago }
+      end
+
+      trait :verification_failed do
+        synced
+        verification_failure { 'Could not calculate the checksum' }
+        verification_state { Geo::CoolWidgetRegistry.verification_state_value(:verification_failed) }
+        verification_retry_count { 1 }
+        verification_retry_at { 2.hours.from_now }
       end
     end
   end
@@ -468,7 +477,7 @@ That's all of the required database changes.
   end
   ```
 
-- [ ] Add the following to `spec/factories/cool_widgets.rb`:
+- [ ] Add the following to `ee/spec/factories/cool_widgets.rb`:
 
   ```ruby
   # frozen_string_literal: true
@@ -476,15 +485,24 @@ That's all of the required database changes.
   FactoryBot.modify do
     factory :cool_widget do
       trait :verification_succeeded do
-          with_file
-          verification_checksum { 'abc' }
-          verification_state { CoolWidget.verification_state_value(:verification_succeeded) }
+        with_file
+        verification_checksum { 'abc' }
+        verification_state { CoolWidget.verification_state_value(:verification_succeeded) }
       end
 
       trait :verification_failed do
-          with_file
-          verification_failure { 'Could not calculate the checksum' }
-          verification_state { CoolWidget.verification_state_value(:verification_failed) }
+        with_file
+        verification_failure { 'Could not calculate the checksum' }
+        verification_state { CoolWidget.verification_state_value(:verification_failed) }
+
+        #
+        # Geo::VerifiableReplicator#after_verifiable_update tries to verify
+        # the replicable async and marks it as verification started when the
+        # model record is created/updated.
+        #
+        after(:create) do |instance, _|
+          instance.verification_failed!
+        end
       end
     end
   end
@@ -653,7 +671,7 @@ The GraphQL API is used by `Admin > Geo > Replication Details` views, and is dir
 
   module Types
     module Geo
-      # rubocop:disable Graphql/AuthorizeTypes because it is included
+      # rubocop:disable Graphql/AuthorizeTypes -- because it is included
       class CoolWidgetRegistryType < BaseObject
         graphql_name 'CoolWidgetRegistry'
 

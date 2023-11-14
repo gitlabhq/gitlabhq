@@ -40,7 +40,7 @@ RSpec.shared_examples 'User updates wiki page' do
         click_on('Create page')
       end
 
-      expect(page).to have_current_path(%r(one/two/three-test), ignore_query: true)
+      expect(page).to have_current_path(%r{one/two/three-test}, ignore_query: true)
       expect(find('.wiki-pages')).to have_content('three')
 
       first(:link, text: 'three').click
@@ -49,7 +49,7 @@ RSpec.shared_examples 'User updates wiki page' do
 
       click_on('Edit')
 
-      expect(page).to have_current_path(%r(one/two/three-test), ignore_query: true)
+      expect(page).to have_current_path(%r{one/two/three-test}, ignore_query: true)
       expect(page).to have_content('Edit Page')
 
       fill_in('Content', with: 'Updated Wiki Content')
@@ -149,7 +149,10 @@ RSpec.shared_examples 'User updates wiki page' do
       end
     end
 
-    it_behaves_like 'edits content using the content editor', { with_expanded_references: false }
+    it_behaves_like 'edits content using the content editor', {
+      with_expanded_references: false,
+      with_quick_actions: false
+    }
     it_behaves_like 'inserts diagrams.net diagram using the content editor'
     it_behaves_like 'autocompletes items'
   end

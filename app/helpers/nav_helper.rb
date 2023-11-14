@@ -57,10 +57,6 @@ module NavHelper
     end
   end
 
-  def nav_control_class
-    "nav-control" if current_user
-  end
-
   def user_dropdown_class
     class_names = []
     class_names << 'header-user-dropdown-toggle'
@@ -82,23 +78,11 @@ module NavHelper
     %w[system_info background_migrations background_jobs health_check]
   end
 
-  def admin_analytics_nav_links
-    %w[dev_ops_report usage_trends]
-  end
-
-  def show_super_sidebar?(user = current_user)
-    # The new sidebar is not enabled for anonymous use
-    # Once we enable the new sidebar by default, this
-    # should return true
-    return Feature.enabled?(:super_sidebar_logged_out) unless user
-
-    # Users who got the special `super_sidebar_nav_enrolled` enabled,
-    # see the new nav as long as they don't explicitly opt-out via the toggle
-    if user.use_new_navigation.nil? && Feature.enabled?(:super_sidebar_nav_enrolled, user)
-      true
-    else
-      !!user.use_new_navigation
-    end
+  def show_super_sidebar?(_user = current_user)
+    # The new navigation is now enabled for everyone.
+    # We are working on cleaning up the use of this helper and other related code.
+    # See https://gitlab.com/groups/gitlab-org/-/epics/11875
+    true
   end
 
   private

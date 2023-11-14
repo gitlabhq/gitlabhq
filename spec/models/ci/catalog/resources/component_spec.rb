@@ -9,6 +9,23 @@ RSpec.describe Ci::Catalog::Resources::Component, type: :model, feature_category
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:version).class_name('Ci::Catalog::Resources::Version') }
 
+  it_behaves_like 'a BulkInsertSafe model', described_class do
+    let_it_be(:project) { create(:project, :readme, description: 'project description') }
+    let_it_be(:catalog_resource) { create(:ci_catalog_resource, project: project) }
+    let_it_be(:version) { create(:ci_catalog_resource_version, project: project) }
+
+    let(:valid_items_for_bulk_insertion) do
+      build_list(:ci_catalog_resource_component, 10) do |component|
+        component.catalog_resource = catalog_resource
+        component.version = version
+        component.project = project
+        component.created_at = Time.zone.now
+      end
+    end
+
+    let(:invalid_items_for_bulk_insertion) { [] }
+  end
+
   describe 'validations' do
     it { is_expected.to validate_presence_of(:catalog_resource) }
     it { is_expected.to validate_presence_of(:project) }

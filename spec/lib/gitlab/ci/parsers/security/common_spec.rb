@@ -335,7 +335,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
 
             expect(flags).to contain_exactly(
               have_attributes(type: 'flagged-as-likely-false-positive', origin: 'post analyzer X', description: 'static string to sink'),
-            have_attributes(type: 'flagged-as-likely-false-positive', origin: 'post analyzer Y', description: 'integer to sink')
+              have_attributes(type: 'flagged-as-likely-false-positive', origin: 'post analyzer Y', description: 'integer to sink')
             )
           end
         end

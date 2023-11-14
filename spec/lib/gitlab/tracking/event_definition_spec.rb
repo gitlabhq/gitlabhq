@@ -15,8 +15,8 @@ RSpec.describe Gitlab::Tracking::EventDefinition do
       product_stage: 'growth',
       product_section: 'dev',
       product_group: 'group::product analytics',
-      distribution: %w(ee ce),
-      tier: %w(free premium ultimate)
+      distribution: %w[ee ce],
+      tier: %w[free premium ultimate]
     }
   end
 
@@ -49,8 +49,8 @@ RSpec.describe Gitlab::Tracking::EventDefinition do
       :product_stage        | 1
       :product_section      | nil
       :product_group        | nil
-      :distributions        | %[be eb]
-      :tiers                | %[pro]
+      :distributions        | %(be eb)
+      :tiers                | %(pro)
     end
 
     with_them do

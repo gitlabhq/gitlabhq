@@ -11,8 +11,16 @@ RSpec.describe VsCode::Settings::VsCodeSetting, feature_category: :web_ide do
     it { is_expected.to validate_presence_of(:content) }
   end
 
+  describe 'validates the uniqueness of attributes' do
+    it { is_expected.to validate_uniqueness_of(:setting_type).scoped_to([:user_id]) }
+  end
+
   describe 'relationship validation' do
     it { is_expected.to belong_to(:user) }
+  end
+
+  describe 'settings type validation' do
+    it { is_expected.to validate_inclusion_of(:setting_type).in_array(VsCode::Settings::SETTINGS_TYPES) }
   end
 
   describe '.by_setting_type' do

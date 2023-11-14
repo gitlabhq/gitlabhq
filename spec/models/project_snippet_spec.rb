@@ -2,9 +2,22 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectSnippet do
+RSpec.describe ProjectSnippet, feature_category: :source_code_management do
   describe "Associations" do
     it { is_expected.to belong_to(:project) }
+  end
+
+  describe 'scopes' do
+    describe '.by_project' do
+      subject { described_class.by_project(project) }
+
+      let_it_be(:project) { create(:project) }
+      let_it_be(:snippet1) { create(:project_snippet, project: project) }
+      let_it_be(:snippet2) { create(:project_snippet, project: build(:project)) }
+      let_it_be(:snippet3) { create(:personal_snippet) }
+
+      it { is_expected.to contain_exactly(snippet1) }
+    end
   end
 
   describe "Validation" do

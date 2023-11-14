@@ -1,7 +1,7 @@
 <script>
 import { GlLink, GlDisclosureDropdown, GlSprintf } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import { Mousetrap } from '~/lib/mousetrap';
 import { s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -14,7 +14,7 @@ export default {
     GlDisclosureDropdown,
     GlLink,
     GlSprintf,
-    CiBadgeLink,
+    CiIcon,
   },
   props: {
     pipeline: {
@@ -94,7 +94,10 @@ export default {
 </script>
 <template>
   <div class="dropdown">
-    <div class="gl-display-flex gl-flex-wrap gl-gap-2 js-pipeline-info" data-testid="pipeline-info">
+    <div
+      class="gl-display-flex gl-flex-wrap gl-align-items-center gl-gap-2 js-pipeline-info"
+      data-testid="pipeline-info"
+    >
       <gl-sprintf :message="pipelineInfo">
         <template #bold="{ content }">
           <span class="gl-display-flex gl-font-weight-bold">{{ content }}</span>
@@ -108,9 +111,9 @@ export default {
           >
         </template>
         <template #status>
-          <ci-badge-link
+          <ci-icon
             :status="pipeline.details.status"
-            size="sm"
+            show-status-text
             data-testid="pipeline-status-link"
           />
         </template>
@@ -125,7 +128,7 @@ export default {
         <template #ref>
           <gl-link
             :href="pipeline.ref.path"
-            class="link-commit ref-name gl-mt-1"
+            class="link-commit ref-name"
             data-testid="source-ref-link"
             >{{ pipeline.ref.name }}</gl-link
           ><clipboard-button

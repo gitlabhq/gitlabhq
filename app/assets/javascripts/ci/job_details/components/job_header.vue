@@ -4,12 +4,12 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { glEmojiTag } from '~/emoji';
 import { __, sprintf } from '~/locale';
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
   components: {
-    CiBadgeLink,
+    CiIcon,
     TimeagoTooltip,
     GlButton,
     GlAvatarLink,
@@ -113,7 +113,7 @@ export default {
       </div>
     </div>
     <section class="header-main-content gl-display-flex gl-align-items-center gl-mr-3">
-      <ci-badge-link class="gl-mr-3" :status="status" />
+      <ci-icon class="gl-mr-3" :status="status" show-status-text />
 
       <template v-if="shouldRenderTriggeredLabel">{{ __('Started') }}</template>
       <template v-else>{{ __('Created') }}</template>

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UserGroupNotificationSettingsFinder do
+RSpec.describe UserGroupNotificationSettingsFinder, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
 
   subject { described_class.new(user, Group.where(id: groups.map(&:id))).execute }
@@ -127,38 +127,38 @@ RSpec.describe UserGroupNotificationSettingsFinder do
 
         expect(result.count).to eq(3)
       end
-    end
-  end
 
-  context 'preloading `emails_disabled`' do
-    let_it_be(:root_group) { create(:group) }
-    let_it_be(:sub_group) { create(:group, parent: root_group) }
-    let_it_be(:sub_sub_group) { create(:group, parent: sub_group) }
+      context 'preloading `emails_enabled`' do
+        let_it_be(:root_group) { create(:group) }
+        let_it_be(:sub_group) { create(:group, parent: root_group) }
+        let_it_be(:sub_sub_group) { create(:group, parent: sub_group) }
 
-    let_it_be(:another_root_group) { create(:group) }
-    let_it_be(:sub_group_with_emails_disabled) { create(:group, emails_disabled: true, parent: another_root_group) }
-    let_it_be(:another_sub_sub_group) { create(:group, parent: sub_group_with_emails_disabled) }
+        let_it_be(:another_root_group) { create(:group) }
+        let_it_be(:sub_group_with_emails_disabled) { create(:group, emails_enabled: false, parent: another_root_group) }
+        let_it_be(:another_sub_sub_group) { create(:group, parent: sub_group_with_emails_disabled) }
 
-    let_it_be(:root_group_with_emails_disabled) { create(:group, emails_disabled: true) }
-    let_it_be(:group) { create(:group, parent: root_group_with_emails_disabled) }
+        let_it_be(:root_group_with_emails_disabled) { create(:group, emails_enabled: false) }
+        let_it_be(:group) { create(:group, parent: root_group_with_emails_disabled) }
 
-    let(:groups) { Group.where(id: [sub_sub_group, another_sub_sub_group, group]) }
+        let(:groups) { Group.where(id: [sub_sub_group, another_sub_sub_group, group]) }
 
-    before do
-      described_class.new(user, groups).execute
-    end
+        before do
+          described_class.new(user, groups).execute
+        end
 
-    it 'preloads the `group.emails_disabled` method' do
-      recorder = ActiveRecord::QueryRecorder.new do
-        groups.each(&:emails_disabled?)
-      end
+        it 'preloads the `group.emails_enabled` method' do
+          recorder = ActiveRecord::QueryRecorder.new do
+            groups.each(&:emails_enabled?)
+          end
 
-      expect(recorder.count).to eq(0)
-    end
+          expect(recorder.count).to eq(0)
+        end
 
-    it 'preloads the `group.emails_disabled` method correctly' do
-      groups.each do |group|
-        expect(group.emails_disabled?).to eq(Group.find(group.id).emails_disabled?) # compare the memoized and the freshly loaded value
+        it 'preloads the `group.emails_enabled` method correctly' do
+          groups.each do |group|
+            expect(group.emails_enabled?).to eq(Group.find(group.id).emails_enabled?) # compare the memoized and the freshly loaded value
+          end
+        end
       end
     end
   end

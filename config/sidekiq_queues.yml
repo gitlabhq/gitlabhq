@@ -25,6 +25,10 @@
 :queues:
 - - abuse_new_abuse_report
   - 1
+- - abuse_spam_abuse_events
+  - 1
+- - activity_pub
+  - 1
 - - adjourned_project_deletion
   - 1
 - - admin_emails
@@ -273,6 +277,8 @@
   - 2
 - - emails_on_push
   - 2
+- - environments_auto_recover
+  - 1
 - - environments_auto_stop
   - 1
 - - environments_canary_ingress_update
@@ -349,8 +355,6 @@
   - 1
 - - groups_update_two_factor_requirement_for_members
   - 1
-- - hashed_storage
-  - 1
 - - import_issues_csv
   - 2
 - - incident_management
@@ -411,8 +415,6 @@
   - 1
 - - llm_namespace_access_cache_reset
   - 1
-- - llm_tanuki_bot_update
-  - 1
 - - llm_vertex_ai_access_token_refresh
   - 1
 - - mail_scheduler
@@ -471,6 +473,8 @@
   - 1
 - - ml_experiment_tracking_associate_ml_candidate_to_package
   - 1
+- - namespaces_free_user_cap_group_over_limit_notification
+  - 1
 - - namespaces_process_sync_events
   - 1
 - - namespaces_storage_usage_export
@@ -504,6 +508,8 @@
 - - package_cleanup
   - 1
 - - package_metadata_advisory_scan
+  - 1
+- - package_metadata_global_advisory_scan
   - 1
 - - package_repositories
   - 1
@@ -556,6 +562,8 @@
 - - projects_forks_sync
   - 1
 - - projects_git_garbage_collect
+  - 1
+- - projects_import_export_after_import_merge_requests
   - 1
 - - projects_import_export_create_relation_exports
   - 1
@@ -659,8 +667,6 @@
   - 1
 - - security_scan_result_policies_sync_any_merge_request_approval_rules
   - 1
-- - security_scan_result_policies_sync_opened_merge_requests
-  - 1
 - - security_scan_result_policies_sync_project
   - 1
 - - security_scans
@@ -688,8 +694,6 @@
 - - system_access_saml_microsoft_group_sync
   - 1
 - - system_hook_push
-  - 1
-- - tasks_to_be_done_create
   - 1
 - - terraform
   - 1

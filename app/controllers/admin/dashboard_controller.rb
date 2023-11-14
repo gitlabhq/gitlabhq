@@ -13,8 +13,7 @@ class Admin::DashboardController < Admin::ApplicationController
     @projects = Project.order_id_desc.without_deleted.with_route.limit(10)
     @users = User.order_id_desc.limit(10)
     @groups = Group.order_id_desc.with_route.limit(10)
-    @notices = Gitlab::ConfigChecker::PumaRuggedChecker.check
-    @notices += Gitlab::ConfigChecker::ExternalDatabaseChecker.check
+    @notices = Gitlab::ConfigChecker::ExternalDatabaseChecker.check
     @redis_versions = Gitlab::Redis::ALL_CLASSES.map(&:version).uniq
   end
 

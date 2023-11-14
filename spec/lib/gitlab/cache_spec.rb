@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Cache, :request_store do
   end
 
   describe '.delete' do
-    let(:key) { %w{a cache key} }
+    let(:key) { %w[a cache key] }
 
     subject(:delete) { described_class.delete(key) }
 

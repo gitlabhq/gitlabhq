@@ -6,5 +6,4 @@ Lint/RedundantDirGlobSort:
     - 'config/application.rb'
     - 'ee/spec/spec_helper.rb'
     - 'qa/qa/specs/spec_helper.rb'
-    - 'rubocop/rubocop.rb'
     - 'spec/spec_helper.rb'

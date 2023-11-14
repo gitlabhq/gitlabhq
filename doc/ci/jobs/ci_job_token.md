@@ -22,6 +22,7 @@ You can use a GitLab CI/CD job token to authenticate with specific API endpoints
 - [Get job token's job](../../api/jobs.md#get-job-tokens-job).
 - [Pipeline triggers](../../api/pipeline_triggers.md), using the `token=` parameter
   to [trigger a multi-project pipeline](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api).
+- [Update pipeline metadata](../../api/pipelines.md#update-pipeline-metadata)
 - [Releases](../../api/releases/index.md) and [Release links](../../api/releases/links.md).
 - [Terraform plan](../../user/infrastructure/index.md).
 - [Deployments](../../api/deployments.md).
@@ -69,9 +70,7 @@ tries to steal tokens from other jobs.
 
 You can control what projects a CI/CD job token can access to increase the
 job token's security. A job token might give extra permissions that aren't necessary
-to access specific private resources. The job token scope only controls access
-to private projects. If an accessed project is public or internal, token scoping does
-not apply.
+to access specific private resources.
 
 When enabled, and the job token is being used to access a different project:
 
@@ -80,7 +79,7 @@ When enabled, and the job token is being used to access a different project:
 - The accessed project must have the project attempting to access it [added to the allowlist](#add-a-project-to-the-job-token-scope-allowlist).
 
 If a job token is leaked, it could potentially be used to access private data
-to the job token's user. By limiting the job token access scope, private data cannot
+to the job token's user. By limiting the job token access scope, project data cannot
 be accessed unless projects are explicitly authorized.
 
 There is a proposal to add more strategic control of the access permissions,
@@ -100,14 +99,39 @@ their `CI_JOB_TOKEN`.
 
 For example, project `A` can add project `B` to the allowlist. CI/CD jobs
 in project `B` (the "allowed project") can now use their CI/CD job token to
-authenticate API calls to access project `A`. If project `A` is public or internal,
-the project can be accessed by project `B` without adding it to the allowlist.
+authenticate API calls to access project `A`.
 
 By default, the allowlist of any project only includes itself.
 
 It is a security risk to disable this feature, so project maintainers or owners should
 keep this setting enabled at all times. Add projects to the allowlist only when cross-project
 access is needed.
+
+### Limit job token scope for public or internal projects
+
+Projects can use a job token to authenticate with public or internal projects for
+the following actions without being added to the allowlist:
+
+- Fetch artifacts
+- Access the container registry
+- Access the package registry
+- Access releases, deployments, and environments
+
+To limit access to these actions to only the projects on the allowlist, set the visibility
+of each feature to be only accessible to project members:
+
+Prerequisite:
+
+- You must have the Maintainer role for the project.
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
+1. Set the visibility to **Only project members** for the features you want to restrict access to.
+   - The ability to fetch artifacts is controlled by the CI/CD visibility setting.
+1. Select **Save changes**.
+
+Triggering pipelines and fetching Terraform plans is not affected by feature visibility.
 
 ### Disable the job token scope allowlist
 
@@ -180,9 +204,7 @@ limited only by the user's access permissions.
 
 For example, when the setting is enabled, jobs in a pipeline in project `A` have
 a `CI_JOB_TOKEN` scope limited to project `A`. If the job needs to use the token
-to make an API request to a private project `B`, then `B` must be added to the allowlist for `A`.
-If project `B` is public or internal, you do not need to add
-`B` to the allowlist to grant access.
+to make an API request to project `B`, then `B` must be added to the allowlist for `A`.
 
 ### Configure the job token scope
 

@@ -9,6 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Enhanced email styling [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78604) in GitLab 14.9 [with a feature flag](../../administration/feature_flags.md) named `enhanced_notify_css`. Disabled by default.
 > - Enhanced email styling [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/355907) in GitLab 14.9.
 > - Enhanced email styling [enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/355907) in GitLab 15.0.
+> - Product marketing emails [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/418137) in GitLab 16.6.
 
 Stay informed about what's happening in GitLab with email notifications.
 You can receive updates about activity in issues, merge requests, epics, and designs.
@@ -84,8 +85,6 @@ different values for a project or a group.
 
 - **Notification email**: the email address your notifications are sent to.
   Defaults to your primary email address.
-- **Receive product marketing emails**: select this checkbox to receive
-  [periodic emails](#opt-out-of-product-marketing-emails) about GitLab features.
 - **Global notification level**: the default [notification level](#notification-levels)
   which applies to all your notifications.
 - **Receive notifications about your own activity**: select this checkbox to receive
@@ -144,32 +143,6 @@ Or:
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 To learn how to be notified when a new release is available, watch [Notification for releases](https://www.youtube.com/watch?v=qyeNkGgqmH4).
-
-### Opt out of product marketing emails
-
-You can receive emails that teach you about various GitLab features.
-These emails are enabled by default.
-
-To opt out:
-
-1. On the left sidebar, select your avatar.
-1. Select **Preferences**.
-1. On the left sidebar, select **Notifications**.
-1. Clear the **Receive product marketing emails** checkbox.
-   Edited settings are automatically saved and enabled.
-
-Disabling these emails does not disable all emails.
-Learn how to [opt out of all emails from GitLab](#opt-out-of-all-gitlab-emails).
-
-#### Self-managed product marketing emails **(FREE SELF)**
-
-The self-managed installation generates and automatically sends these emails based on user actions.
-Turning this on does not cause your GitLab instance or your company to send any personal information to
-GitLab Inc.
-
-An instance administrator can configure this setting for all users. If you choose to opt out, your
-setting overrides the instance-wide setting, even when an administrator later enables these emails
-for all users.
 
 ## Notification events
 
@@ -348,7 +321,6 @@ If you no longer wish to receive any email notifications:
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. On the left sidebar, select **Notifications**.
-1. Clear the **Receive product marketing emails** checkbox.
 1. Set your **Global notification level** to **Disabled**.
 1. Clear the **Receive notifications about your own activity** checkbox.
 1. If you belong to any groups or projects, set their notification setting to **Global** or

@@ -112,7 +112,7 @@ export default {
 </script>
 
 <template>
-  <div ref="sidebarSeverity" class="block">
+  <div ref="sidebarSeverity" class="block" data-testid="severity-block-container">
     <sidebar-editable-item
       ref="toggle"
       :loading="isUpdating"
@@ -131,7 +131,7 @@ export default {
             </gl-sprintf>
           </gl-tooltip>
         </div>
-        <div class="hide-collapsed">
+        <div class="hide-collapsed" data-testid="incident-severity">
           <severity-token :severity="selectedItem" />
         </div>
       </template>

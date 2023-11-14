@@ -6,6 +6,8 @@
 # Update below commented lines with appropriate values.
 
 class <%= migration_class_name %> < Gitlab::Database::Migration[<%= Gitlab::Database::Migration.current_version %>]
+  milestone '<%= Gitlab.current_milestone %>'
+
   MIGRATION = "<%= class_name %>"
   # DELAY_INTERVAL = 2.minutes
   # BATCH_SIZE = <%= Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers::BATCH_SIZE %>

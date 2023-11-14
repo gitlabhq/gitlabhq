@@ -88,6 +88,16 @@ RSpec.describe Projects::ServiceDeskController, feature_category: :service_desk 
       expect(json_response['issue_template_key']).to eq('service_desk')
     end
 
+    it 'sets add_external_participants_from_cc' do
+      put project_service_desk_path(project, format: :json), params: { add_external_participants_from_cc: true }
+      project.reset
+
+      settings = project.service_desk_setting
+      expect(settings).to be_present
+      expect(settings.add_external_participants_from_cc).to eq(true)
+      expect(json_response['add_external_participants_from_cc']).to eq(true)
+    end
+
     it 'returns an error when update of service desk settings fails' do
       put project_service_desk_path(project, format: :json), params: { issue_template_key: 'invalid key' }
 

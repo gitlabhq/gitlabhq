@@ -155,7 +155,7 @@ RSpec.describe ObjectStorage::Config, feature_category: :shared do
     it { expect(subject.aws_server_side_encryption_enabled?).to be true }
     it { expect(subject.server_side_encryption).to eq('AES256') }
     it { expect(subject.server_side_encryption_kms_key_id).to eq('arn:aws:12345') }
-    it { expect(subject.fog_attributes.keys).to match_array(%w(x-amz-server-side-encryption x-amz-server-side-encryption-aws-kms-key-id)) }
+    it { expect(subject.fog_attributes.keys).to match_array(%w[x-amz-server-side-encryption x-amz-server-side-encryption-aws-kms-key-id]) }
   end
 
   context 'with only server side encryption enabled' do

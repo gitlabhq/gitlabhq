@@ -47,7 +47,7 @@ RSpec.describe 'Admin uses repository checks', :request_store, feature_category:
       )
       visit_admin_project_page(project)
 
-      page.within('[data-testid="last-repository-check-failed-alert"]') do
+      within_testid('last-repository-check-failed-alert') do
         expect(page.text).to match(/Last repository check \(just now\) failed/)
       end
     end

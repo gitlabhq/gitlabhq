@@ -107,7 +107,7 @@ export default {
       targetSelected: '',
       targetPath: this.broadcastMessage.targetPath,
       targetAccessLevels: this.broadcastMessage.targetAccessLevels,
-      targetAccessLevelOptions: this.targetAccessLevelOptions.map(([text, value]) => ({
+      targetAccessLevelCheckBoxGroupOptions: this.targetAccessLevelOptions.map(([text, value]) => ({
         text,
         value,
       })),
@@ -324,7 +324,10 @@ export default {
       :state="!isValidated || targetRolesValid"
       data-testid="target-roles-checkboxes"
     >
-      <gl-form-checkbox-group v-model="targetAccessLevels" :options="targetAccessLevelOptions" />
+      <gl-form-checkbox-group
+        v-model="targetAccessLevels"
+        :options="targetAccessLevelCheckBoxGroupOptions"
+      />
     </gl-form-group>
 
     <gl-form-group

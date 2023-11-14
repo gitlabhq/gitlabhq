@@ -7,7 +7,7 @@ exports[`StatisticsList displays the counts data with labels 1`] = `
       Total:
     </span>
     <strong>
-      4 pipelines
+      40,000 pipelines
     </strong>
   </li>
   <li>
@@ -15,7 +15,7 @@ exports[`StatisticsList displays the counts data with labels 1`] = `
       Successful:
     </span>
     <strong>
-      2 pipelines
+      20,000 pipelines
     </strong>
   </li>
   <li>
@@ -25,7 +25,7 @@ exports[`StatisticsList displays the counts data with labels 1`] = `
     <gl-link-stub
       href="/flightjs/Flight/-/pipelines?page=1&scope=all&status=failed"
     >
-      2 pipelines
+      20,000 pipelines
     </gl-link-stub>
   </li>
   <li>

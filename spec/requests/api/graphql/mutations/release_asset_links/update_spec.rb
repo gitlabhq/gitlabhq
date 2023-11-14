@@ -10,12 +10,14 @@ RSpec.describe 'Updating an existing release asset link', feature_category: :rel
   let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
 
   let_it_be(:release_link) do
-    create(:release_link,
-           release: release,
-           name: 'link name',
-           url: 'https://example.com/url',
-           filepath: '/permanent/path',
-           link_type: 'package')
+    create(
+      :release_link,
+      release: release,
+      name: 'link name',
+      url: 'https://example.com/url',
+      filepath: '/permanent/path',
+      link_type: 'package'
+    )
   end
 
   let(:current_user) { developer }

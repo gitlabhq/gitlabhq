@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../../migration_helpers'
-require_relative '../../batched_background_migrations'
+require_relative '../../batched_background_migrations_dictionary'
 
 module RuboCop
   module Cop
@@ -43,7 +43,7 @@ module RuboCop
         private
 
         def fetch_finalized_by(queued_migration_version)
-          BatchedBackgroundMigrations.new(queued_migration_version).finalized_by
+          BatchedBackgroundMigrationsDictionary.new(queued_migration_version).finalized_by
         end
       end
     end

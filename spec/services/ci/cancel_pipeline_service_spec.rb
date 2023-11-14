@@ -12,12 +12,12 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category:
       pipeline: pipeline,
       current_user: current_user,
       cascade_to_children: cascade_to_children,
-      auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id,
+      auto_canceled_by_pipeline: auto_canceled_by_pipeline,
       execute_async: execute_async)
   end
 
   let(:cascade_to_children) { true }
-  let(:auto_canceled_by_pipeline_id) { nil }
+  let(:auto_canceled_by_pipeline) { nil }
   let(:execute_async) { true }
 
   shared_examples 'force_execute' do
@@ -58,14 +58,19 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category:
         expect(pipeline.all_jobs.pluck(:status)).to match_array(%w[canceled canceled success])
       end
 
-      context 'when auto_canceled_by_pipeline_id is provided' do
-        let(:auto_canceled_by_pipeline_id) { create(:ci_pipeline).id }
+      context 'when auto_canceled_by_pipeline is provided' do
+        let(:auto_canceled_by_pipeline) { create(:ci_pipeline) }
 
         it 'updates the pipeline and jobs with it' do
           subject
 
-          expect(pipeline.auto_canceled_by_id).to eq(auto_canceled_by_pipeline_id)
-          expect(pipeline.all_jobs.canceled.pluck(:auto_canceled_by_id).uniq).to eq([auto_canceled_by_pipeline_id])
+          expect(pipeline.auto_canceled_by_id).to eq(auto_canceled_by_pipeline.id)
+
+          expect(pipeline.all_jobs.canceled.pluck(:auto_canceled_by_id).uniq)
+            .to eq([auto_canceled_by_pipeline.id])
+
+          expect(pipeline.all_jobs.canceled.pluck(:auto_canceled_by_partition_id).uniq)
+            .to eq([auto_canceled_by_pipeline.partition_id])
         end
       end
 

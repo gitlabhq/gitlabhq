@@ -14,6 +14,7 @@ RSpec.describe Ml::Model, feature_category: :mlops do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_one(:default_experiment) }
     it { is_expected.to have_many(:versions) }
+    it { is_expected.to have_many(:metadata) }
     it { is_expected.to have_one(:latest_version).class_name('Ml::ModelVersion').inverse_of(:model) }
   end
 
@@ -77,45 +78,11 @@ RSpec.describe Ml::Model, feature_category: :mlops do
     end
   end
 
-  describe '.find_or_create' do
-    subject(:find_or_create) { described_class.find_or_create(project, name, experiment) }
+  describe '.including_project' do
+    subject { described_class.including_project }
 
-    let(:name) { existing_model.name }
-    let(:project) { existing_model.project }
-    let(:experiment) { default_experiment }
-
-    context 'when model name does not exist in the project' do
-      let(:name) { 'new_model' }
-      let(:experiment) { build(:ml_experiments, name: name, project: project) }
-
-      it 'creates a model', :aggregate_failures do
-        expect { find_or_create }.to change { Ml::Model.count }.by(1)
-
-        expect(find_or_create.name).to eq(name)
-        expect(find_or_create.project).to eq(project)
-        expect(find_or_create.default_experiment).to eq(experiment)
-      end
-    end
-
-    context 'when model name exists but project is different' do
-      let(:project) { create(:project) }
-      let(:experiment) { build(:ml_experiments, name: name, project: project) }
-
-      it 'creates a model', :aggregate_failures do
-        expect { find_or_create }.to change { Ml::Model.count }.by(1)
-
-        expect(find_or_create.name).to eq(name)
-        expect(find_or_create.project).to eq(project)
-        expect(find_or_create.default_experiment).to eq(experiment)
-      end
-    end
-
-    context 'when model exists' do
-      it 'fetches existing model', :aggregate_failures do
-        expect { find_or_create }.not_to change { Ml::Model.count }
-
-        expect(find_or_create).to eq(existing_model)
-      end
+    it 'loads latest version' do
+      expect(subject.first.association_cached?(:project)).to be(true)
     end
   end
 

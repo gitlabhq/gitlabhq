@@ -1327,4 +1327,79 @@ RSpec.describe API::Helpers, feature_category: :shared do
       end
     end
   end
+
+  describe '#authenticate_by_gitlab_shell_or_workhorse_token!' do
+    include GitlabShellHelpers
+    include WorkhorseHelpers
+
+    include_context 'workhorse headers'
+
+    let(:headers) { {} }
+    let(:params) { {} }
+
+    context 'when request from gitlab shell' do
+      let(:valid_secret_token) { 'valid' }
+      let(:invalid_secret_token) { 'invalid' }
+
+      before do
+        allow(helper).to receive_messages(headers: headers)
+      end
+
+      context 'with invalid token' do
+        let(:headers) { gitlab_shell_internal_api_request_header(secret_token: invalid_secret_token) }
+
+        it 'unauthorized' do
+          expect(helper).to receive(:unauthorized!)
+
+          helper.authenticate_by_gitlab_shell_or_workhorse_token!
+        end
+      end
+
+      context 'with valid token' do
+        let(:headers) { gitlab_shell_internal_api_request_header }
+
+        it 'authorized' do
+          expect(helper).not_to receive(:unauthorized!)
+
+          helper.authenticate_by_gitlab_shell_or_workhorse_token!
+        end
+      end
+    end
+
+    context 'when request from gitlab workhorse' do
+      let(:env) { {} }
+      let(:request) { ActionDispatch::Request.new(env) }
+
+      before do
+        allow_any_instance_of(ActionDispatch::Request).to receive(:headers).and_return(headers)
+        allow(helper).to receive(:request).and_return(request)
+        allow(helper).to receive_messages(params: params, headers: headers, env: env)
+      end
+
+      context 'with invalid token' do
+        let(:headers) { { Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => JWT.encode({ 'iss' => 'gitlab-workhorse' }, 'wrongkey', 'HS256') } }
+
+        before do
+          allow(JWT).to receive(:decode).and_return([{ 'iss' => 'gitlab-workhorse' }])
+        end
+
+        it 'unauthorized' do
+          expect(helper).to receive(:forbidden!)
+
+          helper.authenticate_by_gitlab_shell_or_workhorse_token!
+        end
+      end
+
+      context 'with valid token' do
+        let(:headers) { workhorse_headers }
+        let(:env) { { 'HTTP_GITLAB_WORKHORSE' => 1 } }
+
+        it 'authorized' do
+          expect(helper).not_to receive(:forbidden!)
+
+          helper.authenticate_by_gitlab_shell_or_workhorse_token!
+        end
+      end
+    end
+  end
 end

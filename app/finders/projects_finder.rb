@@ -28,6 +28,7 @@
 #     last_activity_before: datetime
 #     repository_storage: string
 #     not_aimed_for_deletion: boolean
+#     full_paths: string[]
 #
 class ProjectsFinder < UnionFinder
   include CustomAttributesFilter
@@ -76,8 +77,9 @@ class ProjectsFinder < UnionFinder
 
   # EE would override this to add more filters
   def filter_projects(collection)
-    collection = collection.without_deleted
+    collection = by_deleted_status(collection)
     collection = by_ids(collection)
+    collection = by_full_paths(collection)
     collection = by_personal(collection)
     collection = by_starred(collection)
     collection = by_trending(collection)
@@ -153,6 +155,12 @@ class ProjectsFinder < UnionFinder
     params[:min_access_level].present?
   end
 
+  def by_deleted_status(items)
+    return items.without_deleted unless current_user&.can?(:admin_all_resources)
+
+    params[:include_pending_delete].present? ? items : items.without_deleted
+  end
+
   # rubocop: disable CodeReuse/ActiveRecord
   def by_ids(items)
     items = items.where(id: project_ids_relation) if project_ids_relation
@@ -161,6 +169,10 @@ class ProjectsFinder < UnionFinder
     items
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def by_full_paths(items)
+    params[:full_paths].present? ? items.where_full_path_in(params[:full_paths], use_includes: false) : items
+  end
 
   def union(items)
     find_union(items, Project).with_route

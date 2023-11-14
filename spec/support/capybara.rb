@@ -191,7 +191,7 @@ RSpec.configure do |config|
     if example.metadata[:screenshot]
       screenshot = example.metadata[:screenshot][:image] || example.metadata[:screenshot][:html]
       screenshot&.delete_prefix!(ENV.fetch('CI_PROJECT_DIR', ''))
-      example.metadata[:stdout] = %{[[ATTACHMENT|#{screenshot}]]}
+      example.metadata[:stdout] = %([[ATTACHMENT|#{screenshot}]])
     end
   end
 

@@ -17,6 +17,8 @@ For example:
 
 ## Available information
 
+> Rugged calls [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/421591) in GitLab 16.6.
+
 From left to right, the performance bar displays:
 
 - **Current Host**: the current host serving the page.
@@ -37,8 +39,6 @@ From left to right, the performance bar displays:
 - **Gitaly calls**: the time taken (in milliseconds) and the total number of
   [Gitaly](../../gitaly/index.md) calls. Select to display a modal window with more
   details.
-- **Rugged calls**: the time taken (in milliseconds) and the total number of
-  Rugged calls. Select to display a modal window with more details.
 - **Redis calls**: the time taken (in milliseconds) and the total number of
   Redis calls. Select to display a modal window with more details.
 - **Elasticsearch calls**: the time taken (in milliseconds) and the total number of

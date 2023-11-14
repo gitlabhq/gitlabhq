@@ -22,7 +22,12 @@ RSpec.describe Projects::Ml::ShowMlModelComponent, type: :component, feature_cat
         'model' => {
           'id' => model1.id,
           'name' => model1.name,
-          'path' => "/#{project.full_path}/-/ml/models/#{model1.id}"
+          'path' => "/#{project.full_path}/-/ml/models/#{model1.id}",
+          'description' => 'This is a placeholder for the short description',
+          'latestVersion' => {
+            'version' => model1.latest_version.version
+          },
+          'versionCount' => 1
         }
       })
     end

@@ -20,6 +20,7 @@ RSpec.shared_examples 'a deployable job policy' do |factory_type|
       end
 
       it { expect(policy).not_to be_allowed :update_build }
+      it { expect(policy).not_to be_allowed :cancel_build }
     end
   end
 end

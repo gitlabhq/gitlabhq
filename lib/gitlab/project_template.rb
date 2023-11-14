@@ -60,14 +60,14 @@ module Gitlab
           ProjectTemplate.new('dotnetcore', '.NET Core', _('A .NET Core console application template, customizable for any .NET Core project'), 'https://gitlab.com/gitlab-org/project-templates/dotnetcore', 'illustrations/third-party-logos/dotnet.svg'),
           ProjectTemplate.new('android', 'Android', _('A ready-to-go template for use with Android apps'), 'https://gitlab.com/gitlab-org/project-templates/android', 'illustrations/logos/android.svg'),
           ProjectTemplate.new('gomicro', 'Go Micro', _('Go Micro is a framework for micro service development'), 'https://gitlab.com/gitlab-org/project-templates/go-micro', 'illustrations/logos/gomicro.svg'),
-          ProjectTemplate.new('bridgetown', 'Pages/Bridgetown', _('Everything you need to create a GitLab Pages site using Bridgetown'), 'https://gitlab.com/gitlab-org/project-templates/bridgetown'),
+          ProjectTemplate.new('bridgetown', 'Pages/Bridgetown', _('Everything you need to create a GitLab Pages site using Bridgetown'), 'https://gitlab.com/pages/bridgetown'),
           ProjectTemplate.new('gatsby', 'Pages/Gatsby', _('Everything you need to create a GitLab Pages site using Gatsby'), 'https://gitlab.com/pages/gatsby', 'illustrations/third-party-logos/gatsby.svg'),
           ProjectTemplate.new('hugo', 'Pages/Hugo', _('Everything you need to create a GitLab Pages site using Hugo'), 'https://gitlab.com/pages/hugo', 'illustrations/logos/hugo.svg'),
           ProjectTemplate.new('pelican', 'Pages/Pelican', _('Everything you need to create a GitLab Pages site using Pelican'), 'https://gitlab.com/pages/pelican', 'illustrations/third-party-logos/pelican.svg'),
           ProjectTemplate.new('jekyll', 'Pages/Jekyll', _('Everything you need to create a GitLab Pages site using Jekyll'), 'https://gitlab.com/pages/jekyll', 'illustrations/logos/jekyll.svg'),
           ProjectTemplate.new('plainhtml', 'Pages/Plain HTML', _('Everything you need to create a GitLab Pages site using plain HTML'), 'https://gitlab.com/pages/plain-html'),
           ProjectTemplate.new('hexo', 'Pages/Hexo', _('Everything you need to create a GitLab Pages site using Hexo'), 'https://gitlab.com/pages/hexo', 'illustrations/logos/hexo.svg'),
-          ProjectTemplate.new('middleman', 'Pages/Middleman', _('Everything you need to create a GitLab Pages site using Middleman'), 'https://gitlab.com/gitlab-org/project-templates/middleman', 'illustrations/logos/middleman.svg'),
+          ProjectTemplate.new('middleman', 'Pages/Middleman', _('Everything you need to create a GitLab Pages site using Middleman'), 'https://gitlab.com/pages/middleman', 'illustrations/logos/middleman.svg'),
           ProjectTemplate.new('gitpod_spring_petclinic', 'Gitpod/Spring Petclinic', _('A Gitpod configured Webapplication in Spring and Java'), 'https://gitlab.com/gitlab-org/project-templates/gitpod-spring-petclinic', 'illustrations/logos/gitpod.svg'),
           ProjectTemplate.new('nfhugo', 'Netlify/Hugo', _('A Hugo site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features'), 'https://gitlab.com/pages/nfhugo', 'illustrations/logos/netlify.svg'),
           ProjectTemplate.new('nfjekyll', 'Netlify/Jekyll', _('A Jekyll site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features'), 'https://gitlab.com/pages/nfjekyll', 'illustrations/logos/netlify.svg'),
@@ -81,7 +81,8 @@ module Gitlab
           ProjectTemplate.new('cluster_management', 'GitLab Cluster Management', _('An example project for managing Kubernetes clusters integrated with GitLab'), 'https://gitlab.com/gitlab-org/project-templates/cluster-management'),
           ProjectTemplate.new('kotlin_native_linux', 'Kotlin Native Linux', _('A basic template for developing Linux programs using Kotlin Native'), 'https://gitlab.com/gitlab-org/project-templates/kotlin-native-linux'),
           ProjectTemplate.new('typo3_distribution', 'TYPO3 Distribution', _('A template for starting a new TYPO3 project'), 'https://gitlab.com/gitlab-org/project-templates/typo3-distribution', 'illustrations/logos/typo3.svg'),
-          ProjectTemplate.new('laravel', 'Laravel Framework', _('A basic folder structure of a Laravel application, to help you get started.'), 'https://gitlab.com/gitlab-org/project-templates/laravel', 'illustrations/logos/laravel.svg')
+          ProjectTemplate.new('laravel', 'Laravel Framework', _('A basic folder structure of a Laravel application, to help you get started.'), 'https://gitlab.com/gitlab-org/project-templates/laravel', 'illustrations/logos/laravel.svg'),
+          ProjectTemplate.new('astro_tailwind', 'Astro Tailwind', _('A basic folder structure of Astro Starter Kit, to help you get started.'), 'https://gitlab.com/gitlab-org/project-templates/astro-tailwind')
         ]
       end
       # rubocop:enable Metrics/AbcSize

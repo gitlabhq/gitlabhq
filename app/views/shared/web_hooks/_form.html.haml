@@ -66,7 +66,7 @@
           help_text: s_('Webhooks|A release is created, updated, or deleted.')
     - if Feature.enabled?(:emoji_webhooks, hook.parent)
       %li.gl-pb-5
-        - emoji_help_link = link_to s_('Which emoji events trigger webhooks'), help_page_path('user/project/integrations/webhook_events.md', anchor: 'emoji-events')
+        - emoji_help_link = link_to s_('Which emoji events trigger webhooks'), help_page_path('user/project/integrations/webhook_events', anchor: 'emoji-events')
         = form.gitlab_ui_checkbox_component :emoji_events,
             integration_webhook_event_human_name(:emoji_events),
             help_text: s_('Webhooks|An emoji is awarded or revoked. %{help_link}?').html_safe % { help_link: emoji_help_link }

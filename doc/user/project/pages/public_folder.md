@@ -126,6 +126,15 @@ pages:
 NOTE:
 GitLab Pages supports only static sites.
 
+By default, Nuxt uses the `public` folder to store static assets. For GitLab
+Pages, rename the `public` folder to a collision-free alternative first:
+
+1. In your project directory, run:
+
+   ```shell
+   mv public static
+   ```
+
 1. Add the following to your `nuxt.config.js`:
 
    ```javascript
@@ -133,6 +142,12 @@ GitLab Pages supports only static sites.
      target: 'static',
      generate: {
        dir: 'public'
+     },
+     dir: {
+       // The folder name Nuxt uses for static files (`public`) is already
+       // reserved for the build output. So in deviation from the defaults we're
+       // using a folder called `static` instead.
+       public: 'static'
      }
    }
    ```

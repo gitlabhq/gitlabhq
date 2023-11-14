@@ -34,7 +34,7 @@ module Projects
           @tag_names.each do |name|
             raise TimeoutError if timeout?(start_time)
 
-            if @container_repository.delete_tag_by_name(name)
+            if @container_repository.delete_tag(name)
               @deleted_tags.append(name)
             end
           end

@@ -1659,6 +1659,12 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
 
+    it 'returns true for a user in parent group' do
+      subgroup = create(:group, parent: group)
+
+      expect(subgroup.member?(user)).to be_truthy
+    end
+
     context 'in shared group' do
       let(:shared_group) { create(:group) }
       let(:member_shared) { create(:user) }
@@ -2050,29 +2056,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       expect(group.users_with_descendants).to contain_exactly(user_a, user_b)
       expect(nested_group.users_with_descendants).to contain_exactly(user_a, user_b)
       expect(deep_nested_group.users_with_descendants).to contain_exactly(user_a)
-    end
-  end
-
-  describe '#project_users_with_descendants' do
-    let(:user_a) { create(:user) }
-    let(:user_b) { create(:user) }
-    let(:user_c) { create(:user) }
-
-    let(:group) { create(:group) }
-    let(:nested_group) { create(:group, parent: group) }
-    let(:deep_nested_group) { create(:group, parent: nested_group) }
-    let(:project_a) { create(:project, namespace: group) }
-    let(:project_b) { create(:project, namespace: nested_group) }
-    let(:project_c) { create(:project, namespace: deep_nested_group) }
-
-    it 'returns members of all projects in group and subgroups' do
-      project_a.add_developer(user_a)
-      project_b.add_developer(user_b)
-      project_c.add_developer(user_c)
-
-      expect(group.project_users_with_descendants).to contain_exactly(user_a, user_b, user_c)
-      expect(nested_group.project_users_with_descendants).to contain_exactly(user_b, user_c)
-      expect(deep_nested_group.project_users_with_descendants).to contain_exactly(user_c)
     end
   end
 
@@ -2953,18 +2936,21 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe '.ids_with_disabled_email' do
-    let_it_be(:parent_1) { create(:group, emails_disabled: true) }
+    let_it_be(:parent_1) { create(:group) }
     let_it_be(:child_1) { create(:group, parent: parent_1) }
 
-    let_it_be(:parent_2) { create(:group, emails_disabled: false) }
+    let_it_be(:parent_2) { create(:group) }
     let_it_be(:child_2) { create(:group, parent: parent_2) }
 
-    let_it_be(:other_group) { create(:group, emails_disabled: false) }
+    let_it_be(:other_group) { create(:group) }
 
     shared_examples 'returns namespaces with disabled email' do
       subject(:group_ids_where_email_is_disabled) { described_class.ids_with_disabled_email([child_1, child_2, other_group]) }
 
-      it { is_expected.to eq(Set.new([child_1.id])) }
+      it do
+        parent_1.update_attribute(:emails_enabled, false)
+        is_expected.to eq(Set.new([child_1.id]))
+      end
     end
 
     it_behaves_like 'returns namespaces with disabled email'

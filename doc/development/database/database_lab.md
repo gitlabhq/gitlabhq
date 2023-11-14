@@ -18,7 +18,7 @@ schema changes, like additional indexes or columns, in an isolated copy of produ
 1. Select **Sign in with Google**. (Not GitLab, as you need Google SSO to connect with our project.)
 1. After you sign in, select the GitLab organization and then visit "Ask Joe" in the sidebar.
 1. Select the database you're testing against:
-   - Most queries for the GitLab project run against `gitlab-production-tunnel-pg12`.
+   - Most queries for the GitLab project run against `gitlab-production-main`.
    - If the query is for a CI table, select `gitlab-production-ci`.
    - If the query is for the container registry, select `gitlab-production-registry`.
 1. Type `explain <Query Text>` in the chat box to get a plan.

@@ -359,7 +359,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
     it 'updates labels and touches the record with labels param as array', :aggregate_failures do
       travel_to(2.minutes.from_now) do
-        put api_for_user, params: { labels: %w(foo bar) }
+        put api_for_user, params: { labels: %w[foo bar] }
       end
 
       expect(response).to have_gitlab_http_status(:ok)

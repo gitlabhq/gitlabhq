@@ -284,9 +284,31 @@ describe('Job State actions', () => {
       });
     });
 
-    describe('error', () => {
+    describe('server error', () => {
       beforeEach(() => {
         mock.onGet(`${TEST_HOST}/endpoint/trace.json`).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+      });
+
+      it('dispatches requestJobLog and receiveJobLogError', () => {
+        return testAction(
+          fetchJobLog,
+          null,
+          mockedState,
+          [],
+          [
+            {
+              type: 'receiveJobLogError',
+            },
+          ],
+        );
+      });
+    });
+
+    describe('unexpected error', () => {
+      beforeEach(() => {
+        mock.onGet(`${TEST_HOST}/endpoint/trace.json`).reply(() => {
+          throw new Error('an error');
+        });
       });
 
       it('dispatches requestJobLog and receiveJobLogError', () => {

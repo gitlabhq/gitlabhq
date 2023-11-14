@@ -11,7 +11,7 @@ module ProjectsHelper
   end
 
   def link_to_project(project)
-    link_to namespace_project_path(namespace_id: project.namespace, id: project), title: h(project.name), class: 'gl-link' do
+    link_to namespace_project_path(namespace_id: project.namespace, id: project), title: h(project.name), class: 'gl-link gl-text-truncate' do
       title = content_tag(:span, project.name, class: 'project-name')
 
       if project.namespace
@@ -187,7 +187,7 @@ module ProjectsHelper
   end
 
   def link_to_autodeploy_doc
-    link_to _('About auto deploy'), help_page_path('topics/autodevops/stages.md', anchor: 'auto-deploy'), target: '_blank', rel: 'noopener'
+    link_to _('About auto deploy'), help_page_path('topics/autodevops/stages', anchor: 'auto-deploy'), target: '_blank', rel: 'noopener'
   end
 
   def autodeploy_flash_notice(branch_name)
@@ -198,6 +198,10 @@ module ProjectsHelper
   def load_pipeline_status(projects)
     Gitlab::Cache::Ci::ProjectPipelineStatus
       .load_in_batch_for_projects(projects)
+  end
+
+  def load_catalog_resources(projects)
+    ActiveRecord::Associations::Preloader.new(records: projects, associations: :catalog_resource).call
   end
 
   def last_pipeline_from_status_cache(project)

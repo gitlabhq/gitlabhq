@@ -5,7 +5,9 @@ class AddAuditorIndexToUsersTable < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation
     add_concurrent_index :users, :id, where: 'auditor IS true', name: INDEX_NAME
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

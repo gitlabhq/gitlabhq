@@ -68,7 +68,8 @@ this method only supports replies, and not the other features of [incoming email
 
 ## Accepted headers
 
-> Accepting `Received` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81489) in GitLab 14.9.
+> - Accepting `Received` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81489) in GitLab 14.9.
+> - Accepting `Cc` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348572) in GitLab 16.5.
 
 Email is processed correctly when a configured email address is present in one of the following headers
 (sorted in the order they are checked):
@@ -77,6 +78,7 @@ Email is processed correctly when a configured email address is present in one o
 - `Delivered-To`
 - `Envelope-To` or `X-Envelope-To`
 - `Received`
+- `Cc`
 
 The `References` header is also accepted, however it is used specifically to relate email responses to existing discussion threads. It is not used for creating issues by email.
 
@@ -86,8 +88,7 @@ also checks accepted headers.
 Usually, the "To" field contains the email address of the primary receiver.
 However, it might not include the configured GitLab email address if:
 
-- The address is in the "CC" field.
-- The address was included when using "Reply all".
+- The address is in the "BCC" field.
 - The email was forwarded.
 
 The `Received` header can contain multiple email addresses. These are checked in the order that they appear.

@@ -80,6 +80,7 @@ module Sidebars
       is_active = @context.route_is_active.call(active_routes) || items.any? { |item| item[:is_active] }
 
       {
+        id: self.class.name.demodulize.underscore,
         title: title,
         icon: sprite_icon,
         avatar: avatar,

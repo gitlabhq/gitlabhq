@@ -6,7 +6,7 @@
 
 .event-title.d-flex.flex-wrap
   = inline_event_icon(event)
-  %span.event-type.d-inline-block.gl-mr-2.pushed= event.push_activity_description
+  %span.event-type.d-inline-block.gl-mr-2.pushed{ class: user_profile_activity_classes }= event.push_activity_description
   - unless event.batch_push?
     %span.gl-mr-2.text-truncate
       - commits_link = project_commits_path(project, event.ref_name)

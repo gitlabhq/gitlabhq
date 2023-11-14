@@ -221,8 +221,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Policy, feature_category: :continuous_
         let(:config) { { variables: %w[$VARIABLE] } }
 
         it 'includes default values' do
-          expect(entry.value).to eq(refs: %w[branches tags],
-                                    variables: %w[$VARIABLE])
+          expect(entry.value).to eq(refs: %w[branches tags], variables: %w[$VARIABLE])
         end
       end
     end

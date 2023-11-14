@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
+require_relative './listbox_helpers'
+
 module CycleAnalyticsHelpers
+  include ::ListboxHelpers
+
   def toggle_value_stream_dropdown
     page.find('[data-testid="dropdown-value-streams"]').click
   end
@@ -16,8 +20,8 @@ module CycleAnalyticsHelpers
 
     within last_stage do
       find('[name*="custom-stage-name-"]').fill_in with: "Cool custom stage - name #{index}"
-      select_dropdown_option_by_value "custom-stage-start-event-", :merge_request_created
-      select_dropdown_option_by_value "custom-stage-end-event-", :merge_request_merged
+      select_dropdown_option_by_value "custom-stage-start-event-", 'Merge request created'
+      select_dropdown_option_by_value "custom-stage-end-event-", 'Merge request merged'
     end
   end
 
@@ -34,8 +38,8 @@ module CycleAnalyticsHelpers
 
     within last_stage do
       find('[name*="custom-stage-name-"]').fill_in with: "Cool custom label stage - name #{index}"
-      select_dropdown_option_by_value "custom-stage-start-event-", :issue_label_added
-      select_dropdown_option_by_value "custom-stage-end-event-", :issue_label_removed
+      select_dropdown_option_by_value "custom-stage-start-event-", 'Issue label was added'
+      select_dropdown_option_by_value "custom-stage-end-event-", 'Issue label was removed'
 
       select_event_label("[data-testid*='custom-stage-start-event-label-']")
       select_event_label("[data-testid*='custom-stage-end-event-label-']")
@@ -102,19 +106,14 @@ module CycleAnalyticsHelpers
     select_value_stream(custom_value_stream_name)
   end
 
-  def toggle_dropdown(field)
-    page.within("[data-testid*='#{field}']") do
-      find('.dropdown-toggle').click
+  def select_dropdown_option_by_value(name, value)
+    page.within("[data-testid*='#{name}']") do
+      toggle_listbox
 
       wait_for_requests
-
-      expect(find('.dropdown-menu')).to have_selector('.dropdown-item')
     end
-  end
 
-  def select_dropdown_option_by_value(name, value, elem = '.dropdown-item')
-    toggle_dropdown name
-    page.find("[data-testid*='#{name}'] .dropdown-menu").find("#{elem}[value='#{value}']").click
+    select_listbox_item(value)
   end
 
   def create_commit_referencing_issue(issue, branch_name: generate(:branch))

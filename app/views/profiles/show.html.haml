@@ -122,6 +122,10 @@
           allow_empty: true}
         %small.form-text.text-gl-muted
           = external_accounts_docs_link
+      - if Feature.enabled?(:mastodon_social_ui, @user)
+        .form-group.gl-form-group
+          = f.label :mastodon
+          = f.text_field :mastodon, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: "@robin@example.com"
 
       .form-group.gl-form-group
         = f.label :website_url, s_('Profiles|Website url')
@@ -152,7 +156,7 @@
           %legend.col-form-label
             = _('Private profile')
           - private_profile_label = s_("Profiles|Don't display activity-related personal information on your profile.")
-          - private_profile_help_link = link_to sprite_icon('question-o'), help_page_path('user/profile/index.md', anchor: 'make-your-user-profile-page-private')
+          - private_profile_help_link = link_to sprite_icon('question-o'), help_page_path('user/profile/index', anchor: 'make-your-user-profile-page-private')
           = f.gitlab_ui_checkbox_component :private_profile, '%{private_profile_label} %{private_profile_help_link}'.html_safe % { private_profile_label: private_profile_label, private_profile_help_link: private_profile_help_link.html_safe }
         %fieldset.form-group.gl-form-group
           %legend.col-form-label

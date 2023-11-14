@@ -12,7 +12,7 @@ import {
   GlTable,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Api, { DEFAULT_PER_PAGE } from '~/api';
 import { HTTP_STATUS_PAYLOAD_TOO_LARGE } from '~/lib/utils/http_status';
 import { __, s__, sprintf } from '~/locale';

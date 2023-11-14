@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name          = 'gitlab-sidekiq-fetcher'
-  s.version       = '0.9.0'
+  s.version       = '0.10.0'
   s.authors       = ['TEA', 'GitLab']
   s.email         = 'valery@gitlab.com'
   s.license       = 'LGPL-3.0'

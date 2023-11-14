@@ -39,8 +39,8 @@ RSpec.shared_examples 'returns tags for allowed users' do |user_type, scope|
       let(:url) { "/#{scope}s/#{object.id}/registry/repositories?tags=true" }
 
       before do
-        stub_container_registry_tags(repository: root_repository.path, tags: %w(rootA latest), with_manifest: true)
-        stub_container_registry_tags(repository: test_repository.path, tags: %w(rootA latest), with_manifest: true)
+        stub_container_registry_tags(repository: root_repository.path, tags: %w[rootA latest], with_manifest: true)
+        stub_container_registry_tags(repository: test_repository.path, tags: %w[rootA latest], with_manifest: true)
       end
 
       it 'returns a list of repositories and their tags' do
@@ -64,8 +64,8 @@ RSpec.shared_examples 'returns tags for allowed users' do |user_type, scope|
       let(:url) { "/#{scope}s/#{object.id}/registry/repositories?tags_count=true" }
 
       before do
-        stub_container_registry_tags(repository: root_repository.path, tags: %w(rootA latest), with_manifest: true)
-        stub_container_registry_tags(repository: test_repository.path, tags: %w(rootA latest), with_manifest: true)
+        stub_container_registry_tags(repository: root_repository.path, tags: %w[rootA latest], with_manifest: true)
+        stub_container_registry_tags(repository: test_repository.path, tags: %w[rootA latest], with_manifest: true)
       end
 
       it 'returns a list of repositories and their tags_count' do

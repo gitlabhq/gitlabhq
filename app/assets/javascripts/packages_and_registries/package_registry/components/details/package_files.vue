@@ -12,7 +12,7 @@ import {
   GlSprintf,
   GlKeysetPagination,
 } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/alert';
 import { NEXT, PREV } from '~/vue_shared/components/pagination/constants';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
@@ -92,9 +92,6 @@ export default {
   apollo: {
     packageFiles: {
       query: getPackageFilesQuery,
-      context: {
-        isSingleRequest: true,
-      },
       variables() {
         return this.queryVariables;
       },

@@ -78,6 +78,9 @@
       = f.gitlab_ui_radio_component :layout, layout_choices[0][1], layout_choices[0][0], help_text: fixed_help_text
       = f.gitlab_ui_radio_component :layout, layout_choices[1][1], layout_choices[1][0], help_text: fluid_help_text
 
+    - if Feature.enabled?(:ui_for_organizations, current_user)
+      #js-home-organization-setting{ data: { app_data: home_organization_setting_app_data } }
+
     .js-listbox-input{ data: { label: s_('Preferences|Homepage'), description: s_('Preferences|Choose what content you want to see by default on your homepage.'), name: 'user[dashboard]', items: dashboard_choices.to_json, value: current_user.dashboard, block: true.to_s, toggle_class: 'gl-form-input-xl' } }
 
     = render_if_exists 'profiles/preferences/group_overview_selector', f: f # EE-specific
@@ -152,6 +155,12 @@
       = f.gitlab_ui_checkbox_component :time_display_relative,
         s_('Preferences|Use relative times'),
         help_text: s_('Preferences|For example: 30 minutes ago.')
+    .form-group
+      = f.label :time_display_format, class: 'label-bold' do
+        = s_('Preferences|Time format')
+      - time_display_format_choices.each_entry do |time_display_format_option|
+        .gl-mb-4
+        = f.gitlab_ui_radio_component :time_display_format, time_display_format_option[1], time_display_format_option[0]
   .settings-section.js-preferences-form.js-search-settings-section#enabled_following
     .settings-sticky-header
       .settings-sticky-header-inner

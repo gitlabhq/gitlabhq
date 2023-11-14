@@ -4,7 +4,7 @@ RSpec.shared_examples Gitlab::Import::AdvanceStage do |factory:|
   let_it_be(:project) { create(:project) }
   let_it_be_with_reload(:import_state) { create(factory, :started, project: project, jid: '123') }
   let(:worker) { described_class.new }
-  let(:next_stage) { :finish }
+  let(:next_stage) { 'finish' }
 
   describe '#perform', :clean_gitlab_redis_shared_state do
     context 'when the project no longer exists' do
@@ -60,7 +60,7 @@ RSpec.shared_examples Gitlab::Import::AdvanceStage do |factory:|
       end
 
       it 'schedules the next stage' do
-        next_worker = described_class::STAGES[next_stage]
+        next_worker = described_class::STAGES[next_stage.to_sym]
 
         expect_next_found_instance_of(import_state.class) do |state|
           expect(state).to receive(:refresh_jid_expiration)
@@ -72,7 +72,7 @@ RSpec.shared_examples Gitlab::Import::AdvanceStage do |factory:|
       end
 
       it 'raises KeyError when the stage name is invalid' do
-        expect { worker.perform(project.id, { '123' => 2 }, :kittens) }
+        expect { worker.perform(project.id, { '123' => 2 }, 'kittens') }
           .to raise_error(KeyError)
       end
     end
@@ -106,7 +106,7 @@ RSpec.shared_examples Gitlab::Import::AdvanceStage do |factory:|
 
         it 'advances to next stage' do
           freeze_time do
-            next_worker = described_class::STAGES[next_stage]
+            next_worker = described_class::STAGES[next_stage.to_sym]
 
             expect(next_worker).to receive(:perform_async).with(project.id)
 
@@ -122,7 +122,7 @@ RSpec.shared_examples Gitlab::Import::AdvanceStage do |factory:|
 
         it 'logs error and fails import' do
           freeze_time do
-            next_worker = described_class::STAGES[next_stage]
+            next_worker = described_class::STAGES[next_stage.to_sym]
 
             expect(next_worker).not_to receive(:perform_async).with(project.id)
             expect_next_instance_of(described_class) do |klass|

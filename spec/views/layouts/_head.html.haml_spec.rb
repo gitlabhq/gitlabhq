@@ -15,7 +15,7 @@ RSpec.describe 'layouts/_head' do
 
     render
 
-    expect(rendered).to match(%{content="foo&quot; http-equiv=&quot;refresh"})
+    expect(rendered).to match(%(content="foo&quot; http-equiv=&quot;refresh"))
   end
 
   it 'escapes HTML-safe strings in page_description' do
@@ -23,7 +23,7 @@ RSpec.describe 'layouts/_head' do
 
     render
 
-    expect(rendered).to match(%{content="foo&quot; http-equiv=&quot;refresh"})
+    expect(rendered).to match(%(content="foo&quot; http-equiv=&quot;refresh"))
   end
 
   it 'escapes HTML-safe strings in page_image' do
@@ -31,7 +31,7 @@ RSpec.describe 'layouts/_head' do
 
     render
 
-    expect(rendered).to match(%{content="foo&quot; http-equiv=&quot;refresh"})
+    expect(rendered).to match(%(content="foo&quot; http-equiv=&quot;refresh"))
   end
 
   context 'when an asset_host is set' do
@@ -101,7 +101,7 @@ RSpec.describe 'layouts/_head' do
       render
 
       expect(rendered).to match(%r{<script.*>.*var u="//#{matomo_host}/".*</script>}m)
-      expect(rendered).to match(%r(<noscript>.*<img src="//#{matomo_host}/matomo.php.*</noscript>))
+      expect(rendered).to match(%r{<noscript>.*<img src="//#{matomo_host}/matomo.php.*</noscript>})
       expect(rendered).not_to include('_paq.push(["disableCookies"])')
     end
 
@@ -120,6 +120,6 @@ RSpec.describe 'layouts/_head' do
 
   def stub_helper_with_safe_string(method)
     allow_any_instance_of(PageLayoutHelper).to receive(method)
-      .and_return(%q{foo" http-equiv="refresh}.html_safe)
+      .and_return(%q(foo" http-equiv="refresh).html_safe)
   end
 end

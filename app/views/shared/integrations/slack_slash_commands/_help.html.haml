@@ -5,7 +5,7 @@
   .well-segment
     %p
       = s_("SlackService|Perform common operations in this project by entering slash commands in Slack.")
-      = link_to help_page_path('user/project/integrations/slack_slash_commands.md'), target: '_blank' do
+      = link_to help_page_path('user/project/integrations/slack_slash_commands'), target: '_blank' do
         = _("Learn more.")
         = sprite_icon('external-link')
     %p.inline
@@ -40,7 +40,7 @@
           .col-12.input-group
             = text_field_tag :url, integration_trigger_url(integration), class: 'form-control form-control-sm', readonly: 'readonly'
             .input-group-append
-              = clipboard_button(target: '#url', category: :primary, size: :medium)
+              = clipboard_button(target: '#url', category: :primary, size: :medium, title: _('Copy URL'))
 
         .form-group
           = label_tag nil, _('Method'), class: 'col-12 col-form-label label-bold'
@@ -51,7 +51,7 @@
           .col-12.input-group
             = text_field_tag :customize_name, 'GitLab', class: 'form-control form-control-sm', readonly: 'readonly'
             .input-group-append
-              = clipboard_button(target: '#customize_name', category: :primary, size: :medium)
+              = clipboard_button(target: '#customize_name', category: :primary, size: :medium, title: _('Copy customize name'))
 
         .form-group
           = label_tag nil, _('Customize icon'), class: 'col-12 col-form-label label-bold'
@@ -68,21 +68,21 @@
           .col-12.input-group
             = text_field_tag :autocomplete_description, run_actions_text.html_safe, class: 'form-control form-control-sm', readonly: 'readonly'
             .input-group-append
-              = clipboard_button(target: '#autocomplete_description', category: :primary, size: :medium)
+              = clipboard_button(target: '#autocomplete_description', category: :primary, size: :medium, title: _('Copy autocomplete description'))
 
         .form-group
           = label_tag :autocomplete_usage_hint, _('Autocomplete usage hint'), class: 'col-12 col-form-label label-bold'
           .col-12.input-group
             = text_field_tag :autocomplete_usage_hint, '[help]', class: 'form-control form-control-sm', readonly: 'readonly'
             .input-group-append
-              = clipboard_button(target: '#autocomplete_usage_hint', category: :primary, size: :medium)
+              = clipboard_button(target: '#autocomplete_usage_hint', category: :primary, size: :medium, title: _('Copy autocomplete usage hint'))
 
         .form-group
           = label_tag :descriptive_label, _('Descriptive label'), class: 'col-12 col-form-label label-bold'
           .col-12.input-group
             = text_field_tag :descriptive_label, _('Perform common operations on GitLab project'), class: 'form-control form-control-sm', readonly: 'readonly'
             .input-group-append
-              = clipboard_button(target: '#descriptive_label', category: :primary, size: :medium)
+              = clipboard_button(target: '#descriptive_label', category: :primary, size: :medium, title: _('Copy descriptive label'))
 
       %hr
 

@@ -8,11 +8,11 @@ module QA
           include QA::Page::Settings::Common
 
           view 'app/views/shared/deploy_tokens/_index.html.haml' do
-            element :deploy_tokens_settings_content
+            element 'deploy-tokens-settings-content'
           end
 
           def expand_deploy_tokens(&block)
-            expand_content(:deploy_tokens_settings_content) do
+            expand_content('deploy-tokens-settings-content') do
               Settings::GroupDeployTokens.perform(&block)
             end
           end

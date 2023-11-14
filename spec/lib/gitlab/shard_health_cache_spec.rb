@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ShardHealthCache, :clean_gitlab_redis_cache do
-  let(:shards) { %w(foo bar) }
+  let(:shards) { %w[foo bar] }
 
   before do
     described_class.update(shards) # rubocop:disable Rails/SaveBang
@@ -23,7 +23,7 @@ RSpec.describe Gitlab::ShardHealthCache, :clean_gitlab_redis_cache do
     end
 
     it 'replaces the existing set' do
-      new_set = %w(test me more)
+      new_set = %w[test me more]
       described_class.update(new_set) # rubocop:disable Rails/SaveBang
 
       expect(described_class.cached_healthy_shards).to match_array(new_set)

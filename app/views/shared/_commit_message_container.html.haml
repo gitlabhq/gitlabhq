@@ -10,7 +10,7 @@
       class: 'form-control gl-form-input js-commit-message',
       placeholder: local_assigns[:placeholder],
       data: descriptions,
-      'data-qa-selector': 'commit_message_field',
+      'data-testid': 'commit-message-field',
       required: true, rows: (local_assigns[:rows] || 3),
       id: "commit_message-#{nonce}"
     - if local_assigns[:hint]

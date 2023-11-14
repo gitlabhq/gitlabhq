@@ -116,13 +116,22 @@ describe('Blob Header Default Actions', () => {
       });
     });
 
+    it.each([[{ showBlameToggle: true }], [{ showBlameToggle: false }]])(
+      'passes the `showBlameToggle` prop to the viewer switcher',
+      (propsData) => {
+        createComponent({ propsData });
+
+        expect(findViewSwitcher().props('showBlameToggle')).toBe(propsData.showBlameToggle);
+      },
+    );
+
     it('does not render viewer switcher if the blob has only the simple viewer', () => {
       createComponent({
         blobProps: {
           richViewer: null,
         },
       });
-      expect(findViewSwitcher().exists()).toBe(false);
+      expect(findViewSwitcher().props('showViewerToggles')).toBe(false);
     });
 
     it('does not render viewer switcher if a corresponding prop is passed', () => {

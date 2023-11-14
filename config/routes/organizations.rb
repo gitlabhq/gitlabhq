@@ -8,6 +8,7 @@ resources(
 ) do
   member do
     get :groups_and_projects
+    get :users
 
     resource :settings, only: [], as: :settings_organization do
       get :general

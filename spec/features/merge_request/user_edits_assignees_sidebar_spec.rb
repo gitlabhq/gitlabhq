@@ -34,202 +34,81 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_cate
   let(:sidebar_assignee_tooltip) { sidebar_assignee_avatar_link['title'] || '' }
   let(:sidebar_assignee_merge_ability) { sidebar_assignee_avatar_link['data-cannot-merge'] || '' }
 
-  context 'when GraphQL assignees widget feature flag is disabled' do
-    let(:sidebar_assignee_dropdown_item) do
-      sidebar_assignee_block.find(".dropdown-menu li[data-user-id=\"#{assignee.id}\"]")
-    end
+  let(:sidebar_assignee_dropdown_item) { sidebar_assignee_block.find(".dropdown-item", text: assignee.username) }
+  let(:sidebar_assignee_dropdown_tooltip) { sidebar_assignee_dropdown_item['title'] }
 
-    let(:sidebar_assignee_dropdown_tooltip) { sidebar_assignee_dropdown_item.find('a')['data-title'] || '' }
-
+  context 'when user is an owner' do
     before do
-      stub_feature_flags(issue_assignees_widget: false)
+      stub_const('Autocomplete::UsersFinder::LIMIT', users_find_limit)
+
+      sign_in(owner)
+
+      merge_request.assignees << assignee
+
+      visit project_merge_request_path(project, merge_request)
+
+      wait_for_requests
     end
 
-    context 'when user is an owner' do
-      before do
-        stub_const('Autocomplete::UsersFinder::LIMIT', users_find_limit)
-
-        sign_in(owner)
-
-        merge_request.assignees << assignee
-
-        visit project_merge_request_path(project, merge_request)
-
-        wait_for_requests
+    shared_examples 'when assigned' do |expected_tooltip: '', expected_cannot_merge: ''|
+      it 'shows assignee name' do
+        expect(sidebar_assignee_block).to have_text(assignee.name)
       end
 
-      shared_examples 'when assigned' do |expected_tooltip: '', expected_cannot_merge: ''|
-        it 'shows assignee name' do
-          expect(sidebar_assignee_block).to have_text(assignee.name)
+      it "sets data-cannot-merge to '#{expected_cannot_merge}'" do
+        expect(sidebar_assignee_merge_ability).to eql(expected_cannot_merge)
+      end
+
+      context 'when edit is clicked' do
+        before do
+          open_assignees_dropdown
         end
 
-        it "sets data-cannot-merge to '#{expected_cannot_merge}'" do
-          expect(sidebar_assignee_merge_ability).to eql(expected_cannot_merge)
-        end
-
-        context 'when edit is clicked' do
-          before do
-            sidebar_assignee_block.click_link('Edit')
-
-            wait_for_requests
-          end
-
-          it "shows assignee tooltip '#{expected_tooltip}" do
-            expect(sidebar_assignee_dropdown_tooltip).to eql(expected_tooltip)
-          end
-        end
-      end
-
-      context 'when assigned to maintainer' do
-        let(:assignee) { project_maintainers.last }
-
-        it_behaves_like 'when assigned', expected_tooltip: ''
-      end
-
-      context 'when assigned to developer' do
-        let(:assignee) { project_developers.last }
-
-        it_behaves_like 'when assigned', expected_tooltip: 'Cannot merge', expected_cannot_merge: 'true'
-      end
-    end
-
-    context 'with members shared into ancestors of the project' do
-      before do
-        sign_in(owner)
-
-        visit project_merge_request_path(project, merge_request)
-        wait_for_requests
-
-        sidebar_assignee_block.click_link('Edit')
-        wait_for_requests
-      end
-
-      it 'contains the members shared into ancestors of the projects' do
-        page.within '.dropdown-menu-user' do
-          expect(page).to have_content shared_into_ancestor_user.name
+        it "shows assignee tooltip '#{expected_tooltip}" do
+          expect(sidebar_assignee_dropdown_tooltip).to eql(expected_tooltip)
         end
       end
     end
 
-    context 'with invite members considerations' do
-      let_it_be(:user) { create(:user) }
+    context 'when assigned to maintainer' do
+      let(:assignee) { project_maintainers.last }
 
-      before do
-        sign_in(user)
-      end
+      it_behaves_like 'when assigned', expected_tooltip: ''
+    end
 
-      include_examples 'issuable invite members' do
-        let(:issuable_path) { project_merge_request_path(project, merge_request) }
+    context 'when assigned to developer' do
+      let(:assignee) { project_developers.last }
+
+      it_behaves_like 'when assigned', expected_tooltip: 'Cannot merge', expected_cannot_merge: 'true'
+    end
+  end
+
+  context 'with members shared into ancestors of the project' do
+    before do
+      sign_in(owner)
+
+      visit project_merge_request_path(project, merge_request)
+      wait_for_requests
+
+      open_assignees_dropdown
+    end
+
+    it 'contains the members shared into ancestors of the projects' do
+      page.within '.dropdown-menu-user' do
+        expect(page).to have_content shared_into_ancestor_user.name
       end
     end
   end
 
-  context 'when GraphQL assignees widget feature flag is enabled' do
-    let(:sidebar_assignee_dropdown_item) { sidebar_assignee_block.find(".dropdown-item", text: assignee.username) }
-    let(:sidebar_assignee_dropdown_tooltip) { sidebar_assignee_dropdown_item['title'] }
+  context 'with invite members considerations' do
+    let_it_be(:user) { create(:user) }
 
-    context 'when user is an owner' do
-      before do
-        stub_const('Autocomplete::UsersFinder::LIMIT', users_find_limit)
-
-        sign_in(owner)
-
-        merge_request.assignees << assignee
-
-        visit project_merge_request_path(project, merge_request)
-
-        wait_for_requests
-      end
-
-      shared_examples 'when assigned' do |expected_tooltip: '', expected_cannot_merge: ''|
-        it 'shows assignee name' do
-          expect(sidebar_assignee_block).to have_text(assignee.name)
-        end
-
-        it "sets data-cannot-merge to '#{expected_cannot_merge}'" do
-          expect(sidebar_assignee_merge_ability).to eql(expected_cannot_merge)
-        end
-
-        context 'when edit is clicked' do
-          before do
-            open_assignees_dropdown
-          end
-
-          it "shows assignee tooltip '#{expected_tooltip}" do
-            expect(sidebar_assignee_dropdown_tooltip).to eql(expected_tooltip)
-          end
-        end
-      end
-
-      context 'when assigned to maintainer' do
-        let(:assignee) { project_maintainers.last }
-
-        it_behaves_like 'when assigned', expected_tooltip: ''
-      end
-
-      context 'when assigned to developer' do
-        let(:assignee) { project_developers.last }
-
-        it_behaves_like 'when assigned', expected_tooltip: 'Cannot merge', expected_cannot_merge: 'true'
-      end
+    before do
+      sign_in(user)
     end
 
-    context 'with members shared into ancestors of the project' do
-      before do
-        sign_in(owner)
-
-        visit project_merge_request_path(project, merge_request)
-        wait_for_requests
-
-        open_assignees_dropdown
-      end
-
-      it 'contains the members shared into ancestors of the projects' do
-        page.within '.dropdown-menu-user' do
-          expect(page).to have_content shared_into_ancestor_user.name
-        end
-      end
-    end
-
-    context 'with invite members considerations' do
-      let_it_be(:user) { create(:user) }
-
-      before do
-        sign_in(user)
-      end
-
-      # TODO: Move to shared examples when feature flag is removed: https://gitlab.com/gitlab-org/gitlab/-/issues/328185
-      context 'when a privileged user can invite' do
-        it 'shows a link for inviting members and launches invite modal' do
-          project.add_maintainer(user)
-          visit project_merge_request_path(project, merge_request)
-
-          open_assignees_dropdown
-
-          page.within '.dropdown-menu-user' do
-            expect(page).to have_link('Invite members')
-
-            click_link 'Invite members'
-          end
-
-          page.within invite_modal_selector do
-            expect(page).to have_content("You're inviting members to the #{project.name} project")
-          end
-        end
-      end
-
-      context 'when user cannot invite members in assignee dropdown' do
-        it 'shows author in assignee dropdown and no invite link' do
-          project.add_developer(user)
-          visit project_merge_request_path(project, merge_request)
-
-          open_assignees_dropdown
-
-          page.within '.dropdown-menu-user' do
-            expect(page).not_to have_link('Invite members')
-          end
-        end
-      end
+    include_examples 'issuable invite members' do
+      let(:issuable_path) { project_merge_request_path(project, merge_request) }
     end
   end
 

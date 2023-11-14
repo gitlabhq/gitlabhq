@@ -8,6 +8,7 @@ module Types
 
         abilities :read_job_artifacts, :read_build
         ability_field :update_build, calls_gitaly: true
+        ability_field :cancel_build, calls_gitaly: true
       end
     end
   end

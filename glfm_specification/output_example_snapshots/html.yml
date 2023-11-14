@@ -8650,3 +8650,278 @@
   wysiwyg: |-
     <p dir="auto">footnote reference tag <sup dir="auto" identifier="fortytwo">fortytwo</sup></p>
     <div node="footnoteDefinition(paragraph(&quot;footnote text&quot;))" htmlattributes="[object Object]"><p dir="auto">footnote text</p></div>
+09_00_00__gfm_undocumented_extensions_and_more_robust_test__footnotes__002:
+  canonical: |
+    <p>This is some text!<sup class="footnote-ref"><a href="#fn-1" id="fnref-1" data-footnote-ref>1</a></sup>. Other text.<sup class="footnote-ref"><a href="#fn-footnote" id="fnref-footnote" data-footnote-ref>2</a></sup>.</p>
+    <p>Here's a thing<sup class="footnote-ref"><a href="#fn-other-note" id="fnref-other-note" data-footnote-ref>3</a></sup>.</p>
+    <p>And another thing<sup class="footnote-ref"><a href="#fn-codeblock-note" id="fnref-codeblock-note" data-footnote-ref>4</a></sup>.</p>
+    <p>This doesn't have a referent[^nope].</p>
+    <p>Hi!</p>
+    <section class="footnotes" data-footnotes>
+    <ol>
+    <li id="fn-1">
+    <p>Some <em>bolded</em> footnote definition. <a href="#fnref-1" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1">↩</a></p>
+    </li>
+    <li id="fn-footnote">
+    <blockquote>
+    <p>Blockquotes can be in a footnote.</p>
+    </blockquote>
+    <pre><code>as well as code blocks
+    </code></pre>
+    <p>or, naturally, simple paragraphs. <a href="#fnref-footnote" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="2" aria-label="Back to reference 2">↩</a></p>
+    </li>
+    <li id="fn-other-note">
+    <p>no code block here (spaces are stripped away) <a href="#fnref-other-note" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="3" aria-label="Back to reference 3">↩</a></p>
+    </li>
+    <li id="fn-codeblock-note">
+    <pre><code>this is now a code block (8 spaces indentation)
+    </code></pre>
+    <a href="#fnref-codeblock-note" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="4" aria-label="Back to reference 4">↩</a>
+    </li>
+    </ol>
+    </section>
+  static: |-
+    <p data-sourcepos="1:1-1:47" dir="auto">This is some text!<sup class="footnote-ref"><a href="#fn-1-42" id="fnref-1-42" data-footnote-ref>1</a></sup>. Other text.<sup class="footnote-ref"><a href="#fn-footnote-42" id="fnref-footnote-42" data-footnote-ref>2</a></sup>.</p>
+    <p data-sourcepos="3:1-3:28" dir="auto">Here's a thing<sup class="footnote-ref"><a href="#fn-other-note-42" id="fnref-other-note-42" data-footnote-ref>3</a></sup>.</p>
+    <p data-sourcepos="5:1-5:35" dir="auto">And another thing<sup class="footnote-ref"><a href="#fn-codeblock-note-42" id="fnref-codeblock-note-42" data-footnote-ref>4</a></sup>.</p>
+    <p data-sourcepos="7:1-7:36" dir="auto">This doesn't have a referent[^nope].</p>
+    <p data-sourcepos="17:1-17:3" dir="auto">Hi!</p>
+    <section data-footnotes class="footnotes">
+    <ol>
+    <li id="fn-1-42">
+    <p data-sourcepos="15:7-15:40">Some <em>bolded</em> footnote definition. <a href="#fnref-1-42" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+    </li>
+    <li id="fn-footnote-42">
+    <blockquote data-sourcepos="20:5-20:39">
+    <p data-sourcepos="20:7-20:39">Blockquotes can be in a footnote.</p>
+    </blockquote>
+    <div class="gl-relative markdown-code-block js-markdown-code">
+    <pre data-sourcepos="22:9-23:0" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">as well as code blocks</span></code></pre>
+    <copy-code></copy-code>
+    </div>
+    <p data-sourcepos="24:5-24:37">or, naturally, simple paragraphs. <a href="#fnref-footnote-42" data-footnote-backref data-footnote-backref-idx="2" aria-label="Back to reference 2" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+    </li>
+    <li id="fn-other-note-42">
+    <p data-sourcepos="10:22-10:66">no code block here (spaces are stripped away) <a href="#fnref-other-note-42" data-footnote-backref data-footnote-backref-idx="3" aria-label="Back to reference 3" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+    </li>
+    <li id="fn-codeblock-note-42">
+    <div class="gl-relative markdown-code-block js-markdown-code">
+    <pre data-sourcepos="13:9-14:0" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">this is now a code block (8 spaces indentation)</span></code></pre>
+    <copy-code></copy-code>
+    </div>
+    <a href="#fnref-codeblock-note-42" data-footnote-backref data-footnote-backref-idx="4" aria-label="Back to reference 4" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a>
+    </li>
+    </ol>
+    </section>
+  wysiwyg: |-
+    <p dir="auto">This is some text!<sup dir="auto" identifier="1">1</sup>. Other text.<sup dir="auto" identifier="footnote">footnote</sup>.</p>
+    <p dir="auto">Here's a thing<sup dir="auto" identifier="other-note">other-note</sup>.</p>
+    <p dir="auto">And another thing<sup dir="auto" identifier="codeblock-note">codeblock-note</sup>.</p>
+    <p dir="auto">This doesn't have a referent[^nope].</p>
+    <div node="footnoteDefinition(paragraph(&quot;no code block here (spaces are stripped away)&quot;))" htmlattributes="[object Object]"><p dir="auto">no code block here (spaces are stripped away)</p></div>
+    <div node="footnoteDefinition(paragraph(&quot;Some &quot;, italic(&quot;bolded&quot;), &quot; footnote definition.&quot;))" htmlattributes="[object Object]"><p dir="auto">Some <em>bolded</em> footnote definition.</p></div>
+    <p dir="auto">Hi!</p>
+    <div node="footnoteDefinition(paragraph(&quot;This is unused.&quot;))" htmlattributes="[object Object]"><p dir="auto">This is unused.</p></div>
+? 09_01_00__gfm_undocumented_extensions_and_more_robust_test__when_a_footnote_is_used_multiple_times,_we_insert_multiple_backrefs.__001
+: canonical: |
+    <p>This is some text. It has a footnote<sup class="footnote-ref"><a href="#fn-a-footnote" id="fnref-a-footnote" data-footnote-ref>1</a></sup>.</p>
+    <p>This footnote is referenced<sup class="footnote-ref"><a href="#fn-a-footnote" id="fnref-a-footnote-2" data-footnote-ref>1</a></sup> multiple times, in lots of different places.<sup class="footnote-ref"><a href="#fn-a-footnote" id="fnref-a-footnote-3" data-footnote-ref>1</a></sup></p>
+    <section class="footnotes" data-footnotes>
+    <ol>
+    <li id="fn-a-footnote">
+    <p>This footnote definition should have three backrefs. <a href="#fnref-a-footnote" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1">↩</a> <a href="#fnref-a-footnote-2" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="1-2" aria-label="Back to reference 1-2">↩<sup class="footnote-ref">2</sup></a> <a href="#fnref-a-footnote-3" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="1-3" aria-label="Back to reference 1-3">↩<sup class="footnote-ref">3</sup></a></p>
+    </li>
+    </ol>
+    </section>
+  static: |-
+    <p data-sourcepos="1:1-1:50" dir="auto">This is some text. It has a footnote<sup class="footnote-ref"><a href="#fn-a-footnote-42" id="fnref-a-footnote-42" data-footnote-ref>1</a></sup>.</p>
+    <p data-sourcepos="3:1-3:98" dir="auto">This footnote is referenced<sup><a href="#fn-a-footnote" id="fnref-a-footnote-2" data-footnote-ref>1</a></sup> multiple times, in lots of different places.<sup><a href="#fn-a-footnote" id="fnref-a-footnote-3" data-footnote-ref>1</a></sup></p>
+    <section data-footnotes class="footnotes">
+    <ol>
+    <li id="fn-a-footnote-42">
+    <p data-sourcepos="5:16-5:67">This footnote definition should have three backrefs. <a href="#fnref-a-footnote-42" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a> <a href="#fnref-a-footnote-2" data-footnote-backref data-footnote-backref-idx="1-2" aria-label="Back to reference 1-2"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji><sup>2</sup></a> <a href="#fnref-a-footnote-3" data-footnote-backref data-footnote-backref-idx="1-3" aria-label="Back to reference 1-3"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji><sup>3</sup></a></p>
+    </li>
+    </ol>
+    </section>
+  wysiwyg: |-
+    <p dir="auto">This is some text. It has a footnote<sup dir="auto" identifier="a-footnote">a-footnote</sup>.</p>
+    <p dir="auto">This footnote is referenced<sup dir="auto" identifier="a-footnote">a-footnote</sup> multiple times, in lots of different places.<sup dir="auto" identifier="a-footnote">a-footnote</sup></p>
+    <div node="footnoteDefinition(paragraph(&quot;This footnote definition should have three backrefs.&quot;))" htmlattributes="[object Object]"><p dir="auto">This footnote definition should have three backrefs.</p></div>
+09_02_00__gfm_undocumented_extensions_and_more_robust_test__footnote_reference_labels_are_href_escaped__001:
+  canonical: |
+    <p>Hello<sup class="footnote-ref"><a href="#fn-%22%3E%3Cscript%3Ealert(1)%3C/script%3E" id="fnref-%22%3E%3Cscript%3Ealert(1)%3C/script%3E" data-footnote-ref>1</a></sup></p>
+    <section class="footnotes" data-footnotes>
+    <ol>
+    <li id="fn-%22%3E%3Cscript%3Ealert(1)%3C/script%3E">
+    <p>pwned <a href="#fnref-%22%3E%3Cscript%3Ealert(1)%3C/script%3E" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1">↩</a></p>
+    </li>
+    </ol>
+    </section>
+  static: |-
+    <p data-sourcepos="1:1-1:35" dir="auto">Hello<sup class="footnote-ref"><a href="#fn-%22%3E%3Cscript%3Ealert(1)%3C/script%3E-42" id="fnref-%22%3E%3Cscript%3Ealert(1)%3C/script%3E-42" data-footnote-ref>1</a></sup></p>
+    <section data-footnotes class="footnotes">
+    <ol>
+    <li id="fn-%22%3E%3Cscript%3Ealert(1)%3C/script%3E-42">
+    <p data-sourcepos="3:33-3:37">pwned <a href="#fnref-%22%3E%3Cscript%3Ealert(1)%3C/script%3E-42" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+    </li>
+    </ol>
+    </section>
+  wysiwyg: |-
+    <p dir="auto">Hello<sup dir="auto" identifier="&quot;><script>alert(1)</script>">"&gt;&lt;script&gt;alert(1)&lt;/script&gt;</sup></p>
+    <div node="footnoteDefinition(paragraph(&quot;pwned&quot;))" htmlattributes="[object Object]"><p dir="auto">pwned</p></div>
+09_03_00__gfm_undocumented_extensions_and_more_robust_test__interop__001:
+  canonical: |
+    <p><del><a href="http://www.google.com">www.google.com</a></del></p>
+    <p><del><a href="http://google.com">http://google.com</a></del></p>
+  static: |-
+    <p data-sourcepos="1:1-1:18" dir="auto"><del><a href="http://www.google.com" rel="nofollow noreferrer noopener" target="_blank">www.google.com</a></del></p>
+    <p data-sourcepos="3:1-3:21" dir="auto"><del><a href="http://google.com" rel="nofollow noreferrer noopener" target="_blank">http://google.com</a></del></p>
+  wysiwyg: |-
+    <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.google.com"><s>www.google.com</s></a></p>
+    <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="http://google.com"><s>http://google.com</s></a></p>
+09_03_00__gfm_undocumented_extensions_and_more_robust_test__interop__002:
+  canonical: |
+    <table>
+    <thead>
+    <tr>
+    <th>a</th>
+    <th>b</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+    <td><a href="https://github.com">https://github.com</a> <a href="http://www.github.com">www.github.com</a></td>
+    <td><a href="http://pokemon.com">http://pokemon.com</a></td>
+    </tr>
+    </tbody>
+    </table>
+  static: |-
+    <table data-sourcepos="1:1-3:58" dir="auto">
+    <thead>
+    <tr data-sourcepos="1:1-1:9">
+    <th data-sourcepos="1:2-1:4">a</th>
+    <th data-sourcepos="1:6-1:8">b</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr data-sourcepos="3:1-3:58">
+    <td data-sourcepos="3:2-3:36">
+    <a href="https://github.com" rel="nofollow noreferrer noopener" target="_blank">https://github.com</a> <a href="http://www.github.com" rel="nofollow noreferrer noopener" target="_blank">www.github.com</a>
+    </td>
+    <td data-sourcepos="3:38-3:57"><a href="http://pokemon.com" rel="nofollow noreferrer noopener" target="_blank">http://pokemon.com</a></td>
+    </tr>
+    </tbody>
+    </table>
+  wysiwyg: |-
+    <table><tbody><tr><th colspan="1" rowspan="1"><p dir="auto">a</p></th><th colspan="1" rowspan="1"><p dir="auto">b</p></th></tr><tr><td colspan="1" rowspan="1"><p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="https://github.com">https://github.com</a><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.github.com">www.github.com</a></p></td><td colspan="1" rowspan="1"><p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="http://pokemon.com">http://pokemon.com</a></p></td></tr></tbody></table>
+09_04_00__gfm_undocumented_extensions_and_more_robust_test__task_lists__001:
+  canonical: |
+    <ul>
+    <li><input type="checkbox" disabled="" /> foo</li>
+    <li><input type="checkbox" checked="" disabled="" /> bar</li>
+    </ul>
+  static: |-
+    <ul data-sourcepos="1:1-2:9" class="task-list" dir="auto">
+    <li data-sourcepos="1:1-1:9" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> foo</li>
+    <li data-sourcepos="2:1-2:9" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> bar</li>
+    </ul>
+  wysiwyg: |-
+    <ul dir="auto" start="1" parens="false" data-type="taskList"><li dir="auto" data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p dir="auto">foo</p></div></li><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p dir="auto">bar</p></div></li></ul>
+09_04_00__gfm_undocumented_extensions_and_more_robust_test__task_lists__002:
+  canonical: |
+    <ul>
+    <li><input type="checkbox" checked="" disabled="" /> foo
+    <ul>
+    <li><input type="checkbox" disabled="" /> bar</li>
+    <li><input type="checkbox" checked="" disabled="" /> baz</li>
+    </ul>
+    </li>
+    <li><input type="checkbox" disabled="" /> bim</li>
+    </ul>
+    <p>Show a regular (non task) list to show that it has the same structure</p>
+    <ul>
+    <li>[@] foo
+    <ul>
+    <li>[@] bar</li>
+    <li>[@] baz</li>
+    </ul>
+    </li>
+    <li>[@] bim</li>
+    </ul>
+  static: |-
+    <ul data-sourcepos="1:1-5:0" class="task-list" dir="auto">
+    <li data-sourcepos="1:1-3:11" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> foo
+    <ul data-sourcepos="2:3-3:11" class="task-list">
+    <li data-sourcepos="2:3-2:11" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> bar</li>
+    <li data-sourcepos="3:3-3:11" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> baz</li>
+    </ul>
+    </li>
+    <li data-sourcepos="4:1-5:0" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> bim</li>
+    </ul>
+    <p data-sourcepos="6:1-6:69" dir="auto">Show a regular (non task) list to show that it has the same structure</p>
+    <ul data-sourcepos="7:1-10:9" dir="auto">
+    <li data-sourcepos="7:1-9:11">[@] foo
+    <ul data-sourcepos="8:3-9:11">
+    <li data-sourcepos="8:3-8:11">[@] bar</li>
+    <li data-sourcepos="9:3-9:11">[@] baz</li>
+    </ul>
+    </li>
+    <li data-sourcepos="10:1-10:9">[@] bim</li>
+    </ul>
+  wysiwyg: |-
+    Error - check implementation:
+    Cannot read properties of undefined (reading 'start')
+09_04_00__gfm_undocumented_extensions_and_more_robust_test__task_lists__003:
+  canonical: |
+    <ul>
+    <li><input type="checkbox" checked="" disabled="" /> foo
+    <ul>
+    <li><input type="checkbox" disabled="" /> bar</li>
+    <li><input type="checkbox" checked="" disabled="" /> baz</li>
+    </ul>
+    </li>
+    <li><input type="checkbox" disabled="" /> bim</li>
+    </ul>
+    <p>Show a regular (non task) list to show that it has the same structure</p>
+    <ul>
+    <li>[@] foo
+    <ul>
+    <li>[@] bar</li>
+    <li>[@] baz</li>
+    </ul>
+    </li>
+    <li>[@] bim</li>
+    </ul>
+  static: |-
+    <ul data-sourcepos="1:1-5:0" class="task-list" dir="auto">
+    <li data-sourcepos="1:1-3:13" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> foo
+    <ul data-sourcepos="2:5-3:13" class="task-list">
+    <li data-sourcepos="2:5-2:13" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> bar</li>
+    <li data-sourcepos="3:5-3:13" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> baz</li>
+    </ul>
+    </li>
+    <li data-sourcepos="4:1-5:0" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> bim</li>
+    </ul>
+    <p data-sourcepos="6:1-6:69" dir="auto">Show a regular (non task) list to show that it has the same structure</p>
+    <ul data-sourcepos="7:1-10:9" dir="auto">
+    <li data-sourcepos="7:1-9:13">[@] foo
+    <ul data-sourcepos="8:5-9:13">
+    <li data-sourcepos="8:5-8:13">[@] bar</li>
+    <li data-sourcepos="9:5-9:13">[@] baz</li>
+    </ul>
+    </li>
+    <li data-sourcepos="10:1-10:9">[@] bim</li>
+    </ul>
+  wysiwyg: |-
+    Error - check implementation:
+    Cannot read properties of undefined (reading 'start')

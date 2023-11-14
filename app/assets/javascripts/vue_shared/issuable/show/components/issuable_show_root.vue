@@ -147,6 +147,7 @@ export default {
       :description-help-path="descriptionHelpPath"
       :task-list-update-path="taskListUpdatePath"
       :task-list-lock-version="taskListLockVersion"
+      :workspace-type="workspaceType"
       @edit-issuable="$emit('edit-issuable', $event)"
       @task-list-update-success="$emit('task-list-update-success', $event)"
       @task-list-update-failure="$emit('task-list-update-failure')"

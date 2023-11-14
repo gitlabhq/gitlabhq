@@ -132,7 +132,7 @@ RSpec.describe 'Admin Jobs', :js, feature_category: :continuous_integration do
 
         within_testid('jobs-table') do
           expect(page).to have_selector('[data-testid="jobs-table-row"]', count: 1)
-          expect(find_by_testid('ci-badge-text')).to have_content('Failed')
+          expect(find_by_testid('ci-icon-text')).to have_content('Failed')
         end
       end
     end

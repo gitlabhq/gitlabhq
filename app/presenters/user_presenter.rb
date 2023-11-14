@@ -21,7 +21,6 @@ class UserPresenter < Gitlab::View::Presenter::Delegated
 
   delegator_override :saved_replies
   def saved_replies
-    return ::Users::SavedReply.none unless Feature.enabled?(:saved_replies, current_user)
     return ::Users::SavedReply.none unless current_user.can?(:read_saved_replies, user)
 
     user.saved_replies

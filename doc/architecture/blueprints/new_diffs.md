@@ -68,6 +68,35 @@ compared with the pros and cons of alternatives.
 
 ## Design and implementation details
 
+### Workspace & Artifacts
+
+- We will store implementation details like metrics, budgets, and development & architectural patterns here in the docs
+- We will store large bodies of research, the results of audits, etc. in the [wiki](https://gitlab.com/gitlab-com/create-stage/new-diffs/-/wikis/home) of the [New Diffs project](https://gitlab.com/gitlab-com/create-stage/new-diffs)
+- We will store audio & video recordings on the public Youtube channel in the Code Review / New Diffs playlist
+- We will store drafts, meeting notes, and other temporary documents in public Google docs
+
+### Definitions
+
+#### Maintainability
+
+Maintainable projects are _simple_ projects.
+
+Simplicity is the opposite of complexity. This uses a definition of simple and complex [described by Rich Hickey in "Simple Made Easy"](https://www.infoq.com/presentations/Simple-Made-Easy/) (Strange Loop, 2011).
+
+- Maintainable code is simple (single task, single concept, separate from other things).
+- Maintainable projects expand on simple code by having simple structure (folders define classes of behaviors, e.g. you can be assured that a component directory will never initiate a network call, because that would be complecting visual display with data access)
+- Maintainable applications flow out of simple organization and simple code. The old saying is a cluttered desk is representative of a cluttered mind. Rigorous discipline on simplicity will be represented in our output (the product). By being strict about working simply, we will naturally produce applications where our users can more easily reason about their behavior.
+
+#### Done
+
+GitLab has an existing [definition of done](/ee/development/contributing/merge_request_workflow.md#definition-of-done) which is geared primarily toward identifying when an MR is ready to be merged.
+
+In addition to the items in the GitLab definition of done, work on new diffs should also adhere to the following requirements:
+
+- Meets or exceeds all metrics
+  - Meets or exceeds our minimum accessibility metrics (these are explicitly not part of our defined priorities, since they are non-negotiable)
+- All work is fully documented for engineers (user documentation is a requirement of the standard definition of done)
+
 <!--
 This section should contain enough information that the specifics of your
 change are understandable. This may include API specs (though not always

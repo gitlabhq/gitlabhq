@@ -139,8 +139,11 @@ export default {
       }
       return false;
     },
+    hasChildren() {
+      return this.totalIssuesCount + this.totalEpicsCount > 0;
+    },
     shouldRenderEpicCountables() {
-      return this.isEpicBoard && this.item.hasIssues;
+      return this.isEpicBoard && this.hasChildren;
     },
     shouldRenderEpicProgress() {
       return this.totalWeight > 0;
@@ -396,7 +399,7 @@ export default {
             <issue-due-date
               v-if="item.dueDate"
               :date="item.dueDate"
-              :closed="item.closed || Boolean(item.closedAt)"
+              :closed="Boolean(item.closedAt)"
             />
             <issue-time-estimate v-if="item.timeEstimate" :estimate="item.timeEstimate" />
             <issue-card-weight

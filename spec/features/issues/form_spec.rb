@@ -7,9 +7,9 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
   include ListboxHelpers
 
   let_it_be(:project)   { create(:project, :repository) }
-  let_it_be(:user)      { create(:user, :no_super_sidebar) }
-  let_it_be(:user2)     { create(:user, :no_super_sidebar) }
-  let_it_be(:guest)     { create(:user, :no_super_sidebar) }
+  let_it_be(:user)      { create(:user) }
+  let_it_be(:user2)     { create(:user) }
+  let_it_be(:guest)     { create(:user) }
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:label)     { create(:label, project: project) }
   let_it_be(:label2)    { create(:label, project: project) }
@@ -526,7 +526,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
 
         find('body').send_keys('e')
 
-        click_link 'Boards'
+        click_link 'Homepage'
 
         expect(page).not_to have_content(expected_content)
       end
@@ -539,7 +539,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
         find('body').send_keys('e')
         fill_in 'issue-description', with: content
 
-        click_link 'Boards' do
+        click_link 'Homepage' do
           page.driver.browser.switch_to.alert.dismiss
         end
 
@@ -554,8 +554,8 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
         find('body').send_keys('e')
         fill_in 'issue-description', with: content
 
-        click_link 'Boards' do
-          page.driver.browser.switch_to.alert.accept
+        click_link 'Homepage' do
+          page.driver.browser.switch_to.alert.dismiss
         end
 
         expect(page).not_to have_content(content)
@@ -600,15 +600,5 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
         end
       end
     end
-  end
-
-  def before_for_selector(selector)
-    js = <<-JS.strip_heredoc
-      (function(selector) {
-        var el = document.querySelector(selector);
-        return window.getComputedStyle(el, '::before').getPropertyValue('content');
-      })("#{escape_javascript(selector)}")
-    JS
-    page.evaluate_script(js)
   end
 end

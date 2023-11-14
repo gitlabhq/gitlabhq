@@ -24,7 +24,7 @@ RSpec.describe Gitlab::WikiPages::FrontMatterParser do
   end
 
   def have_correct_front_matter
-    include(a: 1, b: 2, c: %w(foo bar))
+    include(a: 1, b: 2, c: %w[foo bar])
   end
 
   describe '#parse' do

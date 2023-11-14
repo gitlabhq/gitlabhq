@@ -14,6 +14,7 @@ RSpec.describe BatchedBackgroundMigration::BatchedBackgroundMigrationGenerator, 
 
   before do
     prepare_destination
+    allow(Gitlab).to receive(:current_milestone).and_return('16.6')
   end
 
   after do

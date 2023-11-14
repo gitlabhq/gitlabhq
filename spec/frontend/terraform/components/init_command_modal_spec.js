@@ -8,13 +8,13 @@ const terraformApiUrl = 'https://gitlab.com/api/v4/projects/1';
 const username = 'username';
 const modalId = 'fake-modal-id';
 const stateName = 'aws/eu-central-1';
-const stateNamePlaceholder = '<YOUR-STATE-NAME>';
 const stateNameEncoded = encodeURIComponent(stateName);
 const modalInfoCopyStr = `export GITLAB_ACCESS_TOKEN=<YOUR-ACCESS-TOKEN>
+export TF_STATE_NAME=${stateNameEncoded}
 terraform init \\
-    -backend-config="address=${terraformApiUrl}/${stateNameEncoded}" \\
-    -backend-config="lock_address=${terraformApiUrl}/${stateNameEncoded}/lock" \\
-    -backend-config="unlock_address=${terraformApiUrl}/${stateNameEncoded}/lock" \\
+    -backend-config="address=${terraformApiUrl}/$TF_STATE_NAME" \\
+    -backend-config="lock_address=${terraformApiUrl}/$TF_STATE_NAME/lock" \\
+    -backend-config="unlock_address=${terraformApiUrl}/$TF_STATE_NAME/lock" \\
     -backend-config="username=${username}" \\
     -backend-config="password=$GITLAB_ACCESS_TOKEN" \\
     -backend-config="lock_method=POST" \\
@@ -67,7 +67,7 @@ describe('InitCommandModal', () => {
       describe('init command', () => {
         it('includes correct address', () => {
           expect(findInitCommand().text()).toContain(
-            `-backend-config="address=${terraformApiUrl}/${stateNameEncoded}"`,
+            `-backend-config="address=${terraformApiUrl}/$TF_STATE_NAME"`,
           );
         });
         it('includes correct username', () => {
@@ -94,7 +94,7 @@ describe('InitCommandModal', () => {
     describe('on rendering', () => {
       it('includes correct address', () => {
         expect(findInitCommand().text()).toContain(
-          `-backend-config="address=${terraformApiUrl}/${stateNamePlaceholder}"`,
+          `-backend-config="address=${terraformApiUrl}/$TF_STATE_NAME"`,
         );
       });
     });

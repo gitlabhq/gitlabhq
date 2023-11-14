@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Nuget::ExtractMetadataFileService, feature_category: :package_registry do
+  include PackagesManagerApiSpecHelpers
+
   let_it_be(:package_file) { build(:package_file, :nuget) }
   let_it_be(:package_zip_file) { Zip::File.new(package_file.file) }
 
@@ -37,6 +39,18 @@ RSpec.describe Packages::Nuget::ExtractMetadataFileService, feature_category: :p
 
       it 'returns the nuspec file content' do
         expect(subject.payload.squish).to include(expected_metadata)
+      end
+
+      context 'with InputStream zip' do
+        let(:package_zip_file) do
+          Zip::InputStream.open(
+            temp_file('package.nupkg', content: File.open(package_file.file.path))
+          )
+        end
+
+        it 'returns the nuspec file content' do
+          expect(subject.payload.squish).to include(expected_metadata)
+        end
       end
     end
 

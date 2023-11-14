@@ -313,4 +313,124 @@ RSpec.describe 'container repository details', feature_category: :container_regi
   end
 
   it_behaves_like 'handling graphql network errors with the container registry'
+
+  context 'when list tags API is enabled', :saas do
+    before do
+      stub_container_registry_config(enabled: true)
+      allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
+
+      allow_next_instances_of(ContainerRegistry::GitlabApiClient, nil) do |client|
+        allow(client).to receive(:tags).and_return(response_body)
+      end
+    end
+
+    let_it_be(:raw_tags_response) do
+      [
+        {
+          name: 'latest',
+          digest: 'sha256:1234567892',
+          config_digest: 'sha256:3332132331',
+          media_type: 'application/vnd.oci.image.manifest.v1+json',
+          size_bytes: 1234567892,
+          created_at: 10.minutes.ago,
+          updated_at: 10.minutes.ago
+        }
+      ]
+    end
+
+    let_it_be(:url) { URI('/gitlab/v1/repositories/group1/proj1/tags/list/?before=tag1') }
+
+    let_it_be(:response_body) do
+      {
+        pagination: { previous: { uri: url }, next: { uri: url } },
+        response_body: ::Gitlab::Json.parse(raw_tags_response.to_json)
+      }
+    end
+
+    it_behaves_like 'a working graphql query' do # OK
+      before do
+        subject
+      end
+
+      it 'matches the JSON schema' do
+        expect(container_repository_details_response).to match_schema('graphql/container_repository_details')
+      end
+    end
+
+    context 'with different permissions' do # OK
+      let_it_be(:user) { create(:user) }
+
+      let(:tags_response) { container_repository_details_response.dig('tags', 'nodes') }
+
+      where(:project_visibility, :role, :access_granted, :can_delete) do
+        :private | :maintainer | true  | true
+        :private | :developer  | true  | true
+        :private | :reporter   | true  | false
+        :private | :guest      | false | false
+        :private | :anonymous  | false | false
+        :public  | :maintainer | true  | true
+        :public  | :developer  | true  | true
+        :public  | :reporter   | true  | false
+        :public  | :guest      | true  | false
+        :public  | :anonymous  | true  | false
+      end
+
+      with_them do
+        before do
+          project.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project_visibility.to_s.upcase, false))
+          project.add_member(user, role) unless role == :anonymous
+        end
+
+        it 'return the proper response' do
+          subject
+
+          if access_granted
+            expect(tags_response.size).to eq(raw_tags_response.size)
+            expect(container_repository_details_response.dig('canDelete')).to eq(can_delete)
+          else
+            expect(container_repository_details_response).to eq(nil)
+          end
+        end
+      end
+    end
+
+    context 'querying' do
+      let(:name) { 'l' }
+      let(:tags_response) { container_repository_details_response.dig('tags', 'edges') }
+      let(:variables) do
+        { id: container_repository_global_id, n: name }
+      end
+
+      let(:query) do
+        <<~GQL
+          query($id: ContainerRepositoryID!, $n: String) {
+            containerRepository(id: $id) {
+              tags(name: $n) {
+                edges {
+                  node {
+                    #{all_graphql_fields_for('ContainerRepositoryTag')}
+                  }
+                }
+              }
+            }
+          }
+        GQL
+      end
+
+      it 'returns the tag response', :aggregate_failures do
+        subject
+
+        expect(tags_response.size).to eq(1)
+        expect(tags_response.first.dig('node', 'name')).to eq('latest')
+      end
+
+      context 'invalid filter' do
+        let(:name) { 1 }
+
+        it_behaves_like 'returning an invalid value error'
+      end
+    end
+
+    it_behaves_like 'handling graphql network errors with the container registry'
+  end
 end

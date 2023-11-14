@@ -61,7 +61,9 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
       merge_request_activity_counter.track_submit_review_comment(user: current_user)
     end
 
-    if Gitlab::Utils.to_boolean(approve_params[:approve])
+    if Feature.enabled?(:mr_request_changes, current_user) && reviewer_state_params[:reviewer_state]
+      update_reviewer_state
+    elsif Gitlab::Utils.to_boolean(approve_params[:approve])
       unless merge_request.approved_by?(current_user)
         success = ::MergeRequests::ApprovalService
           .new(project: @project, current_user: current_user, params: approve_params)
@@ -144,6 +146,10 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
     params.permit(:approve)
   end
 
+  def reviewer_state_params
+    params.permit(:reviewer_state)
+  end
+
   def prepare_notes_for_rendering(notes)
     return [] unless notes
 
@@ -179,6 +185,18 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
 
   def merge_request_activity_counter
     Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter
+  end
+
+  def update_reviewer_state
+    if reviewer_state_params[:reviewer_state] === 'approved'
+      ::MergeRequests::ApprovalService
+        .new(project: @project, current_user: current_user, params: approve_params)
+        .execute(merge_request)
+    else
+      ::MergeRequests::UpdateReviewerStateService
+        .new(project: @project, current_user: current_user)
+        .execute(merge_request, reviewer_state_params[:reviewer_state])
+    end
   end
 end
 

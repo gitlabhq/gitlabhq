@@ -96,7 +96,7 @@ You've successfully created a repository with a protected deployment branch!
 
 Next, you'll configure CI/CD to merge changes from the default branch to your deployment branch.
 
-In the root of `web-app-manifests`, create and push a [`.gitlab-ci.yml`](../../../../ci/yaml/gitlab_ci_yaml.md) file with the following contents:
+In the root of `web-app-manifests`, create and push a [`.gitlab-ci.yml`](../../../../ci/index.md#the-gitlab-ciyml-file) file with the following contents:
 
    ```yaml
    deploy:

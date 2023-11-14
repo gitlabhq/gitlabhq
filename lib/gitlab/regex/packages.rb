@@ -3,6 +3,8 @@
 module Gitlab
   module Regex
     module Packages
+      include ::Gitlab::Utils::StrongMemoize
+
       CONAN_RECIPE_FILES = %w[conanfile.py conanmanifest.txt conan_sources.tgz conan_export.tgz].freeze
       CONAN_PACKAGE_FILES = %w[conaninfo.txt conanmanifest.txt conan_package.tgz].freeze
 
@@ -74,8 +76,10 @@ module Gitlab
         maven_app_name_regex
       end
 
-      def npm_package_name_regex
-        @npm_package_name_regex ||= %r{\A(?:@(#{Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX})/)?[-+\.\_a-zA-Z0-9]+\z}o
+      def npm_package_name_regex(other_accepted_chars = nil)
+        strong_memoize_with(:npm_package_name_regex, other_accepted_chars) do
+          %r{\A(?:@(#{Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX})/)?[-+\.\_a-zA-Z0-9#{other_accepted_chars}]+\z}
+        end
       end
 
       def npm_package_name_regex_message

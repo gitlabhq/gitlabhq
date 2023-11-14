@@ -120,7 +120,7 @@ RSpec.describe 'Editing file blob', :js, feature_category: :groups_and_projects 
       it 'updates content' do
         edit_and_commit
 
-        expect(page).to have_content 'successfully committed'
+        expect(page).to have_content 'committed successfully.'
         expect(page).to have_content 'NextFeature'
       end
 

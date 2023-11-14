@@ -145,11 +145,15 @@ RSpec.describe Gitlab::GithubImport::StageMethods, feature_category: :importers 
         .to receive(:import)
         .with(client, project)
 
+      expect(project.import_state).to receive(:refresh_jid_expiration)
+
       worker.try_import(client, project)
     end
 
     it 'reschedules the worker if RateLimitError was raised' do
       client = double(:client, rate_limit_resets_in: 10)
+
+      expect(project.import_state).to receive(:refresh_jid_expiration)
 
       expect(worker)
         .to receive(:import)
@@ -179,6 +183,32 @@ RSpec.describe Gitlab::GithubImport::StageMethods, feature_category: :importers 
 
     it 'returns nil for a non-existing project ID' do
       expect(worker.find_project(-1)).to be_nil
+    end
+  end
+
+  describe '.resumes_work_when_interrupted!' do
+    subject(:sidekiq_options) { worker.class.sidekiq_options }
+
+    it 'does not set the `max_retries_after_interruption` if not called' do
+      is_expected.not_to have_key('max_retries_after_interruption')
+    end
+
+    it 'sets the `max_retries_after_interruption`' do
+      worker.class.resumes_work_when_interrupted!
+
+      is_expected.to include('max_retries_after_interruption' => 20)
+    end
+
+    context 'when the flag is disabled' do
+      before do
+        stub_feature_flags(github_importer_raise_max_interruptions: false)
+      end
+
+      it 'does not set `max_retries_after_interruption`' do
+        worker.class.resumes_work_when_interrupted!
+
+        is_expected.not_to have_key('max_retries_after_interruption')
+      end
     end
   end
 end

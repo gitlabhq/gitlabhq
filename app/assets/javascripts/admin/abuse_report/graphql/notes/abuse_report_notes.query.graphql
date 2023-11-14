@@ -1,0 +1,18 @@
+#import "./abuse_report_note.fragment.graphql"
+
+query abuseReportNotes($id: AbuseReportID!) {
+  abuseReport(id: $id) {
+    id
+    discussions {
+      nodes {
+        id
+        replyId
+        notes {
+          nodes {
+            ...AbuseReportNote
+          }
+        }
+      }
+    }
+  }
+}

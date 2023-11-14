@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { sanitize } from '~/lib/dompurify';
 
 // We currently load + parse the data from the issue app and related merge request

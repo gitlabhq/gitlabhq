@@ -524,6 +524,39 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
   end
 
+  describe '.with_creator_id' do
+    subject { described_class.with_creator_id('1') }
+
+    let_it_be(:runner1) { create(:ci_runner, creator_id: 2) }
+    let_it_be(:runner2) { create(:ci_runner, creator_id: 1) }
+    let_it_be(:runner3) { create(:ci_runner, creator_id: 1) }
+    let_it_be(:runner4) { create(:ci_runner, creator_id: nil) }
+
+    it 'returns runners with creator_id \'1\'' do
+      is_expected.to contain_exactly(runner2, runner3)
+    end
+  end
+
+  describe '.with_version_prefix' do
+    subject { described_class.with_version_prefix('15.11.') }
+
+    let_it_be(:runner1) { create(:ci_runner) }
+    let_it_be(:runner2) { create(:ci_runner) }
+    let_it_be(:runner3) { create(:ci_runner) }
+
+    before_all do
+      create(:ci_runner_machine, runner: runner1, version: '15.11.0')
+      create(:ci_runner_machine, runner: runner2, version: '15.9.0')
+      create(:ci_runner_machine, runner: runner3, version: '15.9.0')
+      # Add another runner_machine to runner3 to ensure edge case is handled (searching multiple machines in a single runner)
+      create(:ci_runner_machine, runner: runner3, version: '15.11.5')
+    end
+
+    it 'returns runners containing runner managers with versions starting with 15.11.' do
+      is_expected.to contain_exactly(runner1, runner3)
+    end
+  end
+
   describe '.stale', :freeze_time do
     subject { described_class.stale }
 
@@ -739,7 +772,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
 
     context 'when runner has tags' do
-      let(:tag_list) { %w(bb cc) }
+      let(:tag_list) { %w[bb cc] }
 
       shared_examples 'tagged build picker' do
         it 'can handle build with matching tags' do
@@ -1026,7 +1059,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
 
     def value_in_queues
-      Gitlab::Redis::SharedState.with do |redis|
+      Gitlab::Redis::Workhorse.with do |redis|
         runner_queue_key = runner.send(:runner_queue_key)
         redis.get(runner_queue_key)
       end

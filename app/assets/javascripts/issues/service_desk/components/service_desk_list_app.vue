@@ -1,7 +1,7 @@
 <script>
-import * as Sentry from '@sentry/browser';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { isEmpty } from 'lodash';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import axios from '~/lib/utils/axios_utils';
@@ -165,9 +165,6 @@ export default {
       },
       skip() {
         return this.shouldSkipQuery;
-      },
-      context: {
-        isSingleRequest: true,
       },
     },
   },

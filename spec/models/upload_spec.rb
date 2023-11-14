@@ -266,7 +266,7 @@ RSpec.describe Upload do
 
     it 'updates project statistics when upload is added' do
       expect(ProjectCacheWorker).to receive(:perform_async)
-        .with(project.id, [], [:uploads_size])
+        .with(project.id, [], ['uploads_size'])
 
       subject.save!
     end
@@ -275,7 +275,7 @@ RSpec.describe Upload do
       subject.save!
 
       expect(ProjectCacheWorker).to receive(:perform_async)
-        .with(project.id, [], [:uploads_size])
+        .with(project.id, [], ['uploads_size'])
 
       subject.destroy!
     end

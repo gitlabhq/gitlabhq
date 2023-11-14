@@ -1,6 +1,6 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import Composer from '~/packages_and_registries/package_registry/components/details/metadata/composer.vue';
 import Conan from '~/packages_and_registries/package_registry/components/details/metadata/conan.vue';
@@ -41,9 +41,6 @@ export default {
   apollo: {
     packageMetadata: {
       query: getPackageMetadataQuery,
-      context: {
-        isSingleRequest: true,
-      },
       variables() {
         return {
           id: this.packageId,

@@ -18,9 +18,14 @@ RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover, :aggregate_failur
   let(:legacy_upload) { create_upload(note, filename) }
 
   def create_remote_upload(model, filename)
-    create(:upload, :attachment_upload,
-           path: "note/attachment/#{model.id}/#{filename}", secret: nil,
-           store: ObjectStorage::Store::REMOTE, model: model)
+    create(
+      :upload,
+      :attachment_upload,
+      path: "note/attachment/#{model.id}/#{filename}",
+      secret: nil,
+      store: ObjectStorage::Store::REMOTE,
+      model: model
+    )
   end
 
   def create_upload(model, filename, with_file = true)
@@ -147,14 +152,23 @@ RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover, :aggregate_failur
       end
 
       let(:legacy_upload) do
-        create(:upload, :with_file, :attachment_upload,
-               path: "uploads/-/system/note/attachment/#{note.id}/#{filename}", model: note)
+        create(
+          :upload,
+          :with_file,
+          :attachment_upload,
+          path: "uploads/-/system/note/attachment/#{note.id}/#{filename}",
+          model: note
+        )
       end
 
       context 'when the file does not exist for the upload' do
         let(:legacy_upload) do
-          create(:upload, :attachment_upload,
-                 path: "uploads/-/system/note/attachment/#{note.id}/#{filename}", model: note)
+          create(
+            :upload,
+            :attachment_upload,
+            path: "uploads/-/system/note/attachment/#{note.id}/#{filename}",
+            model: note
+          )
         end
 
         it_behaves_like 'move error'
@@ -162,8 +176,13 @@ RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover, :aggregate_failur
 
       context 'when the file does not exist on expected path' do
         let(:legacy_upload) do
-          create(:upload, :attachment_upload, :with_file,
-                 path: "uploads/-/system/note/attachment/some_part/#{note.id}/#{filename}", model: note)
+          create(
+            :upload,
+            :attachment_upload,
+            :with_file,
+            path: "uploads/-/system/note/attachment/some_part/#{note.id}/#{filename}",
+            model: note
+          )
         end
 
         it_behaves_like 'move error'
@@ -171,8 +190,13 @@ RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover, :aggregate_failur
 
       context 'when the file path does not include system/note/attachment' do
         let(:legacy_upload) do
-          create(:upload, :attachment_upload, :with_file,
-                 path: "uploads/-/system#{note.id}/#{filename}", model: note)
+          create(
+            :upload,
+            :attachment_upload,
+            :with_file,
+            path: "uploads/-/system#{note.id}/#{filename}",
+            model: note
+          )
         end
 
         it_behaves_like 'move error'
@@ -188,8 +212,14 @@ RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover, :aggregate_failur
 
       context 'when upload has mount_point nil' do
         let(:legacy_upload) do
-          create(:upload, :with_file, :attachment_upload,
-                 path: "uploads/-/system/note/attachment/#{note.id}/#{filename}", model: note, mount_point: nil)
+          create(
+            :upload,
+            :with_file,
+            :attachment_upload,
+            path: "uploads/-/system/note/attachment/#{note.id}/#{filename}",
+            model: note,
+            mount_point: nil
+          )
         end
 
         it_behaves_like 'migrates the file correctly', false

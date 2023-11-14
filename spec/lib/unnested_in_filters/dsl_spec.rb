@@ -12,7 +12,7 @@ RSpec.describe UnnestedInFilters::Dsl do
   end
 
   describe '#exists?' do
-    let(:states) { %w(active banned) }
+    let(:states) { %w[active banned] }
 
     subject { test_model.where(state: states).use_unnested_filters.exists? }
 

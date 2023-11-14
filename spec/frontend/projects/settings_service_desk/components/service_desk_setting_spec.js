@@ -1,4 +1,4 @@
-import { GlButton, GlDropdown, GlLoadingIcon, GlToggle, GlAlert } from '@gitlab/ui';
+import { GlButton, GlDropdown, GlFormCheckbox, GlLoadingIcon, GlToggle, GlAlert } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -19,14 +19,21 @@ describe('ServiceDeskSetting', () => {
   const findSuffixFormGroup = () => wrapper.findByTestId('suffix-form-group');
   const findIssueTrackerInfo = () => wrapper.findComponent(GlAlert);
   const findIssueHelpLink = () => wrapper.findByTestId('issue-help-page');
+  const findAddExternalParticipantsFromCcCheckbox = () => wrapper.findComponent(GlFormCheckbox);
 
-  const createComponent = ({ props = {} } = {}) =>
+  const createComponent = ({ props = {}, provide = {} } = {}) =>
     extendedWrapper(
       mount(ServiceDeskSetting, {
         propsData: {
           isEnabled: true,
           isIssueTrackerEnabled: true,
           ...props,
+        },
+        provide: {
+          glFeatures: {
+            issueEmailParticipants: true,
+          },
+          ...provide,
         },
       }),
     );
@@ -205,6 +212,25 @@ describe('ServiceDeskSetting', () => {
     });
   });
 
+  describe('add external participants from cc checkbox', () => {
+    it('is rendered', () => {
+      wrapper = createComponent();
+      expect(findAddExternalParticipantsFromCcCheckbox().exists()).toBe(true);
+    });
+
+    it('forwards the initial value to the checkbox', () => {
+      wrapper = createComponent({ props: { initialAddExternalParticipantsFromCc: true } });
+      expect(findAddExternalParticipantsFromCcCheckbox().find('input').element.checked).toBe(true);
+    });
+
+    describe('when feature flag issue_email_participants is disabled', () => {
+      it('is not rendered', () => {
+        wrapper = createComponent({ provide: { glFeatures: { issueEmailParticipants: false } } });
+        expect(findAddExternalParticipantsFromCcCheckbox().exists()).toBe(false);
+      });
+    });
+  });
+
   describe('save button', () => {
     it('renders a save button to save a template', () => {
       wrapper = createComponent();
@@ -223,6 +249,7 @@ describe('ServiceDeskSetting', () => {
           initialSelectedFileTemplateProjectId: 42,
           initialOutgoingName: 'GitLab Support Bot',
           initialProjectKey: 'key',
+          initialAddExternalParticipantsFromCc: false,
         },
       });
 
@@ -235,6 +262,7 @@ describe('ServiceDeskSetting', () => {
         fileTemplateProjectId: 42,
         outgoingName: 'GitLab Support Bot',
         projectKey: 'key',
+        addExternalParticipantsFromCc: false,
       };
 
       expect(wrapper.emitted('save')[0]).toEqual([payload]);
@@ -258,6 +286,10 @@ describe('ServiceDeskSetting', () => {
 
     it('does not render template save button', () => {
       expect(findButton().exists()).toBe(false);
+    });
+
+    it('does not render add external participants from cc checkbox', () => {
+      expect(findAddExternalParticipantsFromCcCheckbox().exists()).toBe(false);
     });
 
     it('emits an event to turn on Service Desk when the toggle is clicked', async () => {

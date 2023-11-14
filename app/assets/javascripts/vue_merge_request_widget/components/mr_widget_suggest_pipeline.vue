@@ -99,11 +99,7 @@ export default {
           <p class="gl-mt-2">
             <gl-sprintf :message="$options.SP_HELP_CONTENT">
               <template #link="{ content }">
-                <gl-link
-                  data-testid="help"
-                  :href="$options.SP_HELP_URL"
-                  target="_blank"
-                  class="font-size-inherit"
+                <gl-link data-testid="help" :href="$options.SP_HELP_URL" target="_blank"
                   >{{ content }}
                 </gl-link>
               </template>

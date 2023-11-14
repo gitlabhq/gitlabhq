@@ -59,12 +59,18 @@ This blueprint does not cover the following:
 
 - Secrets such as access tokens created within GitLab to allow external resources to access GitLab, e.g personal access tokens.
 
+## Decisions
+
+- [ADR-001: Use envelope encryption](decisions/001_envelop_encryption.md)
+- [ADR-002: Use GCP Key Management Service](decisions/002_gcp_kms.md)
+- [ADR-003: Build Secrets Manager in Go](decisions/003_go_service.md)
+
 ## Proposal
 
 The secrets manager feature will consist of three core components:
 
 1. GitLab Rails
-1. GitLab Secrets Service
+1. GitLab Secrets Manager Service
 1. GCP Key Management
 
 At a high level, secrets will be stored using unique encryption keys in order to achieve isolation
@@ -86,12 +92,14 @@ The plain-text secret would be encrypted using a single use data key.
 The data key is then encrypted using the public key belonging to the group or project.
 Both, the encrypted secret and the encrypted data key, are being stored in the database.
 
-**2. GitLab Secrets Manager**
+**2. GitLab Secrets Manager Service**
 
-GitLab Secrets Manager will be a new component in the GitLab overall architecture. This component serves the following purpose:
+GitLab Secrets Manager Service will be a new component in the GitLab overall architecture. This component serves the following purpose:
 
 1. Correlating GitLab identities into GCP identities for access control.
 1. A proxy over GCP Key Management for decrypting operations.
+
+[The service will use Go-based tech stack](decisions/003_go_service.md) and [labkit](https://gitlab.com/gitlab-org/labkit).
 
 **3. GCP Key Management**
 
@@ -119,10 +127,6 @@ Hence, GCP Key Management is the natural choice for a cloud-based key management
 
 To extend this service to self-managed GitLab instances, we would consider using GitLab Cloud Connector as a proxy between
 self-managed GitLab instances and the GitLab Secrets Manager.
-
-## Decision Records
-
-- [001: Use envelope encryption](decisions/001_envelop_encryption.md)
 
 ## Alternative Solutions
 

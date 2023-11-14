@@ -7,6 +7,7 @@ class UserPreference < MainClusterwide::ApplicationRecord
   # enum options with same name for multiple fields, also it creates
   # extra methods that aren't really needed here.
   NOTES_FILTERS = { all_notes: 0, only_comments: 1, only_activity: 2 }.freeze
+  TIME_DISPLAY_FORMATS = { system: 0, non_iso_format: 1, iso_format: 2 }.freeze
 
   belongs_to :user
 
@@ -27,12 +28,15 @@ class UserPreference < MainClusterwide::ApplicationRecord
 
   validates :pinned_nav_items, json_schema: { filename: 'pinned_nav_items' }
 
+  validates :time_display_format, inclusion: { in: TIME_DISPLAY_FORMATS.values }, presence: true
+
   ignore_columns :experience_level, remove_with: '14.10', remove_after: '2021-03-22'
   # 2023-06-22 is after 16.1 release and during 16.2 release https://docs.gitlab.com/ee/development/database/avoiding_downtime_in_migrations.html#ignoring-the-column-release-m
   ignore_columns :use_legacy_web_ide, remove_with: '16.2', remove_after: '2023-06-22'
 
   attribute :tab_width, default: -> { Gitlab::TabWidth::DEFAULT }
   attribute :time_display_relative, default: true
+  attribute :time_display_format, default: 0
   attribute :render_whitespace_in_code, default: false
   attribute :project_shortcut_buttons, default: true
   attribute :keyboard_shortcuts_enabled, default: true
@@ -77,6 +81,16 @@ class UserPreference < MainClusterwide::ApplicationRecord
       super(default)
     else
       super(value)
+    end
+  end
+
+  class << self
+    def time_display_formats
+      {
+        s_('Time Display|System') => TIME_DISPLAY_FORMATS[:system],
+        s_('Time Display|12-hour: 2:34 PM') => TIME_DISPLAY_FORMATS[:non_iso_format],
+        s_('Time Display|24-hour: 14:34') => TIME_DISPLAY_FORMATS[:iso_format]
+      }
     end
   end
 

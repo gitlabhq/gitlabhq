@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Todos', feature_category: :team_planning do
+RSpec.describe 'Dashboard Todos', :js, feature_category: :team_planning do
   include DesignManagementTestHelpers
 
-  let_it_be(:user) { create(:user, :no_super_sidebar, username: 'john') }
-  let_it_be(:user2) { create(:user, :no_super_sidebar, username: 'diane') }
+  let_it_be(:user) { create(:user, username: 'john') }
+  let_it_be(:user2) { create(:user, username: 'diane') }
   let_it_be(:user3) { create(:user) }
-  let_it_be(:author) { create(:user, :no_super_sidebar) }
+  let_it_be(:author) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:issue) { create(:issue, project: project, due_date: Date.today, title: "Fix bug") }
 
@@ -73,7 +73,7 @@ RSpec.describe 'Dashboard Todos', feature_category: :team_planning do
     end
   end
 
-  context 'User has a todo', :js do
+  context 'User has a todo' do
     let_it_be(:user_todo) { create(:todo, :mentioned, user: user, project: project, target: issue, author: author) }
 
     before do
@@ -287,7 +287,7 @@ RSpec.describe 'Dashboard Todos', feature_category: :team_planning do
     end
   end
 
-  context 'User has done todos', :js do
+  context 'User has done todos' do
     before do
       create(:todo, :mentioned, :done, user: user, project: project, target: issue, author: author)
       sign_in(user)
@@ -359,7 +359,7 @@ RSpec.describe 'Dashboard Todos', feature_category: :team_planning do
       expect(page).to have_selector('.gl-pagination .js-pagination-page', count: 2)
     end
 
-    describe 'mark all as done', :js do
+    describe 'mark all as done' do
       before do
         visit dashboard_todos_path
         find('.js-todos-mark-all').click
@@ -377,7 +377,7 @@ RSpec.describe 'Dashboard Todos', feature_category: :team_planning do
       end
     end
 
-    describe 'undo mark all as done', :js do
+    describe 'undo mark all as done' do
       before do
         visit dashboard_todos_path
       end

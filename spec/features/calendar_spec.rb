@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
   include MobileHelpers
 
-  let(:user) { create(:user, :no_super_sidebar) }
+  let(:user) { create(:user) }
   let(:contributed_project) { create(:project, :public, :repository) }
   let(:issue_note) { create(:note, project: contributed_project) }
 
@@ -83,7 +83,6 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
   shared_context 'when user page is visited' do
     before do
       visit user.username
-      page.click_link('Overview')
       wait_for_requests
     end
   end

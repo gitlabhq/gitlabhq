@@ -47,15 +47,15 @@ module Integrations
       end
     end
 
-    def title
+    def self.title
       'JetBrains TeamCity'
     end
 
-    def description
+    def self.description
       s_('ProjectService|Run CI/CD pipelines with JetBrains TeamCity.')
     end
 
-    def help
+    def self.help
       s_('To run CI/CD pipelines with JetBrains TeamCity, input the GitLab project details in the TeamCity project Version Control Settings.')
     end
 

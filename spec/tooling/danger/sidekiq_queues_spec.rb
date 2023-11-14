@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
+require 'fast_spec_helper'
 require 'rspec-parameterized'
-require 'gitlab-dangerfiles'
 require 'gitlab/dangerfiles/spec_helper'
 
 require_relative '../../../tooling/danger/sidekiq_queues'
@@ -17,12 +17,12 @@ RSpec.describe Tooling::Danger::SidekiqQueues do
     using RSpec::Parameterized::TableSyntax
 
     where(:modified_files, :changed_queue_files) do
-      %w(app/workers/all_queues.yml ee/app/workers/all_queues.yml foo) | %w(app/workers/all_queues.yml ee/app/workers/all_queues.yml)
-      %w(app/workers/all_queues.yml ee/app/workers/all_queues.yml) | %w(app/workers/all_queues.yml ee/app/workers/all_queues.yml)
-      %w(app/workers/all_queues.yml foo) | %w(app/workers/all_queues.yml)
-      %w(ee/app/workers/all_queues.yml foo) | %w(ee/app/workers/all_queues.yml)
-      %w(foo) | %w()
-      %w() | %w()
+      %w[app/workers/all_queues.yml ee/app/workers/all_queues.yml foo] | %w[app/workers/all_queues.yml ee/app/workers/all_queues.yml]
+      %w[app/workers/all_queues.yml ee/app/workers/all_queues.yml] | %w[app/workers/all_queues.yml ee/app/workers/all_queues.yml]
+      %w[app/workers/all_queues.yml foo] | %w[app/workers/all_queues.yml]
+      %w[ee/app/workers/all_queues.yml foo] | %w[ee/app/workers/all_queues.yml]
+      %w[foo] | %w[]
+      %w[] | %w[]
     end
 
     with_them do

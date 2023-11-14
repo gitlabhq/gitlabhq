@@ -5,6 +5,7 @@ import {
   GlIcon,
   GlLoadingIcon,
   GlTooltipDirective,
+  GlToggle,
 } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { s__ } from '~/locale';
@@ -15,7 +16,12 @@ import { isMetaKey } from '~/lib/utils/common_utils';
 import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 
-import { FORM_TYPES, WIDGET_ICONS, WORK_ITEM_STATUS_TEXT } from '../../constants';
+import {
+  FORM_TYPES,
+  WIDGET_ICONS,
+  WORK_ITEM_STATUS_TEXT,
+  I18N_WORK_ITEM_SHOW_LABELS,
+} from '../../constants';
 import { findHierarchyWidgetChildren } from '../../utils';
 import { removeHierarchyChild } from '../../graphql/cache_utils';
 import groupWorkItemByIidQuery from '../../graphql/group_work_item_by_iid.query.graphql';
@@ -36,6 +42,7 @@ export default {
     WorkItemDetailModal,
     AbuseCategorySelector,
     WorkItemChildrenWrapper,
+    GlToggle,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -64,9 +71,6 @@ export default {
       },
       update(data) {
         return data.workspace.workItems.nodes[0] ?? {};
-      },
-      context: {
-        isSingleRequest: true,
       },
       skip() {
         return !this.iid;
@@ -107,6 +111,7 @@ export default {
       reportedUserId: 0,
       reportedUrl: '',
       widgetName: 'tasks',
+      showLabels: true,
     };
   },
   computed: {
@@ -204,6 +209,7 @@ export default {
     addChildButtonLabel: s__('WorkItem|Add'),
     addChildOptionLabel: s__('WorkItem|Existing task'),
     createChildOptionLabel: s__('WorkItem|New task'),
+    showLabelsLabel: I18N_WORK_ITEM_SHOW_LABELS,
   },
   WIDGET_TYPE_TASK_ICON: WIDGET_ICONS.TASK,
   WORK_ITEM_STATUS_TEXT,
@@ -227,6 +233,14 @@ export default {
       </span>
     </template>
     <template #header-right>
+      <gl-toggle
+        class="gl-mr-4"
+        :value="showLabels"
+        :label="$options.i18n.showLabelsLabel"
+        label-position="left"
+        label-id="relationship-toggle-labels"
+        @change="showLabels = $event"
+      />
       <gl-disclosure-dropdown
         v-if="canUpdate && canAddTask"
         placement="right"
@@ -282,6 +296,7 @@ export default {
             :full-path="fullPath"
             :work-item-id="issuableGid"
             :work-item-iid="iid"
+            :show-labels="showLabels"
             @error="error = $event"
             @show-modal="openChild"
           />

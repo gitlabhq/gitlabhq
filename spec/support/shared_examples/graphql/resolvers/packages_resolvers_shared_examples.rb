@@ -52,6 +52,18 @@ RSpec.shared_examples 'group and projects packages resolver' do
       it { is_expected.to eq([conan_package]) }
     end
 
+    context 'filter by package_version' do
+      let(:args) { { package_version: '1.0.0', sort: 'CREATED_DESC' } }
+
+      it { is_expected.to eq([conan_package]) }
+
+      it 'includes_versionless has no effect' do
+        args[:include_versionless] = true
+
+        is_expected.to eq([conan_package])
+      end
+    end
+
     context 'filter by status' do
       let(:args) { { status: 'error', sort: 'CREATED_DESC' } }
 

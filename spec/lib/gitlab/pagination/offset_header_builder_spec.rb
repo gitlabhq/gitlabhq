@@ -15,11 +15,15 @@ RSpec.describe Gitlab::Pagination::OffsetHeaderBuilder do
 
   describe '#execute' do
     let(:basic_links) do
-      %{<http://localhost?page=1&per_page=5>; rel="prev", <http://localhost?page=3&per_page=5>; rel="next", <http://localhost?page=1&per_page=5>; rel="first"}
+      [
+        %(<http://localhost?page=1&per_page=5>; rel="prev"),
+        %(<http://localhost?page=3&per_page=5>; rel="next"),
+        %(<http://localhost?page=1&per_page=5>; rel="first")
+      ].join(', ')
     end
 
     let(:last_link) do
-      %{, <http://localhost?page=3&per_page=5>; rel="last"}
+      %(, <http://localhost?page=3&per_page=5>; rel="last")
     end
 
     def expect_basic_headers

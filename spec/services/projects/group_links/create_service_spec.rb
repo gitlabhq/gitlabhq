@@ -6,6 +6,7 @@ RSpec.describe Projects::GroupLinks::CreateService, '#execute', feature_category
   let_it_be(:user) { create :user }
   let_it_be(:group) { create :group }
   let_it_be(:project) { create(:project, namespace: create(:namespace, :with_namespace_settings)) }
+  let_it_be(:group_user) { create(:user).tap { |user| group.add_guest(user) } }
 
   let(:opts) do
     {
@@ -37,67 +38,75 @@ RSpec.describe Projects::GroupLinks::CreateService, '#execute', feature_category
     end
   end
 
-  context 'when user has proper membership to share a group' do
+  context 'when user has proper permissions to share a project with a group' do
     before do
       group.add_guest(user)
     end
 
-    it_behaves_like 'shareable'
-
-    it 'updates authorization', :sidekiq_inline do
-      expect { subject.execute }.to(
-        change { Ability.allowed?(user, :read_project, project) }
-          .from(false).to(true))
-    end
-
-    context 'with specialized project_authorization workers' do
-      let_it_be(:other_user) { create(:user) }
-
+    context 'when the user is a MAINTAINER in the project' do
       before do
-        group.add_developer(other_user)
+        project.add_maintainer(user)
       end
 
-      it 'schedules authorization update for users with access to group' do
-        stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
+      it_behaves_like 'shareable'
 
-        expect(AuthorizedProjectsWorker).not_to(
-          receive(:bulk_perform_async)
-        )
-        expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to(
-          receive(:perform_async)
-            .with(project.id)
-            .and_call_original
-        )
-        expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
-          receive(:bulk_perform_in).with(
-            1.hour,
-            array_including([user.id], [other_user.id]),
-            batch_delay: 30.seconds, batch_size: 100
-          ).and_call_original
-        )
-
-        subject.execute
-      end
-    end
-
-    context 'when sharing outside the hierarchy is disabled' do
-      let_it_be(:shared_group_parent) do
-        create(:group, namespace_settings: create(:namespace_settings, prevent_sharing_groups_outside_hierarchy: true))
+      it 'updates authorization', :sidekiq_inline do
+        expect { subject.execute }.to(
+          change { Ability.allowed?(group_user, :read_project, project) }
+            .from(false).to(true))
       end
 
-      let_it_be(:project, reload: true) { create(:project, group: shared_group_parent) }
+      context 'with specialized project_authorization workers' do
+        let_it_be(:other_user) { create(:user) }
 
-      it_behaves_like 'not shareable'
+        before do
+          group.add_developer(other_user)
+        end
 
-      context 'when group is inside hierarchy' do
-        let(:group) { create(:group, :private, parent: shared_group_parent) }
+        it 'schedules authorization update for users with access to group' do
+          stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
 
-        it_behaves_like 'shareable'
+          expect(AuthorizedProjectsWorker).not_to(
+            receive(:bulk_perform_async)
+          )
+          expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to(
+            receive(:perform_async)
+              .with(project.id)
+              .and_call_original
+          )
+          expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
+            receive(:bulk_perform_in).with(
+              1.hour,
+              array_including([user.id], [other_user.id]),
+              batch_delay: 30.seconds, batch_size: 100
+            ).and_call_original
+          )
+
+          subject.execute
+        end
+      end
+
+      context 'when sharing outside the hierarchy is disabled' do
+        let_it_be(:shared_group_parent) do
+          create(:group,
+            namespace_settings: create(:namespace_settings, prevent_sharing_groups_outside_hierarchy: true)
+          )
+        end
+
+        let_it_be(:project, reload: true) { create(:project, group: shared_group_parent) }
+
+        it_behaves_like 'not shareable'
+
+        context 'when group is inside hierarchy' do
+          let(:group) { create(:group, :private, parent: shared_group_parent) }
+
+          it_behaves_like 'shareable'
+        end
       end
     end
   end
 
-  context 'when user does not have permissions for the group' do
+  context 'when user does not have permissions to share the project with a group' do
     it_behaves_like 'not shareable'
   end
 

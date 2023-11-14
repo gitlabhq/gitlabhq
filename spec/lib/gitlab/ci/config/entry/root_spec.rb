@@ -31,7 +31,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
     context 'when top-level entries are defined' do
       let(:hash) do
         {
-          before_script: %w(ls pwd),
+          before_script: %w[ls pwd],
           image: 'image:1.0',
           default: {},
           services: ['postgres:9.1', 'mysql:5.5'],
@@ -41,7 +41,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
             VAR3: { value: 'val3', options: %w[val3 val4 val5], description: 'this is var 3 and some options' }
           },
           after_script: ['make clean'],
-          stages: %w(build pages release),
+          stages: %w[build pages release],
           cache: { key: 'k', untracked: true, paths: ['public/'] },
           rspec: { script: %w[rspec ls] },
           spinach: { before_script: [], variables: {}, script: 'spinach' },
@@ -123,7 +123,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
             expect(root.jobs_value[:rspec]).to eq(
               { name: :rspec,
                 script: %w[rspec ls],
-                before_script: %w(ls pwd),
+                before_script: %w[ls pwd],
                 image: { name: 'image:1.0' },
                 services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
                 stage: 'test',
@@ -162,7 +162,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
                 services: [{ name: "postgres:9.1" }, { name: "mysql:5.5" }],
                 cache: [{ key: "k", untracked: true, paths: ["public/"], policy: "pull-push", when: 'on_success',
                           unprotect: false, fallback_keys: [] }],
-                only: { refs: %w(branches tags) },
+                only: { refs: %w[branches tags] },
                 job_variables: { 'VAR' => { value: 'job' } },
                 root_variables_inheritance: true,
                 after_script: [],
@@ -176,14 +176,14 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
 
     context 'when a mix of top-level and default entries is used' do
       let(:hash) do
-        { before_script: %w(ls pwd),
+        { before_script: %w[ls pwd],
           after_script: ['make clean'],
           default: {
             image: 'image:1.0',
             services: ['postgres:9.1', 'mysql:5.5']
           },
           variables: { VAR: 'root' },
-          stages: %w(build pages),
+          stages: %w[build pages],
           cache: { key: 'k', untracked: true, paths: ['public/'] },
           rspec: { script: %w[rspec ls] },
           spinach: { before_script: [], variables: { VAR: 'job' }, script: 'spinach' } }
@@ -205,7 +205,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
             expect(root.jobs_value).to eq(
               rspec: { name: :rspec,
                        script: %w[rspec ls],
-                       before_script: %w(ls pwd),
+                       before_script: %w[ls pwd],
                        image: { name: 'image:1.0' },
                        services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
                        stage: 'test',

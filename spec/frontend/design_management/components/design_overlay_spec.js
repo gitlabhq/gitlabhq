@@ -86,7 +86,7 @@ describe('Design overlay component', () => {
     };
 
     wrapper
-      .find('[data-qa-selector="design_image_button"]')
+      .find('[data-testid="design-image-button"]')
       .trigger('mouseup', { offsetX: newCoordinates.x, offsetY: newCoordinates.y });
 
     expect(wrapper.emitted('openCommentForm')).toEqual([

@@ -3,7 +3,7 @@
 module Gitlab
   module Database
     class TablesLocker
-      GITLAB_SCHEMAS_TO_IGNORE = %i[gitlab_embedding gitlab_geo].freeze
+      GITLAB_SCHEMAS_TO_IGNORE = %i[gitlab_embedding gitlab_geo gitlab_jh].freeze
 
       def initialize(logger: nil, dry_run: false, include_partitions: true)
         @logger = logger

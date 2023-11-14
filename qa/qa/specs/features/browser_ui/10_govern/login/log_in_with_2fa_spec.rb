@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Govern', :requires_admin, product_group: :authentication_and_authorization do
+  RSpec.describe 'Govern', :requires_admin, product_group: :authentication do
     describe '2FA' do
       let(:admin_api_client) { Runtime::API::Client.as_admin }
       let(:owner_api_client) { Runtime::API::Client.new(:gitlab, user: owner_user) }

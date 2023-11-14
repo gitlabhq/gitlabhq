@@ -3,10 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe ::Ml::FindOrCreateModelService, feature_category: :mlops do
+  let_it_be(:user) { create(:user) }
   let_it_be(:existing_model) { create(:ml_models) }
   let_it_be(:another_project) { create(:project) }
+  let_it_be(:description) { 'description' }
+  let_it_be(:metadata) { [] }
 
-  subject(:create_model) { described_class.new(project, name).execute }
+  subject(:create_model) { described_class.new(project, name, user, description, metadata).execute }
 
   describe '#execute' do
     context 'when model name does not exist in the project' do

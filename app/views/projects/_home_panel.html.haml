@@ -3,15 +3,17 @@
 - emails_disabled = @project.emails_disabled?
 
 .project-home-panel.js-show-on-project-root.gl-mt-4.gl-mb-5{ class: [("empty-project" if empty_repo)] }
-  .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-sm-flex-direction-column.gl-mb-3.gl-gap-5
+  .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-flex-direction-column.gl-md-flex-direction-row.gl-mb-3.gl-gap-5
     .home-panel-title-row.gl-display-flex.gl-align-items-center
       %div{ class: 'avatar-container rect-avatar s64 home-panel-avatar gl-flex-shrink-0 gl-w-11 gl-h-11 gl-mr-3! float-none' }
         = project_icon(@project, alt: @project.name, class: 'avatar avatar-tile s64', width: 64, height: 64, itemprop: 'image')
       %div
         %h1.home-panel-title.gl-font-size-h1.gl-mt-3.gl-mb-2.gl-display-flex.gl-word-break-word{ data: { testid: 'project-name-content' }, itemprop: 'name' }
           = @project.name
-          = visibility_level_content(@project, css_class: 'visibility-icon gl-text-secondary gl-ml-2', icon_css_class: 'icon')
-          = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: @project, additional_classes: 'gl-align-self-center gl-ml-2'
+          = visibility_level_content(@project, css_class: 'visibility-icon gl-text-secondary gl-mx-2', icon_css_class: 'icon')
+          = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: @project, additional_classes: 'gl-align-self-center gl-mx-2'
+          - if @project.catalog_resource
+            = render partial: 'shared/ci_catalog_badge', locals: { href: project_ci_catalog_resource_path(@project, @project.catalog_resource), css_class: 'gl-mx-2' }
           - if @project.group
             = render_if_exists 'shared/tier_badge', source: @project, source_type: 'Project'
         .home-panel-metadata.gl-font-sm.gl-text-secondary.gl-font-base.gl-font-weight-normal.gl-line-height-normal{ data: { testid: 'project-id-content' }, itemprop: 'identifier' }

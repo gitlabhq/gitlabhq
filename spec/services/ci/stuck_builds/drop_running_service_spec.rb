@@ -51,7 +51,7 @@ RSpec.describe Ci::StuckBuilds::DropRunningService, feature_category: :runner_fl
     include_examples 'running builds'
   end
 
-  %w(success skipped failed canceled scheduled pending).each do |status|
+  %w[success skipped failed canceled scheduled pending].each do |status|
     context "when job is #{status}" do
       let(:status) { status }
       let(:updated_at) { 2.days.ago }

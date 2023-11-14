@@ -107,7 +107,10 @@ namespace :gitlab do
         end
       end
 
-      Rake::Task['db:seed_fu'].invoke if databases_loaded.present? && databases_loaded.all?
+      if databases_loaded.present? && databases_loaded.all?
+        Rake::Task["gitlab:db:lock_writes"].invoke
+        Rake::Task['db:seed_fu'].invoke
+      end
     end
 
     def configure_database(connection, database_name: nil)
@@ -454,7 +457,12 @@ namespace :gitlab do
 
         ActiveRecord::Base.establish_connection(config) # rubocop: disable Database/EstablishConnection
         Gitlab::Database.check_for_non_superuser
-        Rake::Task['db:migrate'].invoke
+
+        if Rake::Task.task_defined?("db:migrate:#{db_config.name}")
+          Rake::Task["db:migrate:#{db_config.name}"].invoke
+        else
+          Rake::Task["db:migrate"].invoke
+        end
       end
     end
 

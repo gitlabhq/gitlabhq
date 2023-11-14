@@ -308,7 +308,7 @@ export const packageMetadataQuery = (packageType) => {
         id: 'gid://gitlab/Packages::Package/111',
         packageType,
         metadata: {
-          ...(packageTypeMetadataQueryMapping[packageType]?.() ?? {}),
+          ...packageTypeMetadataQueryMapping[packageType]?.(),
         },
         __typename: 'PackageDetailsType',
       },

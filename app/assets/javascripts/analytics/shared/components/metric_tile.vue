@@ -44,6 +44,7 @@ export default {
       :animation-decimal-places="decimalPlaces"
       :class="{ 'gl-hover-cursor-pointer': hasLinks }"
       tabindex="0"
+      use-delimiters
       @click="clickHandler(metric)"
     />
     <metric-popover :metric="metric" :target="metric.identifier" />

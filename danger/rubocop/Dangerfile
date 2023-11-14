@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+# Danger should not comment when inline disables are added in the following files.
+no_suggestions_for_extensions = %w[.md]
+
 helper.all_changed_files.each do |filename|
+  next if filename.end_with?(*no_suggestions_for_extensions)
+
   rubocop.add_suggestions_for(filename)
 end

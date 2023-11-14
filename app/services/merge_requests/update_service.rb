@@ -168,6 +168,7 @@ module MergeRequests
         merge_request.target_branch
       )
 
+      delete_approvals_on_target_branch_change(merge_request)
       refresh_pipelines_on_merge_requests(merge_request, allow_duplicate: true)
 
       abort_auto_merge(merge_request, 'target branch was changed')
@@ -320,6 +321,10 @@ module MergeRequests
 
     def trigger_merge_request_status_updated(merge_request)
       GraphqlTriggers.merge_request_merge_status_updated(merge_request)
+    end
+
+    def delete_approvals_on_target_branch_change(_merge_request)
+      # Overridden in EE. No-op since we only want to delete approvals in EE.
     end
   end
 end

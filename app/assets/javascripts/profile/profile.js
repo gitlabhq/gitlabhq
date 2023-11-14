@@ -89,8 +89,12 @@ export default class Profile {
   }
 
   updateHeaderAvatar() {
-    $('.header-user-avatar').attr('src', this.avatarGlCrop.dataURL);
-    $('.js-sidebar-user-avatar').attr('src', this.avatarGlCrop.dataURL);
+    if (gon?.use_new_navigation) {
+      $('[data-testid="user-dropdown"] .gl-avatar').attr('src', this.avatarGlCrop.dataURL);
+    } else {
+      $('.header-user-avatar').attr('src', this.avatarGlCrop.dataURL);
+      $('.js-sidebar-user-avatar').attr('src', this.avatarGlCrop.dataURL);
+    }
   }
 
   setRepoRadio() {

@@ -1,0 +1,51 @@
+{
+  "type": "object",
+  "required": [
+    "registered_model"
+  ],
+  "properties": {
+    "model": {
+      "type": "object",
+      "required": [
+        "name",
+        "description",
+        "user_id"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "user_id": {
+          "type": "integer"
+        },
+        "creation_timestamp": {
+          "type": "string"
+        },
+        "last_updated_timestamp": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "value"
+            ],
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

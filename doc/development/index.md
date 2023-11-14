@@ -10,7 +10,7 @@ description: "Development Guidelines: learn how to contribute to GitLab."
 
 Learn how to contribute to the development of the GitLab product.
 
-This content is intended for GitLab team members as well as members of the wider community.
+This content is intended for both GitLab team members and members of the wider community.
 
 - [Contribute to GitLab development](contributing/index.md)
 - [Contribute to GitLab Runner development](https://docs.gitlab.com/runner/development/)

@@ -14,6 +14,7 @@ import {
 import allRunnersQuery from 'ee_else_ce/ci/runner/graphql/list/all_runners.query.graphql';
 import allRunnersCountQuery from 'ee_else_ce/ci/runner/graphql/list/all_runners_count.query.graphql';
 
+import RunnerListHeader from '../components/runner_list_header.vue';
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
 import RunnerList from '../components/runner_list.vue';
@@ -28,6 +29,7 @@ import RunnerJobStatusBadge from '../components/runner_job_status_badge.vue';
 import { pausedTokenConfig } from '../components/search_tokens/paused_token_config';
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
 import { tagTokenConfig } from '../components/search_tokens/tag_token_config';
+import { versionTokenConfig } from '../components/search_tokens/version_token_config';
 import {
   ADMIN_FILTERED_SEARCH_NAMESPACE,
   INSTANCE_TYPE,
@@ -42,6 +44,7 @@ export default {
   components: {
     GlButton,
     GlLink,
+    RunnerListHeader,
     RegistrationDropdown,
     RunnerFilteredSearchBar,
     RunnerList,
@@ -78,9 +81,6 @@ export default {
   apollo: {
     runners: {
       query: allRunnersQuery,
-      context: {
-        isSingleRequest: true,
-      },
       fetchPolicy: fetchPolicies.NETWORK_ONLY,
       variables() {
         return this.variables;
@@ -118,6 +118,7 @@ export default {
       return [
         pausedTokenConfig,
         statusTokenConfig,
+        versionTokenConfig,
         {
           ...tagTokenConfig,
           recentSuggestionsStorageKey: `${this.$options.filteredSearchNamespace}-recent-tags`,
@@ -178,11 +179,9 @@ export default {
 </script>
 <template>
   <div>
-    <header class="gl-my-5 gl-display-flex gl-justify-content-space-between">
-      <h2 class="gl-my-0 header-title">
-        {{ s__('Runners|Runners') }}
-      </h2>
-      <div class="gl-display-flex gl-gap-3">
+    <runner-list-header>
+      <template #title>{{ s__('Runners|Runners') }}</template>
+      <template #actions>
         <runner-dashboard-link />
         <gl-button :href="newRunnerPath" variant="confirm">
           {{ s__('Runners|New instance runner') }}
@@ -192,8 +191,9 @@ export default {
           :type="$options.INSTANCE_TYPE"
           placement="right"
         />
-      </div>
-    </header>
+      </template>
+    </runner-list-header>
+
     <div
       class="gl-display-flex gl-align-items-center gl-flex-direction-column-reverse gl-md-flex-direction-row gl-mt-3 gl-md-mt-0"
     >

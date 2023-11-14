@@ -25,6 +25,7 @@ Prerequisites:
 - Access to the corresponding Azure Active Directory Tenant with at least the `Application Developer` access level.
 - A local installation of the [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli).
   Alternatively, you can follow all the steps below with the [Azure Cloud Shell](https://portal.azure.com/#cloudshell/).
+- Your GitLab instance must be publicly accessible over the internet as Azure must to connect to the GitLab OIDC endpoint.
 - A GitLab project.
 
 To complete this tutorial:
@@ -167,3 +168,23 @@ CI/CD variables, from the Azure Portal:
    Azure AD federated identity credentials.
 
 Review [Connect to cloud services](../index.md) for further details.
+
+### `Request to External OIDC endpoint failed` message
+
+If you receive the error `ERROR: AADSTS501661: Request to External OIDC endpoint failed.`
+you should verify that your GitLab instance is publicly accessible from the internet.
+
+Azure must be able to access the following GitLab endpoints to authenticate with OIDC:
+
+- `GET /.well-known/openid-configuration`
+- `GET /oauth/discovery/keys`
+
+If you update your firewall and still receive this error, [clear the Redis cache](../../../administration/raketasks/maintenance.md#clear-redis-cache)
+and try again.
+
+### `No matching federated identity record found for presented assertion audience` message
+
+If you receive the error `ERROR: AADSTS700212: No matching federated identity record found for presented assertion audience 'https://gitlab.com'`
+you should verify that your CI/CD job uses the correct `aud` value.
+
+The `aud` value should match the audience used to [create the federated identity credentials](#create-azure-ad-federated-identity-credentials).

@@ -29,11 +29,11 @@ module Integrations
     validates :username, presence: true, if: :activated?
     validates :token, presence: true, if: :activated?
 
-    def title
+    def self.title
       'Packagist'
     end
 
-    def description
+    def self.description
       s_('Integrations|Keep your PHP dependencies updated on Packagist.')
     end
 

@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { formatMedianValues } from '../utils';
-import { PAGINATION_SORT_FIELD_END_EVENT, PAGINATION_SORT_DIRECTION_DESC } from '../constants';
+import { PAGINATION_SORT_DIRECTION_DESC, PAGINATION_SORT_FIELD_DURATION } from '../constants';
 import * as types from './mutation_types';
 
 export default {
@@ -41,7 +41,7 @@ export default {
     Vue.set(state, 'pagination', {
       page,
       hasNextPage,
-      sort: sort || PAGINATION_SORT_FIELD_END_EVENT,
+      sort: sort || PAGINATION_SORT_FIELD_DURATION,
       direction: direction || PAGINATION_SORT_DIRECTION_DESC,
     });
   },

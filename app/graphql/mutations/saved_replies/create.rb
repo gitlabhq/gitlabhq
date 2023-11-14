@@ -16,8 +16,6 @@ module Mutations
                description: copy_field_description(Types::SavedReplyType, :content)
 
       def resolve(name:, content:)
-        raise Gitlab::Graphql::Errors::ResourceNotAvailable, 'Feature disabled' unless feature_enabled?
-
         result = ::Users::SavedReplies::CreateService.new(current_user: current_user, name: name, content: content).execute
         present_result(result)
       end

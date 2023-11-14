@@ -100,9 +100,6 @@ export default {
           filters: this.filterParams,
         };
       },
-      context: {
-        isSingleRequest: true,
-      },
       skip() {
         return this.isEpicBoard;
       },
@@ -122,9 +119,6 @@ export default {
       },
       update(data) {
         return data[this.boardType].board.lists.nodes[0];
-      },
-      context: {
-        isSingleRequest: true,
       },
       error(error) {
         setError({
@@ -148,9 +142,6 @@ export default {
       },
       update(data) {
         return data[this.boardType].board.lists.nodes[0];
-      },
-      context: {
-        isSingleRequest: true,
       },
       error(error) {
         setError({
@@ -400,7 +391,7 @@ export default {
         this.updateIssueOrderInProgress = true;
         await this.moveBoardItem(
           {
-            epicId: itemId,
+            itemId,
             iid: itemIid,
             fromListId: from.dataset.listId,
             toListId: to.dataset.listId,
@@ -428,11 +419,11 @@ export default {
       return items.some((item) => item.iid === itemIid);
     },
     async moveBoardItem(variables, newIndex) {
-      const { fromListId, toListId, iid } = variables;
+      const { fromListId, toListId, iid, itemId } = variables;
       this.toListId = toListId;
       await this.$nextTick(); // we need this next tick to retrieve `toList` from Apollo cache
 
-      const itemToMove = this.boardListItems.find((item) => item.iid === iid);
+      const itemToMove = this.boardListItems.find((item) => item.id === itemId);
 
       if (this.shouldCloneCard && this.isItemInTheList(iid)) {
         return;
@@ -445,6 +436,7 @@ export default {
             ...moveItemVariables({
               ...variables,
               isIssue: !this.isEpicBoard,
+              epicId: itemId, // for Epic Boards
               boardId: this.boardId,
               itemToMove,
             }),
@@ -532,7 +524,8 @@ export default {
           variables: {
             ...moveItemVariables({
               iid: item.iid,
-              epicId: item.id,
+              itemId: item.id,
+              epicId: item.id, // for Epic Boards
               fromListId: this.currentList.id,
               toListId: this.currentList.id,
               isIssue: !this.isEpicBoard,

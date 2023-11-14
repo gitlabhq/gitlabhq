@@ -11,6 +11,8 @@ module Gitlab
         include GithubImport::Queue
         include StageMethods
 
+        resumes_work_when_interrupted!
+
         # client - An instance of Gitlab::GithubImport::Client.
         # project - An instance of Project.
         def import(client, project)
@@ -20,7 +22,7 @@ module Gitlab
             hash[waiter.key] = waiter.jobs_remaining
           end
 
-          AdvanceStageWorker.perform_async(project.id, waiters, :issue_events)
+          AdvanceStageWorker.perform_async(project.id, waiters.deep_stringify_keys, 'issue_events')
         end
 
         # The importers to run in this stage. Issues can't be imported earlier

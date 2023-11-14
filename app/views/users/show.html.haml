@@ -17,32 +17,16 @@
 .user-profile
   .cover-block.user-cover-block.gl-border-t.gl-border-b.gl-mt-n1
     %div{ class: container_class }
-      - if Feature.enabled?(:user_profile_overflow_menu_vue)
-        .cover-controls.gl-display-flex.gl-gap-3.gl-pb-4
-          = render 'users/follow_user'
-          -# The following edit button is mutually exclusive to the follow user button, they won't be shown together
-          - if @user == current_user
-            = render Pajamas::ButtonComponent.new(href: profile_path,
-              button_options: { class: 'gl-flex-grow-1', title: s_('UserProfile|Edit profile') }) do
-              = s_("UserProfile|Edit profile")
-          = render 'users/view_gpg_keys'
-          = render 'users/view_user_in_admin_area'
-          .js-user-profile-actions{ data: user_profile_actions_data(@user) }
-      - else
-        = render layout: 'users/cover_controls' do
-          - if @user == current_user
-            = render Pajamas::ButtonComponent.new(href: profile_path,
-              icon: 'pencil',
-              button_options: { class: 'gl-flex-grow-1 has-tooltip', title: s_('UserProfile|Edit profile'), 'aria-label': 'Edit profile', data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }})
-          - elsif current_user
-            #js-report-abuse{ data: { report_abuse_path: add_category_abuse_reports_path, reported_user_id: @user.id, reported_from_url: user_url(@user) } }
-          = render 'users/view_gpg_keys'
-          - if can?(current_user, :read_user_profile, @user)
-            = render Pajamas::ButtonComponent.new(href: user_path(@user, rss_url_options),
-              icon: 'rss',
-              button_options: { class: 'gl-flex-grow-1 has-tooltip', title: s_('UserProfile|Subscribe'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }})
-          = render 'users/view_user_in_admin_area'
-          = render 'users/follow_user'
+      .cover-controls.gl-display-flex.gl-gap-3.gl-pb-4
+        = render 'users/follow_user'
+        -# The following edit button is mutually exclusive to the follow user button, they won't be shown together
+        - if @user == current_user
+          = render Pajamas::ButtonComponent.new(href: profile_path,
+            button_options: { class: 'gl-flex-grow-1', title: s_('UserProfile|Edit profile') }) do
+            = s_("UserProfile|Edit profile")
+        = render 'users/view_gpg_keys'
+        = render 'users/view_user_in_admin_area'
+        .js-user-profile-actions{ data: user_profile_actions_data(@user) }
 
       .profile-header{ class: [('with-no-profile-tabs' if profile_tabs.empty?), ('gl-mb-4!' if show_super_sidebar?)] }
         .gl-display-inline-block.gl-mx-8.gl-vertical-align-top
@@ -111,6 +95,10 @@
                   = render 'middle_dot_divider', breakpoint: 'sm' do
                     = link_to discord_url(@user), class: 'gl-hover-text-decoration-none', title: "Discord", target: '_blank', rel: 'noopener noreferrer nofollow' do
                       = sprite_icon('discord', css_class: 'discord-icon')
+                - if Feature.enabled?(:mastodon_social_ui, @user) && @user.mastodon.present?
+                  = render 'middle_dot_divider', breakpoint: 'sm' do
+                    = link_to mastodon_url(@user), class: 'gl-hover-text-decoration-none', title: "Mastodon", target: '_blank', rel: 'noopener noreferrer nofollow' do
+                      = sprite_icon('mastodon', css_class: 'mastodon-icon')
                 - if @user.website_url.present?
                   = render 'middle_dot_divider', stacking: true do
                     - if Feature.enabled?(:security_auto_fix) && @user.bot?
@@ -126,6 +114,8 @@
                 %p.profile-user-bio.gl-mb-3
                   = @user.bio
 
+      -# TODO: Remove this with the removal of the old navigation.
+      -# See https://gitlab.com/groups/gitlab-org/-/epics/11875.
       - if !profile_tabs.empty? && !Feature.enabled?(:profile_tabs_vue, current_user)
         .scrolling-tabs-container{ class: [('gl-display-none' if show_super_sidebar?)] }
           %button.fade-left{ type: 'button', title: _('Scroll left'), 'aria-label': _('Scroll left') }
@@ -169,7 +159,7 @@
                     = gl_badge_tag @user.followers.count, size: :sm
               - if profile_tab?(:following)
                 %li.js-following-tab
-                  = link_to user_following_path, data: { target: 'div#following', action: 'following', toggle: 'tab', endpoint: user_following_path(format: :json), qa_selector: 'following_tab' } do
+                  = link_to user_following_path, data: { target: 'div#following', action: 'following', toggle: 'tab', endpoint: user_following_path(format: :json) } do
                     = s_('UserProfile|Following')
                     = gl_badge_tag @user.followees.count, size: :sm
     - if !profile_tabs.empty? && Feature.enabled?(:profile_tabs_vue, current_user)
@@ -183,13 +173,15 @@
 
         - if profile_tab?(:activity)
           #activity.tab-pane
-            .flash-container
-            - if can?(current_user, :read_cross_project)
-              %h4.prepend-top-20
-                = s_('UserProfile|Most Recent Activity')
-              .content_list{ data: { href: user_activity_path } }
-              .loading
-                = gl_loading_icon(size: 'md')
+            .row
+              .col-12
+                .flash-container
+                - if can?(current_user, :read_cross_project)
+                  %h4.prepend-top-20
+                    = s_('UserProfile|Most Recent Activity')
+                  .content_list.user-activity-content{ data: { href: user_activity_path } }
+                  .loading
+                    = gl_loading_icon(size: 'md')
         - unless @user.bot?
           - if profile_tab?(:groups)
             #groups.tab-pane

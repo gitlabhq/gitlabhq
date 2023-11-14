@@ -17,7 +17,7 @@ describe('GlobalSearch BlobsFilters', () => {
     currentScope: () => 'blobs',
   };
 
-  const createComponent = ({ initialState = {}, searchBlobsHideArchivedProjects = true } = {}) => {
+  const createComponent = ({ initialState = {} } = {}) => {
     const store = new Vuex.Store({
       state: {
         urlQuery: MOCK_QUERY,
@@ -30,11 +30,6 @@ describe('GlobalSearch BlobsFilters', () => {
 
     wrapper = shallowMount(BlobsFilters, {
       store,
-      provide: {
-        glFeatures: {
-          searchBlobsHideArchivedProjects,
-        },
-      },
     });
   };
 
@@ -42,29 +37,20 @@ describe('GlobalSearch BlobsFilters', () => {
   const findArchivedFilter = () => wrapper.findComponent(ArchivedFilter);
   const findDividers = () => wrapper.findAll('hr');
 
-  describe.each`
-    description                                          | searchBlobsHideArchivedProjects
-    ${'Renders correctly with Archived Filter enabled'}  | ${true}
-    ${'Renders correctly with Archived Filter disabled'} | ${false}
-  `('$description', ({ searchBlobsHideArchivedProjects }) => {
-    beforeEach(() => {
-      createComponent({
-        searchBlobsHideArchivedProjects,
-      });
-    });
+  beforeEach(() => {
+    createComponent({});
+  });
 
-    it('renders LanguageFilter', () => {
-      expect(findLanguageFilter().exists()).toBe(true);
-    });
+  it('renders LanguageFilter', () => {
+    expect(findLanguageFilter().exists()).toBe(true);
+  });
 
-    it(`renders correctly ArchivedFilter when searchBlobsHideArchivedProjects is ${searchBlobsHideArchivedProjects}`, () => {
-      expect(findArchivedFilter().exists()).toBe(searchBlobsHideArchivedProjects);
-    });
+  it('renders ArchivedFilter', () => {
+    expect(findArchivedFilter().exists()).toBe(true);
+  });
 
-    it('renders divider correctly', () => {
-      const dividersCount = searchBlobsHideArchivedProjects ? 1 : 0;
-      expect(findDividers()).toHaveLength(dividersCount);
-    });
+  it('renders divider correctly', () => {
+    expect(findDividers()).toHaveLength(1);
   });
 
   describe('Renders correctly in new nav', () => {
@@ -74,7 +60,6 @@ describe('GlobalSearch BlobsFilters', () => {
           searchType: SEARCH_TYPE_ADVANCED,
           useSidebarNavigation: true,
         },
-        searchBlobsHideArchivedProjects: true,
       });
     });
 

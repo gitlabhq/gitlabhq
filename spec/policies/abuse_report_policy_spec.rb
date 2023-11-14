@@ -12,6 +12,7 @@ RSpec.describe AbuseReportPolicy, feature_category: :insider_threat do
 
     it 'cannot read_abuse_report' do
       expect(policy).to be_disallowed(:read_abuse_report)
+      expect(policy).to be_disallowed(:create_note)
     end
   end
 
@@ -20,6 +21,7 @@ RSpec.describe AbuseReportPolicy, feature_category: :insider_threat do
 
     it 'can read_abuse_report' do
       expect(policy).to be_allowed(:read_abuse_report)
+      expect(policy).to be_allowed(:create_note)
     end
   end
 end

@@ -16,14 +16,16 @@ RSpec.describe 'Moving an issue', feature_category: :team_planning do
       iid: issue.iid.to_s
     }
 
-    graphql_mutation(:issue_move, variables,
-                     <<-QL.strip_heredoc
-                       clientMutationId
-                       errors
-                       issue {
-                         title
-                       }
-                     QL
+    graphql_mutation(
+      :issue_move,
+      variables,
+      <<-QL.strip_heredoc
+        clientMutationId
+        errors
+        issue {
+          title
+        }
+      QL
     )
   end
 

@@ -126,9 +126,7 @@ RSpec.describe API::Ci::ResourceGroups, feature_category: :continuous_delivery d
     context 'when resource group key contains a slash' do
       let_it_be(:resource_group) { create(:ci_resource_group, project: project, key: 'test/test') }
       let_it_be(:upcoming_processable) do
-        create(:ci_processable,
-               :waiting_for_resource,
-               resource_group: resource_group)
+        create(:ci_processable, :waiting_for_resource, resource_group: resource_group)
       end
 
       let(:key) { 'test%2Ftest' }

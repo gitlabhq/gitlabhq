@@ -437,7 +437,7 @@ module SystemNotes
 
     def discussion_lock
       action = noteable.discussion_locked? ? 'locked' : 'unlocked'
-      body = "#{action} this #{noteable.class.to_s.titleize.downcase}"
+      body = "#{action} the discussion in this #{noteable.class.to_s.titleize.downcase}"
 
       if action == 'locked'
         track_issue_event(:track_issue_locked_action)

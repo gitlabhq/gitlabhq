@@ -61,7 +61,7 @@ RSpec.describe 'projects/commit/branches.html.haml' do
     before do
       assign(:branches, ['master'])
       assign(:branches_limit_exceeded, true)
-      assign(:tags, %w(tag1 tag2))
+      assign(:tags, %w[tag1 tag2])
       assign(:tags_limit_exceeded, false)
 
       render

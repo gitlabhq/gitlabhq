@@ -2,7 +2,8 @@
 
 module QA
   RSpec.describe 'Verify', :runner, product_group: :pipeline_security do
-    describe "Unlocking job artifacts across pipelines" do
+    describe "Unlocking job artifacts across pipelines", feature_flag: { name: 'ci_unlock_non_successful_pipelines,
+                                                                         scope: :project' } do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let(:project) { create(:project, name: 'unlock-job-artifacts-project') }
 
@@ -15,11 +16,13 @@ module QA
       end
 
       before do
+        Runtime::Feature.enable(:ci_unlock_non_successful_pipelines, project: project)
         Flow::Login.sign_in
         project.visit!
       end
 
       after do
+        Runtime::Feature.disable(:ci_unlock_non_successful_pipelines, project: project)
         runner.remove_via_api!
       end
 
@@ -59,11 +62,7 @@ module QA
         end
 
         it 'keeps job artifacts from latest failed pipelines and from latest successful pipeline',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/394808',
-          quarantine: {
-            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/266958',
-            type: :bug
-          } do
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/394808' do
           update_ci_file(job_name: 'failed_job_1', script: 'exit 1')
           Flow::Pipeline.wait_for_latest_pipeline(status: 'Failed')
 
@@ -94,11 +93,7 @@ module QA
         end
 
         it 'keeps job artifacts from the latest blocked pipeline and from latest successful pipeline',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/395511',
-          quarantine: {
-            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/387087',
-            type: :bug
-          } do
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/395511' do
           update_ci_with_manual_job(job_name: 'successful_job_with_manual_1', script: 'echo test')
           Flow::Pipeline.wait_for_latest_pipeline(status: 'Blocked')
 

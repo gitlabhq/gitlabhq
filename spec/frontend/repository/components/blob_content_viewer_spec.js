@@ -18,6 +18,7 @@ import { loadViewer } from '~/repository/components/blob_viewers';
 import DownloadViewer from '~/repository/components/blob_viewers/download_viewer.vue';
 import EmptyViewer from '~/repository/components/blob_viewers/empty_viewer.vue';
 import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer.vue';
+import SourceViewerNew from '~/vue_shared/components/source_viewer/source_viewer_new.vue';
 import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
 import projectInfoQuery from '~/repository/queries/project_info.query.graphql';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
@@ -137,6 +138,7 @@ const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute 
         ...inject,
         glFeatures: {
           highlightJsWorker: false,
+          blobBlameInfo: true,
         },
       },
     }),
@@ -157,6 +159,7 @@ describe('Blob content viewer component', () => {
   const findForkSuggestion = () => wrapper.findComponent(ForkSuggestion);
   const findCodeIntelligence = () => wrapper.findComponent(CodeIntelligence);
   const findSourceViewer = () => wrapper.findComponent(SourceViewer);
+  const findSourceViewerNew = () => wrapper.findComponent(SourceViewerNew);
 
   beforeEach(() => {
     jest.spyOn(window, 'requestIdleCallback').mockImplementation(execImmediately);
@@ -179,12 +182,41 @@ describe('Blob content viewer component', () => {
 
       expect(findBlobHeader().props('activeViewerType')).toEqual(SIMPLE_BLOB_VIEWER);
       expect(findBlobHeader().props('hasRenderError')).toEqual(false);
-      expect(findBlobHeader().props('hideViewerSwitcher')).toEqual(true);
+      expect(findBlobHeader().props('hideViewerSwitcher')).toEqual(false);
       expect(findBlobHeader().props('blob')).toEqual(simpleViewerMock);
       expect(findBlobHeader().props('showForkSuggestion')).toEqual(false);
+      expect(findBlobHeader().props('showBlameToggle')).toEqual(false);
       expect(findBlobHeader().props('projectPath')).toEqual(propsMock.projectPath);
       expect(findBlobHeader().props('projectId')).toEqual(projectMock.id);
       expect(mockRouterPush).not.toHaveBeenCalled();
+    });
+
+    describe('blame toggle', () => {
+      const triggerBlame = async () => {
+        findBlobHeader().vm.$emit('blame');
+        await nextTick();
+      };
+
+      it('renders a blame toggle for JSON files', async () => {
+        await createComponent({ blob: { ...simpleViewerMock, language: 'json' } });
+
+        expect(findBlobHeader().props('showBlameToggle')).toEqual(true);
+      });
+
+      it('adds blame param to the URL and passes `showBlame` to the SourceViewer', async () => {
+        loadViewer.mockReturnValueOnce(SourceViewerNew);
+        await createComponent({ blob: { ...simpleViewerMock, language: 'json' } });
+
+        await triggerBlame();
+
+        expect(mockRouterPush).toHaveBeenCalledWith({ query: { blame: '1' } });
+        expect(findSourceViewerNew().props('showBlame')).toBe(true);
+
+        await triggerBlame();
+
+        expect(mockRouterPush).toHaveBeenCalledWith({ query: { blame: '0' } });
+        expect(findSourceViewerNew().props('showBlame')).toBe(false);
+      });
     });
 
     it('creates an alert when the BlobHeader component emits an error', async () => {

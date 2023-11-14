@@ -2,8 +2,8 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import OrganizationFormWrapper from '~/crm/organizations/components/organization_form_wrapper.vue';
 import CrmForm from '~/crm/components/crm_form.vue';
 import getGroupOrganizationsQuery from '~/crm/organizations/components/graphql/get_group_organizations.query.graphql';
-import createOrganizationMutation from '~/crm/organizations/components/graphql/create_customer_relations_organization.mutation.graphql';
-import updateOrganizationMutation from '~/crm/organizations/components/graphql/update_organization.mutation.graphql';
+import createCustomerRelationsOrganizationMutation from '~/crm/organizations/components/graphql/create_customer_relations_organization.mutation.graphql';
+import updateCustomerRelationsOrganizationMutation from '~/crm/organizations/components/graphql/update_customer_relations_organization.mutation.graphql';
 
 describe('Customer relations organization form wrapper', () => {
   let wrapper;
@@ -48,7 +48,7 @@ describe('Customer relations organization form wrapper', () => {
       expect(organizationForm.props('fields')).toHaveLength(4);
       expect(organizationForm.props('title')).toBe('Edit organization');
       expect(organizationForm.props('successMessage')).toBe('Organization has been updated.');
-      expect(organizationForm.props('mutation')).toBe(updateOrganizationMutation);
+      expect(organizationForm.props('mutation')).toBe(updateCustomerRelationsOrganizationMutation);
       expect(organizationForm.props('getQuery')).toMatchObject({
         query: getGroupOrganizationsQuery,
         variables: { groupFullPath: 'flightjs' },
@@ -69,7 +69,7 @@ describe('Customer relations organization form wrapper', () => {
       expect(organizationForm.props('fields')).toHaveLength(3);
       expect(organizationForm.props('title')).toBe('New organization');
       expect(organizationForm.props('successMessage')).toBe('Organization has been added.');
-      expect(organizationForm.props('mutation')).toBe(createOrganizationMutation);
+      expect(organizationForm.props('mutation')).toBe(createCustomerRelationsOrganizationMutation);
       expect(organizationForm.props('getQuery')).toMatchObject({
         query: getGroupOrganizationsQuery,
         variables: { groupFullPath: 'flightjs' },

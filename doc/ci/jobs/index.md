@@ -297,7 +297,8 @@ For example, if you start rolling out new code and:
 
 ## Expand and collapse job log sections
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/14664) in GitLab 12.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/14664) in GitLab 12.0.
+> - Support for output of multi-line command bash shell output [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3486) in GitLab 16.5 behind the [GitLab Runner feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html), `FF_SCRIPT_SECTIONS`.
 
 Job logs are divided into sections that can be collapsed or expanded. Each section displays
 the duration.
@@ -397,3 +398,67 @@ The behavior of deployment jobs can be controlled with
 [deployment safety](../environments/deployment_safety.md) settings like
 [preventing outdated deployment jobs](../environments/deployment_safety.md#prevent-outdated-deployment-jobs)
 and [ensuring only one deployment job runs at a time](../environments/deployment_safety.md#ensure-only-one-deployment-job-runs-at-a-time).
+
+## Troubleshooting
+
+### Job log slow to update
+
+When you visit the job log page for a running job, there could be a delay of up to
+60 seconds before a log update. The default refresh time is 60 seconds, but after
+the log is viewed in the UI one time, log updates should occur every 3 seconds.
+
+### `get_sources` job section fails because of an HTTP/2 problem
+
+Sometimes, jobs fail with the following cURL error:
+
+```plaintext
+++ git -c 'http.userAgent=gitlab-runner <version>' fetch origin +refs/pipelines/<id>:refs/pipelines/<id> ...
+error: RPC failed; curl 16 HTTP/2 send again with decreased length
+fatal: ...
+```
+
+You can work around this problem by configuring Git and `libcurl` to
+[use HTTP/1.1](https://git-scm.com/docs/git-config#Documentation/git-config.txt-httpversion).
+The configuration can be added to:
+
+- A job's [`pre_get_sources_script`](../yaml/index.md#hookspre_get_sources_script):
+
+  ```yaml
+  job_name:
+    hooks:
+      pre_get_sources_script:
+        - git config --global http.version "HTTP/1.1"
+  ```
+
+- The [runner's `config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
+  with [Git configuration environment variables](https://git-scm.com/docs/git-config#ENVIRONMENT):
+
+  ```toml
+  [[runners]]
+  ...
+  environment = [
+    "GIT_CONFIG_COUNT=1",
+    "GIT_CONFIG_KEY_0=http.version",
+    "GIT_CONFIG_VALUE_0=HTTP/1.1"
+  ]
+  ```
+
+### Job using `resource_group` gets stuck **(FREE SELF)**
+
+If a job using [`resource_group`](../yaml/index.md#resource_group) gets stuck, a
+GitLab administrator can try run the following commands from the [rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+# find resource group by name
+resource_group = Project.find_by_full_path('...').resource_groups.find_by(key: 'the-group-name')
+busy_resources = resource_group.resources.where('build_id IS NOT NULL')
+
+# identify which builds are occupying the resource
+# (I think it should be 1 as of today)
+busy_resources.pluck(:build_id)
+
+# it's good to check why this build is holding the resource.
+# Is it stuck? Has it been forcefully dropped by the system?
+# free up busy resources
+busy_resources.update_all(build_id: nil)
+```

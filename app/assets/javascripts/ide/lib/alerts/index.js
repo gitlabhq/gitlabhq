@@ -1,3 +1,4 @@
+import { isDefaultCiConfig } from '~/lib/utils/common_utils';
 import { leftSidebarViews } from '../../constants';
 import EnvironmentsMessage from './environments.vue';
 
@@ -6,7 +7,7 @@ const alerts = [
     key: Symbol('ALERT_ENVIRONMENT'),
     show: (state, file) =>
       state.currentActivityView === leftSidebarViews.commit.name &&
-      file.path === '.gitlab-ci.yml' &&
+      isDefaultCiConfig(file.path) &&
       state.environmentsGuidanceAlertDetected &&
       !state.environmentsGuidanceAlertDismissed,
     props: { variant: 'tip' },

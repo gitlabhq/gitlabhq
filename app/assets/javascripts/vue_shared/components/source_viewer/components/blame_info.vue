@@ -2,7 +2,6 @@
 import { GlTooltipDirective } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import CommitInfo from '~/repository/components/commit_info.vue';
-import { calculateBlameOffset, toggleBlameClasses } from '../utils';
 
 export default {
   name: 'BlameInfo',
@@ -14,24 +13,10 @@ export default {
     SafeHtml,
   },
   props: {
-    blameData: {
+    blameInfo: {
       type: Array,
       required: true,
     },
-  },
-  computed: {
-    blameInfo() {
-      return this.blameData.map((blame, index) => ({
-        ...blame,
-        blameOffset: calculateBlameOffset(blame.lineno, index),
-      }));
-    },
-  },
-  mounted() {
-    toggleBlameClasses(this.blameData, true);
-  },
-  destroyed() {
-    toggleBlameClasses(this.blameData, false);
   },
 };
 </script>
@@ -41,10 +26,11 @@ export default {
       <commit-info
         v-for="(blame, index) in blameInfo"
         :key="index"
-        :class="{ 'gl-border-t': index !== 0 }"
+        :class="{ 'gl-border-t': blame.blameOffset !== '0px' }"
         class="gl-display-flex gl-absolute gl-px-3"
         :style="{ top: blame.blameOffset }"
         :commit="blame.commit"
+        :prev-blame-link="blame.commitData && blame.commitData.projectBlameLink"
       />
     </div>
   </div>

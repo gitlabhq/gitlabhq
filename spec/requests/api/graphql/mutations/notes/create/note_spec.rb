@@ -5,13 +5,15 @@ require 'spec_helper'
 RSpec.describe 'Adding a Note', feature_category: :team_planning do
   include GraphqlHelpers
 
-  let_it_be(:current_user) { create(:user) }
-
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group).tap { |g| g.add_developer(developer) } }
+  let_it_be_with_reload(:project) { create(:project, :repository, group: group) }
+  let_it_be(:developer) { create(:user).tap { |u| group.add_developer(u) } }
   let(:noteable) { create(:merge_request, source_project: project, target_project: project) }
-  let(:project) { create(:project, :repository) }
   let(:discussion) { nil }
   let(:head_sha) { nil }
   let(:body) { 'Body text' }
+  let(:current_user) { user }
   let(:mutation) do
     variables = {
       noteable_id: GitlabSchema.id_from_object(noteable).to_s,
@@ -30,9 +32,7 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
   it_behaves_like 'a Note mutation when the user does not have permission'
 
   context 'when the user has permission' do
-    before do
-      project.add_developer(current_user)
-    end
+    let(:current_user) { developer }
 
     it_behaves_like 'a working GraphQL mutation'
 
@@ -78,17 +78,15 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
     end
 
     context 'for an issue' do
-      let(:noteable) { create(:issue, project: project) }
+      let_it_be_with_reload(:issue) { create(:issue, project: project) }
+      let(:noteable) { issue }
       let(:mutation) { graphql_mutation(:create_note, variables) }
+      let(:variables_extra) { {} }
       let(:variables) do
         {
           noteable_id: GitlabSchema.id_from_object(noteable).to_s,
           body: body
         }.merge(variables_extra)
-      end
-
-      before do
-        project.add_developer(current_user)
       end
 
       context 'when using internal param' do
@@ -104,8 +102,8 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
       end
 
       context 'as work item' do
-        let_it_be(:project) { create(:project) }
-        let_it_be(:noteable) { create(:work_item, project: project) }
+        let_it_be_with_reload(:work_item) { create(:work_item, :task, project: project) }
+        let(:noteable) { work_item }
 
         context 'when using internal param' do
           let(:variables_extra) { { internal: true } }
@@ -120,10 +118,8 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
         end
 
         context 'without notes widget' do
-          let(:variables_extra) { {} }
-
           before do
-            WorkItems::Type.default_by_type(:issue).widget_definitions.find_by_widget_type(:notes)
+            WorkItems::Type.default_by_type(:task).widget_definitions.find_by_widget_type(:notes)
               .update!(disabled: true)
           end
 
@@ -133,10 +129,6 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
         end
 
         context 'when body contains quick actions' do
-          let_it_be(:noteable) { create(:work_item, :task, project: project) }
-
-          let(:variables_extra) { {} }
-
           it_behaves_like 'work item supports labels widget updates via quick actions'
           it_behaves_like 'work item does not support labels widget updates via quick actions'
           it_behaves_like 'work item supports assignee widget updates via quick actions'
@@ -145,16 +137,19 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
           it_behaves_like 'work item does not support start and due date widget updates via quick actions'
           it_behaves_like 'work item supports type change via quick actions'
         end
+
+        context 'when work item is directly associated with a group' do
+          let_it_be_with_reload(:group_work_item) { create(:work_item, :group_level, :task, namespace: group) }
+          let(:noteable) { group_work_item }
+
+          it_behaves_like 'a Note mutation that creates a Note'
+        end
       end
     end
 
     context 'when body only contains quick actions' do
       let(:head_sha) { noteable.diff_head_sha }
       let(:body) { '/merge' }
-
-      before do
-        project.add_developer(current_user)
-      end
 
       # NOTE: Known issue https://gitlab.com/gitlab-org/gitlab/-/issues/346557
       it 'returns a nil note and info about the command in errors' do

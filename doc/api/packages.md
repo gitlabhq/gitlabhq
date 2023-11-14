@@ -8,11 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349418) support for [GitLab CI/CD job token](../ci/jobs/ci_job_token.md) authentication for the project-level API in GitLab 15.3.
 
-This is the API documentation of [GitLab Packages](../administration/packages/index.md).
+The API documentation of [GitLab Packages](../administration/packages/index.md).
 
 ## List packages
 
-### Within a project
+### For a project
 
 Get a list of project packages. All package types are included in results. When
 accessed without authentication, only packages of public projects are returned.
@@ -23,15 +23,16 @@ packages.
 GET /projects/:id/packages
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
-| `order_by`| string | no | The field to use as order. One of `created_at` (default), `name`, `version`, or `type`. |
-| `sort`    | string | no | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
-| `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, `helm`, `terraform_module`, or `golang`. (_Introduced in GitLab 12.9_)
-| `package_name` | string | no | Filter the project packages with a fuzzy search by name. (_Introduced in GitLab 12.9_)
-| `include_versionless` | boolean | no | When set to true, versionless packages are included in the response. (_Introduced in GitLab 13.8_)
-| `status` | string | no | Filter the returned packages by status. One of `default` (default), `hidden`, `processing`, `error`, or `pending_destruction`. (_Introduced in GitLab 13.9_)
+| Attribute             | Type           | Required | Description |
+|:----------------------|:---------------|:---------|:------------|
+| `id`                  | integer/string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `order_by`            | string         | no       | The field to use as order. One of `created_at` (default), `name`, `version`, or `type`. |
+| `sort`                | string         | no       | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
+| `package_type`        | string         | no       | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, `helm`, `terraform_module`, or `golang`. |
+| `package_name`        | string         | no       | Filter the project packages with a fuzzy search by name. |
+| `package_version`     | string         | no       | Filter the project packages by version. If used in combination with `include_versionless`, then no versionless packages are returned. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349065) in GitLab 16.6. |
+| `include_versionless` | boolean        | no       | When set to true, versionless packages are included in the response. |
+| `status`              | string         | no       | Filter the returned packages by status. One of `default` (default), `hidden`, `processing`, `error`, or `pending_destruction`. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages"
@@ -76,9 +77,7 @@ By default, the `GET` request returns 20 results, because the API is [paginated]
 Although you can filter packages by status, working with packages that have a `processing` status
 can result in malformed data or broken packages.
 
-### Within a group
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18871) in GitLab 12.5.
+### For a group
 
 Get a list of project packages at the group level.
 When accessed without authentication, only packages of public projects are returned.
@@ -89,25 +88,21 @@ packages.
 GET /groups/:id/packages
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
-| `exclude_subgroups` | boolean | false | If the parameter is included as true, packages from projects from subgroups are not listed. Default is `false`. |
-| `order_by`| string | no | The field to use as order. One of `created_at` (default), `name`, `version`, `type`, or `project_path`. |
-| `sort`    | string | no | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
-| `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, `helm`, or `golang`. (_Introduced in GitLab 12.9_) |
-| `package_name` | string | no | Filter the project packages with a fuzzy search by name. (_[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30980) in GitLab 13.0_)
-| `include_versionless` | boolean | no | When set to true, versionless packages are included in the response. (_Introduced in GitLab 13.8_)
-| `status` | string | no | Filter the returned packages by status. One of `default` (default), `hidden`, `processing`, `error`, or `pending_destruction`. (_Introduced in GitLab 13.9_)
+| Attribute             | Type           | Required | Description |
+|:----------------------|:---------------|:---------|:------------|
+| `id`                  | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `exclude_subgroups`   | boolean        | false    | If the parameter is included as true, packages from projects from subgroups are not listed. Default is `false`. |
+| `order_by`            | string         | no       | The field to use as order. One of `created_at` (default), `name`, `version`, `type`, or `project_path`. |
+| `sort`                | string         | no       | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
+| `package_type`        | string         | no       | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, `helm`, or `golang`. |
+| `package_name`        | string         | no       | Filter the project packages with a fuzzy search by name. |
+| `package_version`     | string         | no       | Filter the returned packages by version. If used in combination with `include_versionless`, then no versionless packages are returned. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349065) in GitLab 16.6. |
+| `include_versionless` | boolean        | no       | When set to true, versionless packages are included in the response. |
+| `status`              | string         | no       | Filter the returned packages by status. One of `default` (default), `hidden`, `processing`, `error`, or `pending_destruction`. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/packages?exclude_subgroups=false"
 ```
-
-> **Deprecation:**
->
-> The `pipeline` attribute in the response is deprecated in favor of `pipelines`, which was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44348) in GitLab 13.6. Both are available until 13.7.
-> The `build_info` attribute in the response is deprecated in favor of `pipeline`, which was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28040) in GitLab 12.10.
 
 Example response:
 
@@ -195,11 +190,6 @@ GET /projects/:id/packages/:package_id
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id"
 ```
 
-> **Deprecation:**
->
-> The `pipeline` attribute in the response is deprecated in favor of `pipelines`, which was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44348) in GitLab 13.6. Both are available until 13.7.
-> The `build_info` attribute in the response is deprecated in favor of `pipeline`, which was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28040) in GitLab 12.10.
-
 Example response:
 
 ```json
@@ -213,7 +203,7 @@ Example response:
     "delete_api_path": "/namespace1/project1/-/packages/1"
   },
   "created_at": "2019-11-27T03:37:38.711Z",
-  "last_downloaded_at": "2022-09-07T07:51:50.504Z"
+  "last_downloaded_at": "2022-09-07T07:51:50.504Z",
   "pipelines": [
     {
       "id": 123,
@@ -424,8 +414,6 @@ If [request forwarding](../user/packages/package_registry/supported_functionalit
 deleting a package can introduce a [dependency confusion risk](../user/packages/package_registry/supported_functionality.md#deleting-packages).
 
 ## Delete a package file
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32107) in GitLab 13.12.
 
 WARNING:
 Deleting a package file may corrupt your package making it unusable or unpullable from your package

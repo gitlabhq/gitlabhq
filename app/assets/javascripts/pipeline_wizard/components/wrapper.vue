@@ -14,8 +14,7 @@ import CommitStep from './commit.vue';
 export const i18n = {
   stepNofN: __('Step %{currentStep} of %{stepCount}'),
   draft: __('Draft: %{filename}'),
-  overlayMessage: __(`Start inputting changes and we will generate a
-    YAML-file for you to add to your repository`),
+  overlayMessage: __(`Enter values to populate the .gitlab-ci.yml configuration file.`),
 };
 
 const trackingMixin = Tracking.mixin();

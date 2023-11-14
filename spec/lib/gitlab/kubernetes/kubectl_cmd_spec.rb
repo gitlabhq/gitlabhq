@@ -7,7 +7,7 @@ require_relative '../../../../lib/gitlab/kubernetes/pod_cmd'
 RSpec.describe Gitlab::Kubernetes::KubectlCmd do
   describe '.delete' do
     it 'constructs string properly' do
-      args = %w(resource_type type --flag-1 --flag-2)
+      args = %w[resource_type type --flag-1 --flag-2]
 
       expected_command = 'kubectl delete resource_type type --flag-1 --flag-2'
 
@@ -31,7 +31,7 @@ RSpec.describe Gitlab::Kubernetes::KubectlCmd do
 
     context 'with optional args' do
       it 'constructs command properly with many args' do
-        args = %w(arg-1 --flag-0-1 arg-2 --flag-0-2)
+        args = %w[arg-1 --flag-0-1 arg-2 --flag-0-2]
 
         expected_command = 'kubectl apply -f filename arg-1 --flag-0-1 arg-2 --flag-0-2'
 

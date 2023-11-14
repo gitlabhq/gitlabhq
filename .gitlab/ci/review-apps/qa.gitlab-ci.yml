@@ -1,18 +1,6 @@
 include:
   - local: .gitlab/ci/qa-common/main.gitlab-ci.yml
   - template: Verify/Browser-Performance.gitlab-ci.yml
-  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@7.3.0"
-    inputs:
-      job_name: "e2e-test-report"
-      job_stage: "post-qa"
-      aws_access_key_id_variable_name: "QA_ALLURE_AWS_ACCESS_KEY_ID"
-      aws_secret_access_key_variable_name: "QA_ALLURE_AWS_SECRET_ACCESS_KEY"
-      gitlab_auth_token_variable_name: "PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE"
-      allure_results_glob: "qa/tmp/allure-results"
-      allure_ref_slug: "${CI_COMMIT_REF_SLUG}"
-      allure_project_path: "${CI_PROJECT_PATH}"
-      allure_merge_request_iid: "${CI_MERGE_REQUEST_IID}"
-      allure_job_name: "${QA_RUN_TYPE}"
 
 .test-variables:
   variables:
@@ -121,12 +109,15 @@ browser_performance:
 
 e2e-test-report:
   extends: .rules:prepare-report
+  stage: report
+  variables:
+    ALLURE_RESULTS_GLOB: "qa/tmp/allure-results"
 
 upload-knapsack-report:
   extends:
     - .generate-knapsack-report-base
     - .bundle-base
-  stage: post-qa
+  stage: report
   variables:
     QA_KNAPSACK_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/knapsack/*/*.json
 
@@ -134,7 +125,7 @@ delete-test-resources:
   extends:
     - .bundle-base
     - .rules:prepare-report
-  stage: post-qa
+  stage: report
   variables:
     GITLAB_QA_ACCESS_TOKEN: $REVIEW_APPS_ROOT_TOKEN
   script:
@@ -146,7 +137,7 @@ notify-slack:
   extends:
     - .notify-slack
     - .rules:main-run
-  stage: post-qa
+  stage: report
   variables:
     QA_RSPEC_XML_FILE_PATTERN: ${CI_PROJECT_DIR}/qa/tmp/rspec-*.xml
     RUN_WITH_BUNDLE: "true"
@@ -157,7 +148,7 @@ export-test-metrics:
     - .export-test-metrics
     - .bundle-base
     - .rules:main-run
-  stage: post-qa
+  stage: report
   variables:
     QA_METRICS_REPORT_FILE_PATTERN: tmp/test-metrics-*.json
   when: always

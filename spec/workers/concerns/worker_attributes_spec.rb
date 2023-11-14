@@ -37,7 +37,7 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
       :worker_has_external_dependencies? | :worker_has_external_dependencies! | false            | []                                 | true
       :idempotent?                       | :idempotent!                       | false            | []                                 | true
       :big_payload?                      | :big_payload!                      | false            | []                                 | true
-      :database_health_check_attrs       | :defer_on_database_health_signal   | nil              | [:gitlab_main, [:users], 1.minute] | { gitlab_schema: :gitlab_main, tables: [:users], delay_by: 1.minute }
+      :database_health_check_attrs       | :defer_on_database_health_signal   | nil              | [:gitlab_main, [:users], 1.minute] | { gitlab_schema: :gitlab_main, tables: [:users], delay_by: 1.minute, block: nil }
     end
     # rubocop: enable Layout/LineLength
 

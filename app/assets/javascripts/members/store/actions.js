@@ -6,7 +6,10 @@ export const updateMemberRole = async ({ state, commit }, { memberId, accessLeve
   try {
     await axios.put(
       state.memberPath.replace(/:id$/, memberId),
-      state.requestFormatter({ accessLevel: accessLevel.integerValue }),
+      state.requestFormatter({
+        accessLevel: accessLevel.integerValue,
+        memberRoleId: accessLevel.memberRoleId,
+      }),
     );
 
     commit(types.RECEIVE_MEMBER_ROLE_SUCCESS, { memberId, accessLevel });

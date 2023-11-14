@@ -5,6 +5,8 @@ export const SCOPE_PROJECTS = 'projects';
 export const SCOPE_NOTES = 'notes';
 export const SCOPE_COMMITS = 'commits';
 export const SCOPE_MILESTONES = 'milestones';
+export const SCOPE_WIKI_BLOBS = 'wiki_blobs';
+
 export const LABEL_DEFAULT_CLASSES = [
   'gl-display-flex',
   'gl-flex-direction-row',

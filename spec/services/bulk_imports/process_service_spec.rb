@@ -133,23 +133,6 @@ RSpec.describe BulkImports::ProcessService, feature_category: :importers do
           end
         end
       end
-
-      context 'when exception occurs' do
-        it 'tracks the exception & marks import as failed' do
-          create(:bulk_import_entity, :created, bulk_import: bulk_import)
-
-          allow(BulkImports::ExportRequestWorker).to receive(:perform_async).and_raise(StandardError)
-
-          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
-            kind_of(StandardError),
-            bulk_import_id: bulk_import.id
-          )
-
-          subject.execute
-
-          expect(bulk_import.reload.failed?).to eq(true)
-        end
-      end
     end
 
     context 'when importing a group' do
@@ -221,15 +204,14 @@ RSpec.describe BulkImports::ProcessService, feature_category: :importers do
         end
 
         it 'logs an info message for the skipped pipelines' do
-          expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+          expect_next_instance_of(BulkImports::Logger) do |logger|
             expect(logger).to receive(:info).with(
               message: 'Pipeline skipped as source instance version not compatible with pipeline',
               bulk_import_entity_id: entity.id,
               bulk_import_id: entity.bulk_import_id,
               bulk_import_entity_type: entity.source_type,
               source_full_path: entity.source_full_path,
-              importer: 'gitlab_migration',
-              pipeline_name: 'PipelineClass4',
+              pipeline_class: 'PipelineClass4',
               minimum_source_version: '15.1.0',
               maximum_source_version: nil,
               source_version: '15.0.0'
@@ -241,8 +223,7 @@ RSpec.describe BulkImports::ProcessService, feature_category: :importers do
               bulk_import_id: entity.bulk_import_id,
               bulk_import_entity_type: entity.source_type,
               source_full_path: entity.source_full_path,
-              importer: 'gitlab_migration',
-              pipeline_name: 'PipelineClass5',
+              pipeline_class: 'PipelineClass5',
               minimum_source_version: '16.0.0',
               maximum_source_version: nil,
               source_version: '15.0.0'

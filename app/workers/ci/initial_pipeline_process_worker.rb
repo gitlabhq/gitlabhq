@@ -17,24 +17,10 @@ module Ci
 
     def perform(pipeline_id)
       Ci::Pipeline.find_by_id(pipeline_id).try do |pipeline|
-        create_deployments!(pipeline)
-
         Ci::PipelineCreation::StartPipelineService
           .new(pipeline)
           .execute
       end
-    end
-
-    private
-
-    def create_deployments!(pipeline)
-      return if Feature.enabled?(:create_deployment_only_for_processable_jobs, pipeline.project)
-
-      pipeline.stages.flat_map(&:statuses).each { |build| create_deployment(build) }
-    end
-
-    def create_deployment(build)
-      ::Deployments::CreateForJobService.new.execute(build)
     end
   end
 end

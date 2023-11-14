@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Popen do
 
   context 'zero status' do
     before do
-      @output, @status = @klass.new.popen(%w(ls), path)
+      @output, @status = @klass.new.popen(%w[ls], path)
     end
 
     it { expect(@status).to be_zero }
@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Popen do
 
   context 'non-zero status' do
     before do
-      @output, @status = @klass.new.popen(%w(cat NOTHING), path)
+      @output, @status = @klass.new.popen(%w[cat NOTHING], path)
     end
 
     it { expect(@status).to eq(1) }
@@ -64,7 +64,7 @@ RSpec.describe Gitlab::Popen do
     it 'calls popen3 with the provided environment variables' do
       expect(Open3).to receive(:popen3).with(vars, 'ls', options)
 
-      @output, @status = @klass.new.popen(%w(ls), path, { 'foobar' => 123 })
+      @output, @status = @klass.new.popen(%w[ls], path, { 'foobar' => 123 })
     end
   end
 
@@ -83,7 +83,7 @@ RSpec.describe Gitlab::Popen do
 
   context 'without a directory argument' do
     before do
-      @output, @status = @klass.new.popen(%w(ls))
+      @output, @status = @klass.new.popen(%w[ls])
     end
 
     it { expect(@status).to be_zero }

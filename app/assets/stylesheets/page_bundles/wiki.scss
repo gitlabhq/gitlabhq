@@ -148,7 +148,8 @@
     margin: 0;
   }
 
-  ul.wiki-pages ul {
+  ul.wiki-pages ul,
+  ul.wiki-pages li:not(.wiki-directory){ 
     padding-left: 20px;
   }
 
@@ -157,6 +158,16 @@
 
     .gutter-toggle {
       margin-top: 0;
+    }
+  }
+}
+
+.right-sidebar.wiki-sidebar {
+  .active > .wiki-list {
+    a,
+    .wiki-list-expand-button,
+    .wiki-list-collapse-button {
+      color: $white;
     }
   }
 }

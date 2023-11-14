@@ -43,7 +43,7 @@ RSpec.describe 'Registration enabled callout', feature_category: :system_access 
         before do
           visit admin_root_path
 
-          find('[data-testid="close-registration-enabled-callout"]').click
+          find_by_testid('close-registration-enabled-callout').click
 
           wait_for_requests
 

@@ -92,8 +92,8 @@ export default {
     deleteModalTitle() {
       return sprintf(__('Delete %{name}'), { name: this.name });
     },
-    lockBtnQASelector() {
-      return this.canLock ? 'lock_button' : 'disabled_lock_button';
+    lockBtnTestId() {
+      return this.canLock ? 'lock-button' : 'disabled-lock-button';
     },
   },
   methods: {
@@ -120,8 +120,7 @@ export default {
         :project-path="projectPath"
         :is-locked="isLocked"
         :can-lock="canLock"
-        data-testid="lock"
-        :data-qa-selector="lockBtnQASelector"
+        :data-testid="lockBtnTestId"
       />
       <gl-button data-testid="replace" @click="showModal($options.replaceBlobModalId)">
         {{ $options.i18n.replace }}

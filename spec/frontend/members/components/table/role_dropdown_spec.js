@@ -1,10 +1,10 @@
 import { GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
-import * as Sentry from '@sentry/browser';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import waitForPromises from 'helpers/wait_for_promises';
 import RoleDropdown from '~/members/components/table/role_dropdown.vue';
 import { MEMBER_TYPES } from '~/members/constants';
@@ -13,7 +13,7 @@ import { member } from '../../mock_data';
 
 Vue.use(Vuex);
 jest.mock('ee_else_ce/members/guest_overage_confirm_action');
-jest.mock('@sentry/browser');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('RoleDropdown', () => {
   let wrapper;
@@ -71,9 +71,7 @@ describe('RoleDropdown', () => {
 
   it('has items prop with all valid roles', () => {
     createComponent();
-    const roles = findListbox()
-      .props('items')
-      .map((item) => item.text);
+    const roles = findListboxItems().wrappers.map((item) => item.text());
     expect(roles).toEqual(Object.keys(member.validRoles));
   });
 
@@ -102,7 +100,7 @@ describe('RoleDropdown', () => {
 
         expect(actions.updateMemberRole).toHaveBeenCalledWith(expect.any(Object), {
           memberId: member.id,
-          accessLevel: { integerValue: 30, stringValue: 'Developer' },
+          accessLevel: { integerValue: 30, memberRoleId: null },
         });
       });
 
@@ -247,7 +245,7 @@ describe('RoleDropdown', () => {
       });
 
       it('resets selected dropdown item', () => {
-        expect(findListbox().props('selected')).toBe(member.validRoles.Owner);
+        expect(findListbox().props('selected')).toMatch(/role-static-\d+/);
       });
     });
   });

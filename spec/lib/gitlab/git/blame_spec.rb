@@ -48,6 +48,14 @@ RSpec.describe Gitlab::Git::Blame, feature_category: :source_code_management do
       end
     end
 
+    context 'when path is missing' do
+      let(:path) { 'unknown_file' }
+
+      it 'returns an empty array' do
+        expect(result).to eq([])
+      end
+    end
+
     context "ISO-8859 encoding" do
       let(:path) { 'encoding/iso8859.txt' }
 

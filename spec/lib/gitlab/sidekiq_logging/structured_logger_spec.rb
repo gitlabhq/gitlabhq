@@ -181,7 +181,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
 
       it 'logs without created_at and enqueued_at fields' do
         travel_to(timestamp) do
-          excluded_fields = %w(created_at enqueued_at args scheduling_latency_s)
+          excluded_fields = %w[created_at enqueued_at args scheduling_latency_s]
 
           expect(logger).to receive(:info).with(start_payload.except(*excluded_fields)).ordered
           expect(logger).to receive(:info).with(end_payload.except(*excluded_fields)).ordered
@@ -238,13 +238,11 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
       end
     end
 
-    context 'with Gitaly, Rugged, and Redis calls' do
+    context 'with Gitaly, and Redis calls' do
       let(:timing_data) do
         {
           gitaly_calls: 10,
           gitaly_duration_s: 10000,
-          rugged_calls: 1,
-          rugged_duration_s: 5000,
           redis_calls: 3,
           redis_duration_s: 1234
         }
@@ -261,7 +259,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         end
       end
 
-      it 'logs with Gitaly and Rugged timing data', :aggregate_failures do
+      it 'logs with Gitaly timing data', :aggregate_failures do
         travel_to(timestamp) do
           expect(logger).to receive(:info).with(start_payload).ordered
           expect(logger).to receive(:info).with(expected_end_payload).ordered

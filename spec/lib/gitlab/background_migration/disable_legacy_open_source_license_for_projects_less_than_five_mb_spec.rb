@@ -3,23 +3,24 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::DisableLegacyOpenSourceLicenseForProjectsLessThanFiveMb,
-               :migration,
-               schema: 20221018095434,
-               feature_category: :groups_and_projects do
+  :migration,
+  schema: 20221018095434,
+  feature_category: :groups_and_projects do
   let(:namespaces_table) { table(:namespaces) }
   let(:projects_table) { table(:projects) }
   let(:project_settings_table) { table(:project_settings) }
   let(:project_statistics_table) { table(:project_statistics) }
 
   subject(:perform_migration) do
-    described_class.new(start_id: project_settings_table.minimum(:project_id),
-                        end_id: project_settings_table.maximum(:project_id),
-                        batch_table: :project_settings,
-                        batch_column: :project_id,
-                        sub_batch_size: 2,
-                        pause_ms: 0,
-                        connection: ActiveRecord::Base.connection)
-                   .perform
+    described_class.new(
+      start_id: project_settings_table.minimum(:project_id),
+      end_id: project_settings_table.maximum(:project_id),
+      batch_table: :project_settings,
+      batch_column: :project_id,
+      sub_batch_size: 2,
+      pause_ms: 0,
+      connection: ActiveRecord::Base.connection
+    ).perform
   end
 
   it 'sets `legacy_open_source_license_available` to false only for projects less than 5 MiB', :aggregate_failures do
@@ -45,10 +46,12 @@ RSpec.describe Gitlab::BackgroundMigration::DisableLegacyOpenSourceLicenseForPro
   def create_legacy_license_project_setting(repo_size:)
     path = "path-for-repo-size-#{repo_size}"
     namespace = namespaces_table.create!(name: "namespace-#{path}", path: "namespace-#{path}")
-    project_namespace =
-      namespaces_table.create!(name: "-project-namespace-#{path}", path: "project-namespace-#{path}", type: 'Project')
-    project = projects_table
-                .create!(name: path, path: path, namespace_id: namespace.id, project_namespace_id: project_namespace.id)
+    project_namespace = namespaces_table.create!(
+      name: "-project-namespace-#{path}", path: "project-namespace-#{path}", type: 'Project'
+    )
+    project = projects_table.create!(
+      name: path, path: path, namespace_id: namespace.id, project_namespace_id: project_namespace.id
+    )
 
     size_in_bytes = 1.megabyte * repo_size
     project_statistics_table.create!(project_id: project.id, namespace_id: namespace.id, repository_size: size_in_bytes)

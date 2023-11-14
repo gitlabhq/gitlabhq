@@ -31,7 +31,7 @@ RSpec.describe Gitlab::SidekiqCluster do # rubocop:disable RSpec/FilePath
       ).and_return(2)
       expect(Process).to receive(:detach).ordered.with(2)
 
-      described_class.start([%w(foo), %w(bar baz)], env: :production, directory: 'foo/bar', max_concurrency: 20, min_concurrency: 10)
+      described_class.start([%w[foo], %w[bar baz]], env: :production, directory: 'foo/bar', max_concurrency: 20, min_concurrency: 10)
     end
 
     it 'starts Sidekiq with the given queues and sensible default options' do
@@ -45,10 +45,10 @@ RSpec.describe Gitlab::SidekiqCluster do # rubocop:disable RSpec/FilePath
         dryrun: false
       }
 
-      expect(described_class).to receive(:start_sidekiq).ordered.with(%w(foo bar baz), expected_options)
-      expect(described_class).to receive(:start_sidekiq).ordered.with(%w(solo), expected_options)
+      expect(described_class).to receive(:start_sidekiq).ordered.with(%w[foo bar baz], expected_options)
+      expect(described_class).to receive(:start_sidekiq).ordered.with(%w[solo], expected_options)
 
-      described_class.start([%w(foo bar baz), %w(solo)])
+      described_class.start([%w[foo bar baz], %w[solo]])
     end
   end
 
@@ -67,7 +67,7 @@ RSpec.describe Gitlab::SidekiqCluster do # rubocop:disable RSpec/FilePath
       allow(Process).to receive(:spawn).and_return(1)
       allow(Process).to receive(:detach).with(1).and_return(waiter_thread)
 
-      expect(described_class.start_sidekiq(%w(foo), **options)).to eq(waiter_thread)
+      expect(described_class.start_sidekiq(%w[foo], **options)).to eq(waiter_thread)
     end
 
     it 'handles duplicate queue names' do
@@ -77,7 +77,7 @@ RSpec.describe Gitlab::SidekiqCluster do # rubocop:disable RSpec/FilePath
         .and_return(1)
       allow(Process).to receive(:detach).with(1).and_return(waiter_thread)
 
-      expect(described_class.start_sidekiq(%w(foo foo bar baz), **options)).to eq(waiter_thread)
+      expect(described_class.start_sidekiq(%w[foo foo bar baz], **options)).to eq(waiter_thread)
     end
 
     it 'runs the sidekiq process in a new process group' do
@@ -87,15 +87,15 @@ RSpec.describe Gitlab::SidekiqCluster do # rubocop:disable RSpec/FilePath
         .and_return(1)
       allow(Process).to receive(:detach).with(1).and_return(waiter_thread)
 
-      expect(described_class.start_sidekiq(%w(foo bar baz), **options)).to eq(waiter_thread)
+      expect(described_class.start_sidekiq(%w[foo bar baz], **options)).to eq(waiter_thread)
     end
   end
 
   describe '.count_by_queue' do
     it 'tallies the queue counts' do
-      queues = [%w(foo), %w(bar baz), %w(foo)]
+      queues = [%w[foo], %w[bar baz], %w[foo]]
 
-      expect(described_class.count_by_queue(queues)).to eq(%w(foo) => 2, %w(bar baz) => 1)
+      expect(described_class.count_by_queue(queues)).to eq(%w[foo] => 2, %w[bar baz] => 1)
     end
   end
 

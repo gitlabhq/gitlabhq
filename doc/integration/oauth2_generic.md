@@ -6,6 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Use Generic OAuth2 gem as an OAuth 2.0 authentication provider **(FREE SELF)**
 
+NOTE:
+If your provider supports the OpenID specification, you should use [`omniauth-openid-connect`](../administration/auth/oidc.md) as your authentication provider.
+
 The [`omniauth-oauth2-generic` gem](https://gitlab.com/satorix/omniauth-oauth2-generic) allows single sign-on (SSO) between GitLab
 and your OAuth 2.0 provider, or any OAuth 2.0 provider compatible with this gem.
 

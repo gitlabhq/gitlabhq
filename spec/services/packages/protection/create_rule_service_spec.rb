@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Protection::CreateRuleService, '#execute', feature_category: :environment_management do
+RSpec.describe Packages::Protection::CreateRuleService, '#execute', feature_category: :package_registry do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
 

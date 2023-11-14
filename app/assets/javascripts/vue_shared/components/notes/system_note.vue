@@ -30,12 +30,10 @@ import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import TimelineEntryItem from './timeline_entry_item.vue';
 
 const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
-const MR_ICON_COLORS = {
+const ICON_COLORS = {
   check: 'gl-bg-green-100 gl-text-green-700',
   'merge-request-close': 'gl-bg-red-100 gl-text-red-700',
   merge: 'gl-bg-blue-100 gl-text-blue-700',
-};
-const ICON_COLORS = {
   'issue-close': 'gl-bg-blue-100 gl-text-blue-700',
 };
 
@@ -76,6 +74,9 @@ export default {
     noteAnchorId() {
       return `note_${this.note.id}`;
     },
+    isAllowedIcon() {
+      return Object.keys(ICON_COLORS).includes(this.note.system_note_icon_name);
+    },
     isTargetNote() {
       return this.targetNoteHash === this.noteAnchorId;
     },
@@ -95,15 +96,8 @@ export default {
     isMergeRequest() {
       return this.getNoteableData.noteableType === 'MergeRequest';
     },
-    hasIconColors() {
-      if (!this.isMergeRequest) return true;
-
-      return this.isMergeRequest && MR_ICON_COLORS[this.note.system_note_icon_name];
-    },
     iconBgClass() {
-      const colors = this.isMergeRequest ? MR_ICON_COLORS : ICON_COLORS;
-
-      return colors[this.note.system_note_icon_name] || 'gl-bg-gray-50 gl-text-gray-600';
+      return ICON_COLORS[this.note.system_note_icon_name] || 'gl-bg-gray-50 gl-text-gray-600';
     },
   },
   mounted() {
@@ -140,17 +134,16 @@ export default {
       :class="[
         iconBgClass,
         {
-          'mr-system-note-empty gl-bg-gray-900!': !hasIconColors,
-          'gl-w-6 gl-h-6 gl-mt-n1 gl-ml-2': !isMergeRequest,
-          'mr-system-note-icon': isMergeRequest,
+          'system-note-icon': isAllowedIcon,
+          'system-note-tiny-dot gl-bg-gray-900!': !isAllowedIcon,
         },
       ]"
       class="gl-float-left gl--flex-center gl-rounded-full gl-relative timeline-icon"
     >
       <gl-icon
-        v-if="note.system_note_icon_name && hasIconColors"
+        v-if="isAllowedIcon"
         :name="note.system_note_icon_name"
-        :size="isMergeRequest ? 12 : 16"
+        :size="12"
         data-testid="timeline-icon"
       />
     </div>

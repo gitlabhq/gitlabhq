@@ -59,6 +59,10 @@ module PreferencesHelper
     ]
   end
 
+  def time_display_format_choices
+    UserPreference.time_display_formats
+  end
+
   def first_day_of_week_choices_with_default
     first_day_of_week_choices.unshift([_('System default (%{default})') % { default: default_first_day_of_week }, nil])
   end
@@ -122,8 +126,8 @@ module PreferencesHelper
 
   def integration_views
     [].tap do |views|
-      views << { name: 'gitpod', message: gitpod_enable_description, message_url: gitpod_url_placeholder, help_link: help_page_path('integration/gitpod.md') } if Gitlab::CurrentSettings.gitpod_enabled
-      views << { name: 'sourcegraph', message: sourcegraph_url_message, message_url: Gitlab::CurrentSettings.sourcegraph_url, help_link: help_page_path('user/profile/preferences.md', anchor: 'sourcegraph') } if Gitlab::Sourcegraph.feature_available? && Gitlab::CurrentSettings.sourcegraph_enabled
+      views << { name: 'gitpod', message: gitpod_enable_description, message_url: gitpod_url_placeholder, help_link: help_page_path('integration/gitpod') } if Gitlab::CurrentSettings.gitpod_enabled
+      views << { name: 'sourcegraph', message: sourcegraph_url_message, message_url: Gitlab::CurrentSettings.sourcegraph_url, help_link: help_page_path('user/profile/preferences', anchor: 'sourcegraph') } if Gitlab::Sourcegraph.feature_available? && Gitlab::CurrentSettings.sourcegraph_enabled
     end
   end
 

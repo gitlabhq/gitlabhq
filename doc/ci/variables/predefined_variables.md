@@ -107,10 +107,10 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_PROJECT_URL`                         | 8.10   | 0.5    | The HTTP(S) address of the project. |
 | `CI_PROJECT_VISIBILITY`                  | 10.3   | all    | The project visibility. Can be `internal`, `private`, or `public`. |
 | `CI_PROJECT_CLASSIFICATION_LABEL`        | 14.2   | all    | The project [external authorization classification label](../../administration/settings/external_authorization.md). |
-| `CI_REGISTRY_IMAGE`                      | 8.10   | 0.5    | The address of the project's Container Registry. Only available if the Container Registry is enabled for the project. |
+| `CI_REGISTRY`                            | 8.10   | 0.5    | Address of the [Container Registry](../../user/packages/container_registry/index.md) server, formatted as `<host>[:<port>]`. For example: `registry.gitlab.example.com`. Only available if the Container Registry is enabled for the GitLab instance. |
+| `CI_REGISTRY_IMAGE`                      | 8.10   | 0.5    | Base address for the container registry to push, pull, or tag project's images, formatted as `<host>[:<port>]/<project_full_path>`. For example: `registry.gitlab.example.com/my_group/my_project`. Image names must follow the [container registry naming convention](../../user/packages/container_registry/index.md#naming-convention-for-your-container-images). Only available if the Container Registry is enabled for the project. |
 | `CI_REGISTRY_PASSWORD`                   | 9.0    | all    | The password to push containers to the project's GitLab Container Registry. Only available if the Container Registry is enabled for the project. This password value is the same as the `CI_JOB_TOKEN` and is valid only as long as the job is running. Use the `CI_DEPLOY_PASSWORD` for long-lived access to the registry |
 | `CI_REGISTRY_USER`                       | 9.0    | all    | The username to push containers to the project's GitLab Container Registry. Only available if the Container Registry is enabled for the project. |
-| `CI_REGISTRY`                            | 8.10   | 0.5    | The address of the GitLab Container Registry. Only available if the Container Registry is enabled for the project. This variable includes a `:port` value if one is specified in the registry configuration. |
 | `CI_REPOSITORY_URL`                      | 9.0    | all    | The full path to Git clone (HTTP) the repository with a [CI/CD job token](../jobs/ci_job_token.md), in the format `https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.example.com/my-group/my-project.git`. |
 | `CI_RUNNER_DESCRIPTION`                  | 8.10   | 0.5    | The description of the runner. |
 | `CI_RUNNER_EXECUTABLE_ARCH`              | all    | 10.6   | The OS/architecture of the GitLab Runner executable. Might not be the same as the environment of the executor. |
@@ -140,9 +140,9 @@ as it can cause the pipeline to behave unexpectedly.
 | `GITLAB_CI`                              | all    | all    | Available for all jobs executed in CI/CD. `true` when available. |
 | `GITLAB_FEATURES`                        | 10.6   | all    | The comma-separated list of licensed features available for the GitLab instance and license. |
 | `GITLAB_USER_EMAIL`                      | 8.12   | all    | The email of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the email of the user who started the job. |
-| `GITLAB_USER_ID`                         | 8.12   | all    | The ID of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the ID of the user who started the job. |
+| `GITLAB_USER_ID`                         | 8.12   | all    | The numeric ID of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the ID of the user who started the job. |
 | `GITLAB_USER_LOGIN`                      | 10.0   | all    | The username of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the username of the user who started the job. |
-| `GITLAB_USER_NAME`                       | 10.0   | all    | The name of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the name of the user who started the job. |
+| `GITLAB_USER_NAME`                       | 10.0   | all    | The display name of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the name of the user who started the job. |
 | `KUBECONFIG`                             | 14.2   | all    | The path to the `kubeconfig` file with contexts for every shared agent connection. Only available when a [GitLab agent is authorized to access the project](../../user/clusters/agent/ci_cd_workflow.md#authorize-the-agent). |
 | `TRIGGER_PAYLOAD`                        | 13.9   | all    | The webhook payload. Only available when a pipeline is [triggered with a webhook](../triggers/index.md#access-webhook-payload). |
 
@@ -157,8 +157,8 @@ These variables are available when:
 |---------------------------------------------|--------|--------|-------------|
 | `CI_MERGE_REQUEST_APPROVED`                 | 14.1   | all    | Approval status of the merge request. `true` when [merge request approvals](../../user/project/merge_requests/approvals/index.md) is available and the merge request has been approved. |
 | `CI_MERGE_REQUEST_ASSIGNEES`                | 11.9   | all    | Comma-separated list of usernames of assignees for the merge request. |
-| `CI_MERGE_REQUEST_ID`                       | 11.6   | all    | The instance-level ID of the merge request. This is a unique ID across all projects on GitLab. |
-| `CI_MERGE_REQUEST_IID`                      | 11.6   | all    | The project-level IID (internal ID) of the merge request. This ID is unique for the current project. |
+| `CI_MERGE_REQUEST_ID`                       | 11.6   | all    | The instance-level ID of the merge request. This is a unique ID across all projects on the GitLab instance. |
+| `CI_MERGE_REQUEST_IID`                      | 11.6   | all    | The project-level IID (internal ID) of the merge request. This ID is unique for the current project, and is the number used in the merge request URL, page title, and other visible locations. |
 | `CI_MERGE_REQUEST_LABELS`                   | 11.9   | all    | Comma-separated label names of the merge request. |
 | `CI_MERGE_REQUEST_MILESTONE`                | 11.9   | all    | The milestone title of the merge request. |
 | `CI_MERGE_REQUEST_PROJECT_ID`               | 11.6   | all    | The ID of the project of the merge request. |

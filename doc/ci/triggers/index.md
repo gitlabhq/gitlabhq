@@ -14,6 +14,7 @@ When authenticating with the API, you can use:
 
 - A [pipeline trigger token](#create-a-pipeline-trigger-token) to trigger a branch or tag pipeline.
 - A [CI/CD job token](../jobs/ci_job_token.md) to [trigger a multi-project pipeline](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api).
+- A [personal access token](../../user/profile/personal_access_tokens.md).
 
 ## Create a pipeline trigger token
 

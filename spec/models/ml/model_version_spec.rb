@@ -18,6 +18,7 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:model) }
     it { is_expected.to belong_to(:package).class_name('Packages::MlModel::Package') }
+    it { is_expected.to have_one(:candidate).class_name('Ml::Candidate') }
   end
 
   describe 'validation' do
@@ -26,11 +27,15 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
       build_stubbed(:ml_model_package, project: base_project, version: valid_version, name: model1.name)
     end
 
+    let_it_be(:valid_description) { 'Valid description' }
+
     let(:package) { valid_package }
     let(:version) { valid_version }
+    let(:description) { valid_description }
 
     subject(:errors) do
-      mv = described_class.new(version: version, model: model1, package: package, project: model1.project)
+      mv = described_class.new(version: version, model: model1, package: package, project: model1.project,
+        description: description)
       mv.validate
       mv.errors
     end
@@ -57,6 +62,14 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
         let(:version) { existing_model_version.version }
 
         it { expect(errors).to include(:version) }
+      end
+    end
+
+    describe 'description' do
+      context 'when description is too large' do
+        let(:description) { 'a' * 501 }
+
+        it { expect(errors).to include(:description) }
       end
     end
 
@@ -91,8 +104,9 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
 
     let(:version) { existing_model_version.version }
     let(:package) { nil }
+    let(:description) { 'Some description' }
 
-    subject(:find_or_create) { described_class.find_or_create!(model1, version, package) }
+    subject(:find_or_create) { described_class.find_or_create!(model1, version, package, description) }
 
     context 'if model version exists' do
       it 'returns the model version', :aggregate_failures do
@@ -111,8 +125,63 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
 
         expect(model_version.version).to eq(version)
         expect(model_version.model).to eq(model1)
+        expect(model_version.description).to eq(description)
         expect(model_version.package).to eq(package)
       end
+    end
+  end
+
+  describe '#by_project_id_and_id' do
+    let(:id) { model_version1.id }
+    let(:project_id) { model_version1.project.id }
+
+    subject { described_class.by_project_id_and_id(project_id, id) }
+
+    context 'if exists' do
+      it { is_expected.to eq(model_version1) }
+    end
+
+    context 'if id has no match' do
+      let(:id) { non_existing_record_id }
+
+      it { is_expected.to be(nil) }
+    end
+
+    context 'if project id does not match' do
+      let(:project_id) { non_existing_record_id }
+
+      it { is_expected.to be(nil) }
+    end
+  end
+
+  describe '.by_project_id_name_and_version' do
+    let(:version) { model_version1.version }
+    let(:project_id) { model_version1.project.id }
+    let(:model_name) { model_version1.model.name }
+    let_it_be(:latest_version) { create(:ml_model_versions, model: model_version1.model) }
+
+    subject { described_class.by_project_id_name_and_version(project_id, model_name, version) }
+
+    context 'if exists' do
+      it { is_expected.to eq(model_version1) }
+    end
+
+    context 'if id has no match' do
+      let(:version) { non_existing_record_id }
+
+      it { is_expected.to be(nil) }
+    end
+
+    context 'if project id does not match' do
+      let(:project_id) { non_existing_record_id }
+
+      it { is_expected.to be(nil) }
+    end
+
+    context 'if model name does not match' do
+      let(:model_name) { non_existing_record_id }
+
+      it { is_expected.to be(nil) }
     end
   end
 

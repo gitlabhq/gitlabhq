@@ -29,6 +29,15 @@ module QA
           personal_access_token: ENV['GITLAB_QA_ACCESS_TOKEN'])
       end
 
+      # @example
+      #   GITLAB_ADDRESS=<address> \
+      #   GITLAB_QA_ACCESS_TOKEN=<token> \
+      #   USER_ID=<id> bundle exec "delete_user_projects[2023-01-01,true]"
+      #
+      # @example
+      #   GITLAB_ADDRESS=<address> \
+      #   GITLAB_QA_ACCESS_TOKEN=<token> \
+      #   USER_ID=<id> bundle exec "delete_user_projects[,true]"
       def run
         $stdout.puts 'Running...'
 

@@ -210,17 +210,30 @@ RSpec.describe Banzai::Filter::MathFilter, feature_category: :team_planning do
   context 'when limiting how many elements can be marked as math' do
     subject { pipeline_filter('$`2+2`$ + $3+3$ + $$4+4$$') }
 
-    it 'enforces limits by default' do
+    before do
       stub_const('Banzai::Filter::MathFilter::RENDER_NODES_LIMIT', 2)
+    end
 
+    it 'enforces limits by default' do
       expect(subject.search('.js-render-math').count).to eq(2)
     end
 
     it 'does not limit when math_rendering_limits_enabled is false' do
       stub_application_setting(math_rendering_limits_enabled: false)
-      stub_const('Banzai::Filter::MathFilter::RENDER_NODES_LIMIT', 2)
 
       expect(subject.search('.js-render-math').count).to eq(3)
+    end
+
+    it 'does not limit for the wiki' do
+      doc = pipeline_filter('$`2+2`$ + $3+3$ + $$4+4$$', { wiki: true })
+
+      expect(doc.search('.js-render-math').count).to eq(3)
+    end
+
+    it 'does not limit for blobs' do
+      doc = pipeline_filter('$`2+2`$ + $3+3$ + $$4+4$$', { text_source: :blob })
+
+      expect(doc.search('.js-render-math').count).to eq(3)
     end
   end
 
@@ -232,14 +245,14 @@ RSpec.describe Banzai::Filter::MathFilter, feature_category: :team_planning do
     end.not_to raise_error
   end
 
-  def pipeline_filter(text)
-    context = { project: nil, no_sourcepos: true }
+  def pipeline_filter(text, context = {})
+    context = { project: nil, no_sourcepos: true }.merge(context)
 
     doc = Banzai::Pipeline::PreProcessPipeline.call(text, {})
     doc = Banzai::Pipeline::PlainMarkdownPipeline.call(doc[:output], context)
     doc = Banzai::Filter::CodeLanguageFilter.call(doc[:output], context, nil)
     doc = Banzai::Filter::SanitizationFilter.call(doc, context, nil)
 
-    filter(doc)
+    filter(doc, context)
   end
 end

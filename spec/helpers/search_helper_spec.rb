@@ -797,19 +797,23 @@ RSpec.describe SearchHelper, feature_category: :global_search do
       allow(self).to receive(:current_user).and_return(:the_current_user)
     end
 
-    where(:input, :expected) do
-      '0'       | false
-      '1'       | true
-      'yes'     | true
-      'no'      | false
-      'true'    | true
-      'false'   | false
-      true      | true
-      false     | false
+    shared_context 'with inputs' do
+      where(:input, :expected) do
+        '0'       | false
+        '1'       | true
+        'yes'     | true
+        'no'      | false
+        'true'    | true
+        'false'   | false
+        true      | true
+        false     | false
+      end
     end
 
     describe 'for confidential' do
       let(:params) { { confidential: input } }
+
+      include_context 'with inputs'
 
       with_them do
         it 'transforms param' do
@@ -822,6 +826,8 @@ RSpec.describe SearchHelper, feature_category: :global_search do
 
     describe 'for include_archived' do
       let(:params) { { include_archived: input } }
+
+      include_context 'with inputs'
 
       with_them do
         it 'transforms param' do

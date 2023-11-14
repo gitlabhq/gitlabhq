@@ -37,7 +37,7 @@ export default {
   },
   [types.RECEIVE_PROJECT_MILESTONES_SUCCESS](state, response) {
     state.matches.projectMilestones = {
-      list: response.data.map(({ title }) => ({ title })),
+      list: response.data.map(({ title }) => ({ text: title, value: title })),
       totalCount: parseInt(response.headers['x-total'], 10) || response.data.length,
       error: null,
     };
@@ -51,7 +51,7 @@ export default {
   },
   [types.RECEIVE_GROUP_MILESTONES_SUCCESS](state, response) {
     state.matches.groupMilestones = {
-      list: response.data.map(({ title }) => ({ title })),
+      list: response.data.map(({ title }) => ({ text: title, value: title })),
       totalCount: parseInt(response.headers['x-total'], 10) || response.data.length,
       error: null,
     };

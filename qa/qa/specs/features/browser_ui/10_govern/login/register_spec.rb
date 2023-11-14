@@ -15,7 +15,7 @@ module QA
     end
   end
 
-  RSpec.describe 'Govern', :skip_signup_disabled, :requires_admin, product_group: :authentication_and_authorization do
+  RSpec.describe 'Govern', :skip_signup_disabled, :requires_admin, product_group: :authentication do
     describe 'while LDAP is enabled', :orchestrated, :ldap_no_tls,
       testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347934',
       quarantine: {
@@ -157,11 +157,11 @@ module QA
           Flow::Login.sign_in(as: user, skip_page_validation: true)
 
           Flow::UserOnboarding.onboard_user
-
-          # In development env and .com the user is asked to create a group and a project which can be skipped for
-          # the purpose of this test
+          # In development env and .com the user is asked to create a group and a project
+          Flow::UserOnboarding.create_initial_project if page.has_text?("Create or import your first project", wait: 0)
           Runtime::Browser.visit(:gitlab, Page::Dashboard::Welcome)
-          Page::Main::Menu.perform(&:has_personal_area?)
+
+          expect(Page::Main::Menu.perform(&:has_personal_area?)).to be_truthy
         end
       end
     end

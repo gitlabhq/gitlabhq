@@ -99,8 +99,11 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers do
         expect(migration).to receive(:add_index)
           .with(table_name, column_name, { name: index_name, where: 'x > 0', unique: true })
 
-        migration.add_concurrent_partitioned_index(table_name, column_name,
-                                                   { name: index_name, where: 'x > 0', unique: true })
+        migration.add_concurrent_partitioned_index(
+          table_name,
+          column_name,
+          { name: index_name, where: 'x > 0', unique: true }
+        )
       end
     end
 

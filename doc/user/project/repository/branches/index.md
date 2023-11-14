@@ -176,6 +176,7 @@ GitLab enforces these additional rules on all branches:
 
 - No spaces are allowed in branch names.
 - Branch names with 40 hexadecimal characters are prohibited, because they are similar to Git commit hashes.
+- Branch names are case-sensitive.
 
 Common software packages, like Docker, can enforce
 [additional branch naming restrictions](../../../../administration/packages/container_registry.md#docker-connection-error).
@@ -313,6 +314,27 @@ To create a target branch rule:
 1. Select the **Target branch** to use when the branch name matches the **Rule name**.
 1. Select **Save**.
 
+### Example
+
+You could configure your project to have the following target branch rules:
+
+| Rule name   | Target branch |
+|-------------|---------------|
+| `feature/*` | `develop`     |
+| `bug/*`     | `develop`     |
+| `release/*` | `main`        |
+
+These rules simplify the process of creating merge requests for a project that:
+
+- Uses `main` to represent the deployed state of your application.
+- Tracks current, unreleased development work in another long-running branch, like `develop`.
+
+If your workflow initially places new features in `develop` instead of `main`, these rules
+ensure all branches matching either `feature/*` or `bug/*` do not target `main` by mistake.
+
+When you're ready to release to `main`, create a branch named `release/*`, and the rules
+ensure this branch targets `main`.
+
 ## Delete a target branch rule
 
 When you remove a target branch rule, existing merge requests remain unchanged.
@@ -389,3 +411,18 @@ To fix this problem:
 
 Git versions [2.16.0 and later](https://github.com/git/git/commit/a625b092cc59940521789fe8a3ff69c8d6b14eb2),
 prevent you from creating a branch with this name.
+
+### Find all branches you've authored
+
+To find all branches you've authored in a project, run this command in a Git repository:
+
+```shell
+git for-each-ref --format='%(refname:short) %(authoremail)'  | grep $(git config --get user.email)
+```
+
+To get a total of all branches in a project, sorted by author, run this command
+in a Git repository:
+
+```shell
+git for-each-ref --format='%(authoremail)'  | sort | uniq -c | sort -g
+```

@@ -19,6 +19,7 @@ module Gitlab
 
             validate_repository_size!
 
+            set_default_branch
             update_clone_time
           end
 
@@ -75,6 +76,16 @@ module Gitlab
 
         def validate_repository_size!
           # Defined in EE
+        end
+
+        def set_default_branch
+          default_branch = client.repo(project.import_source).default_branch
+
+          project.change_head(default_branch) if default_branch
+        end
+
+        def client
+          Bitbucket::Client.new(project.import_data.credentials)
         end
       end
     end

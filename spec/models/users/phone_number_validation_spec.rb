@@ -2,7 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::PhoneNumberValidation do
+RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resiliency do
+  let_it_be(:user) { create(:user) }
+  let_it_be(:banned_user) { create(:user, :banned) }
+
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:banned_user) }
 
@@ -30,9 +33,6 @@ RSpec.describe Users::PhoneNumberValidation do
   describe '.related_to_banned_user?' do
     let_it_be(:international_dial_code) { 1 }
     let_it_be(:phone_number) { '555' }
-
-    let_it_be(:user) { create(:user) }
-    let_it_be(:banned_user) { create(:user, :banned) }
 
     subject(:related_to_banned_user?) do
       described_class.related_to_banned_user?(international_dial_code, phone_number)
@@ -79,25 +79,25 @@ RSpec.describe Users::PhoneNumberValidation do
     end
   end
 
-  describe '#for_user' do
-    let_it_be(:user_1) { create(:user) }
-    let_it_be(:user_2) { create(:user) }
+  describe 'scopes' do
+    let_it_be(:another_user) { create(:user) }
 
-    let_it_be(:phone_number_record_1) { create(:phone_number_validation, user: user_1) }
-    let_it_be(:phone_number_record_2) { create(:phone_number_validation, user: user_2) }
+    let_it_be(:phone_number_record_1) { create(:phone_number_validation, user: user, telesign_reference_xid: 'target') }
+    let_it_be(:phone_number_record_2) { create(:phone_number_validation, user: another_user) }
 
-    context 'when multiple records exist for multiple users' do
-      it 'returns the correct phone number record for user' do
-        records = described_class.for_user(user_1.id)
+    describe '#for_user' do
+      context 'when multiple records exist for multiple users' do
+        it 'returns the correct phone number record for user' do
+          records = described_class.for_user(user.id)
 
-        expect(records.count).to be(1)
-        expect(records.first).to eq(phone_number_record_1)
+          expect(records.count).to be(1)
+          expect(records.first).to eq(phone_number_record_1)
+        end
       end
     end
   end
 
   describe '#validated?' do
-    let_it_be(:user) { create(:user) }
     let_it_be(:phone_number_record) { create(:phone_number_validation, user: user) }
 
     context 'when phone number record is not validated' do
@@ -114,6 +114,22 @@ RSpec.describe Users::PhoneNumberValidation do
       it 'returns true' do
         expect(phone_number_record.validated?).to be(true)
       end
+    end
+  end
+
+  describe '.by_reference_id' do
+    let_it_be(:phone_number_record) { create(:phone_number_validation) }
+
+    let(:ref_id) { phone_number_record.telesign_reference_xid }
+
+    subject { described_class.by_reference_id(ref_id) }
+
+    it { is_expected.to eq phone_number_record }
+
+    context 'when there is no matching record' do
+      let(:ref_id) { 'does-not-exist' }
+
+      it { is_expected.to be_nil }
     end
   end
 end

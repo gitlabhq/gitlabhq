@@ -152,7 +152,7 @@ export default class Notes {
     // update the file name when an attachment is selected
     this.$wrapperEl.on('change', '.js-note-attachment-input', this.updateFormAttachment);
     // reply to diff/discussion notes
-    this.$wrapperEl.on('click', '.js-discussion-reply-button', this.onReplyToDiscussionNote);
+    this.$wrapperEl.on('focus', '.js-discussion-reply-button', this.onReplyToDiscussionNote);
     // add diff note
     this.$wrapperEl.on('click', '.js-add-diff-note-button', this.onAddDiffNote);
     // add diff note for images

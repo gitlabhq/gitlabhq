@@ -36,12 +36,12 @@ RSpec.describe 'Admin Broadcast Messages', :js, feature_category: :onboarding do
 
       # edit
       page.within(first_message_container) do
-        find('[data-testid="edit-message"]').click
+        find_by_testid('edit-message').click
       end
 
       wait_for_requests
 
-      expect(find('[data-testid="message-input"]').value).to eq('test message')
+      expect(find_by_testid('message-input').value).to eq('test message')
 
       fill_in 'Message', with: 'changed test message'
 
@@ -61,11 +61,11 @@ RSpec.describe 'Admin Broadcast Messages', :js, feature_category: :onboarding do
     end
 
     def preview_container
-      find('[data-testid="preview-broadcast-message"]')
+      find_by_testid('preview-broadcast-message')
     end
 
     def first_message_container
-      find('[data-testid="message-row"]', match: :first)
+      find_by_testid('message-row', match: :first)
     end
   end
 end

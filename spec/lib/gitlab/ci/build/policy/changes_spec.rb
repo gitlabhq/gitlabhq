@@ -8,11 +8,14 @@ RSpec.describe Gitlab::Ci::Build::Policy::Changes do
   describe '#satisfied_by?' do
     describe 'paths matching' do
       let(:pipeline) do
-        build(:ci_empty_pipeline, project: project,
-                                  ref: 'master',
-                                  source: :push,
-                                  sha: '1234abcd',
-                                  before_sha: '0123aabb')
+        build(
+          :ci_empty_pipeline,
+          project: project,
+          ref: 'master',
+          source: :push,
+          sha: '1234abcd',
+          before_sha: '0123aabb'
+        )
       end
 
       let(:ci_build) do
@@ -92,11 +95,14 @@ RSpec.describe Gitlab::Ci::Build::Policy::Changes do
       let_it_be(:project) { create(:project, :repository) }
 
       let(:pipeline) do
-        create(:ci_empty_pipeline, project: project,
-                                   ref: 'master',
-                                   source: :push,
-                                   sha: '498214d',
-                                   before_sha: '281d3a7')
+        create(
+          :ci_empty_pipeline,
+          project: project,
+          ref: 'master',
+          source: :push,
+          sha: '498214d',
+          before_sha: '281d3a7'
+        )
       end
 
       let(:build) do
@@ -122,12 +128,15 @@ RSpec.describe Gitlab::Ci::Build::Policy::Changes do
       let_it_be(:project) { create(:project, :repository) }
 
       let(:pipeline) do
-        create(:ci_empty_pipeline, project: project,
-                                   ref: 'feature',
-                                   source: source,
-                                   sha: '0b4bc9a4',
-                                   before_sha: Gitlab::Git::BLANK_SHA,
-                                   merge_request: merge_request)
+        create(
+          :ci_empty_pipeline,
+          project: project,
+          ref: 'feature',
+          source: source,
+          sha: '0b4bc9a4',
+          before_sha: Gitlab::Git::BLANK_SHA,
+          merge_request: merge_request
+        )
       end
 
       let(:ci_build) do
@@ -140,11 +149,13 @@ RSpec.describe Gitlab::Ci::Build::Policy::Changes do
         let(:source) { :merge_request_event }
 
         let(:merge_request) do
-          create(:merge_request,
-                 source_project: project,
-                 source_branch: 'feature',
-                 target_project: project,
-                 target_branch: 'master')
+          create(
+            :merge_request,
+            source_project: project,
+            source_branch: 'feature',
+            target_project: project,
+            target_branch: 'master'
+          )
         end
 
         it 'is satified by changes in the merge request' do

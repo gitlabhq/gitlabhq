@@ -974,28 +974,6 @@ const data = store.readQuery({
 
 Read more about the `@connection` directive in [Apollo's documentation](https://www.apollographql.com/docs/react/caching/advanced-topics/#the-connection-directive).
 
-### Managing performance
-
-The Apollo client batches queries by default. Given 3 deferred queries,
-Apollo groups them into one request, sends the single request to the server, and
-responds after all 3 queries have completed.
-
-If you need to have queries sent as individual requests, additional context can be provided
-to tell Apollo to do this.
-
-```javascript
-export default {
-  apollo: {
-    user: {
-      query: QUERY_IMPORT,
-      context: {
-        isSingleRequest: true,
-      }
-    }
-  },
-};
-```
-
 #### Polling and Performance
 
 While the Apollo client has support for simple polling, for performance reasons, our [ETag-based caching](../polling.md) is preferred to hitting the database each time.
@@ -1078,21 +1056,6 @@ await this.$apollo.mutate({
       store.writeQuery({ query: getPipelineEtag, data: { pipelineEtag } });
     }
   },
-});
-```
-
-ETags depend on the request being a `GET` instead of GraphQL's usual `POST`. Our default link library does not support `GET` requests, so we must let our default Apollo client know to use a different library. Keep in mind, this means your app cannot batch queries.
-
-```javascript
-/* componentMountIndex.js */
-
-const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient(
-    {},
-    {
-      useGet: true,
-    },
-  ),
 });
 ```
 

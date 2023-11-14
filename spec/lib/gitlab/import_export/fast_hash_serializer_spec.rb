@@ -156,7 +156,7 @@ RSpec.describe Gitlab::ImportExport::FastHashSerializer, :with_license, feature_
   it 'has project and group labels' do
     label_types = subject['issues'].first['label_links'].map { |link| link['label']['type'] }
 
-    expect(label_types).to match_array(%w(ProjectLabel GroupLabel))
+    expect(label_types).to match_array(%w[ProjectLabel GroupLabel])
   end
 
   it 'has priorities associated to labels' do

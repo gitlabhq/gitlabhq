@@ -1,7 +1,7 @@
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { captureException } from '~/ci/runner/sentry_utils';
 
-jest.mock('@sentry/browser');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('~/ci/runner/sentry_utils', () => {
   describe('captureException', () => {

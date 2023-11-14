@@ -1,0 +1,8 @@
+---
+name: group_multi_select_tokens
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133725
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/428741
+milestone: '16.6'
+type: development
+group: group::project management
+default_enabled: false

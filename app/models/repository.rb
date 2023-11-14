@@ -1102,10 +1102,6 @@ class Repository
     blob_data_at(sha, '.gitlab/route-map.yml')
   end
 
-  def gitlab_ci_yml_for(sha, path = '.gitlab-ci.yml')
-    blob_data_at(sha, path)
-  end
-
   def lfsconfig_for(sha)
     blob_data_at(sha, '.lfsconfig')
   end
@@ -1245,6 +1241,10 @@ class Repository
   def get_patch_id(old_revision, new_revision)
     raw_repository.get_patch_id(old_revision, new_revision)
   rescue Gitlab::Git::CommandError, Gitlab::Git::Repository::NoRepository => e
+    # This is expected when there are no differences between the old_revision and the new_revision.
+    # It's not ideal, but is simpler to handle this here than making breaking changes to gitaly.
+    return if e.message.match?(/no difference between old and new revision./)
+
     Gitlab::ErrorTracking.track_exception(
       e,
       project_id: project.id,

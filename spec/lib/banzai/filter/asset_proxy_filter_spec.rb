@@ -62,6 +62,8 @@ RSpec.describe Banzai::Filter::AssetProxyFilter, feature_category: :team_plannin
   end
 
   context 'when properly configured' do
+    using RSpec::Parameterized::TableSyntax
+
     before do
       stub_asset_proxy_setting(enabled: true)
       stub_asset_proxy_setting(secret_key: 'shared-secret')
@@ -71,84 +73,33 @@ RSpec.describe Banzai::Filter::AssetProxyFilter, feature_category: :team_plannin
       @context = described_class.transform_context({})
     end
 
-    it 'replaces img src' do
-      src     = 'http://example.com/test.png'
-      new_src = 'https://assets.example.com/08df250eeeef1a8cf2c761475ac74c5065105612/687474703a2f2f6578616d706c652e636f6d2f746573742e706e67'
-      doc     = filter(image(src), @context)
-
-      expect(doc.at_css('img')['src']).to eq new_src
-      expect(doc.at_css('img')['data-canonical-src']).to eq src
+    where(:data_canonical_src, :src) do
+      'http://example.com/test.png' | 'https://assets.example.com/08df250eeeef1a8cf2c761475ac74c5065105612/687474703a2f2f6578616d706c652e636f6d2f746573742e706e67'
+      '///example.com/test.png' | 'https://assets.example.com/3368d2c7b9bed775bdd1e811f36a4b80a0dcd8ab/2f2f2f6578616d706c652e636f6d2f746573742e706e67'
+      '//example.com/test.png' | 'https://assets.example.com/a2e9aa56319e31bbd05be72e633f2864ff08becb/2f2f6578616d706c652e636f6d2f746573742e706e67'
+      # If it can't be parsed, default to use asset proxy
+      'oigjsie8787%$**(#(%0' | 'https://assets.example.com/1b893f9a71d66c99437f27e19b9a061a6f5d9391/6f69676a7369653837383725242a2a2823282530'
+      'https://example.com/x?¬' | 'https://assets.example.com/2f29a8c7f13f3ae14dc18c154dbbd657d703e75f/68747470733a2f2f6578616d706c652e636f6d2f783fc2ac'
+      # The browser loads this as if it was a valid URL
+      'http:example.com' | 'https://assets.example.com/bcefecd18484ec2850887d6730273e5e70f5ed1a/687474703a6578616d706c652e636f6d'
+      'https:example.com' | 'https://assets.example.com/648e074361143780357db0b5cf73d4438d5484d3/68747470733a6578616d706c652e636f6d'
+      'https://example.com/##' | 'https://assets.example.com/d7d0c845cc553d9430804c07e9456545ef3e6fe6/68747470733a2f2f6578616d706c652e636f6d2f2323'
+      nil | "test.png"
+      nil | "/test.png"
+      nil | "#{Gitlab.config.gitlab.url}/test.png"
+      nil | 'http://gitlab.com/test.png'
+      nil | 'http://gitlab.com/test.png?url=http://example.com/test.png'
+      nil | 'http://images.mydomain.com/test.png'
     end
 
-    it 'replaces invalid URLs' do
-      src     = '///example.com/test.png'
-      new_src = 'https://assets.example.com/3368d2c7b9bed775bdd1e811f36a4b80a0dcd8ab/2f2f2f6578616d706c652e636f6d2f746573742e706e67'
-      doc     = filter(image(src), @context)
+    with_them do
+      it 'correctly modifies the img tag' do
+        original_url = data_canonical_src || src
+        doc = filter(image(original_url), @context)
 
-      expect(doc.at_css('img')['src']).to eq new_src
-      expect(doc.at_css('img')['data-canonical-src']).to eq src
-    end
-
-    it 'replaces by default, even strings that do not look like URLs' do
-      src     = 'oigjsie8787%$**(#(%0'
-      new_src = 'https://assets.example.com/1b893f9a71d66c99437f27e19b9a061a6f5d9391/6f69676a7369653837383725242a2a2823282530'
-      doc     = filter(image(src), @context)
-
-      expect(doc.at_css('img')['src']).to eq new_src
-      expect(doc.at_css('img')['data-canonical-src']).to eq src
-    end
-
-    it 'replaces URL with non-ASCII characters' do
-      src     = 'https://example.com/x?¬'
-      new_src = 'https://assets.example.com/2f29a8c7f13f3ae14dc18c154dbbd657d703e75f/68747470733a2f2f6578616d706c652e636f6d2f783fc2ac'
-      doc     = filter(image(src), @context)
-
-      expect(doc.at_css('img')['src']).to eq new_src
-      expect(doc.at_css('img')['data-canonical-src']).to eq src
-    end
-
-    it 'replaces out-of-spec URL that would still be rendered in the browser' do
-      src     = 'https://example.com/##'
-      new_src = 'https://assets.example.com/d7d0c845cc553d9430804c07e9456545ef3e6fe6/68747470733a2f2f6578616d706c652e636f6d2f2323'
-      doc     = filter(image(src), @context)
-
-      expect(doc.at_css('img')['src']).to eq new_src
-      expect(doc.at_css('img')['data-canonical-src']).to eq src
-    end
-
-    it 'skips internal images' do
-      src      = "#{Gitlab.config.gitlab.url}/test.png"
-      doc      = filter(image(src), @context)
-
-      expect(doc.at_css('img')['src']).to eq src
-    end
-
-    it 'skip relative urls' do
-      src = "/test.png"
-      doc = filter(image(src), @context)
-
-      expect(doc.at_css('img')['src']).to eq src
-    end
-
-    it 'skips single domain' do
-      src = "http://gitlab.com/test.png"
-      doc = filter(image(src), @context)
-
-      expect(doc.at_css('img')['src']).to eq src
-    end
-
-    it 'skips single domain and ignores url in query string' do
-      src = "http://gitlab.com/test.png?url=http://example.com/test.png"
-      doc = filter(image(src), @context)
-
-      expect(doc.at_css('img')['src']).to eq src
-    end
-
-    it 'skips wildcarded domain' do
-      src = "http://images.mydomain.com/test.png"
-      doc = filter(image(src), @context)
-
-      expect(doc.at_css('img')['src']).to eq src
+        expect(doc.at_css('img')['src']).to eq src
+        expect(doc.at_css('img')['data-canonical-src']).to eq data_canonical_src
+      end
     end
   end
 end

@@ -13,29 +13,18 @@ RSpec.describe 'Instance variables', :js, feature_category: :secrets_management 
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
 
-    stub_feature_flags(ci_variable_drawer: false)
     visit page_path
     wait_for_requests
   end
 
   context 'when ci_variables_pages FF is enabled' do
-    it_behaves_like 'variable list', is_admin: true
+    it_behaves_like 'variable list drawer', is_admin: true
     it_behaves_like 'variable list pagination', :ci_instance_variable
   end
 
   context 'when ci_variables_pages FF is disabled' do
     before do
       stub_feature_flags(ci_variables_pages: false)
-    end
-
-    it_behaves_like 'variable list', is_admin: true
-  end
-
-  context 'when ci_variable_drawer FF is enabled' do
-    before do
-      stub_feature_flags(ci_variable_drawer: true)
-      visit page_path
-      wait_for_requests
     end
 
     it_behaves_like 'variable list drawer', is_admin: true

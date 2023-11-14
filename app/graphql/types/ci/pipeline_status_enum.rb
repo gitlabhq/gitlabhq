@@ -7,6 +7,7 @@ module Types
         created: 'Pipeline has been created.',
         waiting_for_resource: 'A resource (for example, a runner) that the pipeline requires to run is unavailable.',
         preparing: 'Pipeline is preparing to run.',
+        waiting_for_callback: 'Pipeline is waiting for an external action.',
         pending: 'Pipeline has not started running yet.',
         running: 'Pipeline is running.',
         failed: 'At least one stage of the pipeline failed.',

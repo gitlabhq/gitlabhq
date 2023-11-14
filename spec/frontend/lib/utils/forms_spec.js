@@ -6,7 +6,8 @@ import {
   hasMinimumLength,
   isParseableAsInteger,
   isIntegerGreaterThan,
-  isEmail,
+  isServiceDeskSettingEmail,
+  isUserEmail,
   parseRailsFormFields,
 } from '~/lib/utils/forms';
 
@@ -202,7 +203,7 @@ describe('lib/utils/forms', () => {
     );
   });
 
-  describe('isEmail', () => {
+  describe('isServiceDeskSettingEmail', () => {
     it.each`
       input                                    | returnValue
       ${'user-with_special-chars@example.com'} | ${true}
@@ -219,7 +220,28 @@ describe('lib/utils/forms', () => {
       ${' '}                                   | ${false}
       ${'12'}                                  | ${false}
     `('returns $returnValue for value $input', ({ input, returnValue }) => {
-      expect(isEmail(input)).toBe(returnValue);
+      expect(isServiceDeskSettingEmail(input)).toBe(returnValue);
+    });
+  });
+
+  describe('isUserEmail', () => {
+    it.each`
+      input                                    | returnValue
+      ${'user-with_special-chars@example.com'} | ${true}
+      ${'user@subdomain.example.com'}          | ${true}
+      ${'user@example.com'}                    | ${true}
+      ${'user@example.co'}                     | ${true}
+      ${'user@example.c'}                      | ${true}
+      ${'user@example'}                        | ${true}
+      ${''}                                    | ${false}
+      ${[]}                                    | ${false}
+      ${null}                                  | ${false}
+      ${undefined}                             | ${false}
+      ${'hello'}                               | ${false}
+      ${' '}                                   | ${false}
+      ${'12'}                                  | ${false}
+    `('returns $returnValue for value $input', ({ input, returnValue }) => {
+      expect(isUserEmail(input)).toBe(returnValue);
     });
   });
 

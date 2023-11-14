@@ -688,6 +688,31 @@ entry.
 - [Alias read_namespace to access_namespace and move usages to new ability](gitlab-org/gitlab@61cdb4127143162a9bf9182f9c3c2d8421ee447f) by @Taucher2003 ([merge request](gitlab-org/gitlab!126625))
 - [Remove `custom_roles_on_groups` feature flag](gitlab-org/gitlab@ddb4b4399b8bb82793410005c5778a002ae409b9) ([merge request](gitlab-org/gitlab!132187)) **GitLab Enterprise Edition**
 
+## 16.4.2 (2023-10-30)
+
+### Fixed (4 changes)
+
+- [Fix pipeline schedules view when owner is nil](gitlab-org/security/gitlab@663b1328b6e05e472f60ebdcec9866220b88d066)
+- [Update dependency prometheus-client-mmap to '>= 0.28.1'](gitlab-org/security/gitlab@a478482f3616bfe205e10fcca997b0e6f133d692)
+- [Fix failing migration when commit_message_negative_regex is missing](gitlab-org/security/gitlab@1488c3ed6568d44aa7c8b7d0551fa8160b59c1dc)
+- [Backport fix flaky epic tests](gitlab-org/security/gitlab@155cb51939d5b3c1f4b847219a5cb62c9f2ae1b0) **GitLab Enterprise Edition**
+
+### Security (9 changes)
+
+- [Fix infinite loop when finding component project](gitlab-org/security/gitlab@b38efc987c1081fcd092c96e69c7ebb539324679) ([merge request](gitlab-org/security/gitlab!3666))
+- [Update gitlab-chronic-duration to 0.12](gitlab-org/security/gitlab@1c8dd2e890c1121b1c1ad947f701a39ec6ac5310) ([merge request](gitlab-org/security/gitlab!3628))
+- [Guard gitlab_version_check helper](gitlab-org/security/gitlab@e6c833ee0da8a801f08d5d7411b4ff683d0cde31) ([merge request](gitlab-org/security/gitlab!3653))
+- [Add the environment action to the CI JWT token fields](gitlab-org/security/gitlab@10fe34349f2e1d8230b805316f559b2dde8e6240) ([merge request](gitlab-org/security/gitlab!3616))
+- [Remove FIFO files from tarball extract](gitlab-org/security/gitlab@5d5acf918d68ffcf193a7c477c637788aadd882e) ([merge request](gitlab-org/security/gitlab!3633))
+- [Backport add abuse detection for pipes](gitlab-org/security/gitlab@2ccde2dbbcc647c8fc34ebb71c5472e2b70560ab) ([merge request](gitlab-org/security/gitlab!3618))
+- [Prevent unprivileged user assignment in templated projects](gitlab-org/security/gitlab@977371d7af40caa2a9b8fb18fe093be12d2e8443) ([merge request](gitlab-org/security/gitlab!3636))
+- [Fixes Service Desk email template issue description privileges](gitlab-org/security/gitlab@6e8e58e222937232397502828fa0985dee1bf786) ([merge request](gitlab-org/security/gitlab!3640))
+- [Update mermaid version for DOS fixes](gitlab-org/security/gitlab@5047299db60c7ab27fb521812d04dee7e70e319b) ([merge request](gitlab-org/security/gitlab!3626))
+
+### Other (1 change)
+
+- [Create Geo event when project is created](gitlab-org/security/gitlab@1f743fba3af02ab30e65c03da7f088610880a90a) **GitLab Enterprise Edition**
+
 ## 16.4.1 (2023-09-28)
 
 ### Security (15 changes)
@@ -1433,6 +1458,20 @@ entry.
 - [Remove completed partition_id migrations](gitlab-org/gitlab@119f7a7fd961c93be6b1bbd606fbbe2b798f10aa) ([merge request](gitlab-org/gitlab!129118))
 - [Convert design_user_mentions.note_id to bigint for self-managed](gitlab-org/gitlab@08219da99fc356fecc4e9965fe1891baca4d10ff) ([merge request](gitlab-org/gitlab!129111))
 - [Migrate etag cache store from SharedState to Cache](gitlab-org/gitlab@6476298fcdcf77206fa768bcca6bd1e3c7994936) ([merge request](gitlab-org/gitlab!129050))
+
+## 16.3.6 (2023-10-30)
+
+### Security (9 changes)
+
+- [Fix infinite loop when finding component project](gitlab-org/security/gitlab@a1c1255f8f767f1b9a26aee1008ef6a286988a1d) ([merge request](gitlab-org/security/gitlab!3667))
+- [Update gitlab-chronic-duration to 0.12](gitlab-org/security/gitlab@89ed5a67a26c362d197eae4f3228755a5e3a1c03) ([merge request](gitlab-org/security/gitlab!3630))
+- [Guard gitlab_version_check helper](gitlab-org/security/gitlab@b8f490fc3cfe465d46666380b17c065669c216e1) ([merge request](gitlab-org/security/gitlab!3654))
+- [Add the environment action to the CI JWT token fields](gitlab-org/security/gitlab@0563e1a02c2b6886cc21c4dfbedd975c102f0fbb) ([merge request](gitlab-org/security/gitlab!3615))
+- [Remove FIFO files from tarball extract](gitlab-org/security/gitlab@d794f0c972e2e081c0ed78ed5001bdd111688641) ([merge request](gitlab-org/security/gitlab!3634))
+- [Backport add abuse detection for pipes](gitlab-org/security/gitlab@84a3debec3ce0473598d4681850ccca74a892b30) ([merge request](gitlab-org/security/gitlab!3619))
+- [Prevent unprivileged user assignment in templated projects](gitlab-org/security/gitlab@b4ba31c793317dee41382f7a41af4637f38cddaa) ([merge request](gitlab-org/security/gitlab!3637))
+- [Fixes Service Desk email template issue description privileges](gitlab-org/security/gitlab@223765ae04031afda38f10e8487a3785ab53032b) ([merge request](gitlab-org/security/gitlab!3639))
+- [Update mermaid version for DOS fixes](gitlab-org/security/gitlab@602b89ced4ccad048819fc1603d6e978fd58c882) ([merge request](gitlab-org/security/gitlab!3627))
 
 ## 16.3.5 (2023-09-28)
 

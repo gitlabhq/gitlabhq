@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_category: :code_review_workflow do
   include ListboxHelpers
 
-  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository, namespace: user.namespace) }
 
   def select_source_branch(branch_name)
@@ -64,8 +64,10 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
     fill_in "merge_request_title", with: "Orphaned MR test"
     click_button "Create merge request"
 
-    click_button 'Code'
-    click_button "Check out branch"
+    page.within 'main' do
+      click_button 'Code'
+      click_button "Check out branch"
+    end
 
     expect(page).to have_content 'git checkout -b \'orphaned-branch\' \'origin/orphaned-branch\''
   end

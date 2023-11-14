@@ -510,6 +510,26 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
     end
   end
 
+  describe '#valid_fork_branch?' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :small_repo, creator_id: user.id) }
+    let_it_be(:branch) { nil }
+
+    subject { described_class.new(project, user).valid_fork_branch?(branch) }
+
+    context 'when branch exists' do
+      let(:branch) { project.default_branch_or_main }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when branch does not exist' do
+      let(:branch) { 'branch-that-does-not-exist' }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#valid_fork_target?' do
     let(:project) { Project.new }
     let(:params) { {} }

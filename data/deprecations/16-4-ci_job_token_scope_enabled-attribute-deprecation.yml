@@ -7,7 +7,7 @@
   breaking_change: true  # (required) Change to false if this is not a breaking change.
   reporter: jocelynjane  # (required) GitLab username of the person reporting the change
   stage: verify  # (required) String value of the stage that the feature was created in. e.g., Growth
-  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/423091 # (required) Link to the deprecation issue in GitLab
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/423091  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
     GitLab 16.1 introduced [API endpoints for the job token scope](https://gitlab.com/gitlab-org/gitlab/-/issues/351740). In the [projects API](https://docs.gitlab.com/ee/api/projects.html), the `ci_job_token_scope_enabled` attribute is deprecated, and will be removed in 17.0. You should use the [job token scope APIs](https://docs.gitlab.com/ee/api/project_job_token_scopes.html) instead.
 #

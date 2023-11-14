@@ -67,7 +67,7 @@ export default {
     <div
       class="gl-pb-3 gl-display-flex gl-justify-content-space-between gl-xs-flex-direction-column gl-align-items-center"
     >
-      <h2 class="gl-font-lg gl-mt-2 gl-mb-2">
+      <h2 class="gl-font-size-h1 gl-mt-2 gl-mb-2">
         {{ $options.i18n.reportTypes[reportType] }}
       </h2>
 
@@ -128,7 +128,7 @@ export default {
             </gl-link>
             <time-ago-tooltip
               :time="report.reportedAt"
-              class="gl-ml-3 gl-text-secondary gl-xs-w-full"
+              class="gl-ml-3 gl-text-secondary gl-w-full gl-sm-w-auto"
             />
           </div>
         </div>

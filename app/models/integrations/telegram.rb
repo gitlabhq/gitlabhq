@@ -38,11 +38,11 @@ module Integrations
 
     before_validation :set_webhook
 
-    def title
+    def self.title
       'Telegram'
     end
 
-    def description
+    def self.description
       s_("TelegramIntegration|Send notifications about project events to Telegram.")
     end
 
@@ -50,7 +50,7 @@ module Integrations
       'telegram'
     end
 
-    def help
+    def self.help
       docs_link = ActionController::Base.helpers.link_to(
         _('Learn more.'),
         Rails.application.routes.url_helpers.help_page_url('user/project/integrations/telegram'),

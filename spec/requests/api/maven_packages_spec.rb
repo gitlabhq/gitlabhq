@@ -946,6 +946,22 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       expect(response).to have_gitlab_http_status(:forbidden)
     end
 
+    context 'with basic auth' do
+      where(:token_type) do
+        %i[personal_access_token deploy_token job]
+      end
+
+      with_them do
+        let(:token) { send(token_type).token }
+
+        it "authorizes upload with #{params[:token_type]} token" do
+          authorize_upload({}, headers.merge(basic_auth_header(token_type == :job ? ::Gitlab::Auth::CI_JOB_USER : user.username, token)))
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+    end
+
     def authorize_upload(params = {}, request_headers = headers)
       put api("/projects/#{project.id}/packages/maven/com/example/my-app/#{version}/maven-metadata.xml/authorize"), params: params, headers: request_headers
     end
@@ -1081,6 +1097,22 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         )
 
         expect(response).to have_gitlab_http_status(:forbidden)
+      end
+
+      context 'with basic auth' do
+        where(:token_type) do
+          %i[personal_access_token deploy_token job]
+        end
+
+        with_them do
+          let(:token) { send(token_type).token }
+
+          it "allows upload with #{params[:token_type]} token" do
+            upload_file(params: params, request_headers: headers.merge(basic_auth_header(token_type == :job ? ::Gitlab::Auth::CI_JOB_USER : user.username, token)))
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
       end
 
       context 'file name is too long' do

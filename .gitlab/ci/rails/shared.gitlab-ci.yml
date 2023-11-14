@@ -84,10 +84,10 @@ include:
     - echo -e "\e[0Ksection_start:`date +%s`:report_results_section[collapsed=true]\r\e[0KReport results"
     - |
       if [ "$CREATE_RAILS_TEST_FAILURE_ISSUES" == "true" ]; then
-        bundle exec relate-failure-issue --input-files "rspec/rspec-*.json" --system-log-files "log" --project "gitlab-org/gitlab" --token "${TEST_FAILURES_PROJECT_TOKEN}";
+        bundle exec relate-failure-issue --input-files "rspec/rspec-*.json" --system-log-files "log" --project "gitlab-org/gitlab" --token "${TEST_FAILURES_PROJECT_TOKEN}" --related-issues-file "rspec/${CI_JOB_ID}-failed-test-issues.json";
       fi
       if [ "$CREATE_RAILS_SLOW_TEST_ISSUES" == "true" ]; then
-        bundle exec slow-test-issues --input-files "rspec/rspec-*.json" --project "gitlab-org/gitlab" --token "${TEST_FAILURES_PROJECT_TOKEN}";
+        bundle exec slow-test-issues --input-files "rspec/rspec-*.json" --project "gitlab-org/gitlab" --token "${TEST_FAILURES_PROJECT_TOKEN}" --related-issues-file "rspec/${CI_JOB_ID}-slow-test-issues.json";
       fi
       if [ "$ADD_SLOW_TEST_NOTE_TO_MERGE_REQUEST" == "true" ]; then
         bundle exec slow-test-merge-request-report-note --input-files "rspec/rspec-*.json" --project "gitlab-org/gitlab" --merge_request_iid "$CI_MERGE_REQUEST_IID" --token "${TEST_SLOW_NOTE_PROJECT_TOKEN}";
@@ -120,11 +120,6 @@ include:
     - rspec_paralellized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~zoekt --tag ~click_house"
   after_script:
     - !reference [.rspec-base, after_script]
-
-.rspec-base-pg12:
-  extends:
-    - .rspec-base
-    - .use-pg12
 
 .rspec-base-pg13:
   extends:
@@ -162,11 +157,6 @@ include:
   extends:
     - .rspec-base
     - .use-pg15
-
-.rspec-ee-base-pg12:
-  extends:
-    - .rspec-base
-    - .use-pg12-es7-ee
 
 .rspec-ee-base-pg13:
   extends:

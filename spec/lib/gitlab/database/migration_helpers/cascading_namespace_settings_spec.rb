@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::CascadingNamespaceSettings do
       it 'raises an error when some columns already exist' do
         expect do
           migration.add_cascading_namespace_setting(:cascading_setting, :integer)
-        end.to raise_error %r/Existing columns: namespace_settings.cascading_setting, application_settings.lock_cascading_setting/
+        end.to raise_error %r{Existing columns: namespace_settings.cascading_setting, application_settings.lock_cascading_setting}
       end
     end
   end

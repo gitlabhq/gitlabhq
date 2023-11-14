@@ -111,9 +111,9 @@ You can sort the compliance report on:
 
 You can filter the compliance violations report on:
 
-- Project.
-- Date range of merge.
-- Target branch.
+- The project that the violation was found on.
+- The date range of violation.
+- The target branch of the violation.
 
 Select a row to see details of the compliance violation.
 
@@ -393,6 +393,7 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 With compliance frameworks report, you can see all the compliance frameworks in a group. Each row of the report shows:
 
 - Framework name.
+- Associated projects.
 
 The default framework for the group has a **default** badge.
 

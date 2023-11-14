@@ -14,9 +14,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
   end
 
   let_it_be(:pipeline, reload: true) do
-    create(:ci_pipeline, project: project,
-                         sha: project.commit.id,
-                         ref: project.default_branch)
+    create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
   end
 
   let(:user) { create(:user) }
@@ -25,10 +23,14 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
   let(:guest) { create(:project_member, :guest, project: project).user }
 
   let(:running_job) do
-    create(:ci_build, :running, project: project,
-                                user: user,
-                                pipeline: pipeline,
-                                artifacts_expire_at: 1.day.since)
+    create(
+      :ci_build,
+      :running,
+      project: project,
+      user: user,
+      pipeline: pipeline,
+      artifacts_expire_at: 1.day.since
+    )
   end
 
   let!(:job) do
@@ -266,7 +268,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
           expect(json_response.dig('project', 'groups')).to match_array([{ 'id' => group.id }])
           expect(json_response.dig('user', 'id')).to eq(api_user.id)
           expect(json_response.dig('user', 'username')).to eq(api_user.username)
-          expect(json_response.dig('user', 'roles_in_project')).to match_array %w(guest reporter developer)
+          expect(json_response.dig('user', 'roles_in_project')).to match_array %w[guest reporter developer]
           expect(json_response).not_to include('environment')
         end
 
@@ -450,7 +452,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       end
 
       context 'filter project with array of scope elements' do
-        let(:query) { { scope: %w(pending running) } }
+        let(:query) { { scope: %w[pending running] } }
 
         it do
           expect(response).to have_gitlab_http_status(:ok)
@@ -459,7 +461,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       end
 
       context 'respond 400 when scope contains invalid state' do
-        let(:query) { { scope: %w(unknown running) } }
+        let(:query) { { scope: %w[unknown running] } }
 
         it { expect(response).to have_gitlab_http_status(:bad_request) }
       end
@@ -789,14 +791,14 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     end
 
     context 'authorized user' do
-      context 'user with :update_build persmission' do
+      context 'user with :cancel_build permission' do
         it 'cancels running or pending job' do
           expect(response).to have_gitlab_http_status(:created)
           expect(project.builds.first.status).to eq('success')
         end
       end
 
-      context 'user without :update_build permission' do
+      context 'user without :cancel_build permission' do
         let(:api_user) { reporter }
 
         it 'does not cancel job' do

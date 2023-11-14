@@ -38,7 +38,7 @@ GET /projects/:id/pipelines
 | `id`             | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 | `scope`          | string         | No       | The scope of pipelines, one of: `running`, `pending`, `finished`, `branches`, `tags` |
 | `status`         | string         | No       | The status of pipelines, one of: `created`, `waiting_for_resource`, `preparing`, `pending`, `running`, `success`, `failed`, `canceled`, `skipped`, `manual`, `scheduled` |
-| `source`         | string         | No       | In [GitLab 14.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/325439), how the pipeline was triggered, one of: `push`, `web`, `trigger`, `schedule`, `api`, `external`, `pipeline`, `chat`, `webide`, `merge_request_event`, `external_pull_request_event`, `parent_pipeline`, `ondemand_dast_scan`, or `ondemand_dast_validation`. |
+| `source`         | string         | No       | In [GitLab 14.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/325439), how the pipeline was triggered, one of: `api`, `chat`, `external`, `external_pull_request_event`, `merge_request_event`, `ondemand_dast_scan`, `ondemand_dast_validation`, `parent_pipeline`, `pipeline`, `push`, `schedule`, `security_orchestration_policy`, `trigger`, `web`, or `webide`. |
 | `ref`            | string         | No       | The ref of pipelines |
 | `sha`            | string         | No       | The SHA of pipelines |
 | `yaml_errors`    | boolean        | No       | Returns pipelines with invalid configurations |
@@ -517,4 +517,58 @@ DELETE /projects/:id/pipelines/:pipeline_id
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" --request "DELETE" "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
+```
+
+## Update pipeline metadata
+
+You can update the metadata of a pipeline. The metadata contains the name of the pipeline.
+
+```plaintext
+PUT /projects/:id/pipelines/:pipeline_id/metadata
+```
+
+| Attribute     | Type           | Required | Description |
+|---------------|----------------|----------|-------------|
+| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `pipeline_id` | integer        | Yes      | The ID of a pipeline |
+| `name`        | string         | Yes      | The new name of the pipeline |
+
+Sample request:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "name=Some new pipeline name" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/metadata"
+```
+
+Sample response:
+
+```json
+{
+  "id": 46,
+  "iid": 11,
+  "project_id": 1,
+  "status": "running",
+  "ref": "main",
+  "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+  "before_sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+  "tag": false,
+  "yaml_errors": null,
+  "user": {
+    "name": "Administrator",
+    "username": "root",
+    "id": 1,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+    "web_url": "http://localhost:3000/root"
+  },
+  "created_at": "2016-08-11T11:28:34.085Z",
+  "updated_at": "2016-08-11T11:32:35.169Z",
+  "started_at": null,
+  "finished_at": "2016-08-11T11:32:35.145Z",
+  "committed_at": null,
+  "duration": null,
+  "queued_duration": 0.010,
+  "coverage": null,
+  "web_url": "https://example.com/foo/bar/pipelines/46",
+  "name": "Some new pipeline name"
+}
 ```

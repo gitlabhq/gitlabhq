@@ -45,21 +45,6 @@ RSpec.describe MembersHelper do
     end
   end
 
-  describe '#remove_member_title' do
-    let(:requester) { create(:user) }
-    let(:project) { create(:project, :public) }
-    let(:project_member) { build(:project_member, project: project) }
-    let(:project_member_request) { project.request_access(requester) }
-    let(:group) { create(:group) }
-    let(:group_member) { build(:group_member, group: group) }
-    let(:group_member_request) { group.request_access(requester) }
-
-    it { expect(remove_member_title(project_member)).to eq 'Remove user from project' }
-    it { expect(remove_member_title(project_member_request)).to eq 'Deny access request from project' }
-    it { expect(remove_member_title(group_member)).to eq 'Remove user from group and any subresources' }
-    it { expect(remove_member_title(group_member_request)).to eq 'Deny access request from group' }
-  end
-
   describe '#leave_confirmation_message' do
     let(:project) { build_stubbed(:project) }
     let(:group) { build_stubbed(:group) }

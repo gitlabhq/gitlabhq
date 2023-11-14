@@ -18,6 +18,10 @@ As of GitLab 13.5, we don't have project-level iterations, but you can use this 
 
 Returns a list of project iterations.
 
+Iterations created by **Enable automatic scheduling** in
+[Iteration cadences](../user/group/iterations/index.md#iteration-cadences) return `null` for
+the `title` and `description` fields.
+
 ```plaintext
 GET /projects/:id/iterations
 GET /projects/:id/iterations?state=opened

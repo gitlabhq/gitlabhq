@@ -119,9 +119,8 @@ To deprecate a page or topic:
 
    You can add any additional context-specific details that might help users.
 
-1. Add the following HTML comments above and below the content.
-   For `remove_date`, set a date three months after the release where it
-   will be removed.
+1. Add the following HTML comments above and below the content. For `remove_date`,
+   set a date three months after the [release where it will be removed](https://about.gitlab.com/releases/).
 
    ```markdown
    <!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->

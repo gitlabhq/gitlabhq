@@ -23,13 +23,13 @@ RSpec.describe Commit do
     shared_examples '.lazy checks' do
       context 'when the commits are found' do
         let(:oids) do
-          %w(
+          %w[
             498214de67004b1da3d820901307bed2a68a8ef6
             c642fe9b8b9f28f9225d7ea953fe14e74748d53b
             6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
             048721d90c449b244b7b4c53a9186b04330174ec
             281d3a76f31c812dbf48abce82ccf6860adedd81
-          )
+          ]
         end
 
         subject { oids.map { |oid| described_class.lazy(container, oid) } }
@@ -705,16 +705,6 @@ eos
 
   describe '#uri_type with Gitaly enabled' do
     it_behaves_like "#uri_type"
-  end
-
-  describe '#uri_type with Rugged enabled', :enable_rugged do
-    it 'calls out to the Rugged implementation' do
-      allow_any_instance_of(Rugged::Tree).to receive(:path).with('files/html').and_call_original
-
-      commit.uri_type('files/html')
-    end
-
-    it_behaves_like '#uri_type'
   end
 
   describe '.diff_max_files' do

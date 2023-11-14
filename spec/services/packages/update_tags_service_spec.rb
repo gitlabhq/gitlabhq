@@ -4,7 +4,7 @@ require 'spec_helper'
 RSpec.describe Packages::UpdateTagsService, feature_category: :package_registry do
   let_it_be(:package, reload: true) { create(:nuget_package) }
 
-  let(:tags) { %w(test-tag tag1 tag2 tag3) }
+  let(:tags) { %w[test-tag tag1 tag2 tag3] }
   let(:service) { described_class.new(package, tags) }
 
   describe '#execute' do

@@ -21,11 +21,11 @@ RSpec.describe CaseSensitivity do
     end
 
     it 'finds multiple instances by a single attribute regardless of case' do
-      expect(model.iwhere(path: %w(MODEL-1 model-2))).to contain_exactly(model_1, model_2)
+      expect(model.iwhere(path: %w[MODEL-1 model-2])).to contain_exactly(model_1, model_2)
     end
 
     it 'finds instances by multiple attributes' do
-      expect(model.iwhere(path: %w(MODEL-1 model-2), name: 'model 1'))
+      expect(model.iwhere(path: %w[MODEL-1 model-2], name: 'model 1'))
         .to contain_exactly(model_1)
     end
 
@@ -34,7 +34,7 @@ RSpec.describe CaseSensitivity do
     end
 
     it 'builds a query using LOWER' do
-      query = model.iwhere(path: %w(MODEL-1 model-2), name: 'model 1').to_sql
+      query = model.iwhere(path: %w[MODEL-1 model-2], name: 'model 1').to_sql
       expected_query = <<~QRY.strip
       SELECT \"namespaces\".* FROM \"namespaces\" WHERE (LOWER(\"namespaces\".\"path\") IN (LOWER('MODEL-1'), LOWER('model-2'))) AND (LOWER(\"namespaces\".\"name\") = LOWER('model 1'))
       QRY

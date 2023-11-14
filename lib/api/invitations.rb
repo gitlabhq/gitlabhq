@@ -10,6 +10,12 @@ module API
 
     helpers ::API::Helpers::MembersHelpers
 
+    helpers do
+      params :invitation_params_ee do
+        # Overriden in EE
+      end
+    end
+
     %w[group project].each do |source_type|
       params do
         requires :id, type: String, desc: "The #{source_type} ID"
@@ -26,6 +32,8 @@ module API
           optional :user_id, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The user ID of the new member or multiple IDs separated by commas.'
           optional :expires_at, type: DateTime, desc: 'Date string in the format YEAR-MONTH-DAY'
           optional :invite_source, type: String, desc: 'Source that triggered the member creation process', default: 'invitations-api'
+
+          use :invitation_params_ee
         end
         post ":id/invitations", urgency: :low do
           ::Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/354016')
@@ -34,11 +42,7 @@ module API
 
           source = find_source(source_type, params[:id])
 
-          if ::Feature.enabled?(:admin_group_member, source)
-            authorize_admin_source_member!(source_type, source)
-          else
-            authorize_admin_source!(source_type, source)
-          end
+          authorize_admin_source_member!(source_type, source)
 
           create_service_params = params.merge(source: source)
 
@@ -61,11 +65,7 @@ module API
           source = find_source(source_type, params[:id])
           query = params[:query]
 
-          if ::Feature.enabled?(:admin_group_member, source)
-            authorize_admin_source_member!(source_type, source)
-          else
-            authorize_admin_source!(source_type, source)
-          end
+          authorize_admin_source_member!(source_type, source)
 
           invitations = paginate(retrieve_member_invitations(source, query))
 
@@ -80,16 +80,14 @@ module API
           requires :email, type: String, desc: 'The email address of the invitation'
           optional :access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'A valid access level (defaults: `30`, developer access level)'
           optional :expires_at, type: DateTime, desc: 'Date string in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`)'
+
+          use :invitation_params_ee
         end
         put ":id/invitations/:email", requirements: { email: %r{[^/]+} } do
           source = find_source(source_type, params.delete(:id))
           invite_email = params[:email]
 
-          if ::Feature.enabled?(:admin_group_member, source)
-            authorize_admin_source_member!(source_type, source)
-          else
-            authorize_admin_source!(source_type, source)
-          end
+          authorize_admin_source_member!(source_type, source)
 
           invite = retrieve_member_invitations(source, invite_email).first
           not_found! unless invite
@@ -127,11 +125,7 @@ module API
           source = find_source(source_type, params[:id])
           invite_email = params[:email]
 
-          if ::Feature.enabled?(:admin_group_member, source)
-            authorize_admin_source_member!(source_type, source)
-          else
-            authorize_admin_source!(source_type, source)
-          end
+          authorize_admin_source_member!(source_type, source)
 
           invite = retrieve_member_invitations(source, invite_email).first
           not_found! unless invite
@@ -145,3 +139,5 @@ module API
     end
   end
 end
+
+API::Members.prepend_mod

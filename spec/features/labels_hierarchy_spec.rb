@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
   include FilteredSearchHelpers
 
-  let!(:user) { create(:user, :no_super_sidebar) }
+  let!(:user) { create(:user) }
   let!(:grandparent) { create(:group) }
   let!(:parent) { create(:group, parent: grandparent) }
   let!(:child) { create(:group, parent: parent) }
@@ -179,7 +179,7 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
         wait_for_requests
       end
 
-      find('.btn-confirm').click
+      click_button 'Create issue'
 
       expect(page.find('.issue-details h1.title')).to have_content('new created issue')
       expect(page).to have_selector('span.gl-label-text', text: grandparent_group_label.title)

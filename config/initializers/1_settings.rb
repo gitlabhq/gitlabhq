@@ -183,6 +183,7 @@ Settings.gitlab['default_project_creation'] ||= ::Gitlab::Access::DEVELOPER_MAIN
 Settings.gitlab['default_project_deletion_protection'] ||= false
 Settings.gitlab['default_projects_limit'] ||= 100000
 Settings.gitlab['default_branch_protection'] ||= 2
+Settings.gitlab['default_branch_protection_defaults'] ||= ::Gitlab::Access::BranchProtection.protected_fully
 # `default_can_create_group` is deprecated since GitLab 15.5 in favour of the `can_create_group` column on `ApplicationSetting`.
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
 Settings.gitlab['default_theme'] = Gitlab::Themes::APPLICATION_DEFAULT if Settings.gitlab['default_theme'].nil?
@@ -799,15 +800,9 @@ Gitlab.ee do
   Settings.cron_jobs['llm_embedding_gitlab_documentation_create_empty_embeddings_records_worker'] ||= {}
   Settings.cron_jobs['llm_embedding_gitlab_documentation_create_empty_embeddings_records_worker']['cron'] ||= '0 5 * * 1,2,3,4,5'
   Settings.cron_jobs['llm_embedding_gitlab_documentation_create_empty_embeddings_records_worker']['job_class'] ||= 'Llm::Embedding::GitlabDocumentation::CreateEmptyEmbeddingsRecordsWorker'
-  Settings.cron_jobs['tanuki_bot_recreate_records_worker'] ||= {}
-  Settings.cron_jobs['tanuki_bot_recreate_records_worker']['cron'] ||= '0 5 * * 1,2,3,4,5'
-  Settings.cron_jobs['tanuki_bot_recreate_records_worker']['job_class'] ||= 'Llm::TanukiBot::RecreateRecordsWorker'
   Settings.cron_jobs['llm_embedding_gitlab_documentation_cleanup_previous_versions_records_worker'] ||= {}
   Settings.cron_jobs['llm_embedding_gitlab_documentation_cleanup_previous_versions_records_worker']['cron'] ||= '0 0 * * *'
   Settings.cron_jobs['llm_embedding_gitlab_documentation_cleanup_previous_versions_records_worker']['job_class'] ||= 'Llm::Embedding::GitlabDocumentation::CleanupPreviousVersionsRecordsWorker'
-  Settings.cron_jobs['tanuki_bot_remove_previous_records_worker'] ||= {}
-  Settings.cron_jobs['tanuki_bot_remove_previous_records_worker']['cron'] ||= '0 0 * * *'
-  Settings.cron_jobs['tanuki_bot_remove_previous_records_worker']['job_class'] ||= 'Llm::TanukiBot::RemovePreviousRecordsWorker'
   Settings.cron_jobs['users_create_statistics_worker'] ||= {}
   Settings.cron_jobs['users_create_statistics_worker']['cron'] ||= '2 15 * * *'
   Settings.cron_jobs['users_create_statistics_worker']['job_class'] = 'Users::CreateStatisticsWorker'
@@ -874,6 +869,9 @@ Gitlab.ee do
   Settings.cron_jobs['ci_schedule_unlock_pipelines_in_queue_worker'] ||= {}
   Settings.cron_jobs['ci_schedule_unlock_pipelines_in_queue_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['ci_schedule_unlock_pipelines_in_queue_worker']['job_class'] = 'Ci::ScheduleUnlockPipelinesInQueueCronWorker'
+  Settings.cron_jobs['timeout_pending_status_check_responses_worker'] ||= {}
+  Settings.cron_jobs['timeout_pending_status_check_responses_worker']['cron'] ||= '*/1 * * * *'
+  Settings.cron_jobs['timeout_pending_status_check_responses_worker']['job_class'] = 'ComplianceManagement::TimeoutPendingStatusCheckResponsesWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}

@@ -81,7 +81,9 @@ module DraftNotes
     end
 
     def set_reviewed
-      ::MergeRequests::MarkReviewerReviewedService.new(project: project, current_user: current_user).execute(merge_request)
+      return if Feature.enabled?(:mr_request_changes, current_user)
+
+      ::MergeRequests::UpdateReviewerStateService.new(project: project, current_user: current_user).execute(merge_request, "reviewed")
     end
 
     def capture_diff_note_positions(notes)

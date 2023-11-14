@@ -1,12 +1,12 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters } from 'vuex';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ScopeLegacyNavigation from '~/search/sidebar/components/scope_legacy_navigation.vue';
 import ScopeSidebarNavigation from '~/search/sidebar/components/scope_sidebar_navigation.vue';
 import SmallScreenDrawerNavigation from '~/search/sidebar/components/small_screen_drawer_navigation.vue';
 import SidebarPortal from '~/super_sidebar/components/sidebar_portal.vue';
 import { toggleSuperSidebarCollapsed } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
 import {
   SCOPE_ISSUES,
@@ -16,6 +16,7 @@ import {
   SCOPE_NOTES,
   SCOPE_COMMITS,
   SCOPE_MILESTONES,
+  SCOPE_WIKI_BLOBS,
   SEARCH_TYPE_ADVANCED,
 } from '../constants';
 import IssuesFilters from './issues_filters.vue';
@@ -25,6 +26,7 @@ import ProjectsFilters from './projects_filters.vue';
 import NotesFilters from './notes_filters.vue';
 import CommitsFilters from './commits_filters.vue';
 import MilestonesFilters from './milestones_filters.vue';
+import WikiBlobsFilters from './wiki_blobs_filters.vue';
 
 export default {
   name: 'GlobalSearchSidebar',
@@ -34,6 +36,7 @@ export default {
     BlobsFilters,
     ProjectsFilters,
     NotesFilters,
+    WikiBlobsFilters,
     ScopeLegacyNavigation,
     ScopeSidebarNavigation,
     SidebarPortal,
@@ -60,20 +63,18 @@ export default {
       return this.currentScope === SCOPE_PROJECTS;
     },
     showNotesFilters() {
-      // for now, the feature flag is placed here. Since we have only one filter in notes scope
-      return this.currentScope === SCOPE_NOTES && this.glFeatures.searchNotesHideArchivedProjects;
+      return this.currentScope === SCOPE_NOTES;
     },
     showCommitsFilters() {
-      // for now, the feature flag is placed here. Since we have only one filter in commits scope
-      return (
-        this.currentScope === SCOPE_COMMITS && this.glFeatures.searchCommitsHideArchivedProjects
-      );
+      return this.currentScope === SCOPE_COMMITS;
     },
     showMilestonesFilters() {
-      // for now, the feature flag is placed here. Since we have only one filter in milestones scope
+      return this.currentScope === SCOPE_MILESTONES;
+    },
+    showWikiBlobsFilters() {
       return (
-        this.currentScope === SCOPE_MILESTONES &&
-        this.glFeatures.searchMilestonesHideArchivedProjects
+        this.currentScope === SCOPE_WIKI_BLOBS &&
+        this.glFeatures?.searchProjectWikisHideArchivedProjects
       );
     },
     showScopeNavigation() {
@@ -103,6 +104,7 @@ export default {
       <notes-filters v-if="showNotesFilters" />
       <commits-filters v-if="showCommitsFilters" />
       <milestones-filters v-if="showMilestonesFilters" />
+      <wiki-blobs-filters v-if="showWikiBlobsFilters" />
     </sidebar-portal>
   </section>
 
@@ -119,6 +121,7 @@ export default {
       <notes-filters v-if="showNotesFilters" />
       <commits-filters v-if="showCommitsFilters" />
       <milestones-filters v-if="showMilestonesFilters" />
+      <wiki-blobs-filters v-if="showWikiBlobsFilters" />
     </div>
     <small-screen-drawer-navigation class="gl-lg-display-none">
       <scope-legacy-navigation />
@@ -129,6 +132,7 @@ export default {
       <notes-filters v-if="showNotesFilters" />
       <commits-filters v-if="showCommitsFilters" />
       <milestones-filters v-if="showMilestonesFilters" />
+      <wiki-blobs-filters v-if="showWikiBlobsFilters" />
     </small-screen-drawer-navigation>
   </section>
 </template>

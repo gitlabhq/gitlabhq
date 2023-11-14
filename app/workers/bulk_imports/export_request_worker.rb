@@ -80,8 +80,7 @@ module BulkImports
           bulk_import_id: entity.bulk_import_id,
           bulk_import_entity_type: entity.source_type,
           source_full_path: entity.source_full_path,
-          source_version: entity.bulk_import.source_version_info.to_s,
-          importer: 'gitlab_migration'
+          source_version: entity.bulk_import.source_version_info.to_s
         }
       )
 
@@ -97,7 +96,7 @@ module BulkImports
     end
 
     def logger
-      @logger ||= Gitlab::Import::Logger.build
+      @logger ||= Logger.build
     end
 
     def log_exception(exception, payload)
@@ -114,8 +113,7 @@ module BulkImports
           bulk_import_entity_type: entity.source_type,
           source_full_path: entity.source_full_path,
           message: "Request to export #{entity.source_type} failed",
-          source_version: entity.bulk_import.source_version_info.to_s,
-          importer: 'gitlab_migration'
+          source_version: entity.bulk_import.source_version_info.to_s
         }
       )
 

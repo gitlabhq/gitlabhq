@@ -8,36 +8,36 @@ module QA
           include Page::Component::DropdownFilter
 
           view 'app/views/projects/protected_tags/shared/_dropdown.html.haml' do
-            element :tags_dropdown
+            element 'tags-dropdown'
           end
 
           view 'app/assets/javascripts/protected_tags/protected_tag_create.js' do
-            element :allowed_to_create_dropdown
+            element 'allowed-to-create-dropdown'
           end
 
           view 'app/views/projects/protected_tags/shared/_create_protected_tag.html.haml' do
-            element :protect_tag_button
+            element 'protect-tag-button'
           end
 
           def set_tag(tag_name)
             click_button 'Add tag'
-            click_element :tags_dropdown
+            click_element 'tags-dropdown'
             filter_and_select(tag_name)
           end
 
           def choose_access_level_role(role)
-            return if find_element(:allowed_to_create_dropdown).text == role
+            return if find_element('allowed-to-create-dropdown').text == role
 
-            click_element :allowed_to_create_dropdown
-            within_element :allowed_to_create_dropdown do
+            click_element 'allowed-to-create-dropdown'
+            within_element 'allowed-to-create-dropdown' do
               click_on role
             end
             # confirm selection and remove dropdown
-            click_element :allowed_to_create_dropdown
+            click_element 'allowed-to-create-dropdown'
           end
 
           def click_protect_tag_button
-            click_element :protect_tag_button
+            click_element 'protect-tag-button'
           end
         end
       end

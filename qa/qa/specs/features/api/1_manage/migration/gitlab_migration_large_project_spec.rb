@@ -34,23 +34,36 @@ module QA
       let!(:source_api_client) { source_admin_api_client }
 
       let!(:source_group) do
-        Resource::Sandbox.fabricate_via_api! do |group|
-          group.api_client = source_api_client
-          group.path = gitlab_source_group
-        end
+        paths = gitlab_source_group.split("/")
+        sandbox = build(:sandbox, api_client: source_api_client, path: paths.first).reload!
+        next sandbox if paths.size == 1
+
+        paths[1..].each_with_object([sandbox]) do |path, arr|
+          arr << build(:group, api_client: source_api_client, sandbox: arr.last, path: path).reload!
+        end.last
       end
 
       # generate unique target group because source group has a static name
       let!(:target_sandbox) do
-        Resource::Sandbox.fabricate_via_api! do |group|
-          group.api_client = admin_api_client
-          group.path = "qa-sandbox-#{SecureRandom.hex(4)}"
-        end
+        create(:sandbox, api_client: admin_api_client, path: "qa-sandbox-#{SecureRandom.hex(4)}")
+      end
+
+      let!(:api_client) do
+        Runtime::API::Client.new(
+          user: user,
+          is_new_session: false,
+          personal_access_token: Resource::PersonalAccessToken.fabricate_via_api! do |pat|
+            pat.user = user
+            # importing very large project can take multiple days
+            # token must not expire while we still poll for import result
+            pat.expires_at = (Time.now.to_date + 5)
+          end.token
+        )
       end
 
       # Source objects
       #
-      let(:source_project) { source_group.projects.find { |project| project.name == gitlab_source_project }.reload! }
+      let(:source_project) { source_group.projects(auto_paginate: true).find { |project| project.name == gitlab_source_project }.reload! }
       let(:source_branches) { source_project.repository_branches(auto_paginate: true).map { |b| b[:name] } }
       let(:source_commits) { source_project.commits(auto_paginate: true).map { |c| c[:id] } }
       let(:source_labels) { source_project.labels(auto_paginate: true).map { |l| l.except(:id) } }
@@ -72,7 +85,7 @@ module QA
 
       # Imported objects
       #
-      let(:imported_project) { imported_group.projects.find { |project| project.name == gitlab_source_project }.reload! }
+      let(:imported_project) { imported_group.projects(auto_paginate: true).find { |project| project.name == gitlab_source_project }.reload! }
       let(:branches) { imported_project.repository_branches(auto_paginate: true).map { |b| b[:name] } }
       let(:commits) { imported_project.commits(auto_paginate: true).map { |c| c[:id] } }
       let(:labels) { imported_project.labels(auto_paginate: true).map { |l| l.except(:id) } }
@@ -343,11 +356,7 @@ module QA
         imported_mrs = project.merge_requests(auto_paginate: true, attempts: 2)
 
         Parallel.map(imported_mrs, in_threads: api_parallel_threads) do |mr|
-          resource = Resource::MergeRequest.init do |resource|
-            resource.project = project
-            resource.iid = mr[:iid]
-            resource.api_client = client
-          end
+          resource = build(:merge_request, project: project, iid: mr[:iid], api_client: client)
 
           [mr[:iid], {
             url: mr[:web_url],

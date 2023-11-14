@@ -7,6 +7,7 @@ module Gitlab
 
       # The base cache key to use for storing/retrieving milestone IDs.
       CACHE_KEY = 'github-import/milestone-finder/%{project}/%{iid}'
+      CACHE_OBJECT_NOT_FOUND = -1
 
       # project - An instance of `Project`
       def initialize(project)
@@ -18,7 +19,20 @@ module Gitlab
       def id_for(issuable)
         return unless issuable.milestone_number
 
-        Gitlab::Cache::Import::Caching.read_integer(cache_key_for(issuable.milestone_number))
+        milestone_iid = issuable.milestone_number
+        cache_key = cache_key_for(milestone_iid)
+
+        val = Gitlab::Cache::Import::Caching.read_integer(cache_key)
+
+        return val if Feature.disabled?(:import_fallback_to_db_empty_cache, project)
+
+        return if val == CACHE_OBJECT_NOT_FOUND
+        return val if val.present?
+
+        object_id = project.milestones.by_iid(milestone_iid).pick(:id) || CACHE_OBJECT_NOT_FOUND
+
+        Gitlab::Cache::Import::Caching.write(cache_key, object_id)
+        object_id == CACHE_OBJECT_NOT_FOUND ? nil : object_id
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
@@ -35,7 +49,7 @@ module Gitlab
       # rubocop: enable CodeReuse/ActiveRecord
 
       def cache_key_for(iid)
-        CACHE_KEY % { project: project.id, iid: iid }
+        format(CACHE_KEY, project: project.id, iid: iid)
       end
     end
   end

@@ -111,12 +111,12 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       it 'returns new recovery codes when the user exists' do
         allow_any_instance_of(User).to receive(:two_factor_enabled?).and_return(true)
         allow_any_instance_of(User)
-          .to receive(:generate_otp_backup_codes!).and_return(%w(119135e5a3ebce8e 34bd7b74adbc8861))
+          .to receive(:generate_otp_backup_codes!).and_return(%w[119135e5a3ebce8e 34bd7b74adbc8861])
 
         subject
 
         expect(json_response['success']).to be_truthy
-        expect(json_response['recovery_codes']).to match_array(%w(119135e5a3ebce8e 34bd7b74adbc8861))
+        expect(json_response['recovery_codes']).to match_array(%w[119135e5a3ebce8e 34bd7b74adbc8861])
       end
     end
 
@@ -200,7 +200,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
            params: {
              key_id: key.id,
              name: 'newtoken',
-             scopes: %w(read_api badscope read_repository)
+             scopes: %w[read_api badscope read_repository]
            },
            headers: gitlab_shell_internal_api_request_header
 
@@ -216,14 +216,14 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           params: {
             key_id: key.id,
             name: 'newtoken',
-            scopes: %w(read_api read_repository),
+            scopes: %w[read_api read_repository],
             expires_at: max_pat_access_token_lifetime
           },
           headers: gitlab_shell_internal_api_request_header
 
         expect(json_response['success']).to be_truthy
         expect(json_response['token']).to match(/\A\S{#{token_size}}\z/)
-        expect(json_response['scopes']).to match_array(%w(read_api read_repository))
+        expect(json_response['scopes']).to match_array(%w[read_api read_repository])
         expect(json_response['expires_at']).to eq(max_pat_access_token_lifetime.iso8601)
       end
     end
@@ -236,14 +236,14 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           params: {
             key_id: key.id,
             name: 'newtoken',
-            scopes: %w(read_api read_repository),
+            scopes: %w[read_api read_repository],
             expires_at: 365.days.from_now
           },
           headers: gitlab_shell_internal_api_request_header
 
         expect(json_response['success']).to be_truthy
         expect(json_response['token']).to match(/\A\S{#{token_size}}\z/)
-        expect(json_response['scopes']).to match_array(%w(read_api read_repository))
+        expect(json_response['scopes']).to match_array(%w[read_api read_repository])
         expect(json_response['expires_at']).to eq(max_pat_access_token_lifetime.iso8601)
       end
     end
@@ -560,6 +560,20 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         end
       end
 
+      context 'when Gitaly provides a relative_path argument', :request_store do
+        subject { push(key, project, relative_path: relative_path) }
+
+        let(:relative_path) { 'relative_path' }
+
+        it 'stores relative_path value in RequestStore' do
+          allow(Gitlab::SafeRequestStore).to receive(:[]=).and_call_original
+          expect(Gitlab::SafeRequestStore).to receive(:[]=).with(:gitlab_git_relative_path, relative_path)
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
       context "git push with project.wiki" do
         subject { push(key, project.wiki, env: env.to_json) }
 
@@ -744,6 +758,17 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
             expect(json_response["gitaly"]["features"]).to eq('gitaly-feature-mep-mep' => 'false')
           end
         end
+
+        context 'with audit event' do
+          it 'does not send a git streaming audit event' do
+            expect(::Gitlab::Audit::Auditor).not_to receive(:audit)
+
+            pull(key, project)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response["need_audit"]).to be_falsy
+          end
+        end
       end
 
       context "git push" do
@@ -757,6 +782,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
             expect(json_response["gl_project_path"]).to eq(project.full_path)
             expect(json_response["gl_key_type"]).to eq("key")
             expect(json_response["gl_key_id"]).to eq(key.id)
+            expect(json_response["need_audit"]).to be_falsy
             expect(json_response["gitaly"]).not_to be_nil
             expect(json_response["gitaly"]["repository"]).not_to be_nil
             expect(json_response["gitaly"]["repository"]["storage_name"]).to eq(project.repository.gitaly_repository.storage_name)
@@ -885,7 +911,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         {
           'action' => 'geo_proxy_to_primary',
           'data' => {
-            'api_endpoints' => %w{geo/proxy_git_ssh/info_refs_receive_pack geo/proxy_git_ssh/receive_pack},
+            'api_endpoints' => %w[geo/proxy_git_ssh/info_refs_receive_pack geo/proxy_git_ssh/receive_pack],
             'gl_username' => 'testuser',
             'primary_repo' => 'http://localhost:3000/testuser/repo.git'
           }
@@ -1515,7 +1541,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
   describe 'POST /internal/pre_receive' do
     let(:valid_params) do
-      { gl_repository: gl_repository }
+      { gl_repository: gl_repository, user_id: user.id }
     end
 
     it 'decreases the reference counter and returns the result' do
@@ -1526,6 +1552,12 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       post api("/internal/pre_receive"), params: valid_params, headers: gitlab_shell_internal_api_request_header
 
       expect(json_response['reference_counter_increased']).to be(true)
+    end
+
+    it 'sticks to the primary' do
+      expect(User.sticking).to receive(:find_caught_up_replica).with(:user, user.id)
+
+      post api("/internal/pre_receive"), params: valid_params, headers: gitlab_shell_internal_api_request_header
     end
   end
 

@@ -8,6 +8,16 @@ module API
 
     feature_category :gitaly
 
+    helpers do
+      extend ::Gitlab::Utils::Override
+
+      # Allow to move projects in hidden/pending_delete state
+      override :find_project_scopes
+      def find_project_scopes
+        Project
+      end
+    end
+
     resource :project_repository_storage_moves do
       desc 'Get a list of all project repository storage moves' do
         detail 'This feature was introduced in GitLab 13.0.'

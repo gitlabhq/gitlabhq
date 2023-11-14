@@ -2,6 +2,8 @@
 
 module Ml
   class ModelVersion < ApplicationRecord
+    include Presentable
+
     validates :project, :model, presence: true
 
     validates :version,
@@ -10,11 +12,15 @@ module Ml
       presence: true,
       length: { maximum: 255 }
 
+    validates :description,
+      length: { maximum: 500 }
+
     validate :valid_model?, :valid_package?
 
     belongs_to :model, class_name: 'Ml::Model'
     belongs_to :project
     belongs_to :package, class_name: 'Packages::MlModel::Package', optional: true
+    has_one :candidate, class_name: 'Ml::Candidate'
 
     delegate :name, to: :model
 
@@ -22,8 +28,17 @@ module Ml
     scope :latest_by_model, -> { order_by_model_id_id_desc.select('DISTINCT ON (model_id) *') }
 
     class << self
-      def find_or_create!(model, version, package)
-        create_with(package: package).find_or_create_by!(project: model.project, model: model, version: version)
+      def find_or_create!(model, version, package, description)
+        create_with(package: package, description: description)
+          .find_or_create_by!(project: model.project, model: model, version: version)
+      end
+
+      def by_project_id_and_id(project_id, id)
+        find_by(project_id: project_id, id: id)
+      end
+
+      def by_project_id_name_and_version(project_id, name, version)
+        joins(:model).find_by(model: { name: name, project_id: project_id }, project_id: project_id, version: version)
       end
     end
 

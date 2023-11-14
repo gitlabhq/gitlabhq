@@ -88,7 +88,7 @@ module Ci
             ::Ci::CancelPipelineService.new(
               pipeline: cancelable_pipeline,
               current_user: nil,
-              auto_canceled_by_pipeline_id: pipeline.id,
+              auto_canceled_by_pipeline: pipeline,
               cascade_to_children: false
             ).force_execute
           end

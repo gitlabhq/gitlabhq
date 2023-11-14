@@ -28,13 +28,12 @@ RSpec.describe 'Project issue boards', :js, feature_category: :team_planning do
   let_it_be(:user, reload: true)    { create(:user) }
   let_it_be(:user2, reload: true)   { create(:user) }
 
-  let(:filtered_search) { find('[data-testid="issue-board-filtered-search"]') }
+  let(:filtered_search) { find_by_testid('issue-board-filtered-search') }
   let(:filter_input) { find('.gl-filtered-search-term-input') }
   let(:filter_submit) { find('.gl-search-box-by-click-search-button') }
 
   context 'signed in user' do
     before do
-      stub_feature_flags(apollo_boards: false)
       project.add_maintainer(user)
       project.add_maintainer(user2)
 
@@ -296,7 +295,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :team_planning do
 
             it 'shows issue count on the list' do
               page.within(find(".board:nth-child(2)")) do
-                expect(page.find('[data-testid="board-items-count"]')).to have_text(total_planning_issues)
+                expect(find_by_testid('board-items-count')).to have_text(total_planning_issues)
                 expect(page).not_to have_selector('.max-issue-size')
               end
             end
@@ -389,7 +388,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :team_planning do
 
             wait_for_board_cards(2, 1)
 
-            find('[data-testid="filtered-search-clear-button"]').click
+            find_by_testid('filtered-search-clear-button').click
             filter_submit.click
           end
 
@@ -518,7 +517,6 @@ RSpec.describe 'Project issue boards', :js, feature_category: :team_planning do
 
   context 'signed out user' do
     before do
-      stub_feature_flags(apollo_boards: false)
       visit project_board_path(project, board)
       wait_for_requests
     end
@@ -540,7 +538,6 @@ RSpec.describe 'Project issue boards', :js, feature_category: :team_planning do
     let_it_be(:user_guest, reload: true) { create(:user) }
 
     before do
-      stub_feature_flags(apollo_boards: false)
       project.add_guest(user_guest)
       sign_in(user_guest)
       visit project_board_path(project, board)

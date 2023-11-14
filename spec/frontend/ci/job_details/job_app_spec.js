@@ -311,6 +311,8 @@ describe('Job App', () => {
 
     it('should render job log', () => {
       expect(findJobLog().exists()).toBe(true);
+
+      expect(findJobLog().props()).toEqual({ searchResults: [] });
     });
   });
 

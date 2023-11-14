@@ -1,7 +1,7 @@
 ---
 status: proposed
 creation-date: "2023-03-07"
-authors: [ "@ajwalker"  ]
+authors: [ "@ajwalker", "@johnwparent"  ]
 coach: [ "@ayufan" ]
 approvers: [ "@DarrenEastman", "@engineering-manager" ]
 owning-stage: "~devops::<stage>"
@@ -14,7 +14,7 @@ The GitLab `admission controller` (inspired by the [Kubernetes admission control
 
 An admission controller can be registered to the GitLab instance and receive a payload containing jobs to be created. Admission controllers can be _mutating_, _validating_, or both.
 
-- When _mutating_, mutatable job information can be modified and sent back to the GitLab instance. Jobs can be modified to conform to organizational policy, security requirements, or have, for example, their tag list modified so that they're routed to specific runners.
+- When _mutating_, mutable job information can be modified and sent back to the GitLab instance. Jobs can be modified to conform to organizational policy, security requirements, or have, for example, their tag list modified so that they're routed to specific runners.
 - When _validating_, a job can be denied execution.
 
 ## Motivation
@@ -35,12 +35,12 @@ Before going further, it is helpful to level-set the current job handling mechan
 - On the request from a runner to the API for a job, the database is queried to verify that the job parameters matches that of the runner. In other words, when runners poll a GitLab instance for a job to execute they're assigned a job if it matches the specified criteria.
 - If the job matches the runner in question, then the GitLab instance connects the job to the runner and changes the job state to running. In other words, GitLab connects the `job` object with the `Runner` object.
 - A runner can be configured to run un-tagged jobs. Tags are the primary mechanism used today to enable customers to have some control of which Runners run certain types of jobs.
-- So while runners are scoped to the instance, group, or project, there are no additional access control mechanisms today that can easily be expanded on to deny access to a runner based on a user or group identifier.
+- So while runners are scoped to the instance, group, or project, there are no additional access control mechanisms today that can be expanded on to deny access to a runner based on a user or group identifier.
 
-The current CI jobs queue logic is as follows. **Note - in the code ww still use the very old `build` naming construct, but we've migrated from `build` to `job` in the product and documentation.
+The current CI jobs queue logic is as follows. **Note - in the code we still use the very old `build` naming construct, but we've migrated from `build` to `job` in the product and documentation.
 
 ```ruby
-jobs = 
+jobs =
   if runner.instance_type?
    jobs_for_shared_runner
   elsif runner.group_type?
@@ -96,22 +96,31 @@ Each runner has a tag such as `zone_a`, `zone_b`. In this scenario the customer 
 1. When a job is created the `project information` (`project_id`, `job_id`, `api_token`) will be used to query GitLab for specific details.
 1. If the `user_id` matches then the admissions controller modifies the job tag list. `zone_a` is added to the tag list as the controller has detected that the user triggering the job should have their jobs run IN `zone_a`.
 
+**Scenario 3**: Runner pool with specific tag scheme, user only has access to a specific subset
+
+Each runner has a tag identifier unique to that runner, e.g. `DiscoveryOne`, `tugNostromo`, `MVSeamus`, etc. Users have arbitrary access to these runners, however we don't want to fail a job on access denial, instead we want to prevent the job from being executed on runners to which the user does not have access. We also don't want to reduce the pool of runners the job can be run on.
+
+1. Configure an admissions controller to mutate jobs based on `user_id`.
+1. When a job is created the `project information` (`project_id`, `job_id`, `api_token`) will be used to query GitLab for specific details.
+1. The admission controller queries available runners with the `user_id` and collects all runners for which the job cannot be run. If this is _all_ runners, the admission controller rejects the job, which is dropped. No tags are modified, and a message is included indicating the reasoning. If there are runners for which the user has permissions, the admission controller filters the associated runners for which there are no permissions.
+
 ### MVC
 
 #### Admission controller
 
 1. A single admission controller can be registered at the instance level only.
-1. The admission controller must respond within 30 seconds.
-1. The admission controller will receive an array of individual jobs. These jobs may or may not be related to each other. The response must contain only responses to the jobs made as part of the request.
+1. The admission controller must respond within 1 hr.
+1. The admission controller will receive individual jobs. The response must contain only responses to that job.
+1. The admission controller will recieve an API callback for rejection and acceptance, with the acceptance callback accepting mutation parameters.
 
 #### Job Lifecycle
 
-1. The lifecycle of a job will be updated to include a new `validating` state.
+1. The `preparing` job state will be expanded to include the validation process prerequisite.
 
    ```mermaid
    stateDiagram-v2
-      created --> validating
-      state validating {
+      created --> preparing
+      state preparing {
           [*] --> accept
           [*] --> reject
       }
@@ -127,10 +136,12 @@ Each runner has a tag such as `zone_a`, `zone_b`. In this scenario the customer 
       executed --> created: retry
    ```
 
-1. When the state is `validating`, the mutating webhook payload is sent to the admission controller.
-1. For jobs where the webhook times out (30 seconds) their status should be set as though the admission was denied. This should
+1. When the state is `preparing`, the mutating webhook payload is sent to the admission controller asynchronously. This will be retried a number of times as needed.
+1. The `preparing` state will wait for a response from the webhook or until timeout.
+1. The UI should be updated with the current status of the job prerequisites and admission
+1. For jobs where the webhook times out (1 hour) their status should be set as though the admission was denied with a timeout reasoning. This should
 be rare in typical circumstances.
-1. Jobs with denied admission can be retried. Retried jobs will be resent to the admission controller along with any mutations that they received previously.
+1. Jobs with denied admission can be retried. Retried jobs will be resent to the admission controller without tag mutations or runner filtering reset.
 1. [`allow_failure`](../../../ci/yaml/index.md#allow_failure) should be updated to support jobs that fail on denied admissions, for example:
 
    ```yaml
@@ -141,8 +152,8 @@ be rare in typical circumstances.
        on_denied_admission: true
    ```
 
-1. The UI should be updated to display the reason for any job mutations (if provided).
-1. A table in the database should be created to store the mutations. Any changes that were made, like tags, should be persisted and attached to `ci_builds` with `acts_as_taggable :admission_tags`.
+1. The UI should be updated to display the reason for any job mutations (if provided) or rejection.
+1. Tag modifications applied by the Admission Controller should be persisted by the system with associated reasoning for any modifications, acceptances, or rejections
 
 #### Payload
 
@@ -153,8 +164,10 @@ be rare in typical circumstances.
 1. The response payload is comprised of individual job entries consisting of:
    - Job ID.
    - Admission state: `accepted` or `denied`.
-   - Mutations: Only `tags` is supported for now. The tags provided replaces the original tag list.
+   - Mutations: `additions` and `removals`. `additions` supplements the existing set of tags, `removals` removes tags from the current tag list
    - Reason: A controller can provide a reason for admission and mutation.
+   - Accepted Runners: runners to be considered for job matching, can be empty to match all runners
+   - Rejected Runners: runners that should not be considered for job matching, can be empty to match all runners
 
 ##### Example request
 
@@ -170,7 +183,9 @@ be rare in typical circumstances.
       ...
     },
     "tags": [ "docker", "windows" ]
-  },
+  }
+]
+[
   {
     "id": 245,
     "variables": {
@@ -180,7 +195,9 @@ be rare in typical circumstances.
       ...
     },
     "tags": [ "linux", "eu-west" ]
-  },
+  }
+]
+[
   {
     "id": 666,
     "variables": {
@@ -202,20 +219,29 @@ be rare in typical circumstances.
     "id": 123,
     "admission": "accepted",
     "reason": "it's always-allow-day-wednesday"
-  },
+  }
+]
+[
   {
     "id": 245,
     "admission": "accepted",
-    "mutations": {
-      "tags": [ "linux", "us-west" ]
+    "tags": {
+      "add": [ "linux", "us-west" ],
+      "remove": [...]
     },
-    "reason": "user is US employee: retagged region"
-  },
+    "runners": {
+      "accepted_ids": ["822993167"],
+      "rejected_ids": ["822993168"]
+    },
+    "reason": "user is US employee: retagged region; user only has uid on runner 822993167"
+  }
+]
+[
   {
     "id": 666,
     "admission": "rejected",
     "reason": "you have no power here"
-  },
+  }
 ]
 ```
 
@@ -229,13 +255,32 @@ be rare in typical circumstances.
 
 ### Implementation Details
 
-1. _placeholder for steps required to code the admissions controller MVC_
+#### GitLab
+
+1. Expand `preparing` state to engage the validation process via the `prerequsite` interface.
+1. Amend `preparing` state to indicate to user, via the UI and API, the status of job preparation with regard to the job prerequisites
+    1. Should indicate status of each prerequisite resource for the job separately as they are asynchronous
+    1. Should indicate overall prerequisite status
+1. Introduce a 1 hr timeout to the entire `preparing` state
+1. Add an `AdmissionValidation` prerequisite to the `preparing` status dependencies via `Gitlab::Ci::Build::Prerequisite::Factory`
+1. Convert the Prerequisite factory and `preparing` status to operate asynchronously
+1. Convert `PreparingBuildService` to operate asynchronously
+1. `PreparingBuildService` transitions the job from preparing to failed or pending depending on success of validation.
+1. AdmissionValidation performs a reasonable amount of retries when sending request
+1. Add API endpoint for Webhook/Admission Controller response callback
+    1. Accepts Parameters:
+        - Acceptance/Rejection
+        - Reason String
+        - Tag mutations (if accepted, otherwise ignored)
+    1. Callback encodes one time auth token
+1. Introduce new failure reasoning on validation rejection
+1. Admission controller impacts on job should be persisted
+1. Runner selection filtering per job as a function of the response from the Admission controller (mutating web hook) should be added
 
 ## Technical issues to resolve
 
 | issue | resolution|
 | ------ | ------ |
-|We may have conflicting tag-sets as mutating controller can make it possible to define AND, OR and NONE logical definition of tags. This can get quite complex quickly.     |        |
 |Rule definition for the queue web hook|
 |What data to send to the admissions controller? Is it a subset or all of the [predefined variables](../../../ci/variables/predefined_variables.md)?|
 |Is the `queueing web hook` able to run at GitLab.com scale? On GitLab.com we would trigger millions of webhooks per second and the concern is that would overload Sidekiq or be used to abuse the system.

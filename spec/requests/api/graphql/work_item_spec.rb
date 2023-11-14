@@ -619,6 +619,47 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           )
         end
 
+        context 'when inaccessible links are present' do
+          let_it_be(:no_access_item) { create(:work_item, title: "PRIVATE", project: create(:project, :private)) }
+
+          before do
+            create(:work_item_link, source: work_item, target: no_access_item, link_type: 'relates_to')
+          end
+
+          it 'returns only items that the user has access to' do
+            expect(graphql_dig_at(work_item_data, :widgets, "linkedItems", "nodes", "linkId"))
+              .to match_array([link1.to_gid.to_s, link2.to_gid.to_s])
+          end
+        end
+
+        context 'when limiting the number of results' do
+          it_behaves_like 'sorted paginated query' do
+            include_context 'no sort argument'
+
+            let(:first_param) { 1 }
+            let(:all_records) { [link1, link2] }
+            let(:data_path) { ['workItem', 'widgets', "linkedItems", -1] }
+
+            def widget_fields(args)
+              query_graphql_field(
+                :widgets, {}, query_graphql_field(
+                  '... on WorkItemWidgetLinkedItems', {}, query_graphql_field(
+                    'linkedItems', args, "#{page_info} nodes { linkId }"
+                  )
+                )
+              )
+            end
+
+            def pagination_query(params)
+              graphql_query_for('workItem', { 'id' => global_id }, widget_fields(params))
+            end
+
+            def pagination_results_data(nodes)
+              nodes.map { |item| GlobalID::Locator.locate(item['linkId']) }
+            end
+          end
+        end
+
         context 'when filtering by link type' do
           let(:work_item_fields) do
             <<~GRAPHQL
@@ -664,20 +705,6 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
     end
 
     describe 'notes widget' do
-      let(:work_item_fields) do
-        <<~GRAPHQL
-          id
-          widgets {
-            type
-            ... on WorkItemWidgetNotes {
-              system: discussions(filter: ONLY_ACTIVITY, first: 10) { nodes { id  notes { nodes { id system internal body } } } },
-              comments: discussions(filter: ONLY_COMMENTS, first: 10) { nodes { id  notes { nodes { id system internal body } } } },
-              all_notes: discussions(filter: ALL_NOTES, first: 10) { nodes { id  notes { nodes { id system internal body } } } }
-            }
-          }
-        GRAPHQL
-      end
-
       context 'when fetching award emoji from notes' do
         let(:work_item_fields) do
           <<~GRAPHQL
@@ -767,6 +794,26 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           # TODO: Fix existing N+1 queries in https://gitlab.com/gitlab-org/gitlab/-/issues/414747
           expect { post_graphql(query, current_user: developer) }.not_to exceed_query_limit(control).with_threshold(4)
           expect_graphql_errors_to_be_empty
+        end
+
+        context 'when work item is associated with a group' do
+          let_it_be(:group_work_item) { create(:work_item, :group_level, namespace: group) }
+          let_it_be(:group_work_item_note) { create(:note, noteable: group_work_item, author: developer, project: nil) }
+          let(:global_id) { group_work_item.to_gid.to_s }
+
+          before_all do
+            create(:award_emoji, awardable: group_work_item_note, name: 'rocket', user: developer)
+          end
+
+          it 'returns notes for the group work item' do
+            all_widgets = graphql_dig_at(work_item_data, :widgets)
+            notes_widget = all_widgets.find { |x| x['type'] == 'NOTES' }
+            notes = graphql_dig_at(notes_widget['discussions'], :nodes).flat_map { |d| d['notes']['nodes'] }
+
+            expect(notes).to contain_exactly(
+              hash_including('body' => group_work_item_note.note)
+            )
+          end
         end
       end
     end

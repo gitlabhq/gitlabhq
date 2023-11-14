@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Govern', :reliable, :requires_admin, :skip_live_env,
-    product_group: :authentication_and_authorization do
+    product_group: :authentication do
     describe '2FA' do
       let!(:user) { create(:user) }
       let!(:user_api_client) { Runtime::API::Client.new(:gitlab, user: user) }

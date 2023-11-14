@@ -11,8 +11,6 @@ module Resolvers
       description: 'ID of a saved reply.'
 
     def resolve(id:)
-      return unless Feature.enabled?(:saved_replies, current_user)
-
       saved_reply = ::Users::SavedReply.find_saved_reply(user_id: current_user.id, id: id.model_id)
 
       return unless saved_reply

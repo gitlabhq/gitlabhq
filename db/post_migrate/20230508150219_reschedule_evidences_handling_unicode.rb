@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable BackgroundMigration/MissingDictionaryFile
+# rubocop:disable BackgroundMigration/DictionaryFile
 
 class RescheduleEvidencesHandlingUnicode < Gitlab::Database::Migration[2.1]
   restrict_gitlab_migration gitlab_schema: :gitlab_main
@@ -29,4 +29,4 @@ class RescheduleEvidencesHandlingUnicode < Gitlab::Database::Migration[2.1]
     delete_batched_background_migration(MIGRATION, :vulnerability_occurrences, :id, [])
   end
 end
-# rubocop:enable BackgroundMigration/MissingDictionaryFile
+# rubocop:enable BackgroundMigration/DictionaryFile

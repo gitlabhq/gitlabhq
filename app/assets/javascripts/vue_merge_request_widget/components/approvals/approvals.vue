@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlSprintf } from '@gitlab/ui';
 import { createAlert } from '~/alert';
+import { visitUrl } from '~/lib/utils/url_utility';
 import { STATUS_MERGED } from '~/issues/constants';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
@@ -114,6 +115,13 @@ export default {
       return this.userHasApproved && !this.userCanApprove && this.mr.state !== STATUS_MERGED;
     },
     approvalText() {
+      // Repeating a text of this to keep i18n easier to do (vs, construcing a compound string)
+      if (this.requireSamlAuthToApprove) {
+        return this.isApproved && this.approvedBy.length > 0
+          ? s__('mrWidget|Approve additionally with SAML')
+          : s__('mrWidget|Approve with SAML');
+      }
+
       return this.isApproved && this.approvedBy.length > 0
         ? s__('mrWidget|Approve additionally')
         : s__('mrWidget|Approve');
@@ -161,14 +169,20 @@ export default {
         .join(', ')
         .concat('.');
     },
+    requireSamlAuthToApprove() {
+      return this.mr.requireSamlAuthToApprove;
+    },
   },
   methods: {
     approve() {
+      if (this.requireSamlAuthToApprove) {
+        this.approveWithSamlAuth();
+        return;
+      }
       if (this.requirePasswordToApprove) {
         this.$root.$emit(BV_SHOW_MODAL, this.modalId);
         return;
       }
-
       this.updateApproval(
         () => this.service.approveMergeRequest(),
         () =>
@@ -178,6 +192,10 @@ export default {
             }),
           ),
       );
+    },
+    approveWithSamlAuth() {
+      // Intentionally direct to SAML Identity Provider for renewed authorization even if SSO session exists
+      visitUrl(this.mr.samlApprovalPath);
     },
     approveWithAuth(data) {
       this.updateApproval(
@@ -236,7 +254,7 @@ export default {
 };
 </script>
 <template>
-  <div class="js-mr-approvals mr-section-container mr-widget-workflow">
+  <div v-if="approvals" class="js-mr-approvals mr-section-container mr-widget-workflow">
     <state-container
       :is-loading="$apollo.queries.approvals.loading"
       :mr="mr"
@@ -258,7 +276,7 @@ export default {
               :category="action.category"
               :loading="isApproving"
               class="gl-mr-3"
-              data-qa-selector="approve_button"
+              data-testid="approve-button"
               @click="action.action"
             >
               {{ action.text }}

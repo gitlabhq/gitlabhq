@@ -6,27 +6,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Reference architecture: up to 3,000 users **(PREMIUM SELF)**
 
-This GitLab reference architecture can help you deploy GitLab to up to 3,000
-users, and then maintain uptime and access for those users. You can also use
-this architecture to provide improved GitLab uptime and availability for fewer
-than 3,000 users. For fewer users, reduce the stated node sizes as needed.
+This page describes the GitLab reference architecture designed for the load of up to 3,000 users
+with notable headroom.
 
-If maintaining a high level of uptime for your GitLab environment isn't a
-requirement, or if you don't have the expertise to maintain this sort of
-environment, we recommend using the non-HA [2,000-user reference architecture](2k_users.md)
-for your GitLab installation. If HA is still a requirement, there's several supported
-tweaks you can make to this architecture to reduce complexity as detailed here.
+This architecture is the smallest one available with HA built in. If you require HA but
+have a lower user count or total load the [Supported Modifications for lower user counts](#supported-modifications-for-lower-user-counts-ha)
+section details how to reduce this architecture's size while maintaining HA.
 
 For a full list of reference architectures, see
 [Available reference architectures](index.md#available-reference-architectures).
 
-> - **Supported users (approximate):** 3,000
+> - **Target Load:** 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS
 > - **High Availability:** Yes, although [Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution
 > - **Estimated Costs:** [See cost table](index.md#cost-to-run)
 > - **Cloud Native Hybrid Alternative:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
-> - **Validation and test results:** The Quality Engineering team does [regular smoke and performance tests](index.md#validation-and-test-results) to ensure the reference architectures remain compliant
->   - **Test requests per second (RPS) rates:** API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS
->   - **[Latest Results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/3k)**
 > - **Unsure which Reference Architecture to use?** [Go to this guide for more info](index.md#deciding-which-architecture-to-use).
 
 | Service                                   | Nodes | Configuration         | GCP             | AWS          |
@@ -148,6 +141,27 @@ monitor .[#7FFFD4,norank]u--> elb
 ## Requirements
 
 Before starting, see the [requirements](index.md#requirements) for reference architectures.
+
+## Testing methodology
+
+The 3k architecture is designed to cover a large majority of workflows and is regularly
+[smoke and performance tested](index.md#validation-and-test-results) by the Quality Engineering team
+against the following endpoint throughput targets:
+
+- API: 60 RPS
+- Web: 6 RPS
+- Git (Pull): 6 RPS
+- Git (Push): 1 RPS
+
+The above targets were selected based on real customer data of total environmental loads corresponding to the user count,
+including CI and other workloads along with additional substantial headroom added.
+
+If you have metrics to suggest that you have regularly higher throughput against the above endpoint targets, [large monorepos](index.md#large-monorepos)
+or notable [additional workloads](index.md#additional-workloads) these can notably impact the performance environment and [further adjustments may be required](index.md#scaling-an-environment).
+If this applies to you, we strongly recommended referring to the linked documentation as well as reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
+
+Testing is done regularly via our [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance) and its dataset, which is available for anyone to use.
+The results of this testing are [available publicly on the GPT wiki](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest). For more information on our testing strategy [refer to this section of the documentation](index.md#validation-and-test-results).
 
 ## Setup components
 
@@ -1248,7 +1262,7 @@ This is how this would work with a Linux package PostgreSQL setup:
 1. Create the new user `praefect`, replacing `<praefect_postgresql_password>`:
 
    ```shell
-   CREATE ROLE praefect WITH LOGIN CREATEDB PASSWORD <praefect_postgresql_password>;
+   CREATE ROLE praefect WITH LOGIN CREATEDB PASSWORD '<praefect_postgresql_password>';
    ```
 
 1. Reconnect to the PostgreSQL server, this time as the `praefect` user:
@@ -1708,7 +1722,8 @@ Updates to example must be made at:
 -->
 
    ```ruby
-   roles ["sidekiq_role"]
+   # https://docs.gitlab.com/omnibus/roles/#sidekiq-roles
+   roles(["sidekiq_role"])
 
    # External URL
    ## This should match the URL of the external load balancer

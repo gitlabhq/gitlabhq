@@ -5,6 +5,7 @@ module QA
     module Main
       class Login < Page::Base
         include Layout::Flash
+        include Runtime::Canary
 
         view 'app/views/devise/passwords/edit.html.haml' do
           element :password_field
@@ -250,7 +251,11 @@ module QA
 
           wait_for_gitlab_to_respond
 
-          Page::Main::Menu.validate_elements_present! unless skip_page_validation
+          return if skip_page_validation
+
+          Page::Main::Menu.validate_elements_present!
+
+          validate_canary!
         end
 
         def fill_in_credential(user)

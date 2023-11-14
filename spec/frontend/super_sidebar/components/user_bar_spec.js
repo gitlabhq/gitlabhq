@@ -49,7 +49,6 @@ describe('UserBar component', () => {
         sidebarData,
       },
       provide: {
-        toggleNewNavEndpoint: '/-/profile/preferences',
         isImpersonating: false,
         ...provideOverrides,
       },

@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlLoadingIcon, GlTooltipDirective, GlIntersectionObserver } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import { sprintf, s__, __ } from '~/locale';
@@ -102,7 +102,7 @@ export default {
       return this.statusIcon(this.collapsedData);
     },
     tertiaryActionsButtons() {
-      return this.tertiaryButtons ? this.tertiaryButtons() : undefined;
+      return 'tertiaryButtons' in this ? this.tertiaryButtons() : undefined;
     },
     hydratedSummary() {
       const structuredOutput = this.summary(this.collapsedData);

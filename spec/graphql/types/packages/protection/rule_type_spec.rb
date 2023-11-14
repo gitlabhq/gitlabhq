@@ -9,6 +9,12 @@ RSpec.describe GitlabSchema.types['PackagesProtectionRule'], feature_category: :
 
   specify { expect(described_class).to require_graphql_authorizations(:admin_package) }
 
+  describe 'id' do
+    subject { described_class.fields['id'] }
+
+    it { is_expected.to have_non_null_graphql_type(::Types::GlobalIDType[::Packages::Protection::Rule]) }
+  end
+
   describe 'package_name_pattern' do
     subject { described_class.fields['packageNamePattern'] }
 

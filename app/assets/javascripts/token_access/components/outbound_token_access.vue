@@ -54,12 +54,6 @@ export default {
       columnClass: 'gl-w-40p',
     },
     {
-      key: 'namespace',
-      label: __('Namespace'),
-      thClass: 'gl-border-t-none!',
-      columnClass: 'gl-w-40p',
-    },
-    {
       key: 'actions',
       label: '',
       tdClass: 'gl-text-right',

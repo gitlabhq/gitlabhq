@@ -144,9 +144,9 @@ RSpec.describe ::Import::GitlabProjects::CreateProjectService, :aggregate_failur
           )
           expect(response.payload).to eq(
             other_errors: [
-              %{Project namespace path can contain only letters, digits, '_', '-' and '.'. Cannot start with '-', end in '.git' or end in '.atom'},
-              %{Path can contain only letters, digits, '_', '-' and '.'. Cannot start with '-', end in '.git' or end in '.atom'},
-              %{Path must not start or end with a special character and must not contain consecutive special characters.}
+              %(Project namespace path can contain only letters, digits, '_', '-' and '.'. Cannot start with '-', end in '.git' or end in '.atom'),
+              %(Path can contain only letters, digits, '_', '-' and '.'. Cannot start with '-', end in '.git' or end in '.atom'),
+              %(Path must not start or end with a special character and must not contain consecutive special characters.)
             ])
         end
       end

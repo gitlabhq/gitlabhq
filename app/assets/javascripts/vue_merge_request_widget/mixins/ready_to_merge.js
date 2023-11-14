@@ -21,13 +21,6 @@ export default {
           this.mr.preventMerge,
       );
     },
-    mergeDisabledText() {
-      if (this.pipeline?.status === PIPELINE_SKIPPED_STATUS) {
-        return MERGE_DISABLED_SKIPPED_PIPELINE_TEXT;
-      }
-
-      return MERGE_DISABLED_TEXT;
-    },
     pipelineMustSucceedConflictText() {
       return PIPELINE_MUST_SUCCEED_CONFLICT_TEXT;
     },

@@ -10,6 +10,11 @@ module Types
 
         authorize :admin_package
 
+        field :id,
+          ::Types::GlobalIDType[::Packages::Protection::Rule],
+          null: false,
+          description: 'ID of the package protection rule.'
+
         field :package_name_pattern,
           GraphQL::Types::String,
           null: false,

@@ -299,13 +299,13 @@ RSpec.describe 'Branches', feature_category: :groups_and_projects do
 
     it 'shows pipeline status when available' do
       page.within first('.all-branches li') do
-        expect(page).to have_css 'a.gl-badge .ci-status-icon-success'
+        expect(page).to have_css '[data-testid="status_success_borderless-icon"]'
       end
     end
 
     it 'displays a placeholder when not available' do
       page.all('.all-branches li') do |li|
-        expect(li).to have_css '.pipeline-status svg.s16'
+        expect(li).to have_css '.pipeline-status svg.s24'
       end
     end
   end
@@ -317,7 +317,7 @@ RSpec.describe 'Branches', feature_category: :groups_and_projects do
 
     it 'does not show placeholder or pipeline status' do
       page.all('.all-branches') do |branches|
-        expect(branches).not_to have_css '.pipeline-status svg.s16'
+        expect(branches).not_to have_css '.pipeline-status svg.s24'
       end
     end
   end

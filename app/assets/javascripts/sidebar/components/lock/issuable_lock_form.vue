@@ -50,12 +50,12 @@ export default {
     issueCapitalized: __('Issue'),
     mergeRequest: __('merge request'),
     mergeRequestCapitalized: __('Merge request'),
-    lockingMergeRequest: __('Locking %{issuableDisplayName}'),
-    unlockingMergeRequest: __('Unlocking %{issuableDisplayName}'),
-    lockMergeRequest: __('Lock %{issuableDisplayName}'),
-    unlockMergeRequest: __('Unlock %{issuableDisplayName}'),
-    lockedMessage: __('%{issuableDisplayName} locked.'),
-    unlockedMessage: __('%{issuableDisplayName} unlocked.'),
+    lockingMergeRequest: __('Locking discussion'),
+    unlockingMergeRequest: __('Unlocking discussion'),
+    lockMergeRequest: __('Lock discussion'),
+    unlockMergeRequest: __('Unlock discussion'),
+    lockedMessage: __('Discussion locked.'),
+    unlockedMessage: __('Discussion unlocked.'),
   },
   data() {
     return {
@@ -152,7 +152,7 @@ export default {
         })
         .catch(() => {
           const alertMessage = __(
-            'Something went wrong trying to change the locked state of this %{issuableDisplayName}',
+            'Something went wrong trying to change the locked state of the discussion',
           );
           createAlert({
             message: sprintf(alertMessage, { issuableDisplayName: this.issuableDisplayName }),
@@ -170,9 +170,14 @@ export default {
 </script>
 
 <template>
-  <li v-if="isMovedMrSidebar && isIssuable" class="gl-dropdown-item">
-    <button type="button" class="dropdown-item" data-testid="issuable-lock" @click="toggleLocked">
-      <span class="gl-dropdown-item-text-wrapper">
+  <li v-if="isMovedMrSidebar && isIssuable" class="gl-new-dropdown-item">
+    <button
+      type="button"
+      class="gl-new-dropdown-item-content"
+      data-testid="issuable-lock"
+      @click="toggleLocked"
+    >
+      <span class="gl-new-dropdown-item-text-wrapper">
         <template v-if="isLoading">
           <gl-loading-icon inline size="sm" /> {{ lockToggleInProgressText }}
         </template>

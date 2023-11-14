@@ -1,7 +1,7 @@
 import { GlTable, GlLink, GlPagination, GlAlert } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
 import { shallowMount, mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { DEFAULT_PER_PAGE } from '~/api';
 import IntegrationOverrides from '~/integrations/overrides/components/integration_overrides.vue';

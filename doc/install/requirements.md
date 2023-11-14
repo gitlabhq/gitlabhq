@@ -46,7 +46,6 @@ Memory requirements are dependent on the number of users and expected workload. 
 The following is the recommended minimum Memory hardware guidance for a handful of example GitLab user base sizes.
 
 - **4 GB RAM** is the **required** minimum memory size and supports up to 500 users
-  - Our [Memory Team](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/application_performance/) is working to reduce the memory requirement.
 - 8 GB RAM supports up to 1000 users
 - More users? Consult the [reference architectures page](../administration/reference_architectures/index.md)
 
@@ -227,12 +226,10 @@ optimal settings for your infrastructure.
 
 ### Puma threads
 
-The recommended number of threads is dependent on several factors, including total memory, and use
-of [legacy Rugged code](../administration/gitaly/index.md#direct-access-to-git-in-gitlab).
+The recommended number of threads is dependent on several factors, including total memory.
 
 - If the operating system has a maximum 2 GB of memory, the recommended number of threads is `1`.
   A higher value results in excess swapping, and decrease performance.
-- If legacy Rugged code is in use, the recommended number of threads is `1`.
 - In all other cases, the recommended number of threads is `4`. We don't recommend setting this
 higher, due to how [Ruby MRI multi-threading](https://en.wikipedia.org/wiki/Global_interpreter_lock)
 works.

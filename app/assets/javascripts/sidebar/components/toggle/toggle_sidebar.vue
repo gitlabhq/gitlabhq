@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'ToggleSidebar',
@@ -10,6 +11,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     collapsed: {
       type: Boolean,
@@ -29,7 +31,13 @@ export default {
       return this.collapsed ? 'chevron-double-lg-left' : 'chevron-double-lg-right';
     },
     allCssClasses() {
-      return [this.cssClasses, { 'js-sidebar-collapsed': this.collapsed }];
+      return [
+        this.cssClasses,
+        {
+          'js-sidebar-collapsed': this.collapsed,
+          'gl-mt-2': this.glFeatures.notificationsTodosButtons,
+        },
+      ];
     },
   },
   watch: {

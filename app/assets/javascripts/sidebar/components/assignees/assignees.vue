@@ -58,7 +58,6 @@ export default {
             type="button"
             class="gl-button btn-link gl-reset-color!"
             data-testid="assign-yourself"
-            data-qa-selector="assign_yourself_button"
             @click="assignSelf"
           >
             {{ __('assign yourself') }}

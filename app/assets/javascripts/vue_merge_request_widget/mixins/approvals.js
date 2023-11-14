@@ -18,8 +18,16 @@ export default {
           iid: `${this.mr.iid}`,
         };
       },
-      update: (data) => data.project.mergeRequest,
+      update: (data) => data.project?.mergeRequest,
       result({ data }) {
+        // This case can occur when backend returns an empty project due to expired session.
+        // See https://gitlab.com/gitlab-org/gitlab/-/issues/413627 for more information.
+        if (!data.project) {
+          // Needed to suppress several errors.
+          this.mr.setApprovals({});
+          return;
+        }
+
         const { mergeRequest } = data.project;
 
         this.disableCommittersApproval = data.project.mergeRequestsDisableCommittersApproval;

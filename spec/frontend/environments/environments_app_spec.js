@@ -71,7 +71,7 @@ describe('~/environments/components/environments_app.vue', () => {
       previousPage: 1,
       __typename: 'LocalPageInfo',
     },
-    location = '?scope=available&page=2&search=prod',
+    location = '?scope=active&page=2&search=prod',
   }) => {
     setWindowLocation(location);
     environmentAppMock.mockReturnValue(environmentsApp);
@@ -96,7 +96,7 @@ describe('~/environments/components/environments_app.vue', () => {
     paginationMock = jest.fn();
   });
 
-  it('should request available environments if the scope is invalid', async () => {
+  it('should request active environments if the scope is invalid', async () => {
     await createWrapperWithMocked({
       environmentsApp: resolvedEnvironmentsApp,
       folder: resolvedFolder,
@@ -105,7 +105,7 @@ describe('~/environments/components/environments_app.vue', () => {
 
     expect(environmentAppMock).toHaveBeenCalledWith(
       expect.anything(),
-      expect.objectContaining({ scope: 'available', page: 2 }),
+      expect.objectContaining({ scope: 'active', page: 2 }),
       expect.anything(),
       expect.anything(),
     );
@@ -174,18 +174,25 @@ describe('~/environments/components/environments_app.vue', () => {
     expect(button.exists()).toBe(true);
   });
 
-  it('should not show a button to open the review app modal if review apps are configured', async () => {
-    await createWrapperWithMocked({
-      environmentsApp: {
-        ...resolvedEnvironmentsApp,
-        reviewApp: { canSetupReviewApp: false },
-      },
-      folder: resolvedFolder,
-    });
+  it.each`
+    canSetupReviewApp | hasReviewApp
+    ${false}          | ${true}
+    ${true}           | ${true}
+  `(
+    'should not show button to open the review app modal',
+    async ({ canSetupReviewApp, hasReviewApp }) => {
+      await createWrapperWithMocked({
+        environmentsApp: {
+          ...resolvedEnvironmentsApp,
+          reviewApp: { canSetupReviewApp, hasReviewApp },
+        },
+        folder: resolvedFolder,
+      });
 
-    const button = wrapper.findByRole('button', { name: s__('Environments|Enable review apps') });
-    expect(button.exists()).toBe(false);
-  });
+      const button = wrapper.findByRole('button', { name: s__('Environments|Enable review apps') });
+      expect(button.exists()).toBe(false);
+    },
+  );
 
   it('should not show a button to clean up environments if the user has no permissions', async () => {
     await createWrapperWithMocked({
@@ -218,16 +225,16 @@ describe('~/environments/components/environments_app.vue', () => {
   });
 
   describe('tabs', () => {
-    it('should show tabs for available and stopped environmets', async () => {
+    it('should show tabs for active and stopped environmets', async () => {
       await createWrapperWithMocked({
         environmentsApp: resolvedEnvironmentsApp,
         folder: resolvedFolder,
       });
 
-      const [available, stopped] = wrapper.findAllByRole('tab').wrappers;
+      const [active, stopped] = wrapper.findAllByRole('tab').wrappers;
 
-      expect(available.text()).toContain(__('Available'));
-      expect(available.text()).toContain(resolvedEnvironmentsApp.availableCount.toString());
+      expect(active.text()).toContain(__('Active'));
+      expect(active.text()).toContain(resolvedEnvironmentsApp.activeCount.toString());
       expect(stopped.text()).toContain(__('Stopped'));
       expect(stopped.text()).toContain(resolvedEnvironmentsApp.stoppedCount.toString());
     });
@@ -372,7 +379,7 @@ describe('~/environments/components/environments_app.vue', () => {
       next.trigger('click');
 
       await nextTick();
-      expect(window.location.search).toBe('?scope=available&page=3&search=prod');
+      expect(window.location.search).toBe('?scope=active&page=3&search=prod');
     });
   });
 
@@ -399,7 +406,7 @@ describe('~/environments/components/environments_app.vue', () => {
 
       await waitForDebounce();
 
-      expect(window.location.search).toBe('?scope=available&page=1&search=hello');
+      expect(window.location.search).toBe('?scope=active&page=1&search=hello');
     });
 
     it('should query for the entered parameter', async () => {

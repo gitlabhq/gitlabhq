@@ -121,6 +121,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :upload_file
     enable :guest_access
     enable :read_release
+    enable :award_emoji
   end
 
   rule { admin }.policy do

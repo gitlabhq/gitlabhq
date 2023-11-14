@@ -23,3 +23,6 @@ export const BYTES_FORMAT_BYTES = 'B';
 export const BYTES_FORMAT_KIB = 'KiB';
 export const BYTES_FORMAT_MIB = 'MiB';
 export const BYTES_FORMAT_GIB = 'GiB';
+
+export const DEFAULT_CI_CONFIG_PATH = '.gitlab-ci.yml';
+export const CI_CONFIG_PATH_EXTENSION = /(\.gitlab-ci\.yml)/;

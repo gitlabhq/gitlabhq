@@ -31,6 +31,7 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :authorize_edit_tree!, only: [:new, :create, :update, :destroy]
 
   before_action :commit, except: [:new, :create]
+  before_action :set_is_ambiguous_ref, only: [:show]
   before_action :check_for_ambiguous_ref, only: [:show]
   before_action :blob, except: [:new, :create]
   before_action :require_branch_head, only: [:edit, :update]
@@ -48,6 +49,7 @@ class Projects::BlobController < Projects::ApplicationController
   urgency :low, [:create, :show, :edit, :update, :diff]
 
   before_action do
+    push_frontend_feature_flag(:blob_blame_info, @project)
     push_frontend_feature_flag(:highlight_js_worker, @project)
     push_frontend_feature_flag(:explain_code_chat, current_user)
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)

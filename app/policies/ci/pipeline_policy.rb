@@ -27,10 +27,14 @@ module Ci
       prevent :read_pipeline
     end
 
-    rule { protected_ref }.prevent :update_pipeline
+    rule { protected_ref }.policy do
+      prevent :update_pipeline
+      prevent :cancel_pipeline
+    end
 
     rule { can?(:public_access) & branch_allows_collaboration }.policy do
       enable :update_pipeline
+      enable :cancel_pipeline
     end
 
     rule { can?(:owner_access) }.policy do

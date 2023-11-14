@@ -27,6 +27,7 @@ The following configuration options are also available:
 
 - Enabling [TLS support](#enable-tls-support).
 - Limiting [RPC concurrency](#limit-rpc-concurrency).
+- Limiting [pack-objects concurrency](#limit-pack-objects-concurrency).
 
 ## About the Gitaly token
 
@@ -361,7 +362,7 @@ Configure Gitaly server in one of two ways:
 WARNING:
 If directly copying repository data from a GitLab server to Gitaly, ensure that the metadata file,
 default path `/var/opt/gitlab/git-data/repositories/.gitaly-metadata`, is not included in the transfer.
-Copying this file causes GitLab to use the [Rugged patches](index.md#direct-access-to-git-in-gitlab) for repositories hosted on the Gitaly server,
+Copying this file causes GitLab to use the direct disk access to repositories hosted on the Gitaly server,
 leading to `Error creating pipeline` and `Commit not found` errors, or stale data.
 
 ### Configure Gitaly clients
@@ -665,6 +666,8 @@ Configure Gitaly with TLS in one of two ways:
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+1. Run `sudo gitlab-rake gitlab:gitaly:check` on the Gitaly client (for example, the
+   Rails application) to confirm it can connect to Gitaly servers.
 1. Verify Gitaly traffic is being served over TLS by
    [observing the types of Gitaly connections](#observe-type-of-gitaly-connections).
 1. Optional. Improve security by:
@@ -748,6 +751,43 @@ Configure Gitaly with TLS in one of two ways:
       `/home/git/gitaly/config.toml`.
    1. Saving the file.
    1. [Restarting GitLab](../restart_gitlab.md#self-compiled-installations).
+
+::EndTabs
+
+#### Update the certificates
+
+To update the Gitaly certificates after initial configuration:
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+If the content of your SSL certificates under the `/etc/gitlab/ssl` directory have been updated, but no configuration changes have been made to
+`/etc/gitlab/gitlab.rb`, then reconfiguring GitLab doesn’t affect Gitaly. Instead, you must restart Gitaly manually for the certificates to be loaded
+by the Gitaly process:
+
+```shell
+sudo gitlab-ctl restart gitaly
+```
+
+If you change or update the certificates in `/etc/gitlab/trusted-certs` without making changes to the `/etc/gitlab/gitlab.rb` file, you must:
+
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) so the symlinks for the trusted certificates are updated.
+1. Restart Gitaly manually for the certificates to be loaded by the Gitaly process:
+
+   ```shell
+   sudo gitlab-ctl restart gitaly
+   ```
+
+:::TabTitle Self-compiled (source)
+
+If the content of your SSL certificates under the `/etc/gitlab/ssl` directory have been updated, you must
+[restart GitLab](../restart_gitlab.md#self-compiled-installations) for the certificates to be loaded by the Gitaly process.
+
+If you change or update the certificates in `/usr/local/share/ca-certificates`, you must:
+
+1. Run `sudo update-ca-certificates` to update the system's trusted store.
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations) for the certificates to be loaded by the Gitaly process.
 
 ::EndTabs
 
@@ -865,6 +905,126 @@ When the pack-object cache is enabled, pack-objects limiting kicks in only if th
 
 You can observe the behavior of this queue using Gitaly logs and Prometheus. For more information, see
 [Monitor Gitaly pack-objects concurrency limiting](monitoring.md#monitor-gitaly-pack-objects-concurrency-limiting).
+
+## Adaptive concurrency limiting
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10734) in GitLab 16.6.
+
+Gitaly supports two concurrency limits:
+
+- An [RPC concurrency limit](#limit-rpc-concurrency), which allow you to configure a maximum number of simultaneous in-flight requests for each
+  Gitaly RPC. The limit is scoped by RPC and repository.
+- A [Pack-objects concurrency limit](#limit-pack-objects-concurrency), which restricts the number of concurrent Git data transfer request by IP.
+
+If this limit is exceeded, either:
+
+- The request is put in a queue.
+- The request is rejected if the queue is full or if the request remains in the queue for too long.
+
+Both of these concurrency limits can be configured statically. Though static limits can yield good protection results, they have some drawbacks:
+
+- Static limits are not good for all usage patterns. There is no one-size-fits-all value. If the limit is too low, big repositories are
+  negatively impacted. If the limit is too high, the protection is essentially lost.
+- It's tedious to maintain a sane value for the concurrency limit, especially when the workload of each repository changes over time.
+- A request can be rejected even though the server is idle because the rate doesn't factor in the load on the server.
+
+You can overcome all of these drawbacks and keep the benefits of concurrency limiting by configuring adaptive concurrency limits. Adaptive
+concurrency limits are optional and build on the two concurrency limiting types. It uses Additive Increase/Multiplicative Decrease (AIMD)
+algorithm. Each adaptive limit:
+
+- Gradually increases up to a certain upper limit during typical process functioning.
+- Quickly decreases when the host machine has a resource problem.
+
+This mechanism provides some headroom for the machine to "breathe" and speeds up current inflight requests.
+
+![Gitaly Adaptive Concurrency Limit](img/gitaly_adaptive_concurrency_limit.png)
+
+The adaptive limiter calibrates the limits every 30 seconds and:
+
+- Increases the limits by one until reaching the upper limit.
+- Decreases the limits by half when the top-level cgroup has either memory usage that exceeds 90%, excluding highly-evictable page caches,
+  or CPU throttled for 50% or more of the observation time.
+
+Otherwise, the limits increase by one until reaching the upper bound. For more information about technical implementation
+of this system, please refer to [this blueprint](../../architecture/blueprints/gitaly_adaptive_concurrency_limit/index.md).
+
+Adaptive limiting is enabled for each RPC or pack-objects cache individually. However, limits are calibrated at the same time.
+
+### Enable adaptiveness for RPC concurrency
+
+Prerequisites:
+
+- Because adaptive limiting depends on [control groups](#control-groups), control groups must be enabled before using adaptive limiting.
+
+The following is an example to configure an adaptive limit for RPC concurrency:
+
+```ruby
+# in /etc/gitlab/gitlab.rb
+gitaly['configuration'] = {
+    # ...
+    concurrency: [
+        {
+            rpc: '/gitaly.SmartHTTPService/PostUploadPackWithSidechannel',
+            max_queue_wait: '1s',
+            max_queue_size: 10,
+            adaptive: true,
+            min_limit: 10,
+            initial_limit: 20,
+            max_limit: 40
+        },
+        {
+            rpc: '/gitaly.SSHService/SSHUploadPackWithSidechannel',
+            max_queue_wait: '10s',
+            max_queue_size: 20,
+            adaptive: true,
+            min_limit: 10,
+            initial_limit: 50,
+            max_limit: 100
+        },
+   ],
+}
+```
+
+In this example:
+
+- `adaptive` sets whether the adaptiveness is enabled. If set, the `max_per_repo` value is ignored in favor of the following configuration.
+- `initial_limit` is the per-repository concurrency limit to use when Gitaly starts.
+- `max_limit` is the minimum per-repository concurrency limit of the configured RPC. Gitaly increases the current limit
+  until it reaches this number.
+- `min_limit` is the is the minimum per-repository concurrency limit of the configured RPC. When the host machine has a resource problem,
+  Gitaly quickly reduces the limit until reaching this value.
+
+For more information, see [RPC concurrency](#limit-rpc-concurrency).
+
+### Enable adaptiveness for pack-objects concurrency
+
+Prerequisites:
+
+- Because adaptive limiting depends on [control groups](#control-groups), control groups must be enabled before using adaptive limiting.
+
+The following is an example to configure an adaptive limit for pack-objects concurrency:
+
+```ruby
+# in /etc/gitlab/gitlab.rb
+gitaly['pack_objects_limiting'] = {
+   'max_queue_length' => 200,
+   'max_queue_wait' => '60s',
+   'adaptive' => true,
+   'min_limit' => 10,
+   'initial_limit' => 20,
+   'max_limit' => 40
+}
+```
+
+In this example:
+
+- `adaptive` sets whether the adaptiveness is enabled. If set, the value of `max_concurrency` is ignored in favor of the following configuration.
+- `initial_limit` is the per-IP concurrency limit to use when Gitaly starts.
+- `max_limit` is the minimum per-IP concurrency limit for pack-objects. Gitaly increases the current limit until it reaches this number.
+- `min_limit` is the is the minimum per-IP concurrency limit for pack-objects. When the host machine has a resources problem, Gitaly quickly
+  reduces the limit until it reaches this value.
+
+For more information, see [pack-objects concurrency](#limit-pack-objects-concurrency).
 
 ## Control groups
 
@@ -1673,7 +1833,9 @@ Gitaly fails to start up if either:
 
 ## Configure server-side backups
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4941) in GitLab 16.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4941) in GitLab 16.3.
+> - Server-side support for restoring a specified backup instead of the latest backup [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132188) in GitLab 16.6.
+> - Server-side support for creating incremental backups [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6475) in GitLab 16.6.
 
 Repository backups can be configured so that the Gitaly node that hosts each
 repository is responsible for creating the backup and streaming it to

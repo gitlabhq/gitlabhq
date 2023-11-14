@@ -131,7 +131,7 @@ module Tooling
           generator_templates/usage_metric_definition/metric_definition\.yml)\z}x => [:backend, :analytics_instrumentation],
         %r{gitlab/usage_data(_spec)?\.rb} => [:analytics_instrumentation],
         [%r{\.haml\z}, %r{data: \{ track}] => [:analytics_instrumentation],
-        [%r{\.(rb|haml)\z}, %r{Gitlab::Tracking\.(event|enabled\?|options)$}] => [:analytics_instrumentation],
+        [%r{\.(rb|haml)\z}, %r{Gitlab::Tracking\.(event|enabled\?|options)}] => [:analytics_instrumentation],
         [%r{\.(vue|js)\z}, %r{(Tracking.event|/\btrack\(/|data-track-action)}] => [:analytics_instrumentation],
 
         %r{\A((ee|jh)/)?app/(?!assets|views)[^/]+} => :backend,

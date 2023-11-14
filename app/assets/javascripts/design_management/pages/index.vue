@@ -402,7 +402,7 @@ export default {
               button-variant="default"
               button-class="gl-mr-3"
               button-size="small"
-              data-qa-selector="archive_button"
+              data-testid="archive-button"
               :loading="loading"
               :has-selected-designs="hasSelectedDesigns"
               @delete-selected-designs="mutate()"
@@ -490,7 +490,7 @@ export default {
             :checked="isDesignSelected(design.filename)"
             type="checkbox"
             class="design-checkbox gl-absolute gl-top-4 gl-left-6 gl-ml-2"
-            data-qa-selector="design_checkbox"
+            data-testid="design-checkbox"
             :data-qa-design="design.filename"
             @change="changeSelectedDesigns(design.filename)"
           />
@@ -506,7 +506,7 @@ export default {
               :class="{ 'design-list-item': !isDesignListEmpty }"
               :display-as-card="hasDesigns"
               v-bind="$options.dropzoneProps"
-              data-qa-selector="design_dropzone_content"
+              data-testid="design-dropzone-content"
               @change="onUploadDesign"
               @error="onDesignDropzoneError"
             >

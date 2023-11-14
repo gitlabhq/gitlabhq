@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Govern' do
-    describe 'Impersonation tokens', :requires_admin, product_group: :authentication_and_authorization do
+    describe 'Impersonation tokens', :requires_admin, product_group: :authentication do
       let(:admin_api_client) { Runtime::API::Client.as_admin }
 
       let!(:user) { create(:user, :hard_delete, api_client: admin_api_client) }

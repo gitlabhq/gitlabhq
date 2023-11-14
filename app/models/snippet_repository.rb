@@ -31,6 +31,11 @@ class SnippetRepository < ApplicationRecord
 
     options[:actions] = transform_file_entries(files)
 
+    # The Gitaly calls perform HTTP requests for permissions check
+    # Stick to the primary in order to make those requests aware that
+    # primary database must be used to fetch the data
+    self.class.sticking.stick(:user, user.id)
+
     capture_git_error { repository.commit_files(user, **options) }
   ensure
     Gitlab::ExclusiveLease.cancel(lease_key, uuid)

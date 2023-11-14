@@ -278,7 +278,7 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
       client.with_rate_limit do
         if retries == 0
           retries += 1
-          raise(Octokit::TooManyRequests)
+          raise(Octokit::TooManyRequests.new(body: 'primary'))
         end
       end
 
@@ -304,6 +304,37 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
         .not_to receive(:requests_remaining?)
 
       expect(client.with_rate_limit { 10 }).to eq(10)
+    end
+
+    context 'when threshold is hit' do
+      it 'raises a RateLimitError with the appropriate message' do
+        expect(client).to receive(:requests_remaining?).and_return(false)
+
+        expect { client.with_rate_limit }
+          .to raise_error(Gitlab::GithubImport::RateLimitError, 'Internal threshold reached')
+      end
+    end
+
+    context 'when primary rate limit hit' do
+      let(:limited_block) { -> { raise(Octokit::TooManyRequests.new(body: 'primary')) } }
+
+      it 're-raises a RateLimitError with the appropriate message' do
+        expect(client).to receive(:requests_remaining?).and_return(true)
+
+        expect { client.with_rate_limit(&limited_block) }
+          .to raise_error(Gitlab::GithubImport::RateLimitError, 'primary')
+      end
+    end
+
+    context 'when secondary rate limit hit' do
+      let(:limited_block) { -> { raise(Octokit::TooManyRequests.new(body: 'secondary')) } }
+
+      it 're-raises a RateLimitError with the appropriate message' do
+        expect(client).to receive(:requests_remaining?).and_return(true)
+
+        expect { client.with_rate_limit(&limited_block) }
+          .to raise_error(Gitlab::GithubImport::RateLimitError, 'secondary')
+      end
     end
 
     context 'when Faraday error received from octokit', :aggregate_failures do
@@ -392,7 +423,7 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
   describe '#raise_or_wait_for_rate_limit' do
     context 'when running in parallel mode' do
       it 'raises RateLimitError' do
-        expect { client.raise_or_wait_for_rate_limit }
+        expect { client.raise_or_wait_for_rate_limit('primary') }
           .to raise_error(Gitlab::GithubImport::RateLimitError)
       end
     end
@@ -404,7 +435,7 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
         expect(client).to receive(:rate_limit_resets_in).and_return(1)
         expect(client).to receive(:sleep).with(1)
 
-        client.raise_or_wait_for_rate_limit
+        client.raise_or_wait_for_rate_limit('primary')
       end
 
       it 'increments the rate limit counter' do
@@ -420,7 +451,7 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
           .to receive(:increment)
           .and_call_original
 
-        client.raise_or_wait_for_rate_limit
+        client.raise_or_wait_for_rate_limit('primary')
       end
     end
   end

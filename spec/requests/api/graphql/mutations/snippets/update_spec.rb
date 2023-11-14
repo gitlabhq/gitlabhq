@@ -46,7 +46,7 @@ RSpec.describe 'Updating a Snippet', feature_category: :source_code_management d
       let(:current_user) { create(:user) }
 
       it_behaves_like 'a mutation that returns top-level errors',
-                      errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
+        errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
 
       it 'does not update the Snippet' do
         expect do
@@ -118,13 +118,15 @@ RSpec.describe 'Updating a Snippet', feature_category: :source_code_management d
 
   describe 'PersonalSnippet' do
     let(:snippet) do
-      create(:personal_snippet,
-             :private,
-             :repository,
-             file_name: original_file_name,
-             title: original_title,
-             content: original_content,
-             description: original_description)
+      create(
+        :personal_snippet,
+        :private,
+        :repository,
+        file_name: original_file_name,
+        title: original_title,
+        content: original_content,
+        description: original_description
+      )
     end
 
     it_behaves_like 'graphql update actions'
@@ -139,15 +141,17 @@ RSpec.describe 'Updating a Snippet', feature_category: :source_code_management d
     let_it_be(:project) { create(:project, :private) }
 
     let(:snippet) do
-      create(:project_snippet,
-             :private,
-             :repository,
-             project: project,
-             author: create(:user),
-             file_name: original_file_name,
-             title: original_title,
-             content: original_content,
-             description: original_description)
+      create(
+        :project_snippet,
+        :private,
+        :repository,
+        project: project,
+        author: create(:user),
+        file_name: original_file_name,
+        title: original_title,
+        content: original_content,
+        description: original_description
+      )
     end
 
     context 'when the author is not a member of the project' do

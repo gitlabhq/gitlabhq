@@ -138,7 +138,7 @@ RSpec.describe 'Admin Groups', feature_category: :groups_and_projects do
       it 'shows access requests with link to manage access' do
         visit admin_group_path(group)
 
-        page.within '[data-testid="access-requests"]' do
+        within_testid('access-requests') do
           expect(page).to have_content access_request.user.name
           expect(page).to have_link 'Manage access', href: group_group_members_path(group, tab: 'access_requests')
         end

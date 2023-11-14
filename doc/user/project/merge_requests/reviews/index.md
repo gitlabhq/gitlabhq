@@ -26,8 +26,12 @@ For an overview, see [Merge request review](https://www.youtube.com/watch?v=2May
 > - [Introduced](https://gitlab.com/groups/gitlab-org/modelops/applied-ml/review-recommender/-/epics/3) in GitLab 15.4 as a [Beta](../../../../policy/experiment-beta-support.md#beta) feature [with a flag](../../../../administration/feature_flags.md) named `suggested_reviewers_control`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/368356) in GitLab 15.6.
 > - Beta designation [removed from the UI](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113058) in GitLab 15.10.
+> - Feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134728) in GitLab 16.6.
 
 GitLab uses machine learning to suggest reviewers for your merge request.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [GitLab Duo Suggested Reviewers](https://www.youtube.com/embed/ivwZQgh4Rxw).
 
 To suggest reviewers, GitLab uses:
 
@@ -164,7 +168,7 @@ You can submit your completed review in multiple ways:
   In the modal window, you can supply a **Summary comment**, approve the merge request, and
   include quick actions:
 
-  ![Finish review with comment](img/mr_summary_comment_v15_4.png)
+  ![Finish review with comment](img/mr_summary_comment_v16_6.png)
 
 When you submit your review, GitLab:
 
@@ -193,7 +197,7 @@ Pending comments display information about the action to be taken when the comme
 If you have a review in progress, you can also add a comment from the **Overview** tab by selecting
  **Add to review**:
 
-![New thread](img/mr_review_new_comment_v15_3.png)
+![New thread](img/mr_review_new_comment_v16_6.png)
 
 ### Approval Rule information for Reviewers **(PREMIUM ALL)**
 
@@ -227,14 +231,14 @@ them a notification email.
 When commenting on a diff, you can select which lines of code your comment refers
 to by either:
 
-![Comment on any diff file line](img/comment-on-any-diff-line_v13_10.png)
-
 - Dragging **Add a comment to this line** (**{comment}**) in the gutter to highlight
   lines in the diff. GitLab expands the diff lines and displays a comment box.
 - After starting a comment by selecting **Add a comment to this line** (**{comment}**) in the
   gutter, select the first line number your comment refers to in the **Commenting on lines**
   select box. New comments default to single-line comments, unless you select
   a different starting line.
+
+![Comment on any diff file line](img/comment_on_any_diff_line_v16_6.png)
 
 Multiline comments display the comment's line numbers above the body of the comment:
 
@@ -340,6 +344,9 @@ from the command line by running `git checkout <branch-name>`.
 
 ### Checkout merge requests locally through the `head` ref
 
+> - Deleting `head` refs 14 days after a merge request closes or merges [enabled on self-managed and GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130098) in GitLab 16.4.
+> - Deleting `head` refs 14 days after a merge request closes or merges [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/336070) in GitLab 16.6. Feature flag `merge_request_refs_cleanup` removed.
+
 A merge request contains all the history from a repository, plus the additional
 commits added to the branch associated with the merge request. Here's a few
 ways to check out a merge request locally.
@@ -351,9 +358,8 @@ This relies on the merge request `head` ref (`refs/merge-requests/:iid/head`)
 that is available for each merge request. It allows checking out a merge
 request by using its ID instead of its branch.
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223156) in GitLab
-13.4, 14 days after a merge request gets closed or merged, the merge request
-`head` ref is deleted. This means that the merge request isn't available
+In GitLab 16.6 and later, the merge request `head` ref is deleted 14 days after
+a merge request is closed or merged. The merge request is then no longer available
 for local checkout from the merge request `head` ref anymore. The merge request
 can still be re-opened. If the merge request's branch
 exists, you can still check out the branch, as it isn't affected.

@@ -40,6 +40,8 @@ module Gitlab
           note_url(object, **options)
         when Release
           instance.release_url(object, **options)
+        when Organizations::Organization
+          instance.organization_url(object, **options)
         when Project
           instance.project_url(object, **options)
         when Snippet

@@ -135,11 +135,12 @@ class Member < ApplicationRecord
       .reorder(nil)
   end
 
-  scope :without_invites_and_requests, -> do
-    active_state
-      .non_request
-      .non_invite
-      .non_minimal_access
+  scope :without_invites_and_requests, ->(minimal_access: false) do
+    result = active_state.non_request.non_invite
+
+    result = result.non_minimal_access unless minimal_access
+
+    result
   end
 
   scope :invite, -> { where.not(invite_token: nil) }

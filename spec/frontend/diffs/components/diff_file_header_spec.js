@@ -103,7 +103,7 @@ describe('DiffFileHeader component', () => {
 
   const createComponent = ({ props, options = {} } = {}) => {
     mockStoreConfig = cloneDeep(defaultMockStoreConfig);
-    const store = new Vuex.Store({ ...mockStoreConfig, ...(options.store || {}) });
+    const store = new Vuex.Store({ ...mockStoreConfig, ...options.store });
 
     wrapper = shallowMount(DiffFileHeader, {
       propsData: {

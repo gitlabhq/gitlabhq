@@ -30,8 +30,7 @@ module BulkImports
             source_full_path: entity.source_full_path,
             pipeline_class: self.class.name,
             message: "Entity #{entity.status_name}",
-            source_version: entity.bulk_import.source_version_info.to_s,
-            importer: 'gitlab_migration'
+            source_version: entity.bulk_import.source_version_info.to_s
           )
 
           ::BulkImports::FinishProjectImportWorker.perform_async(entity.project_id) if entity.project?
@@ -42,7 +41,7 @@ module BulkImports
         attr_reader :context, :entity, :trackers
 
         def logger
-          @logger ||= Gitlab::Import::Logger.build
+          @logger ||= Logger.build
         end
 
         def all_other_trackers_failed?

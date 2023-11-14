@@ -39,7 +39,7 @@ describe('LockedBadge component', () => {
 
   it('has title', () => {
     expect(findBadge().attributes('title')).toBe(
-      'This issue is locked. Only project members can comment.',
+      'The discussion in this issue is locked. Only project members can comment.',
     );
   });
 });

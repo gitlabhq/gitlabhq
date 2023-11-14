@@ -226,7 +226,8 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
         GL_ID: "user-#{user.id}",
         GL_USERNAME: user.username,
         GL_REPOSITORY: "project-#{project.id}",
-        ShowAllRefs: false
+        ShowAllRefs: false,
+        NeedAudit: false
       }
     end
 
@@ -275,6 +276,12 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
         subject { described_class.git_http_ok(repository, Gitlab::GlRepository::PROJECT, user, action, show_all_refs: true) }
 
         it { is_expected.to include(ShowAllRefs: true) }
+      end
+
+      context 'need_audit enabled' do
+        subject { described_class.git_http_ok(repository, Gitlab::GlRepository::PROJECT, user, action, show_all_refs: true, need_audit: true) }
+
+        it { is_expected.to include(NeedAudit: true) }
       end
 
       context 'when a feature flag is set for a single project' do

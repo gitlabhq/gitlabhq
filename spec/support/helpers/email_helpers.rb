@@ -94,7 +94,8 @@ module EmailHelpers
       port: credential.smtp_port,
       user_name: credential.smtp_username,
       password: credential.smtp_password,
-      domain: service_desk_setting.custom_email.split('@').last
+      domain: service_desk_setting.custom_email.split('@').last,
+      authentication: credential.smtp_authentication
     )
   end
 end

@@ -27,6 +27,7 @@ import {
   directMember,
   invite,
   accessRequest,
+  privateGroup,
   pagination,
 } from '../../mock_data';
 
@@ -242,6 +243,24 @@ describe('MembersTable', () => {
           createComponent({ members, tableFields: ['actions'] });
 
           expect(wrapper.findByTestId('col-actions').exists()).toBe(false);
+        });
+      });
+    });
+
+    describe('Source field', () => {
+      beforeEach(() => {
+        createComponent({
+          members: [privateGroup],
+          tableFields: ['source'],
+        });
+      });
+
+      it('passes correct props to `MemberSource` component', () => {
+        expect(wrapper.findComponent(MemberSource).props()).toMatchObject({
+          memberSource: {},
+          isDirectMember: true,
+          isSharedWithGroupPrivate: true,
+          createdBy: null,
         });
       });
     });

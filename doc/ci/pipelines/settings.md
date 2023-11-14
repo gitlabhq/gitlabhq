@@ -204,6 +204,7 @@ You can define how long a job can run before it times out.
 1. Expand **General pipelines**.
 1. In the **Timeout** field, enter the number of minutes, or a human-readable value like `2 hours`.
    Must be 10 minutes or more, and less than one month. Default is 60 minutes.
+   Pending jobs are dropped after 24 hours of inactivity.
 
 Jobs that exceed the timeout are marked as failed.
 
@@ -213,3 +214,26 @@ You can override this value [for individual runners](../runners/configure_runner
 
 You can use [pipeline badges](../../user/project/badges.md) to indicate the pipeline status and
 test coverage of your projects. These badges are determined by the latest successful pipeline.
+
+## Disable GitLab CI/CD pipelines
+
+GitLab CI/CD pipelines are enabled by default on all new projects. If you use an external CI/CD server like
+Jenkins or Drone CI, you can disable GitLab CI/CD to avoid conflicts with the commits status API.
+
+You can disable GitLab CI/CD per project or [for all new projects on an instance](../../administration/cicd.md).
+
+When you disable GitLab CI/CD:
+
+- The **CI/CD** item in the left sidebar is removed.
+- The `/pipelines` and `/jobs` pages are no longer available.
+- Existing jobs and pipelines are hidden, not removed.
+
+To disable GitLab CI/CD in your project:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
+1. In the **Repository** section, turn off **CI/CD**.
+1. Select **Save changes**.
+
+These changes do not apply to projects in an [external integration](../../user/project/integrations/index.md#available-integrations).

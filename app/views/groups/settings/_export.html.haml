@@ -31,8 +31,8 @@
     - if group.export_file_exists?
       = render Pajamas::ButtonComponent.new(href: download_export_group_path(group), button_options: { rel: 'nofollow', data: { method: :get, qa_selector: 'download_export_link' } }) do
         = _('Download export')
-      = render Pajamas::ButtonComponent.new(href: export_group_path(group), button_options: { data: { method: :post, qa_selector: 'regenerate_export_group_link' } }) do
+      = render Pajamas::ButtonComponent.new(href: export_group_path(group), button_options: { data: { method: :post } }) do
         = _('Regenerate export')
     - else
-      = render Pajamas::ButtonComponent.new(href: export_group_path(group), button_options: { data: { method: :post, qa_selector: 'export_group_link' } }) do
+      = render Pajamas::ButtonComponent.new(href: export_group_path(group), button_options: { data: { method: :post } }) do
         = _('Export group')

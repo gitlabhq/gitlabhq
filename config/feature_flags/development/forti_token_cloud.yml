@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49089
 rollout_issue_url:
 milestone: '13.7'
 type: development
-group: group::authentication and authorization
+group: group::authentication
 default_enabled: false

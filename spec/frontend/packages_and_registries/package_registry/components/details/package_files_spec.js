@@ -6,9 +6,9 @@ import {
   GlModal,
   GlKeysetPagination,
 } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { stubComponent } from 'helpers/stub_component';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';

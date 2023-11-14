@@ -66,7 +66,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
 
         wait_for_requests
 
-        expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Passed')
+        expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Passed')
       end
 
       it 'shows commit`s data', :js do

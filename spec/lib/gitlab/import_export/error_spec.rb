@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::Error do
+RSpec.describe Gitlab::ImportExport::Error, feature_category: :importers do
   describe '.permission_error' do
     subject(:error) do
       described_class.permission_error(user, importable)
@@ -26,6 +26,14 @@ RSpec.describe Gitlab::ImportExport::Error do
         expect(error.message)
           .to eq 'User with ID: 1 does not have required permissions for Group: group1 with ID: 1'
       end
+    end
+  end
+
+  describe '.file_compression_error' do
+    it 'adds error to exception message' do
+      message = described_class.file_compression_error('Error').message
+
+      expect(message).to eq('File compression or decompression failed. Error')
     end
   end
 end

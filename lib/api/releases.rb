@@ -270,8 +270,6 @@ module API
           .execute
 
         if result[:status] == :success
-          log_release_created_audit_event(result[:release])
-
           present result[:release], with: Entities::Release, current_user: current_user
         else
           render_api_error!(result[:message], result[:http_status])
@@ -317,9 +315,6 @@ module API
           .execute
 
         if result[:status] == :success
-          log_release_updated_audit_event
-          log_release_milestones_updated_audit_event if result[:milestones_updated]
-
           present result[:release], with: Entities::Release, current_user: current_user
         else
           render_api_error!(result[:message], result[:http_status])
@@ -350,8 +345,6 @@ module API
           .execute
 
         if result[:status] == :success
-          log_release_deleted_audit_event
-
           present result[:release], with: Entities::Release, current_user: current_user
         else
           render_api_error!(result[:message], result[:http_status])
@@ -404,22 +397,6 @@ module API
         return {} unless @request.query_string.present?
 
         Rack::Utils.parse_nested_query(@request.query_string)
-      end
-
-      def log_release_created_audit_event(release)
-        # extended in EE
-      end
-
-      def log_release_updated_audit_event
-        # extended in EE
-      end
-
-      def log_release_deleted_audit_event
-        # extended in EE
-      end
-
-      def log_release_milestones_updated_audit_event
-        # extended in EE
       end
 
       def release_cli?

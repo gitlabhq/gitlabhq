@@ -136,10 +136,13 @@ module Gitlab
         response.base.presence
       end
 
-      def fork_repository(source_repository)
+      def fork_repository(source_repository, branch = nil)
+        revision = branch.present? ? "refs/heads/#{branch}" : ""
+
         request = Gitaly::CreateForkRequest.new(
           repository: @gitaly_repo,
-          source_repository: source_repository.gitaly_repository
+          source_repository: source_repository.gitaly_repository,
+          revision: revision
         )
 
         gitaly_client_call(

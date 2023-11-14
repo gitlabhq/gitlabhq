@@ -16,11 +16,42 @@ include:
       allure_merge_request_iid: "${CI_MERGE_REQUEST_IID}"
       allure_job_name: "${QA_RUN_TYPE}"
 
+# code pattern changes
+.code-pattern-changes: &code-pattern-changes
+  if: $MR_CODE_PATTERNS == "true"
+
+# Run all tests when QA framework changes present, full suite execution is explicitly enabled or a feature flag file is removed
+.qa-run-all-tests: &qa-run-all-tests
+  if: $QA_FRAMEWORK_CHANGES == "true" || $QA_RUN_ALL_TESTS == "true" || $QA_RUN_ALL_E2E_LABEL == "true" || $QA_FEATURE_FLAGS =~ /deleted/
+
 variables:
   COLORIZED_LOGS: "true"
   GIT_DEPTH: "20"
-  GIT_STRATEGY: "clone" # 'GIT_STRATEGY: clone' optimizes the pack-objects cache hit ratio
+  GIT_STRATEGY: "clone"  # 'GIT_STRATEGY: clone' optimizes the pack-objects cache hit ratio
   GIT_SUBMODULE_STRATEGY: "none"
+
+.rules:gdk:qa-selective:
+  rules:
+    - <<: *code-pattern-changes
+      when: never
+    - !reference [.rules:test:qa-selective, rules]
+    - if: $QA_SUITES =~ /Test::Instance::Blocking/
+
+.rules:gdk:qa-parallel:
+  rules:
+    - *code-pattern-changes
+    - !reference [.rules:test:qa-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::Blocking/
+
+.rules:gdk:qa-smoke:
+  rules:
+    - <<: *code-pattern-changes
+      variables:
+        QA_TESTS: ""
+    - <<: *qa-run-all-tests
+      variables:
+        QA_TESTS: ""
+    - if: $QA_SUITES =~ /Test::Instance::Smoke/
 
 .gdk-qa-base:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-2.3-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
@@ -66,7 +97,7 @@ variables:
     - echo -e "\e[0Ksection_end:`date +%s`:launch_gdk\r\e[0K"
     - echo -e "\e[0Ksection_start:`date +%s`:install_gems[collapsed=true]\r\e[0KInstall gems"
     - source scripts/utils.sh
-    - cd qa && bundle install
+    - cd qa && bundle config set --local without 'development' && bundle install
     - echo -e "\e[0Ksection_end:`date +%s`:install_gems\r\e[0K"
   script:
     - echo -e "\e[0Ksection_start:`date +%s`:healthcheck[collapsed=true]\r\e[0KWait for gdk to start"
@@ -127,11 +158,10 @@ gdk-qa-smoke:
   extends:
     - .gdk-qa-base
     - .gitlab-qa-report
+    - .rules:gdk:qa-smoke
   variables:
     QA_SCENARIO: Test::Instance::Smoke
     QA_RUN_TYPE: gdk-qa-smoke
-  rules:
-    - when: always
 
 gdk-qa-smoke-with-load-balancer:
   extends:
@@ -155,12 +185,20 @@ gdk-qa-reliable:
     - .gdk-qa-base
     - .gitlab-qa-report
     - .parallel
+    - .rules:gdk:qa-parallel
   variables:
     QA_SCENARIO: Test::Instance::Blocking
     QA_RUN_TYPE: gdk-qa-blocking
   parallel: 10
-  rules:
-    - when: always
+
+gdk-qa-reliable-selective:
+  extends:
+    - .gdk-qa-base
+    - .gitlab-qa-report
+    - .rules:gdk:qa-selective
+  variables:
+    QA_SCENARIO: Test::Instance::Blocking
+    QA_RUN_TYPE: gdk-qa-blocking
 
 gdk-qa-reliable-with-load-balancer:
   extends:

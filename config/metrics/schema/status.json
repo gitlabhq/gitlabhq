@@ -1,0 +1,33 @@
+{
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "broken"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "repair_issue_url"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "removed"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "removed_by_url",
+          "milestone_removed"
+        ]
+      }
+    }
+  ]
+}

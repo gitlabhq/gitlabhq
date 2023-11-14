@@ -52,6 +52,7 @@ describe('IssuableShowRoot', () => {
       descriptionPreviewPath,
       descriptionHelpPath,
       taskCompletionStatus,
+      workspaceType,
     } = mockIssuableShowProps;
     const { state, blocked, confidential, createdAt, author } = mockIssuable;
 
@@ -92,6 +93,7 @@ describe('IssuableShowRoot', () => {
         editFormVisible,
         descriptionPreviewPath,
         descriptionHelpPath,
+        workspaceType,
       });
     });
 

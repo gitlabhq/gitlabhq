@@ -20,11 +20,6 @@ module Gitlab
               raise NotImplementedError
             end
 
-            # Checks whether the provided value is of the given type
-            def valid_value?(value)
-              raise NotImplementedError
-            end
-
             attr_reader :errors, :name, :spec, :value
 
             def initialize(name:, spec:, value:)
@@ -54,20 +49,39 @@ module Gitlab
             private
 
             def validate!
-              return error('required value has not been provided') if required_input? && value.nil?
+              validate_required
 
-              # validate default value
-              if !required_input? && !valid_value?(default)
-                return error("default value is not a #{self.class.type_name}")
-              end
+              return if errors.present?
 
-              # validate provided value
-              return error("provided value is not a #{self.class.type_name}") unless valid_value?(actual_value)
+              run_validations(default, default: true) unless required_input?
 
-              validate_regex!
+              run_validations(value) unless value.nil?
             end
 
-            def validate_regex!
+            def validate_required
+              error('required value has not been provided') if required_input? && value.nil?
+            end
+
+            def run_validations(value, default: false)
+              validate_type(value, default)
+              validate_options(value)
+              validate_regex(value, default)
+            end
+
+            # Type validations are done separately for different input types.
+            def validate_type(_value, _default)
+              raise NotImplementedError
+            end
+
+            # Options can be either StringInput or NumberInput and are validated accordingly.
+            def validate_options(_value)
+              return unless options
+
+              error('Options can only be used with string and number inputs')
+            end
+
+            # Regex can be only be a StringInput and is validated accordingly.
+            def validate_regex(_value, _default)
               return unless spec.key?(:regex)
 
               error('RegEx validation can only be used with string inputs')
@@ -95,6 +109,10 @@ module Gitlab
 
             def default
               spec[:default]
+            end
+
+            def options
+              spec[:options]
             end
           end
         end

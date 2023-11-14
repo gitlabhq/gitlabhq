@@ -131,7 +131,7 @@
   }
 
   .committer {
-    color: $gl-text-color-tertiary;
+    color: $gl-text-color-secondary;
 
     .commit-author-link {
       color: $gl-text-color;
@@ -144,7 +144,6 @@
     vertical-align: text-bottom;
   }
 
-  > .ci-status-link,
   > .btn,
   > .commit-sha-group {
     margin-left: $gl-padding;

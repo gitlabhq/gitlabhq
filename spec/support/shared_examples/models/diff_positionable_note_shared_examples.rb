@@ -48,7 +48,7 @@ RSpec.shared_examples 'a valid diff positionable note' do |factory_on_commit|
       end
     end
 
-    %i(original_position position change_position).each do |method|
+    %i[original_position position change_position].each do |method|
       describe "#{method}=" do
         it "doesn't accept non-hash JSON passed as a string" do
           subject.send(:"#{method}=", "true")

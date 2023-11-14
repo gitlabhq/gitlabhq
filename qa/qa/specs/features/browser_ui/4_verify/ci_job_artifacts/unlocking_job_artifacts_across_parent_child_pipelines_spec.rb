@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner, product_group: :pipeline_security do
+  RSpec.describe 'Verify', :runner, product_group: :pipeline_security,
+    quarantine: {
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422863',
+      type: :flaky
+    } do
     describe 'Unlocking job artifacts across parent-child pipelines' do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let(:project) { create(:project, name: 'unlock-job-artifacts-parent-child-project') }

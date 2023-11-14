@@ -83,7 +83,7 @@ module BulkImports
     end
 
     def raise_error(message)
-      logger.warn(message: message, response_headers: response_headers, importer: 'gitlab_migration')
+      logger.warn(message: message, response_headers: response_headers)
 
       raise ServiceError, message
     end
@@ -112,7 +112,7 @@ module BulkImports
     end
 
     def logger
-      @logger ||= Gitlab::Import::Logger.build
+      @logger ||= Logger.build
     end
 
     def validate_url

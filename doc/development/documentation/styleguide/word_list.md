@@ -26,6 +26,15 @@ For guidance not on this page, we defer to these style guides:
 <!-- Disable trailing punctuation in heading rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md026---trailing-punctuation-in-heading -->
 <!-- markdownlint-disable MD026 -->
 
+## `.gitlab-ci.yml` file
+
+Use backticks and lowercase for **the `.gitlab-ci.yml` file**.
+
+When possible, use the full phrase: **the `.gitlab-ci.yml` file**
+
+Although users can specify another name for their CI/CD configuration file,
+in most cases, use **the `.gitlab-ci.yml` file** instead.
+
 ## `&`
 
 Do not use Latin abbreviations. Use **and** instead, unless you are documenting a UI element that uses an `&`.
@@ -383,9 +392,14 @@ Use **confirmation dialog** to describe the dialog that asks you to confirm an a
 
 Do not use **confirmation box** or **confirmation dialog box**. See also [**dialog**](#dialog).
 
-## Container Registry
+## container registry
 
-Use title case for the GitLab Container Registry.
+When documenting the GitLab container registry features and functionality, use lower case.
+
+Use:
+
+- The GitLab container registry supports A, B, and C.
+- You can push a Docker image to your project's container registry.
 
 ## currently
 
@@ -783,7 +797,9 @@ Do not use **handy**. If the user doesn't find the feature or process to be hand
 
 ## high availability, HA
 
-Do not use **high availability** or **HA**. Instead, direct readers to the GitLab [reference architectures](../../../administration/reference_architectures/index.md) for information about configuring GitLab for handling greater amounts of users.
+Do not use **high availability** or **HA**, except in the GitLab [reference architectures](../../../administration/reference_architectures/index.md#high-availability-ha). Instead, direct readers to the reference architectures for more information about configuring GitLab for handling greater amounts of users.
+
+Do not use phrases like **high availability setup** to mean a multiple node environment. Instead, use **multi-node setup** or similar.
 
 ## higher
 
@@ -1302,6 +1318,14 @@ For example, you might write something like:
 ## push rules
 
 Use lowercase for **push rules**.
+
+## `README` file
+
+Use backticks and lowercase for **the `README` file**, or **the `README.md` file**.
+
+When possible, use the full phrase: **the `README` file**
+
+For plural, use **`README` files**.
 
 ## recommend, we recommend
 

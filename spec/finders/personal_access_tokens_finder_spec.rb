@@ -2,16 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode do
+RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category: :system_access do
   using RSpec::Parameterized::TableSyntax
 
   describe '#execute' do
-    let(:admin) { create(:admin) }
-    let(:user) { create(:user) }
-    let(:other_user) { create(:user) }
-    let(:project_bot) { create(:user, :project_bot) }
+    let_it_be(:admin) { create(:admin) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:other_user) { create(:user) }
+    let_it_be(:project_bot) { create(:user, :project_bot) }
 
-    let!(:tokens) do
+    let_it_be(:tokens) do
       {
         active: create(:personal_access_token, user: user, name: 'my_pat_1'),
         active_other: create(:personal_access_token, user: other_user, name: 'my_pat_2'),
@@ -23,6 +23,8 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode do
         bot: create(:personal_access_token, user: project_bot)
       }
     end
+
+    let(:tokens_keys) { tokens.keys }
 
     let(:params) { {} }
     let(:current_user) { admin }
@@ -89,7 +91,7 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode do
 
     describe 'by user' do
       where(:by_user, :expected_tokens) do
-        nil              | tokens.keys
+        nil              | ref(:tokens_keys)
         ref(:user)       | [:active, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation]
         ref(:other_user) | [:active_other]
         ref(:admin)      | []
@@ -106,7 +108,7 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode do
 
     describe 'by users' do
       where(:by_users, :expected_tokens) do
-        nil                         | tokens.keys
+        nil                         | ref(:tokens_keys)
         lazy { [user] }             | [:active, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation]
         lazy { [other_user] }       | [:active_other]
         lazy { [user, other_user] } | [:active, :active_other, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation]
@@ -124,10 +126,10 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode do
 
     describe 'by impersonation' do
       where(:by_impersonation, :expected_tokens) do
-        nil       | tokens.keys
+        nil       | ref(:tokens_keys)
         true      | [:active_impersonation, :expired_impersonation, :revoked_impersonation]
         false     | [:active, :active_other, :expired, :revoked, :bot]
-        'other'   | tokens.keys
+        'other'   | ref(:tokens_keys)
       end
 
       with_them do
@@ -141,10 +143,10 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode do
 
     describe 'by state' do
       where(:by_state, :expected_tokens) do
-        nil        | tokens.keys
+        nil        | ref(:tokens_keys)
         'active'   | [:active, :active_other, :active_impersonation, :bot]
         'inactive' | [:expired, :revoked, :expired_impersonation, :revoked_impersonation]
-        'other'    | tokens.keys
+        'other'    | ref(:tokens_keys)
       end
 
       with_them do
@@ -158,9 +160,9 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode do
 
     describe 'by owner type' do
       where(:by_owner_type, :expected_tokens) do
-        nil     | tokens.keys
+        nil     | ref(:tokens_keys)
         'human' | [:active, :active_other, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation]
-        'other' | tokens.keys
+        'other' | ref(:tokens_keys)
       end
 
       with_them do
@@ -197,7 +199,7 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode do
         where(:by_created_before, :expected_tokens) do
           6.days.ago      | []
           2.days.ago      | [:active_other]
-          2.days.from_now | tokens.keys
+          2.days.from_now | ref(:tokens_keys)
         end
 
         with_them do
@@ -211,7 +213,7 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode do
 
       describe 'by created after' do
         where(:by_created_after, :expected_tokens) do
-          6.days.ago      | tokens.keys
+          6.days.ago      | ref(:tokens_keys)
           2.days.ago      | [:active, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation, :bot]
           2.days.from_now | []
         end
@@ -236,7 +238,7 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode do
         where(:by_last_used_before, :expected_tokens) do
           6.days.ago      | []
           2.days.ago      | [:active_other]
-          2.days.from_now | tokens.keys
+          2.days.from_now | ref(:tokens_keys)
         end
 
         with_them do
@@ -250,7 +252,7 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode do
 
       describe 'by last used after' do
         where(:by_last_used_after, :expected_tokens) do
-          6.days.ago      | tokens.keys
+          6.days.ago      | ref(:tokens_keys)
           2.days.ago      | [:active, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation, :bot]
           2.days.from_now | []
         end
@@ -267,7 +269,7 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode do
 
     describe 'by search' do
       where(:by_search, :expected_tokens) do
-        nil      | tokens.keys
+        nil      | ref(:tokens_keys)
         'my_pat' | [:active, :active_other]
         'other'  | []
       end
@@ -283,10 +285,10 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode do
 
     describe 'sort' do
       where(:sort, :expected_tokens) do
-        nil       | tokens.keys
+        nil       | ref(:tokens_keys)
         'id_asc'  | [:active, :active_other, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation, :bot]
         'id_desc' | [:bot, :revoked_impersonation, :expired_impersonation, :active_impersonation, :revoked, :expired, :active_other, :active]
-        'other'   | tokens.keys
+        'other'   | ref(:tokens_keys)
       end
 
       with_them do

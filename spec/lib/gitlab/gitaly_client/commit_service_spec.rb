@@ -1041,9 +1041,11 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
   end
 
   describe '#raw_blame' do
-    let(:project) { create(:project, :test_repo) }
+    let_it_be(:project) { create(:project, :test_repo) }
+
     let(:revision) { 'blame-on-renamed' }
     let(:path) { 'files/plain_text/renamed' }
+    let(:range) { nil }
 
     let(:blame_headers) do
       [
@@ -1072,6 +1074,31 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         is_expected.to include(blame_headers[2], blame_headers[3])
         is_expected.not_to include(blame_headers[0], blame_headers[1], blame_headers[4])
       end
+    end
+
+    context 'when out of range' do
+      let(:range) { '9999,99999' }
+
+      it { expect { blame }.to raise_error(ArgumentError, 'range is outside of the file length') }
+    end
+
+    context 'when a file path is not found' do
+      let(:path) { 'unknown/path' }
+
+      it { expect { blame }.to raise_error(ArgumentError, 'path not found in revision') }
+    end
+
+    context 'when an unknown exception is raised' do
+      let(:gitaly_exception) { GRPC::BadStatus.new(GRPC::Core::StatusCodes::NOT_FOUND) }
+
+      before do
+        expect_any_instance_of(Gitaly::CommitService::Stub)
+          .to receive(:raw_blame)
+          .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+          .and_raise(gitaly_exception)
+      end
+
+      it { expect { blame }.to raise_error(gitaly_exception) }
     end
   end
 

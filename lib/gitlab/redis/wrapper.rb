@@ -19,7 +19,7 @@ module Gitlab
       InvalidPathError = Class.new(StandardError)
 
       class << self
-        delegate :params, :url, :store, to: :new
+        delegate :params, :url, :store, :encrypted_secrets, to: :new
 
         def with
           pool.with { |redis| yield redis }
@@ -110,6 +110,14 @@ module Gitlab
         raw_config_hash[:sentinels]
       end
 
+      def secret_file
+        if raw_config_hash[:secret_file].blank?
+          File.join(Settings.encrypted_settings['path'], 'redis.yaml.enc')
+        else
+          Settings.absolute(raw_config_hash[:secret_file])
+        end
+      end
+
       def sentinels?
         sentinels && !sentinels.empty?
       end
@@ -118,20 +126,42 @@ module Gitlab
         ::Redis::Store::Factory.create(redis_store_options.merge(extras))
       end
 
+      def encrypted_secrets
+        # In rake tasks, we have to populate the encrypted_secrets even if the
+        # file does not exist, as it is the job of one of those tasks to create
+        # the file. In other cases, like when being loaded as part of spinning
+        # up test environment via `scripts/setup-test-env`, we should gate on
+        # the presence of the specified secret file so that
+        # `Settings.encrypted`, which might not be loadable does not gets
+        # called.
+        Settings.encrypted(secret_file) if File.exist?(secret_file) || ::Gitlab::Runtime.rake?
+      end
+
       private
 
       def redis_store_options
         config = raw_config_hash
         config[:instrumentation_class] ||= self.class.instrumentation_class
 
-        result = if config[:cluster].present?
-                   config[:db] = 0 # Redis Cluster only supports db 0
-                   config
+        decrypted_config = parse_encrypted_config(config)
+
+        result = if decrypted_config[:cluster].present?
+                   decrypted_config[:db] = 0 # Redis Cluster only supports db 0
+                   decrypted_config
                  else
-                   parse_redis_url(config)
+                   parse_redis_url(decrypted_config)
                  end
 
         parse_client_tls_options(result)
+      end
+
+      def parse_encrypted_config(encrypted_config)
+        encrypted_config.delete(:secret_file)
+
+        decrypted_secrets = encrypted_secrets&.config
+        encrypted_config.merge!(decrypted_secrets) if decrypted_secrets
+
+        encrypted_config
       end
 
       def parse_redis_url(config)

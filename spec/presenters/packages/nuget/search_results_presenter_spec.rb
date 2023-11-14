@@ -25,7 +25,7 @@ RSpec.describe Packages::Nuget::SearchResultsPresenter, feature_category: :packa
     it 'returns the proper data structure' do
       expect(data.size).to eq 3
       pkg_a, pkg_b, pkg_c = data
-      expect_package_result(pkg_a, package_a.name, [package_a.version], %w(tag1 tag2), with_metadatum: true)
+      expect_package_result(pkg_a, package_a.name, [package_a.version], %w[tag1 tag2], with_metadatum: true)
       expect_package_result(pkg_b, packages_b.first.name, packages_b.map(&:version))
       expect_package_result(pkg_c, packages_c.first.name, packages_c.map(&:version))
     end

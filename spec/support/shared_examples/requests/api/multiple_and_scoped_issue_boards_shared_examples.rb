@@ -5,7 +5,6 @@ RSpec.shared_examples 'multiple and scoped issue boards' do |route_definition|
 
   context 'multiple issue boards' do
     before do
-      stub_feature_flags(apollo_boards: false)
       board_parent.add_reporter(user)
       stub_licensed_features(multiple_group_issue_boards: true)
     end

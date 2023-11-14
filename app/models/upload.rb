@@ -174,7 +174,7 @@ class Upload < ApplicationRecord
   end
 
   def update_project_statistics
-    ProjectCacheWorker.perform_async(model_id, [], [:uploads_size])
+    ProjectCacheWorker.perform_async(model_id, [], ['uploads_size'])
   end
 end
 

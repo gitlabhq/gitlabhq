@@ -90,7 +90,7 @@ module Gitlab
           result = ::Gitlab::Instrumentation::RedisClusterValidator.validate(commands)
           return true if result.nil?
 
-          if !result[:valid] && !result[:allowed] && (Rails.env.development? || Rails.env.test?)
+          if !result[:valid] && !result[:allowed] && raise_cross_slot_validation_errors?
             raise RedisClusterValidator::CrossSlotError, "Redis command #{result[:command_name]} arguments hash to different slots. See https://docs.gitlab.com/ee/development/redis.html#multi-key-commands"
           end
 
@@ -188,6 +188,10 @@ module Gitlab
         def decompose_redirection_message(err_msg)
           redirection_type, _, target_node_key = err_msg.split
           { redirection_type: redirection_type, target_node_key: target_node_key }
+        end
+
+        def raise_cross_slot_validation_errors?
+          Rails.env.development? || Rails.env.test?
         end
       end
     end

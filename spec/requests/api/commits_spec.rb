@@ -2426,16 +2426,6 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         expect(json_response['x509_certificate']['x509_issuer']['crl_url']).to eq(commit.signature.x509_certificate.x509_issuer.crl_url)
         expect(json_response['commit_source']).to eq('gitaly')
       end
-
-      context 'with Rugged enabled', :enable_rugged do
-        it 'returns correct JSON' do
-          get api(route, current_user)
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['signature_type']).to eq('X509')
-          expect(json_response['commit_source']).to eq('gitaly')
-        end
-      end
     end
 
     context 'with ssh signed commit' do

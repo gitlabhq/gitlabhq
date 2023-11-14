@@ -1,5 +1,13 @@
-import { CoreV1Api, Configuration, AppsV1Api, BatchV1Api } from '@gitlab/cluster-client';
+import {
+  CoreV1Api,
+  Configuration,
+  AppsV1Api,
+  BatchV1Api,
+  WatchApi,
+  EVENT_DATA,
+} from '@gitlab/cluster-client';
 import { humanizeClusterErrors } from '../../helpers/k8s_integration_helper';
+import k8sPodsQuery from '../queries/k8s_pods.query.graphql';
 
 const mapWorkloadItems = (items, kind) => {
   return items.map((item) => {
@@ -53,15 +61,50 @@ const handleClusterError = async (err) => {
   throw errorData;
 };
 
+const watchPods = ({ configuration, namespace, client }) => {
+  const path = namespace ? `/api/v1/namespaces/${namespace}/pods` : '/api/v1/pods';
+  const config = new Configuration(configuration);
+  const watcherApi = new WatchApi(config);
+
+  watcherApi
+    .subscribeToStream(path, { watch: true })
+    .then((watcher) => {
+      let result = [];
+
+      watcher.on(EVENT_DATA, (data) => {
+        result = data.map((item) => {
+          return { status: { phase: item.status.phase } };
+        });
+
+        client.writeQuery({
+          query: k8sPodsQuery,
+          variables: { configuration, namespace },
+          data: { k8sPods: result },
+        });
+      });
+    })
+    .catch((err) => {
+      handleClusterError(err);
+    });
+};
+
 export default {
-  k8sPods(_, { configuration, namespace }) {
-    const coreV1Api = new CoreV1Api(new Configuration(configuration));
+  k8sPods(_, { configuration, namespace }, { client }) {
+    const config = new Configuration(configuration);
+
+    const coreV1Api = new CoreV1Api(config);
     const podsApi = namespace
       ? coreV1Api.listCoreV1NamespacedPod({ namespace })
       : coreV1Api.listCoreV1PodForAllNamespaces();
 
     return podsApi
-      .then((res) => res?.items || [])
+      .then((res) => {
+        if (gon.features?.k8sWatchApi) {
+          watchPods({ configuration, namespace, client });
+        }
+
+        return res?.items || [];
+      })
       .catch(async (err) => {
         try {
           await handleClusterError(err);

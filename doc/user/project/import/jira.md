@@ -23,8 +23,8 @@ GitLab imports the following information directly:
 Other Jira issue metadata that is not formally mapped to GitLab issue fields is
 imported into the GitLab issue's description as plain text.
 
-Our parser for converting text in Jira issues to GitLab Flavored Markdown is only compatible with
-Jira V3 REST API.
+Text in Jira issues is not parsed to GitLab Flavored Markdown which can result in broken text formatting.
+For more information, see [issue 379104](https://gitlab.com/gitlab-org/gitlab/-/issues/379104).
 
 There is an [epic](https://gitlab.com/groups/gitlab-org/-/epics/2738) tracking the addition of issue assignees, comments, and much more in the future
 iterations of the GitLab Jira importer.

@@ -12,7 +12,7 @@ let wrapper;
 let apolloProvider;
 
 function factory({
-  result = 'passed',
+  status = 'success',
   canMerge = true,
   pushToSourceBranch = true,
   shouldBeRebased = false,
@@ -42,7 +42,7 @@ function factory({
     apolloProvider,
     propsData: {
       mr,
-      check: { result, failureReason: 'Conflicts message' },
+      check: { status, identifier: 'CONFLICT' },
     },
   });
 }
@@ -55,7 +55,7 @@ describe('Merge request merge checks conflicts component', () => {
   it('renders failure reason text', () => {
     factory();
 
-    expect(wrapper.text()).toEqual('Conflicts message');
+    expect(wrapper.text()).toEqual('Merge conflicts must be resolved.');
   });
 
   it.each`
@@ -74,7 +74,12 @@ describe('Merge request merge checks conflicts component', () => {
       sourceBranchProtected,
       rendersConflictButton,
     }) => {
-      factory({ mr: { conflictResolutionPath }, pushToSourceBranch, sourceBranchProtected });
+      factory({
+        status: 'FAILED',
+        mr: { conflictResolutionPath },
+        pushToSourceBranch,
+        sourceBranchProtected,
+      });
 
       await waitForPromises();
 

@@ -11,6 +11,7 @@ RSpec.describe 'cross-database foreign keys' do
   # should be added as a comment along with the name of the column.
   let!(:allowed_cross_database_foreign_keys) do
     [
+      'events.author_id',                         # https://gitlab.com/gitlab-org/gitlab/-/issues/429803
       'gitlab_subscriptions.hosted_plan_id',      # https://gitlab.com/gitlab-org/gitlab/-/issues/422012
       'group_import_states.user_id',              # https://gitlab.com/gitlab-org/gitlab/-/issues/421210
       'identities.saml_provider_id',              # https://gitlab.com/gitlab-org/gitlab/-/issues/422010
@@ -18,11 +19,18 @@ RSpec.describe 'cross-database foreign keys' do
       'issues.closed_by_id',                      # https://gitlab.com/gitlab-org/gitlab/-/issues/422154
       'issues.updated_by_id',                     # https://gitlab.com/gitlab-org/gitlab/-/issues/422154
       'issue_assignees.user_id',                  # https://gitlab.com/gitlab-org/gitlab/-/issues/422154
+      'lfs_file_locks.user_id',                   # https://gitlab.com/gitlab-org/gitlab/-/issues/430838
       'merge_requests.assignee_id',               # https://gitlab.com/gitlab-org/gitlab/-/issues/422080
       'merge_requests.updated_by_id',             # https://gitlab.com/gitlab-org/gitlab/-/issues/422080
       'merge_requests.merge_user_id',             # https://gitlab.com/gitlab-org/gitlab/-/issues/422080
       'merge_requests.author_id',                 # https://gitlab.com/gitlab-org/gitlab/-/issues/422080
+      'namespace_commit_emails.email_id',         # https://gitlab.com/gitlab-org/gitlab/-/issues/429804
+      'namespace_commit_emails.user_id',          # https://gitlab.com/gitlab-org/gitlab/-/issues/429804
+      'path_locks.user_id',                       # https://gitlab.com/gitlab-org/gitlab/-/issues/429380
       'project_authorizations.user_id',           # https://gitlab.com/gitlab-org/gitlab/-/issues/422044
+      'protected_branch_push_access_levels.user_id',  # https://gitlab.com/gitlab-org/gitlab/-/issues/431054
+      'protected_branch_merge_access_levels.user_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/431055
+      'security_orchestration_policy_configurations.bot_user_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/429438
       'user_group_callouts.user_id'               # https://gitlab.com/gitlab-org/gitlab/-/issues/421287
     ]
   end

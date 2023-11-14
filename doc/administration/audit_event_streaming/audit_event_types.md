@@ -37,6 +37,7 @@ Audit event types belong to the following product categories.
 | Name | Description | Saved to database | Streamed | Introduced in |
 |:-----|:------------|:------------------|:---------|:--------------|
 | [`amazon_s3_configuration_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132443) | Triggered when Amazon S3 configuration for audit events streaming is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/423229) |
+| [`amazon_s3_configuration_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133695) | Triggered when Amazon S3 configuration for audit events streaming is deleted.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/423229) |
 | [`amazon_s3_configuration_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133691) | Triggered when Amazon S3 configuration for audit events streaming is updated.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/423229) |
 | [`audit_events_streaming_headers_create`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92068) | Triggered when a streaming header for audit events is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.3](https://gitlab.com/gitlab-org/gitlab/-/issues/366350) |
 | [`audit_events_streaming_headers_destroy`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92068) | Triggered when a streaming header for audit events is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.3](https://gitlab.com/gitlab-org/gitlab/-/issues/366350) |
@@ -44,6 +45,7 @@ Audit event types belong to the following product categories.
 | [`audit_events_streaming_instance_headers_destroy`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127228) | Triggered when a streaming header for instance level external audit event destination is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/417433) |
 | [`audit_events_streaming_instance_headers_update`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127228) | Triggered when a streaming header for instance level external audit event destination is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/417433) |
 | [`create_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74632) | Event triggered when an external audit event destination is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/344664) |
+| [`create_http_namespace_filter`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136047) | Event triggered when a namespace filter for an external audit event destination for a top-level group is created.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.6](https://gitlab.com/gitlab-org/gitlab/-/issues/424176) |
 | [`create_instance_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123882) | Event triggered when an instance level external audit event destination is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.2](https://gitlab.com/gitlab-org/gitlab/-/issues/404730) |
 | [`destroy_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74632) | Event triggered when an external audit event destination is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/344664) |
 | [`destroy_instance_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125846) | Event triggered when an instance level external audit event destination is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.2](https://gitlab.com/gitlab-org/gitlab/-/issues/404730) |
@@ -171,6 +173,7 @@ Audit event types belong to the following product categories.
 | [`ci_variable_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | Triggered when a CI variable is created at a project level| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) |
 | [`ci_variable_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | Triggered when a project's CI variable is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) |
 | [`ci_variable_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | Triggered when a project's CI variable is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) |
+| [`destroy_pipeline`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135255) | Event triggered when a pipeline is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339041) |
 
 ### Deployment management
 
@@ -227,6 +230,8 @@ Audit event types belong to the following product categories.
 
 | Name | Description | Saved to database | Streamed | Introduced in |
 |:-----|:------------|:------------------|:---------|:--------------|
+| [`create_ssh_certificate`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134556) | Event triggered when an SSH certificate is created.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.6](https://gitlab.com/gitlab-org/gitlab/-/issues/427413) |
+| [`delete_ssh_certificate`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134556) | Event triggered when an SSH certificate is deleted.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.6](https://gitlab.com/gitlab-org/gitlab/-/issues/427413) |
 | [`group_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121005) | Event triggered when a group is created.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/411595) |
 | [`group_lfs_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106079) | Event triggered when a groups lfs enabled is updated.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369323) |
 | [`group_membership_lock_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106079) | Event triggered when a groups membership lock is updated.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369323) |
@@ -306,7 +311,6 @@ Audit event types belong to the following product categories.
 | Name | Description | Saved to database | Streamed | Introduced in |
 |:-----|:------------|:------------------|:---------|:--------------|
 | [`experiment_features_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) | Event triggered on toggling setting for enabling experiment AI features| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/404856/) |
-| [`third_party_ai_features_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) | Event triggered on toggling setting for enabling third-party AI features| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/404856/) |
 
 ### Portfolio management
 
@@ -442,6 +446,7 @@ Audit event types belong to the following product categories.
 | [`email_confirmation_sent`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129261) | Triggered when users add or change and email address and it needs to be confirmed.| **{dotted-circle}** No | **{check-circle}** Yes | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/377625) |
 | [`remove_ssh_key`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65615) | Audit event triggered when a SSH key is removed| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/220127) |
 | [`user_admin_status_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65168) | Adds an audit event when a user is either made an administrator, or removed as an administrator| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323905) |
+| [`user_auditor_status_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136456) | Adds an audit event when a user is either made an auditor, or removed as an auditor| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.6](https://gitlab.com/gitlab-org/gitlab/-/issues/430235) |
 | [`user_email_address_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2103) | Adds an audit event when a user updates their email address| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [10.1](https://gitlab.com/gitlab-org/gitlab-ee/issues/1370) |
 | [`user_profile_visiblity_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129149) | Triggered when user toggles private profile user setting| **{dotted-circle}** No | **{check-circle}** Yes | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129149) |
 | [`user_username_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106086) | Event triggered on updating a user's username| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369329) |

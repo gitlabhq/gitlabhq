@@ -48,8 +48,11 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
   end
 
   it_behaves_like 'a working graphql query' do
+    # we exclude codequalityReportsComparer because it is behind feature flag
+    let(:excluded) { %w[codequalityReportsComparer] }
+
     let(:query) do
-      query_merge_requests(all_graphql_fields_for('MergeRequest', max_depth: 2))
+      query_merge_requests(all_graphql_fields_for('MergeRequest', max_depth: 2, excluded: excluded))
     end
 
     before do

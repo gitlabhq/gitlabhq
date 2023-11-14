@@ -16,15 +16,17 @@ RSpec.describe 'Setting an issue as locked', feature_category: :team_planning do
       project_path: project.full_path,
       iid: issue.iid.to_s
     }
-    graphql_mutation(:issue_set_locked, variables.merge(input),
-                     <<-QL.strip_heredoc
-                       clientMutationId
-                       errors
-                       issue {
-                         iid
-                         discussionLocked
-                       }
-                     QL
+    graphql_mutation(
+      :issue_set_locked,
+      variables.merge(input),
+      <<-QL.strip_heredoc
+        clientMutationId
+        errors
+        issue {
+          iid
+          discussionLocked
+        }
+      QL
     )
   end
 

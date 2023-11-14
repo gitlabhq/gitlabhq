@@ -190,7 +190,7 @@ export default {
     renderMarkdown(markdown) {
       const url = setUrlParams(
         { render_quick_actions: this.supportsQuickActions },
-        joinPaths(gon.relative_url_root || window.location.origin, this.renderMarkdownPath),
+        joinPaths(window.location.origin, gon.relative_url_root, this.renderMarkdownPath),
       );
       return axios.post(url, { text: markdown }).then(({ data }) => data.body);
     },

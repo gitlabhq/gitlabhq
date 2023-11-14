@@ -11,25 +11,25 @@ RSpec.describe Gitlab::Instrumentation::RedisClusterValidator, feature_category:
     using RSpec::Parameterized::TableSyntax
 
     where(:command, :arguments, :keys, :is_valid) do
-      :rename | %w(foo bar) | 2 | false
-      :RENAME | %w(foo bar) | 2 | false
-      'rename' | %w(foo bar) | 2 | false
-      'RENAME' | %w(foo bar) | 2 | false
-      :rename | %w(iaa ahy) | 2 | true # 'iaa' and 'ahy' hash to the same slot
-      :rename | %w({foo}:1 {foo}:2) | 2 | true
-      :rename | %w(foo foo bar) | 2 | true # This is not a valid command but should not raise here
-      :mget | %w(foo bar) | 2 | false
-      :mget | %w(foo foo bar) | 3 | false
-      :mget | %w(foo foo) | 2 | true
-      :blpop | %w(foo bar 1) | 2 | false
-      :blpop | %w(foo foo 1) | 2 | true
-      :mset | %w(foo a bar a) | 2 | false
-      :mset | %w(foo a foo a) | 2 | true
-      :del | %w(foo bar) | 2 | false
-      :del | [%w(foo bar)] | 2 | false # Arguments can be a nested array
-      :del | %w(foo foo) | 2 | true
-      :hset | %w(foo bar) | 1 | nil # Single key write
-      :get | %w(foo) | 1 | nil # Single key read
+      :rename | %w[foo bar] | 2 | false
+      :RENAME | %w[foo bar] | 2 | false
+      'rename' | %w[foo bar] | 2 | false
+      'RENAME' | %w[foo bar] | 2 | false
+      :rename | %w[iaa ahy] | 2 | true # 'iaa' and 'ahy' hash to the same slot
+      :rename | %w[{foo}:1 {foo}:2] | 2 | true
+      :rename | %w[foo foo bar] | 2 | true # This is not a valid command but should not raise here
+      :mget | %w[foo bar] | 2 | false
+      :mget | %w[foo foo bar] | 3 | false
+      :mget | %w[foo foo] | 2 | true
+      :blpop | %w[foo bar 1] | 2 | false
+      :blpop | %w[foo foo 1] | 2 | true
+      :mset | %w[foo a bar a] | 2 | false
+      :mset | %w[foo a foo a] | 2 | true
+      :del | %w[foo bar] | 2 | false
+      :del | [%w[foo bar]] | 2 | false # Arguments can be a nested array
+      :del | %w[foo foo] | 2 | true
+      :hset | %w[foo bar] | 1 | nil # Single key write
+      :get | %w[foo] | 1 | nil # Single key read
       :mget | [] | 0 | true # This is invalid, but not because it's a cross-slot command
     end
 

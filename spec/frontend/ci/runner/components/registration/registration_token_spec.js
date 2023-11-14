@@ -55,7 +55,7 @@ describe('RegistrationToken', () => {
       mountFn: mountExtended,
     });
 
-    expect(wrapper.find('input').element.type).toBe('password');
+    expect(wrapper.find('input').classes()).toContain('input-copy-show-disc');
   });
 
   describe('When the copy to clipboard button is clicked', () => {

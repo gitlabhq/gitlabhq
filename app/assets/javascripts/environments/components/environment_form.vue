@@ -193,6 +193,7 @@ export default {
         headers: {
           'GitLab-Agent-Id': getIdFromGraphQLId(this.selectedAgentId),
           'Content-Type': 'application/json',
+          Accept: 'application/json',
           ...csrf.headers,
         },
         credentials: 'include',

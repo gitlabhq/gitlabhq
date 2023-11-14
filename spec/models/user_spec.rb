@@ -44,6 +44,9 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:time_display_relative).to(:user_preference) }
     it { is_expected.to delegate_method(:time_display_relative=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:time_display_format).to(:user_preference) }
+    it { is_expected.to delegate_method(:time_display_format=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:show_whitespace_in_diffs).to(:user_preference) }
     it { is_expected.to delegate_method(:show_whitespace_in_diffs=).to(:user_preference).with_arguments(:args) }
 
@@ -113,6 +116,9 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:linkedin).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:linkedin=).to(:user_detail).with_arguments(:args).allow_nil }
 
+    it { is_expected.to delegate_method(:mastodon).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:mastodon=).to(:user_detail).with_arguments(:args).allow_nil }
+
     it { is_expected.to delegate_method(:twitter).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:twitter=).to(:user_detail).with_arguments(:args).allow_nil }
 
@@ -130,6 +136,9 @@ RSpec.describe User, feature_category: :user_profile do
 
     it { is_expected.to delegate_method(:email_reset_offered_at).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:email_reset_offered_at=).to(:user_detail).with_arguments(:args).allow_nil }
+
+    it { is_expected.to delegate_method(:project_authorizations_recalculated_at).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:project_authorizations_recalculated_at=).to(:user_detail).with_arguments(:args).allow_nil }
   end
 
   describe 'associations' do
@@ -1277,7 +1286,7 @@ RSpec.describe User, feature_category: :user_profile do
         user = create(:user, username: 'CaMeLcAsEd')
         user2 = create(:user, username: 'UPPERCASE')
 
-        expect(described_class.by_username(%w(CAMELCASED uppercase)))
+        expect(described_class.by_username(%w[CAMELCASED uppercase]))
           .to contain_exactly(user, user2)
       end
 
@@ -1414,6 +1423,16 @@ RSpec.describe User, feature_category: :user_profile do
       it 'sorts users by current_sign_in_at in ascending order' do
         expect(described_class.order_oldest_sign_in.to_sql).to include(
           'ORDER BY "users"."current_sign_in_at" ASC NULLS LAST')
+      end
+    end
+
+    describe '.trusted' do
+      let_it_be(:trusted_user1) { create(:user, :trusted) }
+      let_it_be(:trusted_user2) { create(:user, :trusted) }
+      let_it_be(:user3) { create(:user) }
+
+      it 'returns only the trusted users' do
+        expect(described_class.trusted).to match_array([trusted_user1, trusted_user2])
       end
     end
   end
@@ -1824,7 +1843,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'when the confirmation period has expired' do
-      let(:confirmation_sent_at) {  expired_confirmation_sent_at }
+      let(:confirmation_sent_at) { expired_confirmation_sent_at }
 
       it_behaves_like 'unconfirmed user'
 
@@ -1842,7 +1861,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'when the confirmation period has not expired' do
-      let(:confirmation_sent_at) {  extant_confirmation_sent_at }
+      let(:confirmation_sent_at) { extant_confirmation_sent_at }
 
       it_behaves_like 'unconfirmed user'
 
@@ -2033,7 +2052,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'when the confirmation period has expired' do
-      let(:confirmation_sent_at) {  expired_confirmation_sent_at }
+      let(:confirmation_sent_at) { expired_confirmation_sent_at }
 
       it_behaves_like 'unconfirmed user'
       it_behaves_like 'confirms the user on force_confirm'
@@ -2855,6 +2874,12 @@ RSpec.describe User, feature_category: :user_profile do
 
       expect(described_class.filter_items('wop')).to include user
     end
+
+    it 'filters by trusted' do
+      expect(described_class).to receive(:trusted).and_return([user])
+
+      expect(described_class.filter_items('trusted')).to include user
+    end
   end
 
   describe '.without_projects' do
@@ -3261,6 +3286,9 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     describe 'username matching' do
+      let_it_be(:named_john) { create(:user, name: 'John', username: 'abcd') }
+      let_it_be(:username_john) { create(:user, name: 'John Doe', username: 'john') }
+
       it 'returns users with a matching username' do
         expect(described_class.search(user.username)).to eq([user, user2])
       end
@@ -3279,6 +3307,10 @@ RSpec.describe User, feature_category: :user_profile do
 
       it 'returns users with a matching username regardless of the casing' do
         expect(described_class.search(user2.username.upcase)).to eq([user2])
+      end
+
+      it 'returns users with an exact matching username first' do
+        expect(described_class.search('John')).to eq([username_john, named_john])
       end
 
       it 'returns users with a exact matching username shorter than 3 chars' do
@@ -5814,37 +5846,37 @@ RSpec.describe User, feature_category: :user_profile do
 
     context 'oauth user' do
       it 'returns true if name can be synced' do
-        stub_omniauth_setting(sync_profile_attributes: %w(name location))
+        stub_omniauth_setting(sync_profile_attributes: %w[name location])
 
         expect(user.sync_attribute?(:name)).to be_truthy
       end
 
       it 'returns true if email can be synced' do
-        stub_omniauth_setting(sync_profile_attributes: %w(name email))
+        stub_omniauth_setting(sync_profile_attributes: %w[name email])
 
         expect(user.sync_attribute?(:email)).to be_truthy
       end
 
       it 'returns true if location can be synced' do
-        stub_omniauth_setting(sync_profile_attributes: %w(location email))
+        stub_omniauth_setting(sync_profile_attributes: %w[location email])
 
         expect(user.sync_attribute?(:email)).to be_truthy
       end
 
       it 'returns false if name can not be synced' do
-        stub_omniauth_setting(sync_profile_attributes: %w(location email))
+        stub_omniauth_setting(sync_profile_attributes: %w[location email])
 
         expect(user.sync_attribute?(:name)).to be_falsey
       end
 
       it 'returns false if email can not be synced' do
-        stub_omniauth_setting(sync_profile_attributes: %w(location name))
+        stub_omniauth_setting(sync_profile_attributes: %w[location name])
 
         expect(user.sync_attribute?(:email)).to be_falsey
       end
 
       it 'returns false if location can not be synced' do
-        stub_omniauth_setting(sync_profile_attributes: %w(name email))
+        stub_omniauth_setting(sync_profile_attributes: %w[name email])
 
         expect(user.sync_attribute?(:location)).to be_falsey
       end
@@ -5875,7 +5907,7 @@ RSpec.describe User, feature_category: :user_profile do
 
       it 'returns true for email and location if ldap user and location declared as syncable' do
         allow(user).to receive(:ldap_user?).and_return(true)
-        stub_omniauth_setting(sync_profile_attributes: %w(location))
+        stub_omniauth_setting(sync_profile_attributes: %w[location])
 
         expect(user.sync_attribute?(:name)).to be_falsey
         expect(user.sync_attribute?(:email)).to be_truthy

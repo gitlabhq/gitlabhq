@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard snippets', feature_category: :source_code_management do
-  let_it_be(:user) { create(:user, :no_super_sidebar) }
+RSpec.describe 'Dashboard snippets', :js, feature_category: :source_code_management do
+  let_it_be(:user) { create(:user) }
 
   it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :dashboard_snippets_path, :snippets
 
@@ -32,7 +32,7 @@ RSpec.describe 'Dashboard snippets', feature_category: :source_code_management d
     end
   end
 
-  context 'when there are no project snippets', :js do
+  context 'when there are no project snippets' do
     let(:project) { create(:project, :public, creator: user) }
 
     before do
@@ -55,7 +55,7 @@ RSpec.describe 'Dashboard snippets', feature_category: :source_code_management d
 
     it 'shows documentation button in main comment area' do
       parent_element = page.find('.row.empty-state')
-      expect(parent_element).to have_link('Documentation', href: help_page_path('user/snippets.md'))
+      expect(parent_element).to have_link('Documentation', href: help_page_path('user/snippets'))
     end
   end
 

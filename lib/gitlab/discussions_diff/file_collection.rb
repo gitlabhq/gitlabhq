@@ -25,8 +25,9 @@ module Gitlab
       #
       # - Highlight cache is written just for uncached diff files
       # - The cache content is not updated (there's no need to do so)
-      def load_highlight
-        ids = highlightable_collection_ids
+      # - Load only the related diff note ids
+      def load_highlight(diff_note_ids: nil)
+        ids = highlightable_collection_ids(diff_note_ids)
         return if ids.empty?
 
         cached_content = read_cache(ids)
@@ -47,8 +48,13 @@ module Gitlab
 
       private
 
-      def highlightable_collection_ids
-        each.with_object([]) { |file, memo| memo << file.id unless file.resolved_at }
+      def highlightable_collection_ids(diff_note_ids)
+        each.with_object([]) do |file, memo|
+          # We ignore if file is resolved, or not part of the highlight requested notes
+          next if file.resolved_at || (diff_note_ids.present? && diff_note_ids.exclude?(file.diff_note_id))
+
+          memo << file.id
+        end
       end
 
       def read_cache(ids)

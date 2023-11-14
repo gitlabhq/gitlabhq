@@ -148,3 +148,27 @@ Sometimes we want to send internal events when the component is rendered or load
 = render Pajamas::ButtonComponent.new(button_options: { data: { event_tracking_load: 'true', event_tracking: 'i_devops' } }) do
         = _("New project")
 ```
+
+### Props
+
+Apart from `eventName`, the `trackEvent` method also supports `extra` and `context` props.
+
+`extra`: Use this property to append supplementary information to GitLab standard context.
+`context`: Use this property to attach an additional context, if needed.
+
+The following example shows how to use the `extra` and `context` props with the `trackEvent` method:
+
+```javascript
+this.trackEvent('i_code_review_user_apply_suggestion', {
+  extra: {
+    projectId : 123,
+  },
+  context: {
+    schema: 'iglu:com.gitlab/design_management_context/jsonschema/1-0-0',
+    data: {
+      'design-version-number': '1.0.0',
+      'design-is-current-version': '1.0.1',
+    },
+  },
+});
+```

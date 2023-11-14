@@ -1,6 +1,6 @@
 <script>
-import { GlLabel, GlLink, GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { GlLabel, GlLink, GlIcon, GlTooltipDirective, GlButton } from '@gitlab/ui';
+import { __, s__ } from '~/locale';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import RichTimestampTooltip from '~/vue_shared/components/rich_timestamp_tooltip.vue';
 import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/shared/work_item_link_child_metadata.vue';
@@ -15,21 +15,21 @@ import {
   WIDGET_TYPE_LABELS,
   WORK_ITEM_NAME_TO_ICON_MAP,
 } from '../../constants';
-import WorkItemLinksMenu from './work_item_links_menu.vue';
 
 export default {
   i18n: {
     confidential: __('Confidential'),
     created: __('Created'),
     closed: __('Closed'),
+    remove: s__('WorkItem|Remove'),
   },
   components: {
     GlLabel,
     GlLink,
     GlIcon,
+    GlButton,
     RichTimestampTooltip,
     WorkItemLinkChildMetadata,
-    WorkItemLinksMenu,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -52,6 +52,16 @@ export default {
       required: false,
       default: false,
     },
+    showLabels: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
+  data() {
+    return {
+      isFocused: false,
+    };
   },
   computed: {
     labels() {
@@ -106,6 +116,12 @@ export default {
       }
       return false;
     },
+    showRemove() {
+      return this.canUpdate && this.isFocused;
+    },
+    displayLabels() {
+      return this.showLabels && this.labels.length;
+    },
   },
   methods: {
     showScopedLabel(label) {
@@ -117,8 +133,12 @@ export default {
 
 <template>
   <div
-    class="item-body work-item-link-child gl-relative gl-display-flex gl-flex-grow-1 gl-overflow-break-word gl-min-w-0 gl-pl-3 gl-pr-2 gl-py-2 gl-mx-n2 gl-rounded-base"
+    class="item-body work-item-link-child gl-relative gl-display-flex gl-flex-grow-1 gl-overflow-break-word gl-min-w-0 gl-pl-3 gl-pr-2 gl-py-2 gl-mx-n2 gl-rounded-base gl-gap-3"
     data-testid="links-child"
+    @mouseover="isFocused = true"
+    @mouseleave="isFocused = false"
+    @focusin="isFocused = true"
+    @focusout="isFocused = false"
   >
     <div class="item-contents gl-display-flex gl-flex-grow-1 gl-flex-wrap gl-min-w-0">
       <div
@@ -168,7 +188,7 @@ export default {
           class="gl-ml-6 ml-xl-0"
         />
       </div>
-      <div v-if="labels.length" class="gl-display-flex gl-flex-wrap gl-flex-basis-full gl-ml-6">
+      <div v-if="displayLabels" class="gl-display-flex gl-flex-wrap gl-flex-basis-full gl-ml-6">
         <gl-label
           v-for="label in labels"
           :key="label.id"
@@ -181,10 +201,16 @@ export default {
         />
       </div>
     </div>
-    <div v-if="canUpdate" class="gl-ml-0 gl-sm-ml-auto! gl-display-inline-flex">
-      <work-item-links-menu
-        data-testid="links-menu"
-        @removeChild="$emit('removeChild', childItem)"
+    <div v-if="canUpdate">
+      <gl-button
+        :class="{ 'gl-visibility-visible': showRemove }"
+        class="gl-visibility-hidden"
+        category="tertiary"
+        size="small"
+        icon="close"
+        :aria-label="$options.i18n.remove"
+        data-testid="remove-work-item-link"
+        @click="$emit('removeChild', childItem)"
       />
     </div>
   </div>

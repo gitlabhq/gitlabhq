@@ -2,12 +2,7 @@
 import { GlBadge, GlIcon, GlIntersectionObserver, GlLink } from '@gitlab/ui';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
-import {
-  issuableStatusText,
-  STATUS_CLOSED,
-  TYPE_EPIC,
-  WORKSPACE_PROJECT,
-} from '~/issues/constants';
+import { issuableStatusText, STATUS_CLOSED, WORKSPACE_PROJECT } from '~/issues/constants';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 
 export default {
@@ -60,10 +55,7 @@ export default {
       return this.issuableStatus === STATUS_CLOSED;
     },
     statusIcon() {
-      if (this.issuableType === TYPE_EPIC) {
-        return this.isClosed ? 'epic-closed' : 'epic';
-      }
-      return this.isClosed ? 'issue-closed' : 'issues';
+      return this.isClosed ? 'issue-close' : 'issue-open-m';
     },
     statusText() {
       return issuableStatusText[this.issuableStatus];
@@ -84,7 +76,7 @@ export default {
         data-testid="issue-sticky-header"
       >
         <div
-          class="issue-sticky-header-text gl-display-flex gl-align-items-center gl-gap-2 gl-mx-auto gl-px-5"
+          class="issue-sticky-header-text gl-display-flex gl-align-items-center gl-gap-2 gl-mx-auto"
         >
           <gl-badge :variant="statusVariant">
             <gl-icon :name="statusIcon" />

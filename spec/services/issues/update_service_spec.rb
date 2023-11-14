@@ -491,9 +491,9 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
         end
 
         it 'creates system note about discussion lock' do
-          note = find_note('locked this issue')
+          note = find_note('locked the discussion in this issue')
 
-          expect(note.note).to eq 'locked this issue'
+          expect(note.note).to eq 'locked the discussion in this issue'
         end
       end
 
@@ -538,21 +538,6 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
             expect(issue.valid?).to be false
           end
         end
-      end
-
-      it 'verifies the number of queries' do
-        update_issue(description: "- [ ] Task 1 #{user.to_reference}")
-
-        baseline = ActiveRecord::QueryRecorder.new do
-          update_issue(description: "- [x] Task 1 #{user.to_reference}")
-        end
-
-        recorded = ActiveRecord::QueryRecorder.new do
-          update_issue(description: "- [x] Task 1 #{user.to_reference}\n- [ ] Task 2 #{user.to_reference}")
-        end
-
-        expect(recorded.count).to eq(baseline.count)
-        expect(recorded.cached_count).to eq(0)
       end
     end
 

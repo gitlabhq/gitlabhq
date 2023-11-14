@@ -287,6 +287,9 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
             { href: "/groups/new", text: "New group",
               component: nil,
               extraAttrs: extra_attrs.call("general_new_group") },
+            { href: "/-/organizations/new", text: s_('Organization|New organization'),
+              component: nil,
+              extraAttrs: extra_attrs.call("general_new_organization") },
             { href: "/-/snippets/new", text: "New snippet",
               component: nil,
               extraAttrs: extra_attrs.call("general_new_snippet") }
@@ -403,15 +406,15 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
 
     describe 'context switcher persistent links' do
       let_it_be(:public_link) do
-        [
-          { title: s_('Navigation|Explore'), link: '/explore', icon: 'compass' }
-        ]
+        { title: s_('Navigation|Explore'), link: '/explore', icon: 'compass' }
       end
 
       let_it_be(:public_links_for_user) do
         [
           { title: s_('Navigation|Your work'), link: '/', icon: 'work' },
-          *public_link
+          public_link,
+          { title: s_('Navigation|Profile'), link: '/-/profile', icon: 'profile' },
+          { title: s_('Navigation|Preferences'), link: '/-/profile/preferences', icon: 'preferences' }
         ]
       end
 
@@ -436,7 +439,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         let(:user) { nil }
 
         it 'returns only the public links for an anonymous user' do
-          expect(subject[:context_switcher_links]).to eq(public_link)
+          expect(subject[:context_switcher_links]).to eq([public_link])
         end
       end
 

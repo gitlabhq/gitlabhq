@@ -1,0 +1,17 @@
+query getOrganizationUsers($id: OrganizationsOrganizationID!) {
+  organization(id: $id) {
+    id
+    organizationUsers {
+      nodes {
+        badges {
+          text
+          variant
+        }
+        id
+        user {
+          id
+        }
+      }
+    }
+  }
+}

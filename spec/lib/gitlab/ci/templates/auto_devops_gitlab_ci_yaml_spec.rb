@@ -94,7 +94,7 @@ RSpec.describe 'Auto-DevOps.gitlab-ci.yml', feature_category: :auto_devops do
             project.repository.create_branch(pipeline_branch, default_branch)
           end
 
-          %w(review_ecs review_fargate).each do |job|
+          %w[review_ecs review_fargate].each do |job|
             it_behaves_like 'no ECS job when AUTO_DEVOPS_PLATFORM_TARGET is not present' do
               let(:job_name) { job }
             end
@@ -142,7 +142,7 @@ RSpec.describe 'Auto-DevOps.gitlab-ci.yml', feature_category: :auto_devops do
 
       context 'when the project has no active cluster' do
         it 'only creates a build and a test stage' do
-          expect(pipeline.stages_names).to eq(%w(build test))
+          expect(pipeline.stages_names).to eq(%w[build test])
         end
 
         it_behaves_like 'no Kubernetes deployment job'
@@ -273,25 +273,25 @@ RSpec.describe 'Auto-DevOps.gitlab-ci.yml', feature_category: :auto_devops do
       using RSpec::Parameterized::TableSyntax
 
       where(:case_name, :files, :variables, :include_build_names, :not_include_build_names) do
-        'No match'        | { 'README.md' => '' }                   | {}                                          | %w()           | %w(build test)
-        'Buildpack'       | { 'README.md' => '' }                   | { 'BUILDPACK_URL' => 'http://example.com' } | %w(build test) | %w()
-        'Explicit set'    | { 'README.md' => '' }                   | { 'AUTO_DEVOPS_EXPLICITLY_ENABLED' => '1' } | %w(build test) | %w()
-        'Explicit unset'  | { 'README.md' => '' }                   | { 'AUTO_DEVOPS_EXPLICITLY_ENABLED' => '0' } | %w()           | %w(build test)
-        'DOCKERFILE_PATH' | { 'README.md' => '' }                   | { 'DOCKERFILE_PATH' => 'Docker.file' }      | %w(build test) | %w()
-        'Dockerfile'      | { 'Dockerfile' => '' }                  | {}                                          | %w(build test) | %w()
-        'Clojure'         | { 'project.clj' => '' }                 | {}                                          | %w(build test) | %w()
-        'Go modules'      | { 'go.mod' => '' }                      | {}                                          | %w(build test) | %w()
-        'Go gb'           | { 'src/gitlab.com/gopackage.go' => '' } | {}                                          | %w(build test) | %w()
-        'Gradle'          | { 'gradlew' => '' }                     | {}                                          | %w(build test) | %w()
-        'Java'            | { 'pom.xml' => '' }                     | {}                                          | %w(build test) | %w()
-        'Multi-buildpack' | { '.buildpacks' => '' }                 | {}                                          | %w(build test) | %w()
-        'NodeJS'          | { 'package.json' => '' }                | {}                                          | %w(build test) | %w()
-        'PHP'             | { 'composer.json' => '' }               | {}                                          | %w(build test) | %w()
-        'Play'            | { 'conf/application.conf' => '' }       | {}                                          | %w(build test) | %w()
-        'Python'          | { 'Pipfile' => '' }                     | {}                                          | %w(build test) | %w()
-        'Ruby'            | { 'Gemfile' => '' }                     | {}                                          | %w(build test) | %w()
-        'Scala'           | { 'build.sbt' => '' }                   | {}                                          | %w(build test) | %w()
-        'Static'          | { '.static' => '' }                     | {}                                          | %w(build test) | %w()
+        'No match'        | { 'README.md' => '' }                   | {}                                          | %w[]           | %w[build test]
+        'Buildpack'       | { 'README.md' => '' }                   | { 'BUILDPACK_URL' => 'http://example.com' } | %w[build test] | %w[]
+        'Explicit set'    | { 'README.md' => '' }                   | { 'AUTO_DEVOPS_EXPLICITLY_ENABLED' => '1' } | %w[build test] | %w[]
+        'Explicit unset'  | { 'README.md' => '' }                   | { 'AUTO_DEVOPS_EXPLICITLY_ENABLED' => '0' } | %w[]           | %w[build test]
+        'DOCKERFILE_PATH' | { 'README.md' => '' }                   | { 'DOCKERFILE_PATH' => 'Docker.file' }      | %w[build test] | %w[]
+        'Dockerfile'      | { 'Dockerfile' => '' }                  | {}                                          | %w[build test] | %w[]
+        'Clojure'         | { 'project.clj' => '' }                 | {}                                          | %w[build test] | %w[]
+        'Go modules'      | { 'go.mod' => '' }                      | {}                                          | %w[build test] | %w[]
+        'Go gb'           | { 'src/gitlab.com/gopackage.go' => '' } | {}                                          | %w[build test] | %w[]
+        'Gradle'          | { 'gradlew' => '' }                     | {}                                          | %w[build test] | %w[]
+        'Java'            | { 'pom.xml' => '' }                     | {}                                          | %w[build test] | %w[]
+        'Multi-buildpack' | { '.buildpacks' => '' }                 | {}                                          | %w[build test] | %w[]
+        'NodeJS'          | { 'package.json' => '' }                | {}                                          | %w[build test] | %w[]
+        'PHP'             | { 'composer.json' => '' }               | {}                                          | %w[build test] | %w[]
+        'Play'            | { 'conf/application.conf' => '' }       | {}                                          | %w[build test] | %w[]
+        'Python'          | { 'Pipfile' => '' }                     | {}                                          | %w[build test] | %w[]
+        'Ruby'            | { 'Gemfile' => '' }                     | {}                                          | %w[build test] | %w[]
+        'Scala'           | { 'build.sbt' => '' }                   | {}                                          | %w[build test] | %w[]
+        'Static'          | { '.static' => '' }                     | {}                                          | %w[build test] | %w[]
       end
 
       with_them do

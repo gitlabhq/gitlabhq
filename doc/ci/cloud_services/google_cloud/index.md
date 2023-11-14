@@ -22,6 +22,10 @@ This tutorial assumes you have a Google Cloud account and a Google Cloud project
 Your account must have at least the **Workload Identity Pool Admin** permission
 on the Google Cloud project.
 
+NOTE:
+If you would prefer to use a Terraform module and a CI/CD template instead of this tutorial,
+see [How OIDC can simplify authentication of GitLab CI/CD pipelines with Google Cloud](https://about.gitlab.com/blog/2023/06/28/introduction-of-oidc-modules-for-integration-between-google-cloud-and-gitlab-ci/).
+
 To complete this tutorial:
 
 1. [Create the Google Cloud Workload Identity Pool](#create-the-google-cloud-workload-identity-pool).

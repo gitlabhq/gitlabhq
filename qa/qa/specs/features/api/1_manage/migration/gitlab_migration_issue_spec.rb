@@ -74,10 +74,7 @@ module QA
         end
 
         let(:imported_design) do
-          Resource::Design.init do |design|
-            design.api_client = api_client
-            design.issue = imported_issue.reload!
-          end.reload!
+          build(:design, api_client: api_client, issue: imported_issue.reload!).reload!
         end
 
         it(

@@ -1,17 +1,17 @@
 %p
-  - link = link_to('', help_page_path('user/project/deploy_tokens/index.md'), target: '_blank', rel: 'noopener noreferrer')
+  - link = link_to('', help_page_path('user/project/deploy_tokens/index'), target: '_blank', rel: 'noopener noreferrer')
   = safe_format(s_('DeployTokens|Create a new deploy token for all projects in this group. %{link_start}What are deploy tokens?%{link_end}'), tag_pair(link, :link_start, :link_end))
 
 = gitlab_ui_form_for token, url: create_deploy_token_path(group_or_project, anchor: 'js-deploy-tokens'), method: :post, remote: true do |f|
 
   .form-group
     = f.label :name, class: 'label-bold'
-    = f.text_field :name, class: 'form-control gl-form-input', data: { qa_selector: 'deploy_token_name_field' }, required: true
+    = f.text_field :name, class: 'form-control gl-form-input', data: { testid: 'deploy-token-name-field' }, required: true
     .text-secondary= s_('DeployTokens|Enter a unique name for your deploy token.')
 
   .form-group
     = f.label :expires_at, _('Expiration date (optional)'), class: 'label-bold'
-    = f.gitlab_ui_datepicker :expires_at, data: { qa_selector: 'deploy_token_expires_at_field' }, value: f.object.expires_at
+    = f.gitlab_ui_datepicker :expires_at, data: { testid: 'deploy-token-expires-at-field' }, value: f.object.expires_at
     .text-secondary= s_('DeployTokens|Enter an expiration date for your token. Defaults to never expire.')
 
   .form-group
@@ -22,15 +22,15 @@
 
   .form-group
     = f.label :scopes, _('Scopes (select at least one)'), class: 'label-bold'
-    = f.gitlab_ui_checkbox_component :read_repository, 'read_repository', help_text: s_('DeployTokens|Allows read-only access to the repository.'), checkbox_options: { data: { qa_selector: 'deploy_token_read_repository_checkbox' } }
+    = f.gitlab_ui_checkbox_component :read_repository, 'read_repository', help_text: s_('DeployTokens|Allows read-only access to the repository.'), checkbox_options: { data: { testid: 'deploy-token-read-repository-checkbox' } }
 
     - if container_registry_enabled?(group_or_project)
-      = f.gitlab_ui_checkbox_component :read_registry, 'read_registry', help_text: s_('DeployTokens|Allows read-only access to registry images.'), checkbox_options: { data: { qa_selector: 'deploy_token_read_registry_checkbox' } }
-      = f.gitlab_ui_checkbox_component :write_registry, 'write_registry', help_text: s_('DeployTokens|Allows write access to registry images.'), checkbox_options: { data: { qa_selector: 'deploy_token_write_registry_checkbox' } }
+      = f.gitlab_ui_checkbox_component :read_registry, 'read_registry', help_text: s_('DeployTokens|Allows read-only access to registry images.'), checkbox_options: { data: { testid: 'deploy-token-read-registry-checkbox' } }
+      = f.gitlab_ui_checkbox_component :write_registry, 'write_registry', help_text: s_('DeployTokens|Allows write access to registry images.'), checkbox_options: { data: { testid: 'deploy-token-write-registry-checkbox' } }
 
     - if packages_registry_enabled?(group_or_project)
-      = f.gitlab_ui_checkbox_component :read_package_registry, 'read_package_registry', help_text: s_('DeployTokens|Allows read-only access to the package registry.'), checkbox_options: { data: { qa_selector: 'deploy_token_read_package_registry_checkbox' } }
-      = f.gitlab_ui_checkbox_component :write_package_registry, 'write_package_registry', help_text: s_('DeployTokens|Allows read and write access to the package registry.'), checkbox_options: { data: { qa_selector: 'deploy_token_write_package_registry_checkbox' } }
+      = f.gitlab_ui_checkbox_component :read_package_registry, 'read_package_registry', help_text: s_('DeployTokens|Allows read-only access to the package registry.'), checkbox_options: { data: { testid: 'deploy-token-read-package-registry-checkbox' } }
+      = f.gitlab_ui_checkbox_component :write_package_registry, 'write_package_registry', help_text: s_('DeployTokens|Allows read and write access to the package registry.'), checkbox_options: { data: { testid: 'deploy-token-write-package-registry-checkbox' } }
 
   .gl-mt-3
-    = f.submit s_('DeployTokens|Create deploy token'), data: { qa_selector: 'create_deploy_token_button' }, pajamas_button: true
+    = f.submit s_('DeployTokens|Create deploy token'), data: { testid: 'create-deploy-token-button' }, pajamas_button: true

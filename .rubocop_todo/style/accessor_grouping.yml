@@ -1,6 +1,7 @@
 ---
 # Cop supports --autocorrect.
 Style/AccessorGrouping:
+  Details: grace period
   Exclude:
     - 'app/finders/template_finder.rb'
     - 'app/models/commit.rb'
@@ -26,7 +27,6 @@ Style/AccessorGrouping:
     - 'ee/app/models/approval_wrapped_rule.rb'
     - 'ee/app/models/integrations/chat_message/vulnerability_message.rb'
     - 'ee/app/services/ci/pipeline_creation/drop_not_runnable_builds_service.rb'
-    - 'ee/app/services/geo/project_housekeeping_service.rb'
     - 'ee/lib/gitlab/ci/reports/coverage_fuzzing/crash.rb'
     - 'ee/lib/gitlab/ci/reports/coverage_fuzzing/report.rb'
     - 'ee/lib/gitlab/ci/reports/security/locations/container_scanning.rb'
@@ -35,7 +35,6 @@ Style/AccessorGrouping:
     - 'ee/lib/gitlab/ci/reports/security/locations/dependency_scanning.rb'
     - 'lib/feature/definition.rb'
     - 'lib/gitlab/audit/type/definition.rb'
-    - 'lib/gitlab/bitbucket_server_import/importer.rb'
     - 'lib/gitlab/ci/config/external/context.rb'
     - 'lib/gitlab/ci/reports/security/finding.rb'
     - 'lib/gitlab/ci/reports/security/identifier.rb'
@@ -56,6 +55,7 @@ Style/AccessorGrouping:
     - 'lib/gitlab/graphql/connection_redaction.rb'
     - 'lib/gitlab/http_io.rb'
     - 'lib/gitlab/import_export/project/tree_restorer.rb'
+    - 'lib/gitlab/search/abuse_detection.rb'
     - 'lib/gitlab/sidekiq_middleware/duplicate_jobs/duplicate_job.rb'
     - 'lib/gitlab/suggestions/file_suggestion.rb'
     - 'lib/gitlab/tracking/event_definition.rb'
@@ -66,6 +66,5 @@ Style/AccessorGrouping:
     - 'lib/object_storage/direct_upload.rb'
     - 'lib/safe_zip/entry.rb'
     - 'lib/system_check/simple_executor.rb'
-    - 'lib/uploaded_file.rb'
     - 'qa/qa/ee/resource/geo/node.rb'
     - 'qa/qa/ee/resource/settings/elasticsearch.rb'

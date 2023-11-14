@@ -15,7 +15,7 @@ RSpec.describe Gitlab::RepositoryCacheAdapter do
         include Gitlab::RepositoryCacheAdapter # can't use described_class here
 
         def letters
-          %w(b a c)
+          %w[b a c]
         end
         cache_method_as_redis_set(:letters)
 
@@ -47,11 +47,11 @@ RSpec.describe Gitlab::RepositoryCacheAdapter do
         expect(fake_repository).to receive(:_uncached_letters).once.and_call_original
 
         2.times do
-          expect(fake_repository.letters).to eq(%w(a b c))
+          expect(fake_repository.letters).to eq(%w[a b c])
         end
 
         expect(redis_set_cache.exist?(:letters)).to eq(true)
-        expect(fake_repository.instance_variable_get(:@letters)).to eq(%w(a b c))
+        expect(fake_repository.instance_variable_get(:@letters)).to eq(%w[a b c])
       end
 
       context 'membership checks' do
@@ -69,7 +69,7 @@ RSpec.describe Gitlab::RepositoryCacheAdapter do
 
         context 'when the cache key exists' do
           before do
-            redis_set_cache.write(:letters, %w(b a c))
+            redis_set_cache.write(:letters, %w[b a c])
           end
 
           it 'calls #try_include? on the set cache' do
@@ -300,7 +300,7 @@ RSpec.describe Gitlab::RepositoryCacheAdapter do
       expect(redis_set_cache).to receive(:expire).with(:branch_names)
       expect(redis_hash_cache).to receive(:delete).with(:branch_names)
 
-      repository.expire_method_caches(%i(branch_names))
+      repository.expire_method_caches(%i[branch_names])
     end
 
     it 'does not expire caches for non-existent methods' do
@@ -308,7 +308,7 @@ RSpec.describe Gitlab::RepositoryCacheAdapter do
       expect(Gitlab::AppLogger).to(
         receive(:error).with("Requested to expire non-existent method 'nonexistent' for Repository"))
 
-      repository.expire_method_caches(%i(nonexistent))
+      repository.expire_method_caches(%i[nonexistent])
     end
   end
 end

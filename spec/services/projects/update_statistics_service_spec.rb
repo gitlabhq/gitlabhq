@@ -6,7 +6,7 @@ RSpec.describe Projects::UpdateStatisticsService, feature_category: :groups_and_
   using RSpec::Parameterized::TableSyntax
 
   let(:service) { described_class.new(project, nil, statistics: statistics) }
-  let(:statistics) { %w(repository_size) }
+  let(:statistics) { %w[repository_size] }
 
   describe '#execute' do
     context 'with a non-existing project' do
@@ -23,13 +23,13 @@ RSpec.describe Projects::UpdateStatisticsService, feature_category: :groups_and_
       let_it_be(:project) { create(:project) }
 
       where(:statistics, :method_caches) do
-        []                                                   | %i(size recent_objects_size commit_count)
-        ['repository_size']                                  | %i(size recent_objects_size)
-        [:repository_size]                                   | %i(size recent_objects_size)
+        []                                                   | %i[size recent_objects_size commit_count]
+        ['repository_size']                                  | %i[size recent_objects_size]
+        [:repository_size]                                   | %i[size recent_objects_size]
         [:lfs_objects_size]                                  | nil
         [:commit_count]                                      | [:commit_count]
-        [:repository_size, :commit_count]                    | %i(size recent_objects_size commit_count)
-        [:repository_size, :commit_count, :lfs_objects_size] | %i(size recent_objects_size commit_count)
+        [:repository_size, :commit_count]                    | %i[size recent_objects_size commit_count]
+        [:repository_size, :commit_count, :lfs_objects_size] | %i[size recent_objects_size commit_count]
       end
 
       with_them do
@@ -59,7 +59,7 @@ RSpec.describe Projects::UpdateStatisticsService, feature_category: :groups_and_
 
       it 'invalidates and refreshes Wiki size' do
         expect(project.statistics).to receive(:refresh!).with(only: statistics).and_call_original
-        expect(project.wiki.repository).to receive(:expire_method_caches).with(%i(size)).and_call_original
+        expect(project.wiki.repository).to receive(:expire_method_caches).with(%i[size]).and_call_original
 
         service.execute
       end

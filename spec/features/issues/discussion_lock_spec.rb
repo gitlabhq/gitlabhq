@@ -28,7 +28,7 @@ RSpec.describe 'Discussion Lock', :js, feature_category: :team_planning do
           click_button('Lock')
         end
 
-        expect(find('#notes')).to have_content('locked this issue')
+        expect(find('#notes')).to have_content('locked the discussion in this issue')
       end
     end
 
@@ -46,7 +46,7 @@ RSpec.describe 'Discussion Lock', :js, feature_category: :team_planning do
           click_button('Unlock')
         end
 
-        expect(find('#notes')).to have_content('unlocked this issue')
+        expect(find('#notes')).to have_content('unlocked the discussion in this issue')
         expect(find('.issuable-sidebar')).to have_content('Unlocked')
       end
 
@@ -101,7 +101,7 @@ RSpec.describe 'Discussion Lock', :js, feature_category: :team_planning do
         page.within('#notes') do
           expect(page).not_to have_selector('js-main-target-form')
           expect(page.find('.disabled-comments'))
-            .to have_content('This issue is locked. Only project members can comment.')
+            .to have_content('The discussion in this issue is locked. Only project members can comment.')
         end
       end
     end

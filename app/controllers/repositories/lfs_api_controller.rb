@@ -60,7 +60,7 @@ module Repositories
         .for_oids(objects_oids)
         .index_by(&:oid)
 
-      guest_can_download = Guest.can?(:download_code, project)
+      guest_can_download = ::Users::Anonymous.can?(:download_code, project)
 
       objects.each do |object|
         if lfs_object = existing_oids[object[:oid]]
@@ -87,7 +87,7 @@ module Repositories
         if existing_oids.include?(object[:oid])
           object[:actions] = proxy_download_actions(object)
 
-          if Guest.can?(:download_code, project)
+          if ::Users::Anonymous.can?(:download_code, project)
             object[:authenticated] = true
           end
         else

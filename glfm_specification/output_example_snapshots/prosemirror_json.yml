@@ -23425,3 +23425,527 @@
       }
     ]
   }
+09_00_00__gfm_undocumented_extensions_and_more_robust_test__footnotes__002: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "This is some text!"
+          },
+          {
+            "type": "footnoteReference",
+            "attrs": {
+              "identifier": "1",
+              "label": "1"
+            }
+          },
+          {
+            "type": "text",
+            "text": ". Other text."
+          },
+          {
+            "type": "footnoteReference",
+            "attrs": {
+              "identifier": "footnote",
+              "label": "footnote"
+            }
+          },
+          {
+            "type": "text",
+            "text": "."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Here's a thing"
+          },
+          {
+            "type": "footnoteReference",
+            "attrs": {
+              "identifier": "other-note",
+              "label": "other-note"
+            }
+          },
+          {
+            "type": "text",
+            "text": "."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "And another thing"
+          },
+          {
+            "type": "footnoteReference",
+            "attrs": {
+              "identifier": "codeblock-note",
+              "label": "codeblock-note"
+            }
+          },
+          {
+            "type": "text",
+            "text": "."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "This doesn't have a referent[^nope]."
+          }
+        ]
+      },
+      {
+        "type": "footnoteDefinition",
+        "attrs": {
+          "identifier": "other-note",
+          "label": "other-note"
+        },
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "no code block here (spaces are stripped away)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "footnoteDefinition",
+        "attrs": {
+          "identifier": "1",
+          "label": "1"
+        },
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Some "
+              },
+              {
+                "type": "text",
+                "marks": [
+                  {
+                    "type": "italic"
+                  }
+                ],
+                "text": "bolded"
+              },
+              {
+                "type": "text",
+                "text": " footnote definition."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Hi!"
+          }
+        ]
+      },
+      {
+        "type": "footnoteDefinition",
+        "attrs": {
+          "identifier": "unused",
+          "label": "unused"
+        },
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "This is unused."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+? 09_01_00__gfm_undocumented_extensions_and_more_robust_test__when_a_footnote_is_used_multiple_times,_we_insert_multiple_backrefs.__001
+: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "This is some text. It has a footnote"
+          },
+          {
+            "type": "footnoteReference",
+            "attrs": {
+              "identifier": "a-footnote",
+              "label": "a-footnote"
+            }
+          },
+          {
+            "type": "text",
+            "text": "."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "This footnote is referenced"
+          },
+          {
+            "type": "footnoteReference",
+            "attrs": {
+              "identifier": "a-footnote",
+              "label": "a-footnote"
+            }
+          },
+          {
+            "type": "text",
+            "text": " multiple times, in lots of different places."
+          },
+          {
+            "type": "footnoteReference",
+            "attrs": {
+              "identifier": "a-footnote",
+              "label": "a-footnote"
+            }
+          }
+        ]
+      },
+      {
+        "type": "footnoteDefinition",
+        "attrs": {
+          "identifier": "a-footnote",
+          "label": "a-footnote"
+        },
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "This footnote definition should have three backrefs."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+09_02_00__gfm_undocumented_extensions_and_more_robust_test__footnote_reference_labels_are_href_escaped__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Hello"
+          },
+          {
+            "type": "footnoteReference",
+            "attrs": {
+              "identifier": "\"><script>alert(1)</script>",
+              "label": "\"><script>alert(1)</script>"
+            }
+          }
+        ]
+      },
+      {
+        "type": "footnoteDefinition",
+        "attrs": {
+          "identifier": "\"><script>alert(1)</script>",
+          "label": "\"><script>alert(1)</script>"
+        },
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "pwned"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+09_03_00__gfm_undocumented_extensions_and_more_robust_test__interop__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "uploading": false,
+                  "href": "http://www.google.com",
+                  "title": null,
+                  "canonicalSrc": "http://www.google.com",
+                  "isReference": false
+                }
+              },
+              {
+                "type": "strike"
+              }
+            ],
+            "text": "www.google.com"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "uploading": false,
+                  "href": "http://google.com",
+                  "title": null,
+                  "canonicalSrc": "http://google.com",
+                  "isReference": false
+                }
+              },
+              {
+                "type": "strike"
+              }
+            ],
+            "text": "http://google.com"
+          }
+        ]
+      }
+    ]
+  }
+09_03_00__gfm_undocumented_extensions_and_more_robust_test__interop__002: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "table",
+        "attrs": {
+          "isMarkdown": null
+        },
+        "content": [
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableHeader",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "a"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableHeader",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "b"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "marks": [
+                          {
+                            "type": "link",
+                            "attrs": {
+                              "uploading": false,
+                              "href": "https://github.com",
+                              "title": null,
+                              "canonicalSrc": "https://github.com",
+                              "isReference": false
+                            }
+                          }
+                        ],
+                        "text": "https://github.com"
+                      },
+                      {
+                        "type": "text",
+                        "marks": [
+                          {
+                            "type": "link",
+                            "attrs": {
+                              "uploading": false,
+                              "href": "http://www.github.com",
+                              "title": null,
+                              "canonicalSrc": "http://www.github.com",
+                              "isReference": false
+                            }
+                          }
+                        ],
+                        "text": "www.github.com"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "marks": [
+                          {
+                            "type": "link",
+                            "attrs": {
+                              "uploading": false,
+                              "href": "http://pokemon.com",
+                              "title": null,
+                              "canonicalSrc": "http://pokemon.com",
+                              "isReference": false
+                            }
+                          }
+                        ],
+                        "text": "http://pokemon.com"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+09_04_00__gfm_undocumented_extensions_and_more_robust_test__task_lists__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "taskList",
+        "attrs": {
+          "numeric": false,
+          "start": 1,
+          "parens": false
+        },
+        "content": [
+          {
+            "type": "taskItem",
+            "attrs": {
+              "checked": false
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "foo"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "taskItem",
+            "attrs": {
+              "checked": true
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "bar"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+09_04_00__gfm_undocumented_extensions_and_more_robust_test__task_lists__002: |-
+  Error - check implementation:
+  Cannot read properties of undefined (reading 'start')
+09_04_00__gfm_undocumented_extensions_and_more_robust_test__task_lists__003: |-
+  Error - check implementation:
+  Cannot read properties of undefined (reading 'start')

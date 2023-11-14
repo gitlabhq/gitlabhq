@@ -24,6 +24,7 @@ CodeReuse/ActiveRecord:
     - danger/**/*.rb
     - lib/backup/**/*.rb
     - lib/banzai/**/*.rb
+    - lib/click_house/migration_support/**/*.rb
     - lib/gitlab/background_migration/**/*.rb
     - lib/gitlab/cycle_analytics/**/*.rb
     - lib/gitlab/counters/**/*.rb

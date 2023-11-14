@@ -10,9 +10,7 @@ module BulkImports
 
         extractor ::BulkImports::Common::Extractors::NdjsonExtractor, relation: relation
 
-        def after_run(_context)
-          super
-
+        def on_finish
           portable.releases.find_each do |release|
             create_release_evidence(release)
           end

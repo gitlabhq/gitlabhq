@@ -66,7 +66,7 @@ module QA
       end
 
       it(
-        'does not expose file variable content with echo',
+        'does not expose file variable content with echo', :reliable,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370791'
       ) do
         job = create(:job, project: project, id: project.job_by_name('job_echo')[:id])
@@ -81,7 +81,7 @@ module QA
       end
 
       it(
-        'can read file variable content with cat',
+        'can read file variable content with cat', :reliable,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386409'
       ) do
         job = job = create(:job, project: project, id: project.job_by_name('job_cat')[:id])
@@ -96,12 +96,7 @@ module QA
       private
 
       def add_file_variable_to_project(key, value)
-        Resource::CiVariable.fabricate_via_api! do |ci_variable|
-          ci_variable.project = project
-          ci_variable.key = key
-          ci_variable.value = value
-          ci_variable.variable_type = 'file'
-        end
+        create(:ci_variable, project: project, key: key, value: value, variable_type: 'file')
       end
 
       def trigger_pipeline

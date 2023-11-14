@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_desk do
   let(:project) { create(:project, :private, service_desk_enabled: true) }
 
-  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:user) { create(:user) }
   let_it_be(:support_bot) { Users::Internal.support_bot }
 
   before do
@@ -21,8 +21,10 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_des
   describe 'navigation to service desk' do
     before do
       visit project_path(project)
-      find('.sidebar-top-level-items .shortcuts-issues').click
-      find('.sidebar-sub-level-items a', text: 'Service Desk').click
+      find('#menu-section-button-monitor').click
+      within('#monitor') do
+        click_link('Service Desk')
+      end
     end
 
     it 'can navigate to the service desk from link in the sidebar' do

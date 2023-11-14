@@ -1,7 +1,7 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import { accessValue } from './accessors/linked_pipelines_accessors';
 /**
  * Renders the upstream/downstream portions of the pipeline mini graph.
@@ -11,7 +11,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    CiBadgeLink,
+    CiIcon,
   },
   inject: {
     dataMethod: {
@@ -81,11 +81,6 @@ export default {
       // detailedStatus is graphQL, details.status is REST
       return pipeline?.detailedStatus || pipeline?.details?.status;
     },
-    triggerButtonClass(pipeline) {
-      const { group } = accessValue(pipeline, this.dataMethod, 'detailedStatus');
-
-      return `ci-status-icon-${group}`;
-    },
   },
 };
 </script>
@@ -99,15 +94,12 @@ export default {
     }"
     class="linked-pipeline-mini-list gl-display-inline gl-vertical-align-middle"
   >
-    <ci-badge-link
+    <ci-icon
       v-for="pipeline in linkedPipelinesTrimmed"
       :key="pipeline.id"
       v-gl-tooltip="{ title: pipelineTooltipText(pipeline) }"
       :status="pipelineStatus(pipeline)"
-      size="md"
-      :show-text="false"
       :show-tooltip="false"
-      :class="triggerButtonClass(pipeline)"
       class="linked-pipeline-mini-item gl-mb-0!"
       data-testid="linked-pipeline-mini-item"
     />

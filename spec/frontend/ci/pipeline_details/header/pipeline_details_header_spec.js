@@ -7,7 +7,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import PipelineDetailsHeader from '~/ci/pipeline_details/header/pipeline_details_header.vue';
 import { BUTTON_TOOLTIP_RETRY, BUTTON_TOOLTIP_CANCEL } from '~/ci/constants';
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import cancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
 import deletePipelineMutation from '~/ci/pipeline_details/graphql/mutations/delete_pipeline.mutation.graphql';
 import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
@@ -56,7 +56,7 @@ describe('Pipeline details header', () => {
     .mockResolvedValue(pipelineDeleteMutationResponseFailed);
 
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findStatus = () => wrapper.findComponent(CiBadgeLink);
+  const findStatus = () => wrapper.findComponent(CiIcon);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findAllBadges = () => wrapper.findAllComponents(GlBadge);
   const findDeleteModal = () => wrapper.findComponent(GlModal);
@@ -94,9 +94,11 @@ describe('Pipeline details header', () => {
     failureReason: 'pipeline failed',
     badges: {
       schedule: true,
+      trigger: false,
       child: false,
       latest: true,
       mergeTrainPipeline: false,
+      mergedResultsPipeline: false,
       invalid: false,
       failed: false,
       autoDevops: false,
@@ -178,6 +180,7 @@ describe('Pipeline details header', () => {
       expect(findAllBadges()).toHaveLength(2);
       expect(wrapper.findByText('latest').exists()).toBe(true);
       expect(wrapper.findByText('Scheduled').exists()).toBe(true);
+      expect(wrapper.findByText('trigger token').exists()).toBe(false);
     });
 
     it('displays ref text', () => {
@@ -199,6 +202,21 @@ describe('Pipeline details header', () => {
       expect(findPipelineUserLink().attributes('data-user-id')).toBe(userId);
       expect(findPipelineUserLink().attributes('data-username')).toBe(user.username);
       expect(findPipelineUserLink().attributes('href')).toBe(user.webUrl);
+    });
+  });
+
+  describe('with triggered pipeline', () => {
+    beforeEach(async () => {
+      createComponent(defaultHandlers, {
+        ...defaultProps,
+        badges: { ...defaultProps.badges, trigger: true },
+      });
+
+      await waitForPromises();
+    });
+
+    it('displays triggered badge', () => {
+      expect(wrapper.findByText('trigger token').exists()).toBe(true);
     });
   });
 

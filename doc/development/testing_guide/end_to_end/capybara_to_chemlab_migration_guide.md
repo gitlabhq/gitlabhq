@@ -35,44 +35,6 @@ Given the view:
 | ------ | ----- |
 | ![before](img/gl-capybara_V13_12.png) | ![after](img/gl-chemlab_V13_12.png) |
 
-<!--
-```ruby
-# frozen_string_literal: true
-
-module QA
-  module Page
-    class Form < Page::Base
-      view '_form.html' do
-        element :first_name
-        element :last_name
-        element :company_name
-        element :user_name
-        element :password
-        element :continue
-      end
-    end
-  end
-end
-```
-```ruby
-# frozen_string_literal: true
-
-module QA
-  module Page
-    class Form < Chemlab::Page
-      text_field :first_name
-      text_field :last_name
-      text_field :company_name
-      text_field :user_name
-      text_field :password
-
-      button :continue
-    end
-  end
-end
-```
--->
-
 ## Key Differences
 
 ### Page Library Design vs Page Object Design

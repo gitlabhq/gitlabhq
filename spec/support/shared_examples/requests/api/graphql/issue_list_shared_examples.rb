@@ -5,7 +5,7 @@ RSpec.shared_examples 'graphql issue list request spec' do
   let(:fields) do
     <<~QUERY
     nodes {
-      #{all_graphql_fields_for('issues'.classify, excluded: ['relatedMergeRequests'])}
+      #{all_graphql_fields_for('issues'.classify, excluded: %w[relatedMergeRequests productAnalyticsState])}
     }
     QUERY
   end
@@ -24,6 +24,18 @@ RSpec.shared_examples 'graphql issue list request spec' do
     before_all do
       issue_a.assignee_ids = current_user.id
       issue_b.assignee_ids = another_user.id
+    end
+
+    context 'when filtering by state' do
+      context 'when filtering by locked state' do
+        let(:issue_filter_params) { { state: :locked } }
+
+        it 'returns an error message' do
+          post_query
+
+          expect_graphql_errors_to_include(Types::IssuableStateEnum::INVALID_LOCKED_MESSAGE)
+        end
+      end
     end
 
     context 'when filtering by assignees' do

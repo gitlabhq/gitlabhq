@@ -119,9 +119,10 @@ module AutoExplain
       return false if ENV['CI_JOB_NAME_SLUG'] == 'db-migrate-non-superuser'
       return false if connection.database_version.to_s[0..1].to_i < 14
       return false if connection.select_one('SHOW is_superuser')['is_superuser'] != 'on'
+      return false if connection.select_one('SELECT pg_stat_file(\'log/pglog.csv\', true)')['pg_stat_file'].nil?
 
-      # This condition matches the pipeline rules for if-merge-request-labels-record-queries
-      return true if ENV['CI_MERGE_REQUEST_LABELS']&.include?('pipeline:record-queries')
+      # This condition matches the pipeline rules for if-merge-request
+      return true if %w[detached merged_result].include?(ENV['CI_MERGE_REQUEST_EVENT_TYPE'])
 
       # This condition matches the pipeline rules for if-default-branch-refs
       ENV['CI_COMMIT_REF_NAME'] == ENV['CI_DEFAULT_BRANCH'] && !ENV['CI_MERGE_REQUEST_IID']

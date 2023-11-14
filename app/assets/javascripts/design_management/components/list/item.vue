@@ -144,12 +144,17 @@ export default {
             :name="icon.name"
             :size="16"
             :class="icon.classes"
-            data-qa-selector="design_status_icon"
+            data-testid="design-status-icon"
             :data-qa-status="icon.name"
           />
         </span>
       </div>
-      <gl-intersection-observer class="gl-flex-grow-1" @appear="onAppear">
+      <gl-intersection-observer
+        class="gl-flex-grow-1"
+        data-testid="design-image"
+        :data-qa-filename="filename"
+        @appear="onAppear"
+      >
         <gl-loading-icon v-if="showLoadingSpinner" size="lg" />
         <gl-icon
           v-else-if="showImageErrorIcon"
@@ -162,8 +167,6 @@ export default {
           :src="imageLink"
           :alt="filename"
           class="gl-display-block gl-mx-auto gl-max-w-full gl-max-h-full gl-w-auto design-img"
-          data-qa-selector="design_image"
-          :data-qa-filename="filename"
           :data-testid="`design-img-${id}`"
           @load="onImageLoad"
           @error="onImageError"
@@ -171,11 +174,13 @@ export default {
       </gl-intersection-observer>
     </div>
     <div class="card-footer gl-display-flex gl-w-full gl-bg-white gl-py-3 gl-px-4">
-      <div class="gl-display-flex gl-flex-direction-column str-truncated-100">
+      <div
+        class="gl-display-flex gl-flex-direction-column str-truncated-100"
+        data-testid="design-file-name"
+      >
         <span
           v-gl-tooltip
           class="gl-font-weight-semibold str-truncated-100"
-          data-qa-selector="design_file_name"
           :data-testid="`design-img-filename-${id}`"
           :title="filename"
           >{{ filename }}</span

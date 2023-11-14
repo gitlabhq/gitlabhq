@@ -14,15 +14,15 @@ module Integrations
       @reference_pattern = /(?<issue>\b[A-Za-z][A-Za-z0-9_]*-\d+\b)#{regex_suffix if only_long}/
     end
 
-    def title
+    def self.title
       'YouTrack'
     end
 
-    def description
+    def self.description
       s_("IssueTracker|Use YouTrack as this project's issue tracker.")
     end
 
-    def help
+    def self.help
       docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/youtrack'), target: '_blank', rel: 'noopener noreferrer'
       s_("IssueTracker|Use YouTrack as this project's issue tracker. %{docs_link}").html_safe % { docs_link: docs_link.html_safe }
     end

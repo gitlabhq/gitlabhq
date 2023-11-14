@@ -147,6 +147,8 @@ module IssuableActions
     finder = Issuable::DiscussionsListService.new(current_user, issuable, finder_params_for_issuable)
     discussion_notes = finder.execute
 
+    yield discussion_notes if block_given?
+
     if finder.paginator.present? && finder.paginator.has_next_page?
       response.headers['X-Next-Page-Cursor'] = finder.paginator.cursor_for_next_page
     end

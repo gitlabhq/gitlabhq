@@ -124,12 +124,4 @@ RSpec.describe 'Project Network Graph', :js, feature_category: :groups_and_proje
   end
 
   it_behaves_like 'network graph'
-
-  context 'when disable_network_graph_notes_count is disabled' do
-    before do
-      stub_feature_flags(disable_network_graph_notes_count: false)
-    end
-
-    it_behaves_like 'network graph'
-  end
 end

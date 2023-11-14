@@ -1563,3 +1563,23 @@ Any table which has some high read operation compared to current [high-traffic t
 As a general rule, we discourage adding columns to high-traffic tables that are purely for
 analytics or reporting of GitLab.com. This can have negative performance impacts for all
 self-managed instances without providing direct feature value to them.
+
+## Milestone
+
+Beginning in GitLab 16.6, all new migrations must specify a milestone, using the following syntax:
+
+```ruby
+class AddFooToBar < Gitlab::Database::Migration[2.2]
+  milestone '16.6'
+
+  def change
+    # Your migration here
+  end
+end
+```
+
+Adding the correct milestone to a migration enables us to logically partition migrations into
+their corresponding GitLab minor versions. This:
+
+- Simplifies the upgrade process.
+- Alleviates potential migration ordering issues that arise when we rely solely on the migration's timestamp for ordering.

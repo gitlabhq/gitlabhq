@@ -54,6 +54,10 @@ GitLab shows the Code Owners at the top of the page.
 
 ## Set up Code Owners
 
+Prerequisites:
+
+- You must be able to either push to the default branch or create a merge request.
+
 1. Create a `CODEOWNERS` file in your [preferred location](#codeowners-file).
 1. Define some rules in the file following the [Code Owners syntax reference](reference.md).
    Some suggestions:
@@ -145,7 +149,7 @@ of the merge request becomes optional.
 
 Inviting **Subgroup Y** to a parent group of **Project A**
 [is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/288851). To set **Subgroup Y** as
-Code Owners [invite this group directly to the project](#inviting-subgroups-to-projects-in-parent-groups) itself.
+Code Owners, [invite this group directly to the project](#inviting-subgroups-to-projects-in-parent-groups) itself.
 
 NOTE:
 For approval to be required, groups as Code Owners must have a direct membership
@@ -196,7 +200,7 @@ You can organize Code Owners by putting them into named sections.
 You can use sections for shared directories, so that multiple
 teams can be reviewers.
 
-To add a section to the `CODEOWNERS` file, enter a section name in brackets,
+To add a section to the `CODEOWNERS` file, enter a section name in square brackets,
 followed by the files or directories, and users, groups, or subgroups:
 
 ```plaintext
@@ -206,7 +210,7 @@ internal/README.md @user2
 ```
 
 Each Code Owner in the merge request widget is listed under a label.
-The following image shows a **Groups** and **Documentation** section:
+The following image shows **Groups** and **Documentation** sections:
 
 ![MR widget - Sectional Code Owners](../img/sectional_code_owners_v13.2.png)
 
@@ -221,7 +225,9 @@ All paths in that section inherit this default, unless you override the section
 default on a specific line.
 
 Default owners are applied when specific owners are not specified for file paths.
-Specific owners defined beside the file path override default owners:
+Specific owners defined beside the file path override default owners.
+
+For example:
 
 ```plaintext
 [Documentation] @docs-team
@@ -259,8 +265,8 @@ config/db/database-setup.md @docs-team
 
 #### Use regular entries and sections together
 
-If you set a default Code Owner for a path outside a section, their approval is always required, and
-the entry isn't overridden.
+If you set a default Code Owner for a path **outside a section**, their approval is always required.
+Such entries aren't overridden by sections.
 Entries without sections are treated as if they were another, unnamed section:
 
 ```plaintext
@@ -287,7 +293,7 @@ In this example:
   of the `@general-approvers`,`@docs-team`, and `@database-team` groups.
 
 Compare this behavior to when you use only [default owners for sections](#set-default-owner-for-a-section),
-when specific entries within a section override the section default.
+when specific entries in a section override the section default.
 
 #### Sections with duplicate names
 
@@ -313,12 +319,13 @@ entries under **Database**. The entries defined under the sections **Documentati
 
 #### Make a Code Owners section optional
 
-You can designate optional sections in your Code Owners file. Prepend the
-section name with the caret `^` character to treat the entire section as optional.
+You can designate optional sections in your Code Owners file.
 Optional sections enable you to designate responsible parties for various parts
 of your codebase, but not require approval from them. This approach provides
 a more relaxed policy for parts of your project that are frequently updated,
 but don't require stringent reviews.
+
+To treat the entire section as optional, prepend the section name with the caret `^` character.
 
 In this example, the `[Go]` section is optional:
 
@@ -333,7 +340,7 @@ In this example, the `[Go]` section is optional:
 *.go @root
 ```
 
-The optional Code Owners section displays in merge requests under the **Approval Rules** area:
+The optional Code Owners section displays in merge requests under the description:
 
 ![MR widget - Optional Code Owners sections](../img/optional_code_owners_sections_v13_8.png)
 
@@ -348,18 +355,25 @@ section is marked as optional.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335451) in GitLab 15.9.
 
-You can require multiple approvals for the Code Owners sections under the Approval Rules area in merge requests.
-Append the section name with a number `n` in brackets. This requires `n` approvals from the Code Owners in this section.
+You can require multiple approvals for the Code Owners sections in the Approvals area in merge requests.
+Append the section name with a number `n` in brackets, for example, `[2]` or `[3]`.
+This requires `n` approvals from the Code Owners in this section.
 Valid entries for `n` are integers `≥ 1`. `[1]` is optional because it is the default. Invalid values for `n` are treated as `1`.
 
 WARNING:
-[Issue #384881](https://gitlab.com/gitlab-org/gitlab/-/issues/385881) proposes changes
+[Issue 384881](https://gitlab.com/gitlab-org/gitlab/-/issues/385881) proposes changes
 to the behavior of this setting. Do not intentionally set invalid values. They may
-become valid in the future, and cause unexpected behavior.
+become valid in the future and cause unexpected behavior.
 
-Make sure you enabled `Require approval from code owners` in `Settings > Repository > Protected branches`, otherwise the Code Owner approvals are optional.
+To require multiple approvals from Code Owners:
 
-In this example, the `[Documentation]` section requires 2 approvals:
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Repository**.
+1. Expand **Protected branches**.
+1. Next to the default branch, turn on the toggle under **Code owner approval**.
+1. Edit the `CODEOWNERS` file to add a rule for multiple approvals.
+
+For example, to require two approvals for the `[Documentation]` section:
 
 ```plaintext
 [Documentation][2]
@@ -369,7 +383,7 @@ In this example, the `[Documentation]` section requires 2 approvals:
 *.rb @dev-team
 ```
 
-The `Documentation` Code Owners section under the **Approval Rules** area displays 2 approvals are required:
+The `Documentation` Code Owners section in the Approvals area displays two approvals are required:
 
 ![MR widget - Multiple Approval Code Owners sections](../img/multi_approvals_code_owners_sections_v15_9.png)
 
@@ -377,7 +391,7 @@ The `Documentation` Code Owners section under the **Approval Rules** area displa
 
 Users who are **Allowed to push** can choose to create a merge request
 for their changes, or push the changes directly to a branch. If the user
-skips the merge request process, the protected-branch features
+skips the merge request process, the protected branch features
 and Code Owner approvals built into merge requests are also skipped.
 
 This permission is often granted to accounts associated with

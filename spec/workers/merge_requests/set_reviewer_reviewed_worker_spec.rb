@@ -14,21 +14,21 @@ RSpec.describe MergeRequests::SetReviewerReviewedWorker, feature_category: :sour
     let(:event) { approved_event }
   end
 
-  it 'calls MergeRequests::MarkReviewerReviewedService' do
+  it 'calls MergeRequests::UpdateReviewerStateService' do
     expect_next_instance_of(
-      MergeRequests::MarkReviewerReviewedService,
+      MergeRequests::UpdateReviewerStateService,
       project: project, current_user: user
     ) do |service|
-      expect(service).to receive(:execute).with(merge_request)
+      expect(service).to receive(:execute).with(merge_request, "reviewed")
     end
 
     consume_event(subscriber: described_class, event: approved_event)
   end
 
   shared_examples 'when object does not exist' do
-    it 'logs and does not call MergeRequests::MarkReviewerReviewedService' do
+    it 'logs and does not call MergeRequests::UpdateReviewerStateService' do
       expect(Sidekiq.logger).to receive(:info).with(hash_including(log_payload))
-      expect(MergeRequests::MarkReviewerReviewedService).not_to receive(:new)
+      expect(MergeRequests::UpdateReviewerStateService).not_to receive(:new)
 
       expect { consume_event(subscriber: described_class, event: approved_event) }
         .not_to raise_exception

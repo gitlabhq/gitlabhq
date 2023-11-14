@@ -145,6 +145,12 @@ information, read [issue #12549](https://gitlab.com/gitlab-org/gitlab/-/issues/1
 
 ### Complex merge order dependencies are unsupported
 
+- Support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11393) in GitLab 16.6 [with a flag](../../../administration/feature_flags.md) named `remove_mr_blocking_constraints`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `remove_mr_blocking_constraints`.
+On GitLab.com, this feature is available.
+
 If you attempt to create an indirect, nested dependency, GitLab shows the error message:
 
 - Dependencies failed to save: Dependency chains are not supported

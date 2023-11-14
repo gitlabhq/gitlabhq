@@ -1,0 +1,8 @@
+---
+name: observability_metrics
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134393
+rollout_issue_url: https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2444
+milestone: '16.6'
+type: development
+group: group::observability
+default_enabled: false

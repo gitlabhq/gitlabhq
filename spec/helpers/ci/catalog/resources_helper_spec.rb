@@ -5,17 +5,34 @@ require 'spec_helper'
 RSpec.describe Ci::Catalog::ResourcesHelper, feature_category: :pipeline_composition do
   include Devise::Test::ControllerHelpers
 
-  let_it_be(:project) { build(:project) }
+  let_it_be(:project) { create_default(:project) }
+  let_it_be(:user) { create_default(:user) }
+
+  before do
+    allow(helper).to receive(:current_user).and_return(user)
+  end
 
   describe '#can_add_catalog_resource?' do
     subject { helper.can_add_catalog_resource?(project) }
 
-    before do
-      stub_licensed_features(ci_namespace_catalog: false)
+    context 'when user is not an owner' do
+      before_all do
+        project.add_maintainer(user)
+      end
+
+      it 'returns false' do
+        expect(subject).to be false
+      end
     end
 
-    it 'user cannot add a catalog resource in CE regardless of permissions' do
-      expect(subject).to be false
+    context 'when user is an owner' do
+      before_all do
+        project.add_owner(user)
+      end
+
+      it 'returns true' do
+        expect(subject).to be true
+      end
     end
   end
 

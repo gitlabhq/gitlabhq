@@ -105,7 +105,7 @@
   --svg-status-bg: #{$white};
 }
 
-body.gl-dark {
+:root.gl-dark {
   // redefine some colors and values to prevent sourcegraph conflicts
   color-scheme: dark;
   --gray-10: #{$gray-10};
@@ -178,6 +178,10 @@ body.gl-dark {
   }
 }
 
+.gl-label-text-light .gl-label-close.gl-button:hover {
+  background-color: $gray-900;
+}
+
 .gl-label-text-dark.gl-label-text-dark {
   &,
   .gl-label-close .gl-icon {
@@ -192,6 +196,10 @@ body.gl-dark {
   .gl-label-close.gl-button .gl-icon {
     color: $gray-900;
   }
+}
+
+.gl-label-text-dark .gl-label-close.gl-button:hover {
+  background-color: $gray-10;
 }
 
 // duplicated class as the original .atwho-view style is added later
@@ -231,7 +239,7 @@ aside.right-sidebar:not(.right-sidebar-merge-requests) {
   border-left-color: $gray-50;
 }
 
-body.gl-dark {
+:root.gl-dark {
   @include gitlab-theme($gray-900, $gray-400, $gray-500, $gray-900, $white);
 
   .terms {

@@ -20,10 +20,4 @@ RSpec.describe PolicyActor, feature_category: :shared do
     # initialized. So here we just use an instance
     expect(build(:user).methods).to include(*methods)
   end
-
-  describe '#security_policy_bot?' do
-    subject { PolicyActorTestClass.new.security_policy_bot? }
-
-    it { is_expected.to eq(false) }
-  end
 end

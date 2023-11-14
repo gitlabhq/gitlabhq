@@ -78,13 +78,9 @@ module ContainerRegistry
       delete_if_exists("/v2/#{name}/manifests/#{reference}")
     end
 
-    def delete_repository_tag_by_name(name, reference)
-      delete_if_exists("/v2/#{name}/tags/reference/#{reference}")
-    end
-
     # Check if the registry supports tag deletion. This is only supported by the
     # GitLab registry fork. The fastest and safest way to check this is to send
-    # an OPTIONS request to /v2/<name>/tags/reference/<tag>, using a random
+    # an OPTIONS request to /v2/<name>/manifests/<tag>, using a random
     # repository name and tag (the registry won't check if they exist).
     # Registries that support tag deletion will reply with a 200 OK and include
     # the DELETE method in the Allow header. Others reply with an 404 Not Found.
@@ -93,7 +89,7 @@ module ContainerRegistry
         registry_features = Gitlab::CurrentSettings.container_registry_features || []
         next true if ::Gitlab.com_except_jh? && registry_features.include?(REGISTRY_TAG_DELETE_FEATURE)
 
-        response = faraday.run_request(:options, '/v2/name/tags/reference/tag', '', {})
+        response = faraday.run_request(:options, '/v2/name/manifests/tag', '', {})
         response.success? && response.headers['allow']&.include?('DELETE')
       end
     end

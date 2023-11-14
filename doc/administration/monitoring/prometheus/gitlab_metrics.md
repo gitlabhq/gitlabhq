@@ -48,8 +48,6 @@ The following metrics are available:
 | `gitlab_ci_runner_authentication_failure_total`                  | Counter     | 15.2    | Total number of times that runner authentication has failed
 | `gitlab_ghost_user_migration_lag_seconds`                        | Gauge       | 15.6    | The waiting time in seconds of the oldest scheduled record for ghost user migration                                   |                                                           |
 | `gitlab_ghost_user_migration_scheduled_records_total`            | Gauge       | 15.6    | The total number of scheduled ghost user migrations                                                                   |                                                           |
-| `job_waiter_started_total`                                       | Counter     | 12.9    | Number of batches of jobs started where a web request is waiting for the jobs to complete                             | `worker`                                                  |
-| `job_waiter_timeouts_total`                                      | Counter     | 12.9    | Number of batches of jobs that timed out where a web request is waiting for the jobs to complete                      | `worker`                                                  |
 | `gitlab_ci_active_jobs`                                          | Histogram   | 14.2    | Count of active jobs when pipeline is created                                                                         |                                                           |
 | `gitlab_database_transaction_seconds`                            | Histogram   | 12.1    | Time spent in database transactions, in seconds                                                                       |                                                           |
 | `gitlab_method_call_duration_seconds`                            | Histogram   | 10.2    | Method calls real duration                                                                                            | `controller`, `action`, `module`, `method`                |
@@ -245,7 +243,6 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_cursor_last_event_timestamp`              | Gauge   | 10.2  | Last UNIX timestamp of the event log processed by the secondary | `url` |
 | `geo_status_failed_total`                      | Counter | 10.2  | Number of times retrieving the status from the Geo Node failed | `url` |
 | `geo_last_successful_status_check_timestamp`   | Gauge   | 10.2  | Last timestamp when the status was successfully updated | `url` |
-| `geo_job_artifacts_synced_missing_on_primary`  | Gauge   | 10.7  | Number of job artifacts marked as synced due to the file missing on the primary | `url` |
 | `geo_package_files`                            | Gauge   | 13.0  | Number of package files on primary | `url` |
 | `geo_package_files_checksummed`                | Gauge   | 13.0  | Number of package files checksummed on primary | `url` |
 | `geo_package_files_checksum_failed`            | Gauge   | 13.0  | Number of package files failed to calculate the checksum on primary | `url` |
@@ -386,7 +383,12 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_project_repositories_verification_total` | Gauge | 16.2 | Number of Project Repositories to attempt to verify on secondary | `url` |
 | `geo_project_repositories_verified` | Gauge | 16.2 | Number of Project Repositories successfully verified on secondary | `url` |
 | `geo_project_repositories_verification_failed` | Gauge | 16.2 | Number of Project Repositories that failed verification on secondary | `url` |
-
+| `geo_repositories_synced`                            | Gauge   | 10.2    | Deprecated for removal in 17.0. Missing in 16.3 and 16.4. Replaced by `geo_project_repositories_synced`. Number of repositories synced on secondary | `url` |
+| `geo_repositories_failed`                            | Gauge   | 10.2    | Deprecated for removal in 17.0. Missing in 16.3 and 16.4. Replaced by `geo_project_repositories_failed`. Number of repositories failed to sync on secondary | `url` |
+| `geo_repositories_checksummed`                       | Gauge   | 10.7    | Deprecated for removal in 17.0. Missing in 16.3 and 16.4. Replaced by `geo_project_repositories_checksummed`. Number of repositories checksummed on primary | `url` |
+| `geo_repositories_checksum_failed`                   | Gauge   | 10.7    | Deprecated for removal in 17.0. Missing in 16.3 and 16.4. Replaced by `geo_project_repositories_checksum_failed`. Number of repositories failed to calculate the checksum on primary | `url` |
+| `geo_repositories_verified`                          | Gauge   | 10.7    | Deprecated for removal in 17.0. Missing in 16.3 and 16.4. Replaced by `geo_project_repositories_verified`. Number of repositories successfully verified on secondary | `url` |
+| `geo_repositories_verification_failed`               | Gauge   | 10.7    | Deprecated for removal in 17.0. Missing in 16.3 and 16.4. Replaced by `geo_project_repositories_verification_failed`. Number of repositories that failed verification on secondary | `url` |
 | `gitlab_memwd_violations_total`                      | Counter | 15.9    | Total number of times a Sidekiq process violated a memory threshold                                                                                        | |
 | `gitlab_memwd_violations_handled_total`              | Counter | 15.9    | Total number of times Sidekiq process memory violations were handled                                                                                       | |
 | `sidekiq_watchdog_running_jobs_total`                | Counter | 15.9    | Current running jobs when RSS limit was reached                                                                                                            | `worker_class`                                                                                          |

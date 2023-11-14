@@ -44,7 +44,7 @@ RSpec.describe 'issue move to another project', feature_category: :team_planning
     it 'moving issue to another project', :js do
       click_button _('Move issue')
       wait_for_requests
-      all('.gl-dropdown-item')[0].click
+      all('.gl-new-dropdown-item')[0].click
       click_button _('Move')
 
       expect(page).to have_content("Text with #{cross_reference}#{mr.to_reference}")
@@ -116,7 +116,7 @@ RSpec.describe 'issue move to another project', feature_category: :team_planning
 
       click_button _('Move issue')
       wait_for_requests
-      find('.gl-dropdown-item', text: project_title).click
+      find('.gl-new-dropdown-item', text: project_title).click
       click_button _('Move')
     end
 

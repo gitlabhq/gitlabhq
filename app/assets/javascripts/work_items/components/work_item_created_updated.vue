@@ -86,7 +86,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mb-3 gl-text-gray-700">
+  <div class="gl-mb-3 gl-text-gray-700 gl-mt-3">
     <work-item-state-badge v-if="workItemState" :work-item-state="workItemState" />
     <gl-loading-icon v-if="updateInProgress" :inline="true" class="gl-mr-3" />
     <confidentiality-badge

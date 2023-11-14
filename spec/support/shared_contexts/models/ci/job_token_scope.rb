@@ -16,12 +16,14 @@ end
 
 RSpec.shared_context 'with inaccessible projects' do
   let_it_be(:inbound_allowlist_project) { create_project_in_allowlist(source_project, direction: :inbound) }
+
   include_context 'with unscoped projects'
 end
 
 RSpec.shared_context 'with unscoped projects' do
   let_it_be(:unscoped_project1) { create(:project) }
   let_it_be(:unscoped_project2) { create(:project) }
+  let_it_be(:unscoped_public_project) { create(:project, :public) }
 
   let_it_be(:link_out_of_scope) { create(:ci_job_token_project_scope_link, target_project: unscoped_project1) }
 end

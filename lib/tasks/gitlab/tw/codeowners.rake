@@ -26,32 +26,31 @@ namespace :tw do
       CodeOwnerRule.new('Analytics Instrumentation', '@lciutacu'),
       CodeOwnerRule.new('Anti-Abuse', '@phillipwells'),
       CodeOwnerRule.new('Cloud Connector', '@jglassman1'),
-      CodeOwnerRule.new('Authentication and Authorization', '@jglassman1'),
+      CodeOwnerRule.new('Authentication', '@jglassman1'),
+      CodeOwnerRule.new('Authorization', '@jglassman1'),
       # CodeOwnerRule.new('Billing and Subscription Management', ''),
       CodeOwnerRule.new('Code Creation', '@jglassman1'),
       CodeOwnerRule.new('Code Review', '@aqualls'),
       CodeOwnerRule.new('Compliance', '@eread'),
       CodeOwnerRule.new('Composition Analysis', '@rdickenson'),
-      CodeOwnerRule.new('Environments', '@phillipwells'),
       CodeOwnerRule.new('Container Registry', '@marcel.amirault'),
       CodeOwnerRule.new('Contributor Experience', '@eread'),
       CodeOwnerRule.new('Database', '@aqualls'),
       CodeOwnerRule.new('DataOps', '@sselhorn'),
       # CodeOwnerRule.new('Delivery', ''),
-      CodeOwnerRule.new('Development', '@sselhorn'),
       CodeOwnerRule.new('Distribution', '@axil'),
       CodeOwnerRule.new('Distribution (Charts)', '@axil'),
       CodeOwnerRule.new('Distribution (Omnibus)', '@eread'),
-      CodeOwnerRule.new('Documentation Guidelines', '@sselhorn'),
       CodeOwnerRule.new('Duo Chat', '@sselhorn'),
       CodeOwnerRule.new('Dynamic Analysis', '@rdickenson'),
       CodeOwnerRule.new('Editor Extensions', '@aqualls'),
+      CodeOwnerRule.new('Environments', '@phillipwells'),
       CodeOwnerRule.new('Foundations', '@sselhorn'),
       # CodeOwnerRule.new('Fulfillment Platform', ''),
       CodeOwnerRule.new('Fuzz Testing', '@rdickenson'),
       CodeOwnerRule.new('Geo', '@axil'),
       CodeOwnerRule.new('Gitaly', '@eread'),
-      # CodeOwnerRule.new('GitLab Dedicated', ''),
+      CodeOwnerRule.new('GitLab Dedicated', '@lyspin'),
       CodeOwnerRule.new('Global Search', '@ashrafkhamis'),
       CodeOwnerRule.new('IDE', '@ashrafkhamis'),
       CodeOwnerRule.new('Import and Integrate', '@eread @ashrafkhamis'),
@@ -75,9 +74,9 @@ namespace :tw do
       CodeOwnerRule.new('Runner', '@fneill'),
       CodeOwnerRule.new('Runner SaaS', '@fneill'),
       CodeOwnerRule.new('Security Policies', '@rdickenson'),
+      CodeOwnerRule.new('Solutions Architecture', '@jfullam @brianwald @Darwinjs'),
       CodeOwnerRule.new('Source Code', '@msedlakjakubowski'),
       CodeOwnerRule.new('Static Analysis', '@rdickenson'),
-      CodeOwnerRule.new('Style Guide', '@sselhorn'),
       CodeOwnerRule.new('Tenant Scale', '@lciutacu'),
       CodeOwnerRule.new('Testing', '@eread'),
       CodeOwnerRule.new('Threat Insights', '@rdickenson'),
@@ -85,6 +84,33 @@ namespace :tw do
       # CodeOwnerRule.new('US Public Sector Services', ''),
       CodeOwnerRule.new('Utilization', '@fneill')
       # CodeOwnerRule.new('Vulnerability Research', '')
+    ].freeze
+
+    CONTRIBUTOR_DOCS_PATH = '/doc/development/'
+    CONTRIBUTOR_DOCS_CODE_OWNER_RULES = [
+      CodeOwnerRule.new('Analytics Instrumentation',
+        '@gitlab-org/analytics-section/product-analytics/engineers/frontend ' \
+        '@gitlab-org/analytics-section/analytics-instrumentation/engineers'),
+      CodeOwnerRule.new('Authentication', '@gitlab-org/govern/authentication/approvers'),
+      CodeOwnerRule.new('Authorization', '@gitlab-org/govern/authorization/approvers'),
+      CodeOwnerRule.new('Compliance',
+        '@gitlab-org/govern/security-policies-frontend @gitlab-org/govern/threat-insights-frontend-team ' \
+        '@gitlab-org/govern/threat-insights-backend-team'),
+      CodeOwnerRule.new('Composition Analysis',
+        '@gitlab-org/secure/composition-analysis-be @gitlab-org/secure/static-analysis'),
+      CodeOwnerRule.new('Distribution', '@gitlab-org/distribution'),
+      CodeOwnerRule.new('Documentation Guidelines', '@sselhorn'),
+      CodeOwnerRule.new('Engineering Productivity', '@gl-quality/eng-prod'),
+      CodeOwnerRule.new('Foundations', '@gitlab-org/manage/foundations/engineering'),
+      CodeOwnerRule.new('Gitaly', '@proglottis @toon'),
+      CodeOwnerRule.new('Global Search', '@gitlab-org/search-team/migration-maintainers'),
+      CodeOwnerRule.new('IDE',
+        '@gitlab-org/maintainers/remote-development/backend @gitlab-org/maintainers/remote-development/frontend'),
+      CodeOwnerRule.new('Pipeline Authoring', '@gitlab-org/maintainers/cicd-verify'),
+      CodeOwnerRule.new('Pipeline Execution', '@gitlab-org/maintainers/cicd-verify'),
+      CodeOwnerRule.new('Product Analytics', '@gitlab-org/analytics-section/product-analytics/engineers/frontend'),
+      CodeOwnerRule.new('Tenant Scale', '@abdwdd @alexpooley @manojmj'),
+      CodeOwnerRule.new('Threat Insights', '@gitlab-org/govern/threat-insights-frontend-team')
     ].freeze
 
     ERRORS_EXCLUDED_FILES = [
@@ -105,7 +131,8 @@ namespace :tw do
     end
 
     def self.writer_for_group(category, path)
-      writer = CODE_OWNER_RULES.find { |rule| rule.category == category }&.writer
+      rules = path.start_with?(CONTRIBUTOR_DOCS_PATH) ? CONTRIBUTOR_DOCS_CODE_OWNER_RULES : CODE_OWNER_RULES
+      writer = rules.find { |rule| rule.category == category }&.writer
 
       if writer.is_a?(String) || writer.nil?
         writer

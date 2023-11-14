@@ -174,7 +174,6 @@ module Gitlab
           prometheus_enabled: alt_usage_data(fallback: nil) { Gitlab::Prometheus::Internal.prometheus_enabled? },
           prometheus_metrics_enabled: alt_usage_data(fallback: nil) { Gitlab::Metrics.prometheus_metrics_enabled? },
           reply_by_email_enabled: alt_usage_data(fallback: nil) { Gitlab::Email::IncomingEmail.enabled? },
-          web_ide_clientside_preview_enabled: alt_usage_data(fallback: nil) { false },
           signup_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.allow_signup? },
           grafana_link_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.grafana_enabled? },
           gitpod_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.gitpod_enabled? }

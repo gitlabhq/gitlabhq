@@ -32,15 +32,15 @@ module Integrations
       title: -> { s_('GooglePlayStore|Protected branches and tags only') },
       checkbox_label: -> { s_('GooglePlayStore|Only set variables on protected branches and tags') }
 
-    def title
+    def self.title
       s_('GooglePlay|Google Play')
     end
 
-    def description
+    def self.description
       s_('GooglePlay|Use GitLab to build and release an app in Google Play.')
     end
 
-    def help
+    def self.help
       variable_list = [
         '<code>SUPPLY_PACKAGE_NAME</code>',
         '<code>SUPPLY_JSON_KEY_DATA</code>'

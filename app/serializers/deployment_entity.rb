@@ -28,7 +28,7 @@ class DeploymentEntity < Grape::Entity
   expose :deployed_by, as: :user, using: UserEntity
 
   expose :deployable, if: -> (deployment) { deployment.deployable.present? } do |deployment, opts|
-    deployment.deployable.yield_self do |deployable|
+    deployment.deployable.then do |deployable|
       if include_details?
         Ci::JobEntity.represent(deployable, opts)
       elsif can_read_deployables?

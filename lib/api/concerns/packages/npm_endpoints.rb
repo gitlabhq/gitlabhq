@@ -202,7 +202,8 @@ module API
           get '*package_name', format: false, requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
             package_name = params[:package_name]
             available_packages =
-              if Feature.enabled?(:npm_allow_packages_in_multiple_projects)
+              if endpoint_scope != :project &&
+                  Feature.enabled?(:npm_allow_packages_in_multiple_projects, group_or_namespace)
                 finder_for_endpoint_scope(package_name).execute
               else
                 ::Packages::Npm::PackageFinder.new(package_name, project: project_or_nil)
@@ -218,9 +219,8 @@ module API
               target: project_or_nil,
               package_name: package_name
             ) do
-              if endpoint_scope == :project || Feature.disabled?(:npm_allow_packages_in_multiple_projects)
-                authorize_read_package!(project)
-              elsif Feature.enabled?(:npm_allow_packages_in_multiple_projects)
+              if endpoint_scope != :project &&
+                  Feature.enabled?(:npm_allow_packages_in_multiple_projects, group_or_namespace)
                 available_packages_to_user = ::Packages::Npm::PackagesForUserFinder.new(
                   current_user,
                   group_or_namespace,
@@ -232,6 +232,8 @@ module API
                 end
 
                 available_packages = available_packages_to_user
+              else
+                authorize_read_package!(project)
               end
 
               not_found!('Packages') if available_packages.empty?

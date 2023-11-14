@@ -5,33 +5,34 @@ module QA
     module Matchers
       module HaveMatcher
         PREDICATE_TARGETS = %w[
+          alert_with_title
+          assignee
           auto_devops_container
+          child_pipeline
+          content
+          delete_issue_button
+          design
           element
+          file
           file_content
           file_name
-          assignee
-          child_pipeline
-          linked_pipeline
-          content
-          design
-          file
+          framework
+          incident
           issue
           job
+          label
+          linked_pipeline
+          linked_resource
           package
           pipeline
           related_issue_item
           sast_status
           security_configuration_history_link
-          snippet_description
-          tag
-          label
-          variable
-          system_note
-          alert_with_title
-          incident
-          framework
-          delete_issue_button
           skipped_job_in_group
+          snippet_description
+          system_note
+          tag
+          variable
         ].each do |predicate|
           RSpec::Matchers.define "have_#{predicate}" do |*args, **kwargs|
             match do |page_object|

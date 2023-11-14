@@ -1136,24 +1136,24 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to delegate_method(:npm_package_requests_forwarding).to(:namespace) }
 
     describe 'read project settings' do
-      %i(
+      %i[
         show_default_award_emojis
         show_default_award_emojis?
         warn_about_potentially_unwanted_characters
         warn_about_potentially_unwanted_characters?
         enforce_auth_checks_on_uploads
         enforce_auth_checks_on_uploads?
-      ).each do |method|
+      ].each do |method|
         it { is_expected.to delegate_method(method).to(:project_setting).allow_nil }
       end
     end
 
     describe 'write project settings' do
-      %i(
+      %i[
         show_default_award_emojis=
         warn_about_potentially_unwanted_characters=
         enforce_auth_checks_on_uploads=
-      ).each do |method|
+      ].each do |method|
         it { is_expected.to delegate_method(method).to(:project_setting).with_arguments(:args).allow_nil }
       end
     end
@@ -1177,12 +1177,13 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       let(:exclude_attributes) do
         # Skip attributes defined in EE code
-        %w(
+        %w[
           merge_pipelines_enabled
           merge_trains_enabled
           auto_rollback_enabled
           merge_trains_skip_train_allowed
-        )
+          restrict_pipeline_cancellation_role
+        ]
       end
     end
 
@@ -2127,28 +2128,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe 'sorting by name' do
-    let_it_be(:project1) { create(:project, name: 'A') }
-    let_it_be(:project2) { create(:project, name: 'Z') }
-    let_it_be(:project3) { create(:project, name: 'L') }
-
-    context 'when using .sort_by_name_desc' do
-      it 'reorders the projects by descending name order' do
-        projects = described_class.sorted_by_name_desc
-
-        expect(projects.pluck(:name)).to eq(%w[Z L A])
-      end
-    end
-
-    context 'when using .sort_by_name_asc' do
-      it 'reorders the projects by ascending name order' do
-        projects = described_class.sorted_by_name_asc
-
-        expect(projects.pluck(:name)).to eq(%w[A L Z])
-      end
-    end
-  end
-
   describe '.with_shared_runners_enabled' do
     subject { described_class.with_shared_runners_enabled }
 
@@ -2841,7 +2820,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     context "will return false if pages is deployed even if onboarding_complete is false" do
       before do
         project.pages_metadatum.update_column(:onboarding_complete, false)
-        project.pages_metadatum.update_column(:deployed, true)
+        create(:pages_deployment, project: project)
       end
 
       it { is_expected.to be_falsey }
@@ -2855,7 +2834,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'if pages are deployed' do
       before do
-        project.pages_metadatum.update_column(:deployed, true)
+        create(:pages_deployment, project: project)
       end
 
       it { is_expected.to be_truthy }
@@ -4309,7 +4288,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       context 'when project has a deployment platform' do
-        let(:platform_variables) { %w(platform variables) }
+        let(:platform_variables) { %w[platform variables] }
         let(:deployment_platform) { double }
 
         before do
@@ -7142,7 +7121,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           project.check_personal_projects_limit
 
           expect(project.errors[:limit_reached].first)
-            .to match(/Personal project creation is not allowed/)
+            .to eq('You cannot create projects in your personal namespace. Contact your GitLab administrator.')
         end
       end
 
@@ -7155,7 +7134,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           project.check_personal_projects_limit
 
           expect(project.errors[:limit_reached].first)
-            .to match(/Your project limit is 5 projects/)
+            .to eq("You've reached your limit of 5 projects created. Contact your GitLab administrator.")
         end
       end
     end
@@ -7216,126 +7195,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect do
         project.mark_pages_onboarding_complete
       end.to change { pages_metadatum.reload.onboarding_complete }.from(false).to(true)
-    end
-  end
-
-  describe '#mark_pages_as_deployed' do
-    let(:project) { create(:project) }
-
-    it "works when artifacts_archive is missing" do
-      project.mark_pages_as_deployed
-
-      expect(project.pages_metadatum.reload.deployed).to eq(true)
-    end
-
-    it "creates new record and sets deployed to true if none exists yet" do
-      project.pages_metadatum.destroy!
-      project.reload
-
-      project.mark_pages_as_deployed
-
-      expect(project.pages_metadatum.reload.deployed).to eq(true)
-    end
-
-    it "updates the existing record and sets deployed to true and records artifact archive" do
-      pages_metadatum = project.pages_metadatum
-      pages_metadatum.update!(deployed: false)
-
-      expect do
-        project.mark_pages_as_deployed
-      end.to change { pages_metadatum.reload.deployed }.from(false).to(true)
-    end
-  end
-
-  describe '#mark_pages_as_not_deployed' do
-    let(:project) { create(:project) }
-
-    it "creates new record and sets deployed to false if none exists yet" do
-      project.pages_metadatum.destroy!
-      project.reload
-
-      project.mark_pages_as_not_deployed
-
-      expect(project.pages_metadatum.reload.deployed).to eq(false)
-    end
-
-    it "updates the existing record and sets deployed to false and clears artifacts_archive" do
-      pages_metadatum = project.pages_metadatum
-      pages_metadatum.update!(deployed: true)
-
-      expect do
-        project.mark_pages_as_not_deployed
-      end.to change { pages_metadatum.reload.deployed }.from(true).to(false)
-    end
-  end
-
-  describe '#update_pages_deployment!' do
-    let(:project) { create(:project) }
-    let(:deployment) { create(:pages_deployment, project: project) }
-
-    it "creates new metadata record if none exists yet and sets deployment" do
-      project.pages_metadatum.destroy!
-      project.reload
-
-      project.update_pages_deployment!(deployment)
-
-      expect(project.pages_metadatum.pages_deployment).to eq(deployment)
-    end
-
-    it "updates the existing metadara record with deployment" do
-      expect do
-        project.update_pages_deployment!(deployment)
-      end.to change { project.pages_metadatum.reload.pages_deployment }.from(nil).to(deployment)
-    end
-  end
-
-  describe '#set_first_pages_deployment!' do
-    let(:project) { create(:project) }
-    let(:deployment) { create(:pages_deployment, project: project) }
-
-    it "creates new metadata record if none exists yet and sets deployment" do
-      project.pages_metadatum.destroy!
-      project.reload
-
-      project.set_first_pages_deployment!(deployment)
-
-      expect(project.pages_metadatum.reload.pages_deployment).to eq(deployment)
-      expect(project.pages_metadatum.reload.deployed).to eq(true)
-    end
-
-    it "updates the existing metadara record with deployment" do
-      expect do
-        project.set_first_pages_deployment!(deployment)
-      end.to change { project.pages_metadatum.reload.pages_deployment }.from(nil).to(deployment)
-
-      expect(project.pages_metadatum.reload.deployed).to eq(true)
-    end
-
-    it 'only updates metadata for this project' do
-      other_project = create(:project)
-
-      expect do
-        project.set_first_pages_deployment!(deployment)
-      end.not_to change { other_project.pages_metadatum.reload.pages_deployment }.from(nil)
-
-      expect(other_project.pages_metadatum.reload.deployed).to eq(false)
-    end
-
-    it 'does nothing if metadata already references some deployment' do
-      existing_deployment = create(:pages_deployment, project: project)
-      project.set_first_pages_deployment!(existing_deployment)
-
-      expect do
-        project.set_first_pages_deployment!(deployment)
-      end.not_to change { project.pages_metadatum.reload.pages_deployment }.from(existing_deployment)
-    end
-
-    it 'marks project as not deployed if deployment is nil' do
-      project.mark_pages_as_deployed
-
-      expect do
-        project.set_first_pages_deployment!(nil)
-      end.to change { project.pages_metadatum.reload.deployed }.from(true).to(false)
     end
   end
 
@@ -7402,7 +7261,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it 'returns only projects that have pages deployed' do
       _project_without_pages = create(:project)
       project_with_pages = create(:project)
-      project_with_pages.mark_pages_as_deployed
+      create(:pages_deployment, project: project_with_pages)
 
       expect(described_class.with_pages_deployed).to contain_exactly(project_with_pages)
     end
@@ -9138,6 +8997,66 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it_behaves_like 'cleanup by a loose foreign key' do
       let_it_be(:parent) { create(:organization) }
       let_it_be(:model) { create(:project, organization: parent) }
+    end
+  end
+
+  # TODO: Remove/update this spec after background syncing is implemented. See https://gitlab.com/gitlab-org/gitlab/-/issues/429376.
+  describe '#update_catalog_resource' do
+    let_it_be_with_reload(:project) { create(:project, name: 'My project name', description: 'My description') }
+    let_it_be_with_reload(:resource) { create(:ci_catalog_resource, project: project) }
+
+    shared_examples 'name, description, and visibility_level of the catalog resource match the project' do
+      it do
+        expect(project).to receive(:update_catalog_resource).once.and_call_original
+
+        project.save!
+
+        expect(resource.name).to eq(project.name)
+        expect(resource.description).to eq(project.description)
+        expect(resource.visibility_level).to eq(project.visibility_level)
+      end
+    end
+
+    context 'when the project name is updated' do
+      before do
+        project.name = 'My new project name'
+      end
+
+      it_behaves_like 'name, description, and visibility_level of the catalog resource match the project'
+    end
+
+    context 'when the project description is updated' do
+      before do
+        project.description = 'My new description'
+      end
+
+      it_behaves_like 'name, description, and visibility_level of the catalog resource match the project'
+    end
+
+    context 'when the project visibility_level is updated' do
+      before do
+        project.visibility_level = 10
+      end
+
+      it_behaves_like 'name, description, and visibility_level of the catalog resource match the project'
+    end
+
+    context 'when neither the project name, description, nor visibility_level are updated' do
+      it 'does not call update_catalog_resource' do
+        expect(project).not_to receive(:update_catalog_resource)
+
+        project.update!(path: 'path')
+      end
+    end
+
+    context 'when the project does not have a catalog resource' do
+      let_it_be(:project2) { create(:project) }
+
+      it 'does not call update_catalog_resource' do
+        expect(project2).not_to receive(:update_catalog_resource)
+
+        project.update!(name: 'name')
+      end
     end
   end
 

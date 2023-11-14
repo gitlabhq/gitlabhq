@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { GlToast } from '@gitlab/ui';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import { initStatusTriggers } from '../header';
 import { JS_TOGGLE_EXPAND_CLASS } from './constants';
@@ -9,6 +10,8 @@ import {
 } from './super_sidebar_collapsed_state_manager';
 import SuperSidebar from './components/super_sidebar.vue';
 import SuperSidebarToggle from './components/super_sidebar_toggle.vue';
+
+Vue.use(GlToast);
 
 const getTrialStatusWidgetData = (sidebarData) => {
   if (sidebarData.trial_status_widget_data_attrs && sidebarData.trial_status_popover_data_attrs) {
@@ -63,13 +66,7 @@ export const initSuperSidebar = () => {
 
   if (!el) return false;
 
-  const {
-    rootPath,
-    sidebar,
-    toggleNewNavEndpoint,
-    forceDesktopExpandedSidebar,
-    commandPalette,
-  } = el.dataset;
+  const { rootPath, sidebar, forceDesktopExpandedSidebar, commandPalette } = el.dataset;
 
   bindSuperSidebarCollapsedEvents(forceDesktopExpandedSidebar);
   initSuperSidebarCollapsedState(parseBoolean(forceDesktopExpandedSidebar));
@@ -95,7 +92,6 @@ export const initSuperSidebar = () => {
     name: 'SuperSidebarRoot',
     provide: {
       rootPath,
-      toggleNewNavEndpoint,
       isImpersonating,
       ...getTrialStatusWidgetData(sidebarData),
       commandPaletteCommands,

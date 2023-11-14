@@ -47,7 +47,7 @@ export default {
 </script>
 
 <template>
-  <div data-qa-selector="package_path" class="gl-display-flex gl-align-items-center">
+  <div class="gl-display-flex gl-align-items-center">
     <gl-icon data-testid="base-icon" name="project" class="gl-mx-3 gl-min-w-0" />
 
     <gl-link

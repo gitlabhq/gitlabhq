@@ -91,7 +91,7 @@ RSpec.describe 'projects/tags/index.html.haml' do
 
       render
 
-      expect(page.find('.tags .content-list li', text: tag)).to have_css '.gl-badge .ci-status-icon-success'
+      expect(page.find('.tags .content-list li', text: tag)).to have_css '[data-testid="status_success_borderless-icon"]'
       expect(page.all('.tags .content-list li')).to all(have_css('svg.s16'))
     end
 

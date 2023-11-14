@@ -8,14 +8,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Available resources for the [GitLab REST API](index.md) can be grouped in the following contexts:
 
-- [Projects](#project-resources).
-- [Groups](#group-resources).
-- [Standalone](#standalone-resources).
+- [Projects](#project-resources)
+- [Groups](#group-resources)
+- [Standalone](#standalone-resources)
 
 See also:
 
-- Adding [deploy keys for multiple projects](deploy_keys.md#add-deploy-keys-to-multiple-projects).
-- [API Resources for various templates](#templates-api-resources).
+- Adding [deploy keys for multiple projects](deploy_keys.md#add-deploy-keys-to-multiple-projects)
+- [API Resources for various templates](#templates-api-resources)
 
 ## Project resources
 
@@ -206,7 +206,7 @@ The following API resources are available outside of project and group contexts 
 
 Endpoints are available for:
 
-- [Dockerfile templates](templates/dockerfiles.md).
-- [`.gitignore` templates](templates/gitignores.md).
-- [GitLab CI/CD YAML templates](templates/gitlab_ci_ymls.md).
-- [Open source license templates](templates/licenses.md).
+- [Dockerfile templates](templates/dockerfiles.md)
+- [`.gitignore` templates](templates/gitignores.md)
+- [GitLab CI/CD YAML templates](templates/gitlab_ci_ymls.md)
+- [Open source license templates](templates/licenses.md)

@@ -4,16 +4,6 @@ include:
   - local: .gitlab/ci/qa-common/main.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/rules.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/variables.gitlab-ci.yml
-  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@7.3.1"
-    inputs:
-      job_name: "e2e-test-report"
-      job_stage: "report"
-      aws_access_key_id_variable_name: "QA_ALLURE_AWS_ACCESS_KEY_ID"
-      aws_secret_access_key_variable_name: "QA_ALLURE_AWS_SECRET_ACCESS_KEY"
-      gitlab_auth_token_variable_name: "PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE"
-      allure_results_glob: "gitlab-qa-run-*/**/allure-results"
-      allure_job_name: "${QA_RUN_TYPE}"
-      allure_ref_slug: "${CI_COMMIT_REF_SLUG}"
 
 # ==========================================
 # Prepare stage
@@ -417,9 +407,7 @@ integrations:
     - !reference [.rules:test:manual, rules]
 
 ldap-no-server:
-  extends:
-    - .qa
-    - .failure-videos
+  extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::LDAPNoServer
   rules:
@@ -428,9 +416,7 @@ ldap-no-server:
     - !reference [.rules:test:manual, rules]
 
 ldap-tls:
-  extends:
-    - .qa
-    - .failure-videos
+  extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::LDAPTLS
   rules:
@@ -439,9 +425,7 @@ ldap-tls:
     - !reference [.rules:test:manual, rules]
 
 ldap-no-tls:
-  extends:
-    - .qa
-    - .failure-videos
+  extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::LDAPNoTLS
   rules:
@@ -643,6 +627,8 @@ update-ee-to-ce:
 # ==========================================
 e2e-test-report:
   extends: .rules:report:allure-report
+  variables:
+    ALLURE_RESULTS_GLOB: "gitlab-qa-run-*/**/allure-results"
 
 upload-knapsack-report:
   extends:

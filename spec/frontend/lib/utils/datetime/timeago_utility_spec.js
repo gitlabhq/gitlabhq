@@ -160,5 +160,24 @@ describe('TimeAgo utils', () => {
         );
       },
     );
+
+    describe('With User Setting Time Format', () => {
+      it.each`
+        timeDisplayFormat | display      | text
+        ${0}              | ${'System'}  | ${'Feb 18, 2020, 10:22 PM'}
+        ${1}              | ${'12-hour'} | ${'Feb 18, 2020, 10:22 PM'}
+        ${2}              | ${'24-hour'} | ${'Feb 18, 2020, 22:22'}
+      `(`'$display' renders as '$text'`, ({ timeDisplayFormat, text }) => {
+        gon.time_display_relative = false;
+        gon.time_display_format = timeDisplayFormat;
+
+        const element = document.querySelector('time');
+        localTimeAgo([element]);
+
+        jest.runAllTimers();
+
+        expect(element.innerText).toBe(text);
+      });
+    });
   });
 });

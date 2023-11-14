@@ -87,8 +87,8 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
         expect(find('[data-testid="links-child"]')).to have_content('Task 1')
         expect(find('[data-testid="children-count"]')).to have_content('1')
 
-        find('[data-testid="links-menu"]').click
-        click_button 'Remove'
+        find_by_testid('links-child').hover
+        find_by_testid('remove-work-item-link').click
 
         wait_for_all_requests
 

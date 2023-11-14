@@ -114,7 +114,7 @@ RSpec.describe Gitlab::Suggestions::SuggestionSet do
       it 'returns an array of unique file paths associated with the suggestions' do
         suggestion_set = described_class.new([suggestion, suggestion2, suggestion3])
 
-        expected_paths = %w(files/ruby/popen.rb files/ruby/regex.rb)
+        expected_paths = %w[files/ruby/popen.rb files/ruby/regex.rb]
 
         actual_paths = suggestion_set.file_paths
 

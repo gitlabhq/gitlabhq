@@ -2,19 +2,19 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group navbar', :with_license, feature_category: :navigation do
+RSpec.describe 'Group navbar', :with_license, :js, feature_category: :navigation do
   include NavbarStructureHelper
   include WikiHelpers
 
   include_context 'group navbar structure'
 
-  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:user) { create(:user) }
 
   let(:group) { create(:group) }
 
   before do
-    insert_package_nav(_('Kubernetes'))
-    insert_after_nav_item(_('Analytics'), new_nav_item: settings_for_maintainer_nav_item) if Gitlab.ee?
+    create_package_nav(_('Operate'))
+    insert_after_nav_item(_('Analyze'), new_nav_item: settings_for_maintainer_nav_item) if Gitlab.ee?
 
     stub_config(dependency_proxy: { enabled: false })
     stub_config(registry: { enabled: false })
@@ -46,9 +46,9 @@ RSpec.describe 'Group navbar', :with_license, feature_category: :navigation do
 
     before do
       if Gitlab.ee?
-        insert_customer_relations_nav(_('Analytics'))
+        insert_customer_relations_nav(_('Iterations'))
       else
-        insert_customer_relations_nav(_('Packages and registries'))
+        insert_customer_relations_nav(_('Milestones'))
       end
 
       visit group_path(group)
@@ -85,7 +85,7 @@ RSpec.describe 'Group navbar', :with_license, feature_category: :navigation do
     before do
       group.update!(harbor_integration: harbor_integration)
 
-      insert_harbor_registry_nav(_('Package Registry'))
+      insert_harbor_registry_nav(_('Kubernetes'))
 
       visit group_path(group)
     end

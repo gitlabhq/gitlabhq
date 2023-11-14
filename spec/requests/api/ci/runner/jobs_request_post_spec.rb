@@ -24,8 +24,17 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
     let(:runner) { create(:ci_runner, :project, projects: [project]) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
     let(:job) do
-      create(:ci_build, :pending, :queued, :artifacts, :extended_options,
-             pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0)
+      create(
+        :ci_build,
+        :pending,
+        :queued,
+        :artifacts,
+        :extended_options,
+        pipeline: pipeline,
+        name: 'spinach',
+        stage: 'test',
+        stage_idx: 0
+      )
     end
 
     describe 'POST /api/v4/jobs/request' do
@@ -202,12 +211,12 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
           let(:expected_steps) do
             [{ 'name' => 'script',
-               'script' => %w(echo),
+               'script' => %w[echo],
                'timeout' => job.metadata_timeout,
                'when' => 'on_success',
                'allow_failure' => false },
              { 'name' => 'after_script',
-               'script' => %w(ls date),
+               'script' => %w[ls date],
                'timeout' => job.metadata_timeout,
                'when' => 'always',
                'allow_failure' => true }]
@@ -226,7 +235,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           let(:expected_artifacts) do
             [{ 'name' => 'artifacts_file',
                'untracked' => false,
-               'paths' => %w(out/),
+               'paths' => %w[out/],
                'when' => 'always',
                'expire_in' => '7d',
                "artifact_type" => "archive",
@@ -342,10 +351,11 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                 request_job
 
                 expect(response).to have_gitlab_http_status(:created)
-                expect(json_response['git_info']['refspecs'])
-                  .to contain_exactly("+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
-                                      '+refs/tags/*:refs/tags/*',
-                                      '+refs/heads/*:refs/remotes/origin/*')
+                expect(json_response['git_info']['refspecs']).to contain_exactly(
+                  "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
+                  '+refs/tags/*:refs/tags/*',
+                  '+refs/heads/*:refs/remotes/origin/*'
+                )
               end
             end
           end
@@ -383,10 +393,11 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                 request_job
 
                 expect(response).to have_gitlab_http_status(:created)
-                expect(json_response['git_info']['refspecs'])
-                  .to contain_exactly("+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
-                                      '+refs/tags/*:refs/tags/*',
-                                      '+refs/heads/*:refs/remotes/origin/*')
+                expect(json_response['git_info']['refspecs']).to contain_exactly(
+                  "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
+                  '+refs/tags/*:refs/tags/*',
+                  '+refs/heads/*:refs/remotes/origin/*'
+                )
               end
             end
           end
@@ -461,7 +472,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             expect { request_job }.to change { runner.reload.contacted_at }
           end
 
-          %w(version revision platform architecture).each do |param|
+          %w[version revision platform architecture].each do |param|
             context "when info parameter '#{param}' is present" do
               let(:value) { "#{param}_value" }
 
@@ -646,8 +657,16 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
           context 'when job has code coverage report' do
             let(:job) do
-              create(:ci_build, :pending, :queued, :coverage_report_cobertura,
-                     pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0)
+              create(
+                :ci_build,
+                :pending,
+                :queued,
+                :coverage_report_cobertura,
+                pipeline: pipeline,
+                name: 'spinach',
+                stage: 'test',
+                stage_idx: 0
+              )
             end
 
             let(:expected_artifacts) do
@@ -788,9 +807,16 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
           describe 'time_in_queue_seconds support' do
             let(:job) do
-              create(:ci_build, :pending, :queued, pipeline: pipeline,
-                     name: 'spinach', stage: 'test', stage_idx: 0,
-                     queued_at: 60.seconds.ago)
+              create(
+                :ci_build,
+                :pending,
+                :queued,
+                pipeline: pipeline,
+                name: 'spinach',
+                stage: 'test',
+                stage_idx: 0,
+                queued_at: 60.seconds.ago
+              )
             end
 
             it 'presents the time_in_queue_seconds info in the payload' do

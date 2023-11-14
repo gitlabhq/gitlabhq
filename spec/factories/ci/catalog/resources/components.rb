@@ -5,6 +5,6 @@ FactoryBot.define do
     version factory: :ci_catalog_resource_version
     catalog_resource { version.catalog_resource }
     project { version.project }
-    name { catalog_resource.name }
+    name { catalog_resource.project.name }
   end
 end

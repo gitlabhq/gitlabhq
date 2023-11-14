@@ -1,13 +1,14 @@
 <script>
-import * as Sentry from '@sentry/browser';
 import { produce } from 'immer';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import AwardsList from '~/vue_shared/components/awards_list.vue';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 
-import workItemAwardEmojiQuery from '../graphql/award_emoji.query.graphql';
+import groupWorkItemAwardEmojiQuery from '../graphql/group_award_emoji.query.graphql';
+import projectWorkItemAwardEmojiQuery from '../graphql/award_emoji.query.graphql';
 import updateAwardEmojiMutation from '../graphql/update_award_emoji.mutation.graphql';
 import {
   EMOJI_THUMBSDOWN,
@@ -23,6 +24,7 @@ export default {
   components: {
     AwardsList,
   },
+  inject: ['isGroup'],
   props: {
     workItemId: {
       type: String,
@@ -75,7 +77,9 @@ export default {
   },
   apollo: {
     awardEmoji: {
-      query: workItemAwardEmojiQuery,
+      query() {
+        return this.isGroup ? groupWorkItemAwardEmojiQuery : projectWorkItemAwardEmojiQuery;
+      },
       variables() {
         return {
           iid: this.workItemIid,
@@ -116,7 +120,7 @@ export default {
             after: this.pageInfo?.endCursor,
           },
         });
-      } catch (error) {
+      } catch {
         this.$emit('error', I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR);
       }
     },
@@ -139,7 +143,7 @@ export default {
           return this.awardEmoji.nodes;
         }
 
-        // else make a copy of unmutable list and return the list after adding the new emoji
+        // else make a copy of immutable list and return the list after adding the new emoji
         const awardEmojiNodes = [...this.awardEmoji.nodes];
         awardEmojiNodes.push({
           name,
@@ -162,7 +166,7 @@ export default {
     },
     updateWorkItemAwardEmojiWidgetCache({ cache, name, toggledOn }) {
       const query = {
-        query: workItemAwardEmojiQuery,
+        query: this.isGroup ? groupWorkItemAwardEmojiQuery : projectWorkItemAwardEmojiQuery,
         variables: {
           fullPath: this.workItemFullpath,
           iid: this.workItemIid,
@@ -234,7 +238,6 @@ export default {
 <template>
   <div v-if="!isLoading" class="gl-mt-3">
     <awards-list
-      data-testid="work-item-award-list"
       :awards="awards"
       :can-award-emoji="$options.isLoggedIn"
       :current-user-id="currentUserId"

@@ -149,6 +149,7 @@ RSpec.describe 'gitlab:background_migrations namespace rake tasks', :suppress_gi
       context 'with two connections sharing the same database' do
         before do
           skip_if_database_exists(:ci)
+          skip_if_database_exists(:jh)
         end
 
         it 'skips the shared database' do

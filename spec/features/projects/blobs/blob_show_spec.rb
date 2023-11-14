@@ -941,9 +941,7 @@ RSpec.describe 'File blob', :js, feature_category: :groups_and_projects do
 
     it 'shows the realtime pipeline status' do
       page.within('.commit-actions') do
-        expect(page).to have_css('.ci-status-icon')
-        expect(page).to have_css('.ci-status-icon-running')
-        expect(page).to have_selector('[data-testid="status_running-icon"]')
+        expect(page).to have_selector('[data-testid="status_running_borderless-icon"]')
       end
     end
   end

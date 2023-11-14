@@ -74,22 +74,17 @@ module QA
 
     def upload_agent_config(project, agent)
       Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add kubernetes agent configuration'
-          commit.add_files(
-            [
-              {
-                file_path: ".gitlab/agents/#{agent}/config.yaml",
-                content: <<~YAML
-                  ci_access:
-                    projects:
-                      - id: #{project.path_with_namespace}
-                YAML
-              }
-            ]
-          )
-        end
+        create(:commit, project: project, commit_message: 'Add k8s agent configuration', actions: [
+          {
+            action: 'create',
+            file_path: ".gitlab/agents/#{agent}/config.yaml",
+            content: <<~YAML
+              ci_access:
+                projects:
+                  - id: #{project.path_with_namespace}
+            YAML
+          }
+        ])
       end
     end
 

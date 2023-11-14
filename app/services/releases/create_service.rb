@@ -18,12 +18,6 @@ module Releases
 
       return tag unless tag.is_a?(Gitlab::Git::Tag)
 
-      if project.catalog_resource
-        response = Ci::Catalog::Resources::ValidateService.new(project, ref).execute
-
-        return error(response.message) if response.error?
-      end
-
       create_release(tag, evidence_pipeline)
     end
 
@@ -56,6 +50,12 @@ module Releases
     def create_release(tag, evidence_pipeline)
       release = build_release(tag)
 
+      if project.catalog_resource && release.valid?
+        response = Ci::Catalog::Resources::ReleaseService.new(release).execute
+
+        return error(response.message, 422) if response.error?
+      end
+
       release.save!
 
       notify_create_release(release)
@@ -63,6 +63,8 @@ module Releases
       execute_hooks(release, 'create')
 
       create_evidence!(release, evidence_pipeline)
+
+      audit(release, action: :created)
 
       success(tag: tag, release: release)
     rescue StandardError => e

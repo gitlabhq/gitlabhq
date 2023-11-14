@@ -1,0 +1,4 @@
+---
+Cop2:
+  Exclude:
+    - 'app/controllers/application_controller.rb'

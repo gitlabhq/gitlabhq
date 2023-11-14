@@ -6,7 +6,7 @@ require 'rspec-parameterized'
 RSpec.describe Gitlab::Graphql::Tracers::MetricsTracer do
   using RSpec::Parameterized::TableSyntax
 
-  let(:default_known_operations) { ::Gitlab::Graphql::KnownOperations.new(%w(lorem foo bar)) }
+  let(:default_known_operations) { ::Gitlab::Graphql::KnownOperations.new(%w[lorem foo bar]) }
 
   let(:fake_schema) do
     Class.new(GraphQL::Schema) do

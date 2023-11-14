@@ -115,10 +115,10 @@ It picks reviewers and maintainers from the list at the
 page, with these behaviors:
 
 - It doesn't pick people whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
-  - Contains the string `OOO`, `PTO`, `Parental Leave`, or `Friends and Family`.
+  - Contains the string `OOO`, `PTO`, `Parental Leave`, `Friends and Family`, or `Conference`.
   - GitLab user **Busy** indicator is set to `True`.
   - Emoji is from one of these categories:
-    - **On leave** - 🌴 `:palm_tree:`, 🏖️ `:beach:`, ⛱ `:beach_umbrella:`, 🏖 `:beach_with_umbrella:`, 🌞 `:sun_with_face:`, 🎡 `:ferris_wheel:`
+    - **On leave** - 🌴 `:palm_tree:`, 🏖️ `:beach:`, ⛱ `:beach_umbrella:`, 🏖 `:beach_with_umbrella:`, 🌞 `:sun_with_face:`, 🎡 `:ferris_wheel:`, 🏙 `:cityscape:`
     - **Out sick** - 🌡️ `:thermometer:`, 🤒 `:face_with_thermometer:`
     - **At capacity** - 🔴 `:red_circle:`
     - **Focus mode** - 💡 `:bulb:` (focusing on their team's work)
@@ -294,6 +294,10 @@ or get an implementation reviewed, to product managers and UX designers to clear
 up confusion or verify that the end result matches what they had in mind, to
 database specialists to get input on the data model or specific queries, or to
 any other developer to get an in-depth review of the solution.
+
+If you know you'll need many merge requests to deliver a feature (for example, you created a proof of concept and it is clear the feature will consist of 10+ merge requests),
+consider identifying reviewers and maintainers who possess the necessary understanding of the feature (you share the context with them). Then direct all merge requests to these reviewers.
+The best DRI for finding these reviewers is the EM or Staff Engineer. Having stable reviewer counterparts for multiple merge requests with the same context improves efficiency.
 
 If your merge request touches more than one domain (for example, Dynamic Analysis and GraphQL), ask for reviews from an expert from each domain.
 
@@ -764,7 +768,7 @@ A merge request may benefit from being considered a customer critical priority b
 
 Properties of customer critical merge requests:
 
-- The [VP of Development](https://about.gitlab.com/job-families/engineering/development/management/vp/) ([@clefelhocz1](https://gitlab.com/clefelhocz1)) is the approver for deciding if a merge request qualifies as customer critical. Also, if two of his direct reports approve, that can also serve as approval.
+- A senior director or higher in Development must approve that a merge request qualifies as customer-critical. Alternatively, if two of their direct reports approve, that can also serve as approval.
 - The DRI applies the `customer-critical-merge-request` label to the merge request.
 - It is required that the reviewers and maintainers involved with a customer critical merge request are engaged as soon as this decision is made.
 - It is required to prioritize work for those involved on a customer critical merge request so that they have the time available necessary to focus on it.

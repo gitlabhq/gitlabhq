@@ -1,0 +1,8 @@
+---
+name: enforce_ci_builds_pagination_limit
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135162
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/429453
+milestone: '16.6'
+type: ops
+group: group::pipeline execution
+default_enabled: false

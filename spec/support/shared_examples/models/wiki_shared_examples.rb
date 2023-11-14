@@ -14,7 +14,7 @@ RSpec.shared_examples 'wiki model' do
   subject { wiki }
 
   it 'VALID_USER_MARKUPS contains all valid markups' do
-    expect(described_class::VALID_USER_MARKUPS.keys).to match_array(%i(markdown rdoc asciidoc org))
+    expect(described_class::VALID_USER_MARKUPS.keys).to match_array(%i[markdown rdoc asciidoc org])
   end
 
   it 'container class includes HasWiki' do

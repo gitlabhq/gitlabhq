@@ -96,7 +96,7 @@ RSpec.describe 'query Jira import data', feature_category: :importers do
         total_issue_count = jira_imports.map { |ji| ji.dig('totalIssueCount') }
 
         expect(jira_imports.size).to eq 2
-        expect(jira_proket_keys).to eq %w(BB AA)
+        expect(jira_proket_keys).to eq %w[BB AA]
         expect(usernames).to eq [current_user.username, current_user.username]
         expect(imported_issues_count).to eq [2, 2]
         expect(failed_issues_count).to eq [1, 2]

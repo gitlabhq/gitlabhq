@@ -18,6 +18,8 @@ you must verify your identity or reset your password to sign in to GitLab.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo, see [Require email verification - demo](https://www.youtube.com/watch?v=wU6BVEGB3Y0).
 
+On GitLab.com, if you don't receive a verification email, select **Resend Code** before you contact the support team.
+
 ## Accounts without two-factor authentication (2FA)
 
 An account is locked when either:
@@ -36,10 +38,12 @@ To unlock your account, sign in and enter the verification code. You can also
 
 ## Accounts with 2FA or OAuth
 
-An account is locked when there are three or more failed sign-in attempts.
+An account is locked when there are ten or more failed sign-in attempts, or more than the
+amount defined in the [configurable locked user policy](unlock_user.md#self-managed-users).
 
-Accounts with 2FA or OAuth are automatically unlocked after 30 minutes. To unlock an account manually,
-reset your password.
+Accounts with 2FA or OAuth are automatically unlocked after ten minutes, or more than the
+amount defined in the [configurable locked user policy](unlock_user.md#self-managed-users).
+To unlock an account manually, reset your password.
 
 ## Related topics
 

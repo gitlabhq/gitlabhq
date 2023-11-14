@@ -10,12 +10,8 @@ import KeysetPagination from '~/vue_shared/components/incubation/pagination.vue'
 import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
 import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
 
-import {
-  LIST_KEY_CREATED_AT,
-  BASE_SORT_FIELDS,
-  METRIC_KEY_PREFIX,
-  CREATE_CANDIDATE_HELP_PATH,
-} from './constants';
+import { CREATE_EXPERIMENT_HELP_PATH as CREATE_CANDIDATE_HELP_PATH } from '../index/constants';
+import { LIST_KEY_CREATED_AT, BASE_SORT_FIELDS, METRIC_KEY_PREFIX } from './constants';
 import * as translations from './translations';
 
 export default {

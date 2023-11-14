@@ -40,7 +40,6 @@ export default {
       :width="imgSize"
       :class="`s${imgSize}`"
       class="avatar avatar-inline m-0"
-      data-qa-selector="avatar_image"
     />
     <gl-icon v-if="hasMergeIcon" name="warning-solid" aria-hidden="true" class="merge-icon" />
   </span>

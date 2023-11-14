@@ -162,6 +162,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it { is_expected.to validate_inclusion_of(:user_defaults_to_private_profile).in_array([true, false]) }
 
+    it { is_expected.to validate_inclusion_of(:allow_project_creation_for_guest_and_below).in_array([true, false]) }
+
     it { is_expected.to validate_inclusion_of(:deny_all_requests_except_allowed).in_array([true, false]) }
 
     it 'ensures max_pages_size is an integer greater than 0 (or equal to 0 to indicate unlimited/maximum)' do
@@ -254,11 +256,11 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it { is_expected.not_to allow_value(['']).for(:valid_runner_registrars) }
     it { is_expected.not_to allow_value(['OBVIOUSLY_WRONG']).for(:valid_runner_registrars) }
-    it { is_expected.not_to allow_value(%w(project project)).for(:valid_runner_registrars) }
+    it { is_expected.not_to allow_value(%w[project project]).for(:valid_runner_registrars) }
     it { is_expected.not_to allow_value([nil]).for(:valid_runner_registrars) }
     it { is_expected.not_to allow_value(nil).for(:valid_runner_registrars) }
     it { is_expected.to allow_value([]).for(:valid_runner_registrars) }
-    it { is_expected.to allow_value(%w(project group)).for(:valid_runner_registrars) }
+    it { is_expected.to allow_value(%w[project group]).for(:valid_runner_registrars) }
 
     it { is_expected.to allow_value(http).for(:jira_connect_proxy_url) }
     it { is_expected.to allow_value(https).for(:jira_connect_proxy_url) }
@@ -820,15 +822,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       subject { setting }
     end
 
-    # Upgraded databases will have this sort of content
-    context 'repository_storages is a String, not an Array' do
-      before do
-        described_class.where(id: setting.id).update_all(repository_storages: 'default')
-      end
-
-      it { expect(setting.repository_storages).to eq(['default']) }
-    end
-
     context 'auto_devops_domain setting' do
       context 'when auto_devops_enabled? is true' do
         before do
@@ -862,31 +855,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
             expect(setting).to be_invalid
           end
         end
-      end
-    end
-
-    context 'repository storages' do
-      before do
-        storages = {
-          'custom1' => 'tmp/tests/custom_repositories_1',
-          'custom2' => 'tmp/tests/custom_repositories_2',
-          'custom3' => 'tmp/tests/custom_repositories_3'
-
-        }
-        allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
-      end
-
-      describe 'inclusion' do
-        it { is_expected.to allow_value('custom1').for(:repository_storages) }
-        it { is_expected.to allow_value(%w(custom2 custom3)).for(:repository_storages) }
-        it { is_expected.not_to allow_value('alternative').for(:repository_storages) }
-        it { is_expected.not_to allow_value(%w(alternative custom1)).for(:repository_storages) }
-      end
-
-      describe 'presence' do
-        it { is_expected.not_to allow_value([]).for(:repository_storages) }
-        it { is_expected.not_to allow_value("").for(:repository_storages) }
-        it { is_expected.not_to allow_value(nil).for(:repository_storages) }
       end
     end
 

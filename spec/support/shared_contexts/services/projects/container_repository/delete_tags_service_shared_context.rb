@@ -16,11 +16,11 @@ RSpec.shared_context 'container repository delete tags service shared context' d
 
     stub_container_registry_tags(
       repository: repository.path,
-      tags: %w(latest A Ba Bb C D E))
+      tags: %w[latest A Ba Bb C D E])
   end
 
   def stub_delete_reference_request(tag, status = 200)
-    stub_request(:delete, "http://registry.gitlab/v2/#{repository.path}/tags/reference/#{tag}")
+    stub_request(:delete, "http://registry.gitlab/v2/#{repository.path}/manifests/#{tag}")
       .to_return(status: status, body: '')
   end
 
@@ -28,7 +28,7 @@ RSpec.shared_context 'container repository delete tags service shared context' d
     tags = Array.wrap(tags).index_with { 200 } unless tags.is_a?(Hash)
 
     tags.each do |tag, status|
-      stub_request(:delete, "http://registry.gitlab/v2/#{repository.path}/tags/reference/#{tag}")
+      stub_request(:delete, "http://registry.gitlab/v2/#{repository.path}/manifests/#{tag}")
       .to_return(status: status, body: '')
     end
   end
@@ -58,23 +58,11 @@ RSpec.shared_context 'container repository delete tags service shared context' d
       .with(repository.path, content, digest) { double(success?: success ) }
   end
 
-  def expect_delete_tag_by_digest(digest)
-    expect_any_instance_of(ContainerRegistry::Client)
-      .to receive(:delete_repository_tag_by_digest)
-      .with(repository.path, digest) { true }
-
-    expect_any_instance_of(ContainerRegistry::Client)
-      .not_to receive(:delete_repository_tag_by_name)
-  end
-
-  def expect_delete_tag_by_names(names)
+  def expect_delete_tags(names)
     Array.wrap(names).each do |name|
       expect_any_instance_of(ContainerRegistry::Client)
-        .to receive(:delete_repository_tag_by_name)
+        .to receive(:delete_repository_tag_by_digest)
         .with(repository.path, name) { true }
-
-      expect_any_instance_of(ContainerRegistry::Client)
-        .not_to receive(:delete_repository_tag_by_digest)
     end
   end
 end

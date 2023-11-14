@@ -13,7 +13,6 @@ module Types
 
       def total_egress(parent:)
         return unless Feature.enabled?(:data_transfer_monitoring, parent.group)
-        return 40_000_000 if Feature.enabled?(:data_transfer_monitoring_mock_data, parent.group)
 
         object[:egress_nodes].sum('repository_egress + artifacts_egress + packages_egress + registry_egress')
       end

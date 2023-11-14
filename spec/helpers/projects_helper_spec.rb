@@ -128,6 +128,24 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
+  describe '#load_catalog_resources' do
+    before_all do
+      create_list(:project, 2)
+    end
+
+    let_it_be(:projects) { Project.all.to_a }
+
+    it 'does not execute a database query when project.catalog_resource is accessed' do
+      helper.load_catalog_resources(projects)
+
+      queries = ActiveRecord::QueryRecorder.new do
+        projects.each(&:catalog_resource)
+      end
+
+      expect(queries).not_to exceed_query_limit(0)
+    end
+  end
+
   describe '#last_pipeline_from_status_cache' do
     before do
       # clear cross-example caches

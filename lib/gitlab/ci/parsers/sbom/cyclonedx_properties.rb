@@ -15,7 +15,8 @@ module Gitlab
           SUPPORTED_SCHEMA_VERSION = '1'
           GITLAB_PREFIX = 'gitlab:'
           SOURCE_PARSERS = {
-            'dependency_scanning' => ::Gitlab::Ci::Parsers::Sbom::Source::DependencyScanning
+            'dependency_scanning' => ::Gitlab::Ci::Parsers::Sbom::Source::DependencyScanning,
+            'container_scanning' => ::Gitlab::Ci::Parsers::Sbom::Source::ContainerScanning
           }.freeze
           SUPPORTED_PROPERTIES = %w[
             meta:schema_version
@@ -24,6 +25,10 @@ module Gitlab
             dependency_scanning:source_file:path
             dependency_scanning:package_manager:name
             dependency_scanning:language:name
+            container_scanning:image:name
+            container_scanning:image:tag
+            container_scanning:operating_system:name
+            container_scanning:operating_system:version
           ].freeze
 
           def self.parse_source(...)

@@ -18,7 +18,7 @@ RSpec.describe Projects::ContainerRepository::ThirdParty::DeleteTagsService, fea
 
         tags.each { |tag| stub_put_manifest_request(tag) }
 
-        expect_delete_tag_by_digest('sha256:dummy')
+        expect_delete_tags(['sha256:dummy'])
 
         is_expected.to eq(status: :success, deleted: tags)
       end
@@ -92,7 +92,7 @@ RSpec.describe Projects::ContainerRepository::ThirdParty::DeleteTagsService, fea
       let_it_be(:tags) { [] }
 
       it 'does not remove anything' do
-        expect_any_instance_of(ContainerRegistry::Client).not_to receive(:delete_repository_tag_by_name)
+        expect_any_instance_of(ContainerRegistry::Client).not_to receive(:delete_repository_tag_by_digest)
 
         is_expected.to eq(status: :success, deleted: [])
       end

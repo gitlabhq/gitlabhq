@@ -3,7 +3,7 @@ table_name: service_access_tokens
 classes:
 - Ai::ServiceAccessToken
 feature_categories:
-- application_performance
+- cloud_connector
 description: Persists JWT tokens for AI features (e.g. Code Suggestions) to authenticate
   the GitLab instance
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125383

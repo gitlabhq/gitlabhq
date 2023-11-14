@@ -19,7 +19,7 @@ describe('GitLab Feature Flags Mixin', () => {
 
     wrapper = shallowMount(component, {
       provide: {
-        glFeatures: { ...(gon.features || {}) },
+        glFeatures: { ...gon.features },
       },
     });
   });

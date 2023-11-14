@@ -10,15 +10,15 @@ module Integrations
       @reference_pattern ||= /((#|CU-)(?<issue>[a-z0-9]+)|(?<issue>[A-Z0-9_]{2,10}-\d+))\b/
     end
 
-    def title
+    def self.title
       'ClickUp'
     end
 
-    def description
+    def self.description
       s_("IssueTracker|Use Clickup as this project's issue tracker.")
     end
 
-    def help
+    def self.help
       docs_link = ActionController::Base.helpers.link_to _('Learn more.'),
         Rails.application.routes.url_helpers.help_page_url('user/project/integrations/clickup'),
         target: '_blank',

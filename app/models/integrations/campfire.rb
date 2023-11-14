@@ -36,15 +36,15 @@ module Integrations
       placeholder: '123456',
       help: -> { s_('CampfireService|From the end of the room URL.') }
 
-    def title
+    def self.title
       'Campfire'
     end
 
-    def description
+    def self.description
       'Send notifications about push events to Campfire chat rooms.'
     end
 
-    def help
+    def self.help
       docs_link = ActionController::Base.helpers.link_to(
         _('Learn more.'),
         Rails.application.routes.url_helpers.help_page_url('api/integrations', anchor: 'campfire'),

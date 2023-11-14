@@ -3,7 +3,7 @@
     dismissible: false,
     alert_options: { class: 'project-limit-message' }) do |c|
     - c.with_body do
-      = _("You won't be able to create new projects because you have reached your project limit.")
+      = _("You cannot create new projects in your personal namespace because you have reached your personal project limit.")
     - c.with_actions do
       = link_button_to _('Remind later'), '#', class: 'alert-link hide-project-limit-message', variant: :confirm
       = link_button_to _("Don't show again"), profile_path(user: {hide_project_limit: true}), method: :put, class: 'alert-link gl-ml-3'

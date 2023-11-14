@@ -128,6 +128,12 @@ time is set to 15 minutes.
 If you are using self-managed GitLab, an administrator can
 [increase the token duration](../../../administration/packages/container_registry.md#increase-token-duration).
 
+## `Failed to pull image` messages
+
+You might receive a [`Failed to pull image'](../../../ci/debugging.md#failed-to-pull-image-messages)
+error message when a CI/CD job is unable to pull a container image from a project with a limited
+[CI/CD job token scope](../../../ci/jobs/ci_job_token.md#limit-job-token-scope-for-public-or-internal-projects).
+
 ## Slow uploads when using `kaniko` to push large images
 
 When you push large images with `kaniko`, you might experience uncharacteristically long delays.
@@ -136,3 +142,24 @@ This is typically a result of [a performance issue with `kaniko` and HTTP/2](htt
 The current workaround is to use HTTP/1.1 when pushing with `kaniko`.
 
 To use HTTP/1.1, set the `GODEBUG` environment variable to `"http2client=0"`.
+
+## `docker login` command fails with `access forbidden`
+
+The container registry [returns the GitLab API URL to the Docker client](../../../administration/packages/container_registry.md#architecture-of-gitlab-container-registry)
+to validate credentials. The Docker client uses basic auth, so the request contains
+the `Authorization` header. If the `Authorization` header is missing in the request to the
+`/jwt/auth` endpoint configured in the `token_realm` for the registry configuration,
+you receive an `access forbidden` error message.
+
+For example:
+
+```plaintext
+> docker login gitlab.example.com:4567
+
+Username: user
+Password:
+Error response from daemon: Get "https://gitlab.company.com:4567/v2/": denied: access forbidden
+```
+
+To avoid this error, ensure the `Authorization` header is not stripped from the request.
+For example, a proxy in front of GitLab might be redirecting to the `/jwt/auth` endpoint.

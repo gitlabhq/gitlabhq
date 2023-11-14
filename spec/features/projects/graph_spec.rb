@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Project Graph', :js, feature_category: :groups_and_projects do
-  let(:user) { create(:user, :no_super_sidebar) }
+  let(:user) { create(:user) }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:branch_name) { 'master' }
 
@@ -59,7 +59,7 @@ RSpec.describe 'Project Graph', :js, feature_category: :groups_and_projects do
 
     it 'HTML escapes branch name' do
       expect(page.body).to include("Commit statistics for <strong>#{ERB::Util.html_escape(branch_name)}</strong>")
-      expect(page.find('.gl-new-dropdown-button-text')['innerHTML']).to include(ERB::Util.html_escape(branch_name))
+      expect(page).to have_button(branch_name)
     end
   end
 

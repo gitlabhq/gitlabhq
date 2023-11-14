@@ -8,18 +8,6 @@ RSpec.describe Ci::StatusHelper do
   let(:success_commit) { double("Ci::Pipeline", status: 'success') }
   let(:failed_commit) { double("Ci::Pipeline", status: 'failed') }
 
-  describe '#ci_icon_for_status' do
-    it 'renders to correct svg on success' do
-      expect(helper.ci_icon_for_status('success').to_s)
-        .to include 'status_success'
-    end
-
-    it 'renders the correct svg on failure' do
-      expect(helper.ci_icon_for_status('failed').to_s)
-        .to include 'status_failed'
-    end
-  end
-
   describe "#pipeline_status_cache_key" do
     it "builds a cache key for pipeline status" do
       pipeline_status = Gitlab::Cache::Ci::ProjectPipelineStatus.new(
@@ -33,23 +21,19 @@ RSpec.describe Ci::StatusHelper do
     end
   end
 
-  describe "#render_status_with_link" do
-    subject { helper.render_status_with_link("success") }
-
-    it "renders a passed status icon" do
-      is_expected.to include("<span class=\"ci-status-link ci-status-icon-success d-inline-flex")
-    end
+  describe "#render_ci_icon" do
+    subject { helper.render_ci_icon("success") }
 
     it "has 'Pipeline' as the status type in the title" do
       is_expected.to include("title=\"Pipeline: passed\"")
     end
 
     it "has the success status icon" do
-      is_expected.to include("ci-status-icon-success")
+      is_expected.to include("ci-icon-variant-success")
     end
 
     context "when pipeline has commit path" do
-      subject { helper.render_status_with_link("success", "/commit-path") }
+      subject { helper.render_ci_icon("success", "/commit-path") }
 
       it "links to commit" do
         is_expected.to include("href=\"/commit-path\"")
@@ -60,53 +44,40 @@ RSpec.describe Ci::StatusHelper do
       end
 
       it "has the correct status icon" do
-        is_expected.to include("ci-status-icon-success")
+        is_expected.to include("ci-icon-variant-success")
       end
     end
 
-    context "when different type than pipeline is provided" do
-      subject { helper.render_status_with_link("success", type: "commit") }
+    context "when showing status text" do
+      subject do
+        detailed_status = Gitlab::Ci::Status::Success.new(build(:ci_build, :success), build(:user))
+        helper.render_ci_icon(detailed_status, show_status_text: true)
+      end
 
-      it "has the provided type in the title" do
-        is_expected.to include("title=\"Commit: passed\"")
+      it "contains status text" do
+        is_expected.to include("data-testid=\"ci-icon-text\"")
+        is_expected.to include("passed")
       end
     end
 
     context "when tooltip_placement is provided" do
-      subject { helper.render_status_with_link("success", tooltip_placement: "right") }
+      subject { helper.render_ci_icon("success", tooltip_placement: "right") }
 
       it "has the provided tooltip placement" do
         is_expected.to include("data-placement=\"right\"")
       end
     end
 
-    context "when additional CSS classes are provided" do
-      subject { helper.render_status_with_link("success", cssclass: "extra-class") }
-
-      it "has appended extra class to icon classes" do
-        is_expected.to include('class="ci-status-link ci-status-icon-success d-inline-flex ' \
-                               'gl-line-height-1 extra-class"')
-      end
-    end
-
     context "when container is provided" do
-      subject { helper.render_status_with_link("success", container: "my-container") }
+      subject { helper.render_ci_icon("success", container: "my-container") }
 
       it "has the provided container in data" do
         is_expected.to include("data-container=\"my-container\"")
       end
     end
 
-    context "when icon_size is provided" do
-      subject { helper.render_status_with_link("success", icon_size: 24) }
-
-      it "has the svg class to change size" do
-        is_expected.to include("<svg class=\"s24\"")
-      end
-    end
-
     context "when status is success-with-warnings" do
-      subject { helper.render_status_with_link("success-with-warnings") }
+      subject { helper.render_ci_icon("success-with-warnings") }
 
       it "renders warning variant of gl-badge" do
         is_expected.to include('gl-badge badge badge-pill badge-warning')
@@ -114,33 +85,41 @@ RSpec.describe Ci::StatusHelper do
     end
 
     context "when status is manual" do
-      subject { helper.render_status_with_link("manual") }
+      subject { helper.render_ci_icon("manual") }
 
       it "renders neutral variant of gl-badge" do
         is_expected.to include('gl-badge badge badge-pill badge-neutral')
       end
     end
-  end
 
-  describe '#badge_variant' do
-    using RSpec::Parameterized::TableSyntax
+    describe 'badge and icon appearance' do
+      using RSpec::Parameterized::TableSyntax
 
-    where(:status, :expected_badge_variant_class) do
-      'success'               | 'badge-success'
-      'success-with-warnings' | 'badge-warning'
-      'pending'               | 'badge-warning'
-      'failed'                | 'badge-danger'
-      'running'               | 'badge-info'
-      'canceled'              | 'badge-neutral'
-      'manual'                | 'badge-neutral'
-      'other-status'          | 'badge-muted'
-    end
+      where(:status, :icon, :badge_variant) do
+        'success'               | 'status_success_borderless'   | 'success'
+        'success-with-warnings' | 'status_warning_borderless'   | 'warning'
+        'pending'               | 'status_pending_borderless'   | 'warning'
+        'waiting-for-resource'  | 'status_pending_borderless'   | 'warning'
+        'failed'                | 'status_failed_borderless'    | 'danger'
+        'running'               | 'status_running_borderless'   | 'info'
+        'preparing'             | 'status_preparing_borderless' | 'neutral'
+        'canceled'              | 'status_canceled_borderless'  | 'neutral'
+        'created'               | 'status_created_borderless'   | 'neutral'
+        'scheduled'             | 'status_scheduled_borderless' | 'neutral'
+        'play'                  | 'play'                        | 'neutral'
+        'skipped'               | 'status_skipped_borderless'   | 'neutral'
+        'manual'                | 'status_manual_borderless'    | 'neutral'
+        'other-status'          | 'status_canceled_borderless'  | 'neutral'
+      end
 
-    with_them do
-      subject { helper.render_status_with_link(status) }
+      with_them do
+        subject { helper.render_ci_icon(status) }
 
-      it 'uses the correct badge variant classes for gl-badge' do
-        is_expected.to include("gl-badge badge badge-pill #{expected_badge_variant_class}")
+        it 'uses the correct variant and icon for status' do
+          is_expected.to include("gl-badge badge badge-pill badge-#{badge_variant}")
+          is_expected.to include("ci-icon-variant-#{badge_variant}")
+          is_expected.to include("data-testid=\"#{icon}-icon\"")
+        end
       end
     end
   end

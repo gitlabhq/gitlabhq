@@ -6,7 +6,7 @@ import CommitBoxPipelineStatus from './components/commit_box_pipeline_status.vue
 Vue.use(VueApollo);
 
 const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient({}, { useGet: true }),
+  defaultClient: createDefaultClient(),
 });
 
 export default (selector = '.js-commit-pipeline-status') => {

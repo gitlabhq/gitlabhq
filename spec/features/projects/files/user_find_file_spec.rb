@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User find project file', feature_category: :groups_and_projects do
   include ListboxHelpers
 
-  let(:user)    { create :user, :no_super_sidebar }
+  let(:user)    { create :user }
   let(:project) { create :project, :repository }
 
   before do
@@ -15,29 +15,25 @@ RSpec.describe 'User find project file', feature_category: :groups_and_projects 
     visit project_tree_path(project, project.repository.root_ref)
   end
 
-  def active_main_tab
-    find('.sidebar-top-level-items > li.active')
-  end
-
   def find_file(text)
     fill_in 'file_find', with: text
   end
 
   def ref_selector_dropdown
-    find('.gl-button-text')
+    find('.ref-selector .gl-button-text')
   end
 
   it 'navigates to find file by shortcut', :js do
     find('body').native.send_key('t')
 
-    expect(active_main_tab).to have_content('Repository')
+    expect(page).to have_active_sub_navigation('Repository')
     expect(page).to have_selector('.file-finder-holder', count: 1)
   end
 
-  it 'navigates to find file' do
+  it 'navigates to find file', :js do
     click_link 'Find file'
 
-    expect(active_main_tab).to have_content('Repository')
+    expect(page).to have_active_sub_navigation('Repository')
     expect(page).to have_selector('.file-finder-holder', count: 1)
   end
 

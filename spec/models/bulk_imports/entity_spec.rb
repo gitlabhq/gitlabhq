@@ -248,6 +248,24 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
     end
   end
 
+  describe '#portable_class' do
+    context 'when entity is group' do
+      it 'returns Group class' do
+        entity = build(:bulk_import_entity, :group_entity)
+
+        expect(entity.portable_class).to eq(Group)
+      end
+    end
+
+    context 'when entity is project' do
+      it 'returns Project class' do
+        entity = build(:bulk_import_entity, :project_entity)
+
+        expect(entity.portable_class).to eq(Project)
+      end
+    end
+  end
+
   describe '#export_relations_url_path' do
     context 'when entity is group' do
       it 'returns group export relations url' do

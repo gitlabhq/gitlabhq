@@ -6,6 +6,7 @@ fragment IssueNode on Issue {
   iid
   title
   referencePath: reference(full: true)
+  closedAt
   dueDate
   timeEstimate
   totalTimeSpent

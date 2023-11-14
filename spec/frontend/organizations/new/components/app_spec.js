@@ -3,16 +3,19 @@ import Vue, { nextTick } from 'vue';
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import App from '~/organizations/new/components/app.vue';
-import resolvers from '~/organizations/shared/graphql/resolvers';
+import organizationCreateMutation from '~/organizations/new/graphql/mutations/organization_create.mutation.graphql';
 import NewEditForm from '~/organizations/shared/components/new_edit_form.vue';
 import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
-import { createOrganizationResponse } from '~/organizations/mock_data';
+import FormErrorsAlert from '~/vue_shared/components/form/errors_alert.vue';
+import {
+  organizationCreateResponse,
+  organizationCreateResponseWithErrors,
+} from '~/organizations/mock_data';
 import { createAlert } from '~/alert';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
 Vue.use(VueApollo);
-jest.useFakeTimers();
 
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/alert');
@@ -21,8 +24,12 @@ describe('OrganizationNewApp', () => {
   let wrapper;
   let mockApollo;
 
-  const createComponent = ({ mockResolvers = resolvers } = {}) => {
-    mockApollo = createMockApollo([], mockResolvers);
+  const createComponent = ({
+    handlers = [
+      [organizationCreateMutation, jest.fn().mockResolvedValue(organizationCreateResponse)],
+    ],
+  } = {}) => {
+    mockApollo = createMockApollo(handlers);
 
     wrapper = shallowMountExtended(App, { apolloProvider: mockApollo });
   };
@@ -46,13 +53,11 @@ describe('OrganizationNewApp', () => {
   describe('when form is submitted', () => {
     describe('when API is loading', () => {
       beforeEach(async () => {
-        const mockResolvers = {
-          Mutation: {
-            createOrganization: jest.fn().mockReturnValueOnce(new Promise(() => {})),
-          },
-        };
-
-        createComponent({ mockResolvers });
+        createComponent({
+          handlers: [
+            [organizationCreateMutation, jest.fn().mockReturnValueOnce(new Promise(() => {}))],
+          ],
+        });
 
         await submitForm();
       });
@@ -66,13 +71,12 @@ describe('OrganizationNewApp', () => {
       beforeEach(async () => {
         createComponent();
         await submitForm();
-        jest.runAllTimers();
         await waitForPromises();
       });
 
-      it('redirects user to organization path', () => {
+      it('redirects user to organization web url', () => {
         expect(visitUrlWithAlerts).toHaveBeenCalledWith(
-          createOrganizationResponse.organization.path,
+          organizationCreateResponse.data.organizationCreate.organization.webUrl,
           [
             {
               id: 'organization-successfully-created',
@@ -86,26 +90,44 @@ describe('OrganizationNewApp', () => {
     });
 
     describe('when API request is not successful', () => {
-      const error = new Error();
+      describe('when there is a network error', () => {
+        const error = new Error();
 
-      beforeEach(async () => {
-        const mockResolvers = {
-          Mutation: {
-            createOrganization: jest.fn().mockRejectedValueOnce(error),
-          },
-        };
+        beforeEach(async () => {
+          createComponent({
+            handlers: [[organizationCreateMutation, jest.fn().mockRejectedValue(error)]],
+          });
+          await submitForm();
+          await waitForPromises();
+        });
 
-        createComponent({ mockResolvers });
-        await submitForm();
-        jest.runAllTimers();
-        await waitForPromises();
+        it('displays error alert', () => {
+          expect(createAlert).toHaveBeenCalledWith({
+            message: 'An error occurred creating an organization. Please try again.',
+            error,
+            captureError: true,
+          });
+        });
       });
 
-      it('displays error alert', () => {
-        expect(createAlert).toHaveBeenCalledWith({
-          message: 'An error occurred creating an organization. Please try again.',
-          error,
-          captureError: true,
+      describe('when there are GraphQL errors', () => {
+        beforeEach(async () => {
+          createComponent({
+            handlers: [
+              [
+                organizationCreateMutation,
+                jest.fn().mockResolvedValue(organizationCreateResponseWithErrors),
+              ],
+            ],
+          });
+          await submitForm();
+          await waitForPromises();
+        });
+
+        it('displays form errors alert', () => {
+          expect(wrapper.findComponent(FormErrorsAlert).props('errors')).toEqual(
+            organizationCreateResponseWithErrors.data.organizationCreate.errors,
+          );
         });
       });
     });

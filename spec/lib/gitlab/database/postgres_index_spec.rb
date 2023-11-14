@@ -40,7 +40,7 @@ RSpec.describe Gitlab::Database::PostgresIndex do
     it 'only btree and gist indexes' do
       types = described_class.reindexing_support.map(&:type).uniq
 
-      expect(types & %w(btree gist)).to eq(types)
+      expect(types & %w[btree gist]).to eq(types)
     end
 
     context 'with leftover indexes' do
@@ -71,7 +71,7 @@ RSpec.describe Gitlab::Database::PostgresIndex do
     end
 
     it 'retrieves leftover indexes matching the /_ccnew[0-9]*$/ pattern' do
-      expect(subject.map(&:name)).to eq(%w(foobar_ccnew foobar_ccnew1))
+      expect(subject.map(&:name)).to eq(%w[foobar_ccnew foobar_ccnew1])
     end
   end
 

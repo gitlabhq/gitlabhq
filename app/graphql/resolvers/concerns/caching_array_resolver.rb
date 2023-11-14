@@ -132,7 +132,7 @@ module CachingArrayResolver
     model_class.arel_table[Arel.star]
   end
 
-  # rubocop: disable Graphql/Descriptions (false positive!)
+  # rubocop: disable Graphql/Descriptions -- false positive
   def query_limit
     field&.max_page_size.presence || context.schema.default_max_page_size
   end

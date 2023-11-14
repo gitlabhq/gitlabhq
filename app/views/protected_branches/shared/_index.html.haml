@@ -1,7 +1,7 @@
 - can_admin_entity = protected_branch_can_admin_entity?(protected_branch_entity)
 - expanded = expanded_by_default?
 
-%section.settings.no-animate#js-protected-branches-settings{ class: ('expanded' if expanded), data: { qa_selector: 'protected_branches_settings_content' } }
+%section.settings.no-animate#js-protected-branches-settings{ class: ('expanded' if expanded), data: { testid: 'protected-branches-settings-content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = s_("ProtectedBranch|Protected branches")

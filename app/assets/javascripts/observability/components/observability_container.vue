@@ -1,32 +1,17 @@
 <script>
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { logError } from '~/lib/logger';
 import { buildClient } from '../client';
-import { SKELETON_SPINNER_VARIANT } from '../constants';
-import ObservabilitySkeleton from './skeleton/index.vue';
+import ObservabilityLoader from './loader/index.vue';
+import { CONTENT_STATE } from './loader/constants';
 
 export default {
-  SKELETON_SPINNER_VARIANT,
   components: {
-    ObservabilitySkeleton,
+    ObservabilityLoader,
   },
   props: {
-    oauthUrl: {
-      type: String,
-      required: true,
-    },
-    provisioningUrl: {
-      type: String,
-      required: true,
-    },
-    tracingUrl: {
-      type: String,
-      required: true,
-    },
-    servicesUrl: {
-      type: String,
-      required: true,
-    },
-    operationsUrl: {
-      type: String,
+    apiConfig: {
+      type: Object,
       required: true,
     },
   },
@@ -34,6 +19,7 @@ export default {
     return {
       observabilityClient: null,
       authCompleted: false,
+      loaderContentState: null,
     };
   },
   mounted() {
@@ -53,7 +39,7 @@ export default {
   },
   methods: {
     messageHandler(e) {
-      const isExpectedOrigin = e.origin === new URL(this.oauthUrl).origin;
+      const isExpectedOrigin = e.origin === new URL(this.apiConfig.oauthUrl).origin;
       if (!isExpectedOrigin) return;
 
       const { data } = e;
@@ -63,17 +49,14 @@ export default {
 
         const { status, message, statusCode } = data;
         if (status === 'success') {
-          this.observabilityClient = buildClient({
-            provisioningUrl: this.provisioningUrl,
-            tracingUrl: this.tracingUrl,
-            servicesUrl: this.servicesUrl,
-            operationsUrl: this.operationsUrl,
-          });
-          this.$refs.observabilitySkeleton?.onContentLoaded();
+          this.observabilityClient = buildClient(this.apiConfig);
+          this.$emit('observability-client-ready', this.observabilityClient);
+          this.loaderContentState = CONTENT_STATE.LOADED;
         } else if (status === 'error') {
-          // eslint-disable-next-line @gitlab/require-i18n-strings,no-console
-          console.error('GOB auth failed with error:', message, statusCode);
-          this.$refs.observabilitySkeleton?.onError();
+          const error = new Error(`GOB auth failed with error: ${message} - status: ${statusCode}`);
+          Sentry.captureException(error);
+          logError(error);
+          this.loaderContentState = CONTENT_STATE.ERROR;
         }
         this.authCompleted = true;
       }
@@ -88,15 +71,12 @@ export default {
       v-if="!authCompleted"
       sandbox="allow-same-origin allow-forms allow-scripts"
       hidden
-      :src="oauthUrl"
+      :src="apiConfig.oauthUrl"
       data-testid="observability-oauth-iframe"
     ></iframe>
 
-    <observability-skeleton
-      ref="observabilitySkeleton"
-      :variant="$options.SKELETON_SPINNER_VARIANT"
-    >
+    <observability-loader :content-state="loaderContentState">
       <slot v-if="observabilityClient" :observability-client="observabilityClient"></slot>
-    </observability-skeleton>
+    </observability-loader>
   </div>
 </template>

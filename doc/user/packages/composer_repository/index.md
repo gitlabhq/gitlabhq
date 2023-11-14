@@ -225,7 +225,7 @@ To install a package:
    Using a CI/CD job token:
 
    ```shell
-   composer config gitlab-token.<DOMAIN-NAME> gitlab-ci-token ${CI_JOB_TOKEN}
+   composer config -- gitlab-token.<DOMAIN-NAME> gitlab-ci-token "${CI_JOB_TOKEN}"
    ```
 
    Result in the `auth.json` file:

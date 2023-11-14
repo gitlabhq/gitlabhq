@@ -92,7 +92,7 @@ export default {
   <div>
     <div
       v-if="!hiddenDelete"
-      class="gl-display-flex gl-justify-content-space-between gl-mb-3 gl-align-items-center"
+      class="gl-display-flex gl-justify-content-space-between gl-mb-3 gl-mt-5 gl-align-items-center"
     >
       <div class="gl-display-flex gl-align-items-center">
         <gl-form-checkbox

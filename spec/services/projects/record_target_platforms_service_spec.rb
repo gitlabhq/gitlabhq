@@ -21,11 +21,11 @@ RSpec.describe Projects::RecordTargetPlatformsService, '#execute', feature_categ
 
     it 'creates a new setting record for the project', :aggregate_failures do
       expect { execute }.to change { ProjectSetting.count }.from(0).to(1)
-      expect(ProjectSetting.last.target_platforms).to match_array(%w(ios osx))
+      expect(ProjectSetting.last.target_platforms).to match_array(%w[ios osx])
     end
 
     it 'returns array of detected target platforms' do
-      expect(execute).to match_array %w(ios osx)
+      expect(execute).to match_array %w[ios osx]
     end
 
     context 'when a project has an existing setting record' do
@@ -34,17 +34,17 @@ RSpec.describe Projects::RecordTargetPlatformsService, '#execute', feature_categ
       end
 
       context 'when target platforms changed' do
-        let(:saved_target_platforms) { %w(tvos) }
+        let(:saved_target_platforms) { %w[tvos] }
 
         it 'updates' do
-          expect { execute }.to change { project_setting.target_platforms }.from(%w(tvos)).to(%w(ios osx))
+          expect { execute }.to change { project_setting.target_platforms }.from(%w[tvos]).to(%w[ios osx])
         end
 
-        it { is_expected.to match_array %w(ios osx) }
+        it { is_expected.to match_array %w[ios osx] }
       end
 
       context 'when target platforms are the same' do
-        let(:saved_target_platforms) { %w(osx ios) }
+        let(:saved_target_platforms) { %w[osx ios] }
 
         it 'does not update' do
           expect { execute }.not_to change { project_setting.updated_at }

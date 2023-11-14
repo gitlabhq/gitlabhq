@@ -157,6 +157,18 @@ RSpec.describe Integration, feature_category: :integrations do
     include_examples 'hook scope', 'incident'
   end
 
+  describe '.title' do
+    it 'raises an error' do
+      expect { described_class.title }.to raise_error(NotImplementedError)
+    end
+  end
+
+  describe '.description' do
+    it 'raises an error' do
+      expect { described_class.description }.to raise_error(NotImplementedError)
+    end
+  end
+
   describe '#operating?' do
     it 'is false when the integration is not active' do
       expect(build(:integration).operating?).to eq(false)
@@ -976,7 +988,7 @@ RSpec.describe Integration, feature_category: :integrations do
     subject { described_class.available_integration_names }
 
     before do
-      allow(described_class).to receive(:integration_names).and_return(%w(foo))
+      allow(described_class).to receive(:integration_names).and_return(%w[foo])
       allow(described_class).to receive(:project_specific_integration_names).and_return(['bar'])
       allow(described_class).to receive(:dev_integration_names).and_return(['baz'])
     end
@@ -1315,6 +1327,7 @@ RSpec.describe Integration, feature_category: :integrations do
   describe '#async_execute' do
     let(:integration) { described_class.new(id: 123) }
     let(:data) { { object_kind: 'build' } }
+    let(:serialized_data) { data.deep_stringify_keys }
     let(:supported_events) { %w[push build] }
 
     subject(:async_execute) { integration.async_execute(data) }
@@ -1324,7 +1337,7 @@ RSpec.describe Integration, feature_category: :integrations do
     end
 
     it 'queues a Integrations::ExecuteWorker' do
-      expect(Integrations::ExecuteWorker).to receive(:perform_async).with(integration.id, data)
+      expect(Integrations::ExecuteWorker).to receive(:perform_async).with(integration.id, serialized_data)
 
       async_execute
     end

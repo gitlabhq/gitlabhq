@@ -179,14 +179,16 @@ nodes. In this example, we exclude all import-related jobs from a Sidekiq node.
    sudo gitlab-ctl reconfigure
    ```
 
-### Migrating from queue selectors to routing rules
+## Migrating from queue selectors to routing rules
 
 We recommend GitLab deployments add more Sidekiq processes listening to all queues, as in the
 [Reference Architectures](../reference_architectures/index.md). For very large-scale deployments, we recommend
 [routing rules](#routing-rules) instead of [queue selectors](#queue-selectors-deprecated). We use routing rules on GitLab.com as
 it helps to lower the load on Redis.
 
-To migrate from queue selectors to routing rules:
+### Single node setup
+
+To migrate from queue selectors to routing rules in a [single node setup](../reference_architectures/index.md#standalone-non-ha):
 
 1. Open `/etc/gitlab/gitlab.rb`.
 1. Set `sidekiq['queue_selector']` to `false`.
@@ -213,9 +215,11 @@ NOTE:
 It is important to run the Rake task immediately after reconfiguring GitLab.
 After reconfiguring GitLab, existing jobs are not processed until the Rake task starts to migrate the jobs.
 
+#### Migration example
+
 The following example better illustrates the migration process above:
 
-1. Check the following content of `/etc/gitlab/gitlab.rb`:
+1. In `/etc/gitlab/gitlab.rb`, check the `urgency` queries in the `sidekiq['queue_groups']`. For example:
 
    ```ruby
    sidekiq['routing_rules'] = []
@@ -228,7 +232,7 @@ The following example better illustrates the migration process above:
    ]
    ```
 
-1. Update `/etc/gitlab/gitlab.rb` to use routing rules:
+1. Use these same `urgency` queries to update `/etc/gitlab/gitlab.rb` to use routing rules:
 
    ```ruby
    sidekiq['min_concurrency'] = 20
@@ -269,6 +273,31 @@ recommend setting `min_concurrency` and `max_concurrency` to the same value. For
 in a queue group entry is 1, while `min_concurrency` is set to `0`, and `max_concurrency` is set to `20`, the resulting
 concurrency is set to `2` instead. A concurrency of `2` might be too low in most cases, except for very highly-CPU
 bound tasks.
+
+### Multiple node setup
+
+For a multiple node setup:
+
+- Reconfigure all GitLab Rails and Sidekiq nodes with the same `sidekiq['routing_rules']` setting.
+- Alternate between GitLab Rails and Sidekiq nodes as you update and reconfigure the nodes. This ensures the newly configured Sidekiq is ready to consume jobs from the new set of
+  queues during the migration. Otherwise, the new jobs hang until the end of the migration.
+
+Consider the following example of three GitLab Rails nodes and two Sidekiq nodes. To migrate from queue selectors to routing rules:
+
+1. In Sidekiq 1, follow all steps but one in [single node setup](#single-node-setup).
+   **Do not** run the Rake task to [migrate existing jobs](sidekiq_job_migration.md).
+1. Configure the external load balancer to remove Rails 1 from accepting traffic. This step ensures Rails 1 is not serving any request while the Rails process is restarting. For more information, see [issue 428794](https://gitlab.com/gitlab-org/gitlab/-/issues/428794#note_1619505870).
+1. In Rails 1, update `/etc/gitlab/gitlab.rb` to use the same `sidekiq['routing_rules']` setting as Sidekiq 1.
+   Only `sidekiq['routing_rules']` is required in Rails nodes.
+1. Configure the external load balancer to register Rails 1 back.
+1. Repeat steps 1 to 4 for Sidekiq 2 and Rails 2.
+1. Repeat steps 2 to 4 for Rails 3.
+1. If there are more Sidekiq nodes than Rails nodes, follow step 1 on the remaining Sidekiq nodes.
+1. Run the Rake task to [migrate existing jobs](sidekiq_job_migration.md):
+
+   ```shell
+   sudo gitlab-rake gitlab:sidekiq:migrate_jobs:retry gitlab:sidekiq:migrate_jobs:schedule gitlab:sidekiq:migrate_jobs:queued
+   ```
 
 <!--- end_remove -->
 

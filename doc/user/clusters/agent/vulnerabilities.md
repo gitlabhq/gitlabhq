@@ -20,7 +20,7 @@ If both `agent config` and `scan execution policies` are configured, the configu
 
 ### Enable via agent configuration
 
-To enable scanning of all images within your Kubernetes cluster via the agent configuration, add a `container_scanning` configuration block to your agent
+To enable scanning of images within your Kubernetes cluster via the agent configuration, add a `container_scanning` configuration block to your agent
 configuration with a `cadence` field containing a [CRON expression](https://en.wikipedia.org/wiki/Cron) for when the scans are run.
 
 ```yaml
@@ -39,9 +39,9 @@ Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc
 NOTE:
 The CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock/timezone/utc) using the system-time of the Kubernetes-agent pod.
 
-By default, operational container scanning attempts to scan the workloads in all
-namespaces for vulnerabilities. You can set the `vulnerability_report` block with the `namespaces`
-field which can be used to restrict which namespaces are scanned. For example,
+By default, operational container scanning does not scan any workloads for vulnerabilities.
+You can set the `vulnerability_report` block with the `namespaces`
+field which can be used to select which namespaces are scanned. For example,
 if you would like to scan only the `default`, `kube-system` namespaces, you can use this configuration:
 
 ```yaml
@@ -112,12 +112,14 @@ You can customize it with a `resource_requirements` field.
 container_scanning:
   resource_requirements:
     requests:
-      cpu: 200m
+      cpu: '0.2'
       memory: 200Mi
     limits:
-      cpu: 700m
+      cpu: '0.7'
       memory: 700Mi
 ```
+
+When using a fractional value for CPU, format the value as a string.
 
 NOTE:
 Resource requirements can only be set up using the agent configuration. If you enabled `Operational Container Scanning` through `scan execution policies`, you would need to define the resource requirements within the agent configuration file.
@@ -143,3 +145,10 @@ You must have at least the Developer role.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415451) in GitLab 16.4.
 
 To scan private images, the scanner relies on the image pull secrets (direct references and from the service account) to pull the image.
+
+## Troubleshooting
+
+### `Error running Trivy scan. Container terminated reason: OOMKilled`
+
+OCS might fail with an OOM error if there are too many resources to be scanned or if the images being scanned are large.
+To resolve this, [configure the resource requirement](#configure-scanner-resource-requirements) to increase the amount of memory available.

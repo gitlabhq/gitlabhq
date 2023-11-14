@@ -32,7 +32,10 @@ class MemberEntity < Grape::Entity
   expose :access_level do
     expose :human_access, as: :string_value
     expose :access_level, as: :integer_value
+    expose :member_role_id
   end
+
+  expose :custom_permissions
 
   expose :source do |member|
     GroupEntity.represent(member.source, only: [:id, :full_name, :web_url])
@@ -41,6 +44,8 @@ class MemberEntity < Grape::Entity
   expose :type
 
   expose :valid_level_roles, as: :valid_roles
+
+  expose :valid_member_roles, as: :custom_roles
 
   expose :user, if: -> (member) { member.user.present? } do |member, options|
     MemberUserEntity.represent(member.user, options)

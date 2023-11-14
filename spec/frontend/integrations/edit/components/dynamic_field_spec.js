@@ -1,16 +1,22 @@
 import { GlFormGroup, GlFormCheckbox, GlFormInput, GlFormSelect, GlFormTextarea } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 
+import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
+import Vuex from 'vuex';
+
 import DynamicField from '~/integrations/edit/components/dynamic_field.vue';
 import { mockField } from '../mock_data';
 
+Vue.use(Vuex);
+
 describe('DynamicField', () => {
   let wrapper;
+  let store;
 
   const createComponent = (props, isInheriting = false, editable = true) => {
-    wrapper = mount(DynamicField, {
-      propsData: { ...mockField, ...props },
-      computed: {
+    store = new Vuex.Store({
+      getters: {
         isInheriting: () => isInheriting,
         propsSource: () => {
           return {
@@ -18,6 +24,11 @@ describe('DynamicField', () => {
           };
         },
       },
+    });
+
+    wrapper = mount(DynamicField, {
+      propsData: { ...mockField, ...props },
+      store,
     });
   };
 
@@ -29,11 +40,11 @@ describe('DynamicField', () => {
 
   describe('template', () => {
     describe.each`
-      isInheriting | editable | disabled      | readonly      | checkboxLabel
-      ${true}      | ${true}  | ${'disabled'} | ${'readonly'} | ${undefined}
-      ${false}     | ${true}  | ${undefined}  | ${undefined}  | ${'Custom checkbox label'}
-      ${true}      | ${false} | ${'disabled'} | ${'readonly'} | ${undefined}
-      ${false}     | ${false} | ${'disabled'} | ${undefined}  | ${'Custom checkbox label'}
+      isInheriting | editable | disabled      | readonly | checkboxLabel
+      ${true}      | ${true}  | ${'disabled'} | ${true}  | ${undefined}
+      ${false}     | ${true}  | ${undefined}  | ${false} | ${'Custom checkbox label'}
+      ${true}      | ${false} | ${'disabled'} | ${true}  | ${undefined}
+      ${false}     | ${false} | ${'disabled'} | ${false} | ${'Custom checkbox label'}
     `(
       'dynamic field, when isInheriting = `$isInheriting` and editable = `$editable`',
       ({ isInheriting, editable, disabled, readonly, checkboxLabel }) => {
@@ -108,7 +119,7 @@ describe('DynamicField', () => {
 
           it(`renders GlFormTextarea, which ${isInheriting ? 'is' : 'is not'} readonly`, () => {
             expect(findGlFormTextarea().exists()).toBe(true);
-            expect(findGlFormTextarea().find('textarea').attributes('readonly')).toBe(readonly);
+            expect('readonly' in findGlFormTextarea().find('textarea').attributes()).toBe(readonly);
           });
 
           it('does not render other types of input', () => {
@@ -132,7 +143,7 @@ describe('DynamicField', () => {
           it(`renders GlFormInput, which ${isInheriting ? 'is' : 'is not'} readonly`, () => {
             expect(findGlFormInput().exists()).toBe(true);
             expect(findGlFormInput().attributes('type')).toBe('password');
-            expect(findGlFormInput().attributes('readonly')).toBe(readonly);
+            expect('readonly' in findGlFormInput().attributes()).toBe(readonly);
           });
 
           it('does not render other types of input', () => {
@@ -161,9 +172,9 @@ describe('DynamicField', () => {
               id: 'service_project_url',
               name: 'service[project_url]',
               placeholder: mockField.placeholder,
-              required: 'required',
+              required: expect.any(String),
             });
-            expect(findGlFormInput().attributes('readonly')).toBe(readonly);
+            expect('readonly' in findGlFormInput().attributes()).toBe(readonly);
           });
 
           it('does not render other types of input', () => {

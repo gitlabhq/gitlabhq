@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe Gitlab::FileDetector do
   describe '.types_in_paths' do
     it 'returns the file types for the given paths' do
-      expect(described_class.types_in_paths(%w(README.md CHANGELOG VERSION VERSION)))
-        .to eq(%i{readme changelog version})
+      expect(described_class.types_in_paths(%w[README.md CHANGELOG VERSION VERSION]))
+        .to eq(%i[readme changelog version])
     end
 
     it 'does not include unrecognized file paths' do
-      expect(described_class.types_in_paths(%w(README.md foo.txt)))
-        .to eq(%i{readme})
+      expect(described_class.types_in_paths(%w[README.md foo.txt]))
+        .to eq(%i[readme])
     end
   end
 
@@ -25,7 +25,7 @@ RSpec.describe Gitlab::FileDetector do
       extensions = ['txt', *Gitlab::MarkupHelper::EXTENSIONS]
 
       extensions.each do |ext|
-        %w(index readme).each do |file|
+        %w[index readme].each do |file|
           expect(described_class.type_of("#{file}.#{ext}")).to eq(:readme)
         end
       end
@@ -45,13 +45,13 @@ RSpec.describe Gitlab::FileDetector do
     end
 
     it 'returns the type of a changelog file' do
-      %w(CHANGELOG HISTORY CHANGES NEWS).each do |file|
+      %w[CHANGELOG HISTORY CHANGES NEWS].each do |file|
         expect(described_class.type_of(file)).to eq(:changelog)
       end
     end
 
     it 'returns the type of a license file' do
-      %w(LICENSE LICENCE COPYING UNLICENSE UNLICENCE).each do |file|
+      %w[LICENSE LICENCE COPYING UNLICENSE UNLICENCE].each do |file|
         expect(described_class.type_of(file)).to eq(:license)
       end
     end
@@ -73,7 +73,7 @@ RSpec.describe Gitlab::FileDetector do
     end
 
     it 'returns the type of an avatar' do
-      %w(logo.gif logo.png logo.jpg).each do |file|
+      %w[logo.gif logo.png logo.jpg].each do |file|
         expect(described_class.type_of(file)).to eq(:avatar)
       end
     end

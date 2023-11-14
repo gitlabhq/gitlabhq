@@ -29,7 +29,6 @@ describe('Pipelines Triggerer', () => {
 
   const findAvatarLink = () => wrapper.findComponent(GlAvatarLink);
   const findAvatar = () => wrapper.findComponent(GlAvatar);
-  const findTriggerer = () => wrapper.findByText('API');
 
   describe('when user was a triggerer', () => {
     beforeEach(() => {
@@ -42,7 +41,6 @@ describe('Pipelines Triggerer', () => {
 
     it('should render only user avatar', () => {
       expect(findAvatarLink().exists()).toBe(true);
-      expect(findTriggerer().exists()).toBe(false);
     });
 
     it('should set correct props on avatar link component', () => {
@@ -60,17 +58,6 @@ describe('Pipelines Triggerer', () => {
 
     it('should set correct props on avatar component', () => {
       expect(findAvatar().attributes().src).toBe(mockData.pipeline.user.avatar_url);
-    });
-  });
-
-  describe('when API was a triggerer', () => {
-    beforeEach(() => {
-      createComponent({ pipeline: {} });
-    });
-
-    it('should render label only', () => {
-      expect(findAvatarLink().exists()).toBe(false);
-      expect(findTriggerer().exists()).toBe(true);
     });
   });
 });

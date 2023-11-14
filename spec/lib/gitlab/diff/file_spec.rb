@@ -407,10 +407,7 @@ RSpec.describe Gitlab::Diff::File do
 
   context 'diff file stats' do
     let(:diff_file) do
-      described_class.new(diff,
-                          diff_refs: commit.diff_refs,
-                          repository: project.repository,
-                          stats: stats)
+      described_class.new(diff, diff_refs: commit.diff_refs, repository: project.repository, stats: stats)
     end
 
     let(:raw_diff) do

@@ -10,16 +10,4 @@ module ColorsHelper
 
     hex_color.length == 7 ? hex_color[1, 7].scan(/.{2}/).map(&:hex) : hex_color[1, 4].scan(/./).map { |v| (v * 2).hex }
   end
-
-  def rgb_array_to_hex_color(rgb_array)
-    raise ArgumentError, "invalid RGB array `#{rgb_array}`" unless rgb_array_valid?(rgb_array)
-
-    "##{rgb_array.map{ "%02x" % _1 }.join}"
-  end
-
-  private
-
-  def rgb_array_valid?(rgb_array)
-    rgb_array.is_a?(Array) && rgb_array.length == 3 && rgb_array.all?{ _1 >= 0 && _1 <= 255 }
-  end
 end

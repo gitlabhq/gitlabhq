@@ -78,7 +78,7 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueEventsImporter, feature_cate
       allow(importer).to receive(:each_object_to_import).and_yield(issue_event)
 
       expect(Gitlab::GithubImport::ImportIssueEventWorker).to receive(:perform_in).with(
-        1.second, project.id, an_instance_of(Hash), an_instance_of(String)
+        1, project.id, an_instance_of(Hash), an_instance_of(String)
       )
 
       waiter = importer.parallel_import

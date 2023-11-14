@@ -7,12 +7,12 @@ module Gitlab
     EDIT_COMMAND_NAME = "base"
 
     class << self
-      def encrypted_secrets
+      def encrypted_secrets(**args)
         raise NotImplementedError
       end
 
-      def write(contents)
-        encrypted = encrypted_secrets
+      def write(contents, args: {})
+        encrypted = encrypted_secrets(**args)
         return unless validate_config(encrypted)
 
         validate_contents(contents)
@@ -25,8 +25,8 @@ module Gitlab
         warn "Couldn't decrypt #{encrypted.content_path}. Perhaps you passed the wrong key?"
       end
 
-      def edit
-        encrypted = encrypted_secrets
+      def edit(args: {})
+        encrypted = encrypted_secrets(**args)
         return unless validate_config(encrypted)
 
         if ENV["EDITOR"].blank?
@@ -58,8 +58,8 @@ module Gitlab
         temp_file&.unlink
       end
 
-      def show
-        encrypted = encrypted_secrets
+      def show(args: {})
+        encrypted = encrypted_secrets(**args)
         return unless validate_config(encrypted)
 
         puts encrypted.read.presence || "File '#{encrypted.content_path}' does not exist. Use `gitlab-rake #{self::EDIT_COMMAND_NAME}` to change that."

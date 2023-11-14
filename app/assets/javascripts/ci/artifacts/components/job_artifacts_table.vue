@@ -10,7 +10,7 @@ import {
   GlFormCheckbox,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import { createAlert } from '~/alert';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -68,7 +68,7 @@ export default {
     GlPagination,
     GlFormCheckbox,
     TimeAgo,
-    CiBadgeLink,
+    CiIcon,
     JobCheckbox,
     ArtifactsBulkDelete,
     BulkDeleteModal,
@@ -442,7 +442,7 @@ export default {
       <template #cell(job)="{ item }">
         <div class="gl-display-inline-flex gl-align-items-center gl-mb-3 gl-gap-3">
           <span data-testid="job-artifacts-job-status">
-            <ci-badge-link :status="item.detailedStatus" size="sm" :show-text="false" />
+            <ci-icon :status="item.detailedStatus" />
           </span>
           <gl-link :href="item.webPath">
             {{ item.name }}

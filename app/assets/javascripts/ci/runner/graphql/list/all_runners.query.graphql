@@ -10,6 +10,7 @@ query getAllRunners(
   $type: CiRunnerType
   $tagList: [String!]
   $search: String
+  $versionPrefix: String
   $sort: CiRunnerSort
 ) {
   runners(
@@ -22,6 +23,7 @@ query getAllRunners(
     type: $type
     tagList: $tagList
     search: $search
+    versionPrefix: $versionPrefix
     sort: $sort
   ) {
     ...AllRunnersConnection

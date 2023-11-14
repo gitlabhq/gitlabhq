@@ -21,11 +21,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::TemplateUsage do
       expect(command).to(
         receive(:yaml_processor_result)
           .and_return(
-            double(included_templates: %w(Template-1 Template-2))
+            double(included_templates: %w[Template-1 Template-2])
           )
       )
 
-      %w(Template-1 Template-2).each do |expected_template|
+      %w[Template-1 Template-2].each do |expected_template|
         expect(Gitlab::UsageDataCounters::CiTemplateUniqueCounter).to(
           receive(:track_unique_project_event)
             .with(project: project, template: expected_template, config_source: pipeline.config_source, user: user)

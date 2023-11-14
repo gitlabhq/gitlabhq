@@ -17,11 +17,10 @@ The namespace is a user or group in GitLab, such as `gitlab.com/sidney-jones` or
 `gitlab.com/customer-success`. You can use bulk actions in the rails console to move projects to
 different namespaces.
 
-- If you are importing to a self-managed GitLab instance, you can use the [GitHub Rake task](../../../administration/raketasks/github_import.md) instead. The
-  Rake task imports projects without the constraints of a [Sidekiq](../../../development/sidekiq/index.md) worker.
-- If you are importing from GitHub Enterprise to GitLab.com, use the
-  [GitLab Import API](../../../api/import.md#import-repository-from-github) GitHub endpoint instead. This allows you to provide a different domain to import the project from.
-  Using the UI, the GitHub importer always imports from the `github.com` domain.
+If you are importing from GitHub Enterprise to GitLab.com, use the
+[GitLab Import API](../../../api/import.md#import-repository-from-github) GitHub endpoint instead. The API allows you to
+provide a different domain to import the project from. Using the UI, the GitHub importer always imports from the
+`github.com` domain.
 
 When importing projects:
 
@@ -123,9 +122,10 @@ The [GitHub integration method (above)](#use-the-github-integration) is recommen
 
 If you are not using the GitHub integration, you can still perform an authorization with GitHub to grant GitLab access your repositories:
 
-1. Go to <https://github.com/settings/tokens/new>
+1. Go to `https://github.com/settings/tokens/new`.
 1. Enter a token description.
-1. Select the repository scope.
+1. Select the `repo` scope.
+1. Optional. To [import collaborators](#select-additional-items-to-import), select the `read:org` scope.
 1. Select **Generate token**.
 1. Copy the token hash.
 1. Go back to GitLab and provide the token to the GitHub importer.

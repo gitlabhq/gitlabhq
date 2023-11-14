@@ -123,7 +123,7 @@ RSpec.describe ObjectStorage::DirectUpload, feature_category: :shared do
         expect(s3_config[:Region]).to eq(region)
         expect(s3_config[:PathStyle]).to eq(path_style)
         expect(s3_config[:UseIamProfile]).to eq(use_iam_profile)
-        expect(s3_config.keys).not_to include(%i(ServerSideEncryption SSEKMSKeyID))
+        expect(s3_config.keys).not_to include(%i[ServerSideEncryption SSEKMSKeyID])
       end
 
       context 'when no region is specified' do

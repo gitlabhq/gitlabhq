@@ -603,6 +603,17 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
       jira_integration.client.get('/foo')
     end
 
+    context 'when a custom read_timeout option is passed as an argument' do
+      it 'uses the default GitLab::HTTP timeouts plus a custom read_timeout' do
+        expected_timeouts = Gitlab::HTTP::DEFAULT_TIMEOUT_OPTIONS.merge(read_timeout: 2.minutes, timeout: 2.minutes)
+
+        expect(Gitlab::HTTP_V2::Client).to receive(:httparty_perform_request)
+          .with(Net::HTTP::Get, '/foo', hash_including(expected_timeouts)).and_call_original
+
+        jira_integration.client(read_timeout: 2.minutes).get('/foo')
+      end
+    end
+
     context 'with basic auth' do
       before do
         jira_integration.jira_auth_type = 0
@@ -719,10 +730,10 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
         allow_any_instance_of(JIRA::Resource::Issue).to receive(:key).and_return(issue_key)
         allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
 
-        WebMock.stub_request(:get, issue_url).with(basic_auth: %w(jira-username jira-password))
-        WebMock.stub_request(:post, transitions_url).with(basic_auth: %w(jira-username jira-password))
-        WebMock.stub_request(:post, comment_url).with(basic_auth: %w(jira-username jira-password))
-        WebMock.stub_request(:post, remote_link_url).with(basic_auth: %w(jira-username jira-password))
+        WebMock.stub_request(:get, issue_url).with(basic_auth: %w[jira-username jira-password])
+        WebMock.stub_request(:post, transitions_url).with(basic_auth: %w[jira-username jira-password])
+        WebMock.stub_request(:post, comment_url).with(basic_auth: %w[jira-username jira-password])
+        WebMock.stub_request(:post, remote_link_url).with(basic_auth: %w[jira-username jira-password])
       end
 
       let(:external_issue) { ExternalIssue.new('JIRA-123', project) }
@@ -864,7 +875,7 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
 
       it 'logs exception when transition id is not valid' do
         allow(jira_integration).to receive(:log_exception)
-        WebMock.stub_request(:post, transitions_url).with(basic_auth: %w(jira-username jira-password)).and_raise("Bad Request")
+        WebMock.stub_request(:post, transitions_url).with(basic_auth: %w[jira-username jira-password]).and_raise("Bad Request")
 
         close_issue
 
@@ -973,7 +984,7 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
 
         context 'when a transition fails' do
           before do
-            WebMock.stub_request(:post, transitions_url).with(basic_auth: %w(jira-username jira-password)).to_return do |request|
+            WebMock.stub_request(:post, transitions_url).with(basic_auth: %w[jira-username jira-password]).to_return do |request|
               { status: request.body.include?('"id":"2"') ? 500 : 200 }
             end
           end

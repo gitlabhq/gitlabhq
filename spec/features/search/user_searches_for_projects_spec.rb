@@ -8,7 +8,7 @@ RSpec.describe 'User searches for projects', :js, :disable_rate_limiter, feature
   context 'when signed out' do
     context 'when block_anonymous_global_searches is disabled' do
       before do
-        stub_feature_flags(block_anonymous_global_searches: false, super_sidebar_logged_out: false)
+        stub_feature_flags(block_anonymous_global_searches: false)
       end
 
       include_examples 'top right search form'

@@ -81,6 +81,7 @@ module Ci
     end
 
     rule { ~can?(:jailbreak) & (archived | protected_ref) }.policy do
+      prevent :cancel_build
       prevent :update_build
       prevent :erase_build
     end
@@ -88,6 +89,7 @@ module Ci
     rule { can?(:admin_build) | (can?(:update_build) & owner_of_job & unprotected_ref) }.enable :erase_build
 
     rule { can?(:public_access) & branch_allows_collaboration }.policy do
+      enable :cancel_build
       enable :update_build
       enable :update_commit_status
     end

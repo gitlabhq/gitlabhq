@@ -185,13 +185,4 @@ RSpec.describe "Compare", :js, feature_category: :groups_and_projects do
 
   it_behaves_like "compare view of branches"
   it_behaves_like "compare view of tags"
-
-  context "when super sidebar is enabled" do
-    before do
-      user.update!(use_new_navigation: true)
-    end
-
-    it_behaves_like "compare view of branches"
-    it_behaves_like "compare view of tags"
-  end
 end

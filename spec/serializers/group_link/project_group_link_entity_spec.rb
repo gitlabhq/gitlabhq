@@ -8,51 +8,69 @@ RSpec.describe GroupLink::ProjectGroupLinkEntity do
 
   let(:entity) { described_class.new(project_group_link, { current_user: current_user, source: project_group_link.project }) }
 
-  before do
-    allow(entity).to receive(:current_user).and_return(current_user)
+  subject(:as_json) do
+    entity.as_json
   end
 
   it 'matches json schema' do
     expect(entity.to_json).to match_schema('group_link/project_group_link')
   end
 
-  context 'when current user has `admin_project_member` permissions' do
-    before do
-      allow(entity).to receive(:can?).with(current_user, :admin_project_group_link, project_group_link).and_return(false)
-      allow(entity).to receive(:can?).with(current_user, :admin_project_member, project_group_link.project).and_return(true)
+  context 'when current user is a project maintainer' do
+    before_all do
+      project_group_link.project.add_maintainer(current_user)
     end
 
     it 'exposes `can_update` and `can_remove` as `true`' do
-      json = entity.as_json
-
-      expect(json[:can_update]).to be true
-      expect(json[:can_remove]).to be false
+      expect(as_json[:can_update]).to be true
+      expect(as_json[:can_remove]).to be true
     end
   end
 
   context 'when current user is a group owner' do
-    before do
-      allow(entity).to receive(:can?).with(current_user, :admin_project_group_link, project_group_link).and_return(true)
-      allow(entity).to receive(:can?).with(current_user, :admin_project_member, project_group_link.project).and_return(false)
+    before_all do
+      project_group_link.group.add_owner(current_user)
     end
 
     it 'exposes `can_remove` as true' do
-      json = entity.as_json
-
-      expect(json[:can_remove]).to be true
+      expect(as_json[:can_remove]).to be true
     end
   end
 
   context 'when current user is not a group owner' do
-    before do
-      allow(entity).to receive(:can?).with(current_user, :admin_project_group_link, project_group_link).and_return(false)
-      allow(entity).to receive(:can?).with(current_user, :admin_project_member, project_group_link.project).and_return(false)
+    it 'exposes `can_remove` as false' do
+      expect(as_json[:can_remove]).to be false
     end
 
-    it 'exposes `can_remove` as false' do
-      json = entity.as_json
+    context 'when group is public' do
+      it 'does expose shared_with_group details' do
+        expect(as_json[:shared_with_group].keys).to include(:id, :avatar_url, :web_url, :name)
+      end
 
-      expect(json[:can_remove]).to be false
+      it 'does expose source details' do
+        expect(as_json[:source].keys).to include(:id, :full_name)
+      end
+
+      it 'sets is_shared_with_group_private to false' do
+        expect(as_json[:is_shared_with_group_private]).to be false
+      end
+    end
+
+    context 'when group is private' do
+      let_it_be(:private_group) { create(:group, :private) }
+      let_it_be(:project_group_link) { create(:project_group_link, group: private_group) }
+
+      it 'does not expose shared_with_group details' do
+        expect(as_json[:shared_with_group].keys).to contain_exactly(:id)
+      end
+
+      it 'does not expose source details' do
+        expect(as_json[:source]).to be_nil
+      end
+
+      it 'sets is_shared_with_group_private to true' do
+        expect(as_json[:is_shared_with_group_private]).to be true
+      end
     end
   end
 end

@@ -1,7 +1,7 @@
 <script>
-import * as Sentry from '@sentry/browser';
 import produce from 'immer';
 import Draggable from 'vuedraggable';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -49,6 +49,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    showLabels: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   data() {
@@ -150,9 +155,6 @@ export default {
         },
         update(data) {
           return data.workspace.workItems.nodes[0];
-        },
-        context: {
-          isSingleRequest: true,
         },
       });
     },
@@ -280,6 +282,7 @@ export default {
       :confidential="child.confidential"
       :work-item-type="workItemType"
       :has-indirect-children="hasIndirectChildren"
+      :show-labels="showLabels"
       @mouseover="prefetchWorkItem(child)"
       @mouseout="clearPrefetching"
       @removeChild="removeChild"

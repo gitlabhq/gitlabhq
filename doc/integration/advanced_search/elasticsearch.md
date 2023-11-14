@@ -972,6 +972,15 @@ For the steps below, consider the entry of `sidekiq['routing_rules']`:
 
 At least one process in `sidekiq['queue_groups']` has to include the `mailers` queue, otherwise mailers jobs are not processed at all.
 
+NOTE:
+Routing rules (`sidekiq['routing_rules']`) must be the same across all GitLab nodes (especially GitLab Rails and Sidekiq nodes).
+
+WARNING:
+When starting multiple processes, the number of processes cannot exceed the number of CPU
+cores you want to dedicate to Sidekiq. Each Sidekiq process can use only one CPU core, subject
+to the available workload and concurrency settings. For more details, see how to
+[run multiple Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md).
+
 ### Single node, two processes
 
 To create both an indexing and a non-indexing Sidekiq process in one node:
@@ -998,12 +1007,12 @@ To create both an indexing and a non-indexing Sidekiq process in one node:
 
 1. Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
 for the changes to take effect.
+1. On all other Rails and Sidekiq nodes, ensure that `sidekiq['routing_rules']` is the same as above.
+1. Run the Rake task to [migrate existing jobs](../../administration/sidekiq/sidekiq_job_migration.md):
 
-WARNING:
-When starting multiple processes, the number of processes cannot exceed the number of CPU
-cores you want to dedicate to Sidekiq. Each Sidekiq process can use only one CPU core, subject
-to the available workload and concurrency settings. For more details, see how to
-[run multiple Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md).
+NOTE:
+It is important to run the Rake task immediately after reconfiguring GitLab.
+After reconfiguring GitLab, existing jobs are not processed until the Rake task starts to migrate the jobs.
 
 ### Two nodes, one process for each
 
@@ -1035,6 +1044,8 @@ for the changes to take effect.
 
    ```ruby
    sidekiq['enable'] = true
+   sidekiq['queue_selector'] = false
+
    sidekiq['routing_rules'] = [
       ["feature_category=global_search", "global_search"],
       ["*", "default"],
@@ -1048,10 +1059,18 @@ for the changes to take effect.
    sidekiq['max_concurrency'] = 20
    ```
 
-    to set up a non-indexing Sidekiq process.
-
+1. On all other Rails and Sidekiq nodes, ensure that `sidekiq['routing_rules']` is the same as above.
 1. Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
 for the changes to take effect.
+1. Run the Rake task to [migrate existing jobs](../../administration/sidekiq/sidekiq_job_migration.md):
+
+   ```shell
+   sudo gitlab-rake gitlab:sidekiq:migrate_jobs:retry gitlab:sidekiq:migrate_jobs:schedule gitlab:sidekiq:migrate_jobs:queued
+   ```
+
+NOTE:
+It is important to run the Rake task immediately after reconfiguring GitLab.
+After reconfiguring GitLab, existing jobs are not processed until the Rake task starts to migrate the jobs.
 
 ## Reverting to Basic Search
 

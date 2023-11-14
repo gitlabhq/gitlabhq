@@ -65,7 +65,7 @@ module Emails
       setup_merge_request_mail(merge_request_id, recipient_id)
 
       @label_names = label_names
-      @labels_url = project_labels_url(@project)
+      @labels_url = project_labels_url(@project, subscribed: true)
       mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, reason))
     end
 

@@ -136,7 +136,8 @@ Returns [`CiCatalogResource`](#cicatalogresource).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="querycicatalogresourceid"></a>`id` | [`CiCatalogResourceID!`](#cicatalogresourceid) | CI/CD Catalog resource global ID. |
+| <a id="querycicatalogresourcefullpath"></a>`fullPath` | [`ID`](#id) | CI/CD Catalog resource full path. |
+| <a id="querycicatalogresourceid"></a>`id` | [`CiCatalogResourceID`](#cicatalogresourceid) | CI/CD Catalog resource global ID. |
 
 ### `Query.ciCatalogResources`
 
@@ -157,7 +158,9 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="querycicatalogresourcesprojectpath"></a>`projectPath` | [`ID`](#id) | Project with the namespace catalog. |
-| <a id="querycicatalogresourcessort"></a>`sort` | [`CiCatalogResourceSort`](#cicatalogresourcesort) | Sort Catalog Resources by given criteria. |
+| <a id="querycicatalogresourcesscope"></a>`scope` | [`CiCatalogResourceScope`](#cicatalogresourcescope) | Scope of the returned catalog resources. |
+| <a id="querycicatalogresourcessearch"></a>`search` | [`String`](#string) | Search term to filter the catalog resources by name or description. |
+| <a id="querycicatalogresourcessort"></a>`sort` | [`CiCatalogResourceSort`](#cicatalogresourcesort) | Sort catalog resources by given criteria. |
 
 ### `Query.ciConfig`
 
@@ -323,6 +326,26 @@ Returns [`ExplainVulnerabilityPrompt`](#explainvulnerabilityprompt).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="queryexplainvulnerabilitypromptvulnerabilityid"></a>`vulnerabilityId` | [`VulnerabilityID!`](#vulnerabilityid) | Vulnerability to generate a prompt for. |
+
+### `Query.frecentGroups`
+
+A user's frecently visited groups. Requires the `frecent_namespaces_suggestions` feature flag to be enabled.
+
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`[Group!]`](#group).
+
+### `Query.frecentProjects`
+
+A user's frecently visited projects. Requires the `frecent_namespaces_suggestions` feature flag to be enabled.
+
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`[Project!]`](#project).
 
 ### `Query.geoNode`
 
@@ -505,6 +528,22 @@ This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
 `before: String`, `after: String`, `first: Int`, `last: Int`.
 
+### `Query.memberRole`
+
+Finds a single custom role.
+
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`MemberRole`](#memberrole).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querymemberroleid"></a>`id` | [`MemberRoleID`](#memberroleid) | Global ID of the member role to look up. |
+
 ### `Query.memberRolePermissions`
 
 List of all customizable permissions.
@@ -627,6 +666,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="queryprojectsfullpaths"></a>`fullPaths` | [`[String!]`](#string) | Filter projects by full paths. You cannot provide more than 50 full paths. |
 | <a id="queryprojectsids"></a>`ids` | [`[ID!]`](#id) | Filter projects by IDs. |
 | <a id="queryprojectsmembership"></a>`membership` | [`Boolean`](#boolean) | Return only projects that the current user is a member of. |
 | <a id="queryprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name, a path, or a description. |
@@ -702,6 +742,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="queryrunnersactive"></a>`active` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 14.8. This was renamed. Use: `paused`. |
+| <a id="queryrunnerscreatorid"></a>`creatorId` | [`UserID`](#userid) | Filter runners by creator ID. |
 | <a id="queryrunnerspaused"></a>`paused` | [`Boolean`](#boolean) | Filter runners by `paused` (true) or `active` (false) status. |
 | <a id="queryrunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
 | <a id="queryrunnerssort"></a>`sort` | [`CiRunnerSort`](#cirunnersort) | Sort order of results. |
@@ -709,6 +750,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="queryrunnerstaglist"></a>`tagList` | [`[String!]`](#string) | Filter by tags associated with the runner (comma-separated or array). |
 | <a id="queryrunnerstype"></a>`type` | [`CiRunnerType`](#cirunnertype) | Filter runners by type. |
 | <a id="queryrunnersupgradestatus"></a>`upgradeStatus` | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | Filter by upgrade status. |
+| <a id="queryrunnersversionprefix"></a>`versionPrefix` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
 
 ### `Query.snippets`
 
@@ -1218,6 +1260,7 @@ Input type: `AiActionInput`
 | <a id="mutationaiactiongeneratecommitmessage"></a>`generateCommitMessage` | [`AiGenerateCommitMessageInput`](#aigeneratecommitmessageinput) | Input for generate_commit_message AI action. |
 | <a id="mutationaiactiongeneratedescription"></a>`generateDescription` | [`AiGenerateDescriptionInput`](#aigeneratedescriptioninput) | Input for generate_description AI action. |
 | <a id="mutationaiactiongeneratetestfile"></a>`generateTestFile` | [`GenerateTestFileInput`](#generatetestfileinput) | Input for generate_test_file AI action. |
+| <a id="mutationaiactionresolvevulnerability"></a>`resolveVulnerability` | [`AiResolveVulnerabilityInput`](#airesolvevulnerabilityinput) | Input for resolve_vulnerability AI action. |
 | <a id="mutationaiactionsummarizecomments"></a>`summarizeComments` | [`AiSummarizeCommentsInput`](#aisummarizecommentsinput) | Input for summarize_comments AI action. |
 | <a id="mutationaiactionsummarizereview"></a>`summarizeReview` | [`AiSummarizeReviewInput`](#aisummarizereviewinput) | Input for summarize_review AI action. |
 | <a id="mutationaiactiontanukibot"></a>`tanukiBot` | [`AiTanukiBotInput`](#aitanukibotinput) | Input for tanuki_bot AI action. |
@@ -1276,54 +1319,6 @@ Input type: `AlertTodoCreateInput`
 | <a id="mutationalerttodocreateissue"></a>`issue` | [`Issue`](#issue) | Issue created after mutation. |
 | <a id="mutationalerttodocreatetodo"></a>`todo` | [`Todo`](#todo) | To-do item after mutation. |
 
-### `Mutation.amazonS3ConfigurationCreate`
-
-Input type: `AmazonS3ConfigurationCreateInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationamazons3configurationcreateaccesskeyxid"></a>`accessKeyXid` | [`String!`](#string) | Access key ID of the Amazon S3 account. |
-| <a id="mutationamazons3configurationcreateawsregion"></a>`awsRegion` | [`String!`](#string) | AWS region where the bucket is created. |
-| <a id="mutationamazons3configurationcreatebucketname"></a>`bucketName` | [`String!`](#string) | Name of the bucket where the audit events would be logged. |
-| <a id="mutationamazons3configurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationamazons3configurationcreategrouppath"></a>`groupPath` | [`ID!`](#id) | Group path. |
-| <a id="mutationamazons3configurationcreatename"></a>`name` | [`String`](#string) | Destination name. |
-| <a id="mutationamazons3configurationcreatesecretaccesskey"></a>`secretAccessKey` | [`String!`](#string) | Secret access key of the Amazon S3 account. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationamazons3configurationcreateamazons3configuration"></a>`amazonS3Configuration` | [`AmazonS3ConfigurationType`](#amazons3configurationtype) | configuration created. |
-| <a id="mutationamazons3configurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationamazons3configurationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-
-### `Mutation.amazonS3ConfigurationUpdate`
-
-Input type: `AmazonS3ConfigurationUpdateInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationamazons3configurationupdateaccesskeyxid"></a>`accessKeyXid` | [`String`](#string) | Access key ID of the Amazon S3 account. |
-| <a id="mutationamazons3configurationupdateawsregion"></a>`awsRegion` | [`String`](#string) | AWS region where the bucket is created. |
-| <a id="mutationamazons3configurationupdatebucketname"></a>`bucketName` | [`String`](#string) | Name of the bucket where the audit events would be logged. |
-| <a id="mutationamazons3configurationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationamazons3configurationupdateid"></a>`id` | [`AuditEventsAmazonS3ConfigurationID!`](#auditeventsamazons3configurationid) | ID of the Amazon S3 configuration to update. |
-| <a id="mutationamazons3configurationupdatename"></a>`name` | [`String`](#string) | Destination name. |
-| <a id="mutationamazons3configurationupdatesecretaccesskey"></a>`secretAccessKey` | [`String`](#string) | Secret access key of the Amazon S3 account. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationamazons3configurationupdateamazons3configuration"></a>`amazonS3Configuration` | [`AmazonS3ConfigurationType`](#amazons3configurationtype) | Updated Amazon S3 configuration. |
-| <a id="mutationamazons3configurationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationamazons3configurationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-
 ### `Mutation.approveDeployment`
 
 Input type: `ApproveDeploymentInput`
@@ -1364,6 +1359,72 @@ Input type: `ArtifactDestroyInput`
 | <a id="mutationartifactdestroyartifact"></a>`artifact` | [`CiJobArtifact`](#cijobartifact) | Deleted artifact. |
 | <a id="mutationartifactdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationartifactdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.auditEventsAmazonS3ConfigurationCreate`
+
+Input type: `AuditEventsAmazonS3ConfigurationCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsamazons3configurationcreateaccesskeyxid"></a>`accessKeyXid` | [`String!`](#string) | Access key ID of the Amazon S3 account. |
+| <a id="mutationauditeventsamazons3configurationcreateawsregion"></a>`awsRegion` | [`String!`](#string) | AWS region where the bucket is created. |
+| <a id="mutationauditeventsamazons3configurationcreatebucketname"></a>`bucketName` | [`String!`](#string) | Name of the bucket where the audit events would be logged. |
+| <a id="mutationauditeventsamazons3configurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsamazons3configurationcreategrouppath"></a>`groupPath` | [`ID!`](#id) | Group path. |
+| <a id="mutationauditeventsamazons3configurationcreatename"></a>`name` | [`String`](#string) | Destination name. |
+| <a id="mutationauditeventsamazons3configurationcreatesecretaccesskey"></a>`secretAccessKey` | [`String!`](#string) | Secret access key of the Amazon S3 account. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsamazons3configurationcreateamazons3configuration"></a>`amazonS3Configuration` | [`AmazonS3ConfigurationType`](#amazons3configurationtype) | configuration created. |
+| <a id="mutationauditeventsamazons3configurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsamazons3configurationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.auditEventsAmazonS3ConfigurationDelete`
+
+Input type: `AuditEventsAmazonS3ConfigurationDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsamazons3configurationdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsamazons3configurationdeleteid"></a>`id` | [`AuditEventsAmazonS3ConfigurationID!`](#auditeventsamazons3configurationid) | ID of the Amazon S3 configuration to destroy. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsamazons3configurationdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsamazons3configurationdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.auditEventsAmazonS3ConfigurationUpdate`
+
+Input type: `AuditEventsAmazonS3ConfigurationUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsamazons3configurationupdateaccesskeyxid"></a>`accessKeyXid` | [`String`](#string) | Access key ID of the Amazon S3 account. |
+| <a id="mutationauditeventsamazons3configurationupdateawsregion"></a>`awsRegion` | [`String`](#string) | AWS region where the bucket is created. |
+| <a id="mutationauditeventsamazons3configurationupdatebucketname"></a>`bucketName` | [`String`](#string) | Name of the bucket where the audit events would be logged. |
+| <a id="mutationauditeventsamazons3configurationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsamazons3configurationupdateid"></a>`id` | [`AuditEventsAmazonS3ConfigurationID!`](#auditeventsamazons3configurationid) | ID of the Amazon S3 configuration to update. |
+| <a id="mutationauditeventsamazons3configurationupdatename"></a>`name` | [`String`](#string) | Destination name. |
+| <a id="mutationauditeventsamazons3configurationupdatesecretaccesskey"></a>`secretAccessKey` | [`String`](#string) | Secret access key of the Amazon S3 account. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsamazons3configurationupdateamazons3configuration"></a>`amazonS3Configuration` | [`AmazonS3ConfigurationType`](#amazons3configurationtype) | Updated Amazon S3 configuration. |
+| <a id="mutationauditeventsamazons3configurationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsamazons3configurationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.auditEventsStreamingDestinationEventsAdd`
 
@@ -1504,6 +1565,27 @@ Input type: `AuditEventsStreamingHeadersUpdateInput`
 | <a id="mutationauditeventsstreamingheadersupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationauditeventsstreamingheadersupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationauditeventsstreamingheadersupdateheader"></a>`header` | [`AuditEventStreamingHeader`](#auditeventstreamingheader) | Updates header. |
+
+### `Mutation.auditEventsStreamingHttpNamespaceFiltersAdd`
+
+Input type: `AuditEventsStreamingHTTPNamespaceFiltersAddInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsstreaminghttpnamespacefiltersaddclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsstreaminghttpnamespacefiltersadddestinationid"></a>`destinationId` | [`AuditEventsExternalAuditEventDestinationID!`](#auditeventsexternalauditeventdestinationid) | Destination ID. |
+| <a id="mutationauditeventsstreaminghttpnamespacefiltersaddgrouppath"></a>`groupPath` | [`ID`](#id) | Full path of the group. |
+| <a id="mutationauditeventsstreaminghttpnamespacefiltersaddprojectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsstreaminghttpnamespacefiltersaddclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsstreaminghttpnamespacefiltersadderrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationauditeventsstreaminghttpnamespacefiltersaddnamespacefilter"></a>`namespaceFilter` | [`AuditEventStreamingHTTPNamespaceFilter`](#auditeventstreaminghttpnamespacefilter) | Namespace filter created. |
 
 ### `Mutation.auditEventsStreamingInstanceHeadersCreate`
 
@@ -1791,6 +1873,28 @@ Input type: `BulkRunnerDeleteInput`
 | <a id="mutationbulkrunnerdeletedeletedcount"></a>`deletedCount` | [`Int`](#int) | Number of records effectively deleted. Only present if operation was performed synchronously. |
 | <a id="mutationbulkrunnerdeletedeletedids"></a>`deletedIds` | [`[CiRunnerID!]`](#cirunnerid) | IDs of records effectively deleted. Only present if operation was performed synchronously. |
 | <a id="mutationbulkrunnerdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.catalogResourceUnpublish`
+
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `CatalogResourceUnpublishInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcatalogresourceunpublishclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcatalogresourceunpublishid"></a>`id` | [`CiCatalogResourceID!`](#cicatalogresourceid) | Global ID of the catalog resource to unpublish. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcatalogresourceunpublishclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcatalogresourceunpublisherrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.catalogResourcesCreate`
 
@@ -2245,6 +2349,34 @@ Input type: `CreateComplianceFrameworkInput`
 | <a id="mutationcreatecomplianceframeworkclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreatecomplianceframeworkerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationcreatecomplianceframeworkframework"></a>`framework` | [`ComplianceFramework`](#complianceframework) | Created compliance framework. |
+
+### `Mutation.createContainerRegistryProtectionRule`
+
+Creates a protection rule to restrict access to a project's container registry. Available only when feature flag `container_registry_protected_containers` is enabled.
+
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `CreateContainerRegistryProtectionRuleInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcreatecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcreatecontainerregistryprotectionrulecontainerpathpattern"></a>`containerPathPattern` | [`String!`](#string) | ContainerRegistryname protected by the protection rule. For example `@my-scope/my-container-*`. Wildcard character `*` allowed. |
+| <a id="mutationcreatecontainerregistryprotectionruledeleteprotecteduptoaccesslevel"></a>`deleteProtectedUpToAccessLevel` | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | Max GitLab access level to prevent from deleting container images in the container registry. For example `DEVELOPER`, `MAINTAINER`, `OWNER`. |
+| <a id="mutationcreatecontainerregistryprotectionruleprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project where a protection rule is located. |
+| <a id="mutationcreatecontainerregistryprotectionrulepushprotecteduptoaccesslevel"></a>`pushProtectedUpToAccessLevel` | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | Max GitLab access level to prevent from pushing container images to the container registry. For example `DEVELOPER`, `MAINTAINER`, `OWNER`. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcreatecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcreatecontainerregistryprotectionrulecontainerregistryprotectionrule"></a>`containerRegistryProtectionRule` | [`ContainerRegistryProtectionRule`](#containerregistryprotectionrule) | Container registry protection rule after mutation. |
+| <a id="mutationcreatecontainerregistryprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.createCustomEmoji`
 
@@ -2989,6 +3121,31 @@ Input type: `DeleteAnnotationInput`
 | ---- | ---- | ----------- |
 | <a id="mutationdeleteannotationclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdeleteannotationerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.deletePackagesProtectionRule`
+
+Deletes a protection rule for packages. Available only when feature flag `packages_protected_packages` is enabled.
+
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `DeletePackagesProtectionRuleInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdeletepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdeletepackagesprotectionruleid"></a>`id` | [`PackagesProtectionRuleID!`](#packagesprotectionruleid) | Global ID of the package protection rule to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdeletepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdeletepackagesprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationdeletepackagesprotectionrulepackageprotectionrule"></a>`packageProtectionRule` | [`PackagesProtectionRule`](#packagesprotectionrule) | Packages protection rule that was deleted successfully. |
 
 ### `Mutation.designManagementDelete`
 
@@ -3856,7 +4013,7 @@ Input type: `ExternalAuditEventDestinationUpdateInput`
 
 ### `Mutation.geoRegistriesBulkUpdate`
 
-Mutates multiple Geo registries for a given registry class. Does not mutate the registries if `geo_registries_update_mutation` feature flag is disabled.
+Mutates multiple Geo registries for a given registry class.
 
 WARNING:
 **Introduced** in 16.4.
@@ -3882,7 +4039,7 @@ Input type: `GeoRegistriesBulkUpdateInput`
 
 ### `Mutation.geoRegistriesUpdate`
 
-Mutates a Geo registry. Does not mutate the registry entry if `geo_registries_update_mutation` feature flag is disabled.
+Mutates a Geo registry.
 
 WARNING:
 **Introduced** in 16.1.
@@ -4962,6 +5119,40 @@ Input type: `MarkAsSpamSnippetInput`
 | <a id="mutationmarkasspamsnippeterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationmarkasspamsnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | Snippet after mutation. |
 
+### `Mutation.memberRoleCreate`
+
+WARNING:
+**Introduced** in 16.5.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `MemberRoleCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmemberrolecreateadmingroupmember"></a>`adminGroupMember` | [`Boolean`](#boolean) | Permission to admin group members. |
+| <a id="mutationmemberrolecreateadminmergerequest"></a>`adminMergeRequest` | [`Boolean`](#boolean) | Permission to admin merge requests. |
+| <a id="mutationmemberrolecreateadminvulnerability"></a>`adminVulnerability` | [`Boolean`](#boolean) | Permission to admin vulnerability. |
+| <a id="mutationmemberrolecreatearchiveproject"></a>`archiveProject` | [`Boolean`](#boolean) | Permission to archive projects. |
+| <a id="mutationmemberrolecreatebaseaccesslevel"></a>`baseAccessLevel` | [`MemberAccessLevel!`](#memberaccesslevel) | Base access level for the custom role. |
+| <a id="mutationmemberrolecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmemberrolecreatedescription"></a>`description` | [`String`](#string) | Description of the member role. |
+| <a id="mutationmemberrolecreategrouppath"></a>`groupPath` | [`ID!`](#id) | Group the member role to mutate is in. |
+| <a id="mutationmemberrolecreatemanageprojectaccesstokens"></a>`manageProjectAccessTokens` | [`Boolean`](#boolean) | Permission to admin project access tokens. |
+| <a id="mutationmemberrolecreatename"></a>`name` | [`String`](#string) | Name of the member role. |
+| <a id="mutationmemberrolecreatereadcode"></a>`readCode` | [`Boolean`](#boolean) | Permission to read code. |
+| <a id="mutationmemberrolecreatereaddependency"></a>`readDependency` | [`Boolean`](#boolean) | Permission to read dependency. |
+| <a id="mutationmemberrolecreatereadvulnerability"></a>`readVulnerability` | [`Boolean`](#boolean) | Permission to read vulnerability. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmemberrolecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmemberrolecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationmemberrolecreatememberrole"></a>`memberRole` | [`MemberRole`](#memberrole) | Updated member role. |
+
 ### `Mutation.memberRoleUpdate`
 
 Input type: `MemberRoleUpdateInput`
@@ -4988,6 +5179,10 @@ Input type: `MemberRoleUpdateInput`
 Accepts a merge request.
 When accepted, the source branch will be scheduled to merge into the target branch, either
 immediately if possible, or using one of the automatic merge strategies.
+
+[In GitLab 16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/421510), the merging happens asynchronously.
+This results in `mergeRequest` and `state` not updating after a mutation request,
+because the merging may not have happened yet.
 
 Input type: `MergeRequestAcceptInput`
 
@@ -5456,6 +5651,30 @@ Input type: `OncallScheduleUpdateInput`
 | <a id="mutationoncallscheduleupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationoncallscheduleupdateoncallschedule"></a>`oncallSchedule` | [`IncidentManagementOncallSchedule`](#incidentmanagementoncallschedule) | On-call schedule. |
 
+### `Mutation.organizationCreate`
+
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `OrganizationCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationorganizationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationorganizationcreatename"></a>`name` | [`String!`](#string) | Name for the organization. |
+| <a id="mutationorganizationcreatepath"></a>`path` | [`String!`](#string) | Path for the organization. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationorganizationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationorganizationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationorganizationcreateorganization"></a>`organization` | [`Organization`](#organization) | Organization created. |
+
 ### `Mutation.pagesMarkOnboardingComplete`
 
 Input type: `PagesMarkOnboardingCompleteInput`
@@ -5838,6 +6057,45 @@ Input type: `ProjectSetLockedInput`
 | <a id="mutationprojectsetlockedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationprojectsetlockederrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationprojectsetlockedproject"></a>`project` | [`Project`](#project) | Project after mutation. |
+
+### `Mutation.projectSubscriptionCreate`
+
+Input type: `ProjectSubscriptionCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsubscriptioncreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsubscriptioncreateprojectpath"></a>`projectPath` | [`String!`](#string) | Full path of the downstream project of the Project Subscription. |
+| <a id="mutationprojectsubscriptioncreateupstreampath"></a>`upstreamPath` | [`String!`](#string) | Full path of the upstream project of the Project Subscription. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsubscriptioncreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsubscriptioncreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationprojectsubscriptioncreatesubscription"></a>`subscription` | [`CiSubscriptionsProject`](#cisubscriptionsproject) | Project Subscription created by the mutation. |
+
+### `Mutation.projectSubscriptionDelete`
+
+Input type: `ProjectSubscriptionDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsubscriptiondeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsubscriptiondeletesubscriptionid"></a>`subscriptionId` | [`CiSubscriptionsProjectID!`](#cisubscriptionsprojectid) | ID of the subscription to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsubscriptiondeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsubscriptiondeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationprojectsubscriptiondeleteproject"></a>`project` | [`Project`](#project) | Project after mutation. |
 
 ### `Mutation.projectSyncFork`
 
@@ -6415,7 +6673,7 @@ Input type: `SecurityPolicyProjectAssignInput`
 
 ### `Mutation.securityPolicyProjectCreate`
 
-Creates and assigns a security policy project for the given project (`full_path`).
+Creates and assigns a security policy project for the given project or group (`full_path`).
 
 Input type: `SecurityPolicyProjectCreateInput`
 
@@ -7156,8 +7414,8 @@ Input type: `UpdateNamespacePackageSettingsInput`
 | <a id="mutationupdatenamespacepackagesettingsmavenpackagerequestsforwarding"></a>`mavenPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether Maven package forwarding is allowed for this namespace. |
 | <a id="mutationupdatenamespacepackagesettingsnamespacepath"></a>`namespacePath` | [`ID!`](#id) | Namespace path where the namespace package setting is located. |
 | <a id="mutationupdatenamespacepackagesettingsnpmpackagerequestsforwarding"></a>`npmPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether npm package forwarding is allowed for this namespace. |
-| <a id="mutationupdatenamespacepackagesettingsnugetduplicateexceptionregex"></a>`nugetDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When nuget_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. Error is raised if `nuget_duplicates_option` feature flag is disabled. |
-| <a id="mutationupdatenamespacepackagesettingsnugetduplicatesallowed"></a>`nugetDuplicatesAllowed` | [`Boolean`](#boolean) | Indicates whether duplicate NuGet packages are allowed for this namespace. Error is raised if `nuget_duplicates_option` feature flag is disabled. |
+| <a id="mutationupdatenamespacepackagesettingsnugetduplicateexceptionregex"></a>`nugetDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When nuget_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |
+| <a id="mutationupdatenamespacepackagesettingsnugetduplicatesallowed"></a>`nugetDuplicatesAllowed` | [`Boolean`](#boolean) | Indicates whether duplicate NuGet packages are allowed for this namespace. |
 | <a id="mutationupdatenamespacepackagesettingspypipackagerequestsforwarding"></a>`pypiPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether PyPI package forwarding is allowed for this namespace. |
 
 #### Fields
@@ -7440,6 +7698,83 @@ Input type: `UserSetNamespaceCommitEmailInput`
 | <a id="mutationusersetnamespacecommitemailclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationusersetnamespacecommitemailerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationusersetnamespacecommitemailnamespacecommitemail"></a>`namespaceCommitEmail` | [`NamespaceCommitEmail`](#namespacecommitemail) | User namespace commit email after mutation. |
+
+### `Mutation.valueStreamCreate`
+
+Creates a value stream.
+
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `ValueStreamCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvaluestreamcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvaluestreamcreatename"></a>`name` | [`String!`](#string) | Value stream name. |
+| <a id="mutationvaluestreamcreatenamespacepath"></a>`namespacePath` | [`ID!`](#id) | Full path of the namespace(project or group) the value stream is created in. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvaluestreamcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvaluestreamcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationvaluestreamcreatevaluestream"></a>`valueStream` | [`ValueStream`](#valuestream) | Created value stream. |
+
+### `Mutation.valueStreamDestroy`
+
+Destroy a value stream.
+
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `ValueStreamDestroyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvaluestreamdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvaluestreamdestroyid"></a>`id` | [`AnalyticsCycleAnalyticsValueStreamID!`](#analyticscycleanalyticsvaluestreamid) | Global ID of the value stream to destroy. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvaluestreamdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvaluestreamdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationvaluestreamdestroyvaluestream"></a>`valueStream` | [`ValueStream`](#valuestream) | Value stream deleted after mutation. |
+
+### `Mutation.valueStreamUpdate`
+
+Updates a value stream.
+
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `ValueStreamUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvaluestreamupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvaluestreamupdateid"></a>`id` | [`AnalyticsCycleAnalyticsValueStreamID!`](#analyticscycleanalyticsvaluestreamid) | Global ID of the value stream to update. |
+| <a id="mutationvaluestreamupdatename"></a>`name` | [`String!`](#string) | Value stream name. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvaluestreamupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvaluestreamupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationvaluestreamupdatevaluestream"></a>`valueStream` | [`ValueStream`](#valuestream) | Updated value stream. |
 
 ### `Mutation.vulnerabilitiesDismiss`
 
@@ -10749,6 +11084,29 @@ The edge type for [`MemberInterface`](#memberinterface).
 | <a id="memberinterfaceedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="memberinterfaceedgenode"></a>`node` | [`MemberInterface`](#memberinterface) | The item at the end of the edge. |
 
+#### `MemberRoleConnection`
+
+The connection type for [`MemberRole`](#memberrole).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="memberroleconnectionedges"></a>`edges` | [`[MemberRoleEdge]`](#memberroleedge) | A list of edges. |
+| <a id="memberroleconnectionnodes"></a>`nodes` | [`[MemberRole]`](#memberrole) | A list of nodes. |
+| <a id="memberroleconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `MemberRoleEdge`
+
+The edge type for [`MemberRole`](#memberrole).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="memberroleedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="memberroleedgenode"></a>`node` | [`MemberRole`](#memberrole) | The item at the end of the edge. |
+
 #### `MergeAccessLevelConnection`
 
 The connection type for [`MergeAccessLevel`](#mergeaccesslevel).
@@ -11123,6 +11481,29 @@ The edge type for [`OncallParticipantType`](#oncallparticipanttype).
 | <a id="oncallparticipanttypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="oncallparticipanttypeedgenode"></a>`node` | [`OncallParticipantType`](#oncallparticipanttype) | The item at the end of the edge. |
 
+#### `OrganizationConnection`
+
+The connection type for [`Organization`](#organization).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="organizationconnectionedges"></a>`edges` | [`[OrganizationEdge]`](#organizationedge) | A list of edges. |
+| <a id="organizationconnectionnodes"></a>`nodes` | [`[Organization]`](#organization) | A list of nodes. |
+| <a id="organizationconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `OrganizationEdge`
+
+The edge type for [`Organization`](#organization).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="organizationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="organizationedgenode"></a>`node` | [`Organization`](#organization) | The item at the end of the edge. |
+
 #### `OrganizationUserConnection`
 
 The connection type for [`OrganizationUser`](#organizationuser).
@@ -11354,6 +11735,29 @@ The edge type for [`PathLock`](#pathlock).
 | ---- | ---- | ----------- |
 | <a id="pathlockedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="pathlockedgenode"></a>`node` | [`PathLock`](#pathlock) | The item at the end of the edge. |
+
+#### `PendingGroupMemberConnection`
+
+The connection type for [`PendingGroupMember`](#pendinggroupmember).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pendinggroupmemberconnectionedges"></a>`edges` | [`[PendingGroupMemberEdge]`](#pendinggroupmemberedge) | A list of edges. |
+| <a id="pendinggroupmemberconnectionnodes"></a>`nodes` | [`[PendingGroupMember]`](#pendinggroupmember) | A list of nodes. |
+| <a id="pendinggroupmemberconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `PendingGroupMemberEdge`
+
+The edge type for [`PendingGroupMember`](#pendinggroupmember).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pendinggroupmemberedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="pendinggroupmemberedgenode"></a>`node` | [`PendingGroupMember`](#pendinggroupmember) | The item at the end of the edge. |
 
 #### `PipelineArtifactRegistryConnection`
 
@@ -12931,7 +13335,38 @@ An abuse report.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="abusereportcommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
+| <a id="abusereportdiscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
+| <a id="abusereportid"></a>`id` | [`AbuseReportID!`](#abusereportid) | Global ID of the abuse report. |
 | <a id="abusereportlabels"></a>`labels` | [`LabelConnection`](#labelconnection) | Labels of the abuse report. (see [Connections](#connections)) |
+| <a id="abusereportuserpermissions"></a>`userPermissions` | [`AbuseReportPermissions!`](#abusereportpermissions) | Permissions for the current user on the resource. |
+
+#### Fields with arguments
+
+##### `AbuseReport.notes`
+
+All notes on this noteable.
+
+Returns [`NoteConnection!`](#noteconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="abusereportnotesfilter"></a>`filter` | [`NotesFilterType`](#notesfiltertype) | Type of notes collection: ALL_NOTES, ONLY_COMMENTS, ONLY_ACTIVITY. |
+
+### `AbuseReportPermissions`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="abusereportpermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
+| <a id="abusereportpermissionsreadabusereport"></a>`readAbuseReport` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_abuse_report` on this resource. |
 
 ### `AccessLevel`
 
@@ -13046,12 +13481,13 @@ A user with add-on data.
 | <a id="addonusernamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="addonusernamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
 | <a id="addonuserorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
+| <a id="addonuserorganizations"></a>`organizations` **{warning-solid}** | [`OrganizationConnection`](#organizationconnection) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Organizations where the user has access. |
 | <a id="addonuserpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="addonuserprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="addonuserprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="addonuserpronouns"></a>`pronouns` | [`String`](#string) | Pronouns of the user. |
 | <a id="addonuserpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
-| <a id="addonusersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
+| <a id="addonusersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="addonuserstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="addonuserstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="addonusertwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
@@ -13210,7 +13646,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `AddOnUser.savedReply`
 
-Saved reply authored by the user. Will not return saved reply if `saved_replies` feature flag is disabled.
+Saved reply authored by the user.
 
 Returns [`SavedReply`](#savedreply).
 
@@ -13589,10 +14025,23 @@ Describes a rule for who can approve merge requests.
 | <a id="approvalruleinvalid"></a>`invalid` | [`Boolean`](#boolean) | Indicates if the rule is invalid and cannot be approved. |
 | <a id="approvalrulename"></a>`name` | [`String`](#string) | Name of the rule. |
 | <a id="approvalruleoverridden"></a>`overridden` | [`Boolean`](#boolean) | Indicates if the rule was overridden for the merge request. |
+| <a id="approvalrulescanresultpolicies"></a>`scanResultPolicies` | [`[ApprovalScanResultPolicy!]`](#approvalscanresultpolicy) | List of scan result policies associated with the rule. |
 | <a id="approvalrulesection"></a>`section` | [`String`](#string) | Named section of the Code Owners file that the rule applies to. |
 | <a id="approvalrulesourcerule"></a>`sourceRule` | [`ApprovalRule`](#approvalrule) | Source rule used to create the rule. |
 | <a id="approvalruletype"></a>`type` | [`ApprovalRuleType`](#approvalruletype) | Type of the rule. |
 | <a id="approvalruleusers"></a>`users` | [`UserCoreConnection`](#usercoreconnection) | List of users added as approvers for the rule. (see [Connections](#connections)) |
+
+### `ApprovalScanResultPolicy`
+
+Represents the scan result policy.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="approvalscanresultpolicyapprovalsrequired"></a>`approvalsRequired` | [`Int!`](#int) | Represents the required approvals defined in the policy. |
+| <a id="approvalscanresultpolicyname"></a>`name` | [`String!`](#string) | Represents the name of the policy. |
+| <a id="approvalscanresultpolicyreporttype"></a>`reportType` | [`ApprovalReportType!`](#approvalreporttype) | Represents the report_type of the approval rule. |
 
 ### `AssetType`
 
@@ -13623,6 +14072,18 @@ Represents the YAML definitions for audit events defined in `ee/config/audit_eve
 | <a id="auditeventdefinitionsavedtodatabase"></a>`savedToDatabase` | [`Boolean!`](#boolean) | Indicates if the event is saved to PostgreSQL database. |
 | <a id="auditeventdefinitionstreamed"></a>`streamed` | [`Boolean!`](#boolean) | Indicates if the event is streamed to an external destination. |
 
+### `AuditEventStreamingHTTPNamespaceFilter`
+
+Represents a subgroup or project filter that belongs to an external audit event streaming destination.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="auditeventstreaminghttpnamespacefilterexternalauditeventdestination"></a>`externalAuditEventDestination` | [`ExternalAuditEventDestination!`](#externalauditeventdestination) | Destination to which the filter belongs. |
+| <a id="auditeventstreaminghttpnamespacefilterid"></a>`id` | [`ID!`](#id) | ID of the filter. |
+| <a id="auditeventstreaminghttpnamespacefilternamespace"></a>`namespace` | [`Namespace!`](#namespace) | Group or project namespace the filter belongs to. |
+
 ### `AuditEventStreamingHeader`
 
 Represents a HTTP header key/value that belongs to an audit streaming destination.
@@ -13635,6 +14096,18 @@ Represents a HTTP header key/value that belongs to an audit streaming destinatio
 | <a id="auditeventstreamingheaderid"></a>`id` | [`ID!`](#id) | ID of the header. |
 | <a id="auditeventstreamingheaderkey"></a>`key` | [`String!`](#string) | Key of the header. |
 | <a id="auditeventstreamingheadervalue"></a>`value` | [`String!`](#string) | Value of the header. |
+
+### `AuditEventsStreamingHTTPNamespaceFiltersAddPayload`
+
+Autogenerated return type of AuditEventsStreamingHTTPNamespaceFiltersAdd.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="auditeventsstreaminghttpnamespacefiltersaddpayloadclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="auditeventsstreaminghttpnamespacefiltersaddpayloaderrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="auditeventsstreaminghttpnamespacefiltersaddpayloadnamespacefilter"></a>`namespaceFilter` | [`AuditEventStreamingHTTPNamespaceFilter`](#auditeventstreaminghttpnamespacefilter) | Namespace filter created. |
 
 ### `AuditEventsStreamingInstanceHeader`
 
@@ -13672,18 +14145,20 @@ Core representation of a GitLab user.
 | <a id="autocompleteduserid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="autocompleteduseride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="autocompleteduserjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
+| <a id="autocompleteduserlastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
 | <a id="autocompleteduserlinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="autocompleteduserlocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="autocompletedusername"></a>`name` | [`String!`](#string) | Human-readable name of the user. Returns `****` if the user is a project bot and the requester does not have permission to view the project. |
 | <a id="autocompletedusernamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="autocompletedusernamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
 | <a id="autocompleteduserorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
+| <a id="autocompleteduserorganizations"></a>`organizations` **{warning-solid}** | [`OrganizationConnection`](#organizationconnection) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Organizations where the user has access. |
 | <a id="autocompleteduserpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="autocompleteduserprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="autocompleteduserprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="autocompleteduserpronouns"></a>`pronouns` | [`String`](#string) | Pronouns of the user. |
 | <a id="autocompleteduserpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
-| <a id="autocompletedusersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
+| <a id="autocompletedusersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="autocompleteduserstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="autocompleteduserstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="autocompletedusertwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
@@ -13834,7 +14309,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `AutocompletedUser.savedReply`
 
-Saved reply authored by the user. Will not return saved reply if `saved_replies` feature flag is disabled.
+Saved reply authored by the user.
 
 Returns [`SavedReply`](#savedreply).
 
@@ -14939,6 +15414,17 @@ Represents the Geo replication and verification state of a ci_secure_file.
 | <a id="cistagename"></a>`name` | [`String`](#string) | Name of the stage. |
 | <a id="cistagestatus"></a>`status` | [`String`](#string) | Status of the pipeline stage. |
 
+### `CiSubscriptionsProject`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cisubscriptionsprojectauthor"></a>`author` | [`UserCore`](#usercore) | Author of the subscription. |
+| <a id="cisubscriptionsprojectdownstreamproject"></a>`downstreamProject` | [`Project`](#project) | Downstream project of the subscription. |
+| <a id="cisubscriptionsprojectid"></a>`id` | [`CiSubscriptionsProjectID`](#cisubscriptionsprojectid) | Global ID of the subscription. |
+| <a id="cisubscriptionsprojectupstreamproject"></a>`upstreamProject` | [`Project`](#project) | Upstream project of the subscription. |
+
 ### `CiTemplate`
 
 GitLab CI/CD configuration template.
@@ -15079,6 +15565,7 @@ Represents reports comparison for code quality.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="codequalityreportscomparerreport"></a>`report` | [`CodequalityReportsComparerReport`](#codequalityreportscomparerreport) | Compared codequality report. |
+| <a id="codequalityreportscomparerstatus"></a>`status` | [`CodequalityReportsComparerReportGenerationStatus`](#codequalityreportscomparerreportgenerationstatus) | Compared codequality report generation status. |
 
 ### `CodequalityReportsComparerReport`
 
@@ -15091,7 +15578,7 @@ Represents compared code quality report.
 | <a id="codequalityreportscomparerreportexistingerrors"></a>`existingErrors` | [`[CodequalityReportsComparerReportDegradation!]`](#codequalityreportscomparerreportdegradation) | All code quality degradations. |
 | <a id="codequalityreportscomparerreportnewerrors"></a>`newErrors` | [`[CodequalityReportsComparerReportDegradation!]!`](#codequalityreportscomparerreportdegradation) | New code quality degradations. |
 | <a id="codequalityreportscomparerreportresolvederrors"></a>`resolvedErrors` | [`[CodequalityReportsComparerReportDegradation!]`](#codequalityreportscomparerreportdegradation) | Resolved code quality degradations. |
-| <a id="codequalityreportscomparerreportstatus"></a>`status` | [`CodequalityReportsComparerReportStatus!`](#codequalityreportscomparerreportstatus) | Status of report. |
+| <a id="codequalityreportscomparerreportstatus"></a>`status` | [`CodequalityReportsComparerStatus!`](#codequalityreportscomparerstatus) | Status of report. |
 | <a id="codequalityreportscomparerreportsummary"></a>`summary` | [`CodequalityReportsComparerReportSummary!`](#codequalityreportscomparerreportsummary) | Codequality report summary. |
 
 ### `CodequalityReportsComparerReportDegradation`
@@ -15412,6 +15899,19 @@ A tag expiration policy designed to keep only the images that matter most.
 | <a id="containerexpirationpolicyolderthan"></a>`olderThan` | [`ContainerExpirationPolicyOlderThanEnum`](#containerexpirationpolicyolderthanenum) | Tags older that this will expire. |
 | <a id="containerexpirationpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the container expiration policy was updated. |
 
+### `ContainerRegistryProtectionRule`
+
+A container registry protection rule designed to prevent users with a certain access level or lower from altering the container registry.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerregistryprotectionrulecontainerpathpattern"></a>`containerPathPattern` | [`String!`](#string) | Container repository path pattern protected by the protection rule. For example `@my-scope/my-container-*`. Wildcard character `*` allowed. |
+| <a id="containerregistryprotectionruledeleteprotecteduptoaccesslevel"></a>`deleteProtectedUpToAccessLevel` | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | Max GitLab access level to prevent from pushing container images to the container registry. For example `DEVELOPER`, `MAINTAINER`, `OWNER`. |
+| <a id="containerregistryprotectionruleid"></a>`id` | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | ID of the container registry protection rule. |
+| <a id="containerregistryprotectionrulepushprotecteduptoaccesslevel"></a>`pushProtectedUpToAccessLevel` | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | Max GitLab access level to prevent from pushing container images to the container registry. For example `DEVELOPER`, `MAINTAINER`, `OWNER`. |
+
 ### `ContainerRepository`
 
 A container repository.
@@ -15595,9 +16095,9 @@ A custom emoji uploaded by user.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="customemojipermissionscreatecustomemoji"></a>`createCustomEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `create_custom_emoji` on this resource. |
-| <a id="customemojipermissionsdeletecustomemoji"></a>`deleteCustomEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `delete_custom_emoji` on this resource. |
-| <a id="customemojipermissionsreadcustomemoji"></a>`readCustomEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `read_custom_emoji` on this resource. |
+| <a id="customemojipermissionscreatecustomemoji"></a>`createCustomEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_custom_emoji` on this resource. |
+| <a id="customemojipermissionsdeletecustomemoji"></a>`deleteCustomEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `delete_custom_emoji` on this resource. |
+| <a id="customemojipermissionsreadcustomemoji"></a>`readCustomEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_custom_emoji` on this resource. |
 
 ### `CustomerRelationsContact`
 
@@ -15834,7 +16334,7 @@ Check permissions for the current user on site profile.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="dastsiteprofilepermissionscreateondemanddastscan"></a>`createOnDemandDastScan` | [`Boolean!`](#boolean) | Indicates the user can perform `create_on_demand_dast_scan` on this resource. |
+| <a id="dastsiteprofilepermissionscreateondemanddastscan"></a>`createOnDemandDastScan` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_on_demand_dast_scan` on this resource. |
 
 ### `DastSiteValidation`
 
@@ -16059,8 +16559,8 @@ Approval summary of the deployment.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="deploymentpermissionsapprovedeployment"></a>`approveDeployment` | [`Boolean!`](#boolean) | Indicates the user can perform `approve_deployment` on this resource. This field can only be resolved for one environment in any single request. |
-| <a id="deploymentpermissionsdestroydeployment"></a>`destroyDeployment` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_deployment` on this resource. |
-| <a id="deploymentpermissionsupdatedeployment"></a>`updateDeployment` | [`Boolean!`](#boolean) | Indicates the user can perform `update_deployment` on this resource. |
+| <a id="deploymentpermissionsdestroydeployment"></a>`destroyDeployment` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_deployment` on this resource. |
+| <a id="deploymentpermissionsupdatedeployment"></a>`updateDeployment` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_deployment` on this resource. |
 
 ### `DeploymentTag`
 
@@ -16394,6 +16894,22 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="designversiondesignsatversionfilenames"></a>`filenames` | [`[String!]`](#string) | Filters designs by their filename. |
 | <a id="designversiondesignsatversionids"></a>`ids` | [`[DesignManagementDesignID!]`](#designmanagementdesignid) | Filters designs by their ID. |
 
+### `DetailedImportStatus`
+
+Details of the import status of a project.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="detailedimportstatusid"></a>`id` | [`ProjectImportStateID`](#projectimportstateid) | ID of the import state. |
+| <a id="detailedimportstatuslasterror"></a>`lastError` | [`String`](#string) | Last error of the import. |
+| <a id="detailedimportstatuslastsuccessfulupdateat"></a>`lastSuccessfulUpdateAt` | [`Time`](#time) | Time of the last successful update. |
+| <a id="detailedimportstatuslastupdateat"></a>`lastUpdateAt` | [`Time`](#time) | Time of the last update. |
+| <a id="detailedimportstatuslastupdatestartedat"></a>`lastUpdateStartedAt` | [`Time`](#time) | Time of the start of the last update. |
+| <a id="detailedimportstatusstatus"></a>`status` | [`String`](#string) | Current status of the import. |
+| <a id="detailedimportstatusurl"></a>`url` | [`String`](#string) | Import url. |
+
 ### `DetailedStatus`
 
 #### Fields
@@ -16692,9 +17208,9 @@ Returns [`Deployment`](#deployment).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="environmentpermissionsdestroyenvironment"></a>`destroyEnvironment` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_environment` on this resource. |
-| <a id="environmentpermissionsstopenvironment"></a>`stopEnvironment` | [`Boolean!`](#boolean) | Indicates the user can perform `stop_environment` on this resource. |
-| <a id="environmentpermissionsupdateenvironment"></a>`updateEnvironment` | [`Boolean!`](#boolean) | Indicates the user can perform `update_environment` on this resource. |
+| <a id="environmentpermissionsdestroyenvironment"></a>`destroyEnvironment` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_environment` on this resource. |
+| <a id="environmentpermissionsstopenvironment"></a>`stopEnvironment` | [`Boolean!`](#boolean) | If `true`, the user can perform `stop_environment` on this resource. |
+| <a id="environmentpermissionsupdateenvironment"></a>`updateEnvironment` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_environment` on this resource. |
 
 ### `Epic`
 
@@ -16936,8 +17452,10 @@ Total weight of open and closed descendant issues.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="epicdescendantweightsclosedissues"></a>`closedIssues` | [`Int`](#int) | Total weight of completed (closed) issues in this epic, including epic descendants. |
-| <a id="epicdescendantweightsopenedissues"></a>`openedIssues` | [`Int`](#int) | Total weight of opened issues in this epic, including epic descendants. |
+| <a id="epicdescendantweightsclosedissues"></a>`closedIssues` **{warning-solid}** | [`Int`](#int) | **Deprecated** in 16.6. Use `closedIssuesTotal`. |
+| <a id="epicdescendantweightsclosedissuestotal"></a>`closedIssuesTotal` | [`BigInt`](#bigint) | Total weight of completed (closed) issues in this epic, including epic descendants, encoded as a string. |
+| <a id="epicdescendantweightsopenedissues"></a>`openedIssues` **{warning-solid}** | [`Int`](#int) | **Deprecated** in 16.6. Use `OpenedIssuesTotal`. |
+| <a id="epicdescendantweightsopenedissuestotal"></a>`openedIssuesTotal` | [`BigInt`](#bigint) | Total weight of opened issues in this epic, including epic descendants, encoded as a string. |
 
 ### `EpicHealthStatus`
 
@@ -17167,14 +17685,14 @@ Check permissions for the current user on an epic.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="epicpermissionsadminepic"></a>`adminEpic` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_epic` on this resource. |
-| <a id="epicpermissionsawardemoji"></a>`awardEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `award_emoji` on this resource. |
-| <a id="epicpermissionscreateepic"></a>`createEpic` | [`Boolean!`](#boolean) | Indicates the user can perform `create_epic` on this resource. |
-| <a id="epicpermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource. |
-| <a id="epicpermissionsdestroyepic"></a>`destroyEpic` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_epic` on this resource. |
-| <a id="epicpermissionsreadepic"></a>`readEpic` | [`Boolean!`](#boolean) | Indicates the user can perform `read_epic` on this resource. |
-| <a id="epicpermissionsreadepiciid"></a>`readEpicIid` | [`Boolean!`](#boolean) | Indicates the user can perform `read_epic_iid` on this resource. |
-| <a id="epicpermissionsupdateepic"></a>`updateEpic` | [`Boolean!`](#boolean) | Indicates the user can perform `update_epic` on this resource. |
+| <a id="epicpermissionsadminepic"></a>`adminEpic` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_epic` on this resource. |
+| <a id="epicpermissionsawardemoji"></a>`awardEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `award_emoji` on this resource. |
+| <a id="epicpermissionscreateepic"></a>`createEpic` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_epic` on this resource. |
+| <a id="epicpermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
+| <a id="epicpermissionsdestroyepic"></a>`destroyEpic` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_epic` on this resource. |
+| <a id="epicpermissionsreadepic"></a>`readEpic` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_epic` on this resource. |
+| <a id="epicpermissionsreadepiciid"></a>`readEpicIid` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_epic_iid` on this resource. |
+| <a id="epicpermissionsupdateepic"></a>`updateEpic` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_epic` on this resource. |
 
 ### `EscalationPolicyType`
 
@@ -17250,6 +17768,7 @@ Represents an external resource to send audit events to.
 | <a id="externalauditeventdestinationheaders"></a>`headers` | [`AuditEventStreamingHeaderConnection!`](#auditeventstreamingheaderconnection) | List of additional HTTP headers sent with each event. (see [Connections](#connections)) |
 | <a id="externalauditeventdestinationid"></a>`id` | [`ID!`](#id) | ID of the destination. |
 | <a id="externalauditeventdestinationname"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
+| <a id="externalauditeventdestinationnamespacefilter"></a>`namespaceFilter` | [`AuditEventStreamingHTTPNamespaceFilter`](#auditeventstreaminghttpnamespacefilter) | List of subgroup or project filters for the destination. |
 | <a id="externalauditeventdestinationverificationtoken"></a>`verificationToken` | [`String!`](#string) | Verification token to validate source of event. |
 
 ### `ExternalIssue`
@@ -17782,6 +18301,7 @@ GPG signature for a signed commit.
 | <a id="grouppackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
 | <a id="groupparent"></a>`parent` | [`Group`](#group) | Parent group. |
 | <a id="grouppath"></a>`path` | [`String!`](#string) | Path of the namespace. |
+| <a id="grouppendingmembers"></a>`pendingMembers` **{warning-solid}** | [`PendingGroupMemberConnection`](#pendinggroupmemberconnection) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. A pending membership of a user within this group. |
 | <a id="groupprojectcreationlevel"></a>`projectCreationLevel` | [`String`](#string) | Permission level required to create projects in the group. |
 | <a id="grouprecentissueboards"></a>`recentIssueBoards` | [`BoardConnection`](#boardconnection) | List of recently visited boards of the group. Maximum size is 4. (see [Connections](#connections)) |
 | <a id="grouprepositorysizeexcessprojectcount"></a>`repositorySizeExcessProjectCount` | [`Int!`](#int) | Number of projects in the root namespace where the repository size exceeds the limit. This only applies to namespaces under Project limit enforcement. |
@@ -18394,6 +18914,26 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="grouplabelsonlygrouplabels"></a>`onlyGroupLabels` | [`Boolean`](#boolean) | Include only group level labels. |
 | <a id="grouplabelssearchterm"></a>`searchTerm` | [`String`](#string) | Search term to find labels with. |
 
+##### `Group.memberRoles`
+
+Member roles available for the group.
+
+WARNING:
+**Introduced** in 16.5.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`MemberRoleConnection`](#memberroleconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupmemberrolesid"></a>`id` | [`MemberRoleID`](#memberroleid) | Global ID of the member role to look up. |
+
 ##### `Group.mergeRequestViolations`
 
 Compliance violations reported on merge requests merged within the group.
@@ -18519,6 +19059,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="grouppackagesincludeversionless"></a>`includeVersionless` | [`Boolean`](#boolean) | Include versionless packages. |
 | <a id="grouppackagespackagename"></a>`packageName` | [`String`](#string) | Search a package by name. |
 | <a id="grouppackagespackagetype"></a>`packageType` | [`PackageTypeEnum`](#packagetypeenum) | Filter a package by type. |
+| <a id="grouppackagespackageversion"></a>`packageVersion` | [`String`](#string) | Filter a package by version. If used in combination with `include_versionless`, then no versionless packages are returned. |
 | <a id="grouppackagessort"></a>`sort` | [`PackageGroupSort`](#packagegroupsort) | Sort packages by this criteria. |
 | <a id="grouppackagesstatus"></a>`status` | [`PackageStatus`](#packagestatus) | Filter a package by status. |
 
@@ -18595,6 +19136,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="grouprunnersactive"></a>`active` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 14.8. This was renamed. Use: `paused`. |
+| <a id="grouprunnerscreatorid"></a>`creatorId` | [`UserID`](#userid) | Filter runners by creator ID. |
 | <a id="grouprunnersmembership"></a>`membership` | [`CiRunnerMembershipFilter`](#cirunnermembershipfilter) | Control which runners to include in the results. |
 | <a id="grouprunnerspaused"></a>`paused` | [`Boolean`](#boolean) | Filter runners by `paused` (true) or `active` (false) status. |
 | <a id="grouprunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
@@ -18603,6 +19145,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="grouprunnerstaglist"></a>`tagList` | [`[String!]`](#string) | Filter by tags associated with the runner (comma-separated or array). |
 | <a id="grouprunnerstype"></a>`type` | [`CiRunnerType`](#cirunnertype) | Filter runners by type. |
 | <a id="grouprunnersupgradestatus"></a>`upgradeStatus` | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | Filter by upgrade status. |
+| <a id="grouprunnersversionprefix"></a>`versionPrefix` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
 
 ##### `Group.scanExecutionPolicies`
 
@@ -18842,9 +19385,9 @@ Represents a Group Membership.
 | <a id="groupmembercreatedat"></a>`createdAt` | [`Time`](#time) | Date and time the membership was created. |
 | <a id="groupmembercreatedby"></a>`createdBy` | [`UserCore`](#usercore) | User that authorized membership. |
 | <a id="groupmemberexpiresat"></a>`expiresAt` | [`Time`](#time) | Date and time the membership expires. |
-| <a id="groupmembergroup"></a>`group` | [`Group`](#group) | Group that a User is a member of. |
+| <a id="groupmembergroup"></a>`group` | [`Group`](#group) | Group that a user is a member of. |
 | <a id="groupmemberid"></a>`id` | [`ID!`](#id) | ID of the member. |
-| <a id="groupmembernotificationemail"></a>`notificationEmail` | [`String`](#string) | Group notification email for User. Only available for admins. |
+| <a id="groupmembernotificationemail"></a>`notificationEmail` | [`String`](#string) | Group notification email for user. Only available for admins. |
 | <a id="groupmemberupdatedat"></a>`updatedAt` | [`Time`](#time) | Date and time the membership was last updated. |
 | <a id="groupmemberuser"></a>`user` | [`UserCore`](#usercore) | User that is associated with the member object. |
 | <a id="groupmemberuserpermissions"></a>`userPermissions` | [`GroupPermissions!`](#grouppermissions) | Permissions for the current user on the resource. |
@@ -18869,9 +19412,9 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="grouppermissionscreatecustomemoji"></a>`createCustomEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `create_custom_emoji` on this resource. |
-| <a id="grouppermissionscreateprojects"></a>`createProjects` | [`Boolean!`](#boolean) | Indicates the user can perform `create_projects` on this resource. |
-| <a id="grouppermissionsreadgroup"></a>`readGroup` | [`Boolean!`](#boolean) | Indicates the user can perform `read_group` on this resource. |
+| <a id="grouppermissionscreatecustomemoji"></a>`createCustomEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_custom_emoji` on this resource. |
+| <a id="grouppermissionscreateprojects"></a>`createProjects` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_projects` on this resource. |
+| <a id="grouppermissionsreadgroup"></a>`readGroup` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_group` on this resource. |
 
 ### `GroupReleaseStats`
 
@@ -19459,15 +20002,15 @@ Check permissions for the current user on a issue.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="issuepermissionsadminissue"></a>`adminIssue` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_issue` on this resource. |
-| <a id="issuepermissionscreatedesign"></a>`createDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `create_design` on this resource. |
-| <a id="issuepermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource. |
-| <a id="issuepermissionsdestroydesign"></a>`destroyDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_design` on this resource. |
-| <a id="issuepermissionsreaddesign"></a>`readDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `read_design` on this resource. |
-| <a id="issuepermissionsreadissue"></a>`readIssue` | [`Boolean!`](#boolean) | Indicates the user can perform `read_issue` on this resource. |
-| <a id="issuepermissionsreopenissue"></a>`reopenIssue` | [`Boolean!`](#boolean) | Indicates the user can perform `reopen_issue` on this resource. |
-| <a id="issuepermissionsupdatedesign"></a>`updateDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `update_design` on this resource. |
-| <a id="issuepermissionsupdateissue"></a>`updateIssue` | [`Boolean!`](#boolean) | Indicates the user can perform `update_issue` on this resource. |
+| <a id="issuepermissionsadminissue"></a>`adminIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_issue` on this resource. |
+| <a id="issuepermissionscreatedesign"></a>`createDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_design` on this resource. |
+| <a id="issuepermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
+| <a id="issuepermissionsdestroydesign"></a>`destroyDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_design` on this resource. |
+| <a id="issuepermissionsreaddesign"></a>`readDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_design` on this resource. |
+| <a id="issuepermissionsreadissue"></a>`readIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_issue` on this resource. |
+| <a id="issuepermissionsreopenissue"></a>`reopenIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `reopen_issue` on this resource. |
+| <a id="issuepermissionsupdatedesign"></a>`updateDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_design` on this resource. |
+| <a id="issuepermissionsupdateissue"></a>`updateIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_issue` on this resource. |
 
 ### `IssueStatusCountsType`
 
@@ -19633,9 +20176,10 @@ Represents the Geo replication and verification state of a job_artifact.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="jobpermissionsreadbuild"></a>`readBuild` | [`Boolean!`](#boolean) | Indicates the user can perform `read_build` on this resource. |
-| <a id="jobpermissionsreadjobartifacts"></a>`readJobArtifacts` | [`Boolean!`](#boolean) | Indicates the user can perform `read_job_artifacts` on this resource. |
-| <a id="jobpermissionsupdatebuild"></a>`updateBuild` | [`Boolean!`](#boolean) | Indicates the user can perform `update_build` on this resource. |
+| <a id="jobpermissionscancelbuild"></a>`cancelBuild` | [`Boolean!`](#boolean) | If `true`, the user can perform `cancel_build` on this resource. |
+| <a id="jobpermissionsreadbuild"></a>`readBuild` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_build` on this resource. |
+| <a id="jobpermissionsreadjobartifacts"></a>`readJobArtifacts` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_job_artifacts` on this resource. |
+| <a id="jobpermissionsupdatebuild"></a>`updateBuild` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_build` on this resource. |
 
 ### `Kas`
 
@@ -19741,7 +20285,7 @@ Represents an entry from the Cloud License history.
 | <a id="linkedworkitemtypelinkid"></a>`linkId` | [`WorkItemsRelatedWorkItemLinkID!`](#workitemsrelatedworkitemlinkid) | Global ID of the link. |
 | <a id="linkedworkitemtypelinktype"></a>`linkType` | [`String!`](#string) | Type of link. |
 | <a id="linkedworkitemtypelinkupdatedat"></a>`linkUpdatedAt` | [`Time!`](#time) | Timestamp the link was updated. |
-| <a id="linkedworkitemtypeworkitem"></a>`workItem` | [`WorkItem!`](#workitem) | Linked work item. |
+| <a id="linkedworkitemtypeworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Linked work item. |
 
 ### `Location`
 
@@ -19776,9 +20320,19 @@ Represents a member role.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="memberroleadmingroupmember"></a>`adminGroupMember` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Permission to admin group members. |
+| <a id="memberroleadminmergerequest"></a>`adminMergeRequest` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Permission to admin merge requests. |
+| <a id="memberroleadminvulnerability"></a>`adminVulnerability` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Permission to admin vulnerability. |
+| <a id="memberrolearchiveproject"></a>`archiveProject` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Permission to archive projects. |
+| <a id="memberrolebaseaccesslevel"></a>`baseAccessLevel` **{warning-solid}** | [`AccessLevel!`](#accesslevel) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Base access level for the custom role. |
 | <a id="memberroledescription"></a>`description` | [`String`](#string) | Description of the member role. |
+| <a id="memberroleenabledpermissions"></a>`enabledPermissions` **{warning-solid}** | [`[MemberRolePermission!]`](#memberrolepermission) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Array of all permissions enabled for the custom role. |
 | <a id="memberroleid"></a>`id` | [`MemberRoleID!`](#memberroleid) | ID of the member role. |
+| <a id="memberrolemanageprojectaccesstokens"></a>`manageProjectAccessTokens` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Permission to admin project access tokens. |
 | <a id="memberrolename"></a>`name` | [`String!`](#string) | Name of the member role. |
+| <a id="memberrolereadcode"></a>`readCode` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Permission to read code. |
+| <a id="memberrolereaddependency"></a>`readDependency` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Permission to read dependency. |
+| <a id="memberrolereadvulnerability"></a>`readVulnerability` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Permission to read vulnerability. |
 
 ### `MergeAccessLevel`
 
@@ -20030,6 +20584,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneeid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="mergerequestassigneeide"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="mergerequestassigneejobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
+| <a id="mergerequestassigneelastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
 | <a id="mergerequestassigneelinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="mergerequestassigneelocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="mergerequestassigneemergerequestinteraction"></a>`mergeRequestInteraction` | [`UserMergeRequestInteraction`](#usermergerequestinteraction) | Details of this user's interactions with the merge request. |
@@ -20037,12 +20592,13 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneenamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="mergerequestassigneenamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
 | <a id="mergerequestassigneeorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
+| <a id="mergerequestassigneeorganizations"></a>`organizations` **{warning-solid}** | [`OrganizationConnection`](#organizationconnection) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Organizations where the user has access. |
 | <a id="mergerequestassigneepreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="mergerequestassigneeprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="mergerequestassigneeprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestassigneepronouns"></a>`pronouns` | [`String`](#string) | Pronouns of the user. |
 | <a id="mergerequestassigneepublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
-| <a id="mergerequestassigneesavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
+| <a id="mergerequestassigneesavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="mergerequestassigneestate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestassigneestatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="mergerequestassigneetwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
@@ -20181,7 +20737,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `MergeRequestAssignee.savedReply`
 
-Saved reply authored by the user. Will not return saved reply if `saved_replies` feature flag is disabled.
+Saved reply authored by the user.
 
 Returns [`SavedReply`](#savedreply).
 
@@ -20310,6 +20866,7 @@ The author of the merge request.
 | <a id="mergerequestauthorid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="mergerequestauthoride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="mergerequestauthorjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
+| <a id="mergerequestauthorlastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
 | <a id="mergerequestauthorlinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="mergerequestauthorlocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="mergerequestauthormergerequestinteraction"></a>`mergeRequestInteraction` | [`UserMergeRequestInteraction`](#usermergerequestinteraction) | Details of this user's interactions with the merge request. |
@@ -20317,12 +20874,13 @@ The author of the merge request.
 | <a id="mergerequestauthornamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="mergerequestauthornamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
 | <a id="mergerequestauthororganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
+| <a id="mergerequestauthororganizations"></a>`organizations` **{warning-solid}** | [`OrganizationConnection`](#organizationconnection) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Organizations where the user has access. |
 | <a id="mergerequestauthorpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="mergerequestauthorprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="mergerequestauthorprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestauthorpronouns"></a>`pronouns` | [`String`](#string) | Pronouns of the user. |
 | <a id="mergerequestauthorpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
-| <a id="mergerequestauthorsavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
+| <a id="mergerequestauthorsavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="mergerequestauthorstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestauthorstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="mergerequestauthortwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
@@ -20461,7 +21019,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `MergeRequestAuthor.savedReply`
 
-Saved reply authored by the user. Will not return saved reply if `saved_replies` feature flag is disabled.
+Saved reply authored by the user.
 
 Returns [`SavedReply`](#savedreply).
 
@@ -20653,6 +21211,7 @@ A user participating in a merge request.
 | <a id="mergerequestparticipantid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="mergerequestparticipantide"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="mergerequestparticipantjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
+| <a id="mergerequestparticipantlastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
 | <a id="mergerequestparticipantlinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="mergerequestparticipantlocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="mergerequestparticipantmergerequestinteraction"></a>`mergeRequestInteraction` | [`UserMergeRequestInteraction`](#usermergerequestinteraction) | Details of this user's interactions with the merge request. |
@@ -20660,12 +21219,13 @@ A user participating in a merge request.
 | <a id="mergerequestparticipantnamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="mergerequestparticipantnamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
 | <a id="mergerequestparticipantorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
+| <a id="mergerequestparticipantorganizations"></a>`organizations` **{warning-solid}** | [`OrganizationConnection`](#organizationconnection) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Organizations where the user has access. |
 | <a id="mergerequestparticipantpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="mergerequestparticipantprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="mergerequestparticipantprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestparticipantpronouns"></a>`pronouns` | [`String`](#string) | Pronouns of the user. |
 | <a id="mergerequestparticipantpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
-| <a id="mergerequestparticipantsavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
+| <a id="mergerequestparticipantsavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="mergerequestparticipantstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestparticipantstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="mergerequestparticipanttwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
@@ -20804,7 +21364,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `MergeRequestParticipant.savedReply`
 
-Saved reply authored by the user. Will not return saved reply if `saved_replies` feature flag is disabled.
+Saved reply authored by the user.
 
 Returns [`SavedReply`](#savedreply).
 
@@ -20918,16 +21478,16 @@ Check permissions for the current user on a merge request.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergerequestpermissionsadminmergerequest"></a>`adminMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_merge_request` on this resource. |
-| <a id="mergerequestpermissionscanapprove"></a>`canApprove` | [`Boolean!`](#boolean) | Indicates the user can perform `can_approve` on this resource. |
-| <a id="mergerequestpermissionscanmerge"></a>`canMerge` | [`Boolean!`](#boolean) | Indicates the user can perform `can_merge` on this resource. |
-| <a id="mergerequestpermissionscherrypickoncurrentmergerequest"></a>`cherryPickOnCurrentMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `cherry_pick_on_current_merge_request` on this resource. |
-| <a id="mergerequestpermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource. |
-| <a id="mergerequestpermissionspushtosourcebranch"></a>`pushToSourceBranch` | [`Boolean!`](#boolean) | Indicates the user can perform `push_to_source_branch` on this resource. |
-| <a id="mergerequestpermissionsreadmergerequest"></a>`readMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `read_merge_request` on this resource. |
-| <a id="mergerequestpermissionsremovesourcebranch"></a>`removeSourceBranch` | [`Boolean!`](#boolean) | Indicates the user can perform `remove_source_branch` on this resource. |
-| <a id="mergerequestpermissionsrevertoncurrentmergerequest"></a>`revertOnCurrentMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `revert_on_current_merge_request` on this resource. |
-| <a id="mergerequestpermissionsupdatemergerequest"></a>`updateMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `update_merge_request` on this resource. |
+| <a id="mergerequestpermissionsadminmergerequest"></a>`adminMergeRequest` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_merge_request` on this resource. |
+| <a id="mergerequestpermissionscanapprove"></a>`canApprove` | [`Boolean!`](#boolean) | If `true`, the user can perform `can_approve` on this resource. |
+| <a id="mergerequestpermissionscanmerge"></a>`canMerge` | [`Boolean!`](#boolean) | If `true`, the user can perform `can_merge` on this resource. |
+| <a id="mergerequestpermissionscherrypickoncurrentmergerequest"></a>`cherryPickOnCurrentMergeRequest` | [`Boolean!`](#boolean) | If `true`, the user can perform `cherry_pick_on_current_merge_request` on this resource. |
+| <a id="mergerequestpermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
+| <a id="mergerequestpermissionspushtosourcebranch"></a>`pushToSourceBranch` | [`Boolean!`](#boolean) | If `true`, the user can perform `push_to_source_branch` on this resource. |
+| <a id="mergerequestpermissionsreadmergerequest"></a>`readMergeRequest` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_merge_request` on this resource. |
+| <a id="mergerequestpermissionsremovesourcebranch"></a>`removeSourceBranch` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_source_branch` on this resource. |
+| <a id="mergerequestpermissionsrevertoncurrentmergerequest"></a>`revertOnCurrentMergeRequest` | [`Boolean!`](#boolean) | If `true`, the user can perform `revert_on_current_merge_request` on this resource. |
+| <a id="mergerequestpermissionsupdatemergerequest"></a>`updateMergeRequest` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_merge_request` on this resource. |
 
 ### `MergeRequestReviewLlmSummary`
 
@@ -20969,6 +21529,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewerid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="mergerequestrevieweride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="mergerequestreviewerjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
+| <a id="mergerequestreviewerlastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
 | <a id="mergerequestreviewerlinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="mergerequestreviewerlocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="mergerequestreviewermergerequestinteraction"></a>`mergeRequestInteraction` | [`UserMergeRequestInteraction`](#usermergerequestinteraction) | Details of this user's interactions with the merge request. |
@@ -20976,12 +21537,13 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewernamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="mergerequestreviewernamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
 | <a id="mergerequestreviewerorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
+| <a id="mergerequestreviewerorganizations"></a>`organizations` **{warning-solid}** | [`OrganizationConnection`](#organizationconnection) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Organizations where the user has access. |
 | <a id="mergerequestreviewerpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="mergerequestreviewerprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="mergerequestreviewerprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestreviewerpronouns"></a>`pronouns` | [`String`](#string) | Pronouns of the user. |
 | <a id="mergerequestreviewerpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
-| <a id="mergerequestreviewersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
+| <a id="mergerequestreviewersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="mergerequestreviewerstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestreviewerstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="mergerequestreviewertwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
@@ -21120,7 +21682,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `MergeRequestReviewer.savedReply`
 
-Saved reply authored by the user. Will not return saved reply if `saved_replies` feature flag is disabled.
+Saved reply authored by the user.
 
 Returns [`SavedReply`](#savedreply).
 
@@ -21573,12 +22135,12 @@ Represents the network policy.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="notepermissionsadminnote"></a>`adminNote` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_note` on this resource. |
-| <a id="notepermissionsawardemoji"></a>`awardEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `award_emoji` on this resource. |
-| <a id="notepermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource. |
-| <a id="notepermissionsreadnote"></a>`readNote` | [`Boolean!`](#boolean) | Indicates the user can perform `read_note` on this resource. |
-| <a id="notepermissionsrepositionnote"></a>`repositionNote` | [`Boolean!`](#boolean) | Indicates the user can perform `reposition_note` on this resource. |
-| <a id="notepermissionsresolvenote"></a>`resolveNote` | [`Boolean!`](#boolean) | Indicates the user can perform `resolve_note` on this resource. |
+| <a id="notepermissionsadminnote"></a>`adminNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_note` on this resource. |
+| <a id="notepermissionsawardemoji"></a>`awardEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `award_emoji` on this resource. |
+| <a id="notepermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
+| <a id="notepermissionsreadnote"></a>`readNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_note` on this resource. |
+| <a id="notepermissionsrepositionnote"></a>`repositionNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `reposition_note` on this resource. |
+| <a id="notepermissionsresolvenote"></a>`resolveNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `resolve_note` on this resource. |
 
 ### `NugetDependencyLinkMetadata`
 
@@ -21638,6 +22200,7 @@ Active period time range for on-call rotation.
 | <a id="organizationname"></a>`name` **{warning-solid}** | [`String!`](#string) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Name of the organization. |
 | <a id="organizationorganizationusers"></a>`organizationUsers` **{warning-solid}** | [`OrganizationUserConnection!`](#organizationuserconnection) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Users with access to the organization. |
 | <a id="organizationpath"></a>`path` **{warning-solid}** | [`String!`](#string) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Path of the organization. |
+| <a id="organizationweburl"></a>`webUrl` **{warning-solid}** | [`String!`](#string) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Web URL of the organization. |
 
 #### Fields with arguments
 
@@ -21682,9 +22245,20 @@ A user with access to the organization.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="organizationuserbadges"></a>`badges` **{warning-solid}** | [`[String!]`](#string) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Badges describing the user within the organization. |
+| <a id="organizationuserbadges"></a>`badges` **{warning-solid}** | [`[OrganizationUserBadge!]`](#organizationuserbadge) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Badges describing the user within the organization. |
 | <a id="organizationuserid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. ID of the organization user. |
 | <a id="organizationuseruser"></a>`user` **{warning-solid}** | [`UserCore!`](#usercore) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. User that is associated with the organization. |
+
+### `OrganizationUserBadge`
+
+An organization user badge.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="organizationuserbadgetext"></a>`text` | [`String!`](#string) | Badge text. |
+| <a id="organizationuserbadgevariant"></a>`variant` | [`String!`](#string) | Badge variant. |
 
 ### `Package`
 
@@ -21695,7 +22269,7 @@ Represents a package with pipelines in the Package Registry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="package_links"></a>`_links` | [`PackageLinks!`](#packagelinks) | Map of links to perform actions on the package. |
-| <a id="packagecandestroy"></a>`canDestroy` | [`Boolean!`](#boolean) | Whether the user can destroy the package. |
+| <a id="packagecandestroy"></a>`canDestroy` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.6. Superseded by `user_permissions` field. See `Types::PermissionTypes::Package` type. |
 | <a id="packagecreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
 | <a id="packageid"></a>`id` | [`PackagesPackageID!`](#packagespackageid) | ID of the package. |
 | <a id="packagemetadata"></a>`metadata` | [`PackageMetadata`](#packagemetadata) | Package metadata. |
@@ -21707,6 +22281,7 @@ Represents a package with pipelines in the Package Registry.
 | <a id="packagestatusmessage"></a>`statusMessage` | [`String`](#string) | Status message. |
 | <a id="packagetags"></a>`tags` | [`PackageTagConnection`](#packagetagconnection) | Package tags. (see [Connections](#connections)) |
 | <a id="packageupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
+| <a id="packageuserpermissions"></a>`userPermissions` | [`PackagePermissions!`](#packagepermissions) | Permissions for the current user on the resource. |
 | <a id="packageversion"></a>`version` | [`String`](#string) | Version string. |
 
 ### `PackageBase`
@@ -21718,7 +22293,7 @@ Represents a package in the Package Registry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="packagebase_links"></a>`_links` | [`PackageLinks!`](#packagelinks) | Map of links to perform actions on the package. |
-| <a id="packagebasecandestroy"></a>`canDestroy` | [`Boolean!`](#boolean) | Whether the user can destroy the package. |
+| <a id="packagebasecandestroy"></a>`canDestroy` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.6. Superseded by `user_permissions` field. See `Types::PermissionTypes::Package` type. |
 | <a id="packagebasecreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
 | <a id="packagebaseid"></a>`id` | [`PackagesPackageID!`](#packagespackageid) | ID of the package. |
 | <a id="packagebasemetadata"></a>`metadata` | [`PackageMetadata`](#packagemetadata) | Package metadata. |
@@ -21729,6 +22304,7 @@ Represents a package in the Package Registry.
 | <a id="packagebasestatusmessage"></a>`statusMessage` | [`String`](#string) | Status message. |
 | <a id="packagebasetags"></a>`tags` | [`PackageTagConnection`](#packagetagconnection) | Package tags. (see [Connections](#connections)) |
 | <a id="packagebaseupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
+| <a id="packagebaseuserpermissions"></a>`userPermissions` | [`PackagePermissions!`](#packagepermissions) | Permissions for the current user on the resource. |
 | <a id="packagebaseversion"></a>`version` | [`String`](#string) | Version string. |
 
 ### `PackageComposerJsonType`
@@ -21778,7 +22354,7 @@ Represents a package details in the Package Registry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="packagedetailstype_links"></a>`_links` | [`PackageLinks!`](#packagelinks) | Map of links to perform actions on the package. |
-| <a id="packagedetailstypecandestroy"></a>`canDestroy` | [`Boolean!`](#boolean) | Whether the user can destroy the package. |
+| <a id="packagedetailstypecandestroy"></a>`canDestroy` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.6. Superseded by `user_permissions` field. See `Types::PermissionTypes::Package` type. |
 | <a id="packagedetailstypecomposerconfigrepositoryurl"></a>`composerConfigRepositoryUrl` | [`String`](#string) | Url of the Composer setup endpoint. |
 | <a id="packagedetailstypecomposerurl"></a>`composerUrl` | [`String`](#string) | Url of the Composer endpoint. |
 | <a id="packagedetailstypeconanurl"></a>`conanUrl` | [`String`](#string) | Url of the Conan project endpoint. |
@@ -21802,6 +22378,7 @@ Represents a package details in the Package Registry.
 | <a id="packagedetailstypestatusmessage"></a>`statusMessage` | [`String`](#string) | Status message. |
 | <a id="packagedetailstypetags"></a>`tags` | [`PackageTagConnection`](#packagetagconnection) | Package tags. (see [Connections](#connections)) |
 | <a id="packagedetailstypeupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
+| <a id="packagedetailstypeuserpermissions"></a>`userPermissions` | [`PackagePermissions!`](#packagepermissions) | Permissions for the current user on the resource. |
 | <a id="packagedetailstypeversion"></a>`version` | [`String`](#string) | Version string. |
 | <a id="packagedetailstypeversions"></a>`versions` | [`PackageBaseConnection`](#packagebaseconnection) | Other versions of the package. (see [Connections](#connections)) |
 
@@ -21913,6 +22490,14 @@ Represents links to perform actions on the package.
 | ---- | ---- | ----------- |
 | <a id="packagelinkswebpath"></a>`webPath` | [`String`](#string) | Path to the package details page. |
 
+### `PackagePermissions`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagepermissionsdestroypackage"></a>`destroyPackage` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_package` on this resource. |
+
 ### `PackageSettings`
 
 Namespace-level Package Registry settings.
@@ -21932,8 +22517,8 @@ Namespace-level Package Registry settings.
 | <a id="packagesettingsmavenpackagerequestsforwardinglocked"></a>`mavenPackageRequestsForwardingLocked` | [`Boolean!`](#boolean) | Indicates whether Maven package forwarding settings are locked by a parent namespace. |
 | <a id="packagesettingsnpmpackagerequestsforwarding"></a>`npmPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether npm package forwarding is allowed for this namespace. |
 | <a id="packagesettingsnpmpackagerequestsforwardinglocked"></a>`npmPackageRequestsForwardingLocked` | [`Boolean!`](#boolean) | Indicates whether npm package forwarding settings are locked by a parent namespace. |
-| <a id="packagesettingsnugetduplicateexceptionregex"></a>`nugetDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When nuget_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. Error is raised if `nuget_duplicates_option` feature flag is disabled. |
-| <a id="packagesettingsnugetduplicatesallowed"></a>`nugetDuplicatesAllowed` | [`Boolean!`](#boolean) | Indicates whether duplicate NuGet packages are allowed for this namespace. Error is raised if `nuget_duplicates_option` feature flag is disabled. |
+| <a id="packagesettingsnugetduplicateexceptionregex"></a>`nugetDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When nuget_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |
+| <a id="packagesettingsnugetduplicatesallowed"></a>`nugetDuplicatesAllowed` | [`Boolean!`](#boolean) | Indicates whether duplicate NuGet packages are allowed for this namespace. |
 | <a id="packagesettingspypipackagerequestsforwarding"></a>`pypiPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether PyPI package forwarding is allowed for this namespace. |
 | <a id="packagesettingspypipackagerequestsforwardinglocked"></a>`pypiPackageRequestsForwardingLocked` | [`Boolean!`](#boolean) | Indicates whether PyPI package forwarding settings are locked by a parent namespace. |
 
@@ -21969,6 +22554,7 @@ A packages protection rule designed to protect packages from being pushed by use
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="packagesprotectionruleid"></a>`id` | [`PackagesProtectionRuleID!`](#packagesprotectionruleid) | ID of the package protection rule. |
 | <a id="packagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String!`](#string) | Package name protected by the protection rule. For example `@my-scope/my-package-*`. Wildcard character `*` allowed. |
 | <a id="packagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType!`](#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example `NPM`. |
 | <a id="packagesprotectionrulepushprotecteduptoaccesslevel"></a>`pushProtectedUpToAccessLevel` | [`PackagesProtectionRuleAccessLevel!`](#packagesprotectionruleaccesslevel) | Max GitLab access level unable to push a package. For example `DEVELOPER`, `MAINTAINER`, `OWNER`. |
@@ -22022,6 +22608,46 @@ Represents a file or directory in the project repository that has been locked.
 | <a id="pathlockpath"></a>`path` | [`String`](#string) | Locked path. |
 | <a id="pathlockuser"></a>`user` | [`UserCore`](#usercore) | User that has locked this path. |
 
+### `PendingGroupMember`
+
+Represents a Pending Group Membership.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pendinggroupmemberaccesslevel"></a>`accessLevel` | [`AccessLevel`](#accesslevel) | GitLab::Access level. |
+| <a id="pendinggroupmemberapproved"></a>`approved` | [`Boolean`](#boolean) | Whether the pending group member has been approved. |
+| <a id="pendinggroupmemberavatarurl"></a>`avatarUrl` | [`String`](#string) | URL to avatar image file of the pending group member. |
+| <a id="pendinggroupmembercreatedat"></a>`createdAt` | [`Time`](#time) | Date and time the membership was created. |
+| <a id="pendinggroupmembercreatedby"></a>`createdBy` | [`UserCore`](#usercore) | User that authorized membership. |
+| <a id="pendinggroupmemberemail"></a>`email` | [`String`](#string) | Public email of the pending group member. |
+| <a id="pendinggroupmemberexpiresat"></a>`expiresAt` | [`Time`](#time) | Date and time the membership expires. |
+| <a id="pendinggroupmembergroup"></a>`group` | [`Group`](#group) | Group that a user is a member of. |
+| <a id="pendinggroupmemberid"></a>`id` | [`ID!`](#id) | ID of the member. |
+| <a id="pendinggroupmemberinvited"></a>`invited` | [`Boolean`](#boolean) | Whether the pending group member has been invited. |
+| <a id="pendinggroupmembername"></a>`name` | [`String`](#string) | Name of the pending group member. |
+| <a id="pendinggroupmembernotificationemail"></a>`notificationEmail` | [`String`](#string) | Group notification email for user. Only available for admins. |
+| <a id="pendinggroupmemberupdatedat"></a>`updatedAt` | [`Time`](#time) | Date and time the membership was last updated. |
+| <a id="pendinggroupmemberuser"></a>`user` | [`UserCore`](#usercore) | User that is associated with the member object. |
+| <a id="pendinggroupmemberuserpermissions"></a>`userPermissions` | [`GroupPermissions!`](#grouppermissions) | Permissions for the current user on the resource. |
+| <a id="pendinggroupmemberusername"></a>`username` | [`String`](#string) | Username of the pending group member. |
+| <a id="pendinggroupmemberweburl"></a>`webUrl` | [`String`](#string) | Web URL of the pending group member. |
+
+#### Fields with arguments
+
+##### `PendingGroupMember.mergeRequestInteraction`
+
+Find a merge request.
+
+Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pendinggroupmembermergerequestinteractionid"></a>`id` | [`MergeRequestID!`](#mergerequestid) | Global ID of the merge request. |
+
 ### `Pipeline`
 
 #### Fields
@@ -22067,7 +22693,7 @@ Represents a file or directory in the project repository that has been locked.
 | <a id="pipelinesourcejob"></a>`sourceJob` | [`CiJob`](#cijob) | Job where pipeline was triggered from. |
 | <a id="pipelinestages"></a>`stages` | [`CiStageConnection`](#cistageconnection) | Stages of the pipeline. (see [Connections](#connections)) |
 | <a id="pipelinestartedat"></a>`startedAt` | [`Time`](#time) | Timestamp when the pipeline was started. |
-| <a id="pipelinestatus"></a>`status` | [`PipelineStatusEnum!`](#pipelinestatusenum) | Status of the pipeline (CREATED, WAITING_FOR_RESOURCE, PREPARING, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL, SCHEDULED). |
+| <a id="pipelinestatus"></a>`status` | [`PipelineStatusEnum!`](#pipelinestatusenum) | Status of the pipeline (CREATED, WAITING_FOR_RESOURCE, PREPARING, WAITING_FOR_CALLBACK, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL, SCHEDULED). |
 | <a id="pipelinestuck"></a>`stuck` | [`Boolean!`](#boolean) | If the pipeline is stuck. |
 | <a id="pipelinetestreportsummary"></a>`testReportSummary` | [`TestReportSummary!`](#testreportsummary) | Summary of the test report generated by the pipeline. |
 | <a id="pipelinetotaljobs"></a>`totalJobs` | [`Int!`](#int) | The total number of jobs in the pipeline. |
@@ -22240,9 +22866,10 @@ Represents pipeline counts for the project.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="pipelinepermissionsadminpipeline"></a>`adminPipeline` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_pipeline` on this resource. |
-| <a id="pipelinepermissionsdestroypipeline"></a>`destroyPipeline` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_pipeline` on this resource. |
-| <a id="pipelinepermissionsupdatepipeline"></a>`updatePipeline` | [`Boolean!`](#boolean) | Indicates the user can perform `update_pipeline` on this resource. |
+| <a id="pipelinepermissionsadminpipeline"></a>`adminPipeline` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_pipeline` on this resource. |
+| <a id="pipelinepermissionscancelpipeline"></a>`cancelPipeline` | [`Boolean!`](#boolean) | If `true`, the user can perform `cancel_pipeline` on this resource. |
+| <a id="pipelinepermissionsdestroypipeline"></a>`destroyPipeline` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_pipeline` on this resource. |
+| <a id="pipelinepermissionsupdatepipeline"></a>`updatePipeline` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_pipeline` on this resource. |
 
 ### `PipelineSchedule`
 
@@ -22278,10 +22905,10 @@ Represents a pipeline schedule.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="pipelineschedulepermissionsadminpipelineschedule"></a>`adminPipelineSchedule` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_pipeline_schedule` on this resource. |
-| <a id="pipelineschedulepermissionsplaypipelineschedule"></a>`playPipelineSchedule` | [`Boolean!`](#boolean) | Indicates the user can perform `play_pipeline_schedule` on this resource. |
+| <a id="pipelineschedulepermissionsadminpipelineschedule"></a>`adminPipelineSchedule` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_pipeline_schedule` on this resource. |
+| <a id="pipelineschedulepermissionsplaypipelineschedule"></a>`playPipelineSchedule` | [`Boolean!`](#boolean) | If `true`, the user can perform `play_pipeline_schedule` on this resource. |
 | <a id="pipelineschedulepermissionstakeownershippipelineschedule"></a>`takeOwnershipPipelineSchedule` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 15.9. Use admin_pipeline_schedule permission to determine if the user can take ownership of a pipeline schedule. |
-| <a id="pipelineschedulepermissionsupdatepipelineschedule"></a>`updatePipelineSchedule` | [`Boolean!`](#boolean) | Indicates the user can perform `update_pipeline_schedule` on this resource. |
+| <a id="pipelineschedulepermissionsupdatepipelineschedule"></a>`updatePipelineSchedule` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_pipeline_schedule` on this resource. |
 
 ### `PipelineScheduleVariable`
 
@@ -22396,6 +23023,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectdependencyproxypackagessetting"></a>`dependencyProxyPackagesSetting` **{warning-solid}** | [`DependencyProxyPackagesSetting`](#dependencyproxypackagessetting) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Packages Dependency Proxy settings for the project. Requires the packages and dependency proxy to be enabled in the config. Requires the packages feature to be enabled at the project level. Returns `null` if `packages_dependency_proxy_maven` feature flag is disabled. |
 | <a id="projectdescription"></a>`description` | [`String`](#string) | Short description of the project. |
 | <a id="projectdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
+| <a id="projectdetailedimportstatus"></a>`detailedImportStatus` | [`DetailedImportStatus`](#detailedimportstatus) | Detailed import status of the project. |
 | <a id="projectdora"></a>`dora` | [`Dora`](#dora) | Project's DORA metrics. |
 | <a id="projectflowmetrics"></a>`flowMetrics` **{warning-solid}** | [`ProjectValueStreamAnalyticsFlowMetrics`](#projectvaluestreamanalyticsflowmetrics) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Flow metrics for value stream analytics. |
 | <a id="projectforkscount"></a>`forksCount` | [`Int!`](#int) | Number of times the project has been forked. |
@@ -23291,6 +23919,26 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectlabelsincludeancestorgroups"></a>`includeAncestorGroups` | [`Boolean`](#boolean) | Include labels from ancestor groups. |
 | <a id="projectlabelssearchterm"></a>`searchTerm` | [`String`](#string) | Search term to find labels with. |
 
+##### `Project.memberRoles`
+
+Member roles available for the group.
+
+WARNING:
+**Introduced** in 16.5.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`MemberRoleConnection`](#memberroleconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectmemberrolesid"></a>`id` | [`MemberRoleID`](#memberroleid) | Global ID of the member role to look up. |
+
 ##### `Project.mergeRequest`
 
 A single merge request of the project.
@@ -23416,6 +24064,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectpackagesincludeversionless"></a>`includeVersionless` | [`Boolean`](#boolean) | Include versionless packages. |
 | <a id="projectpackagespackagename"></a>`packageName` | [`String`](#string) | Search a package by name. |
 | <a id="projectpackagespackagetype"></a>`packageType` | [`PackageTypeEnum`](#packagetypeenum) | Filter a package by type. |
+| <a id="projectpackagespackageversion"></a>`packageVersion` | [`String`](#string) | Filter a package by version. If used in combination with `include_versionless`, then no versionless packages are returned. |
 | <a id="projectpackagessort"></a>`sort` | [`PackageSort`](#packagesort) | Sort packages by this criteria. |
 | <a id="projectpackagesstatus"></a>`status` | [`PackageStatus`](#packagestatus) | Filter a package by status. |
 
@@ -23604,6 +24253,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectrunnersactive"></a>`active` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 14.8. This was renamed. Use: `paused`. |
+| <a id="projectrunnerscreatorid"></a>`creatorId` | [`UserID`](#userid) | Filter runners by creator ID. |
 | <a id="projectrunnerspaused"></a>`paused` | [`Boolean`](#boolean) | Filter runners by `paused` (true) or `active` (false) status. |
 | <a id="projectrunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
 | <a id="projectrunnerssort"></a>`sort` | [`CiRunnerSort`](#cirunnersort) | Sort order of results. |
@@ -23611,6 +24261,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectrunnerstaglist"></a>`tagList` | [`[String!]`](#string) | Filter by tags associated with the runner (comma-separated or array). |
 | <a id="projectrunnerstype"></a>`type` | [`CiRunnerType`](#cirunnertype) | Filter runners by type. |
 | <a id="projectrunnersupgradestatus"></a>`upgradeStatus` | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | Filter by upgrade status. |
+| <a id="projectrunnersversionprefix"></a>`versionPrefix` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
 
 ##### `Project.scanExecutionPolicies`
 
@@ -23960,50 +24611,50 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectpermissionsadminoperations"></a>`adminOperations` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_operations` on this resource. |
-| <a id="projectpermissionsadminpathlocks"></a>`adminPathLocks` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_path_locks` on this resource. |
-| <a id="projectpermissionsadminproject"></a>`adminProject` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_project` on this resource. |
-| <a id="projectpermissionsadminremotemirror"></a>`adminRemoteMirror` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_remote_mirror` on this resource. |
-| <a id="projectpermissionsadminwiki"></a>`adminWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_wiki` on this resource. |
-| <a id="projectpermissionsarchiveproject"></a>`archiveProject` | [`Boolean!`](#boolean) | Indicates the user can perform `archive_project` on this resource. |
-| <a id="projectpermissionschangenamespace"></a>`changeNamespace` | [`Boolean!`](#boolean) | Indicates the user can perform `change_namespace` on this resource. |
-| <a id="projectpermissionschangevisibilitylevel"></a>`changeVisibilityLevel` | [`Boolean!`](#boolean) | Indicates the user can perform `change_visibility_level` on this resource. |
-| <a id="projectpermissionscreatedeployment"></a>`createDeployment` | [`Boolean!`](#boolean) | Indicates the user can perform `create_deployment` on this resource. |
-| <a id="projectpermissionscreatedesign"></a>`createDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `create_design` on this resource. |
-| <a id="projectpermissionscreateissue"></a>`createIssue` | [`Boolean!`](#boolean) | Indicates the user can perform `create_issue` on this resource. |
-| <a id="projectpermissionscreatelabel"></a>`createLabel` | [`Boolean!`](#boolean) | Indicates the user can perform `create_label` on this resource. |
-| <a id="projectpermissionscreatemergerequestfrom"></a>`createMergeRequestFrom` | [`Boolean!`](#boolean) | Indicates the user can perform `create_merge_request_from` on this resource. |
-| <a id="projectpermissionscreatemergerequestin"></a>`createMergeRequestIn` | [`Boolean!`](#boolean) | Indicates the user can perform `create_merge_request_in` on this resource. |
-| <a id="projectpermissionscreatepages"></a>`createPages` | [`Boolean!`](#boolean) | Indicates the user can perform `create_pages` on this resource. |
-| <a id="projectpermissionscreatepipeline"></a>`createPipeline` | [`Boolean!`](#boolean) | Indicates the user can perform `create_pipeline` on this resource. |
-| <a id="projectpermissionscreatepipelineschedule"></a>`createPipelineSchedule` | [`Boolean!`](#boolean) | Indicates the user can perform `create_pipeline_schedule` on this resource. |
-| <a id="projectpermissionscreatesnippet"></a>`createSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `create_snippet` on this resource. |
-| <a id="projectpermissionscreatewiki"></a>`createWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `create_wiki` on this resource. |
-| <a id="projectpermissionsdestroydesign"></a>`destroyDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_design` on this resource. |
-| <a id="projectpermissionsdestroypages"></a>`destroyPages` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_pages` on this resource. |
-| <a id="projectpermissionsdestroywiki"></a>`destroyWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_wiki` on this resource. |
-| <a id="projectpermissionsdownloadcode"></a>`downloadCode` | [`Boolean!`](#boolean) | Indicates the user can perform `download_code` on this resource. |
-| <a id="projectpermissionsdownloadwikicode"></a>`downloadWikiCode` | [`Boolean!`](#boolean) | Indicates the user can perform `download_wiki_code` on this resource. |
-| <a id="projectpermissionsforkproject"></a>`forkProject` | [`Boolean!`](#boolean) | Indicates the user can perform `fork_project` on this resource. |
-| <a id="projectpermissionspushcode"></a>`pushCode` | [`Boolean!`](#boolean) | Indicates the user can perform `push_code` on this resource. |
-| <a id="projectpermissionspushtodeleteprotectedbranch"></a>`pushToDeleteProtectedBranch` | [`Boolean!`](#boolean) | Indicates the user can perform `push_to_delete_protected_branch` on this resource. |
-| <a id="projectpermissionsreadcommitstatus"></a>`readCommitStatus` | [`Boolean!`](#boolean) | Indicates the user can perform `read_commit_status` on this resource. |
-| <a id="projectpermissionsreadcycleanalytics"></a>`readCycleAnalytics` | [`Boolean!`](#boolean) | Indicates the user can perform `read_cycle_analytics` on this resource. |
-| <a id="projectpermissionsreaddesign"></a>`readDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `read_design` on this resource. |
-| <a id="projectpermissionsreadenvironment"></a>`readEnvironment` | [`Boolean!`](#boolean) | Indicates the user can perform `read_environment` on this resource. |
-| <a id="projectpermissionsreadmergerequest"></a>`readMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `read_merge_request` on this resource. |
-| <a id="projectpermissionsreadpagescontent"></a>`readPagesContent` | [`Boolean!`](#boolean) | Indicates the user can perform `read_pages_content` on this resource. |
-| <a id="projectpermissionsreadproject"></a>`readProject` | [`Boolean!`](#boolean) | Indicates the user can perform `read_project` on this resource. |
-| <a id="projectpermissionsreadprojectmember"></a>`readProjectMember` | [`Boolean!`](#boolean) | Indicates the user can perform `read_project_member` on this resource. |
-| <a id="projectpermissionsreadwiki"></a>`readWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `read_wiki` on this resource. |
-| <a id="projectpermissionsremoveforkproject"></a>`removeForkProject` | [`Boolean!`](#boolean) | Indicates the user can perform `remove_fork_project` on this resource. |
-| <a id="projectpermissionsremovepages"></a>`removePages` | [`Boolean!`](#boolean) | Indicates the user can perform `remove_pages` on this resource. |
-| <a id="projectpermissionsremoveproject"></a>`removeProject` | [`Boolean!`](#boolean) | Indicates the user can perform `remove_project` on this resource. |
-| <a id="projectpermissionsrenameproject"></a>`renameProject` | [`Boolean!`](#boolean) | Indicates the user can perform `rename_project` on this resource. |
-| <a id="projectpermissionsrequestaccess"></a>`requestAccess` | [`Boolean!`](#boolean) | Indicates the user can perform `request_access` on this resource. |
-| <a id="projectpermissionsupdatepages"></a>`updatePages` | [`Boolean!`](#boolean) | Indicates the user can perform `update_pages` on this resource. |
-| <a id="projectpermissionsupdatewiki"></a>`updateWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `update_wiki` on this resource. |
-| <a id="projectpermissionsuploadfile"></a>`uploadFile` | [`Boolean!`](#boolean) | Indicates the user can perform `upload_file` on this resource. |
+| <a id="projectpermissionsadminoperations"></a>`adminOperations` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_operations` on this resource. |
+| <a id="projectpermissionsadminpathlocks"></a>`adminPathLocks` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_path_locks` on this resource. |
+| <a id="projectpermissionsadminproject"></a>`adminProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_project` on this resource. |
+| <a id="projectpermissionsadminremotemirror"></a>`adminRemoteMirror` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_remote_mirror` on this resource. |
+| <a id="projectpermissionsadminwiki"></a>`adminWiki` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_wiki` on this resource. |
+| <a id="projectpermissionsarchiveproject"></a>`archiveProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `archive_project` on this resource. |
+| <a id="projectpermissionschangenamespace"></a>`changeNamespace` | [`Boolean!`](#boolean) | If `true`, the user can perform `change_namespace` on this resource. |
+| <a id="projectpermissionschangevisibilitylevel"></a>`changeVisibilityLevel` | [`Boolean!`](#boolean) | If `true`, the user can perform `change_visibility_level` on this resource. |
+| <a id="projectpermissionscreatedeployment"></a>`createDeployment` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_deployment` on this resource. |
+| <a id="projectpermissionscreatedesign"></a>`createDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_design` on this resource. |
+| <a id="projectpermissionscreateissue"></a>`createIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_issue` on this resource. |
+| <a id="projectpermissionscreatelabel"></a>`createLabel` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_label` on this resource. |
+| <a id="projectpermissionscreatemergerequestfrom"></a>`createMergeRequestFrom` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_merge_request_from` on this resource. |
+| <a id="projectpermissionscreatemergerequestin"></a>`createMergeRequestIn` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_merge_request_in` on this resource. |
+| <a id="projectpermissionscreatepages"></a>`createPages` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_pages` on this resource. |
+| <a id="projectpermissionscreatepipeline"></a>`createPipeline` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_pipeline` on this resource. |
+| <a id="projectpermissionscreatepipelineschedule"></a>`createPipelineSchedule` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_pipeline_schedule` on this resource. |
+| <a id="projectpermissionscreatesnippet"></a>`createSnippet` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_snippet` on this resource. |
+| <a id="projectpermissionscreatewiki"></a>`createWiki` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_wiki` on this resource. |
+| <a id="projectpermissionsdestroydesign"></a>`destroyDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_design` on this resource. |
+| <a id="projectpermissionsdestroypages"></a>`destroyPages` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_pages` on this resource. |
+| <a id="projectpermissionsdestroywiki"></a>`destroyWiki` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_wiki` on this resource. |
+| <a id="projectpermissionsdownloadcode"></a>`downloadCode` | [`Boolean!`](#boolean) | If `true`, the user can perform `download_code` on this resource. |
+| <a id="projectpermissionsdownloadwikicode"></a>`downloadWikiCode` | [`Boolean!`](#boolean) | If `true`, the user can perform `download_wiki_code` on this resource. |
+| <a id="projectpermissionsforkproject"></a>`forkProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `fork_project` on this resource. |
+| <a id="projectpermissionspushcode"></a>`pushCode` | [`Boolean!`](#boolean) | If `true`, the user can perform `push_code` on this resource. |
+| <a id="projectpermissionspushtodeleteprotectedbranch"></a>`pushToDeleteProtectedBranch` | [`Boolean!`](#boolean) | If `true`, the user can perform `push_to_delete_protected_branch` on this resource. |
+| <a id="projectpermissionsreadcommitstatus"></a>`readCommitStatus` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_commit_status` on this resource. |
+| <a id="projectpermissionsreadcycleanalytics"></a>`readCycleAnalytics` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_cycle_analytics` on this resource. |
+| <a id="projectpermissionsreaddesign"></a>`readDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_design` on this resource. |
+| <a id="projectpermissionsreadenvironment"></a>`readEnvironment` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_environment` on this resource. |
+| <a id="projectpermissionsreadmergerequest"></a>`readMergeRequest` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_merge_request` on this resource. |
+| <a id="projectpermissionsreadpagescontent"></a>`readPagesContent` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_pages_content` on this resource. |
+| <a id="projectpermissionsreadproject"></a>`readProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_project` on this resource. |
+| <a id="projectpermissionsreadprojectmember"></a>`readProjectMember` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_project_member` on this resource. |
+| <a id="projectpermissionsreadwiki"></a>`readWiki` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_wiki` on this resource. |
+| <a id="projectpermissionsremoveforkproject"></a>`removeForkProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_fork_project` on this resource. |
+| <a id="projectpermissionsremovepages"></a>`removePages` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_pages` on this resource. |
+| <a id="projectpermissionsremoveproject"></a>`removeProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_project` on this resource. |
+| <a id="projectpermissionsrenameproject"></a>`renameProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `rename_project` on this resource. |
+| <a id="projectpermissionsrequestaccess"></a>`requestAccess` | [`Boolean!`](#boolean) | If `true`, the user can perform `request_access` on this resource. |
+| <a id="projectpermissionsupdatepages"></a>`updatePages` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_pages` on this resource. |
+| <a id="projectpermissionsupdatewiki"></a>`updateWiki` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_wiki` on this resource. |
+| <a id="projectpermissionsuploadfile"></a>`uploadFile` | [`Boolean!`](#boolean) | If `true`, the user can perform `upload_file` on this resource. |
 
 ### `ProjectRepositoryRegistry`
 
@@ -24062,7 +24713,13 @@ Represents the source of a security policy belonging to a project.
 | <a id="projectstatisticsbuildartifactssize"></a>`buildArtifactsSize` | [`Float!`](#float) | Build artifacts size of the project in bytes. |
 | <a id="projectstatisticscommitcount"></a>`commitCount` | [`Float!`](#float) | Commit count of the project. |
 | <a id="projectstatisticscontainerregistrysize"></a>`containerRegistrySize` | [`Float`](#float) | Container Registry size of the project in bytes. |
+| <a id="projectstatisticscostfactoredbuildartifactssize"></a>`costFactoredBuildArtifactsSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Build artifacts size in bytes with any applicable cost factor for forks applied. This will equal build_artifacts_size if there is no applicable cost factor. |
+| <a id="projectstatisticscostfactoredlfsobjectssize"></a>`costFactoredLfsObjectsSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. LFS objects size in bytes with any applicable cost factor for forks applied. This will equal lfs_objects_size if there is no applicable cost factor. |
+| <a id="projectstatisticscostfactoredpackagessize"></a>`costFactoredPackagesSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Packages size in bytes with any applicable cost factor for forks applied. This will equal packages_size if there is no applicable cost factor. |
+| <a id="projectstatisticscostfactoredrepositorysize"></a>`costFactoredRepositorySize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Repository size in bytes with any applicable cost factor for forks applied. This will equal repository_size if there is no applicable cost factor. |
+| <a id="projectstatisticscostfactoredsnippetssize"></a>`costFactoredSnippetsSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Snippets size in bytes with any applicable cost factor for forks applied. This will equal snippets_size if there is no applicable cost factor. |
 | <a id="projectstatisticscostfactoredstoragesize"></a>`costFactoredStorageSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in 16.2. This feature is an Experiment. It can be changed or removed at any time. Storage size in bytes with any applicable cost factor for forks applied. This will equal storage_size if there is no applicable cost factor. |
+| <a id="projectstatisticscostfactoredwikisize"></a>`costFactoredWikiSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Wiki size in bytes with any applicable cost factor for forks applied. This will equal wiki_size if there is no applicable cost factor. |
 | <a id="projectstatisticslfsobjectssize"></a>`lfsObjectsSize` | [`Float!`](#float) | Large File Storage (LFS) object size of the project in bytes. |
 | <a id="projectstatisticspackagessize"></a>`packagesSize` | [`Float!`](#float) | Packages size of the project in bytes. |
 | <a id="projectstatisticspipelineartifactssize"></a>`pipelineArtifactsSize` | [`Float`](#float) | CI Pipeline artifacts size in bytes. |
@@ -24316,8 +24973,14 @@ Pypi metadata.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="pypimetadataauthoremail"></a>`authorEmail` | [`String`](#string) | Author email address(es) in RFC-822 format. |
+| <a id="pypimetadatadescription"></a>`description` | [`String`](#string) | Longer description that can run to several paragraphs. |
+| <a id="pypimetadatadescriptioncontenttype"></a>`descriptionContentType` | [`String`](#string) | Markup syntax used in the description field. |
 | <a id="pypimetadataid"></a>`id` | [`PackagesPypiMetadatumID!`](#packagespypimetadatumid) | ID of the metadatum. |
+| <a id="pypimetadatakeywords"></a>`keywords` | [`String`](#string) | List of keywords, separated by commas. |
+| <a id="pypimetadatametadataversion"></a>`metadataVersion` | [`String`](#string) | Metadata version. |
 | <a id="pypimetadatarequiredpython"></a>`requiredPython` | [`String`](#string) | Required Python version of the Pypi package. |
+| <a id="pypimetadatasummary"></a>`summary` | [`String`](#string) | One-line summary of the description. |
 
 ### `QueryComplexity`
 
@@ -24702,11 +25365,11 @@ Check permissions for the current user on a requirement.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="requirementpermissionsadminrequirement"></a>`adminRequirement` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_requirement` on this resource. |
-| <a id="requirementpermissionscreaterequirement"></a>`createRequirement` | [`Boolean!`](#boolean) | Indicates the user can perform `create_requirement` on this resource. |
-| <a id="requirementpermissionsdestroyrequirement"></a>`destroyRequirement` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_requirement` on this resource. |
-| <a id="requirementpermissionsreadrequirement"></a>`readRequirement` | [`Boolean!`](#boolean) | Indicates the user can perform `read_requirement` on this resource. |
-| <a id="requirementpermissionsupdaterequirement"></a>`updateRequirement` | [`Boolean!`](#boolean) | Indicates the user can perform `update_requirement` on this resource. |
+| <a id="requirementpermissionsadminrequirement"></a>`adminRequirement` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_requirement` on this resource. |
+| <a id="requirementpermissionscreaterequirement"></a>`createRequirement` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_requirement` on this resource. |
+| <a id="requirementpermissionsdestroyrequirement"></a>`destroyRequirement` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_requirement` on this resource. |
+| <a id="requirementpermissionsreadrequirement"></a>`readRequirement` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_requirement` on this resource. |
+| <a id="requirementpermissionsupdaterequirement"></a>`updateRequirement` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_requirement` on this resource. |
 
 ### `RequirementStatesCount`
 
@@ -24755,10 +25418,10 @@ Counts of requirements by their state.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="runnerpermissionsassignrunner"></a>`assignRunner` | [`Boolean!`](#boolean) | Indicates the user can perform `assign_runner` on this resource. |
-| <a id="runnerpermissionsdeleterunner"></a>`deleteRunner` | [`Boolean!`](#boolean) | Indicates the user can perform `delete_runner` on this resource. |
-| <a id="runnerpermissionsreadrunner"></a>`readRunner` | [`Boolean!`](#boolean) | Indicates the user can perform `read_runner` on this resource. |
-| <a id="runnerpermissionsupdaterunner"></a>`updateRunner` | [`Boolean!`](#boolean) | Indicates the user can perform `update_runner` on this resource. |
+| <a id="runnerpermissionsassignrunner"></a>`assignRunner` | [`Boolean!`](#boolean) | If `true`, the user can perform `assign_runner` on this resource. |
+| <a id="runnerpermissionsdeleterunner"></a>`deleteRunner` | [`Boolean!`](#boolean) | If `true`, the user can perform `delete_runner` on this resource. |
+| <a id="runnerpermissionsreadrunner"></a>`readRunner` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_runner` on this resource. |
+| <a id="runnerpermissionsupdaterunner"></a>`updateRunner` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_runner` on this resource. |
 
 ### `RunnerPlatform`
 
@@ -25252,12 +25915,12 @@ Represents how the blob content should be displayed.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="snippetpermissionsadminsnippet"></a>`adminSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_snippet` on this resource. |
-| <a id="snippetpermissionsawardemoji"></a>`awardEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `award_emoji` on this resource. |
-| <a id="snippetpermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource. |
-| <a id="snippetpermissionsreadsnippet"></a>`readSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `read_snippet` on this resource. |
-| <a id="snippetpermissionsreportsnippet"></a>`reportSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `report_snippet` on this resource. |
-| <a id="snippetpermissionsupdatesnippet"></a>`updateSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `update_snippet` on this resource. |
+| <a id="snippetpermissionsadminsnippet"></a>`adminSnippet` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_snippet` on this resource. |
+| <a id="snippetpermissionsawardemoji"></a>`awardEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `award_emoji` on this resource. |
+| <a id="snippetpermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
+| <a id="snippetpermissionsreadsnippet"></a>`readSnippet` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_snippet` on this resource. |
+| <a id="snippetpermissionsreportsnippet"></a>`reportSnippet` | [`Boolean!`](#boolean) | If `true`, the user can perform `report_snippet` on this resource. |
+| <a id="snippetpermissionsupdatesnippet"></a>`updateSnippet` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_snippet` on this resource. |
 
 ### `SnippetRepositoryRegistry`
 
@@ -25642,7 +26305,7 @@ Describes an incident management timeline event.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="timelogpermissionsadmintimelog"></a>`adminTimelog` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_timelog` on this resource. |
+| <a id="timelogpermissionsadmintimelog"></a>`adminTimelog` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_timelog` on this resource. |
 
 ### `Todo`
 
@@ -25812,18 +26475,20 @@ Core representation of a GitLab user.
 | <a id="usercoreid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="usercoreide"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="usercorejobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
+| <a id="usercorelastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
 | <a id="usercorelinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="usercorelocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="usercorename"></a>`name` | [`String!`](#string) | Human-readable name of the user. Returns `****` if the user is a project bot and the requester does not have permission to view the project. |
 | <a id="usercorenamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="usercorenamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
 | <a id="usercoreorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
+| <a id="usercoreorganizations"></a>`organizations` **{warning-solid}** | [`OrganizationConnection`](#organizationconnection) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Organizations where the user has access. |
 | <a id="usercorepreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="usercoreprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="usercoreprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="usercorepronouns"></a>`pronouns` | [`String`](#string) | Pronouns of the user. |
 | <a id="usercorepublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
-| <a id="usercoresavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
+| <a id="usercoresavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="usercorestate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="usercorestatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="usercoretwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
@@ -25962,7 +26627,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `UserCore.savedReply`
 
-Saved reply authored by the user. Will not return saved reply if `saved_replies` feature flag is disabled.
+Saved reply authored by the user.
 
 Returns [`SavedReply`](#savedreply).
 
@@ -26092,7 +26757,7 @@ fields relate to interactions between the two entities.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="userpermissionscreatesnippet"></a>`createSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `create_snippet` on this resource. |
+| <a id="userpermissionscreatesnippet"></a>`createSnippet` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_snippet` on this resource. |
 
 ### `UserPreferences`
 
@@ -26113,6 +26778,17 @@ fields relate to interactions between the two entities.
 | <a id="userstatusemoji"></a>`emoji` | [`String`](#string) | String representation of emoji. |
 | <a id="userstatusmessage"></a>`message` | [`String`](#string) | User status message. |
 | <a id="userstatusmessagehtml"></a>`messageHtml` | [`String`](#string) | HTML of the user status message. |
+
+### `ValueStream`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreamid"></a>`id` | [`AnalyticsCycleAnalyticsValueStreamID!`](#analyticscycleanalyticsvaluestreamid) | ID of the value stream. |
+| <a id="valuestreamname"></a>`name` | [`String!`](#string) | Name of the value stream. |
+| <a id="valuestreamnamespace"></a>`namespace` | [`Namespace!`](#namespace) | Namespace the value stream belongs to. |
+| <a id="valuestreamproject"></a>`project` **{warning-solid}** | [`Project`](#project) | **Introduced** in 15.6. This feature is an Experiment. It can be changed or removed at any time. Project the value stream belongs to, returns empty if it belongs to a group. |
 
 ### `ValueStreamAnalyticsMetric`
 
@@ -26675,15 +27351,15 @@ Check permissions for the current user on a vulnerability.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="vulnerabilitypermissionsadminvulnerability"></a>`adminVulnerability` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_vulnerability` on this resource. |
-| <a id="vulnerabilitypermissionsadminvulnerabilityexternalissuelink"></a>`adminVulnerabilityExternalIssueLink` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_vulnerability_external_issue_link` on this resource. |
-| <a id="vulnerabilitypermissionsadminvulnerabilityissuelink"></a>`adminVulnerabilityIssueLink` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_vulnerability_issue_link` on this resource. |
-| <a id="vulnerabilitypermissionscreatevulnerabilityexport"></a>`createVulnerabilityExport` | [`Boolean!`](#boolean) | Indicates the user can perform `create_vulnerability_export` on this resource. |
-| <a id="vulnerabilitypermissionscreatevulnerabilityfeedback"></a>`createVulnerabilityFeedback` | [`Boolean!`](#boolean) | Indicates the user can perform `create_vulnerability_feedback` on this resource. |
-| <a id="vulnerabilitypermissionsdestroyvulnerabilityfeedback"></a>`destroyVulnerabilityFeedback` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_vulnerability_feedback` on this resource. |
-| <a id="vulnerabilitypermissionsreadvulnerability"></a>`readVulnerability` | [`Boolean!`](#boolean) | Indicates the user can perform `read_vulnerability` on this resource. |
-| <a id="vulnerabilitypermissionsreadvulnerabilityfeedback"></a>`readVulnerabilityFeedback` | [`Boolean!`](#boolean) | Indicates the user can perform `read_vulnerability_feedback` on this resource. |
-| <a id="vulnerabilitypermissionsupdatevulnerabilityfeedback"></a>`updateVulnerabilityFeedback` | [`Boolean!`](#boolean) | Indicates the user can perform `update_vulnerability_feedback` on this resource. |
+| <a id="vulnerabilitypermissionsadminvulnerability"></a>`adminVulnerability` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_vulnerability` on this resource. |
+| <a id="vulnerabilitypermissionsadminvulnerabilityexternalissuelink"></a>`adminVulnerabilityExternalIssueLink` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_vulnerability_external_issue_link` on this resource. |
+| <a id="vulnerabilitypermissionsadminvulnerabilityissuelink"></a>`adminVulnerabilityIssueLink` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_vulnerability_issue_link` on this resource. |
+| <a id="vulnerabilitypermissionscreatevulnerabilityexport"></a>`createVulnerabilityExport` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_vulnerability_export` on this resource. |
+| <a id="vulnerabilitypermissionscreatevulnerabilityfeedback"></a>`createVulnerabilityFeedback` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_vulnerability_feedback` on this resource. |
+| <a id="vulnerabilitypermissionsdestroyvulnerabilityfeedback"></a>`destroyVulnerabilityFeedback` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_vulnerability_feedback` on this resource. |
+| <a id="vulnerabilitypermissionsreadvulnerability"></a>`readVulnerability` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_vulnerability` on this resource. |
+| <a id="vulnerabilitypermissionsreadvulnerabilityfeedback"></a>`readVulnerabilityFeedback` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_vulnerability_feedback` on this resource. |
+| <a id="vulnerabilitypermissionsupdatevulnerabilityfeedback"></a>`updateVulnerabilityFeedback` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_vulnerability_feedback` on this resource. |
 
 ### `VulnerabilityRemediationType`
 
@@ -26876,14 +27552,14 @@ Check permissions for the current user on a work item.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitempermissionsadminparentlink"></a>`adminParentLink` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_parent_link` on this resource. |
-| <a id="workitempermissionsadminworkitem"></a>`adminWorkItem` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_work_item` on this resource. |
-| <a id="workitempermissionsadminworkitemlink"></a>`adminWorkItemLink` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_work_item_link` on this resource. |
-| <a id="workitempermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource. |
-| <a id="workitempermissionsdeleteworkitem"></a>`deleteWorkItem` | [`Boolean!`](#boolean) | Indicates the user can perform `delete_work_item` on this resource. |
-| <a id="workitempermissionsreadworkitem"></a>`readWorkItem` | [`Boolean!`](#boolean) | Indicates the user can perform `read_work_item` on this resource. |
-| <a id="workitempermissionssetworkitemmetadata"></a>`setWorkItemMetadata` | [`Boolean!`](#boolean) | Indicates the user can perform `set_work_item_metadata` on this resource. |
-| <a id="workitempermissionsupdateworkitem"></a>`updateWorkItem` | [`Boolean!`](#boolean) | Indicates the user can perform `update_work_item` on this resource. |
+| <a id="workitempermissionsadminparentlink"></a>`adminParentLink` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_parent_link` on this resource. |
+| <a id="workitempermissionsadminworkitem"></a>`adminWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_work_item` on this resource. |
+| <a id="workitempermissionsadminworkitemlink"></a>`adminWorkItemLink` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_work_item_link` on this resource. |
+| <a id="workitempermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
+| <a id="workitempermissionsdeleteworkitem"></a>`deleteWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `delete_work_item` on this resource. |
+| <a id="workitempermissionsreadworkitem"></a>`readWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_work_item` on this resource. |
+| <a id="workitempermissionssetworkitemmetadata"></a>`setWorkItemMetadata` | [`Boolean!`](#boolean) | If `true`, the user can perform `set_work_item_metadata` on this resource. |
+| <a id="workitempermissionsupdateworkitem"></a>`updateWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_work_item` on this resource. |
 
 ### `WorkItemType`
 
@@ -27411,6 +28087,14 @@ All possible ways to specify the API surface for an API fuzzing scan.
 | <a id="apifuzzingscanmodeopenapi"></a>`OPENAPI` | The API surface is specified by a OPENAPI file. |
 | <a id="apifuzzingscanmodepostman"></a>`POSTMAN` | The API surface is specified by a POSTMAN file. |
 
+### `ApprovalReportType`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="approvalreporttypeany_merge_request"></a>`ANY_MERGE_REQUEST` | Represents report_type for any_merge_request related approval rules. |
+| <a id="approvalreporttypelicense_scanning"></a>`LICENSE_SCANNING` | Represents report_type for license scanning related approval rules. |
+| <a id="approvalreporttypescan_finding"></a>`SCAN_FINDING` | Represents report_type for vulnerability check related approval rules. |
+
 ### `ApprovalRuleType`
 
 The kind of an approval rule.
@@ -27464,24 +28148,26 @@ Types of blob viewers.
 | <a id="blobviewerstyperich"></a>`rich` | Rich blob viewers type. |
 | <a id="blobviewerstypesimple"></a>`simple` | Simple blob viewers type. |
 
+### `CiCatalogResourceScope`
+
+Values for scoping catalog resources.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cicatalogresourcescopeall"></a>`ALL` | All catalog resources visible to the current user. |
+
 ### `CiCatalogResourceSort`
 
 Values for sorting catalog resources.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="cicatalogresourcesortcreated_asc"></a>`CREATED_ASC` | Created at ascending order. |
-| <a id="cicatalogresourcesortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
+| <a id="cicatalogresourcesortcreated_asc"></a>`CREATED_ASC` | Created date by ascending order. |
+| <a id="cicatalogresourcesortcreated_desc"></a>`CREATED_DESC` | Created date by descending order. |
 | <a id="cicatalogresourcesortlatest_released_at_asc"></a>`LATEST_RELEASED_AT_ASC` | Latest release date by ascending order. |
 | <a id="cicatalogresourcesortlatest_released_at_desc"></a>`LATEST_RELEASED_AT_DESC` | Latest release date by descending order. |
 | <a id="cicatalogresourcesortname_asc"></a>`NAME_ASC` | Name by ascending order. |
 | <a id="cicatalogresourcesortname_desc"></a>`NAME_DESC` | Name by descending order. |
-| <a id="cicatalogresourcesortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
-| <a id="cicatalogresourcesortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
-| <a id="cicatalogresourcesortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_ASC`. |
-| <a id="cicatalogresourcesortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_DESC`. |
-| <a id="cicatalogresourcesortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_ASC`. |
-| <a id="cicatalogresourcesortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_DESC`. |
 
 ### `CiConfigIncludeType`
 
@@ -27586,6 +28272,7 @@ Values for sorting inherited variables.
 | <a id="cijobstatusscheduled"></a>`SCHEDULED` | A job that is scheduled. |
 | <a id="cijobstatusskipped"></a>`SKIPPED` | A job that is skipped. |
 | <a id="cijobstatussuccess"></a>`SUCCESS` | A job that is success. |
+| <a id="cijobstatuswaiting_for_callback"></a>`WAITING_FOR_CALLBACK` | A job that is waiting for callback. |
 | <a id="cijobstatuswaiting_for_resource"></a>`WAITING_FOR_RESOURCE` | A job that is waiting for resource. |
 
 ### `CiJobTokenScopeDirection`
@@ -27690,15 +28377,25 @@ Values for sorting variables.
 | <a id="codequalitydegradationseverityminor"></a>`MINOR` | Code Quality degradation has a status of minor. |
 | <a id="codequalitydegradationseverityunknown"></a>`UNKNOWN` | Code Quality degradation has a status of unknown. |
 
-### `CodequalityReportsComparerReportStatus`
+### `CodequalityReportsComparerReportGenerationStatus`
 
-Report comparison status.
+Represents the generation status of the compared codequality report.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="codequalityreportscomparerreportstatusfailed"></a>`FAILED` | Report failed to generate. |
-| <a id="codequalityreportscomparerreportstatusnot_found"></a>`NOT_FOUND` | Head report or base report not found. |
-| <a id="codequalityreportscomparerreportstatussuccess"></a>`SUCCESS` | Report successfully generated. |
+| <a id="codequalityreportscomparerreportgenerationstatuserror"></a>`ERROR` | An error happened while generating the report. |
+| <a id="codequalityreportscomparerreportgenerationstatusparsed"></a>`PARSED` | Report was generated. |
+| <a id="codequalityreportscomparerreportgenerationstatusparsing"></a>`PARSING` | Report is being generated. |
+
+### `CodequalityReportsComparerStatus`
+
+Represents the state of the code quality report.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="codequalityreportscomparerstatusfailed"></a>`FAILED` | Report generated and there are new code quality degradations. |
+| <a id="codequalityreportscomparerstatusnot_found"></a>`NOT_FOUND` | Head report or base report not found. |
+| <a id="codequalityreportscomparerstatussuccess"></a>`SUCCESS` | No degradations found in the head pipeline report. |
 
 ### `CommitActionMode`
 
@@ -27872,6 +28569,16 @@ Values for sorting contacts.
 | <a id="containerexpirationpolicyolderthanenumseven_days"></a>`SEVEN_DAYS` | 7 days until tags are automatically removed. |
 | <a id="containerexpirationpolicyolderthanenumsixty_days"></a>`SIXTY_DAYS` | 60 days until tags are automatically removed. |
 | <a id="containerexpirationpolicyolderthanenumthirty_days"></a>`THIRTY_DAYS` | 30 days until tags are automatically removed. |
+
+### `ContainerRegistryProtectionRuleAccessLevel`
+
+Access level of a container registry protection rule resource.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="containerregistryprotectionruleaccessleveldeveloper"></a>`DEVELOPER` | Developer access. |
+| <a id="containerregistryprotectionruleaccesslevelmaintainer"></a>`MAINTAINER` | Maintainer access. |
+| <a id="containerregistryprotectionruleaccesslevelowner"></a>`OWNER` | Owner access. |
 
 ### `ContainerRepositoryCleanupStatus`
 
@@ -28693,6 +29400,21 @@ Name of access levels of a group or project member.
 | <a id="memberaccesslevelnameowner"></a>`OWNER` | Owner access. |
 | <a id="memberaccesslevelnamereporter"></a>`REPORTER` | Reporter access. |
 
+### `MemberRolePermission`
+
+Member role permission.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="memberrolepermissionadmin_group_member"></a>`ADMIN_GROUP_MEMBER` | Allows admin access to group members. |
+| <a id="memberrolepermissionadmin_merge_request"></a>`ADMIN_MERGE_REQUEST` | Allows admin access to the merge requests. |
+| <a id="memberrolepermissionadmin_vulnerability"></a>`ADMIN_VULNERABILITY` | Allows admin access to the vulnerability reports. |
+| <a id="memberrolepermissionarchive_project"></a>`ARCHIVE_PROJECT` | Allows to archive projects. |
+| <a id="memberrolepermissionmanage_project_access_tokens"></a>`MANAGE_PROJECT_ACCESS_TOKENS` | Allows manage access to the project access tokens. |
+| <a id="memberrolepermissionread_code"></a>`READ_CODE` | Allows read-only access to the source code. |
+| <a id="memberrolepermissionread_dependency"></a>`READ_DEPENDENCY` | Allows read-only access to the dependencies. |
+| <a id="memberrolepermissionread_vulnerability"></a>`READ_VULNERABILITY` | Allows read-only access to the vulnerability reports. |
+
 ### `MemberSort`
 
 Values for sorting members.
@@ -28727,8 +29449,9 @@ State of a review of a GitLab merge request.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="mergerequestreviewstatereviewed"></a>`REVIEWED` | The merge request is reviewed. |
-| <a id="mergerequestreviewstateunreviewed"></a>`UNREVIEWED` | The merge request is unreviewed. |
+| <a id="mergerequestreviewstaterequested_changes"></a>`REQUESTED_CHANGES` | Merge request reviewer has requested changes. |
+| <a id="mergerequestreviewstatereviewed"></a>`REVIEWED` | Merge request reviewer has reviewed. |
+| <a id="mergerequestreviewstateunreviewed"></a>`UNREVIEWED` | Awaiting review from merge request reviewer. |
 
 ### `MergeRequestSort`
 
@@ -29015,6 +29738,7 @@ Values for package manager.
 | <a id="packagemanagerpip"></a>`PIP` | Package manager: pip. |
 | <a id="packagemanagerpipenv"></a>`PIPENV` | Package manager: pipenv. |
 | <a id="packagemanagerpnpm"></a>`PNPM` | Package manager: pnpm. |
+| <a id="packagemanagerpoetry"></a>`POETRY` | Package manager: poetry. |
 | <a id="packagemanagersbt"></a>`SBT` | Package manager: sbt. |
 | <a id="packagemanagersetuptools"></a>`SETUPTOOLS` | Package manager: setuptools. |
 | <a id="packagemanageryarn"></a>`YARN` | Package manager: yarn. |
@@ -29149,6 +29873,7 @@ Event type of the pipeline associated with a merge request.
 | <a id="pipelinestatusenumscheduled"></a>`SCHEDULED` | Pipeline is scheduled to run. |
 | <a id="pipelinestatusenumskipped"></a>`SKIPPED` | Pipeline was skipped. |
 | <a id="pipelinestatusenumsuccess"></a>`SUCCESS` | Pipeline completed successfully. |
+| <a id="pipelinestatusenumwaiting_for_callback"></a>`WAITING_FOR_CALLBACK` | Pipeline is waiting for an external action. |
 | <a id="pipelinestatusenumwaiting_for_resource"></a>`WAITING_FOR_RESOURCE` | A resource (for example, a runner) that the pipeline requires to run is unavailable. |
 
 ### `ProductAnalyticsState`
@@ -29565,7 +30290,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumci_deprecation_warning_for_types_keyword"></a>`CI_DEPRECATION_WARNING_FOR_TYPES_KEYWORD` | Callout feature name for ci_deprecation_warning_for_types_keyword. |
 | <a id="usercalloutfeaturenameenumcloud_licensing_subscription_activation_banner"></a>`CLOUD_LICENSING_SUBSCRIPTION_ACTIVATION_BANNER` | Callout feature name for cloud_licensing_subscription_activation_banner. |
 | <a id="usercalloutfeaturenameenumcluster_security_warning"></a>`CLUSTER_SECURITY_WARNING` | Callout feature name for cluster_security_warning. |
-| <a id="usercalloutfeaturenameenumcreate_runner_workflow_banner"></a>`CREATE_RUNNER_WORKFLOW_BANNER` | Callout feature name for create_runner_workflow_banner. |
 | <a id="usercalloutfeaturenameenumeoa_bronze_plan_banner"></a>`EOA_BRONZE_PLAN_BANNER` | Callout feature name for eoa_bronze_plan_banner. |
 | <a id="usercalloutfeaturenameenumfeature_flags_new_version"></a>`FEATURE_FLAGS_NEW_VERSION` | Callout feature name for feature_flags_new_version. |
 | <a id="usercalloutfeaturenameenumgcp_signup_offer"></a>`GCP_SIGNUP_OFFER` | Callout feature name for gcp_signup_offer. |
@@ -29580,7 +30304,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumnamespace_storage_limit_alert_error_threshold"></a>`NAMESPACE_STORAGE_LIMIT_ALERT_ERROR_THRESHOLD` | Callout feature name for namespace_storage_limit_alert_error_threshold. |
 | <a id="usercalloutfeaturenameenumnamespace_storage_limit_alert_warning_threshold"></a>`NAMESPACE_STORAGE_LIMIT_ALERT_WARNING_THRESHOLD` | Callout feature name for namespace_storage_limit_alert_warning_threshold. |
 | <a id="usercalloutfeaturenameenumnamespace_storage_pre_enforcement_banner"></a>`NAMESPACE_STORAGE_PRE_ENFORCEMENT_BANNER` | Callout feature name for namespace_storage_pre_enforcement_banner. |
-| <a id="usercalloutfeaturenameenumnew_navigation_callout"></a>`NEW_NAVIGATION_CALLOUT` | Callout feature name for new_navigation_callout. |
+| <a id="usercalloutfeaturenameenumnew_nav_for_everyone_callout"></a>`NEW_NAV_FOR_EVERYONE_CALLOUT` | Callout feature name for new_nav_for_everyone_callout. |
 | <a id="usercalloutfeaturenameenumnew_top_level_group_alert"></a>`NEW_TOP_LEVEL_GROUP_ALERT` | Callout feature name for new_top_level_group_alert. |
 | <a id="usercalloutfeaturenameenumnew_user_signups_cap_reached"></a>`NEW_USER_SIGNUPS_CAP_REACHED` | Callout feature name for new_user_signups_cap_reached. |
 | <a id="usercalloutfeaturenameenumpersonal_access_token_expiry"></a>`PERSONAL_ACCESS_TOKEN_EXPIRY` | Callout feature name for personal_access_token_expiry. |
@@ -29952,6 +30676,12 @@ A `AlertManagementHttpIntegrationID` is a global ID. It is encoded as a string.
 
 An example `AlertManagementHttpIntegrationID` is: `"gid://gitlab/AlertManagement::HttpIntegration/1"`.
 
+### `AnalyticsCycleAnalyticsValueStreamID`
+
+A `AnalyticsCycleAnalyticsValueStreamID` is a global ID. It is encoded as a string.
+
+An example `AnalyticsCycleAnalyticsValueStreamID` is: `"gid://gitlab/Analytics::CycleAnalytics::ValueStream/1"`.
+
 ### `AnalyticsDevopsAdoptionEnabledNamespaceID`
 
 A `AnalyticsDevopsAdoptionEnabledNamespaceID` is a global ID. It is encoded as a string.
@@ -30098,6 +30828,12 @@ A `CiStageID` is a global ID. It is encoded as a string.
 
 An example `CiStageID` is: `"gid://gitlab/Ci::Stage/1"`.
 
+### `CiSubscriptionsProjectID`
+
+A `CiSubscriptionsProjectID` is a global ID. It is encoded as a string.
+
+An example `CiSubscriptionsProjectID` is: `"gid://gitlab/Ci::Subscriptions::Project/1"`.
+
 ### `CiTriggerID`
 
 A `CiTriggerID` is a global ID. It is encoded as a string.
@@ -30133,6 +30869,12 @@ For example: "#fefefe".
 A `ComplianceManagementFrameworkID` is a global ID. It is encoded as a string.
 
 An example `ComplianceManagementFrameworkID` is: `"gid://gitlab/ComplianceManagement::Framework/1"`.
+
+### `ContainerRegistryProtectionRuleID`
+
+A `ContainerRegistryProtectionRuleID` is a global ID. It is encoded as a string.
+
+An example `ContainerRegistryProtectionRuleID` is: `"gid://gitlab/ContainerRegistry::Protection::Rule/1"`.
 
 ### `ContainerRepositoryID`
 
@@ -30537,6 +31279,12 @@ A `PackagesPackageID` is a global ID. It is encoded as a string.
 
 An example `PackagesPackageID` is: `"gid://gitlab/Packages::Package/1"`.
 
+### `PackagesProtectionRuleID`
+
+A `PackagesProtectionRuleID` is a global ID. It is encoded as a string.
+
+An example `PackagesProtectionRuleID` is: `"gid://gitlab/Packages::Protection::Rule/1"`.
+
 ### `PackagesPypiMetadatumID`
 
 A `PackagesPypiMetadatumID` is a global ID. It is encoded as a string.
@@ -30558,6 +31306,12 @@ String or integer.
 A `ProjectID` is a global ID. It is encoded as a string.
 
 An example `ProjectID` is: `"gid://gitlab/Project/1"`.
+
+### `ProjectImportStateID`
+
+A `ProjectImportStateID` is a global ID. It is encoded as a string.
+
+An example `ProjectImportStateID` is: `"gid://gitlab/ProjectImportState/1"`.
 
 ### `ReleaseID`
 
@@ -31039,6 +31793,7 @@ Implementations:
 Implementations:
 
 - [`GroupMember`](#groupmember)
+- [`PendingGroupMember`](#pendinggroupmember)
 - [`ProjectMember`](#projectmember)
 
 ##### Fields
@@ -31071,6 +31826,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 
 Implementations:
 
+- [`AbuseReport`](#abusereport)
 - [`AlertManagementAlert`](#alertmanagementalert)
 - [`BoardEpic`](#boardepic)
 - [`Design`](#design)
@@ -31245,18 +32001,20 @@ Implementations:
 | <a id="userid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="useride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="userjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
+| <a id="userlastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
 | <a id="userlinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="userlocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="username"></a>`name` | [`String!`](#string) | Human-readable name of the user. Returns `****` if the user is a project bot and the requester does not have permission to view the project. |
 | <a id="usernamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="usernamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
 | <a id="userorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
+| <a id="userorganizations"></a>`organizations` **{warning-solid}** | [`OrganizationConnection`](#organizationconnection) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Organizations where the user has access. |
 | <a id="userpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="userprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="userprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="userpronouns"></a>`pronouns` | [`String`](#string) | Pronouns of the user. |
 | <a id="userpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
-| <a id="usersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
+| <a id="usersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="userstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="userstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="usertwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
@@ -31395,7 +32153,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ###### `User.savedReply`
 
-Saved reply authored by the user. Will not return saved reply if `saved_replies` feature flag is disabled.
+Saved reply authored by the user.
 
 Returns [`SavedReply`](#savedreply).
 
@@ -31545,8 +32303,20 @@ see the associated mutation type above.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aichatinputcontent"></a>`content` | [`String!`](#string) | Content of the message. |
+| <a id="aichatinputcurrentfile"></a>`currentFile` **{warning-solid}** | [`AiCurrentFileInput`](#aicurrentfileinput) | **Deprecated:** This feature is an Experiment. It can be changed or removed at any time. Introduced in 16.6. |
 | <a id="aichatinputnamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the namespace the user is acting on. |
 | <a id="aichatinputresourceid"></a>`resourceId` | [`AiModelID`](#aimodelid) | Global ID of the resource to mutate. |
+
+### `AiCurrentFileInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicurrentfileinputcontentabovecursor"></a>`contentAboveCursor` | [`String`](#string) | Content above cursor. |
+| <a id="aicurrentfileinputcontentbelowcursor"></a>`contentBelowCursor` | [`String`](#string) | Content below cursor. |
+| <a id="aicurrentfileinputfilename"></a>`fileName` | [`String!`](#string) | File name. |
+| <a id="aicurrentfileinputselectedtext"></a>`selectedText` | [`String!`](#string) | Selected text. |
 
 ### `AiExplainCodeInput`
 
@@ -31605,6 +32375,14 @@ see the associated mutation type above.
 | <a id="aigeneratedescriptioninputcontent"></a>`content` | [`String!`](#string) | Content of the message. |
 | <a id="aigeneratedescriptioninputdescriptiontemplatename"></a>`descriptionTemplateName` | [`String`](#string) | Name of the description template to use to generate message off of. |
 | <a id="aigeneratedescriptioninputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
+
+### `AiResolveVulnerabilityInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="airesolvevulnerabilityinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
 
 ### `AiSummarizeCommentsInput`
 
@@ -32174,8 +32952,10 @@ A time-frame defined as a closed inclusive range of two dates.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="unionedepicfilterinputauthorusername"></a>`authorUsername` | [`[String!]`](#string) | Filters epics that are authored by one of the given users. |
-| <a id="unionedepicfilterinputlabelname"></a>`labelName` | [`[String!]`](#string) | Filters epics that have at least one of the given labels. |
+| <a id="unionedepicfilterinputauthorusername"></a>`authorUsername` **{warning-solid}** | [`[String!]`](#string) | **Deprecated:** Use authorUsernames instead. Deprecated in 16.6. |
+| <a id="unionedepicfilterinputauthorusernames"></a>`authorUsernames` | [`[String!]`](#string) | Filters epics that are authored by one of the given users. |
+| <a id="unionedepicfilterinputlabelname"></a>`labelName` **{warning-solid}** | [`[String!]`](#string) | **Deprecated:** Use labelNames instead. Deprecated in 16.6. |
+| <a id="unionedepicfilterinputlabelnames"></a>`labelNames` | [`[String!]`](#string) | Filters epics that have at least one of the given labels. |
 
 ### `UnionedIssueFilterInput`
 

@@ -8,9 +8,11 @@ class RecreatedActivityIndex < Gitlab::Database::Migration[2.1]
   def up
     remove_concurrent_index_by_name :users, INDEX_NAME
 
+    # rubocop:disable Migration/PreventIndexCreation
     add_concurrent_index :users, [:id, :last_activity_on],
       name: INDEX_NAME,
       where: "state = 'active' AND user_type IN (0, 4)"
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

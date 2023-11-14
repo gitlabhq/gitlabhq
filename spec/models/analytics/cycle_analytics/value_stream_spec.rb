@@ -99,4 +99,23 @@ RSpec.describe Analytics::CycleAnalytics::ValueStream, type: :model, feature_cat
       it { is_expected.to be_custom }
     end
   end
+
+  describe '#project' do
+    subject(:value_stream) do
+      build(:cycle_analytics_value_stream, name: 'value_stream_1', namespace: namespace).project
+    end
+
+    context 'when namespace is a project' do
+      let_it_be(:project) { create(:project) }
+      let(:namespace) { project.project_namespace }
+
+      it { is_expected.to eq(project) }
+    end
+
+    context 'when namespace is a group' do
+      let_it_be(:namespace) { create(:group) }
+
+      it { is_expected.to be_nil }
+    end
+  end
 end

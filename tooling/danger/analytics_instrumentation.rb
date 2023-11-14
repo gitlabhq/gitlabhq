@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/SignalException
+require_relative 'suggestor'
 
 module Tooling
   module Danger
     module AnalyticsInstrumentation
+      include ::Tooling::Danger::Suggestor
+
       METRIC_DIRS = %w[lib/gitlab/usage/metrics/instrumentations ee/lib/gitlab/usage/metrics/instrumentations].freeze
       APPROVED_LABEL = 'analytics instrumentation::approved'
       REVIEW_LABEL = 'analytics instrumentation::review pending'
@@ -26,6 +28,10 @@ module Tooling
       CHANGED_USAGE_DATA_MESSAGE = <<~MSG
         Notice that implementing metrics directly in usage_data.rb has been deprecated.
         Please use [Instrumentation Classes](https://docs.gitlab.com/ee/development/service_ping/metrics_instrumentation.html) instead.
+      MSG
+
+      CHANGE_DEPRECATED_DATA_SOURCE_MESSAGE = <<~MSG
+        Redis and RedisHLL tracking is deprecated, consider using Internal Events tracking instead https://docs.gitlab.com/ee/development/internal_analytics/internal_event_instrumentation/quick_start.html#defining-event-and-metrics
       MSG
 
       WORKFLOW_LABELS = [
@@ -58,6 +64,17 @@ module Tooling
         return if usage_data_changes.none? { |change| change.start_with?("+") }
 
         warn format(CHANGED_USAGE_DATA_MESSAGE)
+      end
+
+      def check_deprecated_data_sources!
+        new_metric_files.each do |filename|
+          add_suggestion(
+            filename: filename,
+            regex: /^\+?\s+data_source: redis\w*/,
+            replacement: 'data_source: internal_events',
+            comment_text: CHANGE_DEPRECATED_DATA_SOURCE_MESSAGE
+          )
+        end
       end
 
       private
@@ -99,6 +116,10 @@ module Tooling
         files.select do |f|
           f.start_with?('app/models/', 'ee/app/models/')
         end
+      end
+
+      def new_metric_files
+        helper.added_files.select { |f| f.include?('config/metrics') && f.end_with?('.yml') }
       end
 
       def each_metric(&block)

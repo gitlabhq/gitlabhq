@@ -42,6 +42,7 @@ module QA
 
       def upstream_ci_file
         {
+          action: 'create',
           file_path: '.gitlab-ci.yml',
           content: <<~YAML
             child1_trigger:

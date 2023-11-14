@@ -6,7 +6,7 @@ module Gitlab
       include JobDelayCalculator
 
       attr_reader :project, :client, :page_counter, :already_imported_cache_key,
-                  :job_waiter_cache_key, :job_waiter_remaining_cache_key
+        :job_waiter_cache_key, :job_waiter_remaining_cache_key
 
       # The base cache key to use for tracking already imported objects.
       ALREADY_IMPORTED_CACHE_KEY =
@@ -26,12 +26,11 @@ module Gitlab
         @client = client
         @parallel = parallel
         @page_counter = PageCounter.new(project, collection_method)
-        @already_imported_cache_key = ALREADY_IMPORTED_CACHE_KEY %
-          { project: project.id, collection: collection_method }
-        @job_waiter_cache_key = JOB_WAITER_CACHE_KEY %
-          { project: project.id, collection: collection_method }
-        @job_waiter_remaining_cache_key = JOB_WAITER_REMAINING_CACHE_KEY %
-          { project: project.id, collection: collection_method }
+        @already_imported_cache_key = format(ALREADY_IMPORTED_CACHE_KEY, project: project.id,
+          collection: collection_method)
+        @job_waiter_cache_key = format(JOB_WAITER_CACHE_KEY, project: project.id, collection: collection_method)
+        @job_waiter_remaining_cache_key = format(JOB_WAITER_REMAINING_CACHE_KEY, project: project.id,
+          collection: collection_method)
       end
 
       def parallel?
@@ -57,7 +56,8 @@ module Gitlab
         # still scheduling duplicates while. Since all work has already been
         # completed those jobs will just cycle through any remaining pages while
         # not scheduling anything.
-        Gitlab::Cache::Import::Caching.expire(already_imported_cache_key, Gitlab::Cache::Import::Caching::SHORTER_TIMEOUT)
+        Gitlab::Cache::Import::Caching.expire(already_imported_cache_key,
+          Gitlab::Cache::Import::Caching::SHORTER_TIMEOUT)
         info(project.id, message: "importer finished")
 
         retval
@@ -97,7 +97,7 @@ module Gitlab
           repr = object_representation(object)
 
           job_delay = calculate_job_delay(enqueued_job_counter)
-          sidekiq_worker_class.perform_in(job_delay, project.id, repr.to_hash, job_waiter.key)
+          sidekiq_worker_class.perform_in(job_delay, project.id, repr.to_hash.deep_stringify_keys, job_waiter.key.to_s)
           enqueued_job_counter += 1
 
           job_waiter.jobs_remaining = Gitlab::Cache::Import::Caching.increment(job_waiter_remaining_cache_key)

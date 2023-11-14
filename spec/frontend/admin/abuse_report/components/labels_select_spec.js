@@ -9,7 +9,7 @@ import LabelsSelect from '~/admin/abuse_report/components/labels_select.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
-import labelsQuery from '~/admin/abuse_report/components/graphql/abuse_report_labels.query.graphql';
+import labelsQuery from '~/admin/abuse_report/graphql/abuse_report_labels.query.graphql';
 import DropdownWidget from '~/vue_shared/components/dropdown/dropdown_widget/dropdown_widget.vue';
 import DropdownValue from '~/sidebar/components/labels/labels_select_widget/dropdown_value.vue';
 import DropdownHeader from '~/sidebar/components/labels/labels_select_widget/dropdown_header.vue';

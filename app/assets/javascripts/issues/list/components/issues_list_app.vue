@@ -9,11 +9,11 @@ import {
   GlDrawer,
   GlLink,
 } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
 
 import produce from 'immer';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { isEmpty } from 'lodash';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
@@ -276,9 +276,6 @@ export default {
       },
       skip() {
         return !this.hasAnyIssues || isEmpty(this.pageParams);
-      },
-      context: {
-        isSingleRequest: true,
       },
     },
   },
@@ -910,7 +907,7 @@ export default {
       v-if="issuesDrawerEnabled"
       :open="isIssuableSelected"
       header-height="calc(var(--top-bar-height) + var(--performance-bar-height))"
-      class="gl-w-40p gl-xs-w-full"
+      class="gl-w-full gl-sm-w-40p"
       @close="activeIssuable = null"
     >
       <template #title>
@@ -1030,7 +1027,10 @@ export default {
             :export-csv-path="exportCsvPathWithQuery"
             :issuable-count="currentTabCount"
           />
-          <gl-disclosure-dropdown-group :bordered="true" :group="subscribeDropdownOptions" />
+          <gl-disclosure-dropdown-group
+            :bordered="showCsvButtons"
+            :group="subscribeDropdownOptions"
+          />
         </gl-disclosure-dropdown>
       </template>
 

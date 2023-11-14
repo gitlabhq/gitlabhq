@@ -42,7 +42,7 @@ RSpec.describe 'Creating a Snippet', feature_category: :source_code_management d
     let(:current_user) { nil }
 
     it_behaves_like 'a mutation that returns top-level errors',
-                    errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
+      errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
 
     it 'does not create the Snippet' do
       expect do
@@ -122,7 +122,7 @@ RSpec.describe 'Creating a Snippet', feature_category: :source_code_management d
         let(:project_path) { 'foobar' }
 
         it_behaves_like 'a mutation that returns top-level errors',
-                        errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
+          errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
       end
 
       context 'when the feature is disabled' do
@@ -131,7 +131,7 @@ RSpec.describe 'Creating a Snippet', feature_category: :source_code_management d
         end
 
         it_behaves_like 'a mutation that returns top-level errors',
-                        errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
+          errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
       end
 
       it_behaves_like 'snippet edit usage data counters'
@@ -169,8 +169,8 @@ RSpec.describe 'Creating a Snippet', feature_category: :source_code_management d
       end
 
       it_behaves_like 'expected files argument', nil, nil
-      it_behaves_like 'expected files argument', %w(foo bar), %w(foo bar)
-      it_behaves_like 'expected files argument', 'foo', %w(foo)
+      it_behaves_like 'expected files argument', %w[foo bar], %w[foo bar]
+      it_behaves_like 'expected files argument', 'foo', %w[foo]
 
       context 'when files has an invalid value' do
         let(:uploaded_files) { [1] }

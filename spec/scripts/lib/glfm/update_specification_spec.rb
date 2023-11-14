@@ -278,7 +278,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process', feature_category: :team_pl
       end
 
       it 'includes header and all examples', :unlimited_max_formatted_output_length do
-        # rubocop:disable Style/StringConcatenation (string contatenation is more readable)
+        # rubocop:disable Style/StringConcatenation -- string contatenation is more readable
         expected = described_class::ES_SNAPSHOT_SPEC_MD_HEADER +
           ghfm_spec_txt_examples +
           "\n" +

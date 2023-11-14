@@ -10,6 +10,7 @@ export const MAVEN_PACKAGE_FORMAT = s__('PackageRegistry|Maven');
 export const NPM_PACKAGE_FORMAT = s__('PackageRegistry|npm');
 export const PYPI_PACKAGE_FORMAT = s__('PackageRegistry|PyPI');
 export const GENERIC_PACKAGE_FORMAT = s__('PackageRegistry|Generic');
+export const NUGET_PACKAGE_FORMAT = s__('PackageRegistry|NuGet');
 
 export const DUPLICATES_TOGGLE_LABEL = s__('PackageRegistry|Allow duplicates');
 export const DUPLICATES_SETTING_EXCEPTION_TITLE = __('Exceptions');

@@ -1,6 +1,7 @@
 <script>
 import { GlLoadingIcon, GlPagination, GlSprintf, GlAlert } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { debounce } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters, mapActions } from 'vuex';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -16,7 +17,8 @@ import {
 import { createAlert } from '~/alert';
 import { isSingleViewStyle } from '~/helpers/diffs_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean, handleLocationHash } from '~/lib/utils/common_utils';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { Mousetrap } from '~/lib/mousetrap';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -39,8 +41,10 @@ import {
   TRACKING_SINGLE_FILE_MODE,
   TRACKING_MULTIPLE_FILES_MODE,
   EVT_MR_PREPARED,
+  EVT_DISCUSSIONS_ASSIGNED,
 } from '../constants';
 
+import { isCollapsed } from '../utils/diff_file';
 import diffsEventHub from '../event_hub';
 import { reviewStatuses } from '../utils/file_reviews';
 import { diffsApp } from '../utils/performance';
@@ -55,10 +59,16 @@ import HiddenFilesWarning from './hidden_files_warning.vue';
 import NoChanges from './no_changes.vue';
 import VirtualScrollerScrollSync from './virtual_scroller_scroll_sync';
 import DiffsFileTree from './diffs_file_tree.vue';
-import getMRCodequalityReports from './graphql/get_mr_codequality_reports.query.graphql';
+import getMRCodequalityAndSecurityReports from './graphql/get_mr_codequality_and_security_reports.query.graphql';
+
+export const FINDINGS_STATUS_PARSED = 'PARSED';
+export const FINDINGS_STATUS_ERROR = 'ERROR';
+export const FINDINGS_POLL_INTERVAL = 1000;
 
 export default {
   name: 'DiffsApp',
+  FINDINGS_STATUS_PARSED,
+  FINDINGS_STATUS_ERROR,
   components: {
     DiffsFileTree,
     FindingsDrawer,
@@ -100,10 +110,10 @@ export default {
       required: false,
       default: '',
     },
-    endpointSast: {
-      type: String,
+    sastReportAvailable: {
+      type: Boolean,
       required: false,
-      default: '',
+      default: false,
     },
     endpointCodequality: {
       type: String,
@@ -135,31 +145,53 @@ export default {
       diffFilesLength: 0,
       virtualScrollCurrentIndex: -1,
       subscribedToVirtualScrollingEvents: false,
+      autoScrolled: false,
+      activeProject: undefined,
     };
   },
   apollo: {
-    getMRCodequalityReports: {
-      query: getMRCodequalityReports,
+    getMRCodequalityAndSecurityReports: {
+      query: getMRCodequalityAndSecurityReports,
+      pollInterval: FINDINGS_POLL_INTERVAL,
       variables() {
         return { fullPath: this.projectPath, iid: this.iid };
       },
       skip() {
-        return !this.endpointCodequality || !this.sastReportsInInlineDiff;
+        const codeQualityBoolean = Boolean(this.endpointCodequality);
+
+        return !this.sastReportsInInlineDiff || (!codeQualityBoolean && !this.sastReportAvailable);
       },
       update(data) {
-        if (data?.project?.mergeRequest?.codequalityReportsComparer?.report?.newErrors) {
+        const codeQualityBoolean = Boolean(this.endpointCodequality);
+        const { codequalityReportsComparer, sastReport } = data?.project?.mergeRequest || {};
+
+        this.activeProject = data?.project?.mergeRequest?.project;
+        if (
+          (sastReport?.status === FINDINGS_STATUS_PARSED || !this.sastReportAvailable) &&
+          (!codeQualityBoolean || codequalityReportsComparer.status === FINDINGS_STATUS_PARSED)
+        ) {
+          this.getMRCodequalityAndSecurityReportStopPolling(
+            this.$apollo.queries.getMRCodequalityAndSecurityReports,
+          );
+        }
+
+        if (sastReport?.status === FINDINGS_STATUS_ERROR && this.sastReportAvailable) {
+          this.fetchScannerFindingsError();
+        }
+
+        if (codequalityReportsComparer?.report?.newErrors) {
           this.$store.commit(
             'diffs/SET_CODEQUALITY_DATA',
-            sortFindingsByFile(
-              data.project.mergeRequest.codequalityReportsComparer.report.newErrors,
-            ),
+            sortFindingsByFile(codequalityReportsComparer.report.newErrors),
           );
+        }
+
+        if (sastReport?.report) {
+          this.$store.commit('diffs/SET_SAST_DATA', sastReport.report);
         }
       },
       error() {
-        createAlert({
-          message: __('Something went wrong fetching the CodeQuality Findings. Please try again!'),
-        });
+        this.fetchScannerFindingsError();
       },
     },
   },
@@ -304,10 +336,6 @@ export default {
       this.setCodequalityEndpoint(this.endpointCodequality);
     }
 
-    if (this.endpointSast) {
-      this.setSastEndpoint(this.endpointSast);
-    }
-
     if (this.shouldShow) {
       this.fetchData();
     }
@@ -355,22 +383,15 @@ export default {
     this.adjustView();
     this.subscribeToEvents();
 
-    this.unwatchDiscussions = this.$watch(
-      () => `${this.flatBlobsList.length}:${this.$store.state.notes.discussions.length}`,
-      () => {
-        this.setDiscussions();
-
-        if (this.$store.state.notes.doneFetchingBatchDiscussions) {
-          this.unwatchDiscussions();
-        }
-      },
-    );
-
-    this.unwatchRetrievingBatches = this.$watch(
-      () => `${this.retrievingBatches}:${this.$store.state.notes.discussions.length}`,
-      () => {
-        if (!this.retrievingBatches && this.$store.state.notes.discussions.length) {
-          this.unwatchRetrievingBatches();
+    this.slowHashHandler = debounce(() => {
+      handleLocationHash();
+      this.autoScrolled = true;
+    }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+    this.$watch(
+      () => this.$store.state.notes.discussions.length,
+      (newVal, prevVal) => {
+        if (newVal > prevVal) {
+          this.setDiscussions();
         }
       },
     );
@@ -388,7 +409,6 @@ export default {
     ...mapActions('diffs', [
       'moveToNeighboringCommit',
       'setCodequalityEndpoint',
-      'setSastEndpoint',
       'fetchDiffFilesMeta',
       'fetchDiffFilesBatch',
       'fetchFileByFile',
@@ -396,7 +416,6 @@ export default {
       'setFileForcedOpen',
       'fetchCoverageFiles',
       'fetchCodequality',
-      'fetchSast',
       'rereadNoteHash',
       'startRenderDiffsQueue',
       'assignDiscussionsToDiff',
@@ -412,6 +431,11 @@ export default {
     closeDrawer() {
       this.setDrawer({});
     },
+    fetchScannerFindingsError() {
+      createAlert({
+        message: __('Something went wrong fetching the Scanner Findings. Please try again.'),
+      });
+    },
     subscribeToEvents() {
       notesEventHub.$once('fetchDiffData', this.fetchData);
       notesEventHub.$on('refetchDiffData', this.refetchDiffData);
@@ -419,8 +443,13 @@ export default {
       diffsEventHub.$on('diffFilesModified', this.setDiscussions);
       diffsEventHub.$on('doneLoadingBatches', this.autoScroll);
       diffsEventHub.$on(EVT_MR_PREPARED, this.fetchData);
+      diffsEventHub.$on(EVT_DISCUSSIONS_ASSIGNED, this.handleHash);
+    },
+    getMRCodequalityAndSecurityReportStopPolling(query) {
+      query.stopPolling();
     },
     unsubscribeFromEvents() {
+      diffsEventHub.$off(EVT_DISCUSSIONS_ASSIGNED, this.handleHash);
       diffsEventHub.$off(EVT_MR_PREPARED, this.fetchData);
       diffsEventHub.$off('doneLoadingBatches', this.autoScroll);
       diffsEventHub.$off('diffFilesModified', this.setDiscussions);
@@ -436,13 +465,25 @@ export default {
         const idx = this.diffs.findIndex((diffFile) => diffFile.file_hash === sha1InHash);
         const file = this.diffs[idx];
 
+        if (!isCollapsed(file)) return;
+
         this.loadCollapsedDiff({ file })
           .then(() => {
             this.setDiscussions();
-            this.scrollVirtualScrollerToIndex(idx);
             this.setFileForcedOpen({ filePath: file.new_path });
+
+            this.$nextTick(() => this.scrollVirtualScrollerToIndex(idx));
           })
           .catch(() => {});
+      }
+    },
+    handleHash() {
+      if (this.viewDiffsFileByFile && !this.autoScrolled) {
+        const file = this.diffs[0];
+
+        if (file && !file.isLoadingFullFile) {
+          requestIdleCallback(() => this.slowHashHandler());
+        }
       }
     },
     navigateToDiffFileNumber(number) {
@@ -482,7 +523,7 @@ export default {
           })
           .catch(() => {
             createAlert({
-              message: __('Something went wrong on our end. Please try again!'),
+              message: __('Something went wrong on our end. Please try again.'),
             });
           });
       }
@@ -499,7 +540,7 @@ export default {
           })
           .catch(() => {
             createAlert({
-              message: __('Something went wrong on our end. Please try again!'),
+              message: __('Something went wrong on our end. Please try again.'),
             });
           });
       }
@@ -510,10 +551,6 @@ export default {
 
       if (this.endpointCodequality && !this.sastReportsInInlineDiff) {
         this.fetchCodequality();
-      }
-
-      if (this.endpointSast) {
-        this.fetchSast();
       }
 
       if (!this.isNotesFetched) {
@@ -641,7 +678,7 @@ export default {
 
 <template>
   <div v-show="shouldShow">
-    <findings-drawer :drawer="activeDrawer" @close="closeDrawer" />
+    <findings-drawer :project="activeProject" :drawer="activeDrawer" @close="closeDrawer" />
     <div v-if="isLoading || !isTreeLoaded" class="loading"><gl-loading-icon size="lg" /></div>
     <div v-else id="diffs" :class="{ active: shouldShow }" class="diffs tab-pane">
       <compare-versions :diff-files-count-text="numTotalFiles" />

@@ -18,11 +18,11 @@ module Integrations
       title: -> { s_('Integrations|Branches for which notifications are to be sent') },
       choices: -> { branch_choices }
 
-    def title
+    def self.title
       'Microsoft Teams notifications'
     end
 
-    def description
+    def self.description
       'Send notifications about project events to Microsoft Teams.'
     end
 
@@ -30,7 +30,7 @@ module Integrations
       'microsoft_teams'
     end
 
-    def help
+    def self.help
       '<p>Use this service to send notifications about events in GitLab projects to your Microsoft Teams channels. <a href="https://docs.gitlab.com/ee/user/project/integrations/microsoft_teams.html" target="_blank" rel="noopener noreferrer">How do I configure this integration?</a></p>'
     end
 

@@ -76,16 +76,6 @@ module VisibilityLevelHelper
     end
   end
 
-  def visibility_level_options(form_model)
-    available_visibility_levels(form_model).map do |level|
-      {
-        level: level,
-        label: visibility_level_label(level),
-        description: visibility_level_description(level, form_model)
-      }
-    end
-  end
-
   def snippets_selected_visibility_level(visibility_levels, selected)
     visibility_levels.find { |level| level == selected } || visibility_levels.min
   end

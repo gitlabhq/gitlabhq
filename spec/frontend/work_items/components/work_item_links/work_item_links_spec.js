@@ -1,5 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { GlToggle } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -93,6 +94,7 @@ describe('WorkItemLinks', () => {
   const findWorkItemDetailModal = () => wrapper.findComponent(WorkItemDetailModal);
   const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
   const findWorkItemLinkChildrenWrapper = () => wrapper.findComponent(WorkItemChildrenWrapper);
+  const findShowLabelsToggle = () => wrapper.findComponent(GlToggle);
 
   afterEach(() => {
     mockApollo = null;
@@ -278,4 +280,21 @@ describe('WorkItemLinks', () => {
       expect(groupResponseWithAddChildPermission).toHaveBeenCalled();
     });
   });
+
+  it.each`
+    toggleValue
+    ${true}
+    ${false}
+  `(
+    'passes showLabels as $toggleValue to child items when toggle is $toggleValue',
+    async ({ toggleValue }) => {
+      await createComponent();
+
+      findShowLabelsToggle().vm.$emit('change', toggleValue);
+
+      await nextTick();
+
+      expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(toggleValue);
+    },
+  );
 });

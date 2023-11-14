@@ -725,22 +725,35 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe '.recent_target_branches' do
+  describe '.recent_target_branches and .recent_source_branches' do
+    def create_mr(source_branch, target_branch, status, remove_source_branch = false)
+      if remove_source_branch
+        create(:merge_request, status, :remove_source_branch, source_project: project,
+          target_branch: target_branch, source_branch: source_branch)
+      else
+        create(:merge_request, status, source_project: project,
+          target_branch: target_branch, source_branch: source_branch)
+      end
+    end
+
     let(:project) { create(:project) }
-    let!(:merge_request1) { create(:merge_request, :opened, source_project: project, target_branch: 'feature') }
-    let!(:merge_request2) { create(:merge_request, :closed, source_project: project, target_branch: 'merge-test') }
-    let!(:merge_request3) { create(:merge_request, :opened, source_project: project, target_branch: 'fix') }
-    let!(:merge_request4) { create(:merge_request, :closed, source_project: project, target_branch: 'feature') }
+    let!(:merge_request1) { create_mr('source1', 'target1', :opened) }
+    let!(:merge_request2) { create_mr('source2', 'target2', :closed) }
+    let!(:merge_request3) { create_mr('source3', 'target3', :opened) }
+    let!(:merge_request4) { create_mr('source4', 'target1', :closed) }
+    let!(:merge_request5) { create_mr('source5', 'target4', :merged, true) }
 
     before do
       merge_request1.update_columns(updated_at: 1.day.since)
       merge_request2.update_columns(updated_at: 2.days.since)
       merge_request3.update_columns(updated_at: 3.days.since)
       merge_request4.update_columns(updated_at: 4.days.since)
+      merge_request5.update_columns(updated_at: 5.days.since)
     end
 
-    it 'returns target branches sort by updated at desc' do
-      expect(described_class.recent_target_branches).to match_array(%w[feature merge-test fix])
+    it 'returns branches sort by updated at desc' do
+      expect(described_class.recent_target_branches).to match_array(%w[target1 target2 target3 target4])
+      expect(described_class.recent_source_branches).to match_array(%w[source1 source2 source3 source4 source5])
     end
   end
 
@@ -3324,6 +3337,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     context 'with skip_ci_check option' do
       before do
+        allow(subject.project).to receive(:only_allow_merge_if_pipeline_succeeds?).and_return(true)
         allow(subject).to receive_messages(check_mergeability: nil, can_be_merged?: true, broken?: false)
       end
 
@@ -3345,6 +3359,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     context 'with skip_discussions_check option' do
       before do
+        allow(subject.project).to receive(:only_allow_merge_if_all_discussions_are_resolved?).and_return(true)
+
         allow(subject).to receive_messages(
           mergeable_ci_state?: true,
           check_mergeability: nil,
@@ -3380,6 +3396,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     context 'with skip_rebase_check option' do
       before do
+        allow(subject.project).to receive(:ff_merge_must_be_possible?).and_return(true)
+
         allow(subject).to receive_messages(
           mergeable_state?: true,
           check_mergeability: nil,
@@ -3525,6 +3543,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     context 'when failed' do
       context 'when #mergeable_ci_state? is false' do
         before do
+          allow(subject.project).to receive(:only_allow_merge_if_pipeline_succeeds?) { true }
           allow(subject).to receive(:mergeable_ci_state?) { false }
         end
 
@@ -3539,6 +3558,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       context 'when #mergeable_discussions_state? is false' do
         before do
+          allow(subject.project).to receive(:only_allow_merge_if_all_discussions_are_resolved?) { true }
           allow(subject).to receive(:mergeable_discussions_state?) { false }
         end
 
@@ -6016,12 +6036,10 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         allow(merge_request_diff).to receive(:patch_id_sha).and_return(nil)
         allow(merge_request).to receive(:diff_refs).and_return(diff_refs)
 
-        allow_next_instance_of(Repository) do |repo|
-          allow(repo)
-            .to receive(:get_patch_id)
-            .with(diff_refs.base_sha, diff_refs.head_sha)
-            .and_return(patch_id)
-        end
+        allow(merge_request.project.repository)
+          .to receive(:get_patch_id)
+          .with(diff_refs.base_sha, diff_refs.head_sha)
+          .and_return(patch_id)
       end
 
       it { is_expected.to eq(patch_id) }
@@ -6063,6 +6081,56 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
 
       expect(merge_request.all_mergeability_checks_results).to eq(result.payload[:results])
+    end
+  end
+
+  describe '#only_allow_merge_if_pipeline_succeeds?' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    subject(:result) { merge_request.only_allow_merge_if_pipeline_succeeds? }
+
+    before do
+      allow(merge_request.project)
+        .to receive(:only_allow_merge_if_pipeline_succeeds?)
+        .with(inherit_group_setting: true)
+        .and_return(only_allow_merge_if_pipeline_succeeds?)
+    end
+
+    context 'when associated project only_allow_merge_if_pipeline_succeeds? returns true' do
+      let(:only_allow_merge_if_pipeline_succeeds?) { true }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when associated project only_allow_merge_if_pipeline_succeeds? returns false' do
+      let(:only_allow_merge_if_pipeline_succeeds?) { false }
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#only_allow_merge_if_all_discussions_are_resolved?' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    subject(:result) { merge_request.only_allow_merge_if_all_discussions_are_resolved? }
+
+    before do
+      allow(merge_request.project)
+        .to receive(:only_allow_merge_if_all_discussions_are_resolved?)
+        .with(inherit_group_setting: true)
+        .and_return(only_allow_merge_if_all_discussions_are_resolved?)
+    end
+
+    context 'when associated project only_allow_merge_if_all_discussions_are_resolved? returns true' do
+      let(:only_allow_merge_if_all_discussions_are_resolved?) { true }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when associated project only_allow_merge_if_all_discussions_are_resolved? returns false' do
+      let(:only_allow_merge_if_all_discussions_are_resolved?) { false }
+
+      it { is_expected.to eq(false) }
     end
   end
 end

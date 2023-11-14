@@ -34,10 +34,14 @@ module API
       helpers do
         # rubocop: disable CodeReuse/ActiveRecord
         def reorder_users(users)
-          if params[:order_by] && params[:sort]
-            users.reorder(order_options_with_tie_breaker)
-          else
+          # Users#search orders by exact matches and handles pagination,
+          # so we should prioritize that.
+          if params[:search]
             users
+          else
+            # Note that params[:order_by] and params[:sort] will always be present and
+            # default to "id" and "desc" as defined in `sort_params`.
+            users.reorder(order_options_with_tie_breaker)
           end
         end
         # rubocop: enable CodeReuse/ActiveRecord

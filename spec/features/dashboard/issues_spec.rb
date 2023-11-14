@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Issues', feature_category: :team_planning do
+RSpec.describe 'Dashboard Issues', :js, feature_category: :team_planning do
   include FilteredSearchHelpers
 
-  let_it_be(:current_user) { create(:user, :no_super_sidebar) }
+  let_it_be(:current_user) { create(:user) }
   let_it_be(:user) { current_user } # Shared examples depend on this being available
   let_it_be(:public_project) { create(:project, :public) }
   let_it_be(:project) { create(:project) }
@@ -23,7 +23,7 @@ RSpec.describe 'Dashboard Issues', feature_category: :team_planning do
 
   it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :issues_dashboard_path, :issues
 
-  describe 'issues', :js do
+  describe 'issues' do
     it 'shows issues assigned to current user' do
       expect(page).to have_content(assigned_issue.title)
       expect(page).not_to have_content(authored_issue.title)
@@ -59,23 +59,25 @@ RSpec.describe 'Dashboard Issues', feature_category: :team_planning do
   end
 
   describe 'new issue dropdown' do
-    it 'shows projects only with issues feature enabled', :js do
+    it 'shows projects only with issues feature enabled' do
       click_button _('Select project to create issue')
 
-      page.within('[data-testid="new-resource-dropdown"] [role="menu"]') do
-        expect(page).to have_content(project.full_name)
-        expect(page).not_to have_content(project_with_issues_disabled.full_name)
+      within_testid('new-resource-dropdown') do
+        within('[role="menu"]') do
+          expect(page).to have_content(project.full_name)
+          expect(page).not_to have_content(project_with_issues_disabled.full_name)
+        end
       end
     end
 
-    it 'shows the new issue page', :js do
+    it 'shows the new issue page' do
       click_button _('Select project to create issue')
 
       wait_for_requests
 
       project_path = "/#{project.full_path}"
 
-      page.within('[data-testid="new-resource-dropdown"]') do
+      within_testid('new-resource-dropdown') do
         find_button(project.full_name).click
       end
 

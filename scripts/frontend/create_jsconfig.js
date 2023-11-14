@@ -31,18 +31,8 @@ async function createJsConfig() {
   const webpackConfig = require('../../config/webpack.config');
 
   // Aliases
-  const paths = {
-    // NOTE: Sentry is exposed via a wrapper, which has a limited API.
-    '@sentry/browser': [
-      path.relative(PATH_PROJECT_ROOT, 'app/assets/javascripts/sentry/sentry_browser_wrapper.js'),
-    ],
-  };
-  const WEBPACK_ALIAS_EXCEPTIONS = [
-    'jquery$',
-    '@gitlab/svgs/dist/icons.svg',
-    '@apollo/client$',
-    '@sentry/browser$',
-  ];
+  const paths = {};
+  const WEBPACK_ALIAS_EXCEPTIONS = ['jquery$', '@gitlab/svgs/dist/icons.svg', '@apollo/client$'];
   Object.entries(webpackConfig.resolve.alias)
     .filter(([key]) => !WEBPACK_ALIAS_EXCEPTIONS.includes(key))
     .forEach(([key, value]) => {

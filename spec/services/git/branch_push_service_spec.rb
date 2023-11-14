@@ -125,7 +125,7 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
           allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
           expect(Sidekiq.logger).to receive(:warn) do |args|
             pipeline_params = args[:pipeline_params]
-            expect(pipeline_params.keys).to match_array(%i(before after ref variables_attributes checkout_sha))
+            expect(pipeline_params.keys).to match_array(%i[before after ref variables_attributes checkout_sha])
           end
 
           expect { subject }.not_to change { Ci::Pipeline.count }

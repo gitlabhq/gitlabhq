@@ -45,8 +45,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:preserve_unchanged_markdown, project)
-    push_frontend_feature_flag(:service_desk_new_note_email_native_attachments, project)
-    push_frontend_feature_flag(:saved_replies, current_user)
     push_frontend_feature_flag(:issues_grid_view)
     push_frontend_feature_flag(:service_desk_ticket)
     push_frontend_feature_flag(:issues_list_drawer, project)
@@ -60,17 +58,17 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action only: [:index, :service_desk] do
     push_frontend_feature_flag(:or_issuable_queries, project)
     push_frontend_feature_flag(:frontend_caching, project&.group)
+    push_frontend_feature_flag(:group_multi_select_tokens, project)
   end
 
   before_action only: :show do
-    push_frontend_feature_flag(:issue_assignees_widget, project)
     push_frontend_feature_flag(:work_items_mvc, project&.group)
     push_force_frontend_feature_flag(:work_items_mvc, project&.work_items_mvc_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_mvc_2, project&.work_items_mvc_2_feature_flag_enabled?)
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
     push_force_frontend_feature_flag(:linked_work_items, project.linked_work_items_feature_flag_enabled?)
-    push_frontend_feature_flag(:notifications_todos_buttons, project)
+    push_frontend_feature_flag(:notifications_todos_buttons, current_user)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]

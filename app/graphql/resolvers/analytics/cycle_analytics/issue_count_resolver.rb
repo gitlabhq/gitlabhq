@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Graphql/ResolverType (inherited from Resolvers::Analytics::CycleAnalytics::BaseIssueResolver)
+# rubocop:disable Graphql/ResolverType -- inherited from Resolvers::Analytics::CycleAnalytics::BaseIssueResolver
 module Resolvers
   module Analytics
     module CycleAnalytics

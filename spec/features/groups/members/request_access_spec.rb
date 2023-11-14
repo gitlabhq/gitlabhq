@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Groups > Members > Request access', feature_category: :groups_and_projects do
-  let(:user) { create(:user, :no_super_sidebar) }
-  let(:owner) { create(:user, :no_super_sidebar) }
+  let(:user) { create(:user) }
+  let(:owner) { create(:user) }
   let(:group) { create(:group, :public) }
   let!(:project) { create(:project, :private, namespace: group) }
 
@@ -48,12 +48,15 @@ RSpec.describe 'Groups > Members > Request access', feature_category: :groups_an
     expect(page).not_to have_content group.name
   end
 
-  it 'user is not listed in the group members page' do
+  it 'user is not listed in the group members page', :js do
     click_link 'Request Access'
 
     expect(group.requesters.exists?(user_id: user)).to be_truthy
 
-    first(:link, 'Members').click
+    within_testid 'super-sidebar' do
+      click_button 'Manage'
+      first(:link, 'Members').click
+    end
 
     page.within('.content') do
       expect(page).not_to have_content(user.name)

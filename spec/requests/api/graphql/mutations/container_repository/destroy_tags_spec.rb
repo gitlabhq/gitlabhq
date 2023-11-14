@@ -27,7 +27,7 @@ RSpec.describe 'Destroying a container repository tags', feature_category: :cont
   shared_examples 'destroying the container repository tags' do
     before do
       stub_delete_reference_requests(tags)
-      expect_delete_tag_by_names(tags)
+      expect_delete_tags(tags)
       allow_next_instance_of(ContainerRegistry::Client) do |client|
         allow(client).to receive(:supports_tag_delete?).and_return(true)
       end

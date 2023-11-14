@@ -41,6 +41,10 @@ module Users
       ).exists?
     end
 
+    def self.by_reference_id(ref_id)
+      find_by(telesign_reference_xid: ref_id)
+    end
+
     def validated?
       validated_at.present?
     end

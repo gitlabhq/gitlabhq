@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Nuget::CheckDuplicatesService, feature_category: :package_registry do
-  include PackagesManagerApiSpecHelpers
-
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:file_name) { 'package.nupkg' }
@@ -12,7 +10,7 @@ RSpec.describe Packages::Nuget::CheckDuplicatesService, feature_category: :packa
   let(:params) do
     {
       file_name: file_name,
-      file: temp_file(file_name)
+      file: File.open(expand_fixture_path('packages/nuget/package.nupkg'))
     }
   end
 

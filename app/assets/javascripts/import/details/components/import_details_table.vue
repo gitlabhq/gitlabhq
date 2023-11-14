@@ -1,12 +1,13 @@
 <script>
 import { GlEmptyState, GlIcon, GlLink, GlLoadingIcon, GlTable } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
+import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import { getParameterValues } from '~/lib/utils/url_utility';
 
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
-import { STATISTIC_ITEMS } from '../../constants';
+import { getBulkImportFailures } from '~/rest_api';
+import { BULK_IMPORT_STATIC_ITEMS, STATISTIC_ITEMS } from '../../constants';
 import { fetchImportFailures } from '../api';
 
 const DEFAULT_PAGE_SIZE = 20;
@@ -21,28 +22,6 @@ export default {
     PaginationBar,
   },
   STATISTIC_ITEMS,
-  LOCAL_STORAGE_KEY: 'gl-import-details-page-size',
-  fields: [
-    {
-      key: 'type',
-      label: __('Type'),
-      tdClass: 'gl-white-space-nowrap',
-    },
-    {
-      key: 'title',
-      label: __('Title'),
-      tdClass: 'gl-md-w-30 gl-word-break-word',
-    },
-    {
-      key: 'provider_url',
-      label: __('URL'),
-      tdClass: 'gl-white-space-nowrap',
-    },
-    {
-      key: 'details',
-      label: __('Details'),
-    },
-  ],
 
   i18n: {
     fetchErrorMessage: s__('Import|An error occurred while fetching import details.'),
@@ -52,6 +31,25 @@ export default {
   inject: {
     failuresPath: {
       default: undefined,
+    },
+  },
+
+  props: {
+    bulkImport: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    fields: {
+      type: Array,
+      required: true,
+    },
+
+    localStorageKey: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
 
@@ -97,18 +95,28 @@ export default {
       this.loadImportFailures();
     },
 
+    fetchFn(params) {
+      return this.bulkImport
+        ? getBulkImportFailures(
+            getParameterValues('id')[0],
+            getParameterValues('entity_id')[0],
+            params,
+          )
+        : fetchImportFailures(this.failuresPath, {
+            projectId: getParameterValues('project_id')[0],
+            ...params,
+          });
+    },
+
     async loadImportFailures() {
-      if (!this.failuresPath) {
+      if (!this.bulkImport && !this.failuresPath) {
         return;
       }
 
       this.loading = true;
+
       try {
-        const response = await fetchImportFailures(this.failuresPath, {
-          projectId: getParameterValues('project_id')[0],
-          page: this.page,
-          perPage: this.perPage,
-        });
+        const response = await this.fetchFn({ page: this.page, perPage: this.perPage });
 
         const { page, perPage, totalPages, total } = parseIntPagination(
           normalizeHeaders(response.headers),
@@ -123,13 +131,17 @@ export default {
       }
       this.loading = false;
     },
+
+    itemTypeText(type) {
+      return (this.bulkImport ? BULK_IMPORT_STATIC_ITEMS[type] : STATISTIC_ITEMS[type]) || type;
+    },
   },
 };
 </script>
 
 <template>
   <div>
-    <gl-table :fields="$options.fields" :items="items" class="gl-mt-5" :busy="loading" show-empty>
+    <gl-table :fields="fields" :items="items" class="gl-mt-5" :busy="loading" show-empty>
       <template #table-busy>
         <gl-loading-icon size="lg" class="gl-my-5" />
       </template>
@@ -139,7 +151,7 @@ export default {
       </template>
 
       <template #cell(type)="{ item: { type } }">
-        {{ $options.STATISTIC_ITEMS[type] }}
+        {{ itemTypeText(type) }}
       </template>
       <template #cell(provider_url)="{ item: { provider_url } }">
         <gl-link v-if="provider_url" :href="provider_url" target="_blank">
@@ -147,12 +159,30 @@ export default {
           <gl-icon name="external-link" />
         </gl-link>
       </template>
+
+      <template #cell(relation)="{ item: { relation } }">
+        {{ itemTypeText(relation) }}
+      </template>
+      <template #cell(source_title)="{ item: { source_title, source_url } }">
+        <gl-link v-if="source_url" :href="source_url" target="_blank">
+          {{ source_title }}
+          <gl-icon name="external-link" />
+        </gl-link>
+        <span v-else>
+          {{ source_title }}
+        </span>
+      </template>
+      <template #cell(error)="{ item: { exception_class, exception_message } }">
+        <strong>{{ exception_class }}</strong>
+        <p>{{ exception_message }}</p>
+      </template>
     </gl-table>
+
     <pagination-bar
       v-if="hasItems"
       :page-info="pageInfo"
       class="gl-mt-5"
-      :storage-key="$options.LOCAL_STORAGE_KEY"
+      :storage-key="localStorageKey"
       @set-page="setPage"
       @set-page-size="setPageSize"
     />

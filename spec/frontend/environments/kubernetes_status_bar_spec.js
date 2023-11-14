@@ -49,7 +49,6 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
   const createWrapper = ({
     apolloProvider = createApolloProvider(),
     clusterHealthStatus = '',
-    namespace = '',
     fluxResourcePath = '',
   } = {}) => {
     wrapper = shallowMountExtended(KubernetesStatusBar, {
@@ -57,7 +56,6 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
         clusterHealthStatus,
         configuration,
         environmentName,
-        namespace,
         fluxResourcePath,
       },
       apolloProvider,
@@ -88,7 +86,7 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
   });
 
   describe('sync badge', () => {
-    describe('when no namespace is provided', () => {
+    describe('when no flux resource path is provided', () => {
       beforeEach(() => {
         createWrapper();
       });
@@ -104,7 +102,6 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
     });
 
     describe('when flux resource path is provided', () => {
-      const namespace = 'my-namespace';
       let fluxResourcePath;
 
       describe('if the provided resource is a Kustomization', () => {
@@ -112,7 +109,7 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
           fluxResourcePath =
             'kustomize.toolkit.fluxcd.io/v1beta1/namespaces/my-namespace/kustomizations/app';
 
-          createWrapper({ namespace, fluxResourcePath });
+          createWrapper({ fluxResourcePath });
         });
 
         it('requests the Kustomization resource status', () => {
@@ -120,8 +117,6 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
             {},
             expect.objectContaining({
               configuration,
-              namespace,
-              environmentName,
               fluxResourcePath,
             }),
             expect.any(Object),
@@ -139,7 +134,7 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
           fluxResourcePath =
             'helm.toolkit.fluxcd.io/v2beta1/namespaces/my-namespace/helmreleases/app';
 
-          createWrapper({ namespace, fluxResourcePath });
+          createWrapper({ fluxResourcePath });
         });
 
         it('requests the HelmRelease resource status', () => {
@@ -147,8 +142,6 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
             {},
             expect.objectContaining({
               configuration,
-              namespace,
-              environmentName,
               fluxResourcePath,
             }),
             expect.any(Object),
@@ -158,30 +151,6 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
 
         it("doesn't request Kustomization resource status", () => {
           expect(fluxKustomizationStatusQuery).not.toHaveBeenCalled();
-        });
-      });
-    });
-
-    describe('when namespace is provided', () => {
-      describe('with no Flux resources found', () => {
-        beforeEach(() => {
-          createWrapper({ namespace: 'my-namespace' });
-        });
-
-        it('requests Kustomizations', () => {
-          expect(fluxKustomizationStatusQuery).toHaveBeenCalled();
-        });
-
-        it('requests HelmReleases when there were no Kustomizations found', async () => {
-          await waitForPromises();
-
-          expect(fluxHelmReleaseStatusQuery).toHaveBeenCalled();
-        });
-
-        it('renders sync status as Unavailable when no Kustomizations and HelmReleases found', async () => {
-          await waitForPromises();
-
-          expect(findSyncBadge().text()).toBe(s__('Deployment|Unavailable'));
         });
       });
 
@@ -202,63 +171,11 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
         it("doesn't request HelmReleases when the Kustomizations were found", async () => {
           createWrapper({
             apolloProvider: createApolloProviderWithKustomizations(),
-            namespace: 'my-namespace',
           });
           await waitForPromises();
 
           expect(fluxHelmReleaseStatusQuery).not.toHaveBeenCalled();
         });
-
-        it.each`
-          status     | type             | badgeType
-          ${'True'}  | ${'Stalled'}     | ${'stalled'}
-          ${'True'}  | ${'Reconciling'} | ${'reconciling'}
-          ${'True'}  | ${'Ready'}       | ${'reconciled'}
-          ${'False'} | ${'Ready'}       | ${'failed'}
-          ${'True'}  | ${'Unknown'}     | ${'unknown'}
-        `(
-          'renders $badgeType when status is $status and type is $type',
-          async ({ status, type, badgeType }) => {
-            createWrapper({
-              apolloProvider: createApolloProviderWithKustomizations({
-                result: { status, type, message: '' },
-              }),
-              namespace: 'my-namespace',
-            });
-            await waitForPromises();
-
-            const badge = SYNC_STATUS_BADGES[badgeType];
-
-            expect(findSyncBadge().text()).toBe(badge.text);
-            expect(findSyncBadge().props()).toMatchObject({
-              icon: badge.icon,
-              variant: badge.variant,
-            });
-          },
-        );
-
-        it.each`
-          status     | type             | message             | popoverTitle                                     | popoverText
-          ${'True'}  | ${'Stalled'}     | ${'stalled reason'} | ${s__('Deployment|Flux sync stalled')}           | ${'stalled reason'}
-          ${'True'}  | ${'Reconciling'} | ${''}               | ${undefined}                                     | ${s__('Deployment|Flux sync reconciling')}
-          ${'True'}  | ${'Ready'}       | ${''}               | ${undefined}                                     | ${s__('Deployment|Flux sync reconciled successfully')}
-          ${'False'} | ${'Ready'}       | ${'failed reason'}  | ${s__('Deployment|Flux sync failed')}            | ${'failed reason'}
-          ${'True'}  | ${'Unknown'}     | ${''}               | ${s__('Deployment|Flux sync status is unknown')} | ${s__('Deployment|Unable to detect state. %{linkStart}How are states detected?%{linkEnd}')}
-        `(
-          'renders correct popover text when status is $status and type is $type',
-          async ({ status, type, message, popoverTitle, popoverText }) => {
-            createWrapper({
-              apolloProvider: createApolloProviderWithKustomizations({
-                result: { status, type, message },
-              }),
-              namespace: 'my-namespace',
-            });
-            await waitForPromises();
-
-            expect(findPopover().text()).toMatchInterpolatedText(popoverText);
-            expect(findPopover().props('title')).toBe(popoverTitle);
-          },
-        );
       });
 
       describe('when Flux API errored', () => {
@@ -277,7 +194,8 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
         beforeEach(async () => {
           createWrapper({
             apolloProvider: createApolloProviderWithErrors(),
-            namespace: 'my-namespace',
+            fluxResourcePath:
+              'kustomize.toolkit.fluxcd.io/v1beta1/namespaces/my-namespace/kustomizations/app',
           });
           await waitForPromises();
         });

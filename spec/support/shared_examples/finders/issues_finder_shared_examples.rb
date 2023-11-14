@@ -956,7 +956,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         end
 
         context 'multiple params' do
-          let(:params) { { issue_types: %w(issue incident) } }
+          let(:params) { { issue_types: %w[issue incident] } }
 
           it 'returns all items' do
             expect(items).to contain_exactly(incident_item, item1, item2, item3, item4, item5)

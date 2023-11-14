@@ -28,6 +28,7 @@ RSpec.shared_examples "a user type with merge request interaction type" do
       authoredMergeRequests
       assignedMergeRequests
       reviewRequestedMergeRequests
+      organizations
       groupMemberships
       groupCount
       projectMemberships
@@ -50,6 +51,7 @@ RSpec.shared_examples "a user type with merge request interaction type" do
       organization
       jobTitle
       createdAt
+      lastActivityOn
       pronouns
       ide
     ]

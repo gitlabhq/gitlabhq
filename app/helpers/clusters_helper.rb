@@ -38,7 +38,7 @@ module ClustersHelper
       environment_scope: cluster.environment_scope,
       base_domain: cluster.base_domain,
       auto_devops_help_path: help_page_path('topics/autodevops/index'),
-      external_endpoint_help_path: help_page_path('user/project/clusters/gitlab_managed_clusters.md', anchor: 'base-domain')
+      external_endpoint_help_path: help_page_path('user/project/clusters/gitlab_managed_clusters', anchor: 'base-domain')
     }
   end
 

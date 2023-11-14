@@ -13,9 +13,9 @@ module Gitlab
 
           # Pipelines section
           link :pipelines_tab
-          link :buy_ci_minutes
-          div :plan_ci_minutes
-          div :additional_ci_minutes
+          link :buy_compute_minutes
+          div :plan_compute_minutes
+          div :additional_compute_minutes
           div :ci_purchase_successful_alert, text: /You have successfully purchased CI minutes/
 
           # Storage section
@@ -39,17 +39,17 @@ module Gitlab
           button :confirm_member_approval, text: /^OK$/
 
           def plan_ci_limits
-            plan_ci_minutes[/(\d+){2}/]
+            plan_compute_minutes[/(\d+){2}/]
           end
 
           def additional_ci_limits
-            additional_ci_minutes[/(\d+){2}/]
+            additional_compute_minutes[/(\d+){2}/]
           end
 
-          def additional_ci_minutes_added?
+          def additional_compute_minutes_added?
             #  When opening the Usage quotas page, Seats quota tab is opened briefly even when url is to a different tab
             ::QA::Support::WaitForRequests.wait_for_requests
-            additional_ci_minutes?
+            additional_compute_minutes?
           end
 
           # Returns total purchased storage value once it's ready on page
@@ -61,29 +61,29 @@ module Gitlab
             storage_purchased[/(\d+){2}.\d+/].to_f
           end
 
-          # Waits for additional CI minutes to be available on the page
-          def wait_for_additional_ci_minutes_available
+          # Waits for additional compute minutes to be available on the page
+          def wait_for_additional_compute_minutes_available
             ::QA::Support::Waiter.wait_until(
               max_duration: ::QA::Support::Helpers::Zuora::ZUORA_TIMEOUT,
               sleep_interval: 2,
               reload_page: Chemlab.configuration.browser.session,
-              message: 'Expected additional CI minutes but they did not appear.'
+              message: 'Expected additional compute minutes but they did not appear.'
             ) do
-              additional_ci_minutes_added?
+              additional_compute_minutes_added?
             end
           end
 
-          # Waits for additional CI minutes amount to match the expected number of minutes
+          # Waits for additional compute minutes amount to match the expected number of minutes
           #
           # @param [String] minutes
-          def wait_for_additional_ci_minute_limits(minutes)
-            wait_for_additional_ci_minutes_available
+          def wait_for_additional_compute_minute_limits(minutes)
+            wait_for_additional_compute_minutes_available
 
             ::QA::Support::Waiter.wait_until(
               max_duration: ::QA::Support::Helpers::Zuora::ZUORA_TIMEOUT,
               sleep_interval: 2,
               reload_page: Chemlab.configuration.browser.session,
-              message: "Expected additional CI minutes to equal #{minutes}"
+              message: "Expected additional compute minutes to equal #{minutes}"
             ) do
               additional_ci_limits == minutes
             end

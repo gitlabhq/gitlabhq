@@ -61,6 +61,7 @@ export default {
         v-if="canPlay"
         v-gl-tooltip
         :title="$options.i18n.playTooltip"
+        :aria-label="$options.i18n.playTooltip"
         icon="play"
         data-testid="play-pipeline-schedule-btn"
         @click="$emit('playPipelineSchedule', schedule.id)"
@@ -78,6 +79,7 @@ export default {
         v-gl-tooltip
         :href="editPathWithIdParam"
         :title="$options.i18n.editTooltip"
+        :aria-label="$options.i18n.editTooltip"
         icon="pencil"
         data-testid="edit-pipeline-schedule-btn"
       />
@@ -85,6 +87,7 @@ export default {
         v-if="canRemove"
         v-gl-tooltip
         :title="$options.i18n.deleteTooltip"
+        :aria-label="$options.i18n.deleteTooltip"
         icon="remove"
         variant="danger"
         data-testid="delete-pipeline-schedule-btn"

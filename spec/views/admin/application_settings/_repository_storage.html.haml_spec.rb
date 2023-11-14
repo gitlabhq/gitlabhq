@@ -6,7 +6,7 @@ RSpec.describe 'admin/application_settings/_repository_storage.html.haml' do
   let(:app_settings) { build(:application_setting, repository_storages_weighted: repository_storages_weighted) }
 
   before do
-    stub_storage_settings({ 'default': {}, 'mepmep': {}, 'foobar': {} })
+    stub_storage_settings({ default: {}, mepmep: {}, foobar: {} })
     assign(:application_setting, app_settings)
   end
 

@@ -1,6 +1,6 @@
 @import './theme_helper';
 
-body {
+:root {
   &.ui-green {
     @include gitlab-theme(
       $theme-green-200,

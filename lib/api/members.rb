@@ -118,11 +118,8 @@ module API
 
         post ":id/members", feature_category: feature_category do
           source = find_source(source_type, params[:id])
-          if ::Feature.enabled?(:admin_group_member, source)
-            authorize_admin_source_member!(source_type, source)
-          else
-            authorize_admin_source!(source_type, source)
-          end
+
+          authorize_admin_source_member!(source_type, source)
 
           create_service_params = params.merge(source: source)
 
@@ -148,11 +145,7 @@ module API
           source = find_source(source_type, params.delete(:id))
           member = source_members(source).find_by!(user_id: params[:user_id])
 
-          if ::Feature.enabled?(:admin_group_member, source)
-            authorize_update_source_member!(source_type, member)
-          else
-            authorize_admin_source!(source_type, source)
-          end
+          authorize_update_source_member!(source_type, member)
 
           result = ::Members::UpdateService
             .new(current_user, declared_params(include_missing: false))

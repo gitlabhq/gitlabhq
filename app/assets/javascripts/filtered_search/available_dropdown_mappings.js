@@ -11,6 +11,7 @@ import {
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_REVIEWER,
   TOKEN_TYPE_TARGET_BRANCH,
+  TOKEN_TYPE_SOURCE_BRANCH,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import DropdownEmoji from './dropdown_emoji';
 import DropdownHint from './dropdown_hint';
@@ -157,6 +158,15 @@ export default class AvailableDropdownMappings {
         },
         element: this.container.querySelector('#js-dropdown-target-branch'),
       },
+      [TOKEN_TYPE_SOURCE_BRANCH]: {
+        reference: null,
+        gl: DropdownNonUser,
+        extraArguments: {
+          endpoint: this.getMergeRequestSourceBranchesEndpoint(),
+          symbol: '',
+        },
+        element: this.container.querySelector('#js-dropdown-source-branch'),
+      },
       environment: {
         reference: null,
         gl: DropdownNonUser,
@@ -197,10 +207,17 @@ export default class AvailableDropdownMappings {
   }
 
   getMergeRequestTargetBranchesEndpoint() {
-    const endpoint = `${
-      gon.relative_url_root || ''
-    }/-/autocomplete/merge_request_target_branches.json`;
+    const targetBranchEndpointPath = '/-/autocomplete/merge_request_target_branches.json';
+    return this.getMergeRequestBranchesEndpoint(targetBranchEndpointPath);
+  }
 
+  getMergeRequestSourceBranchesEndpoint() {
+    const sourceBranchEndpointPath = '/-/autocomplete/merge_request_source_branches.json';
+    return this.getMergeRequestBranchesEndpoint(sourceBranchEndpointPath);
+  }
+
+  getMergeRequestBranchesEndpoint(endpointPath = '') {
+    const endpoint = `${gon.relative_url_root || ''}${endpointPath}`;
     const params = {
       group_id: this.getGroupId(),
       project_id: this.getProjectId(),

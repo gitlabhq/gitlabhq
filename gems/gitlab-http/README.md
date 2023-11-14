@@ -24,16 +24,27 @@ end
 
 ### Actions
 
-Basic examples;
+Basic examples:
 
 ```ruby
 Gitlab::HTTP_V2.post(uri, body: body)
 
 Gitlab::HTTP_V2.try_get(uri, params)
 
-response = Gitlab::HTTP_V2.head(project_url, verify: true)
+response = Gitlab::HTTP_V2.head(project_url, verify: true) # returns an HTTParty::Response object
 
-Gitlab::HTTP_V2.post(path, base_uri: base_uri, **params)
+Gitlab::HTTP_V2.post(path, base_uri: base_uri, **params) # returns an HTTParty::Response object
+```
+
+Async usage examples:
+
+```ruby
+lazy_response = Gitlab::HTTP_V2.get(location, async: true)
+
+lazy_response.execute # starts the request and returns the same LazyResponse object
+lazy_response.wait # waits for the request to finish and returns the same LazyResponse object
+
+response = lazy_response.value # returns an HTTParty::Response object
 ```
 
 ## Development

@@ -54,6 +54,17 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
     end
   end
 
+  shared_examples_for 'a service that can set the target project of a merge request' do
+    subject(:last_mr) { MergeRequest.last }
+
+    it 'creates a merge request with the correct target project' do
+      project_path = push_options[:target_project] || project.default_merge_request_target.full_path
+
+      expect { service.execute }.to change { MergeRequest.count }.by(1)
+      expect(last_mr.target_project.full_path).to eq(project_path)
+    end
+  end
+
   shared_examples_for 'a service that can set the title of a merge request' do
     subject(:last_mr) { MergeRequest.last }
 
@@ -345,6 +356,31 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
 
     it_behaves_like 'with a deleted branch'
     it_behaves_like 'with the project default branch'
+  end
+
+  describe '`target_project` push option' do
+    let(:changes) { new_branch_changes }
+    let(:double_forked_project) { fork_project(forked_project, user1, repository: true) }
+    let(:service) { described_class.new(project: double_forked_project, current_user: user1, changes: changes, push_options: push_options) }
+    let(:push_options) { { create: true, target_project: target_project.full_path } }
+
+    context 'to self' do
+      let(:target_project) { double_forked_project }
+
+      it_behaves_like 'a service that can set the target project of a merge request'
+    end
+
+    context 'to intermediate project' do
+      let(:target_project) { forked_project }
+
+      it_behaves_like 'a service that can set the target project of a merge request'
+    end
+
+    context 'to base project' do
+      let(:target_project) { project }
+
+      it_behaves_like 'a service that can set the target project of a merge request'
+    end
   end
 
   describe '`title` push option' do
@@ -861,6 +897,17 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
     end
   end
 
+  describe 'when the target project does not exist' do
+    let(:push_options) { { create: true, target: 'my-branch', target_project: 'does-not-exist' } }
+    let(:changes) { default_branch_changes }
+
+    it 'records an error', :sidekiq_inline do
+      service.execute
+
+      expect(service.errors).to eq(["User access was denied"])
+    end
+  end
+
   describe 'when user does not have access to target project' do
     let(:push_options) { { create: true, target: 'my-branch' } }
     let(:changes) { default_branch_changes }
@@ -887,6 +934,18 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
       service.execute
 
       expect(service.errors).to eq(["Merge requests are not enabled for project #{project.full_path}"])
+    end
+  end
+
+  describe 'when projects are unrelated' do
+    let(:unrelated_project) { create(:project, :public, :repository, group: child_group) }
+    let(:push_options) { { create: true, target_project: unrelated_project.full_path } }
+    let(:changes) { new_branch_changes }
+
+    it 'records an error' do
+      service.execute
+
+      expect(service.errors).to eq(["Projects #{project.full_path} and #{unrelated_project.full_path} are not in the same network"])
     end
   end
 

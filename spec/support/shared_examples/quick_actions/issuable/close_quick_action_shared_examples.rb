@@ -54,7 +54,7 @@ RSpec.shared_examples 'close quick action' do |issuable_type|
       expect(issuable).to be_closed
     end
 
-    context "when current user cannot close #{issuable_type}" do
+    context "when current user cannot close #{issuable_type}", :js do
       before do
         guest = create(:user)
         project.add_guest(guest)

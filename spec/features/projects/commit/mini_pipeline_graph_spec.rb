@@ -52,7 +52,7 @@ RSpec.describe 'Mini Pipeline Graph in Commit View', :js, feature_category: :sou
     end
 
     it 'display icon with status' do
-      expect(page).to have_selector('.ci-status-icon-running')
+      expect(page).to have_selector('[data-testid="status_running_borderless-icon"]')
     end
 
     it 'displays a mini pipeline graph' do
@@ -63,7 +63,7 @@ RSpec.describe 'Mini Pipeline Graph in Commit View', :js, feature_category: :sou
       wait_for_requests
 
       page.within '.js-builds-dropdown-list' do
-        expect(page).to have_selector('.ci-status-icon-running')
+        expect(page).to have_selector('[data-testid="status_running_borderless-icon"]')
         expect(page).to have_content(build.stage_name)
       end
 

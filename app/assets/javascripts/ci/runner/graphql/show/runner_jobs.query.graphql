@@ -8,7 +8,7 @@ query getRunnerJobs($id: CiRunnerID!, $first: Int, $last: Int, $before: String, 
       nodes {
         id
         detailedStatus {
-          # fields for `<ci-badge-link>`
+          # fields for `<ci-icon>`
           id
           detailsPath
           group

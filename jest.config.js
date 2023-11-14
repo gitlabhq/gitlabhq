@@ -9,6 +9,10 @@ if (IS_JH && fs.existsSync('./jh/jest.config.js')) {
   module.exports = require('./jh/jest.config');
 } else {
   module.exports = {
-    ...baseConfig('spec/frontend'),
+    ...baseConfig('spec/frontend', {
+      roots: ['<rootDir>/spec/frontend/'],
+      rootsEE: ['<rootDir>/ee/spec/frontend/'],
+      rootsJH: ['<rootDir>/jh/spec/frontend/'],
+    }),
   };
 }

@@ -2,7 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.shared_examples 'edits content using the content editor' do |params = { with_expanded_references: true }|
+RSpec.shared_examples 'edits content using the content editor' do |params = {
+  with_expanded_references: true,
+  with_quick_actions: true
+}|
   include ContentEditorHelpers
 
   let(:content_editor_testid) { '[data-testid="content-editor"] [contenteditable].ProseMirror' }
@@ -463,6 +466,15 @@ RSpec.shared_examples 'edits content using the content editor' do |params = { wi
       end
     end
 
+    it 'does not show a loading indicator after undo paste' do
+      type_in_content_editor [modifier_key, 'v']
+      type_in_content_editor [modifier_key, 'z']
+
+      page.within content_editor_testid do
+        expect(page).not_to have_css('.gl-dots-loader')
+      end
+    end
+
     it 'pastes raw text without formatting if shift + ctrl + v is pressed' do
       type_in_content_editor [modifier_key, :shift, 'v']
 
@@ -546,6 +558,42 @@ RSpec.shared_examples 'edits content using the content editor' do |params = { wi
       end
     end
 
+    if params[:with_quick_actions]
+      it 'shows suggestions for quick actions' do
+        type_in_content_editor '/a'
+
+        expect(find(suggestions_dropdown)).to have_text('/assign')
+        expect(find(suggestions_dropdown)).to have_text('/label')
+      end
+
+      it 'adds the correct prefix for /assign' do
+        type_in_content_editor '/assign'
+
+        expect(find(suggestions_dropdown)).to have_text('/assign')
+        send_keys [:arrow_down, :enter]
+
+        expect(page).to have_text('/assign @')
+      end
+
+      it 'adds the correct prefix for /label' do
+        type_in_content_editor '/label'
+
+        expect(find(suggestions_dropdown)).to have_text('/label')
+        send_keys [:arrow_down, :enter]
+
+        expect(page).to have_text('/label ~')
+      end
+
+      it 'adds the correct prefix for /milestone' do
+        type_in_content_editor '/milestone'
+
+        expect(find(suggestions_dropdown)).to have_text('/milestone')
+        send_keys [:arrow_down, :enter]
+
+        expect(page).to have_text('/milestone %')
+      end
+    end
+
     it 'shows suggestions for members with descriptions' do
       type_in_content_editor '@a'
 
@@ -559,6 +607,39 @@ RSpec.shared_examples 'edits content using the content editor' do |params = { wi
 
       expect(page).not_to have_css(suggestions_dropdown)
       expect(page).to have_text('@abc123')
+    end
+
+    it 'allows dismissing the suggestion popup and typing more text' do
+      type_in_content_editor '@ab'
+
+      expect(find(suggestions_dropdown)).to have_text('abc123')
+
+      send_keys :escape
+
+      expect(page).not_to have_css(suggestions_dropdown)
+
+      type_in_content_editor :enter
+      type_in_content_editor 'foobar'
+
+      # ensure that the texts are in separate paragraphs
+      expect(page).to have_selector('p', text: '@ab')
+      expect(page).to have_selector('p', text: 'foobar')
+      expect(page).not_to have_selector('p', text: '@abfoobar')
+    end
+
+    it 'allows typing more text after the popup has disappeared because no suggestions match' do
+      type_in_content_editor '@ab'
+
+      expect(find(suggestions_dropdown)).to have_text('abc123')
+
+      type_in_content_editor 'foo'
+      type_in_content_editor :enter
+      type_in_content_editor 'bar'
+
+      # ensure that the texts are in separate paragraphs
+      expect(page).to have_selector('p', text: '@abfoo')
+      expect(page).to have_selector('p', text: 'bar')
+      expect(page).not_to have_selector('p', text: '@abfoobar')
     end
 
     context 'when `disable_all_mention` is enabled' do
@@ -617,14 +698,14 @@ RSpec.shared_examples 'edits content using the content editor' do |params = { wi
     it 'shows suggestions for emojis' do
       type_in_content_editor ':smile'
 
-      expect(find(suggestions_dropdown)).to have_text('🙂 slight_smile')
+      expect(find(suggestions_dropdown)).to have_text('😃 smiley')
       expect(find(suggestions_dropdown)).to have_text('😸 smile_cat')
 
       send_keys [:arrow_down, :enter]
 
       expect(page).not_to have_css(suggestions_dropdown)
 
-      expect(page).to have_text('🙂')
+      expect(page).to have_text('😃')
     end
 
     it 'doesn\'t show suggestions dropdown if there are no suggestions to show' do
@@ -640,7 +721,7 @@ RSpec.shared_examples 'edits content using the content editor' do |params = { wi
     it 'scrolls selected item into view when navigating with keyboard' do
       type_in_content_editor ':'
 
-      expect(find(suggestions_dropdown)).to have_text('hundred points symbol')
+      expect(find(suggestions_dropdown)).to have_text('grinning')
 
       expect(dropdown_scroll_top).to be 0
 

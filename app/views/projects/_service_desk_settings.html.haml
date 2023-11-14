@@ -1,5 +1,5 @@
 - expanded = expanded_by_default?
-%section.settings.js-service-desk-setting-wrapper.no-animate#js-service-desk{ class: ('expanded' if expanded), data: { qa_selector: 'service_desk_settings_content' } }
+%section.settings.js-service-desk-setting-wrapper.no-animate#js-service-desk{ class: ('expanded' if expanded) }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Service Desk')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
@@ -18,6 +18,7 @@
         selected_file_template_project_id: "#{@project.service_desk_setting&.file_template_project_id}",
         outgoing_name: "#{@project.service_desk_setting&.outgoing_name}",
         project_key: "#{@project.service_desk_setting&.project_key}",
+        add_external_participants_from_cc: "#{@project.service_desk_setting&.add_external_participants_from_cc}",
         templates: available_service_desk_templates_for(@project),
         public_project: "#{@project.public?}",
         custom_email_endpoint: project_service_desk_custom_email_path(@project) } }

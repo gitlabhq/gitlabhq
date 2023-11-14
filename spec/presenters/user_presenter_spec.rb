@@ -61,28 +61,14 @@ RSpec.describe UserPresenter do
     let_it_be(:other_user) { create(:user) }
     let_it_be(:saved_reply) { create(:saved_reply, user: user) }
 
-    context 'when feature is disabled' do
-      before do
-        stub_feature_flags(saved_replies: false)
-      end
+    context 'when user has no permission to read saved replies' do
+      let(:current_user) { other_user }
 
       it { expect(presenter.saved_replies).to eq(::Users::SavedReply.none) }
     end
 
-    context 'when feature is enabled' do
-      before do
-        stub_feature_flags(saved_replies: current_user)
-      end
-
-      context 'when user has no permission to read saved replies' do
-        let(:current_user) { other_user }
-
-        it { expect(presenter.saved_replies).to eq(::Users::SavedReply.none) }
-      end
-
-      context 'when user has permission to read saved replies' do
-        it { expect(presenter.saved_replies).to eq([saved_reply]) }
-      end
+    context 'when user has permission to read saved replies' do
+      it { expect(presenter.saved_replies).to eq([saved_reply]) }
     end
   end
 end

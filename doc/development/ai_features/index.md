@@ -15,7 +15,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
   - Background workers execute
   - GraphQL subscriptions deliver results back in real time
 - Abstraction for
-  - OpenAI
   - Google Vertex AI
   - Anthropic
 - Rate Limiting
@@ -28,7 +27,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - Automatic Markdown Rendering of responses
 - Centralised Group Level settings for experiment and 3rd party
 - Experimental API endpoints for exploration of AI APIs by GitLab team members without the need for credentials
-  - OpenAI
   - Google Vertex AI
   - Anthropic
 
@@ -36,7 +34,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Apply the following two feature flags to any AI feature work:
 
-- A general that applies to all AI features.
+- A general flag (`ai_global_switch`) that applies to all AI features.
 - A flag specific to that feature. The feature flag name [must be different](../feature_flags/index.md#feature-flags-for-licensed-features) than the licensed feature name.
 
 See the [feature flag tracker](https://gitlab.com/gitlab-org/gitlab/-/issues/405161) for the list of all feature flags and how to use them.
@@ -58,20 +56,19 @@ Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for 
 1. Enable the required general feature flags:
 
    ```ruby
-   Feature.enable(:openai_experimentation)
+   Feature.enable(:ai_global_switch, type: :ops)
    ```
 
 1. Ensure you have followed [the process to obtain an EE license](https://about.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses) for your local instance
 1. Simulate the GDK to [simulate SaaS](../ee_features.md#simulate-a-saas-instance) and ensure the group you want to test has an Ultimate license
-1. Enable `Experimental features` and `Third-party AI services`
+1. Enable `Experimental features`:
    1. Go to the group with the Ultimate license
    1. **Group Settings** > **General** -> **Permissions and group features**
    1. Enable **Experiment features**
-   1. Enable **Third-party AI services**
 1. Enable the specific feature flag for the feature you want to test
 1. Set the required access token. To receive an access token:
    1. For Vertex, follow the [instructions below](#configure-gcp-vertex-access).
-   1. For all other providers, like Anthropic or OpenAI, create an access request where `@m_gill`, `@wayne`, and `@timzallmann` are the tech stack owners.
+   1. For all other providers, like Anthropic, create an access request where `@m_gill`, `@wayne`, and `@timzallmann` are the tech stack owners.
 
 ### Set up the embedding database
 
@@ -117,12 +114,6 @@ In order to obtain a GCP service key for local development, please follow the st
 Gitlab::CurrentSettings.update(vertex_ai_project: PROJECT_ID)
 ```
 
-### Configure OpenAI access
-
-```ruby
-Gitlab::CurrentSettings.update(openai_api_key: "<open-ai-key>")
-```
-
 ### Configure Anthropic access
 
 ```ruby
@@ -131,35 +122,8 @@ Gitlab::CurrentSettings.update!(anthropic_api_key: <insert API key>)
 
 ### Populating embeddings and using embeddings fixture
 
-Currently we have embeddings generate both with OpenAI and VertexAI. Bellow sections explain how to populate
+Embeddings are generated through VertexAI text embeddings endpoint. The sections below explain how to populate
 embeddings in the DB or extract embeddings to be used in specs.
-
-FLAG:
-We are moving towards having VertexAI embeddings only, so eventually the OpenAI embeddings support will be drop
-as well as the section bellow will be removed.
-
-#### OpenAI embeddings
-
-To seed your development database with the embeddings for GitLab Documentation,
-you may use the pre-generated embeddings and a Rake task.
-
-```shell
-RAILS_ENV=development bundle exec rake gitlab:llm:embeddings:seed_pre_generated
-```
-
-The DBCleaner gem we use clear the database tables before each test runs.
-Instead of fully populating the table `tanuki_bot_mvc` where we store OpenAI embeddings for the documentations,
-we can add a few selected embeddings to the table from a pre-generated fixture.
-
-For instance, to test that the question "How can I reset my password" is correctly
-retrieving the relevant embeddings and answered, we can extract the top N closet embeddings
-to the question into a fixture and only restore a small number of embeddings quickly.
-To facilitate an extraction process, a Rake task been written.
-You can add or remove the questions needed to be tested in the Rake task and run the task to generate a new fixture.
-
-```shell
-RAILS_ENV=development bundle exec rake gitlab:llm:embeddings:extract_embeddings
-```
 
 #### VertexAI embeddings
 
@@ -210,9 +174,6 @@ Use the [experimental REST API endpoints](https://gitlab.com/gitlab-org/gitlab/-
 
 The endpoints are:
 
-- `https://gitlab.example.com/api/v4/ai/experimentation/openai/completions`
-- `https://gitlab.example.com/api/v4/ai/experimentation/openai/embeddings`
-- `https://gitlab.example.com/api/v4/ai/experimentation/openai/chat/completions`
 - `https://gitlab.example.com/api/v4/ai/experimentation/anthropic/complete`
 - `https://gitlab.example.com/api/v4/ai/experimentation/vertex/chat`
 
@@ -257,10 +218,8 @@ mutation {
 }
 ```
 
-The GraphQL API then uses the [OpenAI Client](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/llm/open_ai/client.rb)
+The GraphQL API then uses the [Anthropic Client](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/llm/anthropic/client.rb)
 to send the response.
-
-Remember that other clients are available and you should not use OpenAI.
 
 #### How to receive a response
 
@@ -302,7 +261,7 @@ To not have many concurrent subscriptions, you should also only subscribe to the
 
 #### Current abstraction layer flow
 
-The following graph uses OpenAI as an example. You can use different providers.
+The following graph uses VertexAI as an example. You can use different providers.
 
 ```mermaid
 flowchart TD
@@ -311,9 +270,9 @@ B --> C[Llm::ExecuteMethodService]
 C --> D[One of services, for example: Llm::GenerateSummaryService]
 D -->|scheduled| E[AI worker:Llm::CompletionWorker]
 E -->F[::Gitlab::Llm::Completions::Factory]
-F -->G[`::Gitlab::Llm::OpenAi::Completions::...` class using `::Gitlab::Llm::OpenAi::Templates::...` class]
-G -->|calling| H[Gitlab::Llm::OpenAi::Client]
-H --> |response| I[::Gitlab::Llm::OpenAi::ResponseService]
+F -->G[`::Gitlab::Llm::VertexAi::Completions::...` class using `::Gitlab::Llm::Templates::...` class]
+G -->|calling| H[Gitlab::Llm::VertexAi::Client]
+H --> |response| I[::Gitlab::Llm::GraphqlSubscriptionResponseService]
 I --> J[GraphqlTriggers.ai_completion_response]
 J --> K[::GitlabSchema.subscriptions.trigger]
 ```
@@ -419,11 +378,11 @@ end
 
 We recommend to use [policies](../policies.md) to deal with authorization for a feature. Currently we need to make sure to cover the following checks:
 
-1. General AI feature flag is enabled
+1. General AI feature flag (`ai_global_switch`) is enabled
 1. Feature specific feature flag is enabled
 1. The namespace has the required license for the feature
 1. User is a member of the group/project
-1. `experiment_features_enabled` and `third_party_ai_features_enabled` flags are set on the `Namespace`
+1. `experiment_features_enabled` settings are set on the `Namespace`
 
 For our example, we need to implement the `allowed?(:amazing_new_ai_feature)` call. As an example, you can look at the [Issue Policy for the summarize comments feature](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/policies/ee/issue_policy.rb). In our example case, we want to implement the feature for Issues as well:
 
@@ -436,7 +395,7 @@ module EE
     prepended do
       with_scope :subject
       condition(:ai_available) do
-        ::Feature.enabled?(:openai_experimentation)
+        ::Feature.enabled?(:ai_global_switch, type: :ops)
       end
 
       with_scope :subject
@@ -501,10 +460,9 @@ Caching has following limitations:
 
 ### Check if feature is allowed for this resource based on namespace settings
 
-There are two settings allowed on root namespace level that restrict the use of AI features:
+There is one setting allowed on root namespace level that restrict the use of AI features:
 
 - `experiment_features_enabled`
-- `third_party_ai_features_enabled`.
 
 To check if that feature is allowed for a given namespace, call:
 
@@ -512,46 +470,39 @@ To check if that feature is allowed for a given namespace, call:
 Gitlab::Llm::StageCheck.available?(namespace, :name_of_the_feature)
 ```
 
-Add the name of the feature to the `Gitlab::Llm::StageCheck` class. There are arrays there that differentiate
-between experimental and beta features.
+Add the name of the feature to the `Gitlab::Llm::StageCheck` class. There are
+arrays there that differentiate between experimental and beta features.
 
 This way we are ready for the following different cases:
 
-- If the feature is not in any array, the check will return `true`. For example, the feature was moved to GA and does not use a third-party setting.
-- If feature is in GA, but uses a third-party setting, the class will return a proper answer based on the namespace third-party setting.
+- If the feature is not in any array, the check will return `true`. For example, the feature was moved to GA.
 
 To move the feature from the experimental phase to the beta phase, move the name of the feature from the `EXPERIMENTAL_FEATURES` array to the `BETA_FEATURES` array.
 
 ### Implement calls to AI APIs and the prompts
 
 The `CompletionWorker` will call the `Completions::Factory` which will initialize the Service and execute the actual call to the API.
-In our example, we will use OpenAI and implement two new classes:
+In our example, we will use VertexAI and implement two new classes:
 
 ```ruby
-# /ee/lib/gitlab/llm/open_ai/completions/amazing_new_ai_feature.rb
+# /ee/lib/gitlab/llm/vertex_ai/completions/amazing_new_ai_feature.rb
 
 module Gitlab
   module Llm
-    module OpenAi
+    module VertexAi
       module Completions
-        class AmazingNewAiFeature
-          def initialize(ai_prompt_class)
-            @ai_prompt_class = ai_prompt_class
+        class AmazingNewAiFeature < Gitlab::Llm::Completions::Base
+          def execute
+            prompt = ai_prompt_class.new(options[:user_input]).to_prompt
+
+            response = Gitlab::Llm::VertexAi::Client.new(user).text(content: prompt)
+
+            response_modifier = ::Gitlab::Llm::VertexAi::ResponseModifiers::Predictions.new(response)
+
+            ::Gitlab::Llm::GraphqlSubscriptionResponseService.new(
+              user, nil, response_modifier, options: response_options
+            ).execute
           end
-
-          def execute(user, issue, options)
-            options = ai_prompt_class.get_options(options[:messages])
-
-            ai_response = Gitlab::Llm::OpenAi::Client.new(user).chat(content: nil, **options)
-
-            ::Gitlab::Llm::OpenAi::ResponseService.new(user, issue, ai_response, options: {}).execute(
-              Gitlab::Llm::OpenAi::ResponseModifiers::Chat.new
-            )
-          end
-
-          private
-
-          attr_reader :ai_prompt_class
         end
       end
     end
@@ -560,28 +511,23 @@ end
 ```
 
 ```ruby
-# /ee/lib/gitlab/llm/open_ai/templates/amazing_new_ai_feature.rb
+# /ee/lib/gitlab/llm/vertex_ai/templates/amazing_new_ai_feature.rb
 
 module Gitlab
   module Llm
-    module OpenAi
+    module VertexAi
       module Templates
         class AmazingNewAiFeature
-          TEMPERATURE = 0.3
+          def initialize(user_input)
+            @user_input = user_input
+          end
 
-          def self.get_options(messages)
-            system_content = <<-TEMPLATE
-              You are an assistant that writes code for the following input:
-              """
-            TEMPLATE
+          def to_prompt
+            <<-PROMPT
+            You are an assistant that writes code for the following context:
 
-            {
-              messages: [
-                { role: "system", content: system_content },
-                { role: "user", content: messages },
-              ],
-              temperature: TEMPERATURE
-            }
+            context: #{user_input}
+            PROMPT
           end
         end
       end

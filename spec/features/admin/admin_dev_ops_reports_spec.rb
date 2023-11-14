@@ -19,8 +19,8 @@ RSpec.describe 'DevOps Report page', :js, feature_category: :devops_reports do
 
       expect(page).to have_content 'Introducing Your DevOps Report'
 
-      page.within(find('[data-testid="devops-score-container"]')) do
-        find('[data-testid="close-icon"]').click
+      within_testid('devops-score-container') do
+        find_by_testid('close-icon').click
       end
 
       expect(page).not_to have_content 'Introducing Your DevOps Report'

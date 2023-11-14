@@ -1,0 +1,8 @@
+---
+name: activity_filter_has_remediations
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135009
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/429262
+milestone: '16.6'
+type: development
+group: group::threat insights
+default_enabled: false

@@ -105,7 +105,6 @@ export default {
         v-for="(item, index) in accessLevels"
         :key="index"
         data-testid="access-level"
-        data-qa-selector="access_level_content"
         :data-qa-role="item.accessLevelDescription"
       >
         <span v-if="commaSeparateList && index > 0" data-testid="comma-separator">,</span>

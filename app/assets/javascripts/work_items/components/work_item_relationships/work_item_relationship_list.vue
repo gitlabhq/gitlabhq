@@ -19,6 +19,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    showLabels: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
 };
 </script>
@@ -42,6 +47,7 @@ export default {
             :child-item="linkedItem.workItem"
             :can-update="canUpdate"
             :show-task-icon="true"
+            :show-labels="showLabels"
             @click="$emit('showModal', { event: $event, child: linkedItem.workItem })"
             @removeChild="$emit('removeLinkedItem', linkedItem.workItem)"
           />

@@ -826,48 +826,20 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
     end
   end
 
-  context 'with admin_group_member FF disabled' do
-    before do
-      stub_feature_flags(admin_group_member: false)
-    end
-
-    it_behaves_like 'POST /:source_type/:id/members', 'project' do
-      let(:source) { project }
-    end
-
-    it_behaves_like 'POST /:source_type/:id/members', 'group' do
-      let(:source) { group }
-    end
-
-    it_behaves_like 'PUT /:source_type/:id/members/:user_id', 'project' do
-      let(:source) { project }
-    end
-
-    it_behaves_like 'PUT /:source_type/:id/members/:user_id', 'group' do
-      let(:source) { group }
-    end
+  it_behaves_like 'POST /:source_type/:id/members', 'project' do
+    let(:source) { project }
   end
 
-  context 'with admin_group_member FF enabled' do
-    before do
-      stub_feature_flags(admin_group_member: true)
-    end
+  it_behaves_like 'POST /:source_type/:id/members', 'group' do
+    let(:source) { group }
+  end
 
-    it_behaves_like 'POST /:source_type/:id/members', 'project' do
-      let(:source) { project }
-    end
+  it_behaves_like 'PUT /:source_type/:id/members/:user_id', 'project' do
+    let(:source) { project }
+  end
 
-    it_behaves_like 'POST /:source_type/:id/members', 'group' do
-      let(:source) { group }
-    end
-
-    it_behaves_like 'PUT /:source_type/:id/members/:user_id', 'project' do
-      let(:source) { project }
-    end
-
-    it_behaves_like 'PUT /:source_type/:id/members/:user_id', 'group' do
-      let(:source) { group }
-    end
+  it_behaves_like 'PUT /:source_type/:id/members/:user_id', 'group' do
+    let(:source) { group }
   end
 
   it_behaves_like 'DELETE /:source_type/:id/members/:user_id', 'project' do

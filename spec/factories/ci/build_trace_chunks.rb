@@ -22,6 +22,22 @@ FactoryBot.define do
       data_store { :redis }
     end
 
+    trait :redis_trace_chunks_with_data do
+      data_store { :redis_trace_chunks }
+
+      transient do
+        initial_data { 'test data' }
+      end
+
+      after(:create) do |build_trace_chunk, evaluator|
+        Ci::BuildTraceChunks::RedisTraceChunks.new.set_data(build_trace_chunk, evaluator.initial_data)
+      end
+    end
+
+    trait :redis_trace_chunks_without_data do
+      data_store { :redis_trace_chunks }
+    end
+
     trait :database_with_data do
       data_store { :database }
 

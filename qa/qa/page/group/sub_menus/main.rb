@@ -16,7 +16,7 @@ module QA
           end
 
           def go_to_group_overview
-            click_element(:nav_item_link, submenu_item: 'group-overview')
+            click_element('nav-item-link', submenu_item: 'group-overview')
           end
         end
       end

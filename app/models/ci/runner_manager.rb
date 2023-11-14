@@ -62,6 +62,16 @@ module Ci
 
     scope :order_id_desc, -> { order(id: :desc) }
 
+    scope :with_version_prefix, ->(value) do
+      regex = version_regex_expression_for_version(value)
+      value += '.' if regex.end_with?('\.') && !value.end_with?('.')
+      substring = Arel::Nodes::NamedFunction.new('substring', [
+        Ci::RunnerManager.arel_table[:version],
+        Arel.sql("'#{regex}'::text")
+      ])
+      where(substring.eq(sanitize_sql_like(value)))
+    end
+
     scope :with_upgrade_status, ->(upgrade_status) do
       joins(:runner_version).where(runner_version: { status: upgrade_status })
     end
@@ -136,6 +146,17 @@ module Ci
       return unless new_version && Gitlab::Ci::RunnerReleases.instance.enabled?
 
       Ci::Runners::ProcessRunnerVersionUpdateWorker.perform_async(new_version)
+    end
+
+    def self.version_regex_expression_for_version(version)
+      case version
+      when /\d+\.\d+\.\d+/
+        '^\d+\.\d+\.\d+'
+      when /\d+\.\d+(\.)?/
+        '^\d+\.\d+\.'
+      else
+        '^\d+\.'
+      end
     end
   end
 end

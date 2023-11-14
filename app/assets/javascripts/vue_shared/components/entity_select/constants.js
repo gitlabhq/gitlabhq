@@ -14,3 +14,13 @@ export const PROJECT_TOGGLE_TEXT = s__('ProjectSelect|Search for project');
 export const PROJECT_HEADER_TEXT = s__('ProjectSelect|Select a project');
 export const FETCH_PROJECTS_ERROR = __('Unable to fetch projects. Reload the page to try again.');
 export const FETCH_PROJECT_ERROR = __('Unable to fetch project. Reload the page to try again.');
+
+// Organizations
+export const ORGANIZATION_TOGGLE_TEXT = s__('Organization|Search for an organization');
+export const ORGANIZATION_HEADER_TEXT = s__('Organization|Select an organization');
+export const FETCH_ORGANIZATIONS_ERROR = s__(
+  'Organization|Unable to fetch organizations. Reload the page to try again.',
+);
+export const FETCH_ORGANIZATION_ERROR = s__(
+  'Organization|Unable to fetch organizations. Reload the page to try again.',
+);

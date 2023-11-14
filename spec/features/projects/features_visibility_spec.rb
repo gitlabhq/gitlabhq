@@ -3,10 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects do
-  let(:member) { create(:user, :no_super_sidebar) }
+  let(:member) { create(:user) }
   let!(:project) { create(:project, :public, :repository) }
   let!(:issue) { create(:issue, project: project) }
-  let(:non_member) { create(:user, :no_super_sidebar) }
+  let(:non_member) { create(:user) }
+
+  # Sidebar nav links are only visible after hovering over or expanding the
+  # section that contains them (if it exists). Finding visible and hidden
+  # nav links allows us to avoid doing that.
+  let(:visibility_all) { { visible: :all } }
 
   describe 'project features visibility selectors', :js do
     before do
@@ -14,7 +19,7 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
       sign_in(member)
     end
 
-    tools = { builds: "pipelines", issues: "issues", wiki: "wiki", snippets: "snippets", merge_requests: "merge_requests", analytics: "analytics" }
+    tools = { builds: "pipelines", issues: "issues", wiki: "wiki", snippets: "snippets", merge_requests: "merge_requests", analytics: "project-cycle-analytics" }
 
     tools.each do |tool_name, shortcut_name|
       describe "feature #{tool_name}" do
@@ -22,20 +27,16 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
           visit edit_project_path(project)
 
           # disable by clicking toggle
-          toggle_feature_off("project[project_feature_attributes][#{tool_name}_access_level]")
-          page.within('.sharing-permissions') do
-            find('[data-testid="project-features-save-button"]').click
-          end
+          toggle_feature_off(tool_name)
+          click_save_changes
           wait_for_requests
-          expect(page).not_to have_selector(".shortcuts-#{shortcut_name}")
+          expect(page).not_to have_selector(".shortcuts-#{shortcut_name}", **visibility_all)
 
           # re-enable by clicking toggle again
-          toggle_feature_on("project[project_feature_attributes][#{tool_name}_access_level]")
-          page.within('.sharing-permissions') do
-            find('[data-testid="project-features-save-button"]').click
-          end
+          toggle_feature_on(tool_name)
+          click_save_changes
           wait_for_requests
-          expect(page).to have_selector(".shortcuts-#{shortcut_name}")
+          expect(page).to have_selector(".shortcuts-#{shortcut_name}", **visibility_all)
         end
       end
     end
@@ -48,8 +49,8 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
 
         visit project_path(project)
 
-        expect(page).to have_selector('.shortcuts-issues')
-        expect(page).not_to have_selector('.shortcuts-labels')
+        expect(page).to have_selector('.shortcuts-issues', **visibility_all)
+        expect(page).not_to have_selector('.shortcuts-labels', **visibility_all)
       end
     end
 
@@ -65,8 +66,8 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
       it 'hides issues tab' do
         visit project_path(project)
 
-        expect(page).not_to have_selector('.shortcuts-issues')
-        expect(page).not_to have_selector('.shortcuts-labels')
+        expect(page).not_to have_selector('.shortcuts-issues', **visibility_all)
+        expect(page).not_to have_selector('.shortcuts-labels', **visibility_all)
       end
     end
 
@@ -74,7 +75,7 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
       it "shows builds when enabled" do
         visit project_pipelines_path(project)
 
-        expect(page).to have_selector(".shortcuts-builds")
+        expect(page).to have_selector(".shortcuts-builds", **visibility_all)
       end
 
       it "hides builds when disabled" do
@@ -83,7 +84,7 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
 
         visit project_pipelines_path(project)
 
-        expect(page).not_to have_selector(".shortcuts-builds")
+        expect(page).not_to have_selector(".shortcuts-builds", **visibility_all)
       end
     end
   end
@@ -183,23 +184,19 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
     end
 
     it "disables repository related features" do
-      toggle_feature_off('project[project_feature_attributes][repository_access_level]')
+      toggle_feature_off('repository')
 
-      page.within('.sharing-permissions') do
-        click_button "Save changes"
-      end
+      click_save_changes
 
       expect(find(".sharing-permissions")).to have_selector(".gl-toggle.is-disabled", minimum: 3)
     end
 
     it "shows empty features project homepage" do
-      toggle_feature_off('project[project_feature_attributes][repository_access_level]')
-      toggle_feature_off('project[project_feature_attributes][issues_access_level]')
-      toggle_feature_off('project[project_feature_attributes][wiki_access_level]')
+      toggle_feature_off('repository')
+      toggle_feature_off('issues')
+      toggle_feature_off('wiki')
 
-      page.within('.sharing-permissions') do
-        click_button "Save changes"
-      end
+      click_save_changes
       wait_for_requests
 
       visit project_path(project)
@@ -208,13 +205,11 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
     end
 
     it "hides project activity tabs" do
-      toggle_feature_off('project[project_feature_attributes][repository_access_level]')
-      toggle_feature_off('project[project_feature_attributes][issues_access_level]')
-      toggle_feature_off('project[project_feature_attributes][wiki_access_level]')
+      toggle_feature_off('repository')
+      toggle_feature_off('issues')
+      toggle_feature_off('wiki')
 
-      page.within('.sharing-permissions') do
-        click_button "Save changes"
-      end
+      click_save_changes
       wait_for_requests
 
       visit activity_project_path(project)
@@ -229,7 +224,7 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
 
     # Regression spec for https://gitlab.com/gitlab-org/gitlab-foss/issues/25272
     it "hides comments activity tab only on disabled issues, merge requests and repository" do
-      toggle_feature_off('project[project_feature_attributes][issues_access_level]')
+      toggle_feature_off('issues')
 
       save_changes_and_check_activity_tab do
         expect(page).to have_content("Comments")
@@ -237,7 +232,7 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
 
       visit edit_project_path(project)
 
-      toggle_feature_off('project[project_feature_attributes][merge_requests_access_level]')
+      toggle_feature_off('merge_requests')
 
       save_changes_and_check_activity_tab do
         expect(page).to have_content("Comments")
@@ -245,7 +240,7 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
 
       visit edit_project_path(project)
 
-      toggle_feature_off('project[project_feature_attributes][repository_access_level]')
+      toggle_feature_off('repository')
 
       save_changes_and_check_activity_tab do
         expect(page).not_to have_content("Comments")
@@ -255,9 +250,7 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
     end
 
     def save_changes_and_check_activity_tab
-      page.within('.sharing-permissions') do
-        click_button "Save changes"
-      end
+      click_save_changes
       wait_for_requests
 
       visit activity_project_path(project)
@@ -284,10 +277,16 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
   end
 
   def toggle_feature_off(feature_name)
-    find(".project-feature-controls[data-for=\"#{feature_name}\"] .gl-toggle.is-checked").click
+    find(".project-feature-controls[data-for=\"project[project_feature_attributes][#{feature_name}_access_level]\"] .gl-toggle.is-checked").click
   end
 
   def toggle_feature_on(feature_name)
-    find(".project-feature-controls[data-for=\"#{feature_name}\"] .gl-toggle:not(.is-checked)").click
+    find(".project-feature-controls[data-for=\"project[project_feature_attributes][#{feature_name}_access_level]\"] .gl-toggle:not(.is-checked)").click
+  end
+
+  def click_save_changes
+    page.within('.sharing-permissions') do
+      click_button 'Save changes'
+    end
   end
 end

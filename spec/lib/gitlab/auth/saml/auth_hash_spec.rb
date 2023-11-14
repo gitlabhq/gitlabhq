@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Auth::Saml::AuthHash do
   include LoginHelpers
 
-  let(:raw_info_attr) { { 'groups' => %w(Developers Freelancers) } }
+  let(:raw_info_attr) { { 'groups' => %w[Developers Freelancers] } }
   subject(:saml_auth_hash) { described_class.new(omniauth_auth_hash) }
 
   let(:info_hash) do
@@ -23,12 +23,12 @@ RSpec.describe Gitlab::Auth::Saml::AuthHash do
   end
 
   before do
-    stub_saml_group_config(%w(Developers Freelancers Designers))
+    stub_saml_group_config(%w[Developers Freelancers Designers])
   end
 
   describe '#groups' do
     it 'returns array of groups' do
-      expect(saml_auth_hash.groups).to eq(%w(Developers Freelancers))
+      expect(saml_auth_hash.groups).to eq(%w[Developers Freelancers])
     end
 
     context 'raw info hash attributes empty' do

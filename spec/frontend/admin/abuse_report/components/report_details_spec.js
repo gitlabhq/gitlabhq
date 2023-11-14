@@ -5,7 +5,7 @@ import LabelsSelect from '~/admin/abuse_report/components/labels_select.vue';
 import ReportDetails from '~/admin/abuse_report/components/report_details.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import abuseReportQuery from '~/admin/abuse_report/components/graphql/abuse_report.query.graphql';
+import abuseReportQuery from '~/admin/abuse_report/graphql/abuse_report.query.graphql';
 import { createAlert } from '~/alert';
 import { mockAbuseReport, mockLabel1, mockReportQueryResponse } from '../mock_data';
 

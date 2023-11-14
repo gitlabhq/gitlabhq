@@ -72,6 +72,7 @@ module Gitlab
           batch_max_value: nil,
           batch_class_name: BATCH_CLASS_NAME,
           batch_size: BATCH_SIZE,
+          pause_ms: 100,
           max_batch_size: nil,
           sub_batch_size: SUB_BATCH_SIZE,
           gitlab_schema: nil
@@ -105,6 +106,7 @@ module Gitlab
             column_name: batch_column_name,
             job_arguments: job_arguments,
             interval: job_interval,
+            pause_ms: pause_ms,
             min_value: batch_min_value,
             max_value: batch_max_value,
             batch_class_name: batch_class_name,

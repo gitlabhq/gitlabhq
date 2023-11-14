@@ -406,8 +406,10 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline
       end
 
       it 'includes the matched local files' do
-        expect(subject).to contain_exactly(an_instance_of(Gitlab::Ci::Config::External::File::Local),
-                                           an_instance_of(Gitlab::Ci::Config::External::File::Local))
+        expect(subject).to contain_exactly(
+          an_instance_of(Gitlab::Ci::Config::External::File::Local),
+          an_instance_of(Gitlab::Ci::Config::External::File::Local)
+        )
 
         expect(subject.map(&:location)).to contain_exactly('myfolder/file1.yml', 'myfolder/file2.yml')
       end
@@ -424,8 +426,10 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline
         let(:project_id) { project.id }
 
         it 'includes the file' do
-          expect(subject).to contain_exactly(an_instance_of(Gitlab::Ci::Config::External::File::Remote),
-                                             an_instance_of(Gitlab::Ci::Config::External::File::Local))
+          expect(subject).to contain_exactly(
+            an_instance_of(Gitlab::Ci::Config::External::File::Remote),
+            an_instance_of(Gitlab::Ci::Config::External::File::Local)
+          )
         end
       end
 

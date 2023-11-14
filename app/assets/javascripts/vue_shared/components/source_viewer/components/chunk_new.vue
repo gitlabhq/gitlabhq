@@ -56,7 +56,6 @@ export default {
   data() {
     return {
       hasAppeared: false,
-      isLoading: true,
     };
   },
   computed: {
@@ -67,17 +66,6 @@ export default {
       const page = getPageParamValue(this.number);
       return getPageSearchString(this.blamePath, page);
     },
-  },
-  created() {
-    if (this.chunkIndex === 0) {
-      // Display first chunk ASAP in order to improve perceived performance
-      this.isLoading = false;
-      return;
-    }
-
-    window.requestIdleCallback(() => {
-      this.isLoading = false;
-    });
   },
   methods: {
     handleChunkAppear() {
@@ -91,37 +79,37 @@ export default {
 };
 </script>
 <template>
-  <gl-intersection-observer @appear="handleChunkAppear">
-    <div class="gl-display-flex">
-      <div v-if="shouldHighlight" class="gl-display-flex gl-flex-direction-column">
-        <div
-          v-for="(n, index) in totalLines"
-          :key="index"
-          data-testid="line-numbers"
-          class="gl-p-0! gl-z-index-3 diff-line-num gl-border-r gl-display-flex line-links line-numbers"
+  <div class="gl-display-flex">
+    <div v-if="shouldHighlight" class="gl-display-flex gl-flex-direction-column">
+      <div
+        v-for="(n, index) in totalLines"
+        :key="index"
+        data-testid="line-numbers"
+        class="gl-p-0! gl-z-index-3 diff-line-num gl-border-r gl-display-flex line-links line-numbers"
+      >
+        <a
+          class="gl-user-select-none gl-shadow-none! file-line-blame"
+          :href="`${blamePath}${pageSearchString}#L${calculateLineNumber(index)}`"
+        ></a>
+        <a
+          :id="`L${calculateLineNumber(index)}`"
+          class="gl-user-select-none gl-shadow-none! file-line-num"
+          :href="`#L${calculateLineNumber(index)}`"
+          :data-line-number="calculateLineNumber(index)"
         >
-          <a
-            class="gl-user-select-none gl-shadow-none! file-line-blame"
-            :href="`${blamePath}${pageSearchString}#L${calculateLineNumber(index)}`"
-          ></a>
-          <a
-            :id="`L${calculateLineNumber(index)}`"
-            class="gl-user-select-none gl-shadow-none! file-line-num"
-            :href="`#L${calculateLineNumber(index)}`"
-            :data-line-number="calculateLineNumber(index)"
-          >
-            {{ calculateLineNumber(index) }}
-          </a>
-        </div>
+          {{ calculateLineNumber(index) }}
+        </a>
       </div>
+    </div>
 
-      <div v-else-if="!isLoading" class="line-numbers gl-p-0! gl-mr-3 gl-text-transparent">
-        <!-- Placeholder for line numbers while content is not highlighted -->
-      </div>
+    <div v-else class="line-numbers gl-p-0! gl-mr-3 gl-text-transparent">
+      <!-- Placeholder for line numbers while content is not highlighted -->
+    </div>
 
+    <gl-intersection-observer class="gl-w-full" @appear="handleChunkAppear">
       <pre
         class="gl-m-0 gl-p-0! gl-w-full gl-overflow-visible! gl-border-none! code highlight gl-line-height-0"
-      ><code v-if="shouldHighlight" v-safe-html="highlightedContent" data-testid="content"></code><code v-else-if="!isLoading" v-once class="line gl-white-space-pre-wrap! gl-ml-1" data-testid="content" v-text="rawContent"></code></pre>
-    </div>
-  </gl-intersection-observer>
+      ><code v-if="shouldHighlight" v-safe-html="highlightedContent" data-testid="content"></code><code v-else v-once class="line gl-white-space-pre-wrap! gl-ml-1" data-testid="content" v-text="rawContent"></code></pre>
+    </gl-intersection-observer>
+  </div>
 </template>

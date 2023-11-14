@@ -2,7 +2,7 @@ import { useFakeDate } from 'helpers/fake_date';
 import * as types from '~/analytics/cycle_analytics/store/mutation_types';
 import mutations from '~/analytics/cycle_analytics/store/mutations';
 import {
-  PAGINATION_SORT_FIELD_END_EVENT,
+  PAGINATION_SORT_FIELD_DURATION,
   PAGINATION_SORT_DIRECTION_DESC,
 } from '~/analytics/cycle_analytics/constants';
 import {
@@ -99,7 +99,7 @@ describe('Project Value Stream Analytics mutations', () => {
     ${types.SET_LOADING}                         | ${true}                                                  | ${'isLoading'}           | ${true}
     ${types.SET_LOADING}                         | ${false}                                                 | ${'isLoading'}           | ${false}
     ${types.SET_SELECTED_VALUE_STREAM}           | ${selectedValueStream}                                   | ${'selectedValueStream'} | ${selectedValueStream}
-    ${types.SET_PAGINATION}                      | ${pagination}                                            | ${'pagination'}          | ${{ ...pagination, sort: PAGINATION_SORT_FIELD_END_EVENT, direction: PAGINATION_SORT_DIRECTION_DESC }}
+    ${types.SET_PAGINATION}                      | ${pagination}                                            | ${'pagination'}          | ${{ ...pagination, sort: PAGINATION_SORT_FIELD_DURATION, direction: PAGINATION_SORT_DIRECTION_DESC }}
     ${types.SET_PAGINATION}                      | ${{ ...pagination, sort: 'duration', direction: 'asc' }} | ${'pagination'}          | ${{ ...pagination, sort: 'duration', direction: 'asc' }}
     ${types.SET_SELECTED_STAGE}                  | ${selectedStage}                                         | ${'selectedStage'}       | ${selectedStage}
     ${types.RECEIVE_VALUE_STREAMS_SUCCESS}       | ${[selectedValueStream]}                                 | ${'valueStreams'}        | ${[selectedValueStream]}

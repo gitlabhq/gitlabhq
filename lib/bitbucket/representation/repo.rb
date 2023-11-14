@@ -59,6 +59,10 @@ module Bitbucket
         end
       end
 
+      def default_branch
+        raw.dig('mainbranch', 'name')
+      end
+
       def to_s
         full_name
       end

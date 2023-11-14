@@ -448,7 +448,7 @@ These LDAP sync configuration settings are available:
 
 | Setting           | Description | Required | Examples |
 |-------------------|-------------|----------|----------|
-| `group_base`      | Base used to search for groups. | **{dotted-circle}** No (required when `external_groups` is configured) | `'ou=groups,dc=gitlab,dc=example'` |
+| `group_base`      | Base used to search for groups. All valid groups have this base as part of their DN. | **{dotted-circle}** No (required when `external_groups` is configured) | `'ou=groups,dc=gitlab,dc=example'` |
 | `admin_group`     | The CN of a group containing GitLab administrators. Not `cn=administrators` or the full DN. | **{dotted-circle}** No | `'administrators'` |
 | `external_groups` | An array of CNs of groups containing users that should be considered external. Not `cn=interns` or the full DN. | **{dotted-circle}** No | `['interns', 'contractors']` |
 | `sync_ssh_keys`   | The LDAP attribute containing a user's public SSH key. | **{dotted-circle}** No | `'sshPublicKey'` or false if not set |

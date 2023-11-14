@@ -230,7 +230,7 @@ module Sidekiq
       max_retries_after_interruption = nil
 
       max_retries_after_interruption ||= begin
-        Object.const_get(worker_class).sidekiq_options[:max_retries_after_interruption]
+        Object.const_get(worker_class).sidekiq_options['max_retries_after_interruption']
       rescue NameError
       end
 

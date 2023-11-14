@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_profile do
-  let(:user) { create(:user, :no_super_sidebar) }
+  let(:user) { create(:user) }
   let(:contributed_project) { create(:project, :public, :repository) }
 
   def push_code_contribution
@@ -27,8 +27,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
   shared_context 'visit overview tab' do
     before do
       visit user.username
-      page.find('.js-overview-tab a').click
-      wait_for_requests
+      click_nav user.name
     end
   end
 
@@ -61,15 +60,15 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       end
     end
 
-    describe 'user has 11 activities' do
+    describe 'user has 15 activities' do
       before do
-        11.times { push_code_contribution }
+        16.times { push_code_contribution }
       end
 
       include_context 'visit overview tab'
 
-      it 'displays 10 entries in the list of activities' do
-        expect(find('#js-overview')).to have_selector('.event-item', count: 10)
+      it 'displays 15 entries in the list of activities' do
+        expect(find('#js-overview')).to have_selector('.event-item', count: 15)
       end
 
       it 'shows a link to the activity list' do
@@ -158,8 +157,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
     describe 'user has no followers' do
       before do
         visit user.username
-        page.find('.js-followers-tab a').click
-        wait_for_requests
+        click_nav 'Followers'
       end
 
       it 'shows an empty followers list with an info message' do
@@ -177,8 +175,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       before do
         follower.follow(user)
         visit user.username
-        page.find('.js-followers-tab a').click
-        wait_for_requests
+        click_nav 'Followers'
       end
 
       it 'shows followers' do
@@ -199,8 +196,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
         end
 
         visit user.username
-        page.find('.js-followers-tab a').click
-        wait_for_requests
+        click_nav 'Followers'
       end
       it 'shows paginated followers' do
         page.within('#followers') do
@@ -221,8 +217,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
     describe 'user is not following others' do
       before do
         visit user.username
-        page.find('.js-following-tab a').click
-        wait_for_requests
+        click_nav 'Following'
       end
 
       it 'shows an empty following list with an info message' do
@@ -240,8 +235,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       before do
         user.follow(followee)
         visit user.username
-        page.find('.js-following-tab a').click
-        wait_for_requests
+        click_nav 'Following'
       end
 
       it 'shows following user' do
@@ -262,8 +256,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
         end
 
         visit user.username
-        page.find('.js-following-tab a').click
-        wait_for_requests
+        click_nav 'Following'
       end
       it 'shows paginated following' do
         page.within('#following') do
@@ -286,8 +279,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
     shared_context "visit bot's overview tab" do
       before do
         visit bot_user.username
-        page.find('.js-overview-tab a').click
-        wait_for_requests
+        click_nav bot_user.name
       end
     end
 
@@ -326,5 +318,14 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
         expect(page).to have_selector('.projects-block')
       end
     end
+  end
+
+  private
+
+  def click_nav(title)
+    within_testid('super-sidebar') do
+      click_link title
+    end
+    wait_for_requests
   end
 end

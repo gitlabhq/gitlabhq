@@ -21,6 +21,15 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
     sign_in(user)
   end
 
+  it 'passes axe automated accessibility testing' do
+    visit project_tree_path(project, test_sha)
+    wait_for_requests
+
+    expect(page).to be_axe_clean.within('.project-last-commit')
+    expect(page).to be_axe_clean.within('.nav-block')
+    expect(page).to be_axe_clean.within('.tree-content-holder').skipping :'link-in-text-block'
+  end
+
   it 'renders tree table without errors' do
     visit project_tree_path(project, test_sha)
     wait_for_requests
@@ -111,9 +120,16 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
   end
 
   context 'LFS' do
-    it 'renders LFS badge on blob item' do
+    before do
       visit project_tree_path(project, File.join('master', 'files/lfs'))
+      wait_for_requests
+    end
 
+    it 'passes axe automated accessibility testing' do
+      expect(page).to be_axe_clean.within('.tree-content-holder').skipping :'link-in-text-block'
+    end
+
+    it 'renders LFS badge on blob item' do
       expect(page).to have_selector('[data-testid="label-lfs"]', text: 'LFS')
     end
   end

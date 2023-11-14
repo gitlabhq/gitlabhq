@@ -78,7 +78,7 @@ export default {
     newEnvironmentButtonLabel: s__('Environments|New environment'),
     reviewAppButtonLabel: s__('Environments|Enable review apps'),
     cleanUpEnvsButtonLabel: s__('Environments|Clean up environments'),
-    available: __('Available'),
+    active: __('Active'),
     stopped: __('Stopped'),
     prevPage: __('Go to previous page'),
     nextPage: __('Go to next page'),
@@ -97,9 +97,7 @@ export default {
       isStopStaleEnvModalVisible: false,
       page: parseInt(page, 10),
       pageInfo: {},
-      scope: Object.values(ENVIRONMENTS_SCOPE).includes(scope)
-        ? scope
-        : ENVIRONMENTS_SCOPE.AVAILABLE,
+      scope: Object.values(ENVIRONMENTS_SCOPE).includes(scope) ? scope : ENVIRONMENTS_SCOPE.ACTIVE,
       environmentToDelete: {},
       environmentToRollback: {},
       environmentToStop: {},
@@ -111,6 +109,9 @@ export default {
   computed: {
     canSetupReviewApp() {
       return this.environmentApp?.reviewApp?.canSetupReviewApp;
+    },
+    hasReviewApp() {
+      return this.environmentApp?.reviewApp?.hasReviewApp;
     },
     canCleanUpEnvs() {
       return this.environmentApp?.canStopStaleEnvironments;
@@ -130,14 +131,14 @@ export default {
     hasSearch() {
       return Boolean(this.search);
     },
-    availableCount() {
-      return this.environmentApp?.availableCount;
+    activeCount() {
+      return this.environmentApp?.activeCount ?? 0;
     },
     stoppedCount() {
-      return this.environmentApp?.stoppedCount;
+      return this.environmentApp?.stoppedCount ?? 0;
     },
     hasAnyEnvironment() {
-      return this.availableCount > 0 || this.stoppedCount > 0;
+      return this.activeCount > 0 || this.stoppedCount > 0;
     },
     showContent() {
       return this.hasAnyEnvironment || this.hasSearch;
@@ -157,7 +158,10 @@ export default {
       };
     },
     openReviewAppModal() {
-      if (!this.canSetupReviewApp) {
+      // we don't show the Enable review apps button
+      // if a user cannot setup a review app or review
+      // apps are already configured
+      if (!this.canSetupReviewApp || this.hasReviewApp) {
         return null;
       }
 
@@ -272,13 +276,13 @@ export default {
         @primary="showCleanUpEnvsModal"
       >
         <gl-tab
-          :query-param-value="$options.ENVIRONMENTS_SCOPE.AVAILABLE"
-          @click="setScope($options.ENVIRONMENTS_SCOPE.AVAILABLE)"
+          :query-param-value="$options.ENVIRONMENTS_SCOPE.ACTIVE"
+          @click="setScope($options.ENVIRONMENTS_SCOPE.ACTIVE)"
         >
           <template #title>
-            <span>{{ $options.i18n.available }}</span>
+            <span>{{ $options.i18n.active }}</span>
             <gl-badge size="sm" class="gl-tab-counter-badge">
-              {{ availableCount }}
+              {{ activeCount }}
             </gl-badge>
           </template>
         </gl-tab>

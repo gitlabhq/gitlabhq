@@ -43,7 +43,7 @@ export function reviewable(file) {
 }
 
 export function markFileReview(reviews, file, reviewed = true) {
-  const usableReviews = { ...(reviews || {}) };
+  const usableReviews = { ...reviews };
   const updatedReviews = usableReviews;
   let fileReviews;
 

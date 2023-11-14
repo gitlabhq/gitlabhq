@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe 'Creating the packages protection rule', :aggregate_failures, feature_category: :package_registry do
   include GraphqlHelpers
-  using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user, maintainer_projects: [project]) }
@@ -15,151 +14,162 @@ RSpec.describe 'Creating the packages protection rule', :aggregate_failures, fea
     {
       project_path: project.full_path,
       package_name_pattern: package_protection_rule_attributes.package_name_pattern,
-      package_type: "NPM",
-      push_protected_up_to_access_level: "MAINTAINER"
+      package_type: 'NPM',
+      push_protected_up_to_access_level: 'MAINTAINER'
     }
   end
 
   let(:mutation) do
     graphql_mutation(:create_packages_protection_rule, kwargs,
       <<~QUERY
-      clientMutationId
+      packageProtectionRule {
+        id
+        packageNamePattern
+        packageType
+        pushProtectedUpToAccessLevel
+      }
       errors
       QUERY
     )
   end
 
-  let(:mutation_response) { graphql_mutation_response(:create_packages_protection_rule) }
+  let(:mutation_response_package_protection_rule) do
+    graphql_data_at(:createPackagesProtectionRule, :packageProtectionRule)
+  end
 
-  describe 'post graphql mutation' do
-    subject { post_graphql_mutation(mutation, current_user: user) }
+  let(:mutation_response_errors) { graphql_data_at(:createPackagesProtectionRule, :errors) }
 
-    context 'without existing packages protection rule' do
-      it 'returns without error' do
-        subject
+  subject { post_graphql_mutation(mutation, current_user: user) }
 
-        expect_graphql_errors_to_be_empty
-      end
+  shared_examples 'a successful response' do
+    it 'returns without error' do
+      subject
 
-      it 'returns the created packages protection rule' do
-        expect { subject }.to change { ::Packages::Protection::Rule.count }.by(1)
-
-        expect_graphql_errors_to_be_empty
-        expect(Packages::Protection::Rule.where(project: project).count).to eq 1
-
-        expect(Packages::Protection::Rule.where(project: project,
-          package_name_pattern: kwargs[:package_name_pattern])).to exist
-      end
-
-      context 'when invalid fields are given' do
-        let(:kwargs) do
-          {
-            project_path: project.full_path,
-            package_name_pattern: '',
-            package_type: 'UNKNOWN_PACKAGE_TYPE',
-            push_protected_up_to_access_level: 'UNKNOWN_ACCESS_LEVEL'
-          }
-        end
-
-        it 'returns error about required argument' do
-          subject
-
-          expect_graphql_errors_to_include(/was provided invalid value for packageType/)
-          expect_graphql_errors_to_include(/pushProtectedUpToAccessLevel/)
-        end
-      end
+      expect_graphql_errors_to_be_empty
+      expect(mutation_response_errors).to be_empty
     end
 
-    context 'when user does not have permission' do
-      let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
-      let_it_be(:reporter) { create(:user).tap { |u| project.add_reporter(u) } }
-      let_it_be(:guest) { create(:user).tap { |u| project.add_guest(u) } }
-      let_it_be(:anonymous) { create(:user) }
+    it 'returns the created packages protection rule' do
+      subject
 
-      where(:user) do
-        [ref(:developer), ref(:reporter), ref(:guest), ref(:anonymous)]
-      end
-
-      with_them do
-        it 'returns an error' do
-          expect { subject }.not_to change { ::Packages::Protection::Rule.count }
-
-          expect_graphql_errors_to_include(/you don't have permission to perform this action/)
-        end
-      end
+      expect(mutation_response_package_protection_rule).to include(
+        'id' => be_present,
+        'packageNamePattern' => kwargs[:package_name_pattern],
+        'packageType' => kwargs[:package_type],
+        'pushProtectedUpToAccessLevel' => kwargs[:push_protected_up_to_access_level]
+      )
     end
 
-    context 'with existing packages protection rule' do
-      let_it_be(:existing_package_protection_rule) do
-        create(:package_protection_rule, project: project, push_protected_up_to_access_level: Gitlab::Access::DEVELOPER)
-      end
+    it 'creates one package protection rule' do
+      expect { subject }.to change { ::Packages::Protection::Rule.count }.by(1)
 
-      context 'when package name pattern is slightly different' do
-        let(:kwargs) do
-          {
-            project_path: project.full_path,
-            # The field `package_name_pattern` is unique; this is why we change the value in a minimum way
-            package_name_pattern: "#{existing_package_protection_rule.package_name_pattern}-unique",
-            package_type: "NPM",
-            push_protected_up_to_access_level: "DEVELOPER"
-          }
-        end
+      expect(Packages::Protection::Rule.last).to have_attributes(
+        project: project,
+        package_name_pattern: kwargs[:package_name_pattern],
+        package_type: kwargs[:package_type].downcase,
+        push_protected_up_to_access_level: kwargs[:push_protected_up_to_access_level].downcase
+      )
+    end
+  end
 
-        it 'returns the created packages protection rule' do
-          expect { subject }.to change { ::Packages::Protection::Rule.count }.by(1)
+  shared_examples 'an erroneous response' do
+    it 'does not create one package protection rule' do
+      expect { subject }.not_to change { ::Packages::Protection::Rule.count }
+    end
+  end
 
-          expect(Packages::Protection::Rule.where(project: project).count).to eq 2
-          expect(Packages::Protection::Rule.where(project: project,
-            package_name_pattern: kwargs[:package_name_pattern])).to exist
-        end
+  it_behaves_like 'a successful response'
 
-        it 'returns without error' do
-          subject
-
-          expect_graphql_errors_to_be_empty
-        end
-      end
-
-      context 'when field `package_name_pattern` is taken' do
-        let(:kwargs) do
-          {
-            project_path: project.full_path,
-            package_name_pattern: existing_package_protection_rule.package_name_pattern,
-            package_type: 'NPM',
-            push_protected_up_to_access_level: 'MAINTAINER'
-          }
-        end
-
-        it 'returns without error' do
-          subject
-
-          expect(mutation_response).to include 'errors' => ['Package name pattern has already been taken']
-        end
-
-        it 'does not create new package protection rules' do
-          expect { subject }.to change { Packages::Protection::Rule.count }.by(0)
-
-          expect(Packages::Protection::Rule.where(project: project,
-            package_name_pattern: kwargs[:package_name_pattern],
-            push_protected_up_to_access_level: Gitlab::Access::MAINTAINER)).not_to exist
-        end
-      end
+  context 'with invalid kwargs leading to error from graphql' do
+    let(:kwargs) do
+      super().merge!(
+        package_name_pattern: '',
+        package_type: 'UNKNOWN_PACKAGE_TYPE',
+        push_protected_up_to_access_level: 'UNKNOWN_ACCESS_LEVEL'
+      )
     end
 
-    context "when feature flag ':packages_protected_packages' disabled" do
-      before do
-        stub_feature_flags(packages_protected_packages: false)
+    it_behaves_like 'an erroneous response'
+
+    it 'returns error about required argument' do
+      subject
+
+      expect_graphql_errors_to_include(/was provided invalid value for packageType/)
+      expect_graphql_errors_to_include(/pushProtectedUpToAccessLevel/)
+    end
+  end
+
+  context 'with invalid kwargs leading to error from business model' do
+    let(:kwargs) { super().merge!(package_name_pattern: '') }
+
+    it_behaves_like 'an erroneous response'
+
+    it 'returns an error' do
+      subject.tap { expect(mutation_response_errors).to include(/Package name pattern can't be blank/) }
+    end
+  end
+
+  context 'with existing packages protection rule' do
+    let_it_be(:existing_package_protection_rule) do
+      create(:package_protection_rule, project: project, push_protected_up_to_access_level: :maintainer)
+    end
+
+    let(:kwargs) { super().merge!(package_name_pattern: existing_package_protection_rule.package_name_pattern) }
+
+    it_behaves_like 'an erroneous response'
+
+    it 'returns an error' do
+      subject.tap { expect(mutation_response_errors).to include(/Package name pattern has already been taken/) }
+    end
+
+    context 'when field `package_name_pattern` is different than existing one' do
+      let(:kwargs) do
+        # The field `package_name_pattern` is unique; this is why we change the value in a minimum way
+        super().merge!(package_name_pattern: "#{existing_package_protection_rule.package_name_pattern}-unique")
       end
 
-      it 'does not create any package protection rules' do
-        expect { subject }.to change { Packages::Protection::Rule.count }.by(0)
+      it_behaves_like 'a successful response'
+    end
 
-        expect(Packages::Protection::Rule.where(project: project)).not_to exist
-      end
+    context 'when field `push_protected_up_to_access_level` is different than existing one' do
+      let(:kwargs) { super().merge!(push_protected_up_to_access_level: 'DEVELOPER') }
 
-      it 'returns error of disabled feature flag' do
-        subject.tap { expect_graphql_errors_to_include(/'packages_protected_packages' feature flag is disabled/) }
+      it_behaves_like 'an erroneous response'
+
+      it 'returns an error' do
+        subject.tap { expect(mutation_response_errors).to include(/Package name pattern has already been taken/) }
       end
+    end
+  end
+
+  context 'when user does not have permission' do
+    let_it_be(:anonymous) { create(:user) }
+    let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
+    let_it_be(:guest) { create(:user).tap { |u| project.add_guest(u) } }
+    let_it_be(:reporter) { create(:user).tap { |u| project.add_reporter(u) } }
+
+    where(:user) do
+      [ref(:developer), ref(:reporter), ref(:guest), ref(:anonymous)]
+    end
+
+    with_them do
+      it_behaves_like 'an erroneous response'
+
+      it 'returns an error' do
+        subject.tap { expect_graphql_errors_to_include(/you don't have permission to perform this action/) }
+      end
+    end
+  end
+
+  context "when feature flag ':packages_protected_packages' disabled" do
+    before do
+      stub_feature_flags(packages_protected_packages: false)
+    end
+
+    it_behaves_like 'an erroneous response'
+
+    it 'returns error of disabled feature flag' do
+      subject.tap { expect_graphql_errors_to_include(/'packages_protected_packages' feature flag is disabled/) }
     end
   end
 end

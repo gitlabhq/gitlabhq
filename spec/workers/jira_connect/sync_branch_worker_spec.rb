@@ -14,7 +14,7 @@ RSpec.describe JiraConnect::SyncBranchWorker, feature_category: :integrations do
 
     let(:project_id) { project.id }
     let(:branch_name) { 'master' }
-    let(:commit_shas) { %w(b83d6e3 5a62481) }
+    let(:commit_shas) { %w[b83d6e3 5a62481] }
     let(:update_sequence_id) { 1 }
 
     def perform

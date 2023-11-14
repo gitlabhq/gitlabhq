@@ -2,7 +2,7 @@
 
 module Network
   class Graph
-    attr_reader :days, :commits, :map, :notes, :repo
+    attr_reader :days, :commits, :map, :repo
 
     def self.max_count
       @max_count ||= 650
@@ -17,27 +17,9 @@ module Network
 
       @commits = collect_commits
       @days = index_commits
-      @notes = collect_notes
     end
 
     protected
-
-    def collect_notes
-      return {} if Feature.enabled?(:disable_network_graph_notes_count, @project, type: :experiment)
-
-      h = Hash.new(0)
-
-      @project
-        .notes
-        .where(noteable_type: 'Commit')
-        .group('notes.commit_id')
-        .select('notes.commit_id, count(notes.id) as note_count')
-        .each do |item|
-          h[item.commit_id] = item.note_count.to_i
-        end
-
-      h
-    end
 
     # Get commits from repository
     #

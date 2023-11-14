@@ -277,11 +277,7 @@ export default {
       >
         {{ saveText }}
       </gl-button>
-      <gl-button
-        :type="cancelButtonType"
-        data-qa-selector="cancel_badge_button"
-        @click="handleCancel"
-      >
+      <gl-button :type="cancelButtonType" @click="handleCancel">
         {{ __('Cancel') }}
       </gl-button>
     </div>

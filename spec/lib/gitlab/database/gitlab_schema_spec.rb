@@ -95,10 +95,10 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
 
       # ignore gitlab_internal due to `ar_internal_metadata`, `schema_migrations`
       table_and_view_names = table_and_view_names
-        .reject { |_, gitlab_schema| gitlab_schema == :gitlab_internal }
+        .reject { |database_dictionary| database_dictionary.schema?('gitlab_internal') }
 
       duplicated_tables = table_and_view_names
-        .group_by(&:first)
+        .group_by(&:key_name)
         .select { |_, schemas| schemas.count > 1 }
         .keys
 

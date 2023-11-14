@@ -141,7 +141,7 @@ module API
     def find_project(id)
       return unless id
 
-      projects = Project.without_deleted.not_hidden
+      projects = find_project_scopes
 
       if id.is_a?(Integer) || id =~ INTEGER_ID_REGEX
         projects.find_by(id: id)
@@ -150,6 +150,11 @@ module API
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    # Can be overriden by API endpoints
+    def find_project_scopes
+      Project.without_deleted.not_hidden
+    end
 
     def find_project!(id)
       project = find_project(id)
@@ -337,6 +342,12 @@ module API
       unauthorized!
     end
 
+    def authenticate_by_gitlab_shell_or_workhorse_token!
+      return require_gitlab_workhorse! unless headers[GITLAB_SHELL_API_HEADER].present?
+
+      authenticate_by_gitlab_shell_token!
+    end
+
     def authenticated_with_can_read_all_resources!
       authenticate!
       forbidden! unless current_user.can_read_all_resources?
@@ -389,6 +400,10 @@ module API
 
     def authorize_update_builds!
       authorize! :update_build, user_project
+    end
+
+    def authorize_cancel_builds!
+      authorize! :cancel_build, user_project
     end
 
     def require_repository_enabled!(subject = :global)
@@ -758,6 +773,7 @@ module API
       finder_params[:id_before] = sanitize_id_param(params[:id_before]) if params[:id_before]
       finder_params[:updated_after] = declared_params[:updated_after] if declared_params[:updated_after]
       finder_params[:updated_before] = declared_params[:updated_before] if declared_params[:updated_before]
+      finder_params[:include_pending_delete] = declared_params[:include_pending_delete] if declared_params[:include_pending_delete]
       finder_params
     end
 
@@ -891,7 +907,7 @@ module API
     def project_moved?(id, project)
       return false unless Feature.enabled?(:api_redirect_moved_projects)
       return false unless id.is_a?(String) && id.include?('/')
-      return false if project.blank? || id == project.full_path
+      return false if project.blank? || project.full_path.casecmp?(id)
       return false unless params[:id] == id
 
       true

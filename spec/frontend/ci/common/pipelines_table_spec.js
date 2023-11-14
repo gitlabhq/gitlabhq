@@ -16,7 +16,7 @@ import {
   TRACKING_CATEGORIES,
 } from '~/ci/constants';
 
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
 describe('Pipelines Table', () => {
   let wrapper;
@@ -58,7 +58,7 @@ describe('Pipelines Table', () => {
   };
 
   const findGlTableLite = () => wrapper.findComponent(GlTableLite);
-  const findCiBadgeLink = () => wrapper.findComponent(CiBadgeLink);
+  const findCiIcon = () => wrapper.findComponent(CiIcon);
   const findPipelineInfo = () => wrapper.findComponent(PipelineUrl);
   const findTriggerer = () => wrapper.findComponent(PipelineTriggerer);
   const findLegacyPipelineMiniGraph = () => wrapper.findComponent(LegacyPipelineMiniGraph);
@@ -96,7 +96,7 @@ describe('Pipelines Table', () => {
 
     describe('status cell', () => {
       it('should render a status badge', () => {
-        expect(findCiBadgeLink().exists()).toBe(true);
+        expect(findCiIcon().exists()).toBe(true);
       });
     });
 
@@ -265,7 +265,7 @@ describe('Pipelines Table', () => {
     });
 
     it('tracks status badge click', () => {
-      findCiBadgeLink().vm.$emit('ciStatusBadgeClick');
+      findCiIcon().vm.$emit('ciStatusBadgeClick');
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_ci_status_badge', {
         label: TRACKING_CATEGORIES.table,

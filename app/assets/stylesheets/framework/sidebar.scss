@@ -2,7 +2,11 @@
   width: 100%;
 
   .container-fluid {
-    padding: 0 $gl-padding;
+    padding: 0 $container-margin;
+
+    @include media-breakpoint-up(xl) {
+      padding: 0 $container-margin-xl;
+    }
 
     &.container-blank {
       background: none;

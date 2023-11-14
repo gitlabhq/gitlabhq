@@ -202,7 +202,7 @@ A table displays the member's:
 
 NOTE:
 The display of group members' **Source** might be inconsistent.
-For more information, see [issue 414557](https://gitlab.com/gitlab-org/gitlab/-/issues/414557).
+For more information, see [issue 23020](https://gitlab.com/gitlab-org/gitlab/-/issues/23020).
 
 ## Filter and sort members in a group
 
@@ -219,7 +219,7 @@ Filter a group to find members. By default, all members in the group and subgrou
 In lists of group members, entries can display the following badges:
 
 - **SAML**, to indicate the member has a [SAML account](saml_sso/index.md) connected to them.
-- **Enterprise**, to indicate that the member is an [enterprise user](../enterprise_user/index.md).
+- **Enterprise**, to indicate that the member of the top-level group is an [enterprise user](../enterprise_user/index.md).
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
@@ -227,7 +227,7 @@ In lists of group members, entries can display the following badges:
    - To view members in the group only, select **Membership = Direct**.
    - To view members of the group and its subgroups, select **Membership = Inherited**.
    - To view members with two-factor authentication enabled or disabled, select **2FA = Enabled** or **Disabled**.
-   - [In GitLab 14.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/349887), to view GitLab users created by [SAML SSO](saml_sso/index.md) or [SCIM provisioning](saml_sso/scim_setup.md) select **Enterprise = true**.
+   - To view members of the top-level group who are [enterprise users](../enterprise_user/index.md), select **Enterprise = true**.
 
 ### Search a group
 

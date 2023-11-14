@@ -218,7 +218,7 @@ RSpec.describe Lfs::FileTransformer, feature_category: :source_code_management d
 
             repository_types = project.lfs_objects_projects.order(:id).pluck(:repository_type)
 
-            expect(repository_types).to eq(%w(project wiki))
+            expect(repository_types).to eq(%w[project wiki])
           end
         end
       end

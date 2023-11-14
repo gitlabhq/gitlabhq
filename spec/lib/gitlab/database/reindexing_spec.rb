@@ -231,7 +231,7 @@ RSpec.describe Gitlab::Database::Reindexing, feature_category: :database, time_t
 
       states = queued_actions.map(&:reload).map(&:state)
 
-      expect(states).to eq(%w(failed done queued))
+      expect(states).to eq(%w[failed done queued])
     end
   end
 

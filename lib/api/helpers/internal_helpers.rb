@@ -123,6 +123,10 @@ module API
         # Defined in EE
       end
 
+      def need_git_audit_event?
+        false
+      end
+
       private
 
       def repository_path

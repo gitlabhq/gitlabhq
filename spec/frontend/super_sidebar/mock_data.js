@@ -74,6 +74,7 @@ export const mergeRequestMenuGroup = [
 export const contextSwitcherLinks = [
   { title: 'Explore', link: '/explore', icon: 'compass', link_classes: 'persistent-link-class' },
   { title: 'Admin area', link: '/admin', icon: 'admin' },
+  { title: 'Leave admin mode', link: '/admin/session/destroy', data_method: 'post' },
 ];
 
 export const sidebarData = {

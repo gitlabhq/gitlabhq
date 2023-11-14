@@ -11,8 +11,8 @@ RSpec.describe LfsObjectUploader do
 
   it_behaves_like "builds correct paths",
     store_dir: %r[\h{2}/\h{2}],
-    cache_dir: %r[/lfs-objects/tmp/cache],
-    work_dir: %r[/lfs-objects/tmp/work]
+    cache_dir: %r{/lfs-objects/tmp/cache},
+    work_dir: %r{/lfs-objects/tmp/work}
 
   context "object store is REMOTE" do
     before do

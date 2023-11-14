@@ -10,7 +10,7 @@ FactoryBot.define do
     metadata_version { 'sast:1.0' }
     name { 'Cipher with no integrity' }
     report_type { :sast }
-    cvss { [{ vendor: "GitLab", vector_string: "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:L/I:L/A:N" }] }
+    cvss { [{ vendor: "GitLab", vector: "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:L/I:L/A:N" }] }
     original_data do
       {
         description: "The cipher does not provide data integrity update 1",

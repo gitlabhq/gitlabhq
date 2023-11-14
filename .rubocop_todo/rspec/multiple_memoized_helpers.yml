@@ -4,7 +4,6 @@ RSpec/MultipleMemoizedHelpers:
     - 'ee/spec/features/boards/swimlanes/epics_swimlanes_filtering_spec.rb'
     - 'ee/spec/finders/epics_finder_spec.rb'
     - 'ee/spec/finders/incident_management/oncall_users_finder_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/populate_latest_pipeline_ids_spec.rb'
     - 'ee/spec/lib/gitlab/graphql/loaders/bulk_epic_aggregate_loader_spec.rb'
     - 'ee/spec/requests/api/analytics/project_deployment_frequency_spec.rb'
     - 'ee/spec/services/ee/boards/issues/list_service_spec.rb'

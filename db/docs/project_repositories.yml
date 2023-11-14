@@ -7,4 +7,4 @@ feature_categories:
 description: Keeps disk path to repositories and link to the shard
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8614
 milestone: '11.6'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell

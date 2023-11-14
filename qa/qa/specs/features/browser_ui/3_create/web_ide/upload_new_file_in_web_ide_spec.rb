@@ -1,12 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', product_group: :ide,
-    quarantine: {
-      only: { job: 'slow-network' },
-      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/387609',
-      type: :flaky
-    } do
+  RSpec.describe 'Create', product_group: :ide do
     describe 'Upload a file in Web IDE' do
       let(:file_path) { File.absolute_path(File.join('qa', 'fixtures', 'web_ide', file_name)) }
       let(:project) { create(:project, :with_readme, name: 'webide-upload-file-project') }

@@ -1,8 +1,8 @@
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { createAlert, VARIANT_WARNING } from '~/alert';
 
-jest.mock('@sentry/browser');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('Flash', () => {
   const findTextContent = (containerSelector = '.flash-container') =>

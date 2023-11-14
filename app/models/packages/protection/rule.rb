@@ -12,6 +12,12 @@ module Packages
 
       validates :package_name_pattern, presence: true, uniqueness: { scope: [:project_id, :package_type] },
         length: { maximum: 255 }
+      validates :package_name_pattern,
+        format: {
+          with: Gitlab::Regex.protection_rules_npm_package_name_pattern_regex,
+          message: ->(_object, _data) { _('should be a valid NPM package name with optional wildcard characters.') }
+        },
+        if: :npm?
       validates :package_type, presence: true
       validates :push_protected_up_to_access_level, presence: true
 
@@ -20,7 +26,7 @@ module Packages
       scope :for_package_name, ->(package_name) {
         return none if package_name.blank?
 
-        where(":package_name ILIKE package_name_pattern_ilike_query", package_name: package_name)
+        where(':package_name ILIKE package_name_pattern_ilike_query', package_name: package_name)
       }
 
       def self.push_protected_from?(access_level:, package_name:, package_type:)

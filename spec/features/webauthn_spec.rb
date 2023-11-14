@@ -15,7 +15,7 @@ RSpec.describe 'Using WebAuthn Devices for Authentication', :js, feature_categor
     # TODO: it_behaves_like 'hardware device for 2fa', 'WebAuthn'
 
     describe 'registration' do
-      let(:user) { create(:user, :no_super_sidebar) }
+      let(:user) { create(:user) }
 
       before do
         gitlab_sign_in(user)
@@ -58,7 +58,7 @@ RSpec.describe 'Using WebAuthn Devices for Authentication', :js, feature_categor
         gitlab_sign_out
 
         # Second user
-        user = create(:user, :no_super_sidebar)
+        user = create(:user)
         gitlab_sign_in(user)
         visit profile_account_path
         enable_two_factor_authentication
@@ -126,7 +126,7 @@ RSpec.describe 'Using WebAuthn Devices for Authentication', :js, feature_categor
     it_behaves_like 'hardware device for 2fa', 'WebAuthn'
 
     describe 'registration' do
-      let(:user) { create(:user, :no_super_sidebar) }
+      let(:user) { create(:user) }
 
       before do
         gitlab_sign_in(user)
@@ -161,7 +161,7 @@ RSpec.describe 'Using WebAuthn Devices for Authentication', :js, feature_categor
         gitlab_sign_out
 
         # Second user
-        user = create(:user, :no_super_sidebar)
+        user = create(:user)
         gitlab_sign_in(user)
         user.update_attribute(:otp_required_for_login, true)
         visit profile_account_path
@@ -227,7 +227,7 @@ RSpec.describe 'Using WebAuthn Devices for Authentication', :js, feature_categor
 
   describe 'authentication' do
     let(:otp_required_for_login) { true }
-    let(:user) { create(:user, :no_super_sidebar, webauthn_xid: WebAuthn.generate_user_id, otp_required_for_login: otp_required_for_login) }
+    let(:user) { create(:user, webauthn_xid: WebAuthn.generate_user_id, otp_required_for_login: otp_required_for_login) }
     let!(:webauthn_device) do
       add_webauthn_device(app_id, user)
     end
@@ -256,7 +256,7 @@ RSpec.describe 'Using WebAuthn Devices for Authentication', :js, feature_categor
 
     describe 'when a given WebAuthn device has already been registered by another user' do
       describe 'but not the current user' do
-        let(:other_user) { create(:user, :no_super_sidebar, webauthn_xid: WebAuthn.generate_user_id, otp_required_for_login: otp_required_for_login) }
+        let(:other_user) { create(:user, webauthn_xid: WebAuthn.generate_user_id, otp_required_for_login: otp_required_for_login) }
 
         it 'does not allow logging in with that particular device' do
           # Register other user with a different WebAuthn device
@@ -277,7 +277,7 @@ RSpec.describe 'Using WebAuthn Devices for Authentication', :js, feature_categor
         it "allows logging in with that particular device" do
           pending("support for passing credential options in FakeClient")
           # Register current user with the same WebAuthn device
-          current_user = create(:user, :no_super_sidebar)
+          current_user = create(:user)
           gitlab_sign_in(current_user)
           visit profile_account_path
           manage_two_factor_authentication

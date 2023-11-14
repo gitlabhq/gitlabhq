@@ -387,16 +387,7 @@ module API
     mount ::API::Internal::MailRoom
     mount ::API::Internal::ContainerRegistry::Migration
     mount ::API::Internal::Workhorse
-
-    version 'v3', using: :path do
-      # Although the following endpoints are kept behind V3 namespace,
-      # they're not deprecated neither should be removed when V3 get
-      # removed.  They're needed as a layer to integrate with Jira
-      # Development Panel.
-      namespace '/', requirements: ::API::V3::Github::ENDPOINT_REQUIREMENTS do
-        mount ::API::V3::Github
-      end
-    end
+    mount ::API::Internal::Shellhorse
 
     route :any, '*path', feature_category: :not_owned do # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
       error!('404 Not Found', 404)

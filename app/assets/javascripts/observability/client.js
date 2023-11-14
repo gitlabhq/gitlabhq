@@ -1,12 +1,15 @@
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
+import { logError } from '~/lib/logger';
+import { DEFAULT_SORTING_OPTION, SORTING_OPTIONS } from './constants';
 
 function reportErrorAndThrow(e) {
+  logError(e);
   Sentry.captureException(e);
   throw e;
 }
 // Provisioning API spec: https://gitlab.com/gitlab-org/opstrace/opstrace/-/blob/main/provisioning-api/pkg/provisioningapi/routes.go#L59
-async function enableTraces(provisioningUrl) {
+async function enableObservability(provisioningUrl) {
   try {
     // Note: axios.put(url, undefined, {withCredentials: true}) does not send cookies properly, so need to use the API below for the correct behaviour
     return await axios(provisioningUrl, {
@@ -19,7 +22,7 @@ async function enableTraces(provisioningUrl) {
 }
 
 // Provisioning API spec: https://gitlab.com/gitlab-org/opstrace/opstrace/-/blob/main/provisioning-api/pkg/provisioningapi/routes.go#L37
-async function isTracingEnabled(provisioningUrl) {
+async function isObservabilityEnabled(provisioningUrl) {
   try {
     const { data } = await axios.get(provisioningUrl, { withCredentials: true });
     if (data && data.status) {
@@ -42,18 +45,11 @@ async function fetchTrace(tracingUrl, traceId) {
       throw new Error('traceId is required.');
     }
 
-    const { data } = await axios.get(tracingUrl, {
+    const { data } = await axios.get(`${tracingUrl}/${traceId}`, {
       withCredentials: true,
-      params: {
-        trace_id: traceId,
-      },
     });
 
-    if (!Array.isArray(data.traces) || data.traces.length === 0) {
-      throw new Error('traces are missing/invalid in the response'); // eslint-disable-line @gitlab/require-i18n-strings
-    }
-
-    return data.traces[0];
+    return data;
   } catch (e) {
     return reportErrorAndThrow(e);
   }
@@ -65,9 +61,10 @@ async function fetchTrace(tracingUrl, traceId) {
 const SUPPORTED_FILTERS = {
   durationMs: ['>', '<'],
   operation: ['=', '!='],
-  serviceName: ['=', '!='],
+  service: ['=', '!='],
   period: ['='],
   traceId: ['=', '!='],
+  attribute: ['='],
   // free-text 'search' temporarily ignored https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2309
 };
 
@@ -77,9 +74,10 @@ const SUPPORTED_FILTERS = {
 const FILTER_TO_QUERY_PARAM = {
   durationMs: 'duration_nano',
   operation: 'operation',
-  serviceName: 'service_name',
+  service: 'service_name',
   period: 'period',
   traceId: 'trace_id',
+  attribute: 'attribute',
 };
 
 const FILTER_OPERATORS_PREFIX = {
@@ -112,13 +110,32 @@ function getFilterParamName(filterName, operator) {
 }
 
 /**
+ * Process `filterValue` and append the proper query params to the  `searchParams` arg
+ *
+ * It mutates `searchParams`
+ *
+ * @param {String} filterValue The filter value, in the format `attribute_name=attribute_value`
+ * @param {String} filterOperator The filter operator
+ * @param {URLSearchParams} searchParams The URLSearchParams object where to append the proper query params
+ */
+function handleAttributeFilter(filterValue, filterOperator, searchParams) {
+  const [attrName, attrValue] = filterValue.split('=');
+  if (attrName && attrValue) {
+    if (filterOperator === '=') {
+      searchParams.append('attr_name', attrName);
+      searchParams.append('attr_value', attrValue);
+    }
+  }
+}
+
+/**
  * Builds URLSearchParams from a filter object of type { [filterName]: undefined | null | Array<{operator: String, value: any} }
  *  e.g:
  *
  *  filterObj =  {
  *      durationMs: [{operator: '>', value: '100'}, {operator: '<', value: '1000' }],
  *      operation: [{operator: '=', value: 'someOp' }],
- *      serviceName: [{operator: '!=', value: 'foo' }]
+ *      service: [{operator: '!=', value: 'foo' }]
  *    }
  *
  * It handles converting the filter to the proper supported query params
@@ -131,20 +148,22 @@ function filterObjToQueryParams(filterObj) {
 
   Object.keys(SUPPORTED_FILTERS).forEach((filterName) => {
     const filterValues = filterObj[filterName] || [];
-    const supportedFilters = filterValues.filter((f) =>
+    const validFilters = filterValues.filter((f) =>
       SUPPORTED_FILTERS[filterName].includes(f.operator),
     );
-    supportedFilters.forEach(({ operator, value: rawValue }) => {
-      const paramName = getFilterParamName(filterName, operator);
-
-      let value = rawValue;
-      if (filterName === 'durationMs') {
-        // converting durationMs to duration_nano
-        value *= 1000000;
-      }
-
-      if (paramName && value) {
-        filterParams.append(paramName, value);
+    validFilters.forEach(({ operator, value: rawValue }) => {
+      if (filterName === 'attribute') {
+        handleAttributeFilter(rawValue, operator, filterParams);
+      } else {
+        const paramName = getFilterParamName(filterName, operator);
+        let value = rawValue;
+        if (filterName === 'durationMs') {
+          // converting durationMs to duration_nano
+          value *= 1000000;
+        }
+        if (paramName && value) {
+          filterParams.append(paramName, value);
+        }
       }
     });
   });
@@ -161,12 +180,12 @@ function filterObjToQueryParams(filterObj) {
  *    {
  *      durationMs: [ {operator: '>', value: '100'}, {operator: '<', value: '1000'}],
  *      operation: [ {operator: '=', value: 'someOp}],
- *      serviceName: [ {operator: '!=', value: 'foo}]
+ *      service: [ {operator: '!=', value: 'foo}]
  *    }
  *
  * @returns Array<Trace> : A list of traces
  */
-async function fetchTraces(tracingUrl, { filters = {}, pageToken, pageSize } = {}) {
+async function fetchTraces(tracingUrl, { filters = {}, pageToken, pageSize, sortBy } = {}) {
   const params = filterObjToQueryParams(filters);
   if (pageToken) {
     params.append('page_token', pageToken);
@@ -174,6 +193,10 @@ async function fetchTraces(tracingUrl, { filters = {}, pageToken, pageSize } = {
   if (pageSize) {
     params.append('page_size', pageSize);
   }
+  const sortOrder = Object.values(SORTING_OPTIONS).includes(sortBy)
+    ? sortBy
+    : DEFAULT_SORTING_OPTION;
+  params.append('sort', sortOrder);
 
   try {
     const { data } = await axios.get(tracingUrl, {
@@ -228,18 +251,54 @@ async function fetchOperations(operationsUrl, serviceName) {
   }
 }
 
-export function buildClient({ provisioningUrl, tracingUrl, servicesUrl, operationsUrl } = {}) {
-  if (!provisioningUrl || !tracingUrl || !servicesUrl || !operationsUrl) {
-    throw new Error(
-      'missing required params. provisioningUrl, tracingUrl, servicesUrl, operationsUrl are required',
-    );
+async function fetchMetrics(metricsUrl) {
+  try {
+    const { data } = await axios.get(metricsUrl, {
+      withCredentials: true,
+    });
+    if (!Array.isArray(data.metrics)) {
+      throw new Error('metrics are missing/invalid in the response'); // eslint-disable-line @gitlab/require-i18n-strings
+    }
+    return data;
+  } catch (e) {
+    return reportErrorAndThrow(e);
   }
+}
+
+export function buildClient(config) {
+  if (!config) {
+    throw new Error('No options object provided'); // eslint-disable-line @gitlab/require-i18n-strings
+  }
+
+  const { provisioningUrl, tracingUrl, servicesUrl, operationsUrl, metricsUrl } = config;
+
+  if (typeof provisioningUrl !== 'string') {
+    throw new Error('provisioningUrl param must be a string');
+  }
+
+  if (typeof tracingUrl !== 'string') {
+    throw new Error('tracingUrl param must be a string');
+  }
+
+  if (typeof servicesUrl !== 'string') {
+    throw new Error('servicesUrl param must be a string');
+  }
+
+  if (typeof operationsUrl !== 'string') {
+    throw new Error('operationsUrl param must be a string');
+  }
+
+  if (typeof metricsUrl !== 'string') {
+    throw new Error('metricsUrl param must be a string');
+  }
+
   return {
-    enableTraces: () => enableTraces(provisioningUrl),
-    isTracingEnabled: () => isTracingEnabled(provisioningUrl),
-    fetchTraces: (filters) => fetchTraces(tracingUrl, filters),
+    enableObservability: () => enableObservability(provisioningUrl),
+    isObservabilityEnabled: () => isObservabilityEnabled(provisioningUrl),
+    fetchTraces: (options) => fetchTraces(tracingUrl, options),
     fetchTrace: (traceId) => fetchTrace(tracingUrl, traceId),
     fetchServices: () => fetchServices(servicesUrl),
     fetchOperations: (serviceName) => fetchOperations(operationsUrl, serviceName),
+    fetchMetrics: () => fetchMetrics(metricsUrl),
   };
 }

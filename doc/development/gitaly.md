@@ -41,8 +41,8 @@ To read or write Git data, a request has to be made to Gitaly. This means that
 if you're developing a new feature where you need data that's not yet available
 in `lib/gitlab/git` changes have to be made to Gitaly.
 
-There should be no new code that touches Git repositories via disk access (for example,
-Rugged, `git`, `rm -rf`) anywhere in the `gitlab` repository. Anything that
+There should be no new code that touches Git repositories via disk access
+anywhere in the `gitlab` repository. Anything that
 needs direct access to the Git repository *must* be implemented in Gitaly, and
 exposed via an RPC.
 
@@ -63,45 +63,6 @@ rm -rf tmp/tests/gitaly
 ```
 
 During RSpec tests, the Gitaly instance writes logs to `gitlab/log/gitaly-test.log`.
-
-## Legacy Rugged code
-
-While Gitaly can handle all Git access, many of GitLab customers still
-run Gitaly atop NFS. The legacy Rugged implementation for Git calls may
-be faster than the Gitaly RPC due to N+1 Gitaly calls and other
-reasons. See [the issue](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/57317) for more
-details.
-
-Until GitLab has eliminated most of these inefficiencies or the use of
-NFS is discontinued for Git data, Rugged implementations of some of the
-most commonly-used RPCs can be enabled via feature flags:
-
-- `rugged_find_commit`
-- `rugged_get_tree_entries`
-- `rugged_tree_entry`
-- `rugged_commit_is_ancestor`
-- `rugged_commit_tree_entry`
-- `rugged_list_commits_by_oid`
-
-A convenience Rake task can be used to enable or disable these flags
-all together. To enable:
-
-```shell
-bundle exec rake gitlab:features:enable_rugged
-```
-
-To disable:
-
-```shell
-bundle exec rake gitlab:features:disable_rugged
-```
-
-Most of this code exists in the `lib/gitlab/git/rugged_impl` directory.
-
-NOTE:
-You should *not* have to add or modify code related to Rugged unless explicitly discussed with the
-[Gitaly Team](https://gitlab.com/groups/gl-gitaly/group_members). This code does not work on GitLab.com or other GitLab
-instances that do not use NFS.
 
 ## `TooManyInvocationsError` errors
 

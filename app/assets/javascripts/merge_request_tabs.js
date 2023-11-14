@@ -21,12 +21,7 @@ import syntaxHighlight from './syntax_highlight';
 Vue.use(VueApollo);
 
 const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient(
-    {},
-    {
-      useGet: true,
-    },
-  ),
+  defaultClient: createDefaultClient(),
 });
 
 // MergeRequestTabs

@@ -325,7 +325,7 @@ RSpec.describe Projects::Operations::UpdateService, feature_category: :groups_an
             expect(project_arg).to eq project
             expect(user_arg).to eq user
             expect(prometheus_attrs).to have_key('encrypted_properties')
-            expect(prometheus_attrs.keys).not_to include(*%w(id project_id created_at updated_at properties))
+            expect(prometheus_attrs.keys).not_to include(*%w[id project_id created_at updated_at properties])
             expect(prometheus_attrs['encrypted_properties']).not_to eq(prometheus_integration.encrypted_properties)
           end.and_call_original
 

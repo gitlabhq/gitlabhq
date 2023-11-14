@@ -63,10 +63,6 @@ class GlobalPolicy < BasePolicy
     prevent :access_git
   end
 
-  rule { security_policy_bot }.policy do
-    enable :access_git
-  end
-
   rule { project_bot | service_account }.policy do
     prevent :log_in
     prevent :receive_notifications
