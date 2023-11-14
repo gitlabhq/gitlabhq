@@ -303,7 +303,7 @@
   .pipeline-show-container,
   .pipeline-links-container {
     @media (max-width: $breakpoint-sm) {
-      width: 100%;
+      flex-basis: 100%;
     }
   }
 

@@ -48,7 +48,38 @@ There is a feature proposal to add the ability to back up repositories directly 
 
   1. Spin up a VM with 8 vCPU and 7.2 GB memory. This node will be used to back up Git repositories. Note that
      [a Praefect node cannot be used to back up Git data](https://gitlab.com/gitlab-org/gitlab/-/issues/396343#note_1385950340).
-  1. Configure the node as another **GitLab Rails** node as defined in your [reference architecture](../reference_architectures/index.md). As with other GitLab Rails nodes, this node must have access to your main Postgres database as well as to Gitaly Cluster.
+  1. Configure the node as another **GitLab Rails** node as defined in your [reference architecture](../reference_architectures/index.md).
+     As with other GitLab Rails nodes, this node must have access to your main PostgreSQL database, Redis, object storage, and Gitaly Cluster.
+  1. Ensure the GitLab application isn't running on this node by disabling most services:
+
+     1. Edit `/etc/gitlab/gitlab.rb` to ensure the following services are disabled.
+        `roles(['application_role'])` disables Redis, PostgreSQL, and Consul, and
+        is the basis of the reference architecture Rails node definition.
+
+        ```ruby
+        roles(['application_role'])
+        gitlab_workhorse['enable'] = false
+        puma['enable'] = false
+        sidekiq['enable'] = false
+        gitlab_kas['enable'] = false
+        gitaly['enable'] = false
+        prometheus_monitoring['enable'] = false
+        ```
+
+     1. Reconfigure GitLab:
+
+        ```shell
+        sudo gitlab-ctl reconfigure
+        ```
+
+     1. The only service that should be left is `logrotate`, you can verify with:
+
+        ```shell
+        gitlab-ctl status
+        ```
+
+     There is [a feature request](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6823) for a role in the Linux package
+     that meets these requirements.
 
 To back up the Git repositories:
 

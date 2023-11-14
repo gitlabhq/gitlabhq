@@ -43,6 +43,8 @@ group :monorepo do
   gem 'gitlab-backup-cli', path: 'gems/gitlab-backup-cli', feature_category: :backup_restore
 end
 
+gem 'gitlab-secret_detection', path: 'gems/gitlab-secret_detection', feature_category: :secret_detection
+
 # Responders respond_to and respond_with
 gem 'responders', '~> 3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
@@ -226,7 +228,7 @@ gem 'icalendar' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Diffs
 gem 'diffy', '~> 3.4' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'diff_match_patch', '~> 0.1.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'diff_match_patch', '~> 0.1.0', path: 'vendor/gems/diff_match_patch', feature_category: :team_planning
 
 # Application server
 gem 'rack', '~> 2.2.8' # rubocop:todo Gemfile/MissingFeatureCategory

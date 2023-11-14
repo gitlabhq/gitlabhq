@@ -1,6 +1,8 @@
 <script>
 import { GlButton } from '@gitlab/ui';
+import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/dist/utils';
 import { Mousetrap } from '~/lib/mousetrap';
+import { TAB_KEY_CODE } from '~/lib/utils/keycodes';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
 import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
@@ -68,6 +70,13 @@ export default {
       };
     },
   },
+  watch: {
+    'sidebarState.isCollapsed': {
+      handler() {
+        this.setupFocusTrapListener();
+      },
+    },
+  },
   created() {
     const {
       is_logged_in: isLoggedIn,
@@ -80,9 +89,11 @@ export default {
     }
   },
   mounted() {
+    this.setupFocusTrapListener();
     Mousetrap.bind(keysFor(TOGGLE_SUPER_SIDEBAR), this.toggleSidebar);
   },
   beforeDestroy() {
+    document.removeEventListener('keydown', this.focusTrap);
     Mousetrap.unbind(keysFor(TOGGLE_SUPER_SIDEBAR));
   },
   methods: {
@@ -92,6 +103,17 @@ export default {
         property: 'nav_sidebar',
       });
       toggleSuperSidebarCollapsed(!isCollapsed(), true);
+    },
+    setupFocusTrapListener() {
+      /**
+       * Only trap focus when sidebar displays over page content to avoid
+       * focus moving to page content and being obscured by the sidebar
+       */
+      if (GlBreakpointInstance.windowWidth() < breakpoints.xl && !this.sidebarState.isCollapsed) {
+        document.addEventListener('keydown', this.focusTrap);
+      } else {
+        document.removeEventListener('keydown', this.focusTrap);
+      }
     },
     collapseSidebar() {
       toggleSuperSidebarCollapsed(true, false);
@@ -120,6 +142,23 @@ export default {
       } else if (state === STATE_CLOSED) {
         this.sidebarState.isHoverPeek = false;
         this.sidebarState.isCollapsed = true;
+      }
+    },
+    focusTrap(event) {
+      const { keyCode, shiftKey } = event;
+      const firstFocusableElement = this.$refs.userBar.$el.querySelector('a');
+      const lastFocusableElement = this.$refs.helpCenter.$el.querySelector('button');
+
+      if (keyCode !== TAB_KEY_CODE) return;
+
+      if (shiftKey) {
+        if (document.activeElement === firstFocusableElement) {
+          lastFocusableElement.focus();
+          event.preventDefault();
+        }
+      } else if (document.activeElement === lastFocusableElement) {
+        firstFocusableElement.focus();
+        event.preventDefault();
       }
     },
   },
@@ -152,7 +191,7 @@ export default {
       <h2 id="super-sidebar-heading" class="gl-sr-only">
         {{ $options.i18n.primaryNavigation }}
       </h2>
-      <user-bar :has-collapse-button="!showOverlay" :sidebar-data="sidebarData" />
+      <user-bar ref="userBar" :has-collapse-button="!showOverlay" :sidebar-data="sidebarData" />
       <div v-if="showTrialStatusWidget" class="gl-px-2 gl-py-2">
         <trial-status-widget
           class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-px-3 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-py-3"
@@ -180,7 +219,7 @@ export default {
           <sidebar-portal-target />
         </div>
         <div class="gl-p-3">
-          <help-center :sidebar-data="sidebarData" />
+          <help-center ref="helpCenter" :sidebar-data="sidebarData" />
         </div>
       </div>
     </nav>

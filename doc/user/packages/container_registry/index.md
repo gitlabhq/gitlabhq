@@ -168,6 +168,10 @@ this setting. However, disabling the container registry disables all Container R
 
 ## Supported image types
 
-The container registry supports [Docker V2](https://docs.docker.com/registry/spec/manifest-v2-2/) and [Open Container Initiative (OCI)](https://github.com/opencontainers/image-spec/blob/main/spec.md) image formats.
+> OCI conformance [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10345) in GitLab 16.6.
+
+The container registry supports the [Docker V2](https://docs.docker.com/registry/spec/manifest-v2-2/)
+and [Open Container Initiative (OCI)](https://github.com/opencontainers/image-spec/blob/main/spec.md)
+image formats. Additionally, the container registry [conforms to the OCI distribution specification](https://conformance.opencontainers.org/#gitlab-container-registry).
 
 OCI support means that you can host OCI-based image formats in the registry, such as [Helm 3+ chart packages](https://helm.sh/docs/topics/registries/). There is no distinction between image formats in the GitLab [API](../../../api/container_registry.md) and the UI. [Issue 38047](https://gitlab.com/gitlab-org/gitlab/-/issues/38047) addresses this distinction, starting with Helm.

@@ -2,11 +2,35 @@
 import { GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { __, sprintf, s__ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ReviewerAvatarLink from './reviewer_avatar_link.vue';
 
 const LOADING_STATE = 'loading';
 const SUCCESS_STATE = 'success';
 const JUST_APPROVED = 'approved';
+
+const REVIEW_STATE_ICONS = {
+  APPROVED: {
+    name: 'status-success',
+    class: 'gl-text-green-500',
+    title: __('Reviewer approved changes'),
+  },
+  REQUESTED_CHANGES: {
+    name: 'status-alert',
+    class: 'gl-text-red-500',
+    title: __('Reviewer requested changes'),
+  },
+  REVIEWED: {
+    name: 'comment',
+    class: 'gl-bg-blue-500 gl-text-white gl-icon s16 gl-rounded-full gl--flex-center',
+    size: 8,
+    title: __('Reviewer commented'),
+  },
+  UNREVIEWED: {
+    name: 'dotted-circle',
+    title: __('Awaiting review'),
+  },
+};
 
 export default {
   i18n: {
@@ -20,6 +44,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     users: {
       type: Array,
@@ -105,6 +130,18 @@ export default {
         this.loadingStates[userId] = null;
       }
     },
+    reviewStateIcon(user) {
+      if (user.mergeRequestInteraction.approved) return REVIEW_STATE_ICONS.APPROVED;
+
+      return REVIEW_STATE_ICONS[user.mergeRequestInteraction.reviewState];
+    },
+    showRequestReviewButton(user) {
+      if (this.glFeatures.mrRequestChanges) {
+        return user.mergeRequestInteraction.reviewState !== 'UNREVIEWED';
+      }
+
+      return true;
+    },
   },
   LOADING_STATE,
   SUCCESS_STATE,
@@ -134,7 +171,7 @@ export default {
         </div>
       </reviewer-avatar-link>
       <gl-button
-        v-if="user.mergeRequestInteraction.canUpdate && user.mergeRequestInteraction.reviewed"
+        v-if="user.mergeRequestInteraction.canUpdate && showRequestReviewButton(user)"
         v-gl-tooltip.left
         :title="$options.i18n.reRequestReview"
         :aria-label="$options.i18n.reRequestReview"
@@ -146,25 +183,42 @@ export default {
         data-testid="re-request-button"
         @click="reRequestReview(user.id)"
       />
-      <gl-icon
-        v-if="user.mergeRequestInteraction.approved"
-        v-gl-tooltip.left
-        :size="16"
-        :title="approvedByTooltipTitle(user)"
-        name="status-success"
-        class="float-right gl-my-2 gl-ml-auto gl-text-green-500 gl-flex-shrink-0"
-        :class="approveAnimation(user.id)"
-        data-testid="approved"
-      />
-      <gl-icon
-        v-else-if="user.mergeRequestInteraction.reviewed"
-        v-gl-tooltip.left
-        :size="16"
-        :title="reviewedButNotApprovedTooltip(user)"
-        name="dotted-circle"
-        class="float-right gl-my-2 gl-ml-auto gl-text-gray-400 gl-flex-shrink-0"
-        data-testid="reviewed-not-approved"
-      />
+      <template v-if="glFeatures.mrRequestChanges">
+        <span
+          v-gl-tooltip.top.viewport
+          :title="reviewStateIcon(user).title"
+          :class="reviewStateIcon(user).class"
+          class="float-right gl-my-2 gl-ml-auto gl-flex-shrink-0"
+        >
+          <gl-icon
+            :size="reviewStateIcon(user).size || 16"
+            :name="reviewStateIcon(user).name"
+            :aria-label="reviewStateIcon(user).title"
+            data-testid="reviewer-state-icon"
+          />
+        </span>
+      </template>
+      <template v-else>
+        <gl-icon
+          v-if="user.mergeRequestInteraction.approved"
+          v-gl-tooltip.left
+          :size="16"
+          :title="approvedByTooltipTitle(user)"
+          name="status-success"
+          class="float-right gl-my-2 gl-ml-auto gl-text-green-500 gl-flex-shrink-0"
+          :class="approveAnimation(user.id)"
+          data-testid="approved"
+        />
+        <gl-icon
+          v-else-if="user.mergeRequestInteraction.reviewed"
+          v-gl-tooltip.left
+          :size="16"
+          :title="reviewedButNotApprovedTooltip(user)"
+          name="dotted-circle"
+          class="float-right gl-my-2 gl-ml-auto gl-text-gray-400 gl-flex-shrink-0"
+          data-testid="reviewed-not-approved"
+        />
+      </template>
     </div>
   </div>
 </template>

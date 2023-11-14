@@ -1,0 +1,17 @@
+PATH
+  remote: .
+  specs:
+    diff_match_patch (0.1.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  diff_match_patch!
+
+BUNDLED WITH
+   2.4.21

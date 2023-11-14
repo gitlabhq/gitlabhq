@@ -178,19 +178,6 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, feature_category: 
               watchdog.call
             end
 
-            context 'when enforce_memory_watchdog ops toggle is off' do
-              before do
-                stub_feature_flags(enforce_memory_watchdog: false)
-              end
-
-              it 'always uses the NullHandler' do
-                expect(handler).not_to receive(:call)
-                expect(described_class::Handlers::NullHandler.instance).to receive(:call).and_return(true)
-
-                watchdog.call
-              end
-            end
-
             context 'when multiple monitors exceeds allowed number of strikes' do
               before do
                 watchdog.configure do |config|

@@ -61,6 +61,11 @@ PATH
       pg_query
 
 PATH
+  remote: gems/gitlab-secret_detection
+  specs:
+    gitlab-secret_detection (0.1.0)
+
+PATH
   remote: gems/gitlab-utils
   specs:
     gitlab-utils (0.1.0)
@@ -111,6 +116,11 @@ PATH
     devise-pbkdf2-encryptable (0.0.0)
       devise (~> 4.0)
       devise-two-factor (~> 4.1.1)
+
+PATH
+  remote: vendor/gems/diff_match_patch
+  specs:
+    diff_match_patch (0.1.0)
 
 PATH
   remote: vendor/gems/mail-smtp_pool
@@ -465,7 +475,6 @@ GEM
       railties (~> 7.0)
       rotp (~> 6.0)
     diff-lcs (1.5.0)
-    diff_match_patch (0.1.0)
     diffy (3.4.2)
     digest-crc (0.6.4)
       rake (>= 12.0.0, < 14.0.0)
@@ -1825,7 +1834,7 @@ DEPENDENCIES
   devise (~> 4.9.3)
   devise-pbkdf2-encryptable (~> 0.0.0)!
   devise-two-factor (~> 4.1.1)
-  diff_match_patch (~> 0.1.0)
+  diff_match_patch (~> 0.1.0)!
   diffy (~> 3.4)
   discordrb-webhooks (~> 3.4)
   doorkeeper (~> 5.6, >= 5.6.6)
@@ -1871,6 +1880,7 @@ DEPENDENCIES
   gitlab-rspec!
   gitlab-safe_request_store!
   gitlab-schema-validation!
+  gitlab-secret_detection!
   gitlab-sidekiq-fetcher!
   gitlab-styles (~> 11.0.0)
   gitlab-utils!

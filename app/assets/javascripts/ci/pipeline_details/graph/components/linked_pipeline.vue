@@ -287,7 +287,7 @@ export default {
         />
         <div v-else :class="$options.styles.actionSizeClasses"></div>
       </div>
-      <div class="gl-pt-2">
+      <div class="gl-pt-2 gl-ml-7">
         <gl-badge size="sm" variant="info" data-testid="downstream-pipeline-label">
           {{ label }}
         </gl-badge>

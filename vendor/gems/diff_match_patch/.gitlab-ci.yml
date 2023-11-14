@@ -1,0 +1,12 @@
+include:
+  - local: gems/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "diff_match_patch"
+      gem_path_prefix: "vendor/gems/"
+
+rspec:
+  script:
+    - rake test
+  parallel:
+    matrix:
+      - RUBY_VERSION: ["3.0", "3.1", "3.2"]

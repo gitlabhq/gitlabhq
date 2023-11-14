@@ -1136,10 +1136,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 }
 
 .user-activity-content {
-  &::before {
-    @include vertical-line(80px, 25px);
-    background: var(--gray-50, $gray-50);
-  }
+  @include gl-relative;
 
   .system-note-image {
     @include gl--flex-center;
@@ -1150,6 +1147,16 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
     svg {
       fill: $gray-600 !important;
     }
+  }
+}
+
+.user-profile-activity {
+  @include gl-relative;
+
+  &:not(:last-child)::before {
+    @include vertical-line(16px, 10px);
+    height: 100%;
+    background: var(--gray-50, $gray-50);
   }
 }
 

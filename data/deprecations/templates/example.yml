@@ -1,57 +1,61 @@
-# This is a template for announcing a feature deprecation or other important planned change.
-#
-# Please refer to the deprecation guidelines to confirm your understanding of GitLab's definitions.
-# https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology
-#
-# Deprecations and other future breaking changes must be announced at least
-# three releases prior to removal.
-#
+# Use this template tp announce a feature deprecation or other
+# important planned changes at least three releases prior to removal.
 # Breaking changes must happen in a major release.
 #
-# See the OPTIONAL END OF SUPPORT FIELDS section below if an End of Support period also applies.
+# See the deprecation guidelines to confirm your understanding of GitLab's definitions:
+# https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology
 #
-# For more information please refer to the handbook documentation here:
+# If an End of Support period applies, see the OPTIONAL section below.
+#
+# For more information, see the handbook:
 # https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-and-other-planned-breaking-change-announcements
-#
-# Please delete this line and above before submitting your merge request.
-#
+
+# ===================
 # REQUIRED FIELDS
-#
-- title: "Feature A is deprecated"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
-  removal_milestone: "XX.YY"  # (required) The milestone when this feature is planned to be removed
-  announcement_milestone: "XX.YY"  # (required) The milestone when this feature was first announced as deprecated.
-  breaking_change: true  # (required) Change to false if this is not a breaking change.
-  reporter: exampleuser  # (required) GitLab username of the person reporting the change
-  stage: stage  # (required) String value of the stage that the feature was created in. e.g., Growth
-  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/000000  # (required) Link to the deprecation issue in GitLab
-  body: |  # (required) Do not modify this line, instead modify the lines below.
+# ===================
+
+# ----- DELETE EVERYTHING ABOVE THIS LINE -----
+
+- title: "Feature A is deprecated"
+  # The milestones for the deprecation announcement, and the removal.
+  removal_milestone: "XX.YY"
+  announcement_milestone: "XX.YY"
+  # Change breaking_change to false if needed.
+  breaking_change: true
+  # The stage and GitLab username of the person reporting the change,
+  # and a link to the deprecation issue
+  reporter: exampleuser
+  stage: stage
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/000000
+  body: |  # (required) Don't change this line.
     <!-- START OF BODY COMMENT
 
-    Be clear and concise. Give a brief explanation of the details or reasons for the change.
+    This area supports markdown. Replace this comment with your markdown content.
 
-    Additionally, deprecations and other planned changes should be actionable, so add details that explain what users need to do to address the change. For example:
+    Explain, *briefly*, the details or reasons for the change. Deprecations and other planned changes should be actionable, so tell users how to address the change. For example:
 
     - "Use the `internal` keyword instead of `confidential`."
-    - "Reduce the number of characters in all job names to be 250 characters or less."
-    - "Give an expiration date to any access tokens that have no expiration date."
     - "Stop using the `omniauth_crowd` gem. It will be removed and will not be replaced."
 
     When ready, assign to your tech writer for review. They will run `bin/rake gitlab:docs:compile_deprecations` to update the deprecations doc, then merge.
 
-    This area supports markdown. Delete this entire comment and replace it with your markdown content.
-
     END OF BODY COMMENT -->
+
+# ==============================
+# OPTIONAL END-OF-SUPPORT FIELDS
+# ==============================
 #
-# OPTIONAL END OF SUPPORT FIELDS
+# If an End of Support period applies:
+# 1) Share this announcement in the `#spt_managers` Support channel in Slack
+# 2) Mention `@gitlab-com/support` in this merge request.
 #
-# If an End of Support period applies, the announcement should be shared with GitLab Support
-# in the `#spt_managers` channel in Slack, and mention `@gitlab-com/support` in this MR.
-#
-  end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
-  #
-  # OTHER OPTIONAL FIELDS
-  #
-  tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
-  documentation_url:  # (optional) This is a link to the current documentation page
-  image_url:  # (optional) This is a link to a thumbnail image depicting the feature
-  video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  # When support for this feature ends, in XX.YY milestone format.
+  end_of_support_milestone:
+  # Array of tiers the feature is currently available to,
+  # like [Free, Silver, Gold, Core, Premium, Ultimate]
+  tiers:
+  # Links to documentation and thumbnail image
+  documentation_url:
+  image_url:
+  # Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  video_url:

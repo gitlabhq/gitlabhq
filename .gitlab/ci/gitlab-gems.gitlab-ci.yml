@@ -32,3 +32,6 @@ include:
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:
       gem_name: "gitlab-backup-cli"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "gitlab-secret_detection"

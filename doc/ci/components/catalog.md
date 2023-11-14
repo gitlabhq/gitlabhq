@@ -42,8 +42,11 @@ After the repository is set as a components repository, it appears in the CI/CD 
 
 ## View available components in the CI/CD Catalog
 
-To view the components available to your project from the CI/CD Catalog:
+To access the CI/CD Catalog and view the published components that are available to you:
 
-1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Build > Pipeline Editor**.
-1. Select **Browse CI/CD Catalog**.
+1. On the left sidebar, select **Search or go to**.
+1. Select **Explore**.
+1. Select **CI/CD Catalog**.
+
+Alternatively, if you are already in the [pipeline editor](../pipeline_editor/index.md)
+in your project, you can select **Browse CI/CD Catalog**.

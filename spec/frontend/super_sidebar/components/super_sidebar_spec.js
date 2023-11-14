@@ -1,4 +1,5 @@
 import { nextTick } from 'vue';
+import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/dist/utils';
 import { Mousetrap } from '~/lib/mousetrap';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SuperSidebar from '~/super_sidebar/components/super_sidebar.vue';
@@ -23,6 +24,7 @@ import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { trackContextAccess } from '~/super_sidebar/utils';
 import { sidebarData as mockSidebarData, loggedOutSidebarData } from '../mock_data';
 
+const { lg, xl } = breakpoints;
 const initialSidebarState = { ...sidebarState };
 
 jest.mock('~/super_sidebar/super_sidebar_collapsed_state_manager');
@@ -312,6 +314,27 @@ describe('SuperSidebar component', () => {
     it('renders trial status widget', () => {
       expect(findTrialStatusWidget().exists()).toBe(true);
       expect(findTrialStatusPopover().exists()).toBe(true);
+    });
+  });
+
+  describe('keyboard interactivity', () => {
+    it('does not bind keydown events on screens xl and above', async () => {
+      jest.spyOn(document, 'addEventListener');
+      jest.spyOn(bp, 'windowWidth').mockReturnValue(xl);
+      createWrapper();
+
+      isCollapsed.mockReturnValue(false);
+      await nextTick();
+
+      expect(document.addEventListener).not.toHaveBeenCalled();
+    });
+
+    it('binds keydown events on screens below xl', () => {
+      jest.spyOn(document, 'addEventListener');
+      jest.spyOn(bp, 'windowWidth').mockReturnValue(lg);
+      createWrapper();
+
+      expect(document.addEventListener).toHaveBeenCalledWith('keydown', wrapper.vm.focusTrap);
     });
   });
 });

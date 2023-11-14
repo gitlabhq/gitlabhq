@@ -1477,6 +1477,9 @@ ee/lib/ee/api/entities/project.rb
 [Deploy:Environments - KAS Version Maintainers] @gitlab-org/maintainers/kas-version-maintainers
 /GITLAB_KAS_VERSION
 
+^[DiffMatchPatch gem]
+/vendor/gems/diff_match_patch @garyh
+
 # JiHu GitLab rules. See https://gitlab.com/gitlab-jh/gitlab-jh-enablement/-/issues/213#note_1024367528
 
 [JH Frontend] @jihulab/maintainers/frontend

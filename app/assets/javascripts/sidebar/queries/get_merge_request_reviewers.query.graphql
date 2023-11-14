@@ -1,7 +1,7 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 #import "~/graphql_shared/fragments/user_availability.fragment.graphql"
 
-query mergeRequestReviewers($fullPath: ID!, $iid: String!) {
+query mergeRequestReviewers($fullPath: ID!, $iid: String!, $mrRequestChanges: Boolean!) {
   workspace: project(fullPath: $fullPath) {
     id
     issuable: mergeRequest(iid: $iid) {
@@ -14,7 +14,8 @@ query mergeRequestReviewers($fullPath: ID!, $iid: String!) {
             canMerge
             canUpdate
             approved
-            reviewed
+            reviewed @skip(if: $mrRequestChanges)
+            reviewState @include(if: $mrRequestChanges)
           }
         }
       }

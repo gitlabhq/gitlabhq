@@ -343,7 +343,7 @@ export default {
       </div>
       <gl-badge
         v-if="isBridge"
-        class="gl-mt-3"
+        class="gl-mt-3 gl-ml-7"
         variant="info"
         size="sm"
         data-testid="job-bridge-badge"
