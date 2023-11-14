@@ -3,11 +3,10 @@
 require_relative '../lib/gitlab_settings'
 
 file = ENV.fetch('GITLAB_CONFIG') { Rails.root.join('config/gitlab.yml') }
-section = ENV.fetch('GITLAB_ENV') { Rails.env }
 
 GITLAB_INSTANCE_UUID_NOT_SET = 'uuid-not-set'
 
-Settings = GitlabSettings.load(file, section) do
+Settings = GitlabSettings.load(file, Rails.env) do
   def gitlab_on_standard_port?
     on_standard_port?(gitlab)
   end
