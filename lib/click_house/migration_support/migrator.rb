@@ -11,9 +11,13 @@ module ClickHouse
 
       self.migrations_paths = ["db/click_house/migrate"]
 
-      def initialize(direction, migrations, schema_migration, target_version = nil, logger = Gitlab::AppLogger)
+      def initialize(
+        direction, migrations, schema_migration, target_version = nil, step = nil,
+        logger = Gitlab::AppLogger
+      )
         @direction         = direction
         @target_version    = target_version
+        @step              = step
         @migrated_versions = {}
         @migrations        = migrations
         @schema_migration  = schema_migration
@@ -47,12 +51,15 @@ module ClickHouse
         runnable = migrations[start..finish]
 
         if up?
-          runnable.reject { |m| ran?(m) }
+          runnable = runnable.reject { |m| ran?(m) }
         else
           # skip the last migration if we're headed down, but not ALL the way down
           runnable.pop if target
-          runnable.find_all { |m| ran?(m) }
+          runnable = runnable.find_all { |m| ran?(m) }
         end
+
+        runnable = runnable.take(@step) if @step && !@target_version
+        runnable
       end
 
       def migrations

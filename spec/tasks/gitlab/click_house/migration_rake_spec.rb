@@ -9,9 +9,11 @@ RSpec.describe 'gitlab:clickhouse', click_house: :without_migrations, feature_ca
   self.use_transactional_tests = false
 
   let(:migrations_base_dir) { 'click_house/migrations' }
-  let(:migrations_dirname) { '' }
+  let(:migrations_dirname) { 'undefined' }
   let(:migrations_dir) { expand_fixture_path("#{migrations_base_dir}/#{migrations_dirname}") }
   let(:verbose) { nil }
+  let(:target_version) { nil }
+  let(:step) { nil }
 
   before(:all) do
     Rake.application.rake_require 'tasks/gitlab/click_house/migration'
@@ -19,12 +21,12 @@ RSpec.describe 'gitlab:clickhouse', click_house: :without_migrations, feature_ca
 
   before do
     stub_env('VERBOSE', verbose) if verbose
+    stub_env('VERSION', target_version) if target_version
+    stub_env('STEP', step.to_s) if step
   end
 
   describe 'migrate' do
     subject(:migration) { run_rake_task('gitlab:clickhouse:migrate') }
-
-    let(:target_version) { nil }
 
     around do |example|
       ClickHouse::MigrationSupport::Migrator.migrations_paths = [migrations_dir]
@@ -32,10 +34,6 @@ RSpec.describe 'gitlab:clickhouse', click_house: :without_migrations, feature_ca
       example.run
 
       clear_consts(expand_fixture_path(migrations_base_dir))
-    end
-
-    before do
-      stub_env('VERSION', target_version) if target_version
     end
 
     describe 'when creating a table' do
@@ -67,21 +65,68 @@ RSpec.describe 'gitlab:clickhouse', click_house: :without_migrations, feature_ca
 
     describe 'when dropping a table' do
       let(:migrations_dirname) { 'drop_table' }
-      let(:target_version) { 2 }
 
-      it 'drops table' do
-        stub_env('VERSION', 1)
-        run_rake_task('gitlab:clickhouse:migrate')
+      context 'with VERSION set' do
+        let(:target_version) { 2 }
 
-        expect(table_names).to include('some')
+        it 'drops table' do
+          stub_env('VERSION', 1)
+          run_rake_task('gitlab:clickhouse:migrate')
 
-        stub_env('VERSION', target_version)
-        migration
-        expect(table_names).not_to include('some')
+          expect(table_names).to include('some')
+
+          stub_env('VERSION', target_version)
+          migration
+          expect(table_names).not_to include('some')
+        end
+
+        context 'with STEP also set' do
+          let(:step) { 1 }
+
+          it 'ignores STEP and executes both migrations' do
+            migration
+
+            expect(table_names).not_to include('some')
+          end
+        end
+      end
+
+      context 'with STEP set to 1' do
+        let(:step) { 1 }
+
+        it 'executes only first step and creates table' do
+          migration
+
+          expect(table_names).to include('some')
+        end
+      end
+
+      context 'with STEP set to 0' do
+        let(:step) { 0 }
+
+        it 'executes only first step and creates table' do
+          expect { migration }.to raise_error ArgumentError, 'STEP should be a positive number'
+        end
+      end
+
+      context 'with STEP set to not-a-number' do
+        let(:step) { 'NaN' }
+
+        it 'raises an error' do
+          expect { migration }.to raise_error ArgumentError, 'invalid value for Integer(): "NaN"'
+        end
+      end
+
+      context 'with STEP set to empty string' do
+        let(:step) { '' }
+
+        it 'raises an error' do
+          expect { migration }.to raise_error ArgumentError, 'invalid value for Integer(): ""'
+        end
       end
     end
 
-    describe 'with VERSION is invalid' do
+    context 'with VERSION is invalid' do
       let(:migrations_dirname) { 'plain_table_creation' }
       let(:target_version) { 'invalid' }
 
@@ -92,29 +137,51 @@ RSpec.describe 'gitlab:clickhouse', click_house: :without_migrations, feature_ca
   describe 'rollback' do
     subject(:migration) { run_rake_task('gitlab:clickhouse:rollback') }
 
-    let(:schema_migration) { ClickHouse::MigrationSupport::SchemaMigration }
+    let(:migrations_dirname) { 'table_creation_with_down_method' }
 
     around do |example|
       ClickHouse::MigrationSupport::Migrator.migrations_paths = [migrations_dir]
-      migrate(nil, ClickHouse::MigrationSupport::MigrationContext.new(migrations_dir, schema_migration))
+      # Ensure we start with all migrations up
+      schema_migration = ClickHouse::MigrationSupport::SchemaMigration
+      migrate(ClickHouse::MigrationSupport::MigrationContext.new(migrations_dir, schema_migration), nil)
 
       example.run
 
       clear_consts(expand_fixture_path(migrations_base_dir))
     end
 
-    context 'when migrating back all the way to 0' do
-      let(:target_version) { 0 }
+    context 'with VERSION set' do
+      context 'when migrating back all the way to 0' do
+        let(:target_version) { 0 }
 
-      context 'when down method is present' do
-        let(:migrations_dirname) { 'table_creation_with_down_method' }
-
-        it 'removes migration' do
-          expect(table_names).to include('some')
+        it 'rolls back all migrations' do
+          expect(table_names).to include('some', 'another')
 
           migration
-          expect(table_names).not_to include('some')
+          expect(table_names).not_to include('some', 'another')
         end
+
+        context 'with STEP also set' do
+          let(:step) { 1 }
+
+          it 'ignores STEP and rolls back all migrations' do
+            expect(table_names).to include('some', 'another')
+
+            migration
+            expect(table_names).not_to include('some', 'another')
+          end
+        end
+      end
+    end
+
+    context 'with STEP set to 1' do
+      let(:step) { 1 }
+
+      it 'executes only first step and drops "another" table' do
+        run_rake_task('gitlab:clickhouse:rollback')
+
+        expect(table_names).to include('some')
+        expect(table_names).not_to include('another')
       end
     end
   end

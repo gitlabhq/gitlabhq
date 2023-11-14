@@ -36893,7 +36893,7 @@ ALTER INDEX p_ci_builds_scheduled_at_idx ATTACH PARTITION partial_index_ci_build
 
 ALTER INDEX p_ci_builds_token_encrypted_partition_id_idx ATTACH PARTITION unique_ci_builds_token_encrypted_and_partition_id;
 
-CREATE TRIGGER assign_p_ci_builds_id_trigger BEFORE INSERT ON ci_builds FOR EACH ROW EXECUTE FUNCTION assign_p_ci_builds_id_value();
+CREATE TRIGGER assign_p_ci_builds_id_trigger BEFORE INSERT ON p_ci_builds FOR EACH ROW EXECUTE FUNCTION assign_p_ci_builds_id_value();
 
 CREATE TRIGGER chat_names_loose_fk_trigger AFTER DELETE ON chat_names REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 

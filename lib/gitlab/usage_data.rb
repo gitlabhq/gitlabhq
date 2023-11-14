@@ -365,7 +365,6 @@ module Gitlab
           users_created: count(::User.where(time_period), start: minimum_id(User), finish: maximum_id(User)),
           omniauth_providers: filtered_omniauth_provider_names.reject { |name| name == 'group_saml' },
           user_auth_by_provider: distinct_count_user_auth_by_provider(time_period),
-          unique_users_all_imports: unique_users_all_imports(time_period),
           bulk_imports: {
             gitlab_v1: count(::BulkImport.where(**time_period, source_type: :gitlab))
           },
@@ -563,18 +562,6 @@ module Gitlab
           gitlab_migration: add_metric('CountBulkImportsEntitiesMetric', time_frame: time_frame, options: { source_type: :group_entity })
         }
       end
-
-      # rubocop:disable CodeReuse/ActiveRecord
-      def unique_users_all_imports(time_period)
-        project_imports = distinct_count(::Project.where(time_period).where.not(import_type: nil), :creator_id)
-        bulk_imports = distinct_count(::BulkImport.where(time_period), :user_id)
-        jira_issue_imports = distinct_count(::JiraImportState.where(time_period), :user_id)
-        csv_issue_imports = distinct_count(::Issues::CsvImport.where(time_period), :user_id)
-        group_imports = distinct_count(::GroupImportState.where(time_period), :user_id)
-
-        add(project_imports, bulk_imports, jira_issue_imports, csv_issue_imports, group_imports)
-      end
-      # rubocop:enable CodeReuse/ActiveRecord
 
       # rubocop:disable CodeReuse/ActiveRecord
       def distinct_count_user_auth_by_provider(time_period)

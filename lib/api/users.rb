@@ -32,15 +32,20 @@ module API
       helpers Gitlab::Tracking::Helpers::WeakPasswordErrorEvent
 
       helpers do
+        def custom_order_by_or_sort?
+          params[:order_by].present? || params[:sort].present?
+        end
+
         # rubocop: disable CodeReuse/ActiveRecord
         def reorder_users(users)
           # Users#search orders by exact matches and handles pagination,
-          # so we should prioritize that.
-          if params[:search]
+          # so we should prioritize that, unless the user specifies some custom
+          # sort.
+          if params[:search] && !custom_order_by_or_sort?
             users
           else
-            # Note that params[:order_by] and params[:sort] will always be present and
-            # default to "id" and "desc" as defined in `sort_params`.
+            params[:order_by] ||= 'id'
+            params[:sort] ||= 'desc'
             users.reorder(order_options_with_tie_breaker)
           end
         end
@@ -82,6 +87,17 @@ module API
           optional :sort, type: String, values: %w[asc desc], default: 'desc',
                           desc: 'Return users sorted in ascending and descending order'
         end
+
+        # Grape doesn't make it easy to tell whether a user supplied a
+        # value for optional parameters with defaults. Disable the
+        # defaults so that we can manually assign defaults if they are
+        # not provided.
+        params :sort_params_no_defaults do
+          optional :order_by, type: String, values: %w[id name username created_at updated_at],
+                              desc: 'Return users ordered by a field'
+          optional :sort, type: String, values: %w[asc desc],
+                          desc: 'Return users sorted in ascending and descending order'
+        end
       end
 
       desc 'Get the list of users' do
@@ -106,7 +122,7 @@ module API
         optional :two_factor, type: String, desc: 'Filter users by Two-factor authentication.'
         all_or_none_of :extern_uid, :provider
 
-        use :sort_params
+        use :sort_params_no_defaults
         use :pagination
         use :with_custom_attributes
         use :optional_index_params_ee
@@ -1061,6 +1077,8 @@ module API
         end
       end
 
+      helpers Helpers::UserPreferencesHelpers
+
       desc "Get the currently authenticated user's SSH keys" do
         success Entities::SSHKey
       end
@@ -1251,7 +1269,9 @@ module API
         optional :view_diffs_file_by_file, type: Boolean, desc: 'Flag indicating the user sees only one file diff per page'
         optional :show_whitespace_in_diffs, type: Boolean, desc: 'Flag indicating the user sees whitespace changes in diffs'
         optional :pass_user_identities_to_ci_jwt, type: Boolean, desc: 'Flag indicating the user passes their external identities to a CI job as part of a JSON web token.'
-        at_least_one_of :view_diffs_file_by_file, :show_whitespace_in_diffs, :pass_user_identities_to_ci_jwt
+        optional :code_suggestions, type: Boolean, desc: 'Flag indicating the user allows code suggestions.' \
+                                                         'Argument is experimental and can be removed in the future without notice.'
+        at_least_one_of :view_diffs_file_by_file, :show_whitespace_in_diffs, :pass_user_identities_to_ci_jwt, :code_suggestions
       end
       put "preferences", feature_category: :user_profile, urgency: :high do
         authenticate!
@@ -1259,6 +1279,10 @@ module API
         preferences = current_user.user_preference
 
         attrs = declared_params(include_missing: false)
+
+        attrs = update_user_namespace_settings(attrs)
+
+        render_api_error!('400 Bad Request', 400) unless attrs
 
         service = ::UserPreferences::UpdateService.new(current_user, attrs).execute
         if service.success?

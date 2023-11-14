@@ -34,6 +34,33 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 - Git 2.42.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
 
+### Linux package installations
+
+- SSH clone URLs can be customized by setting `gitlab_rails['gitlab_ssh_host']`
+  in `/etc/gitlab/gitlab.rb`. This setting must now be a
+  [valid hostname](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132238).
+  Previously, it could be an arbitrary string that was used to show a
+  custom hostname and port in the repository clone URL.
+
+  For example, prior to GitLab 16.5, the following setting worked:
+
+  ```ruby
+  gitlab_rails['gitlab_ssh_host'] = "gitlab.example.com:2222"
+  ```
+
+  Starting with GitLab 16.5, the hostname and port must be specified separately:
+
+  ```ruby
+  gitlab_rails['gitlab_ssh_host'] = "gitlab.example.com"
+  gitlab_rails['gitlab_shell_ssh_port'] = 2222
+  ```
+
+  After you change the setting, make sure to reconfigure GitLab:
+
+  ```shell
+  sudo gitlab-ctl reconfigure
+  ```
+
 ### Geo installations
 
 Specific information applies to installations using Geo:

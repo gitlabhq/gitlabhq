@@ -34,7 +34,12 @@ RSpec.describe ProjectAuthorization, feature_category: :groups_and_projects do
     end
 
     context 'with duplicate user and project authorization' do
-      subject { project_auth.dup }
+      subject do
+        project_auth.dup.tap do |auth|
+          auth.project = project_1
+          auth.user = user
+        end
+      end
 
       it { is_expected.to be_invalid }
 
@@ -52,6 +57,8 @@ RSpec.describe ProjectAuthorization, feature_category: :groups_and_projects do
     context 'with multiple access levels for the same user and project' do
       subject do
         project_auth.dup.tap do |auth|
+          auth.project = project_1
+          auth.user = user
           auth.access_level = Gitlab::Access::MAINTAINER
         end
       end

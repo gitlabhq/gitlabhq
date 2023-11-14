@@ -41,7 +41,11 @@ module Gitlab
         encrypted.change do |contents|
           contents = encrypted_file_template unless File.exist?(encrypted.content_path)
           File.write(temp_file.path, contents)
-          system(ENV['EDITOR'], temp_file.path)
+
+          edit_success = system(*editor_args, temp_file.path)
+
+          raise "Unable to run $EDITOR: #{editor_args}" unless edit_success
+
           changes = File.read(temp_file.path)
           contents_changed = contents != changes
           validate_contents(changes)
@@ -98,6 +102,10 @@ module Gitlab
 
       def encrypted_file_template
         raise NotImplementedError
+      end
+
+      def editor_args
+        ENV['EDITOR']&.split
       end
     end
   end

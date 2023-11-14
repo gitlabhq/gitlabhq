@@ -23,7 +23,7 @@ RSpec.describe ClickHouse::MigrationSupport::MigrationContext,
   end
 
   describe 'performs migrations' do
-    subject(:migration) { migrate(target_version, migration_context) }
+    subject(:migration) { migrate(migration_context, target_version) }
 
     describe 'when creating a table' do
       let(:migrations_dirname) { 'plain_table_creation' }
@@ -45,7 +45,7 @@ RSpec.describe ClickHouse::MigrationSupport::MigrationContext,
       let(:target_version) { 2 }
 
       it 'drops table' do
-        migrate(1, migration_context)
+        migrate(migration_context, 1)
         expect(table_names).to include('some')
 
         migration
@@ -120,7 +120,7 @@ RSpec.describe ClickHouse::MigrationSupport::MigrationContext,
       end
 
       it 'registers migrations on respective database', :aggregate_failures do
-        expect { migrate(2, migration_context) }
+        expect { migrate(migration_context, 2) }
           .to change { active_schema_migrations_count(*main_db_config) }.from(0).to(1)
           .and change { active_schema_migrations_count(*another_db_config) }.from(0).to(1)
 
@@ -137,7 +137,7 @@ RSpec.describe ClickHouse::MigrationSupport::MigrationContext,
           date: a_hash_including(type: 'Date')
         })
 
-        expect { migrate(nil, migration_context) }
+        expect { migrate(migration_context, nil) }
           .to change { active_schema_migrations_count(*main_db_config) }.to(2)
           .and not_change { active_schema_migrations_count(*another_db_config) }
 
@@ -187,35 +187,60 @@ RSpec.describe ClickHouse::MigrationSupport::MigrationContext,
   end
 
   describe 'performs rollbacks' do
-    subject(:migration) { rollback(target_version, migration_context) }
+    subject(:migration) { rollback(migration_context, target_version) }
 
     before do
-      migrate(nil, migration_context)
+      # Ensure that all migrations are up
+      migrate(migration_context, nil)
     end
 
-    context 'when migrating back all the way to 0' do
-      let(:target_version) { 0 }
+    context 'when down method is present' do
+      let(:migrations_dirname) { 'table_creation_with_down_method' }
 
-      context 'when down method is present' do
-        let(:migrations_dirname) { 'table_creation_with_down_method' }
+      context 'when specifying target_version' do
+        it 'removes migrations and performs down method' do
+          expect(table_names).to include('some', 'another')
 
-        it 'removes migration and performs down method' do
+          # test that target_version is prioritized over step
+          expect { rollback(migration_context, 1, 10000) }.to change { active_schema_migrations_count }.from(2).to(1)
+          expect(table_names).not_to include('another')
           expect(table_names).to include('some')
+          expect(schema_migrations).to contain_exactly(
+            a_hash_including(version: '1', active: 1),
+            a_hash_including(version: '2', active: 0)
+          )
 
-          expect { migration }.to change { active_schema_migrations_count }.from(1).to(0)
+          expect { rollback(migration_context, nil) }.to change { active_schema_migrations_count }.to(0)
+          expect(table_names).not_to include('some', 'another')
 
-          expect(table_names).not_to include('some')
-          expect(schema_migrations).to contain_exactly(a_hash_including(version: '1', active: 0))
+          expect(schema_migrations).to contain_exactly(
+            a_hash_including(version: '1', active: 0),
+            a_hash_including(version: '2', active: 0)
+          )
         end
       end
 
-      context 'when down method is missing' do
-        let(:migrations_dirname) { 'plain_table_creation' }
+      context 'when specifying step' do
+        it 'removes migrations and performs down method' do
+          expect(table_names).to include('some', 'another')
 
-        it 'removes migration ignoring missing down method' do
-          expect { migration }.to change { active_schema_migrations_count }.from(1).to(0)
-            .and not_change { table_names & %w[some] }.from(%w[some])
+          expect { rollback(migration_context, nil, 1) }.to change { active_schema_migrations_count }.from(2).to(1)
+          expect(table_names).not_to include('another')
+          expect(table_names).to include('some')
+
+          expect { rollback(migration_context, nil, 2) }.to change { active_schema_migrations_count }.to(0)
+          expect(table_names).not_to include('some', 'another')
         end
+      end
+    end
+
+    context 'when down method is missing' do
+      let(:migrations_dirname) { 'plain_table_creation' }
+      let(:target_version) { 0 }
+
+      it 'removes migration ignoring missing down method' do
+        expect { migration }.to change { active_schema_migrations_count }.from(1).to(0)
+          .and not_change { table_names & %w[some] }.from(%w[some])
       end
     end
 

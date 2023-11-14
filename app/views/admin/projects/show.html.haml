@@ -210,5 +210,6 @@
                   locals: { membership_source: @project,
                             group: @group,
                             current_user_is_group_owner: current_user_is_group_owner }
-      - c.with_footer do
-        = paginate @project_members, param_name: 'project_members_page', theme: 'gitlab'
+      - unless @project_members.size < Kaminari.config.default_per_page
+        - c.with_footer do
+          = paginate @project_members, param_name: 'project_members_page', theme: 'gitlab'

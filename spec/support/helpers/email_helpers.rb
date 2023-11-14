@@ -64,7 +64,11 @@ module EmailHelpers
 
   def not_enqueue_mail_with(mailer_class, mail_method_name, *args)
     args.map! { |arg| arg.is_a?(ActiveRecord::Base) ? arg.id : arg }
-    not_enqueue_mail(mailer_class, mail_method_name).with(*args)
+
+    matcher = have_enqueued_mail(mailer_class, mail_method_name).with(*args)
+    description = proc { 'email has not been enqueued' }
+
+    RSpec::Matchers::AliasedNegatedMatcher.new(matcher, description)
   end
 
   def have_only_enqueued_mail_with_args(mailer_class, mailer_method, *args)

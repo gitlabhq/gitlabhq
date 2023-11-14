@@ -17,26 +17,27 @@ module ClickHouse
         @schema_migration = schema_migration
       end
 
-      def up(target_version = nil, &block)
+      def up(target_version = nil, step = nil, &block)
         selected_migrations = block ? migrations.select(&block) : migrations
 
-        migrate(:up, selected_migrations, target_version)
+        migrate(:up, selected_migrations, target_version, step)
       end
 
-      def down(target_version = nil, &block)
+      def down(target_version = nil, step = 1, &block)
         selected_migrations = block ? migrations.select(&block) : migrations
 
-        migrate(:down, selected_migrations, target_version)
+        migrate(:down, selected_migrations, target_version, step)
       end
 
       private
 
-      def migrate(direction, selected_migrations, target_version = nil)
+      def migrate(direction, selected_migrations, target_version = nil, step = nil)
         ClickHouse::MigrationSupport::Migrator.new(
           direction,
           selected_migrations,
           schema_migration,
-          target_version
+          target_version,
+          step
         ).migrate
       end
 

@@ -120,10 +120,8 @@ RSpec.shared_examples 'every metric definition' do
     end
 
     let(:ignored_classes) do
-      [
-        Gitlab::Usage::Metrics::Instrumentations::IssuesWithAlertManagementAlertsMetric,
-        Gitlab::Usage::Metrics::Instrumentations::IssuesWithPrometheusAlertEvents
-      ].freeze
+      Gitlab::Usage::Metrics::Instrumentations::IssuesCreatedFromAlertsMetric::ISSUES_FROM_ALERTS_METRICS +
+        Gitlab::Usage::Metrics::Instrumentations::UniqueUsersAllImportsMetric::IMPORTS_METRICS
     end
 
     let(:removed_classes) do

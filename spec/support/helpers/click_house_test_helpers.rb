@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module ClickHouseTestHelpers
-  def migrate(target_version, migration_context)
-    quietly { migration_context.up(target_version) }
+  def migrate(migration_context, target_version, step = nil)
+    quietly { migration_context.up(target_version, step) }
   end
 
-  def rollback(target_version, migration_context)
-    quietly { migration_context.down(target_version) }
+  def rollback(migration_context, target_version, step = 1)
+    quietly { migration_context.down(target_version, step) }
   end
 
   def table_names(database = :main, configuration = ClickHouse::Client.configuration)

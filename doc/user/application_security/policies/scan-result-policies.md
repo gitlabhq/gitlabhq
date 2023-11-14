@@ -89,10 +89,11 @@ the following sections and tables provide an alternative.
 
 ## Scan result policy schema
 
-> The `approval_settings` fields was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4 [with flags](../../../administration/feature_flags.md) named `scan_result_policies_block_unprotecting_branches`, `scan_result_any_merge_request`, or `scan_result_policies_block_force_push`. All are disabled by default.
+> The `approval_settings` fields were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4 [with flags](../../../administration/feature_flags.md) named `scan_result_policies_block_unprotecting_branches`, `scan_result_any_merge_request`, or `scan_result_policies_block_force_push`. Flag `scan_result_policies_block_unprotecting_branches` is disabled by default. Flags `scan_result_any_merge_request` and `scan_result_policies_block_force_push` are enabled by default.
 
 FLAG:
-On self-managed GitLab, by default the `approval_settings` field is unavailable. To show the feature, an administrator can [enable the feature flags](../../../administration/feature_flags.md) named `scan_result_policies_block_unprotecting_branches`, `scan_result_any_merge_request`, or `scan_result_policies_block_force_push`. See the `approval_settings` section below for more information.
+On self-managed GitLab, by default the `approval_settings` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `scan_result_any_merge_request`.
+On GitLab.com, this feature is available. See the `approval_settings` section below for more information.
 
 | Field | Type | Required |Possible values | Description |
 |--------|------|----------|----------------|-------------|
@@ -145,10 +146,11 @@ This rule enforces the defined actions based on license findings.
 ## `any_merge_request` rule type
 
 > - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Enabled by default. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133753) in GitLab 16.5. Feature flag removed.
-> - The `any_merge_request` rule type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4. Disabled by default.
+> - The `any_merge_request` rule type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4. Enabled by default. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136298) in GitLab 16.6.
 
 FLAG:
-On self-managed GitLab, by default the `any_merge_request` field is not available. To show the feature, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `any_merge_request`.
+On self-managed GitLab, by default the `any_merge_request` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `any_merge_request`.
+On GitLab.com, this feature is available.
 
 This rule enforces the defined actions for any merge request based on the commits signature.
 
@@ -179,24 +181,24 @@ the defined policy.
 
 > - The `block_unprotecting_branches` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423101) in GitLab 16.4 [with flag](../../../administration/feature_flags.md) named `scan_result_policy_settings`. Disabled by default.
 > - The `scan_result_policy_settings` feature flag was replaced by the `scan_result_policies_block_unprotecting_branches` feature flag in 16.4.
-> - The `prevent_approval_by_author`, `prevent_approval_by_commit_author`, `remove_approvals_with_new_commit`, and `require_password_to_approve` fields were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4 [with flag](../../../administration/feature_flags.md) named `scan_result_any_merge_request`. Disabled by default.
-> - The `prevent_force_pushing` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420629) in GitLab 16.4 [with flag](../../../administration/feature_flags.md) named `scan_result_policies_block_force_push`. Disabled by default.
+> - The `prevent_approval_by_author`, `prevent_approval_by_commit_author`, `remove_approvals_with_new_commit`, and `require_password_to_approve` fields were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4 [with flag](../../../administration/feature_flags.md) named `scan_result_any_merge_request`. Enabled by default.
+> - The `prevent_pushing_and_force_pushing` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420629) in GitLab 16.4 [with flag](../../../administration/feature_flags.md) named `scan_result_policies_block_force_push`. Enabled by default.
 
 FLAG:
 On self-managed GitLab, by default the `block_unprotecting_branches` field is unavailable. To show the feature, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `scan_result_policies_block_unprotecting_branches`. On GitLab.com, this feature is unavailable.
-On self-managed GitLab, by default the  `prevent_approval_by_author`, `prevent_approval_by_commit_author`, `remove_approvals_with_new_commit`, and `require_password_to_approve` fields are unavailable. To show the feature, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `scan_result_any_merge_request`. On GitLab.com, this feature is available.
-On self-managed GitLab, by default the `prevent_force_pushing` field is unavailable. To show the feature, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. On GitLab.com, this feature is unavailable.
+On self-managed GitLab, by default the  `prevent_approval_by_author`, `prevent_approval_by_commit_author`, `remove_approvals_with_new_commit`, and `require_password_to_approve` fields are available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `scan_result_any_merge_request`. On GitLab.com, this feature is available.
+On self-managed GitLab, by default the `prevent_pushing_and_force_pushing` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `scan_result_policies_block_force_push`. On GitLab.com, this feature is available.
 
 The settings set in the policy overwrite settings in the project.
 
-| Field | Type | Required | Possible values | Description |
-|-------|------|----------|-----------------|-------------|
+| Field                               | Type | Required | Possible values | Description |
+|-------------------------------------|------|----------|-----------------|-------------|
 | `block_unprotecting_branches`       | `boolean` | false | `true`, `false` | Prevent a user from removing a branch from the protected branches list, deleting a protected branch, or changing the default branch if that branch is included in the security policy. |
 | `prevent_approval_by_author`        | `boolean` | false | `true`, `false` | When enabled, two person approval is required on all MRs as merge request authors cannot approve their own MRs and merge them unilaterally. |
 | `prevent_approval_by_commit_author` | `boolean` | false | `true`, `false` | When enabled, users who have contributed code to the MR are ineligible for approval, ensuring code committers cannot introduce vulnerabilities and approve code to merge. |
 | `remove_approvals_with_new_commit`  | `boolean` | false | `true`, `false` | If an MR receives all necessary approvals to merge, but then a new commit is added, new approvals are required. This ensures new commits that may include vulnerabilities cannot be introduced. |
 | `require_password_to_approve`       | `boolean` | false | `true`, `false` | Password confirmation on approvals provides an additional level of security. Enabling this enforces the setting on all projects targeted by this policy. |
-| `prevent_force_pushing`             | `boolean` | false | `true`, `false` | Prevent pushing and force pushing to a protected branch. |
+| `prevent_pushing_and_force_pushing` | `boolean` | false | `true`, `false` | Prevent pushing and force pushing to a protected branch. |
 
 ## Example security scan result policies project
 

@@ -398,7 +398,7 @@ Do not use **confirmation box** or **confirmation dialog box**. See also [**dial
 
 ## container registry
 
-When documenting the GitLab container registry features and functionality, use lower case.
+When documenting the GitLab container registry features and functionality, use lowercase.
 
 Use:
 
@@ -1256,9 +1256,14 @@ Do not use bold.
 Do not use **Owner permissions**. A user who is assigned the Owner role has a set of associated permissions.
 An Owner is the highest role a user can have.
 
-## Package Registry
+## package registry
 
-Use title case for the GitLab Package Registry.
+When documenting the GitLab package registry features and functionality, use lowercase.
+
+Use:
+
+- The GitLab package registry supports A, B, and C.
+- You can publish a package to your project's package registry.
 
 ## page
 

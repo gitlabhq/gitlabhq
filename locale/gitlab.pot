@@ -25350,6 +25350,9 @@ msgstr ""
 msgid "Inform users without uploaded SSH keys that they can't push over SSH until one is added"
 msgstr ""
 
+msgid "Information"
+msgstr ""
+
 msgid "Infrastructure"
 msgstr ""
 
@@ -42959,6 +42962,9 @@ msgstr ""
 msgid "SecurityOrchestration|.yaml preview"
 msgstr ""
 
+msgid "SecurityOrchestration|A compliance framework is a label to identify that your project has certain compliance requirements. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "SecurityOrchestration|Actions"
 msgstr ""
 
@@ -43005,6 +43011,9 @@ msgid "SecurityOrchestration|Apply this policy to all projects %{projectScopeTyp
 msgstr ""
 
 msgid "SecurityOrchestration|Are you sure you want to delete this policy? This action cannot be undone."
+msgstr ""
+
+msgid "SecurityOrchestration|At least one framework label should be selected"
 msgstr ""
 
 msgid "SecurityOrchestration|Automatically selected runners"
@@ -50604,9 +50613,6 @@ msgstr ""
 msgid "Tracing|Attributes"
 msgstr ""
 
-msgid "Tracing|Check again"
-msgstr ""
-
 msgid "Tracing|Date"
 msgstr ""
 
@@ -50664,10 +50670,10 @@ msgstr ""
 msgid "Tracing|Metadata"
 msgstr ""
 
-msgid "Tracing|No traces to display."
+msgid "Tracing|Operation"
 msgstr ""
 
-msgid "Tracing|Operation"
+msgid "Tracing|Refresh the page, or edit your search filter and try again"
 msgstr ""
 
 msgid "Tracing|Resource attributes"

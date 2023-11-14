@@ -241,29 +241,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       )
     end
 
-    it 'includes import gmau usage data' do
-      for_defined_days_back do
-        user = create(:user)
-        group = create(:group)
-
-        group.add_owner(user)
-
-        create(:project, import_type: :github, creator_id: user.id)
-        create(:jira_import_state, :finished, project: create(:project, creator_id: user.id))
-        create(:issue_csv_import, user: user)
-        create(:group_import_state, group: group, user: user)
-        create(:bulk_import, user: user)
-      end
-
-      expect(described_class.usage_activity_by_stage_manage({})).to include(
-        unique_users_all_imports: 10
-      )
-
-      expect(described_class.usage_activity_by_stage_manage(described_class.monthly_time_range_db_params)).to include(
-        unique_users_all_imports: 5
-      )
-    end
-
     it 'includes imports usage data', :clean_gitlab_redis_cache do
       for_defined_days_back do
         user = create(:user)

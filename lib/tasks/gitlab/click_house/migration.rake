@@ -8,12 +8,12 @@ namespace :gitlab do
       ClickHouse::MigrationSupport::SchemaMigration.create_table(args.database&.to_sym || :main)
     end
 
-    desc 'GitLab | ClickHouse | Migrate'
+    desc 'GitLab | ClickHouse | Migrate the database (options: VERSION=x, VERBOSE=false, SCOPE=y)'
     task migrate: [:prepare_schema_migration_table] do
       migrate(:up)
     end
 
-    desc 'GitLab | ClickHouse | Rollback'
+    desc 'GitLab | ClickHouse | Rolls the schema back to the previous version (specify steps w/ STEP=n)'
     task rollback: [:prepare_schema_migration_table] do
       migrate(:down)
     end
@@ -42,13 +42,17 @@ namespace :gitlab do
       check_target_version
 
       scope = ENV['SCOPE']
+      step = ENV['STEP'] ? Integer(ENV['STEP']) : nil
+      step = 1 if step.nil? && direction == :down
+      raise ArgumentError, 'STEP should be a positive number' if step.present? && step < 1
+
       verbose_was = ClickHouse::Migration.verbose
       ClickHouse::Migration.verbose = ENV['VERBOSE'] ? ENV['VERBOSE'] != 'false' : true
 
       migrations_paths = ClickHouse::MigrationSupport::Migrator.migrations_paths
       schema_migration = ClickHouse::MigrationSupport::SchemaMigration
       migration_context = ClickHouse::MigrationSupport::MigrationContext.new(migrations_paths, schema_migration)
-      migrations_ran = migration_context.public_send(direction, target_version) do |migration|
+      migrations_ran = migration_context.public_send(direction, target_version, step) do |migration|
         scope.blank? || scope == migration.scope
       end
 

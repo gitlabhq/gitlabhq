@@ -238,6 +238,22 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
             expect(json_response.first['username']).to eq('a-user')
             expect(json_response.second['username']).to eq('a-user2')
           end
+
+          it 'preserves requested ordering with order_by and sort' do
+            get api(path, user, admin_mode: true), params: { search: first_user.username, order_by: 'name', sort: 'desc' }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.first['username']).to eq('a-user2')
+            expect(json_response.second['username']).to eq('a-user')
+          end
+
+          it 'preserves requested ordering with sort' do
+            get api(path, user, admin_mode: true), params: { search: first_user.username, sort: 'desc' }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.first['username']).to eq('a-user2')
+            expect(json_response.second['username']).to eq('a-user')
+          end
         end
 
         context 'N+1 queries' do
@@ -2946,6 +2962,39 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response["view_diffs_file_by_file"]).to eq(user.user_preference.view_diffs_file_by_file)
         expect(json_response["show_whitespace_in_diffs"]).to eq(user.user_preference.show_whitespace_in_diffs)
+      end
+    end
+  end
+
+  describe "PUT /user/preferences" do
+    let(:path) { '/user/preferences' }
+
+    context "when unauthenticated" do
+      it "returns authentication error" do
+        put api(path)
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context "when authenticated" do
+      it "updates user preferences" do
+        user.user_preference.view_diffs_file_by_file = false
+        user.user_preference.show_whitespace_in_diffs = true
+        user.save!
+
+        put api(path, user), params: {
+          view_diffs_file_by_file: true,
+          show_whitespace_in_diffs: false
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response["view_diffs_file_by_file"]).to eq(true)
+        expect(json_response["show_whitespace_in_diffs"]).to eq(false)
+
+        user.reload
+
+        expect(json_response["view_diffs_file_by_file"]).to eq(user.view_diffs_file_by_file)
+        expect(json_response["show_whitespace_in_diffs"]).to eq(user.show_whitespace_in_diffs)
       end
     end
   end

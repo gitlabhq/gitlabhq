@@ -45,6 +45,8 @@ RSpec.shared_examples 'updates namespace statistics' do
 
   context 'when deleting' do
     it 'schedules a statistic refresh' do
+      statistic_source.save!
+
       expect(Groups::UpdateStatisticsWorker)
         .to receive(:perform_async)
 

@@ -29,7 +29,7 @@ class ClickHouseTestRunner
     migrations_paths = ClickHouse::MigrationSupport::Migrator.migrations_paths
     schema_migration = ClickHouse::MigrationSupport::SchemaMigration
     migration_context = ClickHouse::MigrationSupport::MigrationContext.new(migrations_paths, schema_migration)
-    migrate(nil, migration_context)
+    migrate(migration_context, nil)
 
     @ensure_schema = true
   end

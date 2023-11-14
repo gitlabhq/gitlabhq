@@ -127,7 +127,7 @@ RSpec.describe SystemHook, feature_category: :webhooks do
     end
 
     it 'group destroy hook' do
-      group.destroy!
+      create(:group).destroy!
 
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /group_destroy/,
