@@ -13,7 +13,7 @@ This API is used by the [PyPI package manager client](https://pypi.org/)
 and is generally not meant for manual consumption.
 
 For instructions on how to upload and install PyPI packages from the GitLab
-package registry, see the [PyPI package registry documentation](../../user/packages/pypi_repository/index.md).
+Package Registry, see the [PyPI package registry documentation](../../user/packages/pypi_repository/index.md).
 
 NOTE:
 These endpoints do not adhere to the standard API authentication methods.

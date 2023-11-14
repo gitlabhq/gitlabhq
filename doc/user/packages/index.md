@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Packages and Registries **(FREE ALL)**
 
-The GitLab [Package Registry](package_registry/index.md) acts as a private or public registry
+The GitLab [package registry](package_registry/index.md) acts as a private or public registry
 for a variety of common package managers. You can publish and share
 packages, which can be easily consumed as a dependency in downstream projects.
 

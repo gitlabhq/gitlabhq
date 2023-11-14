@@ -4,7 +4,7 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reduce Package Registry Storage **(FREE ALL)**
+# Reduce package registry storage **(FREE ALL)**
 
 Without cleanup, package registries become large over time. When a large number of packages and
 their assets are added:
@@ -14,13 +14,13 @@ their assets are added:
 
 We recommend deleting unnecessary packages and assets. This page offers examples of how to do so.
 
-## Check Package Registry Storage Use
+## Check package registry storage use
 
 The Usage Quotas page (**Settings > Usage Quotas > Storage**) displays storage usage for Packages.
 
 ## Delete a package
 
-You cannot edit a package after you publish it in the Package Registry. Instead, you
+You cannot edit a package after you publish it in the package registry. Instead, you
 must delete and recreate it.
 
 To delete a package, you must have suitable [permissions](../../permissions.md).

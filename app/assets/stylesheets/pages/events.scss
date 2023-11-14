@@ -158,36 +158,6 @@
   }
 }
 
-@include media-breakpoint-down(xs) {
-  .event-item {
-    padding-left: 0;
-
-    .event-user-info {
-      margin-bottom: $gl-padding-4;
-    }
-
-    .event-title {
-      white-space: normal;
-      overflow: visible;
-      max-width: 100%;
-    }
-
-    .system-note-image {
-      display: none;
-    }
-
-    .event-body {
-      margin-top: $gl-padding-4;
-      margin-right: 0;
-      padding-left: 0;
-    }
-
-    .event-item-timestamp {
-      display: none;
-    }
-  }
-}
-
 // hide event scope (namespace + project) where it is not necessary
 .project-activity {
   .event-scope {

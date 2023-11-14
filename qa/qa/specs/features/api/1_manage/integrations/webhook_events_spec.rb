@@ -101,11 +101,12 @@ module QA
         let(:hook_trigger_times) { 5 }
         let(:disabled_after) { 4 }
 
+        before do
+          Runtime::Feature.enable(:auto_disabling_web_hooks)
+        end
+
         it 'hook is auto-disabled',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/389595', quarantine: {
-            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/393274',
-            type: :investigating
-          } do
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/389595' do
           Resource::ProjectWebHook.setup(fail_mock, session: session, issues: true) do |webhook, smocker|
             hook_trigger_times.times do
               create(:issue, project: webhook.project)

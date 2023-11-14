@@ -25,7 +25,7 @@ A deploy token is a pair of values:
 You can use a deploy token for [HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication)
 to the following endpoints:
 
-- GitLab Package Registry public API.
+- GitLab package registry public API.
 - [Git commands](https://git-scm.com/docs/gitcredentials#_description).
 
 You can create deploy tokens at either the project or group level:
@@ -37,7 +37,7 @@ By default, a deploy token does not expire. You can optionally set an expiry dat
 it. Expiry occurs at midnight UTC on that date.
 
 WARNING:
-You cannot use new or existing deploy tokens for Git operations and Package Registry operations if
+You cannot use new or existing deploy tokens for Git operations and package registry operations if
 [external authorization](../../admin_area/settings/external_authorization.md) is enabled.
 
 ## Scope
@@ -79,7 +79,7 @@ name and token of the group deploy token.
 ### GitLab public API
 
 Deploy tokens can't be used with the GitLab public API. However, you can use deploy tokens with some
-endpoints, such as those from the Package Registry. For more information, see
+endpoints, such as those from the package registry. For more information, see
 [Authenticate with the registry](../../packages/package_registry/index.md#authenticate-with-the-registry).
 
 ## Create a deploy token

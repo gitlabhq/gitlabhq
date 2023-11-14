@@ -4,16 +4,16 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Publish npm packages to the GitLab Package Registry using semantic-release **(FREE ALL)**
+# Publish npm packages to the GitLab package registry using semantic-release **(FREE ALL)**
 
-This guide demonstrates how to automatically publish npm packages to the [GitLab Package Registry](../../user/packages/npm_registry/index.md) by using [semantic-release](https://github.com/semantic-release/semantic-release).
+This guide demonstrates how to automatically publish npm packages to the [GitLab package registry](../../user/packages/npm_registry/index.md) by using [semantic-release](https://github.com/semantic-release/semantic-release).
 
 You can also view or fork the complete [example source](https://gitlab.com/gitlab-examples/semantic-release-npm).
 
 ## Initialize the module
 
 1. Open a terminal and navigate to the project's repository.
-1. Run `npm init`. Name the module according to [the Package Registry's naming conventions](../../user/packages/npm_registry/index.md#naming-convention). For example, if the project's path is `gitlab-examples/semantic-release-npm`, name the module `@gitlab-examples/semantic-release-npm`.
+1. Run `npm init`. Name the module according to [the package registry's naming conventions](../../user/packages/npm_registry/index.md#naming-convention). For example, if the project's path is `gitlab-examples/semantic-release-npm`, name the module `@gitlab-examples/semantic-release-npm`.
 
 1. Install the following npm packages:
 
@@ -82,7 +82,7 @@ publish:
 
 This example configures the pipeline with a single job, `publish`, which runs `semantic-release`. The semantic-release library publishes new versions of the npm package and creates new GitLab releases (if necessary).
 
-The default `before_script` generates a temporary `.npmrc` that is used to authenticate to the Package Registry during the `publish` job.
+The default `before_script` generates a temporary `.npmrc` that is used to authenticate to the package registry during the `publish` job.
 
 ## Set up CI/CD variables
 

@@ -47,7 +47,7 @@ consistent choices, despite all goals being important, we defined the following 
 Examples:
 
 - a proposal improves maintainability at the cost of perceived performance: ❌ we should consider an alternative.
-- a proposal removes a feature from certain contexts, hurting coverage, and has no impact on perceived performance or maintanability: ❌ we should re-consider.
+- a proposal removes a feature from certain contexts, hurting coverage, and has no impact on perceived performance or maintainability: ❌ we should re-consider.
 - a proposal improves perceived performance but removes features from certain contexts of usage: ✅ it's valid and should be discussed with Product/UX.
 - a proposal guarantees consistent coverage and has no impact on perceived performance or maintainability: ✅ it's valid.
 
@@ -72,7 +72,7 @@ compared with the pros and cons of alternatives.
 
 - We will store implementation details like metrics, budgets, and development & architectural patterns here in the docs
 - We will store large bodies of research, the results of audits, etc. in the [wiki](https://gitlab.com/gitlab-com/create-stage/new-diffs/-/wikis/home) of the [New Diffs project](https://gitlab.com/gitlab-com/create-stage/new-diffs)
-- We will store audio & video recordings on the public Youtube channel in the Code Review / New Diffs playlist
+- We will store audio & video recordings on the public YouTube channel in the Code Review / New Diffs playlist
 - We will store drafts, meeting notes, and other temporary documents in public Google docs
 
 ### Definitions
@@ -84,7 +84,7 @@ Maintainable projects are _simple_ projects.
 Simplicity is the opposite of complexity. This uses a definition of simple and complex [described by Rich Hickey in "Simple Made Easy"](https://www.infoq.com/presentations/Simple-Made-Easy/) (Strange Loop, 2011).
 
 - Maintainable code is simple (single task, single concept, separate from other things).
-- Maintainable projects expand on simple code by having simple structure (folders define classes of behaviors, e.g. you can be assured that a component directory will never initiate a network call, because that would be complecting visual display with data access)
+- Maintainable projects expand on simple code by having simple structure (folders define classes of behaviors, e.g. you can be assured that a component directory will never initiate a network call, because that would be conflating visual display with data access)
 - Maintainable applications flow out of simple organization and simple code. The old saying is a cluttered desk is representative of a cluttered mind. Rigorous discipline on simplicity will be represented in our output (the product). By being strict about working simply, we will naturally produce applications where our users can more easily reason about their behavior.
 
 #### Done
@@ -94,8 +94,29 @@ GitLab has an existing [definition of done](/ee/development/contributing/merge_r
 In addition to the items in the GitLab definition of done, work on new diffs should also adhere to the following requirements:
 
 - Meets or exceeds all metrics
-  - Meets or exceeds our minimum accessibility metrics (these are explicitly not part of our defined priorities, since they are non-negotiable)
+  - Meets or exceeds our minimum accessibility metrics (these are explicitly not part of our defined priorities, because they are non-negotiable)
 - All work is fully documented for engineers (user documentation is a requirement of the standard definition of done)
+
+### Metrics
+
+To measure our success, we need to set meaningful metrics. These metrics should meaningfully and positively impact the end user.
+
+1. Meets or exceeds [WCAG 2.2 AA](https://www.w3.org/TR/WCAG22/).
+1. Meets or exceeds [ATAG 2.0 AA](https://www.w3.org/TR/ATAG20/).
+1. The new Diffs app loads less than or equal to 300 KiB of JavaScript (compressed / "across-the-wire")<sup>1</sup>.
+1. The new Diffs app loads less than or equal to 150 KiB of markup, images, styles, fonts, etc. (compressed / "across-the-wire")<sup>1</sup>.
+1. The new Diffs app can load and execute in total isolation from the rest of the GitLab product:
+    1. "Execute" means the app can load, display data, and allows user interaction ("read-only").
+    1. If a part of the application is only used in merge requests or diffs, it is considered part of the Diffs application.
+    1. If a part of the application must be brought in from the rest of the product, it is not considered part of the Diffs load (as defined in metrics 3 and 4).
+    1. If a part of the application must be brought in from the rest of the product, it may not block functionality of the Diffs application.
+    1. If a part of the application must be brought in from the rest of the product, it must be loaded asynchronously.
+    1. If a part of the application meets 5.1-5.5 _(such as: the Markdown editor is loaded asynchronously when the user would like to leave a comment on a diff)_ and its inclusion causes a budget overflow:
+       - It must be added to a list of documented exceptions that we accept are out of bounds and out of our control.
+       - The exceptions list should be addressed on a regular basis to determine the ongoing value of overflowing our budget.
+
+---
+<sup>1</sup>: [The Performance Inequality Gap, 2023](https://infrequently.org/2022/12/performance-baseline-2023/)
 
 <!--
 This section should contain enough information that the specifics of your

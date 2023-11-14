@@ -892,7 +892,7 @@ echo '{"container_expiration_policy_attributes":{"cadence":"1month","enabled":tr
 
 You can optimize container images to reduce the image size and overall storage consumption in the container registry. Learn more in the [pipeline efficiency documentation](../ci/pipelines/pipeline_efficiency.md#optimize-docker-images).
 
-## Manage Package Registry storage
+## Manage package registry storage
 
 Package registries are available [for projects](../api/packages.md#for-a-project) or [for groups](../api/packages.md#for-a-group).
 

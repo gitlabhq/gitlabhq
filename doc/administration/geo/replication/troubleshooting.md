@@ -839,7 +839,7 @@ This behavior affects only the following data types through GitLab 14.6:
 
 | Data type                | From version |
 | ------------------------ | ------------ |
-| Package Registry         | 13.10        |
+| Package registry         | 13.10        |
 | CI Pipeline Artifacts    | 13.11        |
 | Terraform State Versions | 13.12        |
 | Infrastructure Registry (renamed to Terraform Module Registry in GitLab 15.11) | 14.0 |

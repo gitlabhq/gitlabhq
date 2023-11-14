@@ -2967,8 +2967,7 @@ PUT /projects/:id/push_rule
 
 > Moved to GitLab Premium in 13.9.
 
-Removes a push rule from a project. This method is idempotent and can be
-called multiple times. Either the push rule is available or not.
+Removes a push rule from a project.
 
 ```plaintext
 DELETE /projects/:id/push_rule

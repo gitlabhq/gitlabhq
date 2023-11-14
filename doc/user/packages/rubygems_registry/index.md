@@ -4,7 +4,7 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Ruby gems in the Package Registry **(FREE ALL EXPERIMENT)**
+# Ruby gems in the package registry **(FREE ALL EXPERIMENT)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/803) in GitLab 13.10.
 
@@ -13,9 +13,9 @@ The Ruby gems package registry for GitLab is under development and isn't ready f
 limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/3200) details the remaining
 work and timelines to make it production ready.
 
-You can publish Ruby gems in your project's Package Registry, then install the packages when you
+You can publish Ruby gems in your project's package registry, then install the packages when you
 need to use them as a dependency. Although you can push gems to the registry, you cannot install
-them from the registry. However, you can download `gem` files directly from the Package Registry's
+them from the registry. However, you can download `gem` files directly from the package registry's
 UI, or by using the [API](../../../api/packages/rubygems.md#download-a-gem-file).
 
 For documentation of the specific API endpoints that the Ruby gems and Bundler package manager
@@ -49,9 +49,9 @@ Feature.disable(:rubygem_packages, Project.find(2))
 
 If you need help creating a Ruby gem, see the [RubyGems documentation](https://guides.rubygems.org/make-your-own-gem/).
 
-## Authenticate to the Package Registry
+## Authenticate to the package registry
 
-Before you can push to the Package Registry, you must authenticate.
+Before you can push to the package registry, you must authenticate.
 
 To do this, you can use:
 
@@ -108,7 +108,7 @@ https://gitlab.example.com/api/v4/projects/${env.CI_PROJECT_ID}/packages/rubygem
 
 Prerequisites:
 
-- You must [authenticate to the Package Registry](#authenticate-to-the-package-registry).
+- You must [authenticate to the package registry](#authenticate-to-the-package-registry).
 - The maximum allowed gem size is 3 GB.
 
 To push your gem, run a command like this one:

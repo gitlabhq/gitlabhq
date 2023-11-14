@@ -89,8 +89,8 @@ See the warning in [create a project access token](#create-a-project-access-toke
 
 | Scope              | Description                                                                                                                                                     |
 |:-------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `api`              | Grants complete read and write access to the scoped project API, including the [Package Registry](../../packages/package_registry/index.md).                    |
-| `read_api`         | Grants read access to the scoped project API, including the [Package Registry](../../packages/package_registry/index.md).                                       |
+| `api`              | Grants complete read and write access to the scoped project API, including the [package registry](../../packages/package_registry/index.md).                    |
+| `read_api`         | Grants read access to the scoped project API, including the [package registry](../../packages/package_registry/index.md).                                       |
 | `read_registry`    | Grants read access (pull) to the [container registry](../../packages/container_registry/index.md) images if a project is private and authorization is required. |
 | `write_registry`   | Grants write access (push) to the [container registry](../../packages/container_registry/index.md).                                                             |
 | `read_repository`  | Grants read access (pull) to the repository.                                                                                                                    |

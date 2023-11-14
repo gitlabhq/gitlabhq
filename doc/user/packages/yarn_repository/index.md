@@ -17,11 +17,11 @@ You can use the Yarn documentation to get started with
 [Yarn Classic](https://classic.yarnpkg.com/en/docs/getting-started) and
 [Yarn 2+](https://yarnpkg.com/getting-started/).
 
-## Publish to GitLab Package Registry
+## Publish to GitLab package registry
 
-You can use Yarn to publish to the GitLab Package Registry.
+You can use Yarn to publish to the GitLab package registry.
 
-### Authentication to the Package Registry
+### Authentication to the package registry
 
 You need a token to publish a package. Different tokens are available depending on what you're trying to
 achieve. For more information, review the [guidance on tokens](../../../user/packages/package_registry/index.md#authenticate-with-the-registry).
@@ -54,7 +54,7 @@ In this configuration:
 Scoped registry does not work in Yarn Classic in `package.json` file, based on
 this [issue](https://github.com/yarnpkg/yarn/pull/7829).
 Therefore, under `publishConfig` there should be `registry` and not `@scope:registry` for Yarn Classic.
-You can publish using your command line or a CI/CD pipeline to the GitLab Package Registry.
+You can publish using your command line or a CI/CD pipeline to the GitLab package registry.
 
 ### Publishing via the command line - Manual Publish
 
@@ -66,7 +66,7 @@ yarn publish
 yarn npm publish
 ```
 
-Your package should now publish to the Package Registry.
+Your package should now publish to the package registry.
 
 ### Publishing via a CI/CD pipeline - Automated Publish
 
@@ -163,7 +163,7 @@ deploy:
     - yarn npm publish
 ```
 
-Your package should now publish to the Package Registry when the pipeline runs.
+Your package should now publish to the package registry when the pipeline runs.
 
 ## Install a package
 
@@ -191,7 +191,7 @@ You can use one of two API endpoints to install packages:
 If you plan to install a package through the [project level](#install-from-the-project-level),
 you do not have to adhere to the naming convention.
 
-| Project URL                                                       | Package Registry     | Organization Scope | Full package name           |
+| Project URL                                                       | Package registry     | Organization Scope | Full package name           |
 |-------------------------------------------------------------------|----------------------|--------------------|-----------------------------|
 | `https://gitlab.com/<my-org>/<group-name>/<package-name-example>` | Package Name Example | `@my-org`          | `@my-org/package-name`      |
 | `https://gitlab.com/<example-org>/<group-name>/<project-name>`    | Project Name         | `@example-org`     | `@example-org/project-name` |
@@ -301,7 +301,7 @@ Then you can use `yarn add` to install your packages.
 
 ## Troubleshooting
 
-### Error running Yarn with the Package Registry for the npm registry
+### Error running Yarn with the package registry for the npm registry
 
 If you are using [Yarn](https://classic.yarnpkg.com/en/) with the npm registry, you may get an error message like:
 

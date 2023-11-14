@@ -142,7 +142,7 @@ You can use Sigstore and npm, together with GitLab CI/CD, to digitally sign buil
 CLI provenance generation allows users to trust and verify that the package they are downloading and using is from you and the
 build system that built it.
 
-For more information on how to publish npm packages, see [GitLab npm Package Registry](../../user/packages/npm_registry/index.md).
+For more information on how to publish npm packages, see [GitLab npm package registry](../../user/packages/npm_registry/index.md).
 
 ### Sigstore
 

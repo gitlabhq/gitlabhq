@@ -92,7 +92,7 @@ The CMake version is printed in the output.
 
 ### Create a project
 
-To test the Package Registry, you need a C++ project. If you don't already have
+To test the package registry, you need a C++ project. If you don't already have
 one, you can clone the Conan [hello world starter project](https://github.com/conan-io/hello).
 
 ### Build a Conan package
@@ -505,4 +505,4 @@ The output should appear similar to the following:
 mypypipackage-0.0.1-py3-none-any.whl mypypipackage-0.0.1.tar.gz
 ```
 
-The package is now ready to be published to the Package Registry.
+The package is now ready to be published to the package registry.

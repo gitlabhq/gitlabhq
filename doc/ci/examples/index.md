@@ -27,7 +27,7 @@ The following table lists examples with step-by-step tutorials that are containe
 | GitLab Pages                  | See the [GitLab Pages](../../user/project/pages/index.md) documentation for a complete example of deploying a static site. |
 | End-to-end testing            | [End-to-end testing with GitLab CI/CD and WebdriverIO](end_to_end_testing_webdriverio/index.md). |
 | Multi project pipeline        | [Build, test deploy using multi project pipeline](https://gitlab.com/gitlab-examples/upstream-project). |
-| npm with semantic-release     | [Publish npm packages to the GitLab Package Registry using semantic-release](semantic-release.md). |
+| npm with semantic-release     | [Publish npm packages to the GitLab package registry using semantic-release](semantic-release.md). |
 | PHP with Laravel, Envoy       | [Test and deploy Laravel applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md). |
 | PHP with npm, SCP             | [Running Composer and npm scripts with deployment via SCP in GitLab CI/CD](deployment/composer-npm-deploy.md). |
 | PHP with PHPUnit, `atoum`     | [Testing PHP projects](php.md). |

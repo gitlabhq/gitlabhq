@@ -35,7 +35,7 @@ To restore a namespace to its standard state, you can:
 |---------|-------------------|
 | Container Registry | Create, edit, and delete cleanup policies <br> Push an image to the container registry |
 | Merge Requests | Create and update an MR |
-| Package Registry | Publish a package |
+| Package registry | Publish a package |
 | Repositories | Add tags <br> Create new branches <br> Create and update commit status <br> Push and force push to non-protected branches <br> Push and force push to protected branches <br> Upload files <br> Create merge requests |
 | CI/CD | Create, edit, admin, and run pipelines <br>  Create, edit, admin, and run builds <br>  Create and edit admin environments <br> Create and edit admin deployments <br>  Create and edit admin clusters <br> Create and edit admin releases |
 | Namespaces | **For exceeded free user limits:** Invite new users |

@@ -651,7 +651,7 @@ to be set, or _all_ of these values to be set:
 
 ::EndTabs
 
-### Package Registry: Package file size limits
+### Package registry: Package file size limits
 
 The package file size limits are not part of the Application settings API.
 Instead, these settings can be accessed using the [Plan limits API](plan_limits.md).

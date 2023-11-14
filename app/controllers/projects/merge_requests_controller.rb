@@ -601,7 +601,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     when :parsed
       render json: Gitlab::Json.dump(report_comparison[:data]), status: :ok
     when :error
-      render json: { status_reason: report_comparison[:status_reason] }, status: :bad_request
+      render json: {
+               errors: [report_comparison[:status_reason]],
+               status_reason: report_comparison[:status_reason]
+             },
+        status: :bad_request
     else
       raise "Failed to build comparison response as comparison yielded unknown status '#{report_comparison[:status]}'"
     end

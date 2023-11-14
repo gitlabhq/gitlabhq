@@ -166,9 +166,9 @@ Terraform integration depends on running CI pipelines, hence it is blocked.
 
 `docker push` fails with this error: `denied: requested access to the resource is denied`, but `docker pull` works.
 
-### Package Registry
+### Package registry
 
-Package Registry allows you to install but not publish packages.
+Package registry allows you to install but not publish packages.
 
 ### Background jobs
 

@@ -309,14 +309,14 @@ module EventsHelper
     base_class = 'system-note-image'
 
     classes = current_path?('users#activity') ? "#{event.action_name.parameterize}-icon gl-rounded-full gl-bg-gray-50 gl-line-height-0" : "user-avatar"
-    content = current_path?('users#activity') ? icon_for_event(event.action_name, size: 14) : author_avatar(event, size: 32)
+    content = current_path?('users#activity') ? icon_for_event(event.action_name, size: 14) : author_avatar(event, size: 32, css_class: 'gl-display-inline-block')
 
     tag.div(class: "#{base_class} #{classes}") { content }
   end
 
   def inline_event_icon(event)
     unless current_path?('users#activity')
-      content_tag :span, class: "system-note-image-inline d-none d-sm-flex gl-mr-2 #{event.action_name.parameterize}-icon align-self-center" do
+      content_tag :span, class: "system-note-image-inline gl-display-flex gl-mr-2 #{event.action_name.parameterize}-icon align-self-center" do
         next design_event_icon(event.action, size: 14) if event.design?
 
         icon_for_event(event.action_name, size: 14)

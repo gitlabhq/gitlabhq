@@ -4,7 +4,7 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Helm charts in the Package Registry **(FREE ALL BETA)**
+# Helm charts in the package registry **(FREE ALL BETA)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18997) in GitLab 14.1.
 
@@ -13,7 +13,7 @@ The Helm chart registry for GitLab is under development and isn't ready for prod
 limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6366) details the remaining
 work and timelines to make it production ready.
 
-Publish Helm packages in your project's Package Registry. Then install the
+Publish Helm packages in your project's package registry. Then install the
 packages whenever you need to use them as a dependency.
 
 For documentation of the specific API endpoints that Helm package manager
@@ -127,7 +127,7 @@ See [Using Helm](https://helm.sh/docs/intro/using_helm/) for more information.
 
 ## Troubleshooting
 
-### The chart is not visible in the Package Registry after uploading
+### The chart is not visible in the package registry after uploading
 
 Check the [Sidekiq log](../../../administration/logs/index.md#sidekiqlog)
 for any related errors. If you see `Validation failed: Version is invalid`, it means that the

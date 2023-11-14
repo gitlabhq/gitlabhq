@@ -320,7 +320,7 @@ To select a CI/CD template for the required pipeline configuration:
 1. Select a CI/CD template from the dropdown list.
 1. Select **Save changes**.
 
-## Package Registry configuration
+## Package registry configuration
 
 ### Maven Forwarding **(PREMIUM SELF)**
 

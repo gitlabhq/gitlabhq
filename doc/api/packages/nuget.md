@@ -13,7 +13,7 @@ This API is used by the [NuGet package manager client](https://www.nuget.org/)
 and is generally not meant for manual consumption.
 
 For instructions on how to upload and install NuGet packages from the GitLab
-package registry, see the [NuGet package registry documentation](../../user/packages/nuget_repository/index.md).
+Package Registry, see the [NuGet package registry documentation](../../user/packages/nuget_repository/index.md).
 
 NOTE:
 These endpoints do not adhere to the standard API authentication methods.

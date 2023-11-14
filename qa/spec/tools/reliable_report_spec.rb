@@ -18,10 +18,19 @@ describe QA::Tools::ReliableReport do
 
     let(:runs) do
       values = {
-        "name" => "stable spec",
+        "name" => "stable spec1",
+        "status" => "passed",
+        "file_path" => "some/spec.rb",
+        "stage" => "create",
+        "product_group" => "code_review",
+        "_time" => time
+      }
+      more_values = {
+        "name" => "stable spec2",
         "status" => "passed",
         "file_path" => "some/spec.rb",
         "stage" => "manage",
+        "product_group" => "import_and_integrate",
         "_time" => time
       }
       [
@@ -31,6 +40,14 @@ describe QA::Tools::ReliableReport do
             instance_double("InfluxDB2::FluxRecord", values: values),
             instance_double("InfluxDB2::FluxRecord", values: values),
             instance_double("InfluxDB2::FluxRecord", values: values.merge({ "_time" => Time.now.to_s }))
+          ]
+        ),
+        instance_double(
+          "InfluxDB2::FluxTable",
+          records: [
+            instance_double("InfluxDB2::FluxRecord", values: more_values),
+            instance_double("InfluxDB2::FluxRecord", values: more_values),
+            instance_double("InfluxDB2::FluxRecord", values: more_values.merge({ "_time" => Time.now.to_s }))
           ]
         )
       ]
@@ -42,6 +59,17 @@ describe QA::Tools::ReliableReport do
         "status" => "failed",
         "file_path" => "some/spec.rb",
         "stage" => "create",
+        "product_group" => "code_review",
+        "failure_exception" => failure_message,
+        "job_url" => "https://job/url",
+        "_time" => time
+      }
+      more_values = {
+        "name" => "unstable spec",
+        "status" => "failed",
+        "file_path" => "some/spec.rb",
+        "stage" => "manage",
+        "product_group" => "import_and_integrate",
         "failure_exception" => failure_message,
         "job_url" => "https://job/url",
         "_time" => time
@@ -53,6 +81,14 @@ describe QA::Tools::ReliableReport do
             instance_double("InfluxDB2::FluxRecord", values: { **values, "status" => "passed" }),
             instance_double("InfluxDB2::FluxRecord", values: values),
             instance_double("InfluxDB2::FluxRecord", values: values.merge({ "_time" => Time.now.to_s }))
+          ]
+        ),
+        instance_double(
+          "InfluxDB2::FluxTable",
+          records: [
+            instance_double("InfluxDB2::FluxRecord", values: { **more_values, "status" => "passed" }),
+            instance_double("InfluxDB2::FluxRecord", values: more_values),
+            instance_double("InfluxDB2::FluxRecord", values: more_values.merge({ "_time" => Time.now.to_s }))
           ]
         )
       ]
@@ -89,14 +125,12 @@ describe QA::Tools::ReliableReport do
       QUERY
     end
 
-    def markdown_section(summary, result, stage, type)
+    def expected_stage_markdown(result, stage, product_group, type)
       <<~SECTION.strip
-        #{summary_table(summary, type, true)}
-
-        ## #{stage} (1)
+        ## #{stage.capitalize} (1)
 
         <details>
-        <summary>Executions table</summary>
+        <summary>Executions table ~\"group::#{product_group}\" (1)</summary>
 
         #{table(result, ['NAME', 'RUNS', 'FAILURES', 'FAILURE RATE'], "Top #{type} specs in '#{stage}' stage for past #{range} days", true)}
 
@@ -104,7 +138,7 @@ describe QA::Tools::ReliableReport do
       SECTION
     end
 
-    def summary_table(summary, type, markdown = false)
+    def expected_summary_table(summary, type, markdown = false)
       table(summary, %w[STAGE COUNT], "#{type.capitalize} spec summary for past #{range} days".ljust(50), markdown)
     end
 
@@ -241,28 +275,36 @@ describe QA::Tools::ReliableReport do
 
         let(:expected_issue_body) do
           <<~TXT.strip
-          [[_TOC_]]
+            [[_TOC_]]
 
-          # Candidates for promotion to reliable (#{Date.today - range} - #{Date.today})
+            # Candidates for promotion to reliable (#{Date.today - range} - #{Date.today})
 
-          Total amount: **1**
+            Total amount: **2**
 
-          #{markdown_section([['manage', 1]], [[name_column('stable spec'), 3, 0, '0%']], 'manage', 'stable')}
+            #{expected_summary_table([['create', 1], ['manage', 1]], :stable, true)}
 
-          # Reliable specs with failures (#{Date.today - range} - #{Date.today})
+            #{expected_stage_markdown([[name_column('stable spec1'), 3, 0, '0%']], 'create', 'code review', :stable)}
 
-          Total amount: **1**
+            #{expected_stage_markdown([[name_column('stable spec2'), 3, 0, '0%']], 'manage', 'import and integrate', :stable)}
 
-          #{markdown_section([['create', 1]], [[name_column('unstable spec', { failure_message => 'https://job/url' }), 3, 2, '66.67%']], 'create', 'unstable')}
+            # Reliable specs with failures (#{Date.today - range} - #{Date.today})
+
+            Total amount: **2**
+
+            #{expected_summary_table([['create', 1], ['manage', 1]], :unstable, true)}
+
+            #{expected_stage_markdown([[name_column('unstable spec', { failure_message => 'https://job/url' }), 3, 2, '66.67%']], 'create', 'code review', :unstable)}
+
+            #{expected_stage_markdown([[name_column('unstable spec', { failure_message => 'https://job/url' }), 3, 2, '66.67%']], 'manage', 'import and integrate', :unstable)}
           TXT
         end
 
         let(:expected_slack_text) do
           <<~TEXT
-              ```#{summary_table([['manage', 1]], 'stable')}```
-              ```#{summary_table([['create', 1]], 'unstable')}```
+            ```#{expected_summary_table([['create', 1], ['manage', 1]], :stable)}```
+            ```#{expected_summary_table([['create', 1], ['manage', 1]], :unstable)}```
 
-              #{issue_url}
+            #{issue_url}
           TEXT
         end
 
@@ -274,22 +316,26 @@ describe QA::Tools::ReliableReport do
 
         let(:expected_issue_body) do
           <<~TXT.strip
-          [[_TOC_]]
+            [[_TOC_]]
 
-          # Candidates for promotion to reliable (#{Date.today - range} - #{Date.today})
+            # Candidates for promotion to reliable (#{Date.today - range} - #{Date.today})
 
-          Total amount: **1**
+            Total amount: **2**
 
-          #{markdown_section([['manage', 1]], [[name_column('stable spec'), 3, 0, '0%']], 'manage', 'stable')}
+            #{expected_summary_table([['create', 1], ['manage', 1]], :stable, true)}
+
+            #{expected_stage_markdown([[name_column('stable spec1'), 3, 0, '0%']], 'create', 'code review', :stable)}
+
+            #{expected_stage_markdown([[name_column('stable spec2'), 3, 0, '0%']], 'manage', 'import and integrate', :stable)}
           TXT
         end
 
         let(:expected_slack_text) do
           <<~TEXT
-              ```#{summary_table([['manage', 1]], 'stable')}```
-              ```#{summary_table([], 'unstable')}```
+            ```#{expected_summary_table([['create', 1], ['manage', 1]], :stable)}```
+            ```#{expected_summary_table([], :unstable)}```
 
-              #{issue_url}
+            #{issue_url}
           TEXT
         end
 

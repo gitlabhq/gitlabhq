@@ -55,7 +55,7 @@ export const createPipelineDetailsHeaderApp = (elSelector, apolloProvider, graph
         props: {
           name,
           totalJobs,
-          computeMinutes,
+          computeMinutes: Number(computeMinutes),
           yamlErrors,
           failureReason,
           refText,

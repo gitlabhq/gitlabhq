@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Store all of your packages in one GitLab project **(FREE ALL)**
 
-You can store all of your packages in one project's Package Registry. Rather than using
+You can store all of your packages in one project's package registry. Rather than using
 a GitLab repository to store code, you can use the repository to store all your packages.
 Then you can configure your remote repositories to point to the project in GitLab.
 
@@ -36,7 +36,7 @@ Let's take a look at how you might create one project to host all of your packag
 
 1. Create a new project in GitLab. The project doesn't require any code or content.
 1. On the left sidebar, select **Project overview**, and note the project ID.
-1. Create an access token for authentication. All package types in the Package Registry can be published by using:
+1. Create an access token for authentication. All package types in the package registry can be published by using:
 
    - A [personal access token](../../profile/personal_access_tokens.md).
    - A [CI/CD job token](../../../ci/jobs/ci_job_token.md) (`CI_JOB_TOKEN`) in a CI/CD job.
@@ -56,7 +56,7 @@ If you're using npm, create an `.npmrc` file. Add the appropriate URL for publis
 packages to your project. Finally, add a section to your `package.json` file.
 
 Follow the instructions in the
-[GitLab Package Registry npm documentation](../npm_registry/index.md#authentication-to-the-package-registry). After
+[GitLab package registry npm documentation](../npm_registry/index.md#authentication-to-the-package-registry). After
 you do this, you can publish your npm package to your project using `npm publish`, as described in the
 [publishing packages](../npm_registry/index.md#publish-to-gitlab-package-registry) section.
 

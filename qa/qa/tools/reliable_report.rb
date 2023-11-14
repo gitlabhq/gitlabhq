@@ -59,14 +59,14 @@ module QA
       #
       # @return [void]
       def print_report
-        puts "#{stable_summary_table}\n\n"
+        puts "#{summary_table(stable: true)}\n\n"
         puts "Total amount: #{stable_test_runs.sum { |_k, v| v.count }}\n\n"
-        stable_results_tables.each { |stage, table| puts "#{table}\n\n" }
+        print_results(stable_results_tables)
         return puts("No unstable reliable tests present!".colorize(:yellow)) if unstable_reliable_test_runs.empty?
 
-        puts "#{unstable_summary_table}\n\n"
+        puts "#{summary_table(stable: false)}\n\n"
         puts "Total amount: #{unstable_reliable_test_runs.sum { |_k, v| v.count }}\n\n"
-        unstable_reliable_results_tables.each { |stage, table| puts "#{table}\n\n" }
+        print_results(unstable_reliable_results_tables)
       end
 
       # Create report issue
@@ -89,8 +89,8 @@ module QA
         notifier.post(
           icon_emoji: ":tanuki-protect:",
           text: <<~TEXT
-            ```#{stable_summary_table}```
-            ```#{unstable_summary_table}```
+            ```#{summary_table(stable: true)}```
+            ```#{summary_table(stable: false)}```
 
             #{web_url}
           TEXT
@@ -173,39 +173,30 @@ module QA
         issue = []
         issue << "[[_TOC_]]"
         issue << "# Candidates for promotion to reliable #{execution_interval}"
-        issue << "Total amount: **#{stable_test_runs.sum { |_k, v| v.count }}**"
-        issue << stable_summary_table(markdown: true).to_s
+        issue << "Total amount: **#{test_count(stable_test_runs)}**"
+        issue << summary_table(markdown: true, stable: true).to_s
         issue << results_markdown(:stable)
         return issue.join("\n\n") if unstable_reliable_test_runs.empty?
 
         issue << "# Reliable specs with failures #{execution_interval}"
-        issue << "Total amount: **#{unstable_reliable_test_runs.sum { |_k, v| v.count }}**"
-        issue << unstable_summary_table(markdown: true).to_s
+        issue << "Total amount: **#{test_count(unstable_reliable_test_runs)}**"
+        issue << summary_table(markdown: true, stable: false).to_s
         issue << results_markdown(:unstable)
         issue.join("\n\n")
       end
 
-      # Stable spec summary table
+      # Spec summary table
       #
       # @param [Boolean] markdown
+      # @param [Boolean] stable
       # @return [Terminal::Table]
-      def stable_summary_table(markdown: false)
+      def summary_table(markdown: false, stable: true)
+        test_runs = stable ? stable_test_runs : unstable_reliable_test_runs
         terminal_table(
-          rows: stable_test_runs.map { |stage, specs| [stage, specs.length] },
-          title: "Stable spec summary for past #{range} days".ljust(50),
-          headings: %w[STAGE COUNT],
-          markdown: markdown
-        )
-      end
-
-      # Unstable reliable summary table
-      #
-      # @param [Boolean] markdown
-      # @return [Terminal::Table]
-      def unstable_summary_table(markdown: false)
-        terminal_table(
-          rows: unstable_reliable_test_runs.map { |stage, specs| [stage, specs.length] },
-          title: "Unstable spec summary for past #{range} days".ljust(50),
+          rows: test_runs.map do |stage, stage_specs|
+            [stage, stage_specs.sum { |_k, group_specs| group_specs.length }]
+          end,
+          title: "#{stable ? 'Stable' : 'Unstable'} spec summary for past #{range} days".ljust(50),
           headings: %w[STAGE COUNT],
           markdown: markdown
         )
@@ -233,41 +224,51 @@ module QA
       # @return [String]
       def results_markdown(type)
         runs = type == :stable ? stable_test_runs : unstable_reliable_test_runs
-        results_tables(type, markdown: true).map do |stage, table|
-          <<~STAGE.strip
-            ## #{stage} (#{runs[stage].count})
+        results_tables(type, markdown: true).map do |stage, group_tables|
+          markdown = "## #{stage.capitalize} (#{runs[stage].sum { |_k, group_runs| group_runs.count }})\n\n"
 
-            <details>
-            <summary>Executions table</summary>
-
-            #{table}
-
-            </details>
-          STAGE
+          markdown << group_tables.map { |product_group, table| group_results_markdown(product_group, table) }.join
         end.join("\n\n")
+      end
+
+      # Markdown formatted group results table
+      #
+      # @param [String] product_group
+      # @param [Terminal::Table] table
+      # @return [String]
+      def group_results_markdown(product_group, table)
+        <<~MARKDOWN.chomp
+          <details>
+          <summary>Executions table ~"group::#{product_group.tr('_', ' ')}" (#{table.rows.size})</summary>
+
+          #{table}
+
+          </details>
+        MARKDOWN
       end
 
       # Results table
       #
       # @param [Symbol] type result type - :stable, :unstable
       # @param [Boolean] markdown
-      # @return [Hash<Symbol, Terminal::Table>]
+      # @return [Hash<String, Hash<String, Terminal::Table>>] grouped by stage and product_group
       def results_tables(type, markdown: false)
         (type == :stable ? stable_test_runs : unstable_reliable_test_runs).to_h do |stage, specs|
-          headings = ["name", "runs", "failures", "failure rate"]
-
-          [stage, terminal_table(
-            title: "Top #{type} specs in '#{stage}' stage for past #{range} days",
-            headings: headings.map(&:upcase),
-            markdown: markdown,
-            rows: specs.map do |k, v|
-              [
-                name_column(name: k, file: v[:file], link: v[:link],
-                  exceptions_and_job_urls: v[:exceptions_and_job_urls], markdown: markdown),
-                *table_params(v.values)
-              ]
-            end
-          )]
+          headings = ['NAME', 'RUNS', 'FAILURES', 'FAILURE RATE'].freeze
+          [stage, specs.transform_values do |group_specs|
+            terminal_table(
+              title: "Top #{type} specs in '#{stage}::#{specs.key(group_specs)}' group for past #{range} days",
+              headings: headings,
+              markdown: markdown,
+              rows: group_specs.map do |name, result|
+                [
+                  name_column(name: name, file: result[:file], link: result[:link],
+                    exceptions_and_job_urls: result[:exceptions_and_job_urls], markdown: markdown),
+                  *table_params(result.values)
+                ]
+              end
+            )
+          end]
         end
       end
 
@@ -276,14 +277,14 @@ module QA
       # @return [Hash]
       def stable_test_runs
         @top_stable ||= begin
-          stable_specs = test_runs(reliable: false).transform_values do |specs|
-            specs
-              .reject { |k, v| v[:failure_rate] != 0 }
-              .sort_by { |k, v| -v[:runs] }
-              .to_h
+          stable_specs = test_runs(reliable: false).each do |stage, stage_specs|
+            stage_specs.transform_values! do |group_specs|
+              group_specs.reject { |k, v| v[:failure_rate] != 0 }
+                         .sort_by { |k, v| -v[:runs] }
+                         .to_h
+            end
           end
-
-          stable_specs.reject { |k, v| v.empty? }
+          stable_specs.transform_values { |v| v.reject { |_, v| v.empty? } }.reject { |_, v| v.empty? }
         end
       end
 
@@ -292,14 +293,26 @@ module QA
       # @return [Hash]
       def unstable_reliable_test_runs
         @top_unstable_reliable ||= begin
-          unstable = test_runs(reliable: true).transform_values do |specs|
-            specs
-              .reject { |k, v| v[:failure_rate] == 0 }
-              .sort_by { |k, v| -v[:failure_rate] }
-              .to_h
+          unstable = test_runs(reliable: true).each do |_stage, stage_specs|
+            stage_specs.transform_values! do |group_specs|
+              group_specs.reject { |_, v| v[:failure_rate] == 0 }
+                         .sort_by { |_, v| -v[:failure_rate] }
+                         .to_h
+            end
           end
+          unstable.transform_values { |v| v.reject { |_, v| v.empty? } }.reject { |_, v| v.empty? }
+        end
+      end
 
-          unstable.reject { |k, v| v.empty? }
+      def print_results(results)
+        results.each do |_stage, stage_results|
+          stage_results.each_value { |group_results_table| puts "#{group_results_table}\n\n" }
+        end
+      end
+
+      def test_count(test_runs)
+        test_runs.sum do |_stage, stage_results|
+          stage_results.sum { |_product_group, group_results| group_results.count }
         end
       end
 
@@ -368,16 +381,14 @@ module QA
         all_runs.each_with_object(Hash.new { |hsh, key| hsh[key] = {} }) do |table, result|
           records = table.records.sort_by { |record| record.values["_time"] }
 
-          # skip specs that executed less time than defined by range or stopped executing before report date
-          # offset 1 day due to how schedulers are configured and first run can be 1 day later
-          next if (Date.today - Date.parse(records.first.values["_time"])).to_i < (range - 1)
-          next if (Date.today - Date.parse(records.last.values["_time"])).to_i > 1
+          next if within_execution_range(records.first.values["_time"], records.last.values["_time"])
 
           last_record = records.last.values
           name = last_record["name"]
           file = last_record["file_path"].split("/").last
           link = FEATURES_DIR + last_record["file_path"]
           stage = last_record["stage"] || "unknown"
+          product_group = last_record["product_group"] || "unknown"
 
           runs = records.count
 
@@ -394,7 +405,8 @@ module QA
             [r.values["failure_exception"], r.values["job_url"]]
           end
 
-          result[stage][name] = {
+          result[stage][product_group] ||= {}
+          result[stage][product_group][name] = {
             file: file,
             link: link,
             runs: runs,
@@ -413,6 +425,16 @@ module QA
       # @return [Boolean]
       def allowed_failure?(failure_exception)
         ALLOWED_EXCEPTION_PATTERNS.any? { |pattern| pattern.match?(failure_exception) }
+      end
+
+      # Returns true if first_time is before our range, or if last_time is before report date
+      # offset 1 day due to how schedulers are configured and first run can be 1 day later
+      #
+      # @param [String] first_time
+      # @param [String] last_time
+      # @return [Boolean]
+      def within_execution_range(first_time, last_time)
+        (Date.today - Date.parse(first_time)).to_i < (range - 1) || (Date.today - Date.parse(last_time)).to_i > 1
       end
 
       # Flux query

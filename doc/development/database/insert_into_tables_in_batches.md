@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 description: "Sometimes it is necessary to store large amounts of records at once, which can be inefficient
 when iterating collections and performing individual `save`s. With the arrival of `insert_all`
 in Rails 6, which operates at the row level (that is, using `Hash`es), GitLab has added a set

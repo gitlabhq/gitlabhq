@@ -435,7 +435,7 @@ Some project items are excluded from migration because they either:
   - Environments
   - Feature flags
   - Infrastructure Registry
-  - Package Registry
+  - Package registry
   - Pages domains
   - Remote mirrors
 

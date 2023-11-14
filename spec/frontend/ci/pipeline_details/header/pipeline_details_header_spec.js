@@ -89,7 +89,7 @@ describe('Pipeline details header', () => {
   const defaultProps = {
     name: 'Ruby 3.0 master branch pipeline',
     totalJobs: '50',
-    computeMinutes: '0.65',
+    computeMinutes: 0.65,
     yamlErrors: 'errors',
     failureReason: 'pipeline failed',
     badges: {
@@ -243,7 +243,7 @@ describe('Pipeline details header', () => {
     });
 
     it('does not display compute minutes when zero', async () => {
-      createComponent(defaultHandlers, { ...defaultProps, computeMinutes: '0.0' });
+      createComponent(defaultHandlers, { ...defaultProps, computeMinutes: 0.0 });
 
       await waitForPromises();
 

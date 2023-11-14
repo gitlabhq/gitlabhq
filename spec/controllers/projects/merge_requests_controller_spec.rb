@@ -18,6 +18,27 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
     sign_in(user)
   end
 
+  shared_examples 'a 400 response' do
+    it 'does not send polling interval' do
+      expect(Gitlab::PollingInterval).not_to receive(:set_header)
+
+      subject
+    end
+
+    it 'returns 400 HTTP status' do
+      subject
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+    end
+
+    it 'returns an error string' do
+      subject
+
+      expect(json_response['status_reason']).to eq error_string
+      expect(json_response['errors']).to match_array [error_string]
+    end
+  end
+
   describe 'GET commit_change_content' do
     it 'renders commit_change_content template' do
       get :commit_change_content,
@@ -1228,20 +1249,10 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
       end
 
       context 'when user created corrupted coverage reports' do
-        let(:report) { { status: :error, status_reason: 'Failed to parse coverage reports' } }
+        let(:report) { { status: :error, status_reason: error_string } }
+        let(:error_string) { 'Failed to parse coverage reports' }
 
-        it 'does not send polling interval' do
-          expect(Gitlab::PollingInterval).not_to receive(:set_header)
-
-          subject
-        end
-
-        it 'returns 400 HTTP status' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response).to eq({ 'status_reason' => 'Failed to parse coverage reports' })
-        end
+        it_behaves_like 'a 400 response'
       end
     end
 
@@ -1475,20 +1486,10 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
       end
 
       context 'when user created corrupted terraform reports' do
-        let(:report) { { status: :error, status_reason: 'Failed to parse terraform reports' } }
+        let(:report) { { status: :error, status_reason: error_string } }
+        let(:error_string) { 'Failed to parse terraform reports' }
 
-        it 'does not send polling interval' do
-          expect(Gitlab::PollingInterval).not_to receive(:set_header)
-
-          subject
-        end
-
-        it 'returns 400 HTTP status' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response).to eq({ 'status_reason' => 'Failed to parse terraform reports' })
-        end
+        it_behaves_like 'a 400 response'
       end
     end
 
@@ -1603,20 +1604,10 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
     end
 
     context 'when user created corrupted test reports' do
-      let(:comparison_status) { { status: :error, status_reason: 'Failed to parse test reports' } }
+      let(:error_string) { 'Failed to parse test reports' }
+      let(:comparison_status) { { status: :error, status_reason: error_string } }
 
-      it 'does not send polling interval' do
-        expect(Gitlab::PollingInterval).not_to receive(:set_header)
-
-        subject
-      end
-
-      it 'returns 400 HTTP status' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response).to eq({ 'status_reason' => 'Failed to parse test reports' })
-      end
+      it_behaves_like 'a 400 response'
     end
   end
 
@@ -1723,20 +1714,10 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
       end
 
       context 'when user created corrupted accessibility reports' do
-        let(:accessibility_comparison) { { status: :error, status_reason: 'This merge request does not have accessibility reports' } }
+        let(:error_string) { 'This merge request does not have accessibility reports' }
+        let(:accessibility_comparison) { { status: :error, status_reason: error_string } }
 
-        it 'does not send polling interval' do
-          expect(Gitlab::PollingInterval).not_to receive(:set_header)
-
-          subject
-        end
-
-        it 'returns 400 HTTP status' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response).to eq({ 'status_reason' => 'This merge request does not have accessibility reports' })
-        end
+        it_behaves_like 'a 400 response'
       end
     end
   end
@@ -1845,14 +1826,10 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
     end
 
     context 'when pipeline has job without a codequality report' do
-      let(:codequality_comparison) { { status: :error, status_reason: 'no codequality report' } }
+      let(:error_string) { 'no codequality report' }
+      let(:codequality_comparison) { { status: :error, status_reason: error_string } }
 
-      it 'returns a 400' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response).to eq({ 'status_reason' => 'no codequality report' })
-      end
+      it_behaves_like 'a 400 response'
     end
   end
 

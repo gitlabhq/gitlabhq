@@ -13,7 +13,7 @@ This API is used by the [npm package manager client](https://docs.npmjs.com/)
 and is not meant for manual consumption.
 
 For instructions on how to upload and install npm packages from the GitLab
-package registry, see the [npm package registry documentation](../../user/packages/npm_registry/index.md).
+Package Registry, see the [npm package registry documentation](../../user/packages/npm_registry/index.md).
 
 NOTE:
 These endpoints do not adhere to the standard API authentication methods.

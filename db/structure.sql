@@ -34746,8 +34746,6 @@ CREATE INDEX index_users_on_name_trigram ON users USING gin (name gin_trgm_ops);
 
 CREATE INDEX index_users_on_public_email_excluding_null_and_empty ON users USING btree (public_email) WHERE (((public_email)::text <> ''::text) AND (public_email IS NOT NULL));
 
-CREATE INDEX index_users_on_require_two_factor_authentication_from_group ON users USING btree (require_two_factor_authentication_from_group) WHERE (require_two_factor_authentication_from_group = true);
-
 CREATE UNIQUE INDEX index_users_on_reset_password_token ON users USING btree (reset_password_token);
 
 CREATE INDEX index_users_on_state_and_user_type ON users USING btree (state, user_type);
@@ -34771,8 +34769,6 @@ CREATE INDEX index_users_on_username_trigram ON users USING gin (username gin_tr
 CREATE INDEX index_users_ops_dashboard_projects_on_project_id ON users_ops_dashboard_projects USING btree (project_id);
 
 CREATE UNIQUE INDEX index_users_ops_dashboard_projects_on_user_id_and_project_id ON users_ops_dashboard_projects USING btree (user_id, project_id);
-
-CREATE INDEX index_users_require_two_factor_authentication_from_group_false ON users USING btree (require_two_factor_authentication_from_group) WHERE (require_two_factor_authentication_from_group = false);
 
 CREATE INDEX index_users_security_dashboard_projects_on_user_id ON users_security_dashboard_projects USING btree (user_id);
 

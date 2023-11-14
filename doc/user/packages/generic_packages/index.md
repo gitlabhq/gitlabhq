@@ -9,11 +9,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4209) in GitLab 13.5 [with a flag](../../../administration/feature_flags.md) named `generic_packages`. Enabled by default.
 > - [Feature flag `generic_packages`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80886) removed in GitLab 14.8.
 
-Publish generic files, like release binaries, in your project's Package Registry. Then, install the packages whenever you need to use them as a dependency.
+Publish generic files, like release binaries, in your project's package registry. Then, install the packages whenever you need to use them as a dependency.
 
-## Authenticate to the Package Registry
+## Authenticate to the package registry
 
-To authenticate to the Package Registry, you need either a [personal access token](../../../api/rest/index.md#personalprojectgroup-access-tokens),
+To authenticate to the package registry, you need either a [personal access token](../../../api/rest/index.md#personalprojectgroup-access-tokens),
 [CI/CD job token](../../../ci/jobs/ci_job_token.md), or [deploy token](../../project/deploy_tokens/index.md).
 
 In addition to the standard API authentication mechanisms, the generic package

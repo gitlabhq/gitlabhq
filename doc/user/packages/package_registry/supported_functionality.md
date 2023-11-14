@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Supported package functionality
 
-The GitLab Package Registry supports different functionalities for each package type. This support includes publishing
+The GitLab package registry supports different functionalities for each package type. This support includes publishing
 and pulling packages, request forwarding, managing duplicates, and authentication.
 
 ## Publishing packages **(FREE ALL)**
@@ -133,7 +133,7 @@ By default, the GitLab package registry either allows or prevents duplicates bas
 
 ## Authentication tokens **(FREE ALL)**
 
-GitLab tokens are used to authenticate with the GitLab Package Registry.
+GitLab tokens are used to authenticate with the GitLab package registry.
 
 The following tokens are supported:
 
@@ -181,7 +181,7 @@ The following authentication protocols are supported:
 
 Hash values are used to ensure you are using the correct package. You can view these values in the user interface or with the [API](../../../api/packages.md).
 
-The Package Registry supports the following hash types:
+The package registry supports the following hash types:
 
 | Package type                                          | Supported hashes                 |
 |-------------------------------------------------------|----------------------------------|

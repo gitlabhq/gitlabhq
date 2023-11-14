@@ -140,9 +140,9 @@ export default {
       default: '',
     },
     computeMinutes: {
-      type: String,
+      type: Number,
       required: false,
-      default: '',
+      default: 0,
     },
     yamlErrors: {
       type: String,
@@ -315,7 +315,7 @@ export default {
       return cancelable && userPermissions.updatePipeline;
     },
     showComputeMinutes() {
-      return this.isFinished && this.computeMinutes !== '0.0';
+      return this.isFinished && this.computeMinutes;
     },
   },
   methods: {
