@@ -1,5 +1,0 @@
----
-# Cop supports --autocorrect.
-Style/ZeroLengthPredicate:
-  Exclude:
-    - 'spec/requests/api/graphql/mutations/admin/sidekiq_queues/delete_jobs_spec.rb'

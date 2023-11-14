@@ -40,7 +40,8 @@ RSpec.describe 'Deleting Sidekiq jobs', :clean_gitlab_redis_queues, feature_cate
           'args' => args,
           'meta.user' => user.username
         )
-        raise 'Not enqueued!' if Sidekiq::Queue.new(queue).size.zero?
+
+        raise 'Not enqueued!' if Sidekiq::Queue.new(queue).count == 0
       end
 
       it 'returns info about the deleted jobs' do

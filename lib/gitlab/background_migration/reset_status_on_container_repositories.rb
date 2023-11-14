@@ -117,7 +117,7 @@ module Gitlab
             return DUMMY_TAGS unless response
 
             response['tags'] || []
-          rescue StandardError
+          rescue StandardError # rubocop:todo BackgroundMigration/AvoidSilentRescueExceptions -- https://gitlab.com/gitlab-org/gitlab/-/issues/431592
             DUMMY_TAGS
           end
         end

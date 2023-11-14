@@ -13,6 +13,7 @@ module Gitlab
         raise UnknownEventError, "Unknown event: #{event_name}" unless EventDefinitions.known_event?(event_name)
 
         increase_total_counter(event_name)
+        increase_weekly_total_counter(event_name)
         update_unique_counter(event_name, kwargs)
         trigger_snowplow_event(event_name, kwargs) if send_snowplow_event
       rescue StandardError => e
@@ -25,6 +26,12 @@ module Gitlab
       def increase_total_counter(event_name)
         redis_counter_key =
           Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric.redis_key(event_name)
+        Gitlab::Redis::SharedState.with { |redis| redis.incr(redis_counter_key) }
+      end
+
+      def increase_weekly_total_counter(event_name)
+        redis_counter_key =
+          Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric.redis_key(event_name, Date.today)
         Gitlab::Redis::SharedState.with { |redis| redis.incr(redis_counter_key) }
       end
 

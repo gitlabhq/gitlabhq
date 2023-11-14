@@ -740,6 +740,18 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
           .to raise_error(/Don't know how to build task 'gitlab:db:create_dynamic_partitions:geo'/)
       end
     end
+
+    context 'with jh configured' do
+      before do
+        skip 'Skipping because the jh database is not configured' unless
+          !!ActiveRecord::Base.configurations.configs_for(env_name: Rails.env, name: 'jh')
+      end
+
+      it 'does not create a task for the jh database' do
+        expect { run_rake_task('gitlab:db:create_dynamic_partitions:jh') }
+          .to raise_error(/Don't know how to build task 'gitlab:db:create_dynamic_partitions:jh'/)
+      end
+    end
   end
 
   describe 'reindex' do

@@ -217,9 +217,6 @@ todos:
 user_callouts:
   index_user_callouts_on_user_id_and_feature_name:
     - index_user_callouts_on_user_id
-users:
-  index_users_on_state_and_user_type:
-    - index_users_on_state
 vulnerabilities:
   index_vulnerabilities_project_id_state_severity_default_branch:
     - index_vulnerabilities_on_project_id_and_state_and_severity

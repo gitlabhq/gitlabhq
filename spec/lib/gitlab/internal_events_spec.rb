@@ -21,9 +21,11 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       .with(event_name, values: unique_value)
   end
 
-  def expect_redis_tracking(event_name)
-    expect(redis).to have_received(:incr) do |redis_key|
-      expect(redis_key).to end_with(event_name)
+  def expect_redis_tracking
+    call_index = 0
+    expect(redis).to have_received(:incr).twice do |redis_key|
+      expect(redis_key).to end_with(redis_arguments[call_index])
+      call_index += 1
     end
   end
 
@@ -51,12 +53,13 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   let(:fake_snowplow) { instance_double(Gitlab::Tracking::Destinations::Snowplow) }
   let(:event_name) { 'g_edit_by_web_ide' }
   let(:unique_value) { user.id }
+  let(:redis_arguments) { [event_name, Date.today.strftime('%G-%V')] }
 
   it 'updates Redis, RedisHLL and Snowplow', :aggregate_failures do
     params = { user: user, project: project, namespace: namespace }
     described_class.track_event(event_name, **params)
 
-    expect_redis_tracking(event_name)
+    expect_redis_tracking
     expect_redis_hll_tracking(event_name)
     expect_snowplow_tracking(event_name) # Add test for arguments
   end
@@ -86,7 +89,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   it 'logs error on missing property', :aggregate_failures do
     expect { described_class.track_event(event_name, merge_request_id: 1) }.not_to raise_error
 
-    expect_redis_tracking(event_name)
+    expect_redis_tracking
     expect(Gitlab::ErrorTracking).to have_received(:track_and_raise_for_dev_exception)
       .with(described_class::InvalidPropertyError, event_name: event_name, kwargs: { merge_request_id: 1 })
   end
@@ -100,7 +103,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     it 'logs error on missing unique property', :aggregate_failures do
       expect { described_class.track_event(event_name, merge_request_id: 1) }.not_to raise_error
 
-      expect_redis_tracking(event_name)
+      expect_redis_tracking
       expect(Gitlab::ErrorTracking).to have_received(:track_and_raise_for_dev_exception)
     end
   end
@@ -119,7 +122,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     it 'is used when logging to RedisHLL', :aggregate_failures do
       described_class.track_event(event_name, user: user, project: project)
 
-      expect_redis_tracking(event_name)
+      expect_redis_tracking
       expect_redis_hll_tracking(event_name)
       expect_snowplow_tracking(event_name)
     end
@@ -137,7 +140,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       it 'logs error on missing method' do
         expect { described_class.track_event(event_name, project: "a_string") }.not_to raise_error
 
-        expect_redis_tracking(event_name)
+        expect_redis_tracking
         expect(Gitlab::ErrorTracking).to have_received(:track_and_raise_for_dev_exception)
           .with(described_class::InvalidMethodError, event_name: event_name, kwargs: { project: 'a_string' })
       end
@@ -147,7 +150,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       it 'logs to Redis and RedisHLL but not Snowplow' do
         described_class.track_event(event_name, send_snowplow_event: false, user: user, project: project)
 
-        expect_redis_tracking(event_name)
+        expect_redis_tracking
         expect_redis_hll_tracking(event_name)
         expect(fake_snowplow).not_to have_received(:event)
       end
@@ -166,7 +169,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     it 'logs to Redis and Snowplow but not RedisHLL', :aggregate_failures do
       described_class.track_event(event_name, user: user, project: project)
 
-      expect_redis_tracking(event_name)
+      expect_redis_tracking
       expect_snowplow_tracking(event_name)
       expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to have_received(:track_event)
     end

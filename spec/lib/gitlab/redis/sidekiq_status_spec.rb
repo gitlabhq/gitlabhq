@@ -21,9 +21,11 @@ RSpec.describe Gitlab::Redis::SidekiqStatus do
       # Override rails root to avoid having our fixtures overwritten by `redis.yml` if it exists
       allow(Gitlab::Redis::SharedState).to receive(:rails_root).and_return(rails_root)
       allow(Gitlab::Redis::Queues).to receive(:rails_root).and_return(rails_root)
+      allow(Gitlab::Redis::ClusterSharedState).to receive(:rails_root).and_return(rails_root)
 
       allow(Gitlab::Redis::SharedState).to receive(:config_file_name).and_return(config_new_format_host)
       allow(Gitlab::Redis::Queues).to receive(:config_file_name).and_return(config_new_format_socket)
+      allow(Gitlab::Redis::ClusterSharedState).to receive(:config_file_name).and_return(config_new_format_socket)
     end
 
     around do |example|
@@ -37,7 +39,8 @@ RSpec.describe Gitlab::Redis::SidekiqStatus do
       subject.with do |redis_instance|
         expect(redis_instance).to be_instance_of(::Gitlab::Redis::MultiStore)
 
-        expect(redis_instance.primary_store.connection[:id]).to eq("redis://test-host:6379/99")
+        expect(redis_instance.primary_store.secondary_store.connection[:id]).to eq("redis://test-host:6379/99")
+        expect(redis_instance.primary_store.primary_store.connection[:id]).to eq("unix:///path/to/redis.sock/0")
         expect(redis_instance.secondary_store.connection[:id]).to eq("unix:///path/to/redis.sock/0")
 
         expect(redis_instance.instance_name).to eq('SidekiqStatus')

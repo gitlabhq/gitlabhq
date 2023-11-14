@@ -83,8 +83,6 @@ module Gitlab
           "::Gitlab::Instrumentation::Redis::#{store_name}".constantize
         end
 
-        private
-
         def redis
           ::Redis.new(params)
         end

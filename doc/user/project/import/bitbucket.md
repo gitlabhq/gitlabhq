@@ -6,12 +6,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Import your project from Bitbucket Cloud to GitLab **(FREE ALL)**
 
-NOTE:
-The Bitbucket Cloud importer works only with [Bitbucket.org](https://bitbucket.org/), not with Bitbucket
-Server (aka Stash). If you are trying to import projects from Bitbucket Server, use
-[the Bitbucket Server importer](bitbucket_server.md).
+> Parallel imports from Bitbucket Cloud [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412614) in GitLab 16.6 [with a flag](../../../administration/feature_flags.md) named `bitbucket_parallel_importer`. Disabled by default.
 
-Import your projects from Bitbucket Cloud to GitLab with minimal effort.
+Import your projects from Bitbucket Cloud to GitLab.
+
+FLAG:
+On self-managed GitLab, parallel imports are not available. Parallel imports can help when importing large projects.
+To make parallel imports available, an administrator can [enable the feature flag](../../../administration/feature_flags.md)
+named `bitbucket_parallel_importer`. On GitLab.com, this feature is available.
 
 The Bitbucket importer can import:
 
@@ -29,6 +31,11 @@ When importing:
 - References to pull requests and issues are preserved.
 - Repository public access is retained. If a repository is private in Bitbucket, it's created as
   private in GitLab as well.
+
+NOTE:
+The Bitbucket Cloud importer works only with [Bitbucket.org](https://bitbucket.org/), not with Bitbucket
+Server (aka Stash). If you are trying to import projects from Bitbucket Server, use
+[the Bitbucket Server importer](bitbucket_server.md).
 
 ## Prerequisites
 

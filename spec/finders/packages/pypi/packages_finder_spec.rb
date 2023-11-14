@@ -67,7 +67,7 @@ RSpec.describe Packages::Pypi::PackagesFinder do
 
             context 'when package registry is disabled for one project' do
               before do
-                project2.project_feature.update!(package_registry_access_level: ProjectFeature::DISABLED)
+                project2.update!(package_registry_access_level: 'disabled', packages_enabled: false)
               end
 
               it 'filters the packages from the disabled project' do

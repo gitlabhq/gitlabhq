@@ -5,6 +5,7 @@ databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml
 def each_database(databases, include_geo: false)
   ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |database|
     next if database == 'embedding'
+    next if database == 'jh'
     next if !include_geo && database == 'geo'
 
     yield database

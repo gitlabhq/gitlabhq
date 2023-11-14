@@ -34765,8 +34765,6 @@ CREATE INDEX index_users_on_require_two_factor_authentication_from_group ON user
 
 CREATE UNIQUE INDEX index_users_on_reset_password_token ON users USING btree (reset_password_token);
 
-CREATE INDEX index_users_on_state ON users USING btree (state);
-
 CREATE INDEX index_users_on_state_and_user_type ON users USING btree (state, user_type);
 
 CREATE UNIQUE INDEX index_users_on_static_object_token ON users USING btree (static_object_token);

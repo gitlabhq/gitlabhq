@@ -300,7 +300,7 @@ We are conducting deeper research around this specific problem in [issue 420804]
 
 The following iteration plan outlines how we intend to arrive at the Organization MVC. We are following the guidelines for [Experiment, Beta, and Generally Available features](../../../policy/experiment-beta-support.md).
 
-### Iteration 1: Organization Prototype (FY24Q4)
+### Iteration 1: [Organization Prototype](https://gitlab.com/groups/gitlab-org/-/epics/10018) (FY24Q2-FY25Q1)
 
 In iteration 1, we introduce the concept of an Organization as a way to group top-level Groups together. Support for Organizations does not require any [Cells](../cells/index.md) work, but having them will make all subsequent iterations of Cells simpler. The goal of iteration 1 will be to generate a prototype that can be used by GitLab teams to test basic functionality within an Organization. The prototype contains the following functionality:
 
@@ -314,8 +314,9 @@ In iteration 1, we introduce the concept of an Organization as a way to group to
 - A User can be part of multiple Organizations.
 - Users can navigate between the different Organizations they are part of.
 - Any User within or outside of an Organization can be invited to Groups and Projects contained by the Organization.
+- Organizations are not fully isolated. We aim to complete [phase 1 of Organization isolation](https://gitlab.com/groups/gitlab-org/-/epics/11837), with the goal to `define sharding_key` and `desired_sharding_key` rules.
 
-### Iteration 2: Organization MVC Experiment (FY25Q1)
+### Iteration 2: [Organization MVC Experiment](https://gitlab.com/groups/gitlab-org/-/epics/10650) (FY25Q2)
 
 In iteration 2, an Organization MVC Experiment will be released. We will test the functionality with a select set of customers and improve the MVC based on these learnings. The MVC Experiment contains the following functionality:
 
@@ -325,7 +326,7 @@ In iteration 2, an Organization MVC Experiment will be released. We will test th
 - Forking across Organizations will be defined.
 - [Organization Isolation](isolation.md) will be finished to meet the requirements of the initial set of customers
 
-### Iteration 3: Organization MVC Beta (FY25Q1)
+### Iteration 3: [Organization MVC Beta](https://gitlab.com/groups/gitlab-org/-/epics/10651) (FY25Q3)
 
 In iteration 3, the Organization MVC Beta will be released.
 
@@ -334,9 +335,9 @@ In iteration 3, the Organization MVC Beta will be released.
 - Organization Owners can create, edit and delete Groups from the Groups overview.
 - Organization Owners can create, edit and delete Projects from the Projects overview.
 - The Organization URL path can be changed.
-- [Organization Isolation](isolation.md) is available.
+- Organizations are fully isolated. We aim to complete [phase 2 of Organization isolation](https://gitlab.com/groups/gitlab-org/-/epics/11838), with the goal to implement isolation constraints.
 
-### Iteration 4: Organization MVC GA (FY25Q2)
+### Iteration 4: [Organization MVC GA](https://gitlab.com/groups/gitlab-org/-/epics/10652) (FY25Q3)
 
 In iteration 4, the Organization MVC will be rolled out.
 
@@ -346,6 +347,7 @@ After the initial rollout of Organizations, the following functionality will be 
 
 1. [Users can transfer existing top-level Groups into Organizations](https://gitlab.com/groups/gitlab-org/-/epics/11711).
 1. [Organizations can invite Users](https://gitlab.com/gitlab-org/gitlab/-/issues/420166).
+1. Complete [phase 3 of Organization isolation](https://gitlab.com/groups/gitlab-org/-/epics/11839), with the goal to allow customers to move existing namespaces out of the default Organization into a new Organization.
 1. Internal visibility will be made available on Organizations that are part of GitLab.com.
 1. Restrict inviting Users outside of the Organization.
 1. Enterprise Users will be made available at the Organization level.
@@ -368,12 +370,14 @@ We propose the following steps to successfully roll out Organizations:
 
 - Phase 1: Rollout
   - Organizations will be rolled out using the concept of a `default Organization`. All existing top-level groups on GitLab.com are already part of this `default Organization`. The Organization UI is feature flagged and can be enabled for a specific set of users initially, and the global user pool at the end of this phase. This way, users will already become familiar with the concept of an Organization and the Organization UI. No features would be impacted by enabling the `default Organization`. See issue [#418225](https://gitlab.com/gitlab-org/gitlab/-/issues/418225) for more details.
-- Phase 2: Migrations
-  - GitLab, the organization, will be the first one to bud off into a separate Organization. We move all top-level groups that belong to GitLab into the new GitLab Organization, including the `gitLab-org` and `gitLab-com` top-level Groups. See issue [#418228](https://gitlab.com/gitlab-org/gitlab/-/issues/418228) for more details.
-  - Existing customers can create their own Organization. Creation of an Organization remains optional.
-- Phase 3: Onboarding changes
-  - New customers will only have the option to start their journey by creating an Organization.
-- Phase 4: Targeted efforts
+- Phase 2: Temporary onboarding changes
+  - New customers who were identified to not need personal namespaces and forking can create new Organizations from scratch. Top-level Groups cannot be migrated yet into a new Organization, so all content must be newly created in an Organization.
+- Phase 3: Migration of existing customers
+  - GitLab, the organization, will be the first one to bud off into a separate Organization. We move all top-level Groups that belong to GitLab into the new GitLab Organization, including the `gitLab-org` and `gitLab-com` top-level Groups. See issue [#418228](https://gitlab.com/gitlab-org/gitlab/-/issues/418228) for more details.
+  - Once top-level Group transfer from the default Organization to another Organization becomes available, existing customers can create their own Organization and migrate their top-level Groups into it. Creation of an Organization remains optional.
+- Phase 4: Permanent onboarding changes
+  - All new customers will only have the option to start their journey by creating a new Organization.
+- Phase 5: Targeted efforts
   - Organizations are promoted, e.g. via a banner message, targeted conversations with large customers via the CSMs. Creating a separate Organization will remain a voluntary action.
   - We increase the value proposition of the Organization, for instance by moving billing to the Organization level to provide incentives for more customers to move to a separate Organization. Adoption will be monitored.
 
