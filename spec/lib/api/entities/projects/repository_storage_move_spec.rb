@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::Projects::RepositoryStorageMove do
+RSpec.describe API::Entities::Projects::RepositoryStorageMove, feature_category: :source_code_management do
   describe '#as_json' do
     subject { entity.as_json }
 

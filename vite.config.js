@@ -59,6 +59,7 @@ const JH_ALIAS_FALLBACK = [
 ];
 
 export default defineConfig({
+  cacheDir: path.resolve(__dirname, 'tmp/cache/vite'),
   resolve: {
     alias: [
       ...aliasArr,

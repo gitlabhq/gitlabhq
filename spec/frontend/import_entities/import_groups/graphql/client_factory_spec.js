@@ -72,6 +72,7 @@ describe('Bulk import resolvers', () => {
           progress: {
             id: 'DEMO',
             status: 'cached',
+            hasFailures: true,
           },
         };
         localStorageCache.get.mockReturnValueOnce(CACHED_DATA);
@@ -234,7 +235,7 @@ describe('Bulk import resolvers', () => {
         data: { updateImportStatus: statusInResponse },
       } = await client.mutate({
         mutation: updateImportStatusMutation,
-        variables: { id, status: NEW_STATUS },
+        variables: { id, status: NEW_STATUS, hasFailures: true },
       });
 
       expect(statusInResponse).toStrictEqual({
@@ -242,6 +243,7 @@ describe('Bulk import resolvers', () => {
         id,
         message: null,
         status: NEW_STATUS,
+        hasFailures: true,
       });
     });
   });

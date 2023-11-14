@@ -3,6 +3,7 @@
 require 'httparty'
 require 'net/http'
 require 'active_support/all'
+require 'gitlab/utils/all'
 require_relative 'new_connection_adapter'
 require_relative 'exceptions'
 require_relative 'lazy_response'
@@ -73,13 +74,15 @@ module Gitlab
           read_total_timeout = options.fetch(:timeout, DEFAULT_READ_TOTAL_TIMEOUT)
 
           promise = Concurrent::Promise.new do
-            httparty_perform_request(http_method, path, options_with_timeouts) do |fragment|
-              start_time ||= system_monotonic_time
-              elapsed = system_monotonic_time - start_time
+            Gitlab::Utils.restrict_within_concurrent_ruby do
+              httparty_perform_request(http_method, path, options_with_timeouts) do |fragment|
+                start_time ||= system_monotonic_time
+                elapsed = system_monotonic_time - start_time
 
-              raise ReadTotalTimeout, "Request timed out after #{elapsed} seconds" if elapsed > read_total_timeout
+                raise ReadTotalTimeout, "Request timed out after #{elapsed} seconds" if elapsed > read_total_timeout
 
-              yield fragment if block
+                yield fragment if block
+              end
             end
           end
 

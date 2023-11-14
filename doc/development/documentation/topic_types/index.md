@@ -24,6 +24,7 @@ The acronym refers to the first letter of each topic type.
 In addition to the four primary topic types, you can use the following:
 
 - Page type: [Tutorials](tutorial.md)
+- Page type: [Get started](get_started.md)
 - Topic type: [Related topics](#related-topics)
 - Page or topic type: [Glossaries](glossary.md)
 
@@ -36,7 +37,6 @@ You should avoid:
 - Topics that have one or two sentences only. In these cases:
   - Incorporate the information in another topic.
   - If the sentence links to another page, use a [Related topics](#related-topics) link instead.
-- Get started topics. To document a procedure for a single feature, use a [task](task.md). For a set of steps, use a [tutorial](tutorial.md).
 
 ## Topic title guidelines
 

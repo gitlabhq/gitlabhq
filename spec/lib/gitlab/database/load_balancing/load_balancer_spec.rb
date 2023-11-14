@@ -92,8 +92,20 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store, fe
     end
   end
 
+  shared_examples 'restrict within concurrent ruby' do |lb_method|
+    it 'raises an exception when running within a concurrent Ruby thread' do
+      Thread.current[:restrict_within_concurrent_ruby] = true
+
+      expect { |b| lb.public_send(lb_method, &b) }.to raise_error(Gitlab::Utils::ConcurrentRubyThreadIsUsedError,
+        "Cannot run 'db' if running from `Concurrent::Promise`.")
+
+      Thread.current[:restrict_within_concurrent_ruby] = nil
+    end
+  end
+
   describe '#read' do
     it_behaves_like 'logs service discovery thread interruption', :read
+    it_behaves_like 'restrict within concurrent ruby', :read
 
     it 'yields a connection for a read' do
       connection = double(:connection)
@@ -227,6 +239,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store, fe
 
   describe '#read_write' do
     it_behaves_like 'logs service discovery thread interruption', :read_write
+    it_behaves_like 'restrict within concurrent ruby', :read_write
 
     it 'yields a connection for a write' do
       connection = ActiveRecord::Base.connection_pool.connection

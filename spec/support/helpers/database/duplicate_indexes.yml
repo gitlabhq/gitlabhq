@@ -100,9 +100,6 @@ list_user_preferences:
 member_tasks:
   index_member_tasks_on_member_id_and_project_id:
     - index_member_tasks_on_member_id
-members:
-  index_members_on_member_namespace_id_compound:
-    - index_members_on_member_namespace_id
 ml_candidate_params:
   index_ml_candidate_params_on_candidate_id_on_name:
     - index_ml_candidate_params_on_candidate_id

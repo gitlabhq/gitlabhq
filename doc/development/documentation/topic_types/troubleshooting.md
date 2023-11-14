@@ -25,7 +25,7 @@ If you think you have an exception to this rule, contact the Technical Writing t
 GitLab Support maintains their own
 [troubleshooting content](../../../administration/troubleshooting/index.md).
 
-## Troubleshooting topic types
+## Format
 
 Troubleshooting can be one of three types: introductory, task, or reference.
 

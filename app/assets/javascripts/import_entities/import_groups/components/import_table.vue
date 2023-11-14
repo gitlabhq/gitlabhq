@@ -15,6 +15,7 @@ import {
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { createAlert } from '~/alert';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __, n__, sprintf } from '~/locale';
 import { HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -28,7 +29,6 @@ import searchNamespacesWhereUserCanImportProjectsQuery from '~/import_entities/i
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 import { STATUSES } from '../../constants';
-import ImportStatusCell from '../../components/import_status.vue';
 import importGroupsMutation from '../graphql/mutations/import_groups.mutation.graphql';
 import updateImportStatusMutation from '../graphql/mutations/update_import_status.mutation.graphql';
 import bulkImportSourceGroupsQuery from '../graphql/queries/bulk_import_source_groups.query.graphql';
@@ -37,6 +37,7 @@ import { StatusPoller } from '../services/status_poller';
 import { isFinished, isAvailableForImport, isNameValid, isSameTarget } from '../utils';
 import ImportActionsCell from './import_actions_cell.vue';
 import ImportSourceCell from './import_source_cell.vue';
+import ImportStatusCell from './import_status.vue';
 import ImportTargetCell from './import_target_cell.vue';
 
 const VALIDATION_DEBOUNCE_TIME = DEFAULT_DEBOUNCE_AND_THROTTLE_MS;
@@ -283,10 +284,18 @@ export default {
     this.statusPoller = new StatusPoller({
       pollPath: this.jobsPath,
       updateImportStatus: (update) => {
-        this.$apollo.mutate({
-          mutation: updateImportStatusMutation,
-          variables: { id: update.id, status: update.status_name },
-        });
+        try {
+          this.$apollo.mutate({
+            mutation: updateImportStatusMutation,
+            variables: {
+              id: update.id,
+              status: update.status_name,
+              hasFailures: update.has_failures,
+            },
+          });
+        } catch (error) {
+          Sentry.captureException(error);
+        }
       },
     });
 
@@ -337,6 +346,10 @@ export default {
       }
 
       return group.progress?.status || STATUSES.NONE;
+    },
+
+    hasFailures(group) {
+      return group.progress?.hasFailures;
     },
 
     updateImportTarget(group, changes) {
@@ -786,7 +799,7 @@ export default {
             />
           </template>
           <template #cell(progress)="{ item: group }">
-            <import-status-cell :status="group.visibleStatus" class="gl-line-height-32" />
+            <import-status-cell :status="group.visibleStatus" :has-failures="hasFailures(group)" />
           </template>
           <template #cell(actions)="{ item: group, index }">
             <import-actions-cell

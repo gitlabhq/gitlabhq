@@ -46,10 +46,12 @@ module Gitlab
 
         def purchase
           ::QA::Support::Retrier.retry_until(
-            max_duration: 60,
+            max_duration: 80,
             sleep_interval: 10,
             message: 'Expected no Zuora lock competition error'
           ) do
+            ::QA::Runtime::Logger.debug('Attempting to purchase subscription')
+
             confirm_purchase
             ::QA::Support::WaitForRequests.wait_for_requests
             !lock_competition_error?

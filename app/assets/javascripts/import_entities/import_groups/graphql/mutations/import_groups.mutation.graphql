@@ -9,6 +9,7 @@ mutation importGroups($importRequests: [ImportGroupInput!]!) {
     progress {
       id
       status
+      hasFailures
       message
     }
   }

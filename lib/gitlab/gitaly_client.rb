@@ -283,6 +283,7 @@ module Gitlab
     def self.execute(storage, service, rpc, request, remote_storage:, timeout:)
       enforce_gitaly_request_limits(:call)
       Gitlab::RequestContext.instance.ensure_deadline_not_exceeded!
+      raise_if_concurrent_ruby!
 
       kwargs = request_kwargs(storage, timeout: timeout.to_f, remote_storage: remote_storage)
       kwargs = yield(kwargs) if block_given?
@@ -669,5 +670,12 @@ module Gitlab
         Thread.current[:gitaly_feature_flag_actors] ||= {}
       end
     end
+
+    def self.raise_if_concurrent_ruby!
+      Gitlab::Utils.raise_if_concurrent_ruby!(:gitaly)
+    rescue StandardError => e
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
+    end
+    private_class_method :raise_if_concurrent_ruby!
   end
 end

@@ -3548,6 +3548,9 @@ msgstr ""
 msgid "AdminSettings|Git abuse rate limit"
 msgstr ""
 
+msgid "AdminSettings|GitLab uses the %{bold_start}Rails%{bold_end} and %{bold_start}Browser JavaScript%{bold_end} Sentry SDKs to send events to Sentry. For changes to Rails integration settings to take effect, enable the %{code_start}enable_new_sentry_integration%{code_end} and %{code_start}enable_new_sentry_clientside_integration%{code_end} feature flags and restart GitLab."
+msgstr ""
+
 msgid "AdminSettings|GitLab uses the %{bold_start}Rails%{bold_end} and %{bold_start}Browser JavaScript%{bold_end} Sentry SDKs to send events to Sentry. For changes to Rails integration settings to take effect, restart GitLab."
 msgstr ""
 

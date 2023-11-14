@@ -15787,10 +15787,23 @@ Represents finding.
 | <a id="comparedsecurityreportfindingfoundbypipelineiid"></a>`foundByPipelineIid` | [`String`](#string) | IID of the pipeline. |
 | <a id="comparedsecurityreportfindingidentifiers"></a>`identifiers` **{warning-solid}** | [`[VulnerabilityIdentifier!]`](#vulnerabilityidentifier) | **Introduced** in 16.3. This feature is an Experiment. It can be changed or removed at any time. Identifiers of the vulnerability finding. Returns `null` if `sast_reports_in_inline_diff` feature flag is disabled. |
 | <a id="comparedsecurityreportfindinglocation"></a>`location` **{warning-solid}** | [`VulnerabilityLocation`](#vulnerabilitylocation) | **Introduced** in 16.3. This feature is an Experiment. It can be changed or removed at any time. Location of the vulnerability finding. Returns `null` if `sast_reports_in_inline_diff` feature flag is disabled. |
+| <a id="comparedsecurityreportfindingscanner"></a>`scanner` | [`ComparedSecurityReportScanner`](#comparedsecurityreportscanner) | Compared report vulnerability scanner. |
 | <a id="comparedsecurityreportfindingseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability finding. |
 | <a id="comparedsecurityreportfindingstate"></a>`state` | [`VulnerabilityState`](#vulnerabilitystate) | Finding status. |
 | <a id="comparedsecurityreportfindingtitle"></a>`title` | [`String`](#string) | Title of the vulnerability finding. |
 | <a id="comparedsecurityreportfindinguuid"></a>`uuid` | [`String`](#string) | UUIDv5 digest based on the vulnerability's report type, primary identifier, location, fingerprint, project identifier. |
+
+### `ComparedSecurityReportScanner`
+
+Represents a compared report vulnerability scanner.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="comparedsecurityreportscannerexternalid"></a>`externalId` | [`String`](#string) | External ID of the vulnerability scanner. |
+| <a id="comparedsecurityreportscannername"></a>`name` | [`String`](#string) | Name of the vulnerability scanner. |
+| <a id="comparedsecurityreportscannervendor"></a>`vendor` | [`String`](#string) | Vendor of the vulnerability scanner. |
 
 ### `ComplianceFramework`
 

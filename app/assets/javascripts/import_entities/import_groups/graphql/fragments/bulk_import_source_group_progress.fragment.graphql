@@ -1,5 +1,6 @@
 fragment BulkImportSourceGroupProgress on ClientBulkImportProgress {
   id
   status
+  hasFailures
   message
 }

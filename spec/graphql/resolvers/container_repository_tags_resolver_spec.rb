@@ -114,14 +114,6 @@ RSpec.describe Resolvers::ContainerRepositoryTagsResolver, feature_category: :co
 
         expect(resolver(args)).is_a? Gitlab::Graphql::ExternallyPaginatedArray
       end
-
-      context 'when feature use_repository_list_tags_on_graphql is disabled' do
-        before do
-          stub_feature_flags(use_repository_list_tags_on_graphql: false)
-        end
-
-        it_behaves_like 'fetching via tags and filter in place'
-      end
     end
 
     context 'when Gitlab API is not supported' do

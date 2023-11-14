@@ -8,6 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 A task gives instructions for how to complete a procedure.
 
+## Format
+
 Tasks should be in this format:
 
 ```markdown

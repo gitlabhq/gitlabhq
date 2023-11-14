@@ -32,6 +32,44 @@ RSpec.describe Gitlab::HTTP, feature_category: :shared do
         described_class.get('/path', allow_object_storage: true)
       end
     end
+
+    context 'when passing async:true' do
+      it 'calls Gitlab::HTTP_V2.get with default options and async:true' do
+        expect(Gitlab::HTTP_V2).to receive(:get)
+          .with('/path', default_options.merge(async: true))
+
+        described_class.get('/path', async: true)
+      end
+
+      it 'returns a Gitlab::HTTP_V2::LazyResponse object' do
+        stub_request(:get, 'http://example.org').to_return(status: 200, body: 'hello world')
+        result = described_class.get('http://example.org', async: true)
+
+        expect(result).to be_a(Gitlab::HTTP_V2::LazyResponse)
+
+        result.execute
+        result.wait
+
+        expect(result.value).to be_a(HTTParty::Response)
+        expect(result.value.body).to eq('hello world')
+      end
+
+      context 'when there is a DB call in the concurrent thread' do
+        it 'raises Gitlab::Utils::ConcurrentRubyThreadIsUsedError error' do
+          stub_request(:get, 'http://example.org').to_return(status: 200, body: 'hello world')
+
+          result = described_class.get('http://example.org', async: true) do |_fragment|
+            User.first
+          end
+
+          result.execute
+          result.wait
+
+          expect { result.value }.to raise_error(Gitlab::Utils::ConcurrentRubyThreadIsUsedError,
+            "Cannot run 'db' if running from `Concurrent::Promise`.")
+        end
+      end
+    end
   end
 
   describe '.try_get' do

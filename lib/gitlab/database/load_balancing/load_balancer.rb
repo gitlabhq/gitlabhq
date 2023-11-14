@@ -51,6 +51,8 @@ module Gitlab
         # If no secondaries were available this method will use the primary
         # instead.
         def read(&block)
+          raise_if_concurrent_ruby!
+
           service_discovery&.log_refresh_thread_interruption
 
           conflict_retried = 0
@@ -111,6 +113,8 @@ module Gitlab
 
         # Yields a connection that can be used for both reads and writes.
         def read_write
+          raise_if_concurrent_ruby!
+
           service_discovery&.log_refresh_thread_interruption
 
           connection = nil
@@ -371,6 +375,12 @@ module Gitlab
 
           row = ar_connection.select_all(sql).first
           row['location'] if row
+        end
+
+        def raise_if_concurrent_ruby!
+          Gitlab::Utils.raise_if_concurrent_ruby!(:db)
+        rescue StandardError => e
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
         end
       end
     end

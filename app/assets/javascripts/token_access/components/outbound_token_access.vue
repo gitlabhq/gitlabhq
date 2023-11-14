@@ -51,14 +51,12 @@ export default {
       key: 'project',
       label: __('Project that can be accessed'),
       thClass: 'gl-border-t-none!',
-      columnClass: 'gl-w-40p',
     },
     {
       key: 'actions',
       label: '',
       tdClass: 'gl-text-right',
       thClass: 'gl-border-t-none!',
-      columnClass: 'gl-w-10p',
     },
   ],
   components: {

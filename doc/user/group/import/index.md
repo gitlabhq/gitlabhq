@@ -226,6 +226,8 @@ ready for production use.
 
 ### Group import history
 
+> **Partially completed** status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394727) in GitLab 16.7.
+
 You can view all groups migrated by you by direct transfer listed on the group import history page. This list includes:
 
 - Paths of source groups.

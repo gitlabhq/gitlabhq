@@ -1,6 +1,7 @@
-mutation updateImportStatus($status: String!, $id: String!) {
-  updateImportStatus(status: $status, id: $id) @client {
+mutation updateImportStatus($status: String!, $id: String!, $hasFailures: Boolean) {
+  updateImportStatus(status: $status, id: $id, hasFailures: $hasFailures) @client {
     id
     status
+    hasFailures
   }
 }

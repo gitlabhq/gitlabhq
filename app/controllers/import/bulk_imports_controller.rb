@@ -76,7 +76,7 @@ class Import::BulkImportsController < ApplicationController
   def realtime_changes
     Gitlab::PollingInterval.set_header(response, interval: POLLING_INTERVAL)
 
-    render json: current_user_bulk_imports.to_json(only: [:id], methods: [:status_name])
+    render json: current_user_bulk_imports.to_json(only: [:id], methods: [:status_name, :has_failures])
   end
 
   private

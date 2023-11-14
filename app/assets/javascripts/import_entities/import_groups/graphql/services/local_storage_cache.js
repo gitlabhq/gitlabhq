@@ -57,13 +57,14 @@ export class LocalStorageCache {
     return this.jobsLookupCache[jobId];
   }
 
-  updateStatusByJobId(jobId, status) {
+  updateStatusByJobId(jobId, status, hasFailures) {
     this.getCacheKeysByJobId(jobId).forEach((webUrl) =>
       this.set(webUrl, {
         ...this.get(webUrl),
         progress: {
           id: jobId,
           status,
+          hasFailures,
         },
       }),
     );

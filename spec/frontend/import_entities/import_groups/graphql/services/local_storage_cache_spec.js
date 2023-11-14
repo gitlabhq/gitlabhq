@@ -40,10 +40,11 @@ describe('Local storage cache', () => {
         progress: {
           id: JOB_ID,
           status: 'original',
+          hasFailures: false,
         },
       });
 
-      cache.updateStatusByJobId(JOB_ID, CHANGED_STATUS);
+      cache.updateStatusByJobId(JOB_ID, CHANGED_STATUS, true);
 
       expect(storage.setItem).toHaveBeenCalledWith(
         KEY,
@@ -52,6 +53,7 @@ describe('Local storage cache', () => {
             progress: {
               id: JOB_ID,
               status: CHANGED_STATUS,
+              hasFailures: true,
             },
           },
         }),

@@ -919,4 +919,20 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       it_behaves_like 'with_feature_flag_actor'
     end
   end
+
+  describe '.execute' do
+    subject(:execute) do
+      described_class.execute('default', :ref_service, :find_local_branches, Gitaly::FindLocalBranchesRequest.new,
+        remote_storage: nil, timeout: 10.seconds)
+    end
+
+    it 'raises an exception when running within a concurrent Ruby thread' do
+      Thread.current[:restrict_within_concurrent_ruby] = true
+
+      expect { execute }.to raise_error(Gitlab::Utils::ConcurrentRubyThreadIsUsedError,
+        "Cannot run 'gitaly' if running from `Concurrent::Promise`.")
+
+      Thread.current[:restrict_within_concurrent_ruby] = nil
+    end
+  end
 end

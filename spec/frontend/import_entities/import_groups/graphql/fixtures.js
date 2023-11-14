@@ -1,7 +1,7 @@
 import { STATUSES } from '~/import_entities/constants';
 import { clientTypenames } from '~/import_entities/import_groups/graphql/client_factory';
 
-export const generateFakeEntry = ({ id, status, message, ...rest }) => ({
+export const generateFakeEntry = ({ id, status, hasFailures = false, message, ...rest }) => ({
   __typename: clientTypenames.BulkImportSourceGroup,
   webUrl: `https://fake.host/${id}`,
   fullPath: `fake_group_${id}`,
@@ -19,6 +19,7 @@ export const generateFakeEntry = ({ id, status, message, ...rest }) => ({
           __typename: clientTypenames.BulkImportProgress,
           id,
           status,
+          hasFailures,
           message: message || '',
         },
   ...rest,

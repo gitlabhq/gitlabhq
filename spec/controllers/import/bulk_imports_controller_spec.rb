@@ -333,7 +333,7 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
         it 'returns bulk imports created by current user' do
           get :realtime_changes
 
-          expect(json_response).to eq([{ 'id' => bulk_import.id, 'status_name' => bulk_import.status_name.to_s }])
+          expect(json_response).to match_array([{ 'id' => bulk_import.id, 'status_name' => bulk_import.status_name.to_s, 'has_failures' => false }])
         end
 
         it 'sets a Poll-Interval header' do

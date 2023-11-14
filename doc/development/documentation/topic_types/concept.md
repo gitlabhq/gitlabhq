@@ -19,6 +19,8 @@ Don't tell them **how** to do this thing. Tell them **what it is**.
 
 If you start describing another concept, start a new concept and link to it.
 
+## Format
+
 Concepts should be in this format:
 
 ```markdown

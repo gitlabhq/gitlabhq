@@ -9,6 +9,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Reference information should be in an easily-scannable format,
 like a table or list. It's similar to a dictionary or encyclopedia entry.
 
+## Format
+
+Reference topics should be in this format:
+
 ```markdown
 # Title (a noun, like "Pipeline settings" or "Administrator options")
 
