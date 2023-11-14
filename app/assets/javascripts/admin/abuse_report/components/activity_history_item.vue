@@ -31,7 +31,7 @@ export default {
 
 <template>
   <history-item icon="warning">
-    <div class="gl-display-flex gl-xs-flex-direction-column">
+    <div class="gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row">
       <gl-sprintf :message="$options.i18n.reportedByForCategory">
         <template #name>{{ reporterName }}</template>
         <template #category>{{ report.category }}</template>

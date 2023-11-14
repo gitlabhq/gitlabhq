@@ -14,6 +14,8 @@ RSpec.describe Issues::ImportCsvService, feature_category: :team_planning do
     described_class.new(user, project, uploader)
   end
 
+  let!(:test_milestone) { create(:milestone, project: project, title: '15.10') }
+
   include_examples 'issuable import csv service', 'issue' do
     let(:issuables) { project.issues }
     let(:email_method) { :import_issues_csv_email }
@@ -36,7 +38,8 @@ RSpec.describe Issues::ImportCsvService, feature_category: :team_planning do
           description: 'Description',
           time_estimate: 3600,
           assignees: include(assignee),
-          due_date: Date.new(2022, 6, 28)
+          due_date: Date.new(2022, 6, 28),
+          milestone_id: test_milestone.id
         )
       )
     end

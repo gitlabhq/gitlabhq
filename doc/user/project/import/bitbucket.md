@@ -124,5 +124,5 @@ current Bitbucket public name, and reconnect if there's a mismatch:
 1. Following reconnection, the user should use the API again to verify that their `extern_uid` in
    the GitLab database now matches their current Bitbucket public name.
 
-The importer must then [delete the imported project](../../project/settings/index.md#delete-a-project)
+The importer must then [delete the imported project](../../project/working_with_projects.md#delete-a-project)
 and import again.

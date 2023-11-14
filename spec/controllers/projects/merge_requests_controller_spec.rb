@@ -100,13 +100,13 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
               w: '0',
               page: '0',
               per_page: '5',
-              ck: merge_request.merge_head_diff.id))
+              ck: merge_request.merge_head_diff.patch_id_sha))
         end
 
         it 'sets diffs_batch_cache_key' do
           go
 
-          expect(assigns['diffs_batch_cache_key']).to eq(merge_request.merge_head_diff.id)
+          expect(assigns['diffs_batch_cache_key']).to eq(merge_request.merge_head_diff.patch_id_sha)
         end
 
         context 'when diffs_batch_cache_with_max_age feature flag is disabled' do

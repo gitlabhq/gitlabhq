@@ -14,7 +14,7 @@
     - if project.licensed_feature_available?(:code_owners)
       #js-code-owners{ data: { branch: @ref, can_view_branch_rules: can_view_branch_rules?, branch_rules_path: branch_rules_path } }
 
-  .nav-block.gl-display-flex.gl-xs-flex-direction-column.gl-align-items-stretch
+  .nav-block.gl-display-flex.gl-flex-direction-column.gl-sm-flex-direction-row.gl-align-items-stretch
     = render 'projects/tree/tree_header', tree: @tree
 
   - if project.forked?

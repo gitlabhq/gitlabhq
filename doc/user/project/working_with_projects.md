@@ -50,6 +50,20 @@ To view projects you have [starred](#star-a-project):
 1. On the left sidebar, select your avatar and then your username.
 1. On the left sidebar, select **Starred projects**.
 
+## Edit project name and description
+
+Use the project general settings to edit your project details.
+
+Prerequisite:
+
+- You must have at least the Maintainer role for the project.
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. In the **Project name** text box, enter your project name.
+1. In the **Project description** text box, enter your project description.
+1. Under **Project avatar**, to change your project avatar, select **Choose file**.
+
 ## Organizing projects with topics
 
 Topics are labels that you can assign to projects to help you organize and find them.
@@ -135,7 +149,78 @@ To add a star to a project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. In the upper-right corner of the page, select **Star**.
 
-## View projects pending deletion **(PREMIUM ALL)**
+## Delete a project
+
+> - Default deletion behavior for projects changed to [delayed project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6.
+> - Default deletion behavior for projects changed to [immediate deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
+> - Default deletion behavior for projects on the Premium and Ultimate tier changed to [delayed project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 16.0.
+> - Default deletion behavior changed to delayed deletion on the Premium and Ultimate tier [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+
+You can mark a project to be deleted.
+After you delete a project:
+
+- Projects in personal namespaces are deleted immediately.
+- Projects in groups are deleted after a retention period.
+
+Prerequisite:
+
+- You must have the Owner role for a project.
+
+To delete a project:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. Expand **Advanced**.
+1. In the **Delete this project** section, select **Delete project**.
+1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
+
+This action deletes the project and all associated resources (such as issues and merge requests).
+
+You can also [delete projects using the Rails console](#delete-a-project-using-console).
+
+### Delayed project deletion **(PREMIUM ALL)**
+
+> - [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89466) in GitLab 15.1.
+> - [Disabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95495) in GitLab 15.3.
+> - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+
+Prerequisite:
+
+- You must have the Owner role for the project.
+
+Projects in a group (not a personal namespace) can be deleted after a delay period.
+
+On self-managed instances, group administrators can define a deletion delay period of between 1 and 90 days.
+On SaaS, there is a non-adjustable default retention period of seven days.
+
+You can [view projects that are pending deletion](#view-projects-pending-deletion),
+and use the Rails console to
+[find projects that are pending deletion](#find-projects-that-are-pending-deletion).
+
+### Delete a project immediately
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/191367) in GitLab 14.1.
+> - Option to delete projects immediately from the Admin Area and as a group setting removed [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+
+Prerequisites:
+
+- You must have the Owner role for the project.
+- The project must be [marked for deletion](#delete-a-project).
+
+If you don't want to wait for delayed deletion, you can delete a project immediately. To do this, perform the steps for [deleting a projects](#delete-a-project) again.
+
+In the first cycle of deleting a project, the project is moved to the delayed deletion queue and automatically deleted after the retention period has passed.
+If during this delayed deletion time you run a second deletion cycle, the project is deleted immediately.
+
+To immediately delete a project marked for deletion:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. Expand **Advanced**.
+1. In the **Delete this project** section, select **Delete project**.
+1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
+
+### View projects pending deletion
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37014) in GitLab 13.3 for Administrators.
 > - [Tab renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/347468) from **Deleted projects** in GitLab 14.6.

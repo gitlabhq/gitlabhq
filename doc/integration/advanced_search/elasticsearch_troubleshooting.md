@@ -529,3 +529,27 @@ migration has failed with NoMethodError:undefined method `<<' for nil:NilClass, 
 ```
 
 If `BackfillProjectPermissionsInBlobs` is the only halted migration, you can upgrade to the latest patch version of GitLab 16.0, which includes [the fix](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118494). Otherwise, you can ignore the error as it will not affect the current functionality of advanced search.
+
+## `ElasticIndexInitialBulkCronWorker` and `ElasticIndexBulkCronWorker` jobs stuck in deduplication
+
+In GitLab 16.5 and earlier, the `ElasticIndexInitialBulkCronWorker` and `ElasticIndexBulkCronWorker` jobs might get stuck in deduplication. This issue might prevent advanced search from properly indexing documents even after creating a new index. In GitLab 16.6, `idempotent!` was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135817) for bulk cron workers that perform indexing.
+
+The Sidekiq log might have the following entries:
+
+```shell
+{"severity":"INFO","time":"2023-10-31T10:33:06.998Z","retry":0,"queue":"default","version":0,"queue_namespace":"cronjob","args":[],"class":"ElasticIndexInitialBulkCronWorker",
+...
+"idempotency_key":"resque:gitlab:duplicate:default:<value>","duplicate-of":"91e8673347d4dc84fbad5319","job_size_bytes":2,"pid":12047,"job_status":"deduplicated","message":"ElasticIndexInitialBulkCronWorker JID-5e1af9180d6e8f991fc773c6: deduplicated: until executing","deduplication.type":"until executing"}
+```
+
+To resolve this issue:
+
+1. In a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session), run this command:
+
+   ```shell
+   idempotency_key = "<idempotency_key_from_log_entry>"
+   duplicate_key = "resque:gitlab:#{idempotency_key}:cookie:v2"
+   Gitlab::Redis::Queues.with { |c| c.del(duplicate_key) }
+   ```
+
+1. Replace `<idempotency_key_from_log_entry>` with the actual entry in your log.

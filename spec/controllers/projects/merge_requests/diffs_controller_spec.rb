@@ -625,7 +625,7 @@ RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code
     end
 
     context 'when ck param is present' do
-      let(:cache_key) { merge_request.merge_head_diff.id }
+      let(:cache_key) { 'abc123' }
 
       before do
         create(:merge_request_diff, :merge_head, merge_request: merge_request)

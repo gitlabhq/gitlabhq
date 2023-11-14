@@ -2481,7 +2481,7 @@ This endpoint:
   merge requests).
 - In [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) and later, on
   [Premium or Ultimate](https://about.gitlab.com/pricing/) tiers,
-  [delayed project deletion](../user/project/settings/index.md#delayed-project-deletion)
+  [delayed project deletion](../user/project/working_with_projects.md#delayed-project-deletion)
   is applied if enabled.
 - From [GitLab 15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) on
   [Premium or Ultimate](https://about.gitlab.com/pricing/) tiers, deletes a project immediately if the project is already

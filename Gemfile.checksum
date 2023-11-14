@@ -329,7 +329,7 @@
 {"name":"kaminari-actionview","version":"1.2.2","platform":"ruby","checksum":"1330f6fc8b59a4a4ef6a549ff8a224797289ebf7a3a503e8c1652535287cc909"},
 {"name":"kaminari-activerecord","version":"1.2.2","platform":"ruby","checksum":"0dd3a67bab356a356f36b3b7236bcb81cef313095365befe8e98057dd2472430"},
 {"name":"kaminari-core","version":"1.2.2","platform":"ruby","checksum":"3bd26fec7370645af40ca73b9426a448d09b8a8ba7afa9ba3c3e0d39cdbb83ff"},
-{"name":"kas-grpc","version":"0.2.0","platform":"ruby","checksum":"b9a3f787ec9198819034ec358d73b9a3f374d4dd001d673fdaa650eb5ec99a1e"},
+{"name":"kas-grpc","version":"0.3.0","platform":"ruby","checksum":"78dfc454e6725e6354e66e9e65ea87b6ad0888f52d20bf41775e5400d74dad8a"},
 {"name":"knapsack","version":"1.21.1","platform":"ruby","checksum":"82f70422adebcacec1b514f6ebff65265fc85d836e3c320718a160d8ac41cf14"},
 {"name":"kramdown","version":"2.3.2","platform":"ruby","checksum":"cb4530c2e9d16481591df2c9336723683c354e5416a5dd3e447fa48215a6a71c"},
 {"name":"kramdown-parser-gfm","version":"1.1.0","platform":"ruby","checksum":"fb39745516427d2988543bf01fc4cf0ab1149476382393e0e9c48592f6581729"},

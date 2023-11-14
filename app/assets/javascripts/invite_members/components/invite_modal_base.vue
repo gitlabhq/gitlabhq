@@ -338,7 +338,7 @@ export default {
 
     <template #modal-footer>
       <div
-        class="gl-m-0 gl-w-full gl-display-flex gl-xs-flex-direction-column! gl-flex-direction-row-reverse"
+        class="gl-m-0 gl-w-full gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row-reverse"
       >
         <gl-button
           class="gl-w-full gl-sm-w-auto gl-xs-mb-3! gl-sm-ml-3!"

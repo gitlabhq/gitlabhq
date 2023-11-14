@@ -461,7 +461,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @update_current_user_path = expose_path(api_v4_user_preferences_path)
     @endpoint_metadata_url = endpoint_metadata_url(@project, @merge_request)
     @endpoint_diff_batch_url = endpoint_diff_batch_url(@project, @merge_request)
-    @diffs_batch_cache_key = @merge_request.merge_head_diff&.id if merge_request.diffs_batch_cache_with_max_age?
+
+    if merge_request.diffs_batch_cache_with_max_age?
+      @diffs_batch_cache_key = @merge_request.merge_head_diff&.patch_id_sha
+    end
 
     set_pipeline_variables
 
@@ -629,7 +632,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     params = request
       .query_parameters
       .merge(view: 'inline', diff_head: true, w: show_whitespace, page: '0', per_page: per_page)
-    params[:ck] = merge_request.merge_head_diff&.id if merge_request.diffs_batch_cache_with_max_age?
+    params[:ck] = merge_request.merge_head_diff&.patch_id_sha if merge_request.diffs_batch_cache_with_max_age?
 
     diffs_batch_project_json_merge_request_path(project, merge_request, 'json', params)
   end

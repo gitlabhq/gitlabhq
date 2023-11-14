@@ -14,8 +14,9 @@ module ImportCsv
     attr_reader :user, :project, :provided_titles, :results, :milestone_errors
 
     def execute
-      available_milestones = find_milestones_by_titles
-      return ServiceResponse.success if provided_titles.sort == available_milestones.sort
+      result = find_milestones_by_titles
+      available_milestones = result.map(&:title).uniq.sort
+      return ServiceResponse.success(payload: result) if provided_titles.sort == available_milestones
 
       milestone_errors[:missing][:header] = 'Milestone'
       milestone_errors[:missing][:titles] = provided_titles.difference(available_milestones) || []
@@ -29,7 +30,7 @@ module ImportCsv
         title: provided_titles
       }
       finder_params[:group_ids] = project.group.self_and_ancestors.select(:id) if project.group
-      MilestonesFinder.new(finder_params).execute.map(&:title).uniq
+      MilestonesFinder.new(finder_params).execute
     end
   end
 end

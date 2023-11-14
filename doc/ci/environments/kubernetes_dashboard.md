@@ -31,7 +31,9 @@ Prerequisites:
 - The agent for Kubernetes must be shared with the environment's project, or its parent group, using the [`user_access`](../../user/clusters/agent/user_access.md) keyword.
 - Self-managed only. KAS is running on the GitLab subdomain. For example, `kas.example.com` and `example.com`.
 
-### The environment already exists
+::Tabs
+
+:::TabTitle The environment already exists
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
@@ -42,7 +44,7 @@ Prerequisites:
 1. Optional. From the **Flux resource** dropdown list, select a Flux resource.
 1. Select **Save**.
 
-### The environment doesn't exist
+:::TabTitle The environment doesn't exist
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
@@ -52,6 +54,8 @@ Prerequisites:
 1. Optional. From the **Kubernetes namespace** dropdown list, select a namespace.
 1. Optional. From the **Flux resource** dropdown list, select a Flux resource.
 1. Select **Save**.
+
+::EndTabs
 
 ## View a dashboard
 

@@ -30,3 +30,9 @@
     width: 75%;
   }
 }
+
+.gl-sm-flex-direction-row-reverse {
+  @include gl-media-breakpoint-up(sm) {
+    flex-direction: row-reverse;
+  }
+}

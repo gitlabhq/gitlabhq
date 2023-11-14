@@ -31,7 +31,7 @@ To set a project as a catalog resource:
 1. Expand **Visibility, project features, permissions**.
 1. Scroll down to **CI/CD Catalog resource** and select the toggle to mark the project as a catalog resource.
 
-Ensure the project has a clear [description](../../user/project/settings/index.md#edit-project-name-and-description),
+Ensure the project has a clear [description](../../user/project/working_with_projects.md#edit-project-name-and-description),
 as the project description is displayed in the component list in the catalog.
 
 NOTE:
