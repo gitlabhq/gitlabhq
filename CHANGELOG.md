@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.5.2 (2023-11-14)
+
+### Fixed (4 changes)
+
+- [Fix assign security check permission checks](gitlab-org/gitlab@41d0d45a2abd8621ef55042eb0bc54343a48f2da) ([merge request](gitlab-org/gitlab!136434)) **GitLab Enterprise Edition**
+- [Create group wiki repo if absent when verifying on primary](gitlab-org/gitlab@0b490bdbda06febdda47b2e0e0cea1d9e52dd381) ([merge request](gitlab-org/gitlab!136243)) **GitLab Enterprise Edition**
+- [Fix broken issue rendering when initial ID is null](gitlab-org/gitlab@9f9fafbe202c5f5f591f689e295f62b01b8d40fc) ([merge request](gitlab-org/gitlab!136065))
+- [Backport artifacts page breadcrumb fixes](gitlab-org/gitlab@4f15baf84a8de9068fa5c2c6af47fc74d2a46df8) ([merge request](gitlab-org/gitlab!135195))
+
 ## 16.5.1 (2023-10-30)
 
 ### Fixed (1 change)
