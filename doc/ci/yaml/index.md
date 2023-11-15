@@ -55,13 +55,11 @@ A GitLab CI/CD pipeline configuration includes:
   | [`dast_configuration`](#dast_configuration) | Use configuration from DAST profiles on a job level. |
   | [`dependencies`](#dependencies)             | Restrict which artifacts are passed to a specific job by providing a list of jobs to fetch artifacts from. |
   | [`environment`](#environment)               | Name of an environment to which the job deploys. |
-  | [`except`](#only--except)                   | Control when jobs are not created. |
   | [`extends`](#extends)                       | Configuration entries that this job inherits from. |
   | [`image`](#image)                           | Use Docker images. |
   | [`inherit`](#inherit)                       | Select which global defaults all jobs inherit. |
   | [`interruptible`](#interruptible)           | Defines if a job can be canceled when made redundant by a newer run. |
   | [`needs`](#needs)                           | Execute jobs earlier than the stage ordering. |
-  | [`only`](#only--except)                     | Control when jobs are created. |
   | [`pages`](#pages)                           | Upload the result of a job to use with GitLab Pages. |
   | [`parallel`](#parallel)                     | How many instances of a job should be run in parallel. |
   | [`release`](#release)                       | Instructs the runner to generate a [release](../../user/project/releases/index.md) object. |

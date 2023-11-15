@@ -1,7 +1,6 @@
 <script>
 import { GlAvatar, GlAvatarLink, GlBadge } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { isNumeric } from '~/lib/utils/number_utils';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import CiResourceAbout from './ci_resource_about.vue';
 import CiResourceHeaderSkeletonLoader from './ci_resource_header_skeleton_loader.vue';
@@ -64,9 +63,7 @@ export default {
       return this.resource.rootNamespace;
     },
     versionBadgeText() {
-      return isNumeric(this.latestVersion.tagName)
-        ? `v${this.latestVersion.tagName}`
-        : this.latestVersion.tagName;
+      return this.latestVersion.tagName;
     },
   },
 };

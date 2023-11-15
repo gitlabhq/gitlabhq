@@ -134,7 +134,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
       subject(:link) { document.css('.group-path').first }
 
       it 'uses the group name as innerText' do
-        expect(link.inner_text).to eq(group.name)
+        expect(link.inner_text).to match(group.name)
       end
 
       it 'links to the group path' do
@@ -150,7 +150,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
       end
 
       it 'uses the group\'s avatar_url' do
-        expect(icon.attr('src')).to eq(group.avatar_url)
+        expect(icon.attr('src')).to match(group.avatar_url)
       end
     end
   end

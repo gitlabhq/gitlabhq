@@ -56,6 +56,7 @@ export default {
         .get(url, {
           // This prevents axios from automatically JSON.parse response
           transformResponse: [(f) => f],
+          headers: { 'Cache-Control': 'no-cache' },
         })
         .then((res) => {
           this.notifyAboutUpdates({ content: res.data });

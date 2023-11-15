@@ -102,8 +102,18 @@ describe('Snippet Blob Edit component', () => {
 
   describe('with unloaded blob and JSON content', () => {
     beforeEach(() => {
+      jest.spyOn(axios, 'get');
       axiosMock.onGet(TEST_FULL_PATH).reply(HTTP_STATUS_OK, TEST_JSON_CONTENT);
       createComponent();
+    });
+
+    it('makes an API request for the blob content', () => {
+      const expectedConfig = {
+        transformResponse: [expect.any(Function)],
+        headers: { 'Cache-Control': 'no-cache' },
+      };
+
+      expect(axios.get).toHaveBeenCalledWith(TEST_FULL_PATH, expectedConfig);
     });
 
     // This checks against this issue https://gitlab.com/gitlab-org/gitlab/-/issues/241199

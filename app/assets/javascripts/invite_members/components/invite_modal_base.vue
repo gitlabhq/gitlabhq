@@ -158,11 +158,6 @@ export default {
     datepickerId() {
       return `${this.modalId}_expires_at`;
     },
-    selectedRoleName() {
-      return Object.keys(this.accessLevels).find(
-        (key) => this.accessLevels[key] === Number(this.selectedAccessLevel),
-      );
-    },
     contentSlots() {
       return [...DEFAULT_SLOTS, ...(this.extraSlots || [])];
     },

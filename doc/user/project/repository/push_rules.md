@@ -80,6 +80,19 @@ Use these rules for your commit messages.
     The word boundary character (`\b`) prevents false negatives, because Git adds a
     newline character (`\n`) to the end of the commit message.
 
+  Commit messages created in GitLab UI set `\r\n` as a newline character.
+  Use `(\r\n?|\n)` instead of `\n` in your regular expression to correctly match
+  it.
+
+  For example, given the following multi-line commit description:
+
+  ```plaintext
+  JIRA:
+  Description
+  ```
+
+  You can validate it with this regular expression: `JIRA:(\r\n?|\n)\w+`.
+
 - **Reject expression in commit messages**: Commit messages must not match
   the expression. To allow any commit message, leave empty.
   Uses multiline mode, which can be disabled by using `(?-m)`.

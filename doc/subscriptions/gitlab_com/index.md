@@ -267,6 +267,18 @@ Only one namespace can be linked to a subscription.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo, see [Linking GitLab Subscription to the Namespace](https://youtu.be/8iOsN8ajBUw).
 
+### Transfer restrictions
+
+Changing the linked namespace is not supported for all subscription types.
+Transfer restrictions depend on the services associated with the subscription,
+and on any subscriptions associated with the target namespace.
+
+You cannot transfer:
+
+- A subscription with compute minutes.
+- An expired or trial subscription.
+- A subscription to a namespace with any purchased services, like additional storage.
+
 ## Upgrade your GitLab SaaS subscription tier
 
 To upgrade your [GitLab tier](https://about.gitlab.com/pricing/):
@@ -356,7 +368,7 @@ If you have difficulty during the renewal process, contact the
 
 There are several options to renew a subscription for fewer seats, as long as the seat total is equal to or greater than the billable user quantity at the time of renewal:
 
-1. Turn off auto-renewal to avoid renewing at a higher seat quantity.
+1. [Turn off auto-renewal](#enable-or-disable-automatic-subscription-renewal) to avoid renewing at a higher seat quantity.
 1. [Manually renew](#renew-or-change-a-gitlab-saas-subscription) within 15 days of subscription renewal date, and specify the desired seat quantity.
 1. Work with the Sales team to renew your subscription.
 

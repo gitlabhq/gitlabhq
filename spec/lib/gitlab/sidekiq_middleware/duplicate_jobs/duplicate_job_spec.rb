@@ -270,7 +270,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob,
             }
           end
 
-          let(:argv) { ['main', 9, 'loc1', 'ci', nil, 'loc2'] }
+          let(:argv) { ['main', 9, 'loc1', 'ci', '', 'loc2'] }
 
           it 'only updates the main connection' do
             subject

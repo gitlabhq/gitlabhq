@@ -408,7 +408,7 @@ If you have difficulty during the renewal process, contact the
 
 There are several options to renew a subscription for fewer seats, as long as the seat total is equal to or greater than the billable user quantity at the time of renewal:
 
-1. Turn off auto-renewal to avoid renewing at a higher seat quantity.
+1. [Turn off auto-renewal](#enable-or-disable-automatic-subscription-renewal) to avoid renewing at a higher seat quantity.
 1. [Manually renew](#renew-subscription-manually) within 15 days of subscription renewal date, and specify the desired seat quantity.
 1. Work with the Sales team to renew your subscription.
 

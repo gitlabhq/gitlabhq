@@ -83,7 +83,8 @@ At any time, you can revoke a personal access token.
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access Tokens**.
-1. In the **Active personal access tokens** area, next to the key, select **Revoke**.
+1. In the **Active personal access tokens** area, select **Revoke** for the relevant token.
+1. On the confirmation dialog, select **Revoke**.
 
 ## View the last time a token was used
 
@@ -100,7 +101,8 @@ To view the last time a token was used:
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access Tokens**.
-1. In the **Active personal access tokens** area, next to the key, view the **Last Used** date.
+1. In the **Active personal access tokens** area, view the **Last Used** date for
+   the relevant token.
 
 ## Personal access token scopes
 

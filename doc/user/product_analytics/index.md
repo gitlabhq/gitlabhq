@@ -19,7 +19,7 @@ On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
 This page is a work in progress, and we're updating the information as we add more features.
-For more information, see the [group direction page](https://about.gitlab.com/direction/analytics/product-analytics/).
+For more information, see the [group direction page](https://about.gitlab.com/direction/monitor/product-analytics/).
 To leave feedback about Product Analytics bugs or functionality:
 
 - Comment on [issue 391970](https://gitlab.com/gitlab-org/gitlab/-/issues/391970).
@@ -32,7 +32,7 @@ Product analytics uses several tools:
 
 - [**Snowplow**](https://docs.snowplow.io/docs) - A developer-first engine for collecting behavioral data, and passing it through to ClickHouse.
 - [**ClickHouse**](https://clickhouse.com/docs) - A database suited to store, query, and retrieve analytical data.
-- [**Cube**](https://cube.dev/docs/) - An analytical graphing library that provides an API to run queries against the data stored in ClickHouse.
+- [**Cube**](https://cube.dev/docs/) - A universal semantic layer that provides an API to run queries against the data stored in ClickHouse.
 
 The following diagram illustrates the product analytics flow:
 

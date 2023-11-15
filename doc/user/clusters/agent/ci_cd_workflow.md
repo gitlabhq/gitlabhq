@@ -114,7 +114,7 @@ Choose the context to run `kubectl` commands from your CI/CD scripts.
 In the project where you want to run Kubernetes commands, edit your project's `.gitlab-ci.yml` file.
 
 In the first command under the `script` keyword, set your agent's context.
-Use the format `path/to/agent/repository:agent-name`. For example:
+Use the format `<path/to/agent/project>:<agent-name>`. For example:
 
 ```yaml
 deploy:
@@ -123,7 +123,7 @@ deploy:
     entrypoint: ['']
   script:
     - kubectl config get-contexts
-    - kubectl config use-context path/to/agent/repository:agent-name
+    - kubectl config use-context path/to/agent/project:agent-name
     - kubectl get pods
 ```
 
@@ -138,7 +138,7 @@ Set the value of `KUBE_CONTEXT` to the context of the agent you want Auto DevOps
 ```yaml
 deploy:
   variables:
-    KUBE_CONTEXT: <path_to_agent_config_repository>:<agent_name>
+    KUBE_CONTEXT: path/to/agent/project:agent-name
 ```
 
 You can assign different agents to separate Auto DevOps jobs. For instance,
@@ -162,7 +162,7 @@ When you deploy to an environment that has both a
 - The certificate-based cluster's context is called `gitlab-deploy`. This context
   is always selected by default.
 - In GitLab 14.9 and later, agent contexts are included in `$KUBECONFIG`.
-  You can select them by using `kubectl config use-context path/to/agent/repository:agent-name`.
+  You can select them by using `kubectl config use-context <path/to/agent/project>:<agent-name>`.
 - In GitLab 14.8 and earlier, you can still use agent connections, but for environments that
   already have a certificate-based cluster, the agent connections are not included in `$KUBECONFIG`.
 

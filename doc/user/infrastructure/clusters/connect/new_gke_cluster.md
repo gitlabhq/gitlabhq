@@ -64,7 +64,7 @@ To create a GitLab agent for Kubernetes:
 
 1. On the left sidebar, select **Operate > Kubernetes clusters**.
 1. Select **Connect a cluster (agent)**.
-1. From the **Select an agent** dropdown list, select `gke-agent` and select **Register an agent**.
+1. From the **Select an agent or enter a name to create new** dropdown list, choose your agent's name and select **Register**.
 1. GitLab generates a registration token for the agent. Securely store this secret token, as you will need it later.
 1. GitLab provides an address for the agent server (KAS), which you will also need later.
 

@@ -57,6 +57,7 @@ To create a project access token:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Access Tokens**.
+1. Select **Add new token**.
 1. Enter a name. The token name is visible to any user with permissions to view the project.
 1. Enter an expiry date for the token.
    - The token expires on that date at midnight UTC.
@@ -65,7 +66,7 @@ To create a project access token:
    - An instance-wide [maximum lifetime](../../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) setting can limit the maximum allowable lifetime in self-managed instances.
 1. Select a role for the token.
 1. Select the [desired scopes](#scopes-for-a-project-access-token).
-1. Select  **Create project access token**.
+1. Select **Create project access token**.
 
 A project access token is displayed. Save the project access token somewhere safe. After you leave or refresh the page, you can't view it again.
 
@@ -75,7 +76,7 @@ To revoke a project access token:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Access Tokens**.
-1. Next to the project access token to revoke, select **Revoke**.
+1. Next to the project access token to revoke, select **Revoke** (**{remove}**).
 
 ## Scopes for a project access token
 
@@ -87,17 +88,17 @@ The scope determines the actions you can perform when you authenticate with a pr
 NOTE:
 See the warning in [create a project access token](#create-a-project-access-token) regarding internal projects.
 
-| Scope              | Description                                                                                                                                                     |
-|:-------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `api`              | Grants complete read and write access to the scoped project API, including the [package registry](../../packages/package_registry/index.md).                    |
-| `read_api`         | Grants read access to the scoped project API, including the [package registry](../../packages/package_registry/index.md).                                       |
+| Scope              | Description                            |
+|:-------------------|:---------------------------------------|
+| `api`              | Grants complete read and write access to the scoped project API, including the [package registry](../../packages/package_registry/index.md).                   |
+| `read_api`         | Grants read access to the scoped project API, including the [package registry](../../packages/package_registry/index.md).                                   |
 | `read_registry`    | Grants read access (pull) to the [container registry](../../packages/container_registry/index.md) images if a project is private and authorization is required. |
-| `write_registry`   | Grants write access (push) to the [container registry](../../packages/container_registry/index.md).                                                             |
-| `read_repository`  | Grants read access (pull) to the repository.                                                                                                                    |
-| `write_repository` | Grants read and write access (pull and push) to the repository.                                                                                                 |
-| `create_runner`    | Grants permission to create runners in the project.                                                                                                             |
-| `ai_features`      | Grants permission to perform API actions for GitLab Duo.                                                                                                        |
-| `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes in the project.                                                                                     |
+| `write_registry`   | Grants write access (push) to the [Container Registry](../../packages/container_registry/index.md).                                                          |
+| `read_repository`  | Grants read access (pull) to the repository.                                                      |
+| `write_repository` | Grants read and write access (pull and push) to the repository.                                   |
+| `create_runner`    | Grants permission to create runners in the project.                                               |
+| `ai_features`      | Grants permission to perform API actions for GitLab Duo.                                          |
+| `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes in the project.  |
 
 ## Enable or disable project access token creation
 
@@ -108,7 +109,7 @@ To enable or disable project access token creation for all projects in a top-lev
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. Under **Permissions**, turn on or off **Allow project and group access token creation**.
+1. In **Permissions**, select or clear the **Users can create project access tokens and group access tokens in this group** checkbox.
 
 Even when creation is disabled, you can still use and revoke existing project access tokens.
 
