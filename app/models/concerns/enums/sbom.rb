@@ -31,5 +31,9 @@ module Enums
       # consumers from producing invalid SQL caused by null entries
       @_purl_types ||= PURL_TYPES.dup.tap { |h| h.default = 0 }
     end
+
+    def self.purl_types_numerical
+      purl_types.invert
+    end
   end
 end

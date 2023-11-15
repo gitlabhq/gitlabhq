@@ -36,3 +36,9 @@
     flex-direction: row-reverse;
   }
 }
+
+.gl-sm-mb-0 {
+  @include gl-media-breakpoint-up(sm) {
+    margin-bottom: 0;
+  }
+}

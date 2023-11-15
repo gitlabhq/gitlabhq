@@ -20,6 +20,9 @@ Prerequisites:
 - **For Jira Data Center or Jira Server**, you must have one of the following:
   - [Jira username and password](jira_server_configuration.md).
   - Jira personal access token (GitLab 16.0 and later).
+- **For Jira Cloud**, if you have enabled
+  [IP allowlists](https://support.atlassian.com/security-and-access-policies/docs/specify-ip-addresses-for-product-access/), ensure you have added the
+  [GitLab.com IP range](../../user/gitlab_com/index.md#ip-range) to the allowlist. Otherwise, you can't view the Jira issues list in a GitLab project.
 
 You can enable the Jira issue integration by configuring your project settings in GitLab.
 You can also configure these settings at the:

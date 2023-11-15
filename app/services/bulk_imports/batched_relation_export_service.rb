@@ -26,7 +26,7 @@ module BulkImports
       start_export!
       export.batches.destroy_all # rubocop: disable Cop/DestroyAll
       enqueue_batch_exports
-    ensure
+
       FinishBatchedRelationExportWorker.perform_async(export.id)
     end
 

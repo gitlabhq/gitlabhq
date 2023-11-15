@@ -12,7 +12,7 @@ exports[`packages_list_row renders 1`] = `
       class="gl-align-items-stretch gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-justify-content-space-between gl-sm-flex-direction-row"
     >
       <div
-        class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-min-w-0 gl-xs-mb-3"
+        class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-mb-3 gl-min-w-0 gl-sm-mb-0"
       >
         <div
           class="gl-align-items-center gl-display-flex gl-font-weight-bold gl-min-h-6 gl-min-w-0 gl-text-body"

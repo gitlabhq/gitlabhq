@@ -32,18 +32,16 @@ end
 SOLUTIONS_LABELS = %w[Solutions].freeze
 DEVELOPMENT_LABELS = ['docs::improvement', 'development guidelines'].freeze
 
-def no_tw_review_label_message(labels)
+def add_labels(labels)
   helper.labels_to_add.concat(%w[documentation type::maintenance maintenance::refactor] + labels)
-
-  'You do not need tech writer review.'
 end
 
-SOLUTIONS_MESSAGE = <<~MSG.freeze
-This MR contains docs in the /solutions directory and should be reviewed by a Solutions Architect approver. #{no_tw_review_label_message(SOLUTIONS_LABELS)}
+SOLUTIONS_MESSAGE = <<~MSG
+This MR contains docs in the /solutions directory and should be reviewed by a Solutions Architect approver. You do not need tech writer review.
 MSG
 
-DEVELOPMENT_MESSAGE = <<~MSG.freeze
-This MR contains docs in the /development directory. Any Maintainer, other than the author, can merge. #{no_tw_review_label_message(DEVELOPMENT_LABELS)}
+DEVELOPMENT_MESSAGE = <<~MSG
+This MR contains docs in the /development directory. Any Maintainer, other than the author, can merge. You do not need tech writer review.
 MSG
 
 # For regular pages, prompt for a TW review
@@ -78,8 +76,15 @@ MSG
 # Output messages
 warn(DOCUMENTATION_UPDATE_MISSING) if docs_paths_to_review.empty? && feature_mr?
 
-message(SOLUTIONS_MESSAGE) if sections_with_no_tw_review["doc/solutions"].any?
-message(DEVELOPMENT_MESSAGE) if sections_with_no_tw_review["doc/development"].any?
+if sections_with_no_tw_review["doc/solutions"].any?
+  add_labels(SOLUTIONS_LABELS)
+  message(SOLUTIONS_MESSAGE)
+end
+
+if sections_with_no_tw_review["doc/development"].any?
+  add_labels(DEVELOPMENT_LABELS)
+  message(DEVELOPMENT_MESSAGE)
+end
 
 unless docs_paths_to_review.empty?
   message(DOCS_UPDATE_SHORT_MESSAGE)

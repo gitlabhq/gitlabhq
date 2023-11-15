@@ -435,7 +435,7 @@ export default {
               category="primary"
               variant="confirm"
               data-testid="reply-comment-button"
-              class="gl-sm-mr-3 gl-xs-mb-3 js-vue-issue-save js-comment-button"
+              class="gl-sm-mr-3 gl-mb-3 gl-sm-mb-0 js-vue-issue-save js-comment-button"
               @click="handleUpdate()"
             >
               {{ saveButtonTitle }}

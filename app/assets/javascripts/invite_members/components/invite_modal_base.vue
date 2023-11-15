@@ -335,7 +335,7 @@ export default {
         class="gl-m-0 gl-w-full gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row-reverse"
       >
         <gl-button
-          class="gl-w-full gl-sm-w-auto gl-xs-mb-3! gl-sm-ml-3!"
+          class="gl-w-full gl-sm-w-auto gl-sm-ml-3!"
           data-testid="invite-modal-submit"
           v-bind="actionPrimary.attributes"
           @click="onSubmit"

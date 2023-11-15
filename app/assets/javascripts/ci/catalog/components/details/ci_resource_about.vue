@@ -101,7 +101,7 @@ export default {
     <span
       v-for="item in projectInfoItems"
       :key="`${item.icon}`"
-      class="gl-display-flex gl-align-items-center gl-xs-mb-3"
+      class="gl-display-flex gl-align-items-center gl-mb-3 gl-sm-mb-0"
     >
       <gl-icon class="gl-text-primary gl-mr-2" :name="item.icon" />
       <div
