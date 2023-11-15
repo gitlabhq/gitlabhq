@@ -64,7 +64,7 @@ RSpec.describe ::MergeRequests::Mergeability::DetailedMergeStatusService, featur
       merge_request.close!
     end
 
-    it 'returns the failure reason' do
+    it 'returns the failed check' do
       expect(detailed_merge_status).to eq(:not_open)
     end
   end
@@ -77,7 +77,7 @@ RSpec.describe ::MergeRequests::Mergeability::DetailedMergeStatusService, featur
     end
 
     context 'when pipeline does not exist' do
-      it 'returns the failure reason' do
+      it 'returns the failed check' do
         expect(detailed_merge_status).to eq(:ci_must_pass)
       end
     end
@@ -97,7 +97,7 @@ RSpec.describe ::MergeRequests::Mergeability::DetailedMergeStatusService, featur
       context 'when the pipeline is running' do
         let(:ci_status) { :running }
 
-        it 'returns the failure reason' do
+        it 'returns the failed check' do
           expect(detailed_merge_status).to eq(:ci_still_running)
         end
       end
@@ -105,7 +105,7 @@ RSpec.describe ::MergeRequests::Mergeability::DetailedMergeStatusService, featur
       context 'when the pipeline is not running' do
         let(:ci_status) { :failed }
 
-        it 'returns the failure reason' do
+        it 'returns the failed check' do
           expect(detailed_merge_status).to eq(:ci_must_pass)
         end
       end

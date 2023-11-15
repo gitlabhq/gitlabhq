@@ -39,7 +39,7 @@ RSpec.describe MergeRequests::Mergeability::CheckDiscussionsStatusService, featu
 
         it 'returns a check result with status failed' do
           expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
-          expect(result.payload[:reason]).to eq(:discussions_not_resolved)
+          expect(result.payload[:identifier]).to eq(:discussions_not_resolved)
         end
       end
     end

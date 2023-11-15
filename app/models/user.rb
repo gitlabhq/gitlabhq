@@ -22,7 +22,6 @@ class User < MainClusterwide::ApplicationRecord
   include FromUnion
   include BatchDestroyDependentAssociations
   include BatchNullifyDependentAssociations
-  include IgnorableColumns
   include UpdateHighestRole
   include HasUserType
   include Gitlab::Auth::Otp::Fortinet
@@ -31,15 +30,7 @@ class User < MainClusterwide::ApplicationRecord
   include StripAttribute
   include EachBatch
   include CrossDatabaseIgnoredTables
-  include IgnorableColumns
   include UseSqlFunctionForPrimaryKeyLookups
-
-  ignore_column %i[
-    email_opted_in
-    email_opted_in_ip
-    email_opted_in_source_id
-    email_opted_in_at
-  ], remove_with: '16.6', remove_after: '2023-10-22'
 
   # `ensure_namespace_correct` needs to be moved to an after_commit (?)
   cross_database_ignore_tables %w[namespaces namespace_settings], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424279'

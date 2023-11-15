@@ -8,7 +8,7 @@ module MergeRequests
 
       def execute
         if merge_request.broken?
-          failure(reason: failure_reason)
+          failure
         else
           success
         end

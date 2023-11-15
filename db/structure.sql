@@ -778,6 +778,84 @@ CREATE TABLE batched_background_migration_job_transition_logs (
 )
 PARTITION BY RANGE (created_at);
 
+CREATE TABLE p_ci_builds (
+    status character varying,
+    finished_at timestamp without time zone,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    started_at timestamp without time zone,
+    runner_id integer,
+    coverage double precision,
+    commit_id integer,
+    name character varying,
+    options text,
+    allow_failure boolean DEFAULT false NOT NULL,
+    stage character varying,
+    trigger_request_id integer,
+    stage_idx integer,
+    tag boolean,
+    ref character varying,
+    user_id integer,
+    type character varying,
+    target_url character varying,
+    description character varying,
+    project_id integer,
+    erased_by_id integer,
+    erased_at timestamp without time zone,
+    artifacts_expire_at timestamp without time zone,
+    environment character varying,
+    "when" character varying,
+    yaml_variables text,
+    queued_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    coverage_regex character varying,
+    auto_canceled_by_id integer,
+    retried boolean,
+    protected boolean,
+    failure_reason integer,
+    scheduled_at timestamp with time zone,
+    token_encrypted character varying,
+    upstream_pipeline_id integer,
+    resource_group_id bigint,
+    waiting_for_resource_at timestamp with time zone,
+    processed boolean,
+    scheduling_type smallint,
+    id bigint NOT NULL,
+    stage_id bigint,
+    partition_id bigint NOT NULL,
+    auto_canceled_by_partition_id bigint DEFAULT 100 NOT NULL,
+    auto_canceled_by_id_convert_to_bigint bigint,
+    commit_id_convert_to_bigint bigint,
+    erased_by_id_convert_to_bigint bigint,
+    project_id_convert_to_bigint bigint,
+    runner_id_convert_to_bigint bigint,
+    trigger_request_id_convert_to_bigint bigint,
+    upstream_pipeline_id_convert_to_bigint bigint,
+    user_id_convert_to_bigint bigint,
+    CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
+)
+PARTITION BY LIST (partition_id);
+
+CREATE TABLE p_ci_builds_metadata (
+    project_id integer NOT NULL,
+    timeout integer,
+    timeout_source integer DEFAULT 1 NOT NULL,
+    interruptible boolean,
+    config_options jsonb,
+    config_variables jsonb,
+    has_exposed_artifacts boolean,
+    environment_auto_stop_in character varying(255),
+    expanded_environment_name character varying(255),
+    secrets jsonb DEFAULT '{}'::jsonb NOT NULL,
+    build_id bigint NOT NULL,
+    id bigint NOT NULL,
+    runtime_runner_features jsonb DEFAULT '{}'::jsonb NOT NULL,
+    id_tokens jsonb DEFAULT '{}'::jsonb NOT NULL,
+    partition_id bigint NOT NULL,
+    debug_trace_enabled boolean DEFAULT false NOT NULL
+)
+PARTITION BY LIST (partition_id);
+
 CREATE TABLE p_ci_job_annotations (
     id bigint NOT NULL,
     partition_id bigint NOT NULL,
@@ -13601,64 +13679,6 @@ CREATE TABLE ci_build_trace_metadata (
     partition_id bigint NOT NULL
 );
 
-CREATE TABLE p_ci_builds (
-    status character varying,
-    finished_at timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    started_at timestamp without time zone,
-    runner_id integer,
-    coverage double precision,
-    commit_id integer,
-    name character varying,
-    options text,
-    allow_failure boolean DEFAULT false NOT NULL,
-    stage character varying,
-    trigger_request_id integer,
-    stage_idx integer,
-    tag boolean,
-    ref character varying,
-    user_id integer,
-    type character varying,
-    target_url character varying,
-    description character varying,
-    project_id integer,
-    erased_by_id integer,
-    erased_at timestamp without time zone,
-    artifacts_expire_at timestamp without time zone,
-    environment character varying,
-    "when" character varying,
-    yaml_variables text,
-    queued_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    coverage_regex character varying,
-    auto_canceled_by_id integer,
-    retried boolean,
-    protected boolean,
-    failure_reason integer,
-    scheduled_at timestamp with time zone,
-    token_encrypted character varying,
-    upstream_pipeline_id integer,
-    resource_group_id bigint,
-    waiting_for_resource_at timestamp with time zone,
-    processed boolean,
-    scheduling_type smallint,
-    id bigint NOT NULL,
-    stage_id bigint,
-    partition_id bigint NOT NULL,
-    auto_canceled_by_partition_id bigint DEFAULT 100 NOT NULL,
-    auto_canceled_by_id_convert_to_bigint bigint,
-    commit_id_convert_to_bigint bigint,
-    erased_by_id_convert_to_bigint bigint,
-    project_id_convert_to_bigint bigint,
-    runner_id_convert_to_bigint bigint,
-    trigger_request_id_convert_to_bigint bigint,
-    upstream_pipeline_id_convert_to_bigint bigint,
-    user_id_convert_to_bigint bigint,
-    CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
-)
-PARTITION BY LIST (partition_id);
-
 CREATE TABLE ci_builds (
     status character varying,
     finished_at timestamp without time zone,
@@ -13724,26 +13744,6 @@ CREATE SEQUENCE ci_builds_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ci_builds_id_seq OWNED BY p_ci_builds.id;
-
-CREATE TABLE p_ci_builds_metadata (
-    project_id integer NOT NULL,
-    timeout integer,
-    timeout_source integer DEFAULT 1 NOT NULL,
-    interruptible boolean,
-    config_options jsonb,
-    config_variables jsonb,
-    has_exposed_artifacts boolean,
-    environment_auto_stop_in character varying(255),
-    expanded_environment_name character varying(255),
-    secrets jsonb DEFAULT '{}'::jsonb NOT NULL,
-    build_id bigint NOT NULL,
-    id bigint NOT NULL,
-    runtime_runner_features jsonb DEFAULT '{}'::jsonb NOT NULL,
-    id_tokens jsonb DEFAULT '{}'::jsonb NOT NULL,
-    partition_id bigint NOT NULL,
-    debug_trace_enabled boolean DEFAULT false NOT NULL
-)
-PARTITION BY LIST (partition_id);
 
 CREATE SEQUENCE ci_builds_metadata_id_seq
     START WITH 1
@@ -22586,6 +22586,8 @@ CREATE TABLE remote_development_agent_configs (
     network_policy_enabled boolean DEFAULT true NOT NULL,
     gitlab_workspaces_proxy_namespace text DEFAULT 'gitlab-workspaces'::text NOT NULL,
     network_policy_egress jsonb DEFAULT '[{"allow": "0.0.0.0/0", "except": ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]}]'::jsonb NOT NULL,
+    default_resources_per_workspace_container jsonb DEFAULT '{}'::jsonb NOT NULL,
+    max_resources_per_workspace jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_72947a4495 CHECK ((char_length(gitlab_workspaces_proxy_namespace) <= 63)),
     CONSTRAINT check_9f5cd54d1c CHECK ((char_length(dns_zone) <= 256))
 );

@@ -14,7 +14,9 @@ RSpec.describe CreateSecondPartitionForBuildsMetadata, :migration, feature_categ
       end
 
       it 'creates a new partition' do
-        expect { migrate! }.to change { partitions_count }.by(1)
+        migrate!
+
+        expect(partition_101_exists?).to be(true)
       end
     end
 
@@ -24,7 +26,7 @@ RSpec.describe CreateSecondPartitionForBuildsMetadata, :migration, feature_categ
       end
 
       it 'does not create the partition' do
-        expect { migrate! }.not_to change { partitions_count }
+        expect { migrate! }.not_to change { partition_101_exists? }
       end
     end
   end
@@ -38,7 +40,7 @@ RSpec.describe CreateSecondPartitionForBuildsMetadata, :migration, feature_categ
       it 'removes the partition' do
         migrate!
 
-        expect { migration.down }.to change { partitions_count }.by(-1)
+        expect { migration.down }.to change { partition_101_exists? }.to(false)
       end
     end
 
@@ -50,12 +52,14 @@ RSpec.describe CreateSecondPartitionForBuildsMetadata, :migration, feature_categ
       it 'does not change the partitions count' do
         migrate!
 
-        expect { migration.down }.not_to change { partitions_count }
+        expect { migration.down }.not_to change { partition_101_exists? }
       end
     end
   end
 
-  def partitions_count
-    Gitlab::Database::PostgresPartition.for_parent_table(:p_ci_builds_metadata).size
+  def partition_101_exists?
+    Gitlab::Database::PostgresPartition
+      .for_parent_table(:p_ci_builds_metadata)
+      .where(name: :ci_builds_metadata_101).any?
   end
 end

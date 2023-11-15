@@ -32,7 +32,7 @@ module MergeRequests
           message: 'Checks failed.',
           payload: {
             results: results,
-            failure_reason: failure_reason
+            failed_check: failed_check
           }
         )
       end
@@ -68,8 +68,10 @@ module MergeRequests
         results.none?(&:failed?)
       end
 
-      def failure_reason
-        results.find(&:failed?)&.payload&.fetch(:reason)&.to_sym
+      def failed_check
+        # NOTE: the identifier could be string when we retrieve it from the cache
+        # so let's make sure we always return symbols here.
+        results.find(&:failed?)&.payload&.fetch(:identifier)&.to_sym
       end
     end
   end

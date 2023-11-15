@@ -11,7 +11,7 @@ module MergeRequests
         if merge_request.open?
           success
         else
-          failure(reason: failure_reason)
+          failure
         end
       end
 

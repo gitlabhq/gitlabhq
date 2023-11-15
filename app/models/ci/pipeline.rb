@@ -35,6 +35,8 @@ module Ci
 
     CANCELABLE_STATUSES = (Ci::HasStatus::CANCELABLE_STATUSES + ['manual']).freeze
     UNLOCKABLE_STATUSES = (Ci::Pipeline.completed_statuses + [:manual]).freeze
+    INITIAL_PARTITION_VALUE = 100
+    NEXT_PARTITION_VALUE = 101
 
     paginates_per 15
 
@@ -596,7 +598,7 @@ module Ci
     end
 
     def self.current_partition_value
-      100
+      INITIAL_PARTITION_VALUE
     end
 
     def self.object_hierarchy(relation, options = {})

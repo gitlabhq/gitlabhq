@@ -147,7 +147,7 @@ function filterObjToQueryParams(filterObj) {
   const filterParams = new URLSearchParams();
 
   Object.keys(SUPPORTED_FILTERS).forEach((filterName) => {
-    const filterValues = filterObj[filterName] || [];
+    const filterValues = Array.isArray(filterObj[filterName]) ? filterObj[filterName] : [];
     const validFilters = filterValues.filter((f) =>
       SUPPORTED_FILTERS[filterName].includes(f.operator),
     );

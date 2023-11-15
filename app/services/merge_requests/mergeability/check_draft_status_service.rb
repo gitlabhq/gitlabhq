@@ -9,7 +9,7 @@ module MergeRequests
 
       def execute
         if merge_request.draft?
-          failure(reason: failure_reason)
+          failure
         else
           success
         end

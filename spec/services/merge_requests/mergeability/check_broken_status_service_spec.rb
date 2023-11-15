@@ -19,7 +19,7 @@ RSpec.describe MergeRequests::Mergeability::CheckBrokenStatusService, feature_ca
 
       it 'returns a check result with status failed' do
         expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
-        expect(result.payload[:reason]).to eq(:broken_status)
+        expect(result.payload[:identifier]).to eq(:broken_status)
       end
     end
 

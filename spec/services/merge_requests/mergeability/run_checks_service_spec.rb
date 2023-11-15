@@ -77,7 +77,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
       end
 
       context 'when one check fails' do
-        let(:failed_result) { Gitlab::MergeRequests::Mergeability::CheckResult.failed(payload: { reason: 'failed' }) }
+        let(:failed_result) { Gitlab::MergeRequests::Mergeability::CheckResult.failed(payload: { identifier: 'failed' }) }
 
         before do
           allow_next_instance_of(MergeRequests::Mergeability::CheckOpenStatusService) do |service|
@@ -86,11 +86,11 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
           end
         end
 
-        it 'returns the failure reason' do
+        it 'returns the failed check' do
           result = execute
 
           expect(result.success?).to eq(false)
-          expect(execute.payload[:failure_reason]).to eq(:failed)
+          expect(execute.payload[:failed_check]).to eq(:failed)
         end
 
         it_behaves_like 'checks are all executed' do

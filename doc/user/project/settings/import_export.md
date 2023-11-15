@@ -206,7 +206,7 @@ may be possible for an attacker to steal your sensitive data.
 
 - You must have [exported the project and its data](#export-a-project-and-its-data).
 - Compare GitLab versions and ensure you are importing to a GitLab version that is the same or later
-  than the GitLab version you exported to.
+  than the GitLab version you exported from.
 - Review [compatibility](#compatibility) for any issues.
 - At least the Maintainer role on the destination group to migrate to.
 

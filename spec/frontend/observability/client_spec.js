@@ -311,6 +311,16 @@ describe('buildClient', () => {
         expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.TIMESTAMP_DESC}`);
       });
 
+      it('ignores non-array filters', async () => {
+        await client.fetchTraces({
+          filters: {
+            traceId: { operator: '=', value: 'foo' },
+          },
+        });
+
+        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.TIMESTAMP_DESC}`);
+      });
+
       it('ignores unsupported operators', async () => {
         await client.fetchTraces({
           filters: {

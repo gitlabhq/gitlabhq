@@ -12,7 +12,7 @@ module MergeRequests
         if merge_request.mergeable_discussions_state?
           success
         else
-          failure(reason: failure_reason)
+          failure
         end
       end
 
