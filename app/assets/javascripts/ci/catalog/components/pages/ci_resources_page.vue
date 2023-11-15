@@ -1,17 +1,19 @@
 <script>
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
-import CatalogHeader from '~/ci/catalog/components/list/catalog_header.vue';
-import CatalogListSkeletonLoader from '~/ci/catalog/components/list/catalog_list_skeleton_loader.vue';
-import CiResourcesList from '~/ci/catalog/components/list/ci_resources_list.vue';
-import EmptyState from '~/ci/catalog/components/list/empty_state.vue';
 import { ciCatalogResourcesItemsCount } from '~/ci/catalog/graphql/settings';
+import CatalogSearch from '../list/catalog_search.vue';
+import CiResourcesList from '../list/ci_resources_list.vue';
+import CatalogListSkeletonLoader from '../list/catalog_list_skeleton_loader.vue';
+import CatalogHeader from '../list/catalog_header.vue';
+import EmptyState from '../list/empty_state.vue';
 import getCatalogResources from '../../graphql/queries/get_ci_catalog_resources.query.graphql';
 
 export default {
   components: {
     CatalogHeader,
     CatalogListSkeletonLoader,
+    CatalogSearch,
     CiResourcesList,
     EmptyState,
   },
@@ -19,8 +21,9 @@ export default {
     return {
       catalogResources: [],
       currentPage: 1,
-      totalCount: 0,
       pageInfo: {},
+      searchTerm: '',
+      totalCount: 0,
     };
   },
   apollo: {
@@ -50,6 +53,12 @@ export default {
     },
     isLoading() {
       return this.$apollo.queries.catalogResources.loading;
+    },
+    isSearching() {
+      return this.searchTerm?.length > 0;
+    },
+    showEmptyState() {
+      return !this.hasResources && !this.isSearching;
     },
   },
   methods: {
@@ -86,6 +95,22 @@ export default {
         createAlert({ message: e?.message || this.$options.i18n.fetchError, variant: 'danger' });
       }
     },
+    onUpdateSearchTerm(searchTerm) {
+      this.searchTerm = !searchTerm.length ? null : searchTerm;
+      this.resetPageCount();
+      this.$apollo.queries.catalogResources.refetch({
+        searchTerm: this.searchTerm,
+      });
+    },
+    onUpdateSorting(sortValue) {
+      this.resetPageCount();
+      this.$apollo.queries.catalogResources.refetch({
+        sortValue,
+      });
+    },
+    resetPageCount() {
+      this.currentPage = 1;
+    },
   },
   i18n: {
     fetchError: s__('CiCatalog|There was an error fetching CI/CD Catalog resources.'),
@@ -95,18 +120,24 @@ export default {
 <template>
   <div>
     <catalog-header />
-    <catalog-list-skeleton-loader v-if="isLoading" class="gl-w-full gl-mt-3" />
-    <empty-state v-else-if="!hasResources" />
-    <ci-resources-list
-      v-else
-      :current-page="currentPage"
-      :page-info="pageInfo"
-      :prev-text="__('Prev')"
-      :next-text="__('Next')"
-      :resources="catalogResources"
-      :total-count="totalCount"
-      @onPrevPage="handlePrevPage"
-      @onNextPage="handleNextPage"
+    <catalog-search
+      class="gl-py-4 gl-border-b-1 gl-border-gray-100 gl-border-b-solid gl-border-t-1 gl-border-t-solid"
+      @update-search-term="onUpdateSearchTerm"
+      @update-sorting="onUpdateSorting"
     />
+    <catalog-list-skeleton-loader v-if="isLoading" class="gl-w-full gl-mt-3" />
+    <empty-state v-else-if="!hasResources" :search-term="searchTerm" />
+    <template v-else>
+      <ci-resources-list
+        :current-page="currentPage"
+        :page-info="pageInfo"
+        :prev-text="__('Prev')"
+        :next-text="__('Next')"
+        :resources="catalogResources"
+        :total-count="totalCount"
+        @onPrevPage="handlePrevPage"
+        @onNextPage="handleNextPage"
+      />
+    </template>
   </div>
 </template>

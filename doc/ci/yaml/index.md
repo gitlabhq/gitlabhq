@@ -3714,8 +3714,6 @@ An array including any number of:
   - A directory and all its subdirectories, for example `path/to/directory/**/*`.
 - Wildcard [glob](https://en.wikipedia.org/wiki/Glob_(programming)) paths for all files
   with the same extension or multiple extensions, for example `*.md` or `path/to/directory/*.{rb,py,sh}`.
-  See the [Ruby `fnmatch` documentation](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
-  for the supported syntax list.
 - Wildcard paths to files in the root directory, or all directories, wrapped in double quotes.
   For example `"*.json"` or `"**/*.json"`.
 
@@ -3743,6 +3741,9 @@ docker build:
 **Additional details**:
 
 - `rules: changes` works the same way as [`only: changes` and `except: changes`](#onlychanges--exceptchanges).
+- Glob patterns are interpreted with Ruby's [`File.fnmatch`](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
+  with the [flags](https://docs.ruby-lang.org/en/master/File/Constants.html#module-File::Constants-label-Filename+Globbing+Constants+-28File-3A-3AFNM_-2A-29)
+  `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
 - You can use `when: never` to implement a rule similar to [`except:changes`](#onlychanges--exceptchanges).
 - `changes` resolves to `true` if any of the matching files are changed (an `OR` operation).
 
@@ -3846,8 +3847,9 @@ job:
 
 **Additional details**:
 
-- Glob patterns are interpreted with Ruby [`File.fnmatch`](https://docs.ruby-lang.org/en/2.7.0/File.html#method-c-fnmatch)
-  with the flags `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
+- Glob patterns are interpreted with Ruby's [`File.fnmatch`](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
+  with the [flags](https://docs.ruby-lang.org/en/master/File/Constants.html#module-File::Constants-label-Filename+Globbing+Constants+-28File-3A-3AFNM_-2A-29)
+  `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
 - For performance reasons, GitLab performs a maximum of 10,000 checks against
   `exists` patterns or file paths. After the 10,000th check, rules with patterned
   globs always match. In other words, the `exists` rule always assumes a match in
@@ -5136,12 +5138,11 @@ Use `changes` in pipelines with the following refs:
 **Possible inputs**: An array including any number of:
 
 - Paths to files.
-- Wildcard paths for single directories, for example `path/to/directory/*`, or a directory
-  and all its subdirectories, for example `path/to/directory/**/*`.
-- Wildcard [glob](https://en.wikipedia.org/wiki/Glob_(programming)) paths for all
-  files with the same extension or multiple extensions, for example `*.md` or `path/to/directory/*.{rb,py,sh}`.
-  See the [Ruby `fnmatch` documentation](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
-  for the supported syntax list.
+- Wildcard paths for:
+  - Single directories, for example `path/to/directory/*`.
+  - A directory and all its subdirectories, for example `path/to/directory/**/*`.
+- Wildcard [glob](https://en.wikipedia.org/wiki/Glob_(programming)) paths for all files
+  with the same extension or multiple extensions, for example `*.md` or `path/to/directory/*.{rb,py,sh}`.
 - Wildcard paths to files in the root directory, or all directories, wrapped in double quotes.
   For example `"*.json"` or `"**/*.json"`.
 
@@ -5164,6 +5165,9 @@ docker build:
 **Additional details**:
 
 - `changes` resolves to `true` if any of the matching files are changed (an `OR` operation).
+- Glob patterns are interpreted with Ruby's [`File.fnmatch`](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
+  with the [flags](https://docs.ruby-lang.org/en/master/File/Constants.html#module-File::Constants-label-Filename+Globbing+Constants+-28File-3A-3AFNM_-2A-29)
+  `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
 - If you use refs other than `branches`, `external_pull_requests`, or `merge_requests`,
   `changes` can't determine if a given file is new or old and always returns `true`.
 - If you use `only: changes` with other refs, jobs ignore the changes and always run.

@@ -44,6 +44,46 @@ RSpec.describe 'Global Catalog', :js, feature_category: :pipeline_composition do
       expect(find_all('[data-testid="catalog-resource-item"]').length).to be(3)
     end
 
+    context 'when searching for a resource' do
+      let(:project_name) { ci_resource_projects[0].name }
+
+      before do
+        find('input[data-testid="catalog-search-bar"]').send_keys project_name
+        find('input[data-testid="catalog-search-bar"]').send_keys :enter
+        wait_for_requests
+      end
+
+      it 'renders only a subset of items' do
+        expect(find_all('[data-testid="catalog-resource-item"]').length).to be(1)
+        within_testid('catalog-resource-item', match: :first) do
+          expect(page).to have_content(project_name)
+        end
+      end
+    end
+
+    context 'when sorting' do
+      context 'with the creation date option' do
+        it 'sorts resources from last to first by default' do
+          expect(find_all('[data-testid="catalog-resource-item"]').length).to be(3)
+          expect(find_all('[data-testid="catalog-resource-item"]')[0]).to have_content(ci_resource_projects[2].name)
+          expect(find_all('[data-testid="catalog-resource-item"]')[2]).to have_content(ci_resource_projects[0].name)
+        end
+
+        context 'when changing the sort direction' do
+          before do
+            find('.sorting-direction-button').click
+            wait_for_requests
+          end
+
+          it 'sorts resources from first to last' do
+            expect(find_all('[data-testid="catalog-resource-item"]').length).to be(3)
+            expect(find_all('[data-testid="catalog-resource-item"]')[0]).to have_content(ci_resource_projects[0].name)
+            expect(find_all('[data-testid="catalog-resource-item"]')[2]).to have_content(ci_resource_projects[2].name)
+          end
+        end
+      end
+    end
+
     context 'for a single CI/CD catalog resource' do
       it 'renders resource details', :aggregate_failures do
         within_testid('catalog-resource-item', match: :first) do
@@ -58,7 +98,7 @@ RSpec.describe 'Global Catalog', :js, feature_category: :pipeline_composition do
           find_by_testid('ci-resource-link', match: :first).click
         end
 
-        it 'navigate to the details page' do
+        it 'navigates to the details page' do
           expect(page).to have_content('Go to the project')
         end
       end

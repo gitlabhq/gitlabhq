@@ -18,7 +18,7 @@ describe('CatalogHeader', () => {
   const findBanner = () => wrapper.findComponent(GlBanner);
   const findFeedbackButton = () => findBanner().findComponent(GlButton);
   const findTitle = () => wrapper.find('h1');
-  const findDescription = () => wrapper.findByTestId('description');
+  const findDescription = () => wrapper.findByTestId('page-description');
 
   const createComponent = ({ props = {}, provide = {}, stubs = {} } = {}) => {
     wrapper = shallowMountExtended(CatalogHeader, {

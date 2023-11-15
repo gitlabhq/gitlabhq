@@ -6105,9 +6105,6 @@ msgstr ""
 msgid "Approval options"
 msgstr ""
 
-msgid "Approval rejected."
-msgstr ""
-
 msgid "Approval rules"
 msgstr ""
 
@@ -6269,7 +6266,7 @@ msgstr ""
 msgid "ApprovalSettings|Remove approvals by Code Owners if their files changed"
 msgstr ""
 
-msgid "ApprovalSettings|Require user re-authentication (password or SAML) to approve"
+msgid "ApprovalSettings|Require user password to approve"
 msgstr ""
 
 msgid "ApprovalSettings|There was an error loading merge request approval settings."
@@ -10321,6 +10318,9 @@ msgstr ""
 msgid "CiCatalog|Discover CI configuration resources for a seamless CI/CD experience."
 msgstr ""
 
+msgid "CiCatalog|Edit your search and try again. Or %{linkStart}learn to create a component repository%{linkEnd}."
+msgstr ""
+
 msgid "CiCatalog|Get started with the CI/CD Catalog"
 msgstr ""
 
@@ -10342,6 +10342,9 @@ msgstr ""
 msgid "CiCatalog|No release available"
 msgstr ""
 
+msgid "CiCatalog|No result found"
+msgstr ""
+
 msgid "CiCatalog|Page %{currentPage} of %{totalPage}"
 msgstr ""
 
@@ -10352,6 +10355,9 @@ msgid "CiCatalog|Released %{timeAgo} by %{author}"
 msgstr ""
 
 msgid "CiCatalog|Repositories of pipeline components available in this namespace."
+msgstr ""
+
+msgid "CiCatalog|Search must be at least 3 characters"
 msgstr ""
 
 msgid "CiCatalog|The project must contain a README.md file and a template.yml file. When enabled, the repository is available in the CI/CD Catalog."
@@ -14515,6 +14521,9 @@ msgid "Created On"
 msgstr ""
 
 msgid "Created a branch and a merge request to resolve this issue."
+msgstr ""
+
+msgid "Created at"
 msgstr ""
 
 msgid "Created branch '%{branch_name}' and a merge request to resolve this issue."
@@ -57595,12 +57604,6 @@ msgid "mrWidget|Approve"
 msgstr ""
 
 msgid "mrWidget|Approve additionally"
-msgstr ""
-
-msgid "mrWidget|Approve additionally with SAML"
-msgstr ""
-
-msgid "mrWidget|Approve with SAML"
 msgstr ""
 
 msgid "mrWidget|Approved by"

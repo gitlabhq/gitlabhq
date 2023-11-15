@@ -68,7 +68,8 @@ For details, see [authorization guide](authorization.md).
 
 Ensure:
 
-- You avoid N+1s with [BatchLoader](batchloader.md) or [Lookahead](../api_graphql_styleguide.md#look-ahead) when appropriate.
+- You have [checked for N+1s](../api_graphql_styleguide.md#how-to-see-n1-problems-in-development) and
+  used [optimizations](../api_graphql_styleguide.md#optimizations) to remove N+1s whenever possible.
 - You use [laziness](../api_graphql_styleguide.md#laziness) appropriately.
 
 ### Use appropriate types

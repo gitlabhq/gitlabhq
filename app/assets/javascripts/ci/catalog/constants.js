@@ -1,6 +1,14 @@
+import { helpPagePath } from '~/helpers/help_page_helper';
+
 // We disable this for the entire file until the mock data is cleanup
 /* eslint-disable @gitlab/require-i18n-strings */
 export const CATALOG_FEEDBACK_DISMISSED_KEY = 'catalog_feedback_dismissed';
+
+export const SORT_OPTION_CREATED = 'CREATED';
+export const SORT_ASC = 'ASC';
+export const SORT_DESC = 'DESC';
+
+export const COMPONENTS_DOCS_URL = helpPagePath('ci/components/index');
 
 export const componentsMockData = {
   __typename: 'CiComponentConnection',

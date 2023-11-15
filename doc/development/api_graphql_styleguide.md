@@ -205,6 +205,35 @@ it is perfectly possible to parameterize this type with a concern or a
 supertype, if you want to accept a wider range of objects (such as
 `GlobalIDType[Issuable]` vs `GlobalIDType[Issue]`).
 
+## Optimizations
+
+By default, GraphQL tends to introduce N+1 problems unless you actively try to minimize them.
+
+For stability and scalability, you must ensure that our queries do not suffer from N+1
+performance issues.
+
+The following are a list of tools to help you to optimize your GraphQL code:
+
+- [Look ahead](#look-ahead) allows you to preload data based on which fields are selected in the query.
+- [Batch loading](graphql_guide/batchloader.md) allows you batch database queries together to be executed in one statement.
+- [`BatchModelLoader`](graphql_guide/batchloader.md#the-batchmodelloader) is the recommended way to lookup
+  records by ID to leverage batch loading.
+- [`before_connection_authorization`](#before_connection_authorization) allows you to address N+1 problems
+  specific to [type authorization](#authorization) permission checks.
+- [Limit maximum field call count](#limit-maximum-field-call-count) allows you to restrict how many times
+  a field can return data where optimizations cannot be improved.
+
+## How to see N+1 problems in development
+
+N+1 problems can be discovered during development of a feature by:
+
+- Tailing `development.log` while you execute GraphQL queries that return collections of data.
+  [Bullet](../development/profiling.md#bullet) may help.
+- Observing the [performance bar](../administration/monitoring/performance/performance_bar.md) if
+  executing queries in the GitLab UI.
+- Adding a [request spec](#testing-tips-and-tricks) that asserts there are no (or limited) N+1
+  problems with the feature.
+
 ## Types
 
 We use a code-first schema, and we declare what type everything is in Ruby.
@@ -1261,32 +1290,9 @@ field :jobs, resolver: JobsResolver, description: 'All jobs.'
 field :job, resolver: JobsResolver.single, description: 'A single job.'
 ```
 
-### Correct use of `Resolver#ready?`
+### Optimizing Resolvers
 
-Resolvers have two public API methods as part of the framework: `#ready?(**args)` and `#resolve(**args)`.
-We can use `#ready?` to perform set-up, validation or early-return without invoking `#resolve`.
-
-Good reasons to use `#ready?` include:
-
-- validating mutually exclusive arguments (see [validating arguments](#validating-arguments))
-- Returning `Relation.none` if we know before-hand that no results are possible
-- Performing setup such as initializing instance variables (although consider lazily initialized methods for this)
-
-Implementations of [`Resolver#ready?(**args)`](https://graphql-ruby.org/api-doc/1.10.9/GraphQL/Schema/Resolver#ready%3F-instance_method) should
-return `(Boolean, early_return_data)` as follows:
-
-```ruby
-def ready?(**args)
-  [false, 'have this instead']
-end
-```
-
-For this reason, whenever you call a resolver (mainly in tests - as framework
-abstractions Resolvers should not be considered re-usable, finders are to be
-preferred), remember to call the `ready?` method and check the boolean flag
-before calling `resolve`! An example can be seen in our [`GraphqlHelpers`](https://gitlab.com/gitlab-org/gitlab/-/blob/2d395f32d2efbb713f7bc861f96147a2a67e92f2/spec/support/helpers/graphql_helpers.rb#L20-27).
-
-### Look-Ahead
+#### Look-Ahead
 
 The full query is known in advance during execution, which means we can make use
 of [lookahead](https://graphql-ruby.org/queries/lookahead.html) to optimize our
@@ -1368,6 +1374,54 @@ end
 
 For an example of real world use,
 see [`ResolvesMergeRequests`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/concerns/resolves_merge_requests.rb).
+
+#### `before_connection_authorization`
+
+A `before_connection_authorization` hook can help resolvers eliminate N+1 problems that originate from
+[type authorization](graphql_guide/authorization.md#type-authorization) permission checks.
+
+The `before_connection_authorization` method receives the resolved nodes and the current user. In
+the block, use `ActiveRecord::Associations::Preloader` or a `Preloaders::` class to preload data
+for the type authorization check.
+
+Example:
+
+```ruby
+class LabelsResolver < BaseResolver
+  before_connection_authorization do |labels, current_user|
+    Preloaders::LabelsPreloader.new(labels, current_user).preload_all
+  end
+end
+```
+
+#### BatchLoading
+
+See [GraphQL BatchLoader](graphql_guide/batchloader.md).
+
+### Correct use of `Resolver#ready?`
+
+Resolvers have two public API methods as part of the framework: `#ready?(**args)` and `#resolve(**args)`.
+We can use `#ready?` to perform set-up, validation, or early-return without invoking `#resolve`.
+
+Good reasons to use `#ready?` include:
+
+- Validating mutually exclusive arguments (see [validating arguments](#validating-arguments)).
+- Returning `Relation.none` if we know before-hand that no results are possible.
+- Performing setup such as initializing instance variables (although consider lazily initialized methods for this).
+
+Implementations of [`Resolver#ready?(**args)`](https://graphql-ruby.org/api-doc/1.10.9/GraphQL/Schema/Resolver#ready%3F-instance_method) should
+return `(Boolean, early_return_data)` as follows:
+
+```ruby
+def ready?(**args)
+  [false, 'have this instead']
+end
+```
+
+For this reason, whenever you call a resolver (mainly in tests because framework
+abstractions Resolvers should not be considered re-usable, finders are to be
+preferred), remember to call the `ready?` method and check the boolean flag
+before calling `resolve`! An example can be seen in our [`GraphqlHelpers`](https://gitlab.com/gitlab-org/gitlab/-/blob/2d395f32d2efbb713f7bc861f96147a2a67e92f2/spec/support/helpers/graphql_helpers.rb#L20-27).
 
 ### Negated arguments
 

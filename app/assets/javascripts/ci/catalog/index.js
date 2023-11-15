@@ -27,9 +27,6 @@ export const initCatalog = (selector = '#js-ci-cd-catalog') => {
     name: 'GlobalCatalog',
     router: createRouter(ciCatalogPath, CiResourcesPage),
     apolloProvider,
-    provide: {
-      ciCatalogPath,
-    },
     render(h) {
       return h(GlobalCatalog);
     },

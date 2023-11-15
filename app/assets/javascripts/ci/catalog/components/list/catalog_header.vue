@@ -45,7 +45,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-border-b-1 gl-border-gray-100 gl-border-b-solid">
+  <div>
     <gl-banner
       v-if="!isFeedbackBannerDismissed"
       class="gl-mt-5"
@@ -60,7 +60,7 @@ export default {
     </gl-banner>
     <h1 class="gl-font-size-h-display">{{ pageTitle }}</h1>
     <p>
-      <span data-testid="description">{{ pageDescription }}</span>
+      <span data-testid="page-description">{{ pageDescription }}</span>
       <gl-link :href="$options.learnMorePath" target="_blank">{{
         $options.i18n.learnMore
       }}</gl-link>

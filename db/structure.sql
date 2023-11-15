@@ -20688,7 +20688,8 @@ CREATE TABLE packages_tags (
     name character varying(255) NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_91b8472153 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE packages_tags_id_seq
@@ -28124,9 +28125,6 @@ ALTER TABLE workspaces
 
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
-
-ALTER TABLE packages_tags
-    ADD CONSTRAINT check_91b8472153 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;
