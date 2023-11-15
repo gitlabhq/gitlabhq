@@ -89,16 +89,18 @@ module Integrations
     def execute(data)
       return unless supported_events.include?(data[:object_kind])
 
+      serialized_data = data.deep_stringify_keys
+
       Integrations::IrkerWorker.perform_async(
         project_id, channels,
-        colorize_messages, data, settings
+        colorize_messages, serialized_data, settings
       )
     end
 
     def settings
       {
-        server_host: server_host.presence || 'localhost',
-        server_port: server_port.presence || 6659
+        'server_host' => server_host.presence || 'localhost',
+        'server_port' => server_port.presence || 6659
       }
     end
 

@@ -263,7 +263,7 @@ GET /projects/:id/packages/:package_id/package_files
 | `package_id`      | integer | yes | ID of a package. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages/4/package_files"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id/package_files"
 ```
 
 Example response:

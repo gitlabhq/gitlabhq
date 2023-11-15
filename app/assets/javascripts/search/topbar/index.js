@@ -11,7 +11,7 @@ export const initTopbar = (store) => {
     return false;
   }
 
-  const { groupInitialJson, projectInitialJson, defaultBranchName } = el.dataset;
+  const { groupInitialJson, projectInitialJson } = el.dataset;
 
   const groupInitialJsonParsed = JSON.parse(groupInitialJson);
   const projectInitialJsonParsed = JSON.parse(projectInitialJson);
@@ -24,7 +24,6 @@ export const initTopbar = (store) => {
         props: {
           groupInitialJson: groupInitialJsonParsed,
           projectInitialJson: projectInitialJsonParsed,
-          defaultBranchName,
         },
       });
     },

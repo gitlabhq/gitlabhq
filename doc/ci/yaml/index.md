@@ -725,8 +725,11 @@ In this example:
 
 **Additional details**:
 
-- If an input uses both `default` and [`options`](#specinputsoptions), the default value
-  must be one of the listed options. If not, the pipeline fails with a validation error.
+- The pipeline fails with a validation error when the input:
+  - Uses both `default` and [`options`](#specinputsoptions), but the default value
+    is not one of the listed options.
+  - Uses both `default` and `regex`, but the default value does not match the regular expression.
+  - Value does not match the [`type`](#specinputstype).
 
 ##### `spec:inputs:description`
 
@@ -786,8 +789,42 @@ In this example:
 
 **Additional details**:
 
-- If an input uses both [`default`](#specinputsdefault) and `options`, the default value
-  must be one of the listed options. If not, the pipeline fails with a validation error.
+- The pipeline fails with a validation error when:
+  - The input uses both `options` and [`default`](#specinputsdefault), but the default value
+    is not one of the listed options.
+  - Any of the input options do not match the [`type`](#specinputstype), which can
+    be either `string` or `number`, but not `boolean` when using `options`.
+
+##### `spec:inputs:regex`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/410836) in GitLab 16.5.
+
+Use `spec:inputs:regex` to specify a regular expression that the input must match.
+
+**Keyword type**: Header keyword. `specs` must be declared at the top of the configuration file,
+in a header section.
+
+**Possible inputs**: Must be a regular expression that starts and ends with the `/` character.
+
+**Example of `spec:inputs:regex`**:
+
+```yaml
+spec:
+  inputs:
+    version:
+      regex: /^v\d\.\d+(\.\d+)$/
+---
+
+# The pipeline configuration would follow...
+```
+
+In this example, inputs of `v1.0` or `v1.2.3` match the regular expression and pass validation.
+An input of `v1.A.B` does not match the regular expression and fails validation.
+
+**Additional details**:
+
+- `inputs:regex` can only be used with a [`type`](#specinputstype) of `string`,
+  not `number` or `boolean`.
 
 ##### `spec:inputs:type`
 

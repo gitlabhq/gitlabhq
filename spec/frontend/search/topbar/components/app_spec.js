@@ -9,6 +9,8 @@ import GlobalSearchTopbar from '~/search/topbar/components/app.vue';
 import GroupFilter from '~/search/topbar/components/group_filter.vue';
 import ProjectFilter from '~/search/topbar/components/project_filter.vue';
 import MarkdownDrawer from '~/vue_shared/components/markdown_drawer/markdown_drawer.vue';
+import SearchTypeIndicator from '~/search/topbar/components/search_type_indicator.vue';
+
 import {
   SYNTAX_OPTIONS_ADVANCED_DOCUMENT,
   SYNTAX_OPTIONS_ZOEKT_DOCUMENT,
@@ -46,16 +48,19 @@ describe('GlobalSearchTopbar', () => {
   const findProjectFilter = () => wrapper.findComponent(ProjectFilter);
   const findSyntaxOptionButton = () => wrapper.findComponent(GlButton);
   const findSyntaxOptionDrawer = () => wrapper.findComponent(MarkdownDrawer);
+  const findSearchTypeIndicator = () => wrapper.findComponent(SearchTypeIndicator);
 
   describe('template', () => {
     beforeEach(() => {
       createComponent();
     });
 
-    describe('Search box', () => {
-      it('renders always', () => {
-        expect(findGlSearchBox().exists()).toBe(true);
-      });
+    it('always renders Search box', () => {
+      expect(findGlSearchBox().exists()).toBe(true);
+    });
+
+    it('always renders Search indicator', () => {
+      expect(findSearchTypeIndicator().exists()).toBe(true);
     });
 
     describe.each`

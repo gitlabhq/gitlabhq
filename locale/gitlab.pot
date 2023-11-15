@@ -707,12 +707,6 @@ msgstr ""
 msgid "%{description}- Sentry event: %{errorUrl}- First seen: %{firstSeen}- Last seen: %{lastSeen} %{countLabel}: %{count}%{userCountLabel}: %{userCount}"
 msgstr ""
 
-msgid "%{doc_link_start}Advanced search%{doc_link_end} is disabled since %{ref_elem} is not the default branch. %{docs_link}"
-msgstr ""
-
-msgid "%{doc_link_start}Advanced search%{doc_link_end} is enabled."
-msgstr ""
-
 msgid "%{docs_link_start}Learn about visibility levels.%{docs_link_end}"
 msgstr ""
 
@@ -921,6 +915,12 @@ msgid "%{linkStart} Learn more%{linkEnd}."
 msgstr ""
 
 msgid "%{linkStart}%{linkEnd} review summary"
+msgstr ""
+
+msgid "%{linkStart}Advanced search%{linkEnd} is enabled."
+msgstr ""
+
+msgid "%{linkStart}Exact code search (powered by Zoekt)%{linkEnd} is disabled since %{ref_elem} is not the default branch. %{docs_link}"
 msgstr ""
 
 msgid "%{listToShow}, and %{awardsListLength} more"
@@ -22303,7 +22303,10 @@ msgstr ""
 msgid "GlobalSearch|%{count} default results provided. Use the up and down arrow keys to navigate search results list."
 msgstr ""
 
-msgid "GlobalSearch|%{link_start}Exact code search (powered by Zoekt)%{link_end} is enabled"
+msgid "GlobalSearch|%{linkStart}Exact code search (powered by Zoekt)%{linkEnd} is disabled since %{ref_elem} is not the default branch. %{docs_link}"
+msgstr ""
+
+msgid "GlobalSearch|%{linkStart}Exact code search (powered by Zoekt)%{linkEnd} is enabled"
 msgstr ""
 
 msgid "GlobalSearch|Aggregations load error."
@@ -42070,6 +42073,9 @@ msgstr ""
 msgid "Saving project."
 msgstr ""
 
+msgid "ScanExecutionPolicy|%{boldStart}Run%{boldEnd} %{typeSelector} %{tooltip}"
+msgstr ""
+
 msgid "ScanExecutionPolicy|%{hostname}'s timezone"
 msgstr ""
 
@@ -42089,6 +42095,9 @@ msgid "ScanExecutionPolicy|Add condition"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Add new CI variable"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Choose a method to execute code"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Conditions"
@@ -42112,10 +42121,22 @@ msgstr ""
 msgid "ScanExecutionPolicy|DAST site profiles"
 msgstr ""
 
+msgid "ScanExecutionPolicy|Execute a YAML code block"
+msgstr ""
+
+msgid "ScanExecutionPolicy|If there are any conflicting variables with the local pipeline configuration (Ex, gitlab-ci.yml) then variables defined here will take precedence. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "ScanExecutionPolicy|Inserted CI code block"
+msgstr ""
+
 msgid "ScanExecutionPolicy|Key"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Kubernetes agent's timezone"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Linked existing CI file"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Maximum number of CI-criteria is one"
@@ -42125,6 +42146,9 @@ msgid "ScanExecutionPolicy|Only one variable can be added at a time."
 msgstr ""
 
 msgid "ScanExecutionPolicy|Run a %{scan} scan with the following options:"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Run a scan"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Runner tags:"
@@ -43001,6 +43025,9 @@ msgstr ""
 msgid "SecurityOrchestration|Add action"
 msgstr ""
 
+msgid "SecurityOrchestration|Add new action"
+msgstr ""
+
 msgid "SecurityOrchestration|Add new approver"
 msgstr ""
 
@@ -43056,6 +43083,9 @@ msgid "SecurityOrchestration|Cannot create an empty policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Choose a project"
+msgstr ""
+
+msgid "SecurityOrchestration|Choose an action"
 msgstr ""
 
 msgid "SecurityOrchestration|Choose approver type"
