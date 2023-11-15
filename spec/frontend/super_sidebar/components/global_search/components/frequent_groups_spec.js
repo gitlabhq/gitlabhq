@@ -1,16 +1,37 @@
 import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import FrequentItems from '~/super_sidebar/components/global_search/components/frequent_items.vue';
 import FrequentGroups from '~/super_sidebar/components/global_search/components/frequent_groups.vue';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import currentUserFrecentGroupsQuery from '~/super_sidebar/graphql/queries/current_user_frecent_groups.query.graphql';
+import waitForPromises from 'helpers/wait_for_promises';
+import { frecentGroupsMock } from '../../../mock_data';
+
+Vue.use(VueApollo);
 
 describe('FrequentlyVisitedGroups', () => {
   let wrapper;
 
   const groupsPath = '/mock/group/path';
+  const currentUserFrecentGroupsQueryHandler = jest.fn().mockResolvedValue({
+    data: {
+      frecentGroups: frecentGroupsMock,
+    },
+  });
 
-  const createComponent = (options) => {
+  const createComponent = (options, frecentNamespacesSuggestionsEnabled = true) => {
+    const mockApollo = createMockApollo([
+      [currentUserFrecentGroupsQuery, currentUserFrecentGroupsQueryHandler],
+    ]);
+
     wrapper = shallowMount(FrequentGroups, {
+      apolloProvider: mockApollo,
       provide: {
         groupsPath,
+        glFeatures: {
+          frecentNamespacesSuggestions: frecentNamespacesSuggestionsEnabled,
+        },
       },
       ...options,
     });
@@ -36,6 +57,21 @@ describe('FrequentlyVisitedGroups', () => {
     });
   });
 
+  it('loads frecent groups', () => {
+    createComponent();
+
+    expect(currentUserFrecentGroupsQueryHandler).toHaveBeenCalled();
+    expect(findFrequentItems().props('loading')).toBe(true);
+  });
+
+  it('passes fetched groups to FrequentItems', async () => {
+    createComponent();
+    await waitForPromises();
+
+    expect(findFrequentItems().props('items')).toEqual(frecentGroupsMock);
+    expect(findFrequentItems().props('loading')).toBe(false);
+  });
+
   it('with a user, passes a storage key string to FrequentItems', () => {
     gon.current_username = 'test_user';
     createComponent();
@@ -59,5 +95,16 @@ describe('FrequentlyVisitedGroups', () => {
     findFrequentItems().vm.$emit('nothing-to-render');
 
     expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  describe('when the frecentNamespacesSuggestions feature flag is disabled', () => {
+    beforeEach(() => {
+      createComponent({}, false);
+    });
+
+    it('does not fetch frecent groups', () => {
+      expect(currentUserFrecentGroupsQueryHandler).not.toHaveBeenCalled();
+      expect(findFrequentItems().props('loading')).toBe(false);
+    });
   });
 });

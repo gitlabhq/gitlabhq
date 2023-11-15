@@ -2,6 +2,7 @@
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import { __ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'FrequentlyVisitedItem',
@@ -12,6 +13,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     item: {
       type: Object,
@@ -51,6 +53,7 @@ export default {
     </div>
 
     <gl-button
+      v-if="!glFeatures.frecentNamespacesSuggestions"
       v-gl-tooltip.left
       icon="dash"
       category="tertiary"

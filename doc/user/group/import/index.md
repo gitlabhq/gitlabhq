@@ -251,7 +251,7 @@ To view group import history:
 To review the results of an import:
 
 1. Go to the [Group import history page](#group-import-history).
-1. To see the details of a failed import, select the **See failures** link on any import with a **Failed** status.
+1. To see the details of a failed import, select the **See failures** link on any import with a **Failed** or **Partially completed** status.
 
 ### Migrated group items
 

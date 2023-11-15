@@ -14,10 +14,15 @@ describe('FrequentlyVisitedItem', () => {
     avatar: '/mock/avatar.png',
   };
 
-  const createComponent = () => {
+  const createComponent = (frecentNamespacesSuggestionsEnabled = false) => {
     wrapper = shallowMountExtended(FrequentItem, {
       propsData: {
         item: mockItem,
+      },
+      provide: {
+        glFeatures: {
+          frecentNamespacesSuggestions: frecentNamespacesSuggestionsEnabled,
+        },
       },
       stubs: {
         GlButton: stubComponent(GlButton, {
@@ -93,6 +98,16 @@ describe('FrequentlyVisitedItem', () => {
     it('stops the native event from bubbling and prevents its default behavior', () => {
       expect(bubbledKeydownSpy).not.toHaveBeenCalled();
       expect(keydownSpy.mock.calls[0][0].defaultPrevented).toBe(true);
+    });
+  });
+
+  describe('when the frecentNamespacesSuggestionsEnabled feature flag is enabled', () => {
+    beforeEach(() => {
+      createComponent(true);
+    });
+
+    it('does not render the remove button', () => {
+      expect(findRemoveButton().exists()).toBe(false);
     });
   });
 });

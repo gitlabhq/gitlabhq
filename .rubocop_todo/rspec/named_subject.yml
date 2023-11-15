@@ -1097,7 +1097,6 @@ RSpec/NamedSubject:
     - 'ee/spec/services/llm/generate_test_file_service_spec.rb'
     - 'ee/spec/services/llm/git_command_service_spec.rb'
     - 'ee/spec/services/llm/resolve_vulnerability_service_spec.rb'
-    - 'ee/spec/services/llm/tanuki_bot_service_spec.rb'
     - 'ee/spec/services/member_roles/create_service_spec.rb'
     - 'ee/spec/services/merge_request_approval_settings/update_service_spec.rb'
     - 'ee/spec/services/merge_requests/merge_service_spec.rb'

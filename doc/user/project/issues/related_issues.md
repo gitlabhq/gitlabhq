@@ -25,7 +25,7 @@ To manage linked issues through our API, see [Issue links API](../../../api/issu
 
 Prerequisites:
 
-- You must have at least the Reporter role for both projects.
+- You must have at least the Guest role for the source issue's project, and you must be able to access the target issue.
 
 To link one issue to another:
 

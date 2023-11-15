@@ -2529,13 +2529,22 @@ job2:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32022) in GitLab 12.3.
 
-Use `interruptible` if a job should be canceled when a newer pipeline starts before the job completes.
+Use `interruptible` to configure the [auto-cancel redundant pipelines](../pipelines/settings.md#auto-cancel-redundant-pipelines)
+feature to cancel a job before it completes if a new pipeline on the same ref starts for a newer commit. If the feature
+is disabled, the keyword has no effect.
 
-This keyword has no effect if [automatic cancellation of redundant pipelines](../pipelines/settings.md#auto-cancel-redundant-pipelines)
-is disabled. When enabled, a running job with `interruptible: true` is cancelled when
-starting a pipeline for a new change on the same branch.
+**Running** jobs are only cancelled when the jobs are configured with `interruptible: true` and:
 
-You can't cancel subsequent jobs after a job with `interruptible: false` starts.
+- No jobs configured with `interruptible: false` have started at any time.
+  After a job with `interruptible: false` starts, the entire pipeline is no longer
+  considered interruptible.
+  - If the pipeline triggered a downstream pipeline, but no job with `interruptible: false`
+    in the downstream pipeline has started yet, the downstream pipeline is also cancelled.
+- The new pipeline is for a commit with new changes. The **Auto-cancel redundant pipelines**
+  feature has no effect if you select **Run pipeline** in the UI to run a pipeline for the same commit.
+
+A job that has not started yet is always considered `interruptible: true`, regardless of the job's configuration.
+The `interruptible` configuration is only considered after the job starts.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -2579,11 +2588,10 @@ In this example, a new pipeline causes a running pipeline to be:
 
 - Only set `interruptible: true` if the job can be safely canceled after it has started,
   like a build job. Deployment jobs usually shouldn't be cancelled, to prevent partial deployments.
-- To completely cancel a running pipeline, all jobs must have `interruptible: true`,
-  or `interruptible: false` jobs must not have started.
-- Running jobs are only cancelled if the newer pipeline has new changes.
-  For example, a running job is not be cancelled if you run a new pipeline for the same
-  commit by selecting **Run pipeline** in the UI.
+- You can add an optional manual job with `interruptible: false` in the first stage of
+  a pipeline to allow users to manually prevent a pipeline from being automatically
+  cancelled. After a user starts the job, the pipeline cannot be canceled by the
+  **Auto-cancel redundant pipelines** feature.
 
 ### `needs`
 
@@ -4669,6 +4677,13 @@ child3:
     forward:
       yaml_variables: false
 ```
+
+**Additional details**:
+
+- CI/CD variables forwarded to downstream pipelines with `trigger:forward` have the
+  [highest precedence](../variables/index.md#cicd-variable-precedence). If a variable
+  with the same name is defined in the downstream pipeline, that variable is overwritten
+  by the forwarded variable.
 
 ### `variables`
 

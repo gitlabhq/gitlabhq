@@ -51,7 +51,9 @@ Code Quality results are shown in the:
 
 Code Quality analysis results display in the merge request widget area if a report from the target
 branch is available for comparison. The merge request widget displays Code Quality findings and resolutions that
-were introduced by the changes made in the merge request.
+were introduced by the changes made in the merge request. Multiple Code Quality findings with identical
+fingerprints display as a single entry in the merge request widget, each individual finding is available in the
+full report available in the **Pipeline** details view.
 
 ![Code Quality Widget](img/code_quality_widget_13_11.png)
 

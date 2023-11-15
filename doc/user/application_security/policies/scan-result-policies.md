@@ -84,7 +84,7 @@ If you're not familiar with how to read [JSON schemas](https://json-schema.org/)
 the following sections and tables provide an alternative.
 
 | Field                | Type                          | Required | Possible values | Description                               |
-|----------------------|-------------------------------|----------|-----------------|------------------------------------------|
+|----------------------|-------------------------------|----------|-----------------|-------------------------------------------|
 | `scan_result_policy` | `array` of Scan Result Policy | true     |                 | List of scan result policies (maximum 5). |
 
 ## Scan result policy schema
@@ -95,14 +95,14 @@ FLAG:
 On self-managed GitLab, by default the `approval_settings` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `scan_result_any_merge_request`.
 On GitLab.com, this feature is available. See the `approval_settings` section below for more information.
 
-| Field | Type | Required |Possible values | Description |
-|--------|------|----------|----------------|-------------|
-| `name` | `string` | true |  | Name of the policy. Maximum of 255 characters.|
-| `description` | `string` | false |  | Description of the policy. |
-| `enabled` | `boolean` | true | `true`, `false` | Flag to enable (`true`) or disable (`false`) the policy. |
-| `rules` | `array` of rules | true |  | List of rules that the policy applies. |
-| `actions` | `array` of actions | false |  | List of actions that the policy enforces. |
-| `approval_settings` | `object` | false |  | Project settings that the policy overrides. |
+| Field               | Type               | Required | Possible values | Description                                              |
+|---------------------|--------------------|----------|-----------------|----------------------------------------------------------|
+| `name`              | `string`           | true     |                 | Name of the policy. Maximum of 255 characters.           |
+| `description`       | `string`           | false    |                 | Description of the policy.                               |
+| `enabled`           | `boolean`          | true     | `true`, `false` | Flag to enable (`true`) or disable (`false`) the policy. |
+| `rules`             | `array` of rules   | true     |                 | List of rules that the policy applies.                   |
+| `actions`           | `array` of actions | false    |                 | List of actions that the policy enforces.                |
+| `approval_settings` | `object`           | false    |                 | Project settings that the policy overrides.              |
 
 ## `scan_finding` rule type
 
@@ -191,14 +191,14 @@ On self-managed GitLab, by default the `prevent_pushing_and_force_pushing` field
 
 The settings set in the policy overwrite settings in the project.
 
-| Field                               | Type | Required | Possible values | Description |
-|-------------------------------------|------|----------|-----------------|-------------|
-| `block_unprotecting_branches`       | `boolean` | false | `true`, `false` | Prevent a user from removing a branch from the protected branches list, deleting a protected branch, or changing the default branch if that branch is included in the security policy. |
-| `prevent_approval_by_author`        | `boolean` | false | `true`, `false` | When enabled, two person approval is required on all MRs as merge request authors cannot approve their own MRs and merge them unilaterally. |
-| `prevent_approval_by_commit_author` | `boolean` | false | `true`, `false` | When enabled, users who have contributed code to the MR are ineligible for approval, ensuring code committers cannot introduce vulnerabilities and approve code to merge. |
-| `remove_approvals_with_new_commit`  | `boolean` | false | `true`, `false` | If an MR receives all necessary approvals to merge, but then a new commit is added, new approvals are required. This ensures new commits that may include vulnerabilities cannot be introduced. |
-| `require_password_to_approve`       | `boolean` | false | `true`, `false` | Password confirmation on approvals provides an additional level of security. Enabling this enforces the setting on all projects targeted by this policy. |
-| `prevent_pushing_and_force_pushing` | `boolean` | false | `true`, `false` | Prevent pushing and force pushing to a protected branch. |
+| Field                               | Type      | Required | Possible values | Applicable rule type | Description |
+|-------------------------------------|-----------|----------|-----------------|----------------------|-------------|
+| `block_unprotecting_branches`       | `boolean` | false    | `true`, `false` | All                  | When enabled, prevents a user from removing a branch from the protected branches list, deleting a protected branch, or changing the default branch if that branch is included in the security policy. This ensures users cannot remove protection status from a branch to merge vulnerable code. |
+| `prevent_approval_by_author`        | `boolean` | false    | `true`, `false` | `Any merge request`  | When enabled, merge request authors cannot approve their own MRs. This ensures code authors cannot introduce vulnerabilities and approve code to merge. |
+| `prevent_approval_by_commit_author` | `boolean` | false    | `true`, `false` | `Any merge request`  | When enabled, users who have contributed code to the MR are ineligible for approval. This ensures code committers cannot introduce vulnerabilities and approve code to merge. |
+| `remove_approvals_with_new_commit`  | `boolean` | false    | `true`, `false` | `Any merge request`  | When enabled, if an MR receives all necessary approvals to merge, but then a new commit is added, new approvals are required. This ensures new commits that may include vulnerabilities cannot be introduced. |
+| `require_password_to_approve`       | `boolean` | false    | `true`, `false` | `Any merge request`  | When enabled, there will be password confirmation on approvals. Password confirmation adds an extra layer of security. |
+| `prevent_pushing_and_force_pushing` | `boolean` | false    | `true`, `false` | All                  | When enabled, prevents users from pushing and force pushing to a protected branch. This ensures users do not bypass the merge request process to add vulnerable code to a branch. |
 
 ## Example security scan result policies project
 

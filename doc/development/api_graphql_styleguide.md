@@ -174,8 +174,8 @@ See the [deprecating schema items](#deprecating-schema-items) section for how to
 
 ### Breaking change exemptions
 
-Schema items [marked as alpha](#mark-schema-items-as-alpha) are exempt from the deprecation process,
-and can be removed or changed at any time without notice.
+See the
+[GraphQL API breaking change exemptions documentation](../api/graphql/index.md#breaking-change-exemptions).
 
 ## Global IDs
 
@@ -806,9 +806,10 @@ The documentation mentions that the old Global ID style is now deprecated.
 You can mark GraphQL schema items (fields, arguments, enum values, and mutations) as
 [Alpha](../policy/experiment-beta-support.md#experiment).
 
-An item marked as Alpha is [exempt from the deprecation process](#breaking-change-exemptions) and can be removed
-at any time without notice. Mark an item as Alpha when it is
-subject to change and not ready for public use.
+An item marked as Alpha is
+[exempt from the deprecation process](../api/graphql/index.md#breaking-change-exemptions) and can be
+removed at any time without notice. Mark an item as Alpha when it is subject to
+change and not ready for public use.
 
 NOTE:
 Only mark new items as Alpha. Never mark existing items

@@ -188,6 +188,26 @@ export const userMenuMockData = {
   canary_toggle_com_url: 'https://next.gitlab.com',
 };
 
+export const frecentGroupsMock = [
+  {
+    id: 'gid://gitlab/Group/1',
+    name: 'Frecent group 1',
+    namespace: 'Frecent Namespace 1',
+    webUrl: '/frecent-namespace-1/frecent-group-1',
+    avatarUrl: '/uploads/-/avatar1.png',
+  },
+];
+
+export const frecentProjectsMock = [
+  {
+    id: 'gid://gitlab/Project/1',
+    name: 'Frecent project 1',
+    namespace: 'Frecent Namespace 1 / Frecent project 1',
+    webUrl: '/frecent-namespace-1/frecent-project-1',
+    avatarUrl: '/uploads/-/avatar1.png',
+  },
+];
+
 export const cachedFrequentProjects = JSON.stringify([
   {
     id: 1,

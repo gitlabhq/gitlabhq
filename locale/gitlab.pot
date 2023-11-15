@@ -14049,6 +14049,9 @@ msgstr ""
 msgid "Couldn't link epics. You must have at least the Guest role in the epic's group."
 msgstr ""
 
+msgid "Couldn't link issues. You must have at least the Guest role in the source issue's project."
+msgstr ""
+
 msgid "Country / Region"
 msgstr ""
 
@@ -26534,8 +26537,8 @@ msgstr ""
 msgid "IssuesAnalytics|Sorry, your filter produced no results"
 msgstr ""
 
-msgid "IssuesAnalytics|This month (%{chartDateRange})"
-msgid_plural "IssuesAnalytics|Last %{monthsCount} months (%{chartDateRange})"
+msgid "IssuesAnalytics|This month (%{dateRange})"
+msgid_plural "IssuesAnalytics|Last %{monthsCount} months (%{dateRange})"
 msgstr[0] ""
 msgstr[1] ""
 

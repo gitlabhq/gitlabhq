@@ -1,0 +1,9 @@
+query CurrentUserFrecentGroups {
+  frecentGroups {
+    id
+    name
+    namespace: fullName
+    webUrl
+    avatarUrl
+  }
+}

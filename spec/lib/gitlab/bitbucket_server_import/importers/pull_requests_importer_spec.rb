@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, feature_category: :importers do
+  include RepoHelpers
+
   let_it_be(:project) do
     create(:project, :with_import_url, :import_started, :empty_repo,
       import_data_attributes: {
@@ -15,6 +17,8 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, f
   subject(:importer) { described_class.new(project) }
 
   describe '#execute', :clean_gitlab_redis_cache do
+    let(:commit_sha) { 'aaaa1' }
+
     before do
       allow_next_instance_of(BitbucketServer::Client) do |client|
         allow(client).to receive(:pull_requests).and_return(
@@ -23,7 +27,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, f
               {
                 'id' => 1,
                 'state' => 'MERGED',
-                'fromRef' => { 'latestCommit' => 'aaaa1' },
+                'fromRef' => { 'latestCommit' => commit_sha },
                 'toRef' => { 'latestCommit' => 'aaaa2' }
               }
             ),
@@ -77,13 +81,40 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, f
 
     context 'when pull requests are in merged or declined status' do
       it 'fetches latest commits from the remote repository' do
+        expected_refmap = [
+          "#{commit_sha}:refs/merge-requests/1/head",
+          'aaaa2:refs/keep-around/aaaa2',
+          'bbbb1:refs/merge-requests/2/head',
+          'bbbb2:refs/keep-around/bbbb2'
+        ]
+
         expect(project.repository).to receive(:fetch_remote).with(
           project.import_url,
-          refmap: %w[aaaa1 aaaa2 bbbb1 bbbb2],
+          refmap: expected_refmap,
           prune: false
         )
 
         importer.execute
+      end
+
+      context 'when a commit already exists' do
+        let_it_be(:commit_sha) { create_file_in_repo(project, 'master', 'master', 'test.txt', 'testing')[:result] }
+
+        it 'does not fetch the commit' do
+          expected_refmap = [
+            'aaaa2:refs/keep-around/aaaa2',
+            'bbbb1:refs/merge-requests/2/head',
+            'bbbb2:refs/keep-around/bbbb2'
+          ]
+
+          expect(project.repository).to receive(:fetch_remote).with(
+            project.import_url,
+            refmap: expected_refmap,
+            prune: false
+          )
+
+          importer.execute
+        end
       end
 
       context 'when feature flag "fetch_commits_for_bitbucket_server" is disabled' do

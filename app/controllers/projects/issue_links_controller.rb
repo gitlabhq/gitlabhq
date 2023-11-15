@@ -13,7 +13,7 @@ module Projects
     private
 
     def authorize_admin_issue_link!
-      render_403 unless can?(current_user, :admin_issue_link, @project)
+      render_403 unless can?(current_user, :admin_issue_link, issue)
     end
 
     def authorize_issue_link_association!

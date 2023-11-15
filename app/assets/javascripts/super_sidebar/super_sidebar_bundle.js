@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
+import VueApollo from 'vue-apollo';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
+import createDefaultClient from '~/lib/graphql';
 import { initStatusTriggers } from '../header';
 import { JS_TOGGLE_EXPAND_CLASS } from './constants';
 import createStore from './components/global_search/store';
@@ -12,6 +14,11 @@ import SuperSidebar from './components/super_sidebar.vue';
 import SuperSidebarToggle from './components/super_sidebar_toggle.vue';
 
 Vue.use(GlToast);
+Vue.use(VueApollo);
+
+const apolloProvider = new VueApollo({
+  defaultClient: createDefaultClient(),
+});
 
 const getTrialStatusWidgetData = (sidebarData) => {
   if (sidebarData.trial_status_widget_data_attrs && sidebarData.trial_status_popover_data_attrs) {
@@ -90,6 +97,7 @@ export const initSuperSidebar = () => {
   return new Vue({
     el,
     name: 'SuperSidebarRoot',
+    apolloProvider,
     provide: {
       rootPath,
       isImpersonating,

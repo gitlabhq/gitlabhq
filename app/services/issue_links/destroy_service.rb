@@ -3,11 +3,13 @@
 module IssueLinks
   class DestroyService < IssuableLinks::DestroyService
     include IncidentManagement::UsageData
+    include Gitlab::Utils::StrongMemoize
 
     private
 
     def permission_to_remove_relation?
-      can?(current_user, :admin_issue_link, source) && can?(current_user, :admin_issue_link, target)
+      (can?(current_user, :admin_issue_link, link.source) && can?(current_user, :create_issue_link, link.target)) ||
+        (can?(current_user, :admin_issue_link, link.target) && can?(current_user, :create_issue_link, link.source))
     end
 
     def track_event

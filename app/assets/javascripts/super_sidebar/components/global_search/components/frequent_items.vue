@@ -3,8 +3,10 @@ import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem, GlIcon } from '@gi
 import { truncateNamespace } from '~/lib/utils/text_utility';
 import { getItemsFromLocalStorage, removeItemFromLocalStorage } from '~/super_sidebar/utils';
 import { TRACKING_UNKNOWN_PANEL } from '~/super_sidebar/constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { TRACKING_CLICK_COMMAND_PALETTE_ITEM } from '../command_palette/constants';
 import FrequentItem from './frequent_item.vue';
+import FrequentItemSkeleton from './frequent_item_skeleton.vue';
 
 export default {
   name: 'FrequentlyVisitedItems',
@@ -13,8 +15,15 @@ export default {
     GlDisclosureDropdownItem,
     GlIcon,
     FrequentItem,
+    FrequentItemSkeleton,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     emptyStateText: {
       type: String,
       required: true,
@@ -45,10 +54,15 @@ export default {
       required: false,
       default: null,
     },
+    items: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
-      items: getItemsFromLocalStorage({
+      localItems: getItemsFromLocalStorage({
         storageKey: this.storageKey,
         maxItems: this.maxItems,
       }),
@@ -56,10 +70,11 @@ export default {
   },
   computed: {
     formattedItems() {
+      const items = this.glFeatures.frecentNamespacesSuggestions ? this.items : this.localItems;
       // Each item needs two different representations. One is for the
       // GlDisclosureDropdownItem, and the other is for the FrequentItem
       // renderer component inside it.
-      return this.items.map((item) => ({
+      return items.map((item) => ({
         forDropdown: {
           id: item.id,
 
@@ -83,7 +98,7 @@ export default {
       }));
     },
     showEmptyState() {
-      return this.items.length === 0;
+      return !this.loading && this.formattedItems.length === 0;
     },
     viewAllItem() {
       return {
@@ -93,18 +108,21 @@ export default {
     },
   },
   created() {
-    if (!this.storageKey) {
+    if (!this.glFeatures.frecentNamespacesSuggestions && !this.storageKey) {
       this.$emit('nothing-to-render');
     }
   },
   methods: {
     removeItem(item) {
+      if (this.glFeatures.frecentNamespacesSuggestions) {
+        return;
+      }
       removeItemFromLocalStorage({
         storageKey: this.storageKey,
         item,
       });
 
-      this.items = this.items.filter((i) => i.id !== item.id);
+      this.localItems = this.localItems.filter((i) => i.id !== item.id);
     },
   },
 };
@@ -114,16 +132,21 @@ export default {
   <gl-disclosure-dropdown-group v-if="storageKey" v-bind="$attrs">
     <template #group-label>{{ groupName }}</template>
 
-    <gl-disclosure-dropdown-item
-      v-for="item of formattedItems"
-      :key="item.forDropdown.id"
-      :item="item.forDropdown"
-      class="show-on-focus-or-hover--context"
-    >
-      <template #list-item
-        ><frequent-item :item="item.forRenderer" @remove="removeItem"
-      /></template>
+    <gl-disclosure-dropdown-item v-if="loading">
+      <frequent-item-skeleton />
     </gl-disclosure-dropdown-item>
+    <template v-else>
+      <gl-disclosure-dropdown-item
+        v-for="item of formattedItems"
+        :key="item.forDropdown.id"
+        :item="item.forDropdown"
+        class="show-on-focus-or-hover--context"
+      >
+        <template #list-item
+          ><frequent-item :item="item.forRenderer" @remove="removeItem"
+        /></template>
+      </gl-disclosure-dropdown-item>
+    </template>
 
     <gl-disclosure-dropdown-item v-if="showEmptyState" class="gl-cursor-text">
       <span class="gl-text-gray-500 gl-font-sm gl-my-3 gl-mx-3">{{ emptyStateText }}</span>

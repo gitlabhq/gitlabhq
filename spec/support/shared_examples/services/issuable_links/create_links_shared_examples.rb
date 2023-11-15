@@ -5,14 +5,6 @@ RSpec.shared_examples 'issuable link creation' do |use_references: true|
   let(:response_keys) { [:status, :created_references] }
   let(:async_notes) { false }
   let(:already_assigned_error_msg) { "#{issuable_type.capitalize}(s) already assigned" }
-  let(:permission_error_status) { issuable_type == :issue ? 403 : 404 }
-  let(:permission_error_msg) do
-    if issuable_type == :issue
-      "Couldn't link issue. You must have at least the Reporter role in both projects."
-    else
-      no_found_error_msg
-    end
-  end
 
   let(:no_found_error_msg) do
     "No matching #{issuable_type} found. Make sure that you are adding a valid #{issuable_type} URL."
@@ -47,7 +39,7 @@ RSpec.shared_examples 'issuable link creation' do |use_references: true|
       let(:params) { set_params([restricted_issuable]) }
 
       it 'returns error' do
-        is_expected.to eq(message: permission_error_msg, status: :error, http_status: permission_error_status)
+        is_expected.to eq(message: no_found_error_msg, status: :error, http_status: 404)
       end
 
       it 'no relationship is created' do
