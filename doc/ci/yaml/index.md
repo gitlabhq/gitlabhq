@@ -2404,6 +2404,37 @@ image:
 
 - [Override the entrypoint of an image](../docker/using_docker_images.md#override-the-entrypoint-of-an-image).
 
+#### `image:docker`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27919) in GitLab 16.7. Requires GitLab Runner 16.7 or later.
+
+Use `image:docker` to pass options to the Docker executor of a GitLab Runner.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default` section](#default).
+
+**Possible inputs**:
+
+A hash of options for the Docker executor, which can include:
+
+- `platform`: Selects the architecture of the image to pull. When not specified,
+    the default is the same platform as the host runner.
+
+**Example of `image:docker`**:
+
+```yaml
+arm-sql-job:
+  script: echo "Run sql tests"
+  image:
+    name: super/sql:experimental
+    docker:
+      platform: arm64/v8
+```
+
+**Additional details**:
+
+- `image:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/engine/reference/commandline/pull/#options).
+
 #### `image:pull_policy`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21619) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `ci_docker_image_pull_policy`. Disabled by default.
@@ -4219,6 +4250,38 @@ In this example, GitLab launches two containers for the job:
 - [Define `services` in the `.gitlab-ci.yml` file](../services/index.md#define-services-in-the-gitlab-ciyml-file).
 - [Run your CI/CD jobs in Docker containers](../docker/using_docker_images.md).
 - [Use Docker to build Docker images](../docker/using_docker_build.md).
+
+#### `services:docker`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27919) in GitLab 16.7. Requires GitLab Runner 16.7 or later.
+
+Use `services:docker` to pass options to the Docker executor of a GitLab Runner.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default` section](#default).
+
+**Possible inputs**:
+
+A hash of options for the Docker executor, which can include:
+
+- `platform`: Selects the architecture of the image to pull. When not specified,
+    the default is the same platform as the host runner.
+
+**Example of `service:docker`**:
+
+```yaml
+arm-sql-job:
+  script: echo "Run sql tests in service container"
+  image: ruby:2.6
+  services:
+    - name: super/sql:experimental
+      docker:
+        platform: arm64/v8
+```
+
+**Additional details**:
+
+- `services:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/engine/reference/commandline/pull/#options).
 
 #### `service:pull_policy`
 

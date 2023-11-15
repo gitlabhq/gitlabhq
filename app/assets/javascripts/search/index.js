@@ -15,7 +15,6 @@ export const initSearchApp = () => {
   const store = createStore({
     query,
     navigation,
-    useSidebarNavigation: gon.use_new_navigation,
     searchType,
   });
 

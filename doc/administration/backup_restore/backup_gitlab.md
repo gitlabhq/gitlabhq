@@ -362,13 +362,13 @@ Caveats:
 - The resultant filenames will still end in `.gz`.
 - The default decompression command, used during restore, is `gzip -cd`. Therefore if you override the compression command to use a format that cannot be decompressed by `gzip -cd`, you must override the decompression command during restore.
 
-### Default compression: Gzip with fastest method
+##### Default compression: Gzip with fastest method
 
 ```shell
 gitlab-backup create
 ```
 
-### Gzip with slowest method
+##### Gzip with slowest method
 
 ```shell
 gitlab-backup create COMPRESS_CMD="gzip -c --best"
@@ -380,7 +380,7 @@ If `gzip` was used for backup, then restore does not require any options:
 gitlab-backup restore
 ```
 
-### No compression
+##### No compression
 
 If your backup destination has built-in automatic compression, then you may wish to skip compression.
 
@@ -396,7 +396,7 @@ And on restore:
 gitlab-backup restore DECOMPRESS_CMD=tee
 ```
 
-### Replace Gzip
+##### Replace Gzip
 
 This is an example of how to use a compression tool which you installed manually:
 

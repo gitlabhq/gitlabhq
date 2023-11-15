@@ -12,7 +12,9 @@ module Gitlab
           include ::Gitlab::Config::Entry::Attributable
           include ::Gitlab::Config::Entry::Configurable
 
-          IMAGEABLE_ALLOWED_KEYS = %i[name entrypoint ports pull_policy].freeze
+          EXECUTOR_OPTS_KEYS = %i[docker].freeze
+
+          IMAGEABLE_ALLOWED_KEYS = EXECUTOR_OPTS_KEYS + %i[name entrypoint ports pull_policy].freeze
 
           included do
             include ::Gitlab::Config::Entry::Validatable
@@ -23,9 +25,15 @@ module Gitlab
 
               validates :name, type: String, presence: true
               validates :entrypoint, array_of_strings: true, allow_nil: true
+              validates :executor_opts, json_schema: {
+                base_directory: "lib/gitlab/ci/config/entry/schemas/imageable",
+                detail_errors: true,
+                filename: "executor_opts",
+                hash_conversion: true
+              }, allow_nil: true
             end
 
-            attributes :ports, :pull_policy
+            attributes :docker, :ports, :pull_policy
 
             entry :ports, Entry::Ports,
                 description: 'Ports used to expose the image/service'
@@ -48,6 +56,28 @@ module Gitlab
 
           def skip_config_hash_validation?
             true
+          end
+
+          def executor_opts
+            return unless config.is_a?(Hash)
+
+            config.slice(*EXECUTOR_OPTS_KEYS).compact.presence
+          end
+
+          def value
+            if string?
+              { name: config }
+            elsif hash?
+              {
+                name: config[:name],
+                entrypoint: config[:entrypoint],
+                executor_opts: executor_opts,
+                ports: (ports_value if ports_defined?),
+                pull_policy: pull_policy_value
+              }.compact
+            else
+              {}
+            end
           end
         end
       end

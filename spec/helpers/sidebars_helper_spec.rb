@@ -131,8 +131,10 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     it 'returns sidebar values from user', :use_clean_rails_memory_store_caching do
       expect(subject).to include({
         is_logged_in: true,
+        is_admin: false,
         name: user.name,
         username: user.username,
+        admin_url: admin_root_url,
         avatar_url: user.avatar_url,
         has_link_to_profile: helper.current_user_menu?(:profile),
         link_to_profile: user_path(user),
@@ -172,6 +174,14 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         shortcut_links: global_shortcut_links,
         track_visits_path: track_namespace_visits_path
       })
+    end
+
+    context 'when user is admin' do
+      before do
+        allow(user).to receive(:can_admin_all_resources?).and_return(true)
+      end
+
+      it { is_expected.to include({ is_admin: true }) }
     end
 
     describe "shortcut links" do

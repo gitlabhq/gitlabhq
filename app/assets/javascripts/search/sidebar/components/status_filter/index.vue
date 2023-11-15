@@ -1,5 +1,4 @@
 <script>
-import { HR_DEFAULT_CLASSES } from '../../constants';
 import RadioFilter from '../radio_filter.vue';
 import { statusFilterData } from './data';
 
@@ -9,7 +8,6 @@ export default {
     RadioFilter,
   },
   statusFilterData,
-  HR_DEFAULT_CLASSES,
 };
 </script>
 

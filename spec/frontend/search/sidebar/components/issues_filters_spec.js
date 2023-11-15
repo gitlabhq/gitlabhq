@@ -23,7 +23,6 @@ describe('GlobalSearch IssuesFilters', () => {
     const store = new Vuex.Store({
       state: {
         urlQuery: MOCK_QUERY,
-        useSidebarNavigation: false,
         searchType: SEARCH_TYPE_ADVANCED,
         ...initialState,
       },
@@ -44,7 +43,6 @@ describe('GlobalSearch IssuesFilters', () => {
   const findConfidentialityFilter = () => wrapper.findComponent(ConfidentialityFilter);
   const findLabelFilter = () => wrapper.findComponent(LabelFilter);
   const findArchivedFilter = () => wrapper.findComponent(ArchivedFilter);
-  const findDividers = () => wrapper.findAll('hr');
 
   describe.each`
     description                                       | searchIssueLabelAggregation
@@ -72,15 +70,6 @@ describe('GlobalSearch IssuesFilters', () => {
     it(`renders correctly LabelFilter when searchIssueLabelAggregation is ${searchIssueLabelAggregation}`, () => {
       expect(findLabelFilter().exists()).toBe(searchIssueLabelAggregation);
     });
-
-    it('renders divider correctly', () => {
-      // two dividers can't be disabled
-      let dividersCount = 2;
-      if (searchIssueLabelAggregation) {
-        dividersCount += 1;
-      }
-      expect(findDividers()).toHaveLength(dividersCount);
-    });
   });
 
   describe('Renders correctly with basic search', () => {
@@ -101,41 +90,6 @@ describe('GlobalSearch IssuesFilters', () => {
 
     it("doesn't render ArchivedFilter", () => {
       expect(findArchivedFilter().exists()).toBe(true);
-    });
-
-    it('renders 1 divider', () => {
-      expect(findDividers()).toHaveLength(2);
-    });
-  });
-
-  describe('Renders correctly in new nav', () => {
-    beforeEach(() => {
-      createComponent({
-        initialState: {
-          searchType: SEARCH_TYPE_ADVANCED,
-          useSidebarNavigation: true,
-        },
-        searchIssueLabelAggregation: true,
-      });
-    });
-    it('renders StatusFilter', () => {
-      expect(findStatusFilter().exists()).toBe(true);
-    });
-
-    it('renders ConfidentialityFilter', () => {
-      expect(findConfidentialityFilter().exists()).toBe(true);
-    });
-
-    it('renders LabelFilter', () => {
-      expect(findLabelFilter().exists()).toBe(true);
-    });
-
-    it('renders ArchivedFilter', () => {
-      expect(findArchivedFilter().exists()).toBe(true);
-    });
-
-    it("doesn't render dividers", () => {
-      expect(findDividers()).toHaveLength(0);
     });
   });
 
@@ -158,10 +112,6 @@ describe('GlobalSearch IssuesFilters', () => {
 
     it("doesn't render ArchivedFilter", () => {
       expect(findArchivedFilter().exists()).toBe(false);
-    });
-
-    it("doesn't render dividers", () => {
-      expect(findDividers()).toHaveLength(0);
     });
   });
 });

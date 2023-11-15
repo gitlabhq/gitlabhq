@@ -92,7 +92,7 @@ export default {
       'is-upstream': isUpstream,
       'is-downstream': isDownstream,
     }"
-    class="linked-pipeline-mini-list gl-display-inline gl-vertical-align-middle"
+    class="linked-pipeline-mini-list gl-display-inline-flex gl-gap-2 gl-vertical-align-middle"
   >
     <ci-icon
       v-for="pipeline in linkedPipelinesTrimmed"

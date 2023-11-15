@@ -10,6 +10,12 @@ query getOrganizationUsers($id: OrganizationsOrganizationID!) {
         id
         user {
           id
+          username
+          avatarUrl
+          name
+          publicEmail
+          createdAt
+          lastActivityOn
         }
       }
     }

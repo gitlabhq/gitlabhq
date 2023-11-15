@@ -31,26 +31,6 @@ $language-filter-max-height: 20rem;
   }
 }
 
-.search-sidebar {
-  @include media-breakpoint-down(lg) {
-    max-width: 100%;
-  }
-
-  @include media-breakpoint-down(xl) {
-    min-width: $search-sidebar-min-width;
-    max-width: $search-sidebar-min-width;
-  }
-
-  @include media-breakpoint-up(xl) {
-    min-width: $search-sidebar-max-width;
-    max-width: $search-sidebar-max-width;
-  }
-
-  .language-filter-max-height {
-    max-height: $language-filter-max-height;
-  }
-}
-
 .issue-filters {
   .label-filter {
     list-style: none;

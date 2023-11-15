@@ -189,7 +189,7 @@ To add a group to a project:
    From that date onward, the group can no longer access the project.
 1. Select **Invite**.
 
-The members of the group are not displayed on the **Members** tab.
+The members of the invited group are not displayed on the **Members** tab.
 Private groups are masked from unauthorized users.
 The **Members** tab shows:
 
@@ -210,7 +210,7 @@ If the importing member's role in the target project is:
 - Maintainer, then members with the Owner role in the source project are imported with the Maintainer role.
 - Owner, then members with the Owner role in the source project are imported with the Owner role.
 
-To import users:
+To import a project's members:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Manage > Members**.
@@ -218,7 +218,8 @@ To import users:
 1. Select the project. You can view only the projects for which you're a maintainer.
 1. Select **Import project members**.
 
-After the success message displays, refresh the page to view the new members.
+If the import is successful, a success message is displayed.
+To view the imported members, refresh the page.
 
 ## Remove a member from a project
 
@@ -264,7 +265,7 @@ To avoid this problem, GitLab administrators can:
 - Remove the malicious user account.
 - Change the password for the malicious user account.
 
-## Filter and sort members
+## Filter and sort project members
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21727) in GitLab 12.6.
 > - [Improved](https://gitlab.com/groups/gitlab-org/-/epics/4901) in GitLab 13.9.
@@ -279,8 +280,6 @@ You can filter and sort members in a project.
 1. In the **Filter members** box, select `Membership` `=` `Inherited`.
 1. Press <kbd>Enter</kbd>.
 
-![Project members filter inherited](img/project_members_filter_inherited_v14_4.png)
-
 ### Display direct members
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -288,19 +287,31 @@ You can filter and sort members in a project.
 1. In the **Filter members** box, select `Membership` `=` `Direct`.
 1. Press <kbd>Enter</kbd>.
 
-![Project members filter direct](img/project_members_filter_direct_v14_4.png)
+### Search for members in a project
 
-### Search
+To search for a project member:
 
-You can search for members by name, username, or email.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Manage > Members**.
+1. In the search box, enter the member's name, username, or email.
+1. Press <kbd>Enter</kbd>.
 
-![Project members search](img/project_members_search_v14_4.png)
+### Sort members in a project
 
-### Sort
+You can sort members in ascending or descending order by:
 
-You can sort members by **Account**, **Access granted**, **Max role**, or **Last sign-in** in ascending or descending order.
+- **Account** name
+- **Access granted** date
+- **Max role** the members have in the group
+- **User created** date
+- **Last activity** date
+- **Last sign-in** date
 
-![Project members sort](img/project_members_sort_v14_4.png)
+To sort members:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Manage > Members**.
+1. At the top of the member list, from the dropdown list, select the item you want to sort by.
 
 ## Request access to a project
 
@@ -319,8 +330,13 @@ Project maintainers cannot approve Owner role access requests.
 If a project does not have any direct owners or maintainers, the notification is sent to the
 most recently active owners of the project's group.
 
-If you change your mind before your request is approved, select
-**Withdraw Access Request**.
+### Withdraw an access request to a project
+
+You can withdraw an access request to a project before the request is approved.
+To withdraw the access request:
+
+1. On the left sidebar, select **Search or go to** and find the project you requested access to.
+1. Next to the project name, select **Withdraw Access Request**.
 
 ## Prevent users from requesting access to a project
 

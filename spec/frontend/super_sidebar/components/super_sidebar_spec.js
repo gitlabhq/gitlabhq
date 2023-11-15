@@ -58,6 +58,7 @@ describe('SuperSidebar component', () => {
   const findTrialStatusWidget = () => wrapper.findByTestId(trialStatusWidgetStubTestId);
   const findTrialStatusPopover = () => wrapper.findByTestId(trialStatusPopoverStubTestId);
   const findSidebarMenu = () => wrapper.findComponent(SidebarMenu);
+  const findAdminLink = () => wrapper.findByTestId('sidebar-admin-link');
   let trackingSpy = null;
 
   const createWrapper = ({
@@ -335,6 +336,27 @@ describe('SuperSidebar component', () => {
       createWrapper();
 
       expect(document.addEventListener).toHaveBeenCalledWith('keydown', wrapper.vm.focusTrap);
+    });
+  });
+
+  describe('link to Admin area', () => {
+    describe('when user is admin', () => {
+      it('renders', () => {
+        createWrapper({
+          sidebarData: {
+            ...mockSidebarData,
+            is_admin: true,
+          },
+        });
+        expect(findAdminLink().attributes('href')).toBe(mockSidebarData.admin_url);
+      });
+    });
+
+    describe('when user is not admin', () => {
+      it('renders', () => {
+        createWrapper();
+        expect(findAdminLink().exists()).toBe(false);
+      });
     });
   });
 });

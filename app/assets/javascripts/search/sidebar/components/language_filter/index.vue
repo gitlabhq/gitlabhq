@@ -27,7 +27,7 @@ export default {
     loadError: s__('GlobalSearch|Aggregations load error.'),
   },
   computed: {
-    ...mapState(['aggregations', 'useSidebarNavigation']),
+    ...mapState(['aggregations']),
     ...mapGetters(['languageAggregationBuckets']),
     hasBuckets() {
       return this.languageAggregationBuckets.length > 0;
@@ -75,7 +75,7 @@ export default {
 
 <template>
   <div v-if="hasBuckets" class="language-filter-checkbox">
-    <h5 class="gl-mt-0 gl-mb-5" :class="{ 'gl-font-sm': useSidebarNavigation }">
+    <h5 class="gl-mt-0 gl-mb-5 gl-font-sm">
       {{ $options.languageFilterData.header }}
     </h5>
     <div

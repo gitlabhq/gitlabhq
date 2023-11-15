@@ -72,8 +72,10 @@ module SidebarsHelper
   def super_sidebar_logged_in_context(user, group:, project:, panel:, panel_type:) # rubocop:disable Metrics/AbcSize
     super_sidebar_logged_out_context(panel: panel, panel_type: panel_type).merge({
       is_logged_in: true,
+      is_admin: user.can_admin_all_resources?,
       name: user.name,
       username: user.username,
+      admin_url: admin_root_url,
       avatar_url: user.avatar_url,
       has_link_to_profile: current_user_menu?(:profile),
       link_to_profile: user_path(user),

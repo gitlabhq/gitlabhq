@@ -18,8 +18,6 @@ import NotesFilters from '~/search/sidebar/components/notes_filters.vue';
 import CommitsFilters from '~/search/sidebar/components/commits_filters.vue';
 import MilestonesFilters from '~/search/sidebar/components/milestones_filters.vue';
 import WikiBlobsFilters from '~/search/sidebar/components/wiki_blobs_filters.vue';
-import ScopeLegacyNavigation from '~/search/sidebar/components/scope_legacy_navigation.vue';
-import SmallScreenDrawerNavigation from '~/search/sidebar/components/small_screen_drawer_navigation.vue';
 import ScopeSidebarNavigation from '~/search/sidebar/components/scope_sidebar_navigation.vue';
 import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
 
@@ -62,8 +60,6 @@ describe('GlobalSearchSidebar', () => {
   const findCommitsFilters = () => wrapper.findComponent(CommitsFilters);
   const findMilestonesFilters = () => wrapper.findComponent(MilestonesFilters);
   const findWikiBlobsFilters = () => wrapper.findComponent(WikiBlobsFilters);
-  const findScopeLegacyNavigation = () => wrapper.findComponent(ScopeLegacyNavigation);
-  const findSmallScreenDrawerNavigation = () => wrapper.findComponent(SmallScreenDrawerNavigation);
   const findScopeSidebarNavigation = () => wrapper.findComponent(ScopeSidebarNavigation);
   const findDomElementListener = () => wrapper.findComponent(DomElementListener);
 
@@ -129,46 +125,27 @@ describe('GlobalSearchSidebar', () => {
       });
     });
 
-    describe.each`
-      currentScope | sidebarNavShown | legacyNavShown
-      ${'issues'}  | ${false}        | ${true}
-      ${'test'}    | ${false}        | ${true}
-      ${'issues'}  | ${true}         | ${false}
-      ${'test'}    | ${true}         | ${false}
-    `(
-      'renders navigation for scope $currentScope',
-      ({ currentScope, sidebarNavShown, legacyNavShown }) => {
-        beforeEach(() => {
-          getterSpies.currentScope = jest.fn(() => currentScope);
-          createComponent({ useSidebarNavigation: sidebarNavShown });
-        });
+    describe.each(['issues', 'test'])('for scope %p', (currentScope) => {
+      beforeEach(() => {
+        getterSpies.currentScope = jest.fn(() => currentScope);
+        createComponent();
+      });
 
-        it(`renders navigation correctly with legacyNavShown ${legacyNavShown}`, () => {
-          expect(findScopeLegacyNavigation().exists()).toBe(legacyNavShown);
-          expect(findSmallScreenDrawerNavigation().exists()).toBe(legacyNavShown);
-        });
-
-        it(`renders navigation correctly with sidebarNavShown ${sidebarNavShown}`, () => {
-          expect(findScopeSidebarNavigation().exists()).toBe(sidebarNavShown);
-        });
-      },
-    );
+      it(`renders navigation correctly`, () => {
+        expect(findScopeSidebarNavigation().exists()).toBe(true);
+      });
+    });
   });
 
-  describe('when useSidebarNavigation=true', () => {
-    beforeEach(() => {
-      createComponent({ useSidebarNavigation: true });
-    });
+  it('toggles super sidebar when button is clicked', () => {
+    createComponent();
+    const elListener = findDomElementListener();
 
-    it('toggles super sidebar when button is clicked', () => {
-      const elListener = findDomElementListener();
+    expect(toggleSuperSidebarCollapsed).not.toHaveBeenCalled();
 
-      expect(toggleSuperSidebarCollapsed).not.toHaveBeenCalled();
+    elListener.vm.$emit('click');
 
-      elListener.vm.$emit('click');
-
-      expect(toggleSuperSidebarCollapsed).toHaveBeenCalledTimes(1);
-      expect(elListener.props('selector')).toBe('#js-open-mobile-filters');
-    });
+    expect(toggleSuperSidebarCollapsed).toHaveBeenCalledTimes(1);
+    expect(elListener.props('selector')).toBe('#js-open-mobile-filters');
   });
 });

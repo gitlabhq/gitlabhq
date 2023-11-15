@@ -2,7 +2,7 @@
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState } from 'vuex';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { HR_DEFAULT_CLASSES, SEARCH_TYPE_ADVANCED } from '../constants';
+import { SEARCH_TYPE_ADVANCED } from '../constants';
 import { confidentialFilterData } from './confidentiality_filter/data';
 import { statusFilterData } from './status_filter/data';
 import ConfidentialityFilter from './confidentiality_filter/index.vue';
@@ -26,7 +26,7 @@ export default {
   mixins: [glFeatureFlagsMixin()],
   computed: {
     ...mapGetters(['currentScope']),
-    ...mapState(['useSidebarNavigation', 'searchType']),
+    ...mapState(['searchType']),
     showConfidentialityFilter() {
       return Object.values(confidentialFilterData.scopes).includes(this.currentScope);
     },
@@ -43,12 +43,6 @@ export default {
     showArchivedFilter() {
       return archivedFilterData.scopes.includes(this.currentScope);
     },
-    showDivider() {
-      return !this.useSidebarNavigation;
-    },
-    hrClasses() {
-      return [...HR_DEFAULT_CLASSES, 'gl-display-none', 'gl-md-display-block'];
-    },
   },
 };
 </script>
@@ -56,11 +50,8 @@ export default {
 <template>
   <filters-template>
     <status-filter v-if="showStatusFilter" class="gl-mb-5" />
-    <hr v-if="showConfidentialityFilter && showDivider" :class="hrClasses" />
     <confidentiality-filter v-if="showConfidentialityFilter" class="gl-mb-5" />
-    <hr v-if="showLabelFilter && showDivider" :class="hrClasses" />
     <label-filter v-if="showLabelFilter" class="gl-mb-5" />
-    <hr v-if="showArchivedFilter && showDivider" :class="hrClasses" />
     <archived-filter v-if="showArchivedFilter" class="gl-mb-5" />
   </filters-template>
 </template>

@@ -52,7 +52,6 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
   };
 
   const findForm = () => wrapper.findComponent(GlForm);
-  const findDividers = () => wrapper.findAll('hr');
   const findApplyButton = () => wrapper.findComponent(GlButton);
   const findResetButton = () => wrapper.findComponent(GlLink);
   const findSlotContent = () => wrapper.findByText('Filters Content');
@@ -64,10 +63,6 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
 
     it('renders form', () => {
       expect(findForm().exists()).toBe(true);
-    });
-
-    it('renders dividers', () => {
-      expect(findDividers()).toHaveLength(2);
     });
 
     it('renders slot content', () => {

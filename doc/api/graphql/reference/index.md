@@ -29682,7 +29682,6 @@ Representation of mergeability check identifier.
 | <a id="mergeabilitycheckidentifierneed_rebase"></a>`NEED_REBASE` | Mergeability check identifier is need_rebase. |
 | <a id="mergeabilitycheckidentifiernot_approved"></a>`NOT_APPROVED` | Mergeability check identifier is not_approved. |
 | <a id="mergeabilitycheckidentifiernot_open"></a>`NOT_OPEN` | Mergeability check identifier is not_open. |
-| <a id="mergeabilitycheckidentifierpolicies_denied"></a>`POLICIES_DENIED` | Mergeability check identifier is policies_denied. |
 | <a id="mergeabilitycheckidentifierstatus_checks_must_pass"></a>`STATUS_CHECKS_MUST_PASS` | Mergeability check identifier is status_checks_must_pass. |
 
 ### `MergeabilityCheckStatus`

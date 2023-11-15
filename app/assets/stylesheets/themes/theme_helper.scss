@@ -235,16 +235,6 @@
     }
   }
 
-  .search-sidebar {
-    .nav-link {
-      &.active,
-      &:hover {
-        background-color: rgba($gray-50, 0.8);
-        color: $gray-900;
-      }
-    }
-  }
-
   // Sidebar
   .nav-sidebar li.active > a {
     color: $gray-900;

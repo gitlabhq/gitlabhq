@@ -21,7 +21,7 @@ export default {
     tooltip: s__('GlobalSearch|Include search results from archived projects'),
   },
   computed: {
-    ...mapState(['urlQuery', 'useSidebarNavigation']),
+    ...mapState(['urlQuery']),
     selectedFilter: {
       get() {
         return [parseBoolean(this.urlQuery?.include_archived)];
@@ -48,7 +48,7 @@ export default {
 
 <template>
   <gl-form-checkbox-group v-model="selectedFilter">
-    <h5 class="gl-mt-0 gl-mb-5" :class="{ 'gl-font-sm': useSidebarNavigation }">
+    <h5 class="gl-mt-0 gl-mb-5 gl-font-sm">
       {{ $options.archivedFilterData.headerLabel }}
     </h5>
     <gl-form-checkbox

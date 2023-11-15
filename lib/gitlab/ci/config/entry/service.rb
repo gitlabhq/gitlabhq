@@ -34,14 +34,13 @@ module Gitlab
           end
 
           def value
-            if string?
-              { name: @config }
-            elsif hash?
-              @config.merge(
-                pull_policy: pull_policy_value
+            if hash?
+              super.merge(
+                command: @config[:command],
+                alias: @config[:alias]
               ).compact
             else
-              {}
+              super
             end
           end
         end

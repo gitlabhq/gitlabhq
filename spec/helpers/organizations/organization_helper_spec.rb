@@ -119,10 +119,13 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   end
 
   describe '#organization_user_app_data' do
-    it 'returns expected data object' do
-      expect(helper.organization_user_app_data(organization)).to eq(
+    it 'returns expected json' do
+      expect(Gitlab::Json.parse(helper.organization_user_app_data(organization))).to eq(
         {
-          organization_gid: organization.to_global_id
+          'organization_gid' => organization.to_global_id.to_s,
+          'paths' => {
+            'admin_user' => admin_user_path(:id)
+          }
         }
       )
     end

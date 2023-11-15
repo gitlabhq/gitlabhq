@@ -31,6 +31,7 @@ RSpec/FilePath:
     - 'spec/requests/api/ci/runner/jobs_artifacts_spec.rb'
     - 'spec/requests/api/ci/runner/jobs_put_spec.rb'
     - 'spec/requests/api/ci/runner/jobs_request_post_spec.rb'
+    - 'spec/requests/api/ci/runner/jobs_request_yamls_spec.rb'
     - 'spec/requests/api/ci/runner/jobs_trace_spec.rb'
     - 'spec/requests/api/ci/runner/runners_delete_spec.rb'
     - 'spec/requests/api/ci/runner/runners_post_spec.rb'

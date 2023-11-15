@@ -8,6 +8,7 @@ module API
           expose :name, :entrypoint
           expose :ports, using: Entities::Ci::JobRequest::Port
 
+          expose :executor_opts
           expose :pull_policy
           expose :alias, :command
           expose :variables

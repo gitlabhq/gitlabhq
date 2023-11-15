@@ -17,7 +17,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['query', 'useSidebarNavigation']),
+    ...mapState(['query']),
     ...mapGetters(['currentScope']),
     ANY() {
       return this.filterData.filters.ANY;
@@ -57,7 +57,7 @@ export default {
 
 <template>
   <div>
-    <h5 class="gl-mt-0 gl-mb-5" :class="{ 'gl-font-sm': useSidebarNavigation }">
+    <h5 class="gl-mt-0 gl-mb-5 gl-font-sm">
       {{ filterData.header }}
     </h5>
     <gl-form-radio-group v-model="selectedFilter">

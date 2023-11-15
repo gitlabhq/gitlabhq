@@ -2,9 +2,13 @@
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import organizationUsersQuery from '../graphql/organization_users.query.graphql';
+import UsersView from './users_view.vue';
 
 export default {
   name: 'OrganizationsUsersApp',
+  components: {
+    UsersView,
+  },
   i18n: {
     users: __('Users'),
     loadingPlaceholder: __('Loading'),
@@ -25,7 +29,9 @@ export default {
         return { id: this.organizationGid };
       },
       update(data) {
-        return data.organization.organizationUsers.nodes;
+        return data.organization.organizationUsers.nodes.map(({ badges, user }) => {
+          return { ...user, badges, email: user.publicEmail };
+        });
       },
       error(error) {
         createAlert({ message: this.$options.i18n.errorMessage, error, captureError: true });
@@ -43,9 +49,6 @@ export default {
 <template>
   <section>
     <h1 class="gl-my-4 gl-font-size-h-display">{{ $options.i18n.users }}</h1>
-    <template v-if="loading">
-      {{ $options.i18n.loadingPlaceholder }}
-    </template>
-    <div data-testid="organization-users">{{ users }}</div>
+    <users-view :users="users" :loading="loading" />
   </section>
 </template>

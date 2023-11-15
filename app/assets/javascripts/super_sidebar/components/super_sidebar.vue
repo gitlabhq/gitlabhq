@@ -39,6 +39,7 @@ export default {
   i18n: {
     skipToMainContent: __('Skip to main content'),
     primaryNavigation: s__('Navigation|Primary navigation'),
+    adminArea: s__('Navigation|Admin Area'),
   },
   inject: ['showTrialStatusWidget'],
   props: {
@@ -220,6 +221,16 @@ export default {
         </div>
         <div class="gl-p-3">
           <help-center ref="helpCenter" :sidebar-data="sidebarData" />
+          <gl-button
+            v-if="sidebarData.is_admin"
+            class="gl-fixed gl-right-0 gl-mr-3 gl-mt-2"
+            data-testid="sidebar-admin-link"
+            :href="sidebarData.admin_url"
+            icon="admin"
+            size="small"
+          >
+            {{ $options.i18n.adminArea }}
+          </gl-button>
         </div>
       </div>
     </nav>

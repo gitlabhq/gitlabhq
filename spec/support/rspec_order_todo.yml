@@ -2709,7 +2709,6 @@
 - './ee/spec/services/merge_requests/build_service_spec.rb'
 - './ee/spec/services/merge_requests/mergeability/check_approved_service_spec.rb'
 - './ee/spec/services/merge_requests/mergeability/check_blocked_by_other_mrs_service_spec.rb'
-- './ee/spec/services/merge_requests/mergeability/check_denied_policies_service_spec.rb'
 - './ee/spec/services/merge_requests/merge_service_spec.rb'
 - './ee/spec/services/merge_requests/merge_to_ref_service_spec.rb'
 - './ee/spec/services/merge_requests/push_options_handler_service_spec.rb'

@@ -13,7 +13,7 @@ class CreateContributionAnalyticsEvents < ClickHouse::Migration
         created_at Date DEFAULT toDate(now()),
         updated_at DateTime64(6, 'UTC') DEFAULT now()
       )
-      ENGINE = MergeTree
+      ENGINE = ReplacingMergeTree
       ORDER BY (path, created_at, author_id, id)
       PARTITION BY toYear(created_at);
     SQL

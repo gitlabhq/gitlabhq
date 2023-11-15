@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe StorageHelper do
+RSpec.describe StorageHelper, feature_category: :consumables_cost_management do
   describe "#storage_counter" do
     it "formats bytes to one decimal place" do
       expect(helper.storage_counter(1.23.megabytes)).to eq("1.2 MiB")

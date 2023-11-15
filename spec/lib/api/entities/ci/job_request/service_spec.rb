@@ -9,6 +9,7 @@ RSpec.describe API::Entities::Ci::JobRequest::Service do
       ::Gitlab::Ci::Build::Image,
       name: 'image_name',
       entrypoint: ['foo'],
+      executor_opts: {},
       ports: ports,
       pull_policy: ['if-not-present'],
       alias: 'alias',
@@ -25,6 +26,7 @@ RSpec.describe API::Entities::Ci::JobRequest::Service do
     expect(result).to eq(
       name: 'image_name',
       entrypoint: ['foo'],
+      executor_opts: {},
       ports: ports,
       pull_policy: ['if-not-present'],
       alias: 'alias',

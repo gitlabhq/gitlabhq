@@ -961,7 +961,7 @@ this information is removed from the resulting merged file.
 
 ## Versioning and release process
 
-Check the [Release Process documentation](https://gitlab.com/gitlab-org/security-products/release/blob/master/docs/release_process.md).
+Check the [Release Process documentation](../../../development/sec/analyzer_development_guide.md#versioning-and-release-process).
 
 ## Contributing to the vulnerability database
 

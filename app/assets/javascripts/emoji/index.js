@@ -77,6 +77,8 @@ async function loadEmojiWithNames() {
 }
 
 export async function loadCustomEmojiWithNames() {
+  const emojiData = { emojis: {}, names: [] };
+
   if (document.body?.dataset?.groupFullPath && window.gon?.features?.customEmoji) {
     const client = createApolloClient();
     const { data } = await client.query({
@@ -86,26 +88,21 @@ export async function loadCustomEmojiWithNames() {
       },
     });
 
-    return data?.group?.customEmoji?.nodes?.reduce(
-      (acc, e) => {
-        // Map the custom emoji into the format of the normal emojis
-        acc.emojis[e.name] = {
-          c: 'custom',
-          d: e.name,
-          e: undefined,
-          name: e.name,
-          src: e.url,
-          u: 'custom',
-        };
-        acc.names.push(e.name);
-
-        return acc;
-      },
-      { emojis: {}, names: [] },
-    );
+    data?.group?.customEmoji?.nodes?.forEach((e) => {
+      // Map the custom emoji into the format of the normal emojis
+      emojiData.emojis[e.name] = {
+        c: 'custom',
+        d: e.name,
+        e: undefined,
+        name: e.name,
+        src: e.url,
+        u: 'custom',
+      };
+      emojiData.names.push(e.name);
+    });
   }
 
-  return { emojis: {}, names: [] };
+  return emojiData;
 }
 
 async function prepareEmojiMap() {

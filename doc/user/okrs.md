@@ -54,10 +54,6 @@ To learn how to create better OKRs and how we use them at GitLab, see the
 
 ## Create an objective
 
-Prerequisites:
-
-- You must have at least the Guest role for the project.
-
 To create an objective:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -529,11 +525,11 @@ Prerequisite:
 To link an item to an objective or key result:
 
 1. In the **Linked items** section of an objective or key result,
-   select the **Add** button.
+   select **Add**.
 1. Select the relationship between the two items. Either:
-   - **relates to**
-   - **blocks**
-   - **is blocked by**
+   - **Relates to**
+   - **Blocks**
+   - **Is blocked by**
 1. Enter the search text of the item.
 1. When you have added all the items to be linked, select **Add** below the search box.
 
