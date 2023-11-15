@@ -212,6 +212,12 @@ module Types
           description: 'Abuse report labels.',
           resolver: Resolvers::AbuseReportLabelsResolver
 
+    field :ml_model, ::Types::Ml::ModelType,
+          null: true,
+          alpha: { milestone: '16.7' },
+          description: 'Find machine learning models.',
+          resolver: Resolvers::Ml::ModelDetailResolver
+
     def design_management
       DesignManagementObject.new(nil)
     end

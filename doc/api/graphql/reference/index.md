@@ -584,6 +584,22 @@ Returns [`Milestone`](#milestone).
 | ---- | ---- | ----------- |
 | <a id="querymilestoneid"></a>`id` | [`MilestoneID!`](#milestoneid) | Find a milestone by its ID. |
 
+### `Query.mlModel`
+
+Find machine learning models.
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`MlModel`](#mlmodel).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querymlmodelid"></a>`id` | [`MlModelID!`](#mlmodelid) | ID of the model. |
+
 ### `Query.namespace`
 
 Find a namespace.
@@ -11364,6 +11380,43 @@ The edge type for [`Milestone`](#milestone).
 | <a id="milestoneedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="milestoneedgenode"></a>`node` | [`Milestone`](#milestone) | The item at the end of the edge. |
 
+#### `MlModelVersionConnection`
+
+The connection type for [`MlModelVersion`](#mlmodelversion).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlmodelversionconnectionedges"></a>`edges` | [`[MlModelVersionEdge]`](#mlmodelversionedge) | A list of edges. |
+| <a id="mlmodelversionconnectionnodes"></a>`nodes` | [`[MlModelVersion]`](#mlmodelversion) | A list of nodes. |
+| <a id="mlmodelversionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `MlModelVersionConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlmodelversionconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
+
+#### `MlModelVersionEdge`
+
+The edge type for [`MlModelVersion`](#mlmodelversion).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlmodelversionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="mlmodelversionedgenode"></a>`node` | [`MlModelVersion`](#mlmodelversion) | The item at the end of the edge. |
+
 #### `NamespaceCommitEmailConnection`
 
 The connection type for [`NamespaceCommitEmail`](#namespacecommitemail).
@@ -20332,6 +20385,16 @@ Represents an entry from the Cloud License history.
 | <a id="locationblobpath"></a>`blobPath` | [`String`](#string) | HTTP URI path to view the input file in GitLab. |
 | <a id="locationpath"></a>`path` | [`String`](#string) | Path, relative to the root of the repository, of the filewhich was analyzed to detect the dependency. |
 
+### `MLModelVersionLinks`
+
+Represents links to perform actions on the model version.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlmodelversionlinksshowpath"></a>`showPath` | [`String`](#string) | Path to the details page of the model version. |
+
 ### `MavenMetadata`
 
 Maven metadata.
@@ -21910,6 +21973,31 @@ Contains statistics about a milestone.
 | ---- | ---- | ----------- |
 | <a id="milestonestatsclosedissuescount"></a>`closedIssuesCount` | [`Int`](#int) | Number of closed issues associated with the milestone. |
 | <a id="milestonestatstotalissuescount"></a>`totalIssuesCount` | [`Int`](#int) | Total number of issues associated with the milestone. |
+
+### `MlModel`
+
+Machine learning model in the model registry.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlmodelid"></a>`id` | [`MlModelID!`](#mlmodelid) | ID of the model. |
+| <a id="mlmodelname"></a>`name` | [`String!`](#string) | Name of the model. |
+| <a id="mlmodelversions"></a>`versions` | [`MlModelVersionConnection`](#mlmodelversionconnection) | Versions of the model. (see [Connections](#connections)) |
+
+### `MlModelVersion`
+
+Version of a machine learning model.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlmodelversion_links"></a>`_links` | [`MLModelVersionLinks!`](#mlmodelversionlinks) | Map of links to perform actions on the model version. |
+| <a id="mlmodelversioncreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="mlmodelversionid"></a>`id` | [`MlModelVersionID!`](#mlmodelversionid) | ID of the model version. |
+| <a id="mlmodelversionversion"></a>`version` | [`String!`](#string) | Name of the version. |
 
 ### `Namespace`
 
@@ -31231,6 +31319,18 @@ An example `MergeRequestID` is: `"gid://gitlab/MergeRequest/1"`.
 A `MilestoneID` is a global ID. It is encoded as a string.
 
 An example `MilestoneID` is: `"gid://gitlab/Milestone/1"`.
+
+### `MlModelID`
+
+A `MlModelID` is a global ID. It is encoded as a string.
+
+An example `MlModelID` is: `"gid://gitlab/Ml::Model/1"`.
+
+### `MlModelVersionID`
+
+A `MlModelVersionID` is a global ID. It is encoded as a string.
+
+An example `MlModelVersionID` is: `"gid://gitlab/Ml::ModelVersion/1"`.
 
 ### `NamespaceID`
 

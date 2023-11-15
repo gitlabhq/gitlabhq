@@ -23284,6 +23284,9 @@ msgstr ""
 msgid "GroupSettings|Enabling these features is your acceptance of the %{link_start}GitLab Testing Agreement%{link_end}."
 msgstr ""
 
+msgid "GroupSettings|Enforce SSH Certificates"
+msgstr ""
+
 msgid "GroupSettings|Experiment and Beta features"
 msgstr ""
 

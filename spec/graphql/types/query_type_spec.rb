@@ -137,4 +137,14 @@ RSpec.describe GitlabSchema.types['Query'], feature_category: :shared do
       is_expected.to have_graphql_resolver(Resolvers::BoardListResolver)
     end
   end
+
+  describe 'mlModel field' do
+    subject { described_class.fields['mlModel'] }
+
+    it 'returns metadata', :aggregate_failures do
+      is_expected.to have_graphql_type(Types::Ml::ModelType)
+      is_expected.to have_graphql_arguments(:id)
+      is_expected.to have_graphql_resolver(Resolvers::Ml::ModelDetailResolver)
+    end
+  end
 end
