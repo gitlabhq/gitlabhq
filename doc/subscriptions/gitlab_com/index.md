@@ -192,7 +192,7 @@ To add seats to a subscription:
 1. Select **Add more seats** on the relevant subscription card.
 1. Enter the number of additional users.
 1. Review the **Purchase summary** section. The system lists the total price for all users on the
-   system and a credit for what you've already paid. You are only be charged for the net change.
+   system and a credit for what you've already paid. You are only charged for the net change.
 1. Enter your payment information.
 1. Select **Purchase seats**.
 

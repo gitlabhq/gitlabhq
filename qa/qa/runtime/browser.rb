@@ -43,6 +43,7 @@ module QA
       end
 
       def self.configure! # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        return if QA::Runtime::Env.dry_run
         return if @configured
 
         RSpec.configure do |config|

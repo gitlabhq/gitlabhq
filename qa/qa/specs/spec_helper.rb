@@ -14,7 +14,7 @@ Knapsack::Adapters::RSpecAdapter.bind if QA::Runtime::Env.knapsack?
 
 # TODO: move all classes that perform rspec configuration under spec/helpers
 QA::Support::GitlabAddress.define_gitlab_address_attribute!
-QA::Runtime::Browser.configure! unless QA::Runtime::Env.dry_run
+QA::Runtime::Browser.configure!
 QA::Specs::Helpers::FeatureSetup.configure!
 QA::Runtime::AllureReport.configure!
 QA::Runtime::Scenario.from_env(QA::Runtime::Env.runtime_scenario_attributes)
@@ -49,6 +49,11 @@ RSpec.configure do |config|
     # Reset fabrication counters tracked in resource base
     Thread.current[:api_fabrication] = 0
     Thread.current[:browser_ui_fabrication] = 0
+  end
+
+  config.prepend_before(:suite) do
+    # Perform before hooks at the very start of the test run
+    QA::Runtime::Release.perform_before_hooks unless QA::Runtime::Env.dry_run
   end
 
   config.before(:suite) do

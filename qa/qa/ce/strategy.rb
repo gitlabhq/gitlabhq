@@ -20,10 +20,10 @@ module QA
           )
         end
 
-        QA::Runtime::Logger.info("Browser: #{QA::Runtime::Env.browser}")
+        QA::Runtime::Logger.info("Using Browser: #{QA::Runtime::Env.browser}")
 
         if QA::Runtime::Env.use_selenoid?
-          QA::Runtime::Logger.info("Browser version: #{QA::Runtime::Env.selenoid_browser_version}")
+          QA::Runtime::Logger.info("Using Selenoid Browser version: #{QA::Runtime::Env.selenoid_browser_version}")
         end
 
         # The login page could take some time to load the first time it is visited.

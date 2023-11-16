@@ -32,16 +32,6 @@ module QA
         # Set large setup attribute
         Runtime::Scenario.define(:large_setup?, args.include?('can_use_large_setup'))
 
-        ##
-        # Configure browser
-        #
-        Runtime::Browser.configure!
-
-        ##
-        # Perform before hooks, which are different for CE and EE
-        #
-        QA::Runtime::Release.perform_before_hooks unless QA::Runtime::Env.dry_run
-
         Specs::Runner.perform do |specs|
           specs.tty = true
           specs.tags = self.class.focus
