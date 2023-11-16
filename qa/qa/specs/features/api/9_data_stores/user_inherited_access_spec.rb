@@ -12,6 +12,8 @@ module QA
       end
 
       context 'when added to parent group' do
+        include QA::Support::Helpers::Project
+
         let!(:parent_group_user) { create(:user, api_client: admin_api_client) }
 
         let!(:parent_group_user_api_client) do
@@ -23,6 +25,8 @@ module QA
         end
 
         before do
+          wait_until_project_is_ready(sub_group_project)
+
           parent_group.add_member(parent_group_user)
         end
 

@@ -509,18 +509,6 @@
               "description": "Command or script that should be executed as the container's entrypoint. It will be translated to Docker's --entrypoint option while creating the container. The syntax is similar to Dockerfile's ENTRYPOINT directive, where each shell token is a separate string in the array.",
               "minItems": 1
             },
-            "docker": {
-              "type": "object",
-              "description": "Options to pass to Runners Docker Executor",
-              "additionalProperties": false,
-              "properties": {
-                "platform": {
-                  "type": "string",
-                  "minLength": 1,
-                  "description": "Image architecture to pull."
-                }
-              }
-            },
             "pull_policy": {
               "markdownDescription": "Specifies how to pull the image in Runner. It can be one of `always`, `never` or `if-not-present`. The default value is `always`. [Learn more](https://docs.gitlab.com/ee/ci/yaml/#imagepull_policy).",
               "default": "always",
@@ -589,18 +577,6 @@
                 "minItems": 1,
                 "items": {
                   "type": "string"
-                }
-              },
-              "docker": {
-                "type": "object",
-                "description": "Options to pass to Runners Docker Executor",
-                "additionalProperties": false,
-                "properties": {
-                  "platform": {
-                    "type": "string",
-                    "minLength": 1,
-                    "description": "Image architecture to pull."
-                  }
                 }
               },
               "pull_policy": {

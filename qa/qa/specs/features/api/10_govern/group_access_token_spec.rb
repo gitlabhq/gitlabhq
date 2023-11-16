@@ -3,14 +3,16 @@
 module QA
   RSpec.describe 'Govern' do
     describe 'Group access token', product_group: :authentication do
+      include QA::Support::Helpers::Project
+
       let(:group_access_token) { create(:group_access_token) }
       let(:api_client) { Runtime::API::Client.new(:gitlab, personal_access_token: group_access_token.token) }
       let(:project) do
-        Resource::Project.fabricate! do |project|
-          project.name = 'project-for-group-access-token'
-          project.group = group_access_token.group
-          project.initialize_with_readme = true
-        end
+        create(:project, name: 'project-for-group-access-token', group: group_access_token.group)
+      end
+
+      before do
+        wait_until_project_is_ready(project)
       end
 
       it(
@@ -30,11 +32,7 @@ module QA
 
       it(
         'can be used to commit via the API',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/367067',
-        quarantine: {
-          type: :flaky,
-          issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/396615"
-        }
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/367067'
       ) do
         expect do
           create(:commit,

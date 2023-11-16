@@ -6,6 +6,9 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Working with diffs
 
+This page contains developer documentation for diffs. For the user documentation,
+see [Diffs in merge requests](../../../user/project/merge_requests/versions.md).
+
 We rely on different sources to present diffs. These include:
 
 - Gitaly service

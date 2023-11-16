@@ -58358,9 +58358,6 @@ msgstr ""
 msgid "test case"
 msgstr ""
 
-msgid "the '%{data_pointer}' must be a valid '%{type}'"
-msgstr ""
-
 msgid "the correct format."
 msgstr ""
 

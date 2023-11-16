@@ -3,9 +3,15 @@
 module QA
   RSpec.describe 'Govern' do
     describe 'Project access token', product_group: :authentication do
-      let!(:project) { create(:project, name: "project-to-test-project-access-token-#{SecureRandom.hex(4)}") }
+      include QA::Support::Helpers::Project
+
+      let!(:project) { create(:project, name: "project-to-test-project-access-token") }
       let!(:project_access_token) { create(:project_access_token, project: project) }
       let!(:user_api_client) { Runtime::API::Client.new(:gitlab, personal_access_token: project_access_token.token) }
+
+      before do
+        wait_until_project_is_ready(project)
+      end
 
       context 'for the same project' do
         it 'can be used to create a file via the project API',
@@ -41,7 +47,11 @@ module QA
 
       context 'for a different project' do
         let(:different_project) do
-          create(:project, name: "different-project-to-test-project-access-token-#{SecureRandom.hex(4)}")
+          create(:project, name: "different-project-to-test-project-access-token")
+        end
+
+        before do
+          wait_until_project_is_ready(different_project)
         end
 
         after do

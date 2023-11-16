@@ -71,6 +71,7 @@ In the following table, you can see:
 | [Users and permissions report](../../administration/admin_area.md#user-permission-export) | GitLab 16.6 and later |
 | [Advanced search](../../user/search/advanced_search.md) | GitLab 16.6 and later |
 | [DevOps Adoption](../../user/group/devops_adoption/index.md) | GitLab 16.6 and later |
+| [Сross-project pipelines with artifacts dependencies](../../ci/yaml/index.md#needsproject) | GitLab 16.7 and later |
 
 ### Enable registration features
 

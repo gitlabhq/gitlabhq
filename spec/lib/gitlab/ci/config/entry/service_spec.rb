@@ -47,17 +47,17 @@ RSpec.describe Gitlab::Ci::Config::Entry::Service do
         expect(entry.ports).to be_nil
       end
     end
-
-    describe '#executor_opts' do
-      it "returns service's executor_opts configuration" do
-        expect(entry.executor_opts).to be_nil
-      end
-    end
   end
 
   context 'when configuration is a hash' do
     let(:config) do
-      { name: 'postgresql:9.5', alias: 'db', command: %w[cmd run], entrypoint: %w[/bin/sh run] }
+      {
+        name: 'postgresql:9.5',
+        alias: 'db',
+        command: %w[cmd run],
+        entrypoint: %w[/bin/sh run],
+        variables: { 'MY_VAR' => 'variable' }
+      }
     end
 
     describe '#valid?' do
@@ -143,27 +143,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Service do
           it "returns image's ports" do
             expect(entry.ports).to eq ports
           end
-        end
-      end
-    end
-
-    context 'when configuration has docker options' do
-      let(:config) { { name: 'postgresql:9.5', docker: { platform: 'amd64' } } }
-
-      describe '#valid?' do
-        it 'is valid' do
-          expect(entry).to be_valid
-        end
-      end
-
-      describe '#value' do
-        it "returns value" do
-          expect(entry.value).to eq(
-            name: 'postgresql:9.5',
-            executor_opts: {
-              docker: { platform: 'amd64' }
-            }
-          )
         end
       end
     end
