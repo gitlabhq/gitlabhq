@@ -126,14 +126,14 @@ If your GitLab instance uses an HTTP proxy server to access the internet, ensure
 the server is configured to allow outbound connections, including the
 [`gitlab_workhorse` environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.html).
 
-### Update GitLab
+### Upgrade GitLab
 
 In GitLab 16.3 and later, GitLab is enforcing the cloud licensing requirement for Code Suggestions:
 
 - The Premium and Ultimate subscription tiers support cloud Licensing.
 - GitLab Free does not have cloud licensing support.
 
-If you have a GitLab Free subscription and update to GitLab 16.3 or later,
+If you have a GitLab Free subscription and upgrade to GitLab 16.3 or later,
 to continue having early access to Code Suggestions, you must:
 
 1. Have a [subscription that supports cloud licensing](https://about.gitlab.com/pricing/).
@@ -144,8 +144,8 @@ to continue having early access to Code Suggestions, you must:
 
 You must [manually synchronize your subscription](../../../../subscriptions/self_managed/index.md#manually-synchronize-your-subscription-details) if either:
 
-- You have already updated to GitLab 16.3 and have just bought a Premium or Ultimate tier subscription.
-- You already have a Premium or Ultimate tier subscription and have just updated to GitLab 16.3.
+- You have already upgraded to GitLab 16.3 and have just bought a Premium or Ultimate tier subscription.
+- You already have a Premium or Ultimate tier subscription and have just upgraded to GitLab 16.3.
 
 Without the manual synchronization, it might take up to 24 hours to active Code Suggestions on your instance.
 

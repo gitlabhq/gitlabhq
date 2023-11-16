@@ -95,7 +95,7 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker, feature_category: :
           expect(redis).to receive(:hset).with(
             'inactive_projects_deletion_warning_email_notified',
             "project:#{inactive_large_project.id}",
-            Date.current
+            Date.current.to_s
           )
         end
         expect(::Projects::InactiveProjectsDeletionNotificationWorker).to receive(:perform_async).with(

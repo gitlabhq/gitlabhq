@@ -881,7 +881,7 @@ RSpec.describe Event, feature_category: :user_profile do
     context 'when a project was updated more than 1 hour ago', :clean_gitlab_redis_shared_state do
       before do
         ::Gitlab::Redis::SharedState.with do |redis|
-          redis.hset('inactive_projects_deletion_warning_email_notified', "project:#{project.id}", Date.current)
+          redis.hset('inactive_projects_deletion_warning_email_notified', "project:#{project.id}", Date.current.to_s)
         end
       end
 

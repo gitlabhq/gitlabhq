@@ -48,7 +48,7 @@ If you suspect that your GitLab instance has been compromised, consider taking t
 - Review the [Credentials Inventory](../administration/credentials_inventory.md), if available to you.
 - Change any sensitive credentials, variables, tokens, and secrets. For example, those located in instance configuration, database,
   CI/CD pipelines, or elsewhere.
-- Upgrade to the latest version of GitLab and adopt a plan to upgrade after every security patch release.
+- Update to the latest version of GitLab and adopt a plan to update after every security patch release.
 
 In addition, the suggestions below are common steps taken in incident response plans when servers are compromised by malicious actors.
 

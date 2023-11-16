@@ -36,7 +36,7 @@ module Gitlab
 
     def mark_notified
       Gitlab::Redis::SharedState.with do |redis|
-        redis.hset(DELETION_TRACKING_REDIS_KEY, "project:#{project_id}", Date.current)
+        redis.hset(DELETION_TRACKING_REDIS_KEY, "project:#{project_id}", Date.current.to_s)
       end
     end
 
@@ -47,8 +47,9 @@ module Gitlab
     end
 
     def scheduled_deletion_date
-      if notification_date.present?
-        (notification_date.to_date + grace_period_after_notification).to_s
+      notif_date = notification_date
+      if notif_date.present?
+        (notif_date.to_date + grace_period_after_notification).to_s
       else
         grace_period_after_notification.from_now.to_date.to_s
       end

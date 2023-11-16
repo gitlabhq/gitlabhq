@@ -319,6 +319,63 @@ To use Docker-in-Docker with TLS enabled in Kubernetes:
        - docker run my-docker-image /script/to/run/tests
    ```
 
+##### Docker-in-Docker with TLS disabled in Kubernetes
+
+To use Docker-in-Docker with TLS disabled in Kubernetes, you must adapt the example above to:
+
+- Remove the `[[runners.kubernetes.volumes.empty_dir]]` section from the `values.yml` file.
+- Change the port from `2376` to `2375` with `DOCKER_HOST: tcp://docker:2375`.
+- Instruct Docker to start with TLS disabled with `DOCKER_TLS_CERTDIR: ""`.
+
+For example:
+
+1. Using the
+   [Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html), update the
+   [`values.yml` file](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/00c1a2098f303dffb910714752e9a981e119f5b5/values.yaml#L133-137):
+
+   ```yaml
+   runners:
+     config: |
+       [[runners]]
+         [runners.kubernetes]
+           image = "ubuntu:20.04"
+           privileged = true
+   ```
+
+1. You can now use `docker` in the job script. You should include the
+   `docker:24.0.5-dind` service:
+
+   ```yaml
+   default:
+     image: docker:24.0.5
+     services:
+       - docker:24.0.5-dind
+     before_script:
+       - docker info
+
+   variables:
+     # When using dind service, you must instruct Docker to talk with
+     # the daemon started inside of the service. The daemon is available
+     # with a network connection instead of the default
+     # /var/run/docker.sock socket.
+     DOCKER_HOST: tcp://docker:2375
+     #
+     # The 'docker' hostname is the alias of the service container as described at
+     # https://docs.gitlab.com/ee/ci/services/#accessing-the-services.
+     # If you're using GitLab Runner 12.7 or earlier with the Kubernetes executor and Kubernetes 1.6 or earlier,
+     # the variable must be set to tcp://localhost:2376 because of how the
+     # Kubernetes executor connects services to the job container
+     # DOCKER_HOST: tcp://localhost:2376
+     #
+     # This instructs Docker not to start over TLS.
+     DOCKER_TLS_CERTDIR: ""
+   build:
+     stage: build
+     script:
+       - docker build -t my-docker-image .
+       - docker run my-docker-image /script/to/run/tests
+   ```
+
 #### Known issues with Docker-in-Docker
 
 Docker-in-Docker is the recommended configuration, but you should be aware of the following issues:
