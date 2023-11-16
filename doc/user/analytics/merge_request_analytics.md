@@ -23,7 +23,7 @@ You can use merge request analytics to identify:
 
 ## View merge request analytics
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role.
 

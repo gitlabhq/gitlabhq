@@ -53,7 +53,7 @@ By default, GitLab instances do not have a compute quota.
 The default value for the quota is `0`, which is unlimited.
 However, you can change this default value.
 
-Prerequisite:
+Prerequisites:
 
 - You must be a GitLab administrator.
 
@@ -75,7 +75,7 @@ If a quota is already defined for a specific namespace, this value does not chan
 You can override the global value and set a compute quota
 for a specific namespace.
 
-Prerequisite:
+Prerequisites:
 
 - You must be a GitLab administrator.
 
@@ -97,7 +97,7 @@ If you set a quota for a subgroup, it is not used.
 
 ## View compute usage
 
-Prerequisite:
+Prerequisites:
 
 - You must have access to the build to view the total usage and quota summary for a namespace associated with a build.
 - Access to **Usage Quotas** page is based on your role in the associated namespace or group.
@@ -106,7 +106,7 @@ Prerequisite:
 
 > Displaying shared runners duration per project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355666) in GitLab 15.0.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role for the group.
 
@@ -125,7 +125,7 @@ subgroups, sorted in descending order of compute usage.
 
 > Displaying shared runners duration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345795) in GitLab 15.0.
 
-Prerequisite:
+Prerequisites:
 
 - The namespace must be your personal namespace.
 
@@ -164,7 +164,7 @@ You can find pricing for additional compute minutes on the
 
 ### Purchase compute minutes for a group **(FREE SAAS)**
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role for the group.
 
@@ -183,7 +183,7 @@ namespace.
 
 ### Purchase compute minutes for a personal namespace **(FREE SAAS)**
 
-Prerequisite:
+Prerequisites:
 
 - The namespace must be your personal namespace.
 

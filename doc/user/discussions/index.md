@@ -149,7 +149,7 @@ If you edit an existing comment to add a user mention that wasn't there before, 
 You can prevent public comments in an issue or merge request.
 When you do, only project members can add and edit comments.
 
-Prerequisite:
+Prerequisites:
 
 - In merge requests, you must have at least the Developer role.
 - In issues, you must have at least the Reporter role.

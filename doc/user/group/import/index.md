@@ -615,7 +615,7 @@ sure these users exist before importing the desired groups.
 
 ### Enable export for a group
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role for the group.
 

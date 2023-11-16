@@ -40,7 +40,7 @@ If you are using GitLab.com:
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/389269) in GitLab 16.0.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415447) in GitLab 16.2. Feature flag `create_runner_workflow_for_admin` removed.
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator.
 
@@ -78,7 +78,7 @@ The ability to pass a runner registration token, and support for certain configu
 [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and will be removed in GitLab 18.0. Runner authentication tokens
 should be used instead. For more information, see [Migrating to the new runner registration workflow](new_creation_workflow.md).
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator.
 
@@ -93,7 +93,7 @@ To create a shared runner:
 
 ### Pause or resume a shared runner
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator.
 
@@ -109,7 +109,7 @@ You can pause a runner so that it does not accept jobs from groups and projects 
 
 ### Delete shared runners
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator.
 
@@ -295,7 +295,7 @@ how to [register a runner](https://docs.gitlab.com/runner/register/#register-wit
 
 > Ability for users with the Maintainer role to view group runners [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384179) in GitLab 16.4.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Maintainer or Owner role for the group.
 
@@ -324,7 +324,7 @@ those in other groups:
 
 ### Pause or resume a group runner
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator or have the Owner role for the group.
 
@@ -342,7 +342,7 @@ instance. If you pause a group runner that is used by multiple projects, the run
 
 > Multiple runner deletion [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361721/) in GitLab 15.6.
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator or have the Owner role for the group.
 
@@ -365,7 +365,7 @@ To delete a single or multiple group runners:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363012) in GitLab 15.1.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role for the group.
 
@@ -469,7 +469,7 @@ The ability to pass a runner registration token, and support for certain configu
 [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and will be removed in GitLab 18.0. Runner authentication tokens
 should be used instead. For more information, see [Migrating to the new runner registration workflow](new_creation_workflow.md).
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
@@ -487,7 +487,7 @@ The runner is now enabled for the project.
 
 ### Pause or resume a project runner
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator, or have the Maintainer role for the project.
 
@@ -631,7 +631,7 @@ different places.
 
 ### Determine the IP address of a shared runner
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 

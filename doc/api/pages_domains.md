@@ -12,7 +12,7 @@ The GitLab Pages feature must be enabled to use these endpoints. Find out more a
 
 ## List all Pages domains
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 

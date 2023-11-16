@@ -109,7 +109,7 @@ Your slash command can now communicate with your GitLab project.
 
 ## Connect your GitLab account to Mattermost
 
-Prerequisite:
+Prerequisites:
 
 - To run [slash commands](gitlab_slack_application.md#slash-commands), you must have
   [permission](../../permissions.md#project-members-permissions) to

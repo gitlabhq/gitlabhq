@@ -7,7 +7,7 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
 
   let_it_be(:project) { create(:project_empty_repo, :public) }
   let_it_be(:project_b) { create(:project_empty_repo, :public) }
-  let_it_be(:project_unauthorized) { create(:project_empty_repo) }
+  let_it_be(:project_unauthorized) { create(:project_empty_repo, :public) }
   let_it_be(:internal_project) { create(:project_empty_repo, :internal) }
   let_it_be(:private_project) { create(:project_empty_repo, :private) }
   let_it_be(:public_project) { create(:project_empty_repo, :public) }
@@ -90,7 +90,7 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
         visit project_issue_path(internal_project, internal_issue)
 
         expect(page).to have_css('.related-issues-block')
-        expect(page).to have_button 'Add a related issue'
+        expect(page).not_to have_button 'Add a related issue'
       end
 
       it 'shows widget when private project' do
@@ -99,11 +99,44 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
         visit project_issue_path(private_project, private_issue)
 
         expect(page).to have_css('.related-issues-block')
-        expect(page).to have_button 'Add a related issue'
+        expect(page).not_to have_button 'Add a related issue'
       end
 
       it 'shows widget when public project' do
         public_project.add_guest(user)
+
+        visit project_issue_path(public_project, public_issue)
+
+        expect(page).to have_css('.related-issues-block')
+        expect(page).not_to have_button 'Add a related issue'
+      end
+    end
+
+    context 'when logged in and a reporter' do
+      before do
+        sign_in(user)
+      end
+
+      it 'shows widget when internal project' do
+        internal_project.add_reporter(user)
+
+        visit project_issue_path(internal_project, internal_issue)
+
+        expect(page).to have_css('.related-issues-block')
+        expect(page).to have_button 'Add a related issue'
+      end
+
+      it 'shows widget when private project' do
+        private_project.add_reporter(user)
+
+        visit project_issue_path(private_project, private_issue)
+
+        expect(page).to have_css('.related-issues-block')
+        expect(page).to have_button 'Add a related issue'
+      end
+
+      it 'shows widget when public project' do
+        public_project.add_reporter(user)
 
         visit project_issue_path(public_project, public_issue)
 
@@ -113,7 +146,7 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
 
       it 'shows widget on their own public issue' do
         issue = create :issue, project: public_project, author: user
-        public_project.add_guest(user)
+        public_project.add_reporter(user)
 
         visit project_issue_path(public_project, issue)
 

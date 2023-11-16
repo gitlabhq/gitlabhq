@@ -43,7 +43,7 @@ For a more in-depth walkthrough see [GitLab Requirements Traceability Walkthroug
 A paginated list of requirements is available in each project, and there you
 can create a new requirement.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role.
 
@@ -73,7 +73,7 @@ next to the requirement title.
 
 You can edit a requirement from the requirements list page.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role.
 
@@ -89,7 +89,7 @@ To edit a requirement:
 You can archive an open requirement while
 you're in the **Open** tab.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role.
 
@@ -101,7 +101,7 @@ As soon as a requirement is archived, it no longer appears in the **Open** tab.
 
 You can view the list of archived requirements in the **Archived** tab.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role.
 
@@ -294,7 +294,7 @@ By exporting requirements, you and your team can import them into another tool o
 your customers. Exporting requirements can aid collaboration with higher-level systems, as well as
 audit and regulatory compliance tasks.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role.
 

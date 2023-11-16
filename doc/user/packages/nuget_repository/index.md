@@ -300,7 +300,7 @@ To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) package 
 
 ## Publish a NuGet package
 
-Prerequisite:
+Prerequisites:
 
 - Set up the [source](#add-the-package-registry-as-a-source-for-nuget-packages) with a [project-level endpoint](#use-the-gitlab-endpoint-for-nuget-packages).
 
@@ -406,7 +406,7 @@ updated:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416404) in GitLab 16.2.
 
-Prerequisite:
+Prerequisites:
 
 - The project-level package registry is a source for Chocolatey.
 

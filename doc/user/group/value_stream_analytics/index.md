@@ -302,7 +302,7 @@ In GitLab 13.8 and earlier, deployment frequency metrics are calculated based on
 
 ## View lifecycle and DORA metrics
 
-Prerequisite:
+Prerequisites:
 
 - To view deployment metrics, you must have a
 [production environment configured](#how-value-stream-analytics-identifies-the-production-environment).

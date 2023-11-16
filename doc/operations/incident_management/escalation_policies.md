@@ -15,7 +15,7 @@ where you manage [On-call schedules](oncall_schedules.md).
 
 ## Add an escalation policy
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role.
 - You must have an [on-call schedule](oncall_schedules.md).

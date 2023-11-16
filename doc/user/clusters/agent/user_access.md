@@ -147,7 +147,7 @@ subjects:
 
 You can configure an agent to allow GitLab users to access a cluster with the Kubernetes API.
 
-Prerequisite:
+Prerequisites:
 
 - You have an agent configured with the `user_access` entry.
 

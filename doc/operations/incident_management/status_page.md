@@ -39,7 +39,7 @@ To configure a GitLab Status Page you must:
 
 Only AWS S3 is supported as a deploy target.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role.
 

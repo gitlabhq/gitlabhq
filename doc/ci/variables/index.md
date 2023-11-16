@@ -130,7 +130,7 @@ all variables become available to the pipeline.
 
 You can add CI/CD variables to a project's settings.
 
-Prerequisite:
+Prerequisites:
 
 - You must be a project member with the Maintainer role.
 
@@ -159,7 +159,7 @@ or in [job scripts](#use-cicd-variables-in-job-scripts).
 
 You can make a CI/CD variable available to all projects in a group.
 
-Prerequisite:
+Prerequisites:
 
 - You must be a group member with the Owner role.
 
@@ -188,7 +188,7 @@ are recursively inherited.
 
 You can make a CI/CD variable available to all projects and groups in a GitLab instance.
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 
@@ -262,7 +262,7 @@ to prevent commands such as `env`/`printenv` from printing secret variables.
 You can mask a project, group, or instance CI/CD variable so the value of the variable
 does not display in job logs.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the same role or access level as required to [define a CI/CD variable in the UI](#define-a-cicd-variable-in-the-ui).
 
@@ -306,7 +306,7 @@ temporary merge commit, not a branch or tag, do not have access to these variabl
 [Merge request pipelines](../pipelines/merge_request_pipelines.md), which do not use
 a temporary merge commit, can access these variables if the branch is a protected branch.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the same role or access level as required to [define a CI/CD variable in the UI](#define-a-cicd-variable-in-the-ui).
 
@@ -626,7 +626,7 @@ Expanded variables treat values with the `$` character as a reference to another
 CI/CD variables are expanded by default. To treat variables with a `$` character as raw strings,
 disable variable expansion for the variable
 
-Prerequisite:
+Prerequisites:
 
 - You must have the same role or access level as required to [define a CI/CD variable in the UI](#define-a-cicd-variable-in-the-ui).
 

@@ -21,7 +21,7 @@ For more information, see [Product Stage Direction - Plan](https://about.gitlab.
 
 ## Create a test case
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role.
 
@@ -91,7 +91,7 @@ or editing an existing one.
 
 When you want to stop using a test case, you can archive it. You can [reopen an archived test case](#reopen-an-archived-test-case) later.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role.
 

@@ -1308,6 +1308,24 @@ This sensitive data must be handled carefully to avoid leaks which could lead to
 
 In the event of credential leak through an MR, issue, or any other medium, [reach out to SIRT team](https://about.gitlab.com/handbook/security/security-operations/sirt/#-engaging-sirt).
 
+### Token prefixes
+
+User error or software bugs can lead to tokens leaking. Consider prepending a static prefix to the beginning of secrets and adding that prefix to our secrets detection capabilities. For example, GitLab Personal Access Tokens have a prefix so that the plaintext is `glpat-1234567890abcdefghij`.
+
+The prefix pattern should be:
+
+1. `gl` for GitLab
+1. lowercase letters abbreviating the token class name
+1. a hyphen (`-`)
+
+Add the new prefix to:
+
+- [`gitlab/app/assets/javascripts/lib/utils/secret_detection.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/lib/utils/secret_detection.js)
+- The [GitLab Secret Detection gem](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-secret_detection)
+- GitLab [secrets SAST analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/secrets)
+- [Tokinator](https://gitlab.com/gitlab-com/gl-security/appsec/tokinator/-/blob/main/CONTRIBUTING.md?ref_type=heads) (internal tool / team members only)
+- [Token Overview](../security/token_overview.md#gitlab-tokens) documentation
+
 ### Examples
 
 Encrypting a token with `attr_encrypted` so that the plaintext can be retrieved
@@ -1337,6 +1355,19 @@ class WebHookLog < ApplicationRecord
     self.url_hash = Gitlab::CryptoHelper.sha256(interpolated_url)
   end
 end
+```
+
+Using the `TokenAuthenticatable` class helper to create a prefixed token.
+
+```ruby
+class User
+  FEED_TOKEN_PREFIX = 'glft-'
+
+  add_authentication_token_field :feed_token, format_with_prefix: :prefix_for_feed_token
+
+  def prefix_for_feed_token
+    FEED_TOKEN_PREFIX
+  end
 ```
 
 ## Serialization

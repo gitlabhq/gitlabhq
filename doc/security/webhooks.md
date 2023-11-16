@@ -38,7 +38,7 @@ can get the GitLab server to make `POST` HTTP requests to endpoints that delete 
 
 ### Allow requests to the local network from webhooks and integrations
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 
@@ -58,7 +58,7 @@ To allow access to these addresses:
 
 ### Prevent requests to the local network from system hooks
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 
@@ -74,7 +74,7 @@ Prerequisite:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377371) in GitLab 15.10.
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the GitLab instance.
 
@@ -100,7 +100,7 @@ rules.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44496) in GitLab 12.2.
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 

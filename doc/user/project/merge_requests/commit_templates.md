@@ -23,7 +23,7 @@ Commit templates use syntax similar to the syntax for
 Change the commit templates for your project if the default templates don't
 contain the information you need.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for a project.
 

@@ -132,7 +132,7 @@ To move an issue:
 You can move multiple issues at the same time when you're in a project.
 You can't move tasks or test cases.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role for the project.
 

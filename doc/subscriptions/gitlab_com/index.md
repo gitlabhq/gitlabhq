@@ -42,7 +42,7 @@ To subscribe to GitLab SaaS:
 
 ## View your GitLab SaaS subscription
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role for the group.
 
@@ -413,7 +413,7 @@ locked. Projects can only be unlocked by purchasing more storage subscription un
 
 ### Purchase more storage and transfer
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role.
 

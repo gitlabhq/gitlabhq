@@ -36,7 +36,7 @@ When Terraform state administration is disabled:
 
 To disable Terraform administration, follow the steps below according to your installation.
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator.
 

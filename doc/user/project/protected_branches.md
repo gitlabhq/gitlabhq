@@ -128,7 +128,7 @@ specific branch is configured with **Allowed to force push** settings at both th
 group and project levels, the **Allowed to force push** setting at the _project_ level
 is ignored in favor of the group level setting.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role in the group.
 
@@ -153,7 +153,7 @@ If more than one rule applies to a branch, the _most permissive_ rule controls
 how the branch behaves. For merge controls to work properly, set
 **Allowed to push and merge** to a broader set of users than **Allowed to merge**.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role.
 

@@ -25,7 +25,7 @@ or deleted at the subgroup or project level. Project owners can choose a framewo
 
 ## Add a compliance framework to a project
 
-Prerequisite:
+Prerequisites:
 
 - The group to which the project belongs must have a compliance framework.
 

@@ -30,7 +30,7 @@ how to use those features.
 
 ## View DevOps Adoption
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role for the group.
 

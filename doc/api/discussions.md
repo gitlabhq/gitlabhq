@@ -1010,7 +1010,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 Resolve or unresolve a thread of discussion in a merge request.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Developer role, or be the author of the change being reviewed.
 

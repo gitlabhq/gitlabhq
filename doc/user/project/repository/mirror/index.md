@@ -107,7 +107,7 @@ While mirrors are scheduled to update automatically, you can force an immediate 
 - The [interval, in seconds](../../../../administration/instance_limits.md#pull-mirroring-interval)
   for pull mirroring limits has not elapsed after its last update.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 

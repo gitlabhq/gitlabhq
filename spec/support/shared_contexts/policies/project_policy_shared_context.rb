@@ -32,7 +32,7 @@ RSpec.shared_context 'ProjectPolicy context' do
 
   let(:base_reporter_permissions) do
     %i[
-      admin_issue admin_label admin_milestone admin_issue_board_list
+      admin_issue admin_issue_link admin_label admin_milestone admin_issue_board_list
       create_snippet create_incident daily_statistics create_merge_request_in download_code
       download_wiki_code fork_project metrics_dashboard read_build
       read_commit_status read_confidential_issues read_container_image

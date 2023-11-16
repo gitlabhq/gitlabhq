@@ -54,7 +54,7 @@ To view projects you have [starred](#star-a-project):
 
 Use the project general settings to edit your project details.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
@@ -162,7 +162,7 @@ After you delete a project:
 - Projects in personal namespaces are deleted immediately.
 - Projects in groups are deleted after a retention period.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role for a project.
 
@@ -184,7 +184,7 @@ You can also [delete projects using the Rails console](#delete-a-project-using-c
 > - [Disabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95495) in GitLab 15.3.
 > - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role for the project.
 
@@ -295,7 +295,7 @@ A list of projects that use the selected language is displayed.
 
 You can change the visibility of individual features in a project.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role for the project.
 

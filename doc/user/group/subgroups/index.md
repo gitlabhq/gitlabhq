@@ -49,7 +49,7 @@ graph TD
 
 ## View subgroups of a group
 
-Prerequisite:
+Prerequisites:
 
 - To view private nested subgroups, you must be a direct or inherited member of
 the private subgroup.
@@ -92,7 +92,7 @@ To create a subgroup:
 
 ### Change who can create subgroups
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role on the group, depending on the group's setting.
 

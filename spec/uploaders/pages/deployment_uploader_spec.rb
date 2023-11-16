@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Pages::DeploymentUploader do
+RSpec.describe Pages::DeploymentUploader, feature_category: :pages do
   let(:pages_deployment) { create(:pages_deployment) }
   let(:uploader) { described_class.new(pages_deployment, :file) }
 
@@ -22,38 +22,41 @@ RSpec.describe Pages::DeploymentUploader do
       stub_pages_object_storage
     end
 
-    it_behaves_like 'builds correct paths', store_dir: %r[\A\h{2}/\h{2}/\h{64}/pages_deployments/\d+\z]
+    describe '.default_store' do
+      it 'returns remote store when object storage is enabled' do
+        expect(described_class.default_store).to eq(ObjectStorage::Store::REMOTE)
+      end
+    end
 
     it 'preserves original file when stores it' do
       uploader.store!(file)
 
       expect(File.exist?(file.path)).to be true
     end
+
+    it_behaves_like 'builds correct paths',
+      store_dir: %r[\A\h{2}/\h{2}/\h{64}/pages_deployments/\d+\z]
   end
 
   context 'when file is stored in valid local_path' do
-    before do
-      uploader.store!(file)
+    describe '.default_store' do
+      it 'returns local store when object storage is not enabled' do
+        expect(described_class.default_store).to eq(ObjectStorage::Store::LOCAL)
+      end
     end
 
-    subject { uploader.file.path }
+    it 'builds the right file path' do
+      uploader.store!(file)
 
-    it { is_expected.to match(%r[#{uploader.root}/@hashed/\h{2}/\h{2}/\h{64}/pages_deployments/#{pages_deployment.id}/pages.zip]) }
+      expect(uploader.file.path).to match(
+        %r[#{uploader.root}/@hashed/\h{2}/\h{2}/\h{64}/pages_deployments/#{pages_deployment.id}/pages.zip]
+      )
+    end
 
     it 'preserves original file when stores it' do
+      uploader.store!(file)
+
       expect(File.exist?(file.path)).to be true
-    end
-  end
-
-  describe '.default_store' do
-    it 'returns local store when object storage is not enabled' do
-      expect(described_class.default_store).to eq(ObjectStorage::Store::LOCAL)
-    end
-
-    it 'returns remote store when object storage is enabled' do
-      stub_pages_object_storage
-
-      expect(described_class.default_store).to eq(ObjectStorage::Store::REMOTE)
     end
   end
 end

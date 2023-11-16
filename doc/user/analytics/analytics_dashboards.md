@@ -98,7 +98,7 @@ You can use the dashboard designer to:
 
 ## View project dashboards
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Developer role for the project.
 

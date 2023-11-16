@@ -120,7 +120,7 @@ the following actions without being added to the allowlist:
 To limit access to these actions to only the projects on the allowlist, set the visibility
 of each feature to be only accessible to project members:
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Maintainer role for the project.
 
@@ -145,7 +145,7 @@ your maintainers, the job token could be used in an attempt to access your proje
 You can disable the job token scope allowlist for testing or a similar reason,
 but you should enable it again as soon as possible.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
@@ -166,7 +166,7 @@ You can also disable the allowlist [with the API](../../api/graphql/reference/in
 You can add projects to the allowlist for a project. Projects added to the allowlist
 can make API calls from running pipelines by using the CI/CD job token.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role in the current project. If the allowed project
   is internal or private, you must have at least the Guest role in that project.
@@ -210,7 +210,7 @@ to make an API request to project `B`, then `B` must be added to the allowlist f
 
 > **Limit CI_JOB_TOKEN access** setting [renamed to **Limit access _from_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
 
-Prerequisite:
+Prerequisites:
 
 - You must not have more than 200 projects added to the token's scope.
 

@@ -24,7 +24,7 @@ the general user and IP rate limits for requests to the
 and IP rate limits already in place, and increase or decrease the rate limits
 for the Files API. No other new features are provided by this override.
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 

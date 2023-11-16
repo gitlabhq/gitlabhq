@@ -101,7 +101,7 @@ The user cap might apply only retrospectively after the cap has already been exc
 To ensure the cap is enabled immediately, set the cap to a value below the current number of
 billable users (for example, `1`).
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator.
 
@@ -121,7 +121,7 @@ administrator approval is not restricted.
 
 After you remove the user cap, users pending approval are automatically approved.
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator.
 

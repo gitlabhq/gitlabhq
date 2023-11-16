@@ -111,7 +111,7 @@ If you are using a self-managed GitLab instance or if you are importing from Git
 
 ### Use a GitHub token
 
-Prerequisite:
+Prerequisites:
 
 - Authentication token with administrator access.
 

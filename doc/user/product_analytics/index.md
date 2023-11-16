@@ -74,7 +74,7 @@ This feature is not ready for production use.
 To track events in your project applications on a self-managed instance,
 you must enable and configure product analytics.
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator of a self-managed GitLab instance.
 

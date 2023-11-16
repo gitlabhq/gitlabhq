@@ -30,7 +30,7 @@ Secure Files to reduce disk space, or to remove access to the feature.
 
 To disable Secure Files, follow the steps below according to your installation.
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator.
 

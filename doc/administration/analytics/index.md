@@ -12,7 +12,7 @@ Instance-level analytics provide insights into the feature and data usage of you
 
 ## View instance-level analytics
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 

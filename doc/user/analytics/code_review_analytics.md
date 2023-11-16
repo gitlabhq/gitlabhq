@@ -28,7 +28,7 @@ For a video explanation, see [Code review analytics: Faster code review](https:/
 
 ## View code review analytics
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role.
 

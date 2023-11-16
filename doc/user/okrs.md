@@ -399,7 +399,7 @@ To turn off a check-in reminder, enter:
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11198) in GitLab 16.6.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role for the project.
 - The parent objective and child OKR must belong to the same project.
@@ -518,7 +518,7 @@ The relationship only shows up in the UI if the user can see both items.
 
 ### Add a linked item
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Guest role for the project.
 
@@ -540,7 +540,7 @@ them categorized so their relationships can be better understood visually.
 
 ### Remove a linked item
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Guest role for the project.
 

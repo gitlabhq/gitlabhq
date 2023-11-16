@@ -168,7 +168,7 @@ Anyone on the internet can access the package registry for the project.
 
 #### Disable allowing anyone to pull
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator.
 

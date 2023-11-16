@@ -40,7 +40,7 @@ Only authenticated project members can view non-image attachments (including PDF
 
 To apply authentication requirements to image files in private or internal projects:
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Maintainer or Owner role for the project.
 - Your project visibility settings must be **Private** or **Internal**.

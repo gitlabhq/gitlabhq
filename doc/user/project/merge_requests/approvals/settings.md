@@ -153,7 +153,7 @@ However, approvals are reset if the target branch is changed.
 
 If you only want to remove approvals by Code Owners whose files have been changed when a commit is added:
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for a project.
 

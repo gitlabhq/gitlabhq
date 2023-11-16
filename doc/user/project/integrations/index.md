@@ -23,7 +23,7 @@ You can use:
 
 ## Manage group-level default settings for a project integration
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the group.
 
@@ -64,7 +64,7 @@ is proposed in [epic 2137](https://gitlab.com/groups/gitlab-org/-/epics/2137).
 
 ### Remove a group-level default setting
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the group.
 
@@ -79,7 +79,7 @@ Resetting a group-level default setting removes integrations that use default se
 
 ## Use instance-level or group-level default settings for a project integration
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
@@ -95,7 +95,7 @@ To use instance-level or group-level default settings for a project integration:
 
 ## Use custom settings for a project or group integration
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the project or group.
 

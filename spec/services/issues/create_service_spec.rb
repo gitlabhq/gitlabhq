@@ -825,8 +825,7 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
     end
 
     context 'add related issue' do
-      let_it_be(:private_project) { create(:project) }
-      let_it_be(:related_issue) { create(:issue, project: private_project) }
+      let_it_be(:related_issue) { create(:issue, project: project) }
 
       let(:opts) do
         { title: 'A new issue', add_related_issue: related_issue }
@@ -840,7 +839,7 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
 
       context 'when user has access to the related issue' do
         before do
-          private_project.add_guest(user)
+          project.add_developer(user)
         end
 
         it 'adds a link to the issue' do

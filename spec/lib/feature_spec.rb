@@ -43,6 +43,20 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
     end
   end
 
+  describe '.gitlab_instance' do
+    it 'returns a FlipperGitlabInstance with a flipper_id' do
+      flipper_request = described_class.gitlab_instance
+
+      expect(flipper_request.flipper_id).to include("FlipperGitlabInstance:")
+    end
+
+    it 'caches flipper_id' do
+      previous_id = described_class.gitlab_instance.flipper_id
+
+      expect(described_class.gitlab_instance.flipper_id).to eq(previous_id)
+    end
+  end
+
   describe '.get' do
     let(:feature) { double(:feature) }
     let(:key) { 'my_feature' }
@@ -331,33 +345,51 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
       end
     end
 
-    context 'with current_request actor' do
-      context 'when request store is inactive' do
-        it 'returns the approximate percentage set' do
-          number_of_times = 1_000
-          percentage = 50
-          described_class.enable_percentage_of_actors(:enabled_feature_flag, percentage)
+    [:current_request, :request, described_class.current_request].each do |thing|
+      context "with #{thing} actor" do
+        context 'when request store is inactive' do
+          it 'returns the approximate percentage set' do
+            number_of_times = 1_000
+            percentage = 50
+            described_class.enable_percentage_of_actors(:enabled_feature_flag, percentage)
 
-          gate_values = Array.new(number_of_times) do
-            described_class.enabled?(:enabled_feature_flag, described_class.current_request)
+            gate_values = Array.new(number_of_times) do
+              described_class.enabled?(:enabled_feature_flag, thing)
+            end
+
+            margin_of_error = 0.05 * number_of_times
+            expected_size = number_of_times * percentage / 100
+            expect(gate_values.count { |v| v }).to be_within(margin_of_error).of(expected_size)
           end
+        end
 
-          margin_of_error = 0.05 * number_of_times
-          expected_size = number_of_times * percentage / 100
-          expect(gate_values.count { |v| v }).to be_within(margin_of_error).of(expected_size)
+        context 'when request store is active', :request_store do
+          it 'always returns the same gate value' do
+            described_class.enable_percentage_of_actors(:enabled_feature_flag, 50)
+
+            previous_gate_value = described_class.enabled?(:enabled_feature_flag, thing)
+
+            1_000.times do
+              expect(described_class.enabled?(:enabled_feature_flag, thing)).to eq(previous_gate_value)
+            end
+          end
         end
       end
+    end
 
-      context 'when request store is active', :request_store do
-        it 'always returns the same gate value' do
-          described_class.enable_percentage_of_actors(:enabled_feature_flag, 50)
+    context 'with gitlab_instance actor' do
+      it 'always returns the same gate value' do
+        described_class.enable(:enabled_feature_flag, described_class.gitlab_instance)
 
-          previous_gate_value = described_class.enabled?(:enabled_feature_flag, described_class.current_request)
+        expect(described_class.enabled?(:enabled_feature_flag, described_class.gitlab_instance)).to be_truthy
+      end
+    end
 
-          1_000.times do
-            expect(described_class.enabled?(:enabled_feature_flag, described_class.current_request)).to eq(previous_gate_value)
-          end
-        end
+    context 'with :instance actor' do
+      it 'always returns the same gate value' do
+        described_class.enable(:enabled_feature_flag, :instance)
+
+        expect(described_class.enabled?(:enabled_feature_flag, :instance)).to be_truthy
       end
     end
 

@@ -80,7 +80,6 @@ class IssuePolicy < IssuablePolicy
   rule { ~anonymous & can?(:read_issue) }.policy do
     enable :create_todo
     enable :update_subscription
-    enable :create_issue_link
   end
 
   rule { can?(:admin_issue) }.policy do
@@ -102,10 +101,6 @@ class IssuePolicy < IssuablePolicy
 
   rule { can?(:guest_access) & can?(:read_issue) }.policy do
     enable :admin_issue_relation
-  end
-
-  rule { can?(:guest_access) & can?(:read_issue) & is_project_member }.policy do
-    enable :admin_issue_link
   end
 
   rule { can_read_crm_contacts }.policy do

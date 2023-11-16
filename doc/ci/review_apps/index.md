@@ -70,7 +70,7 @@ as mentioned above. To facilitate this, and if you are using Kubernetes, you can
 **Enable review apps** and GitLab prompts you with a template code block that
 you can copy and paste into `.gitlab-ci.yml` as a starting point.
 
-Prerequisite:
+Prerequisites:
 
 - You need at least the Developer role for the project.
 

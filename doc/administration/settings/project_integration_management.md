@@ -23,7 +23,7 @@ is proposed in [epic 2137](https://gitlab.com/groups/gitlab-org/-/epics/2137).
 
 ## Manage instance-level default settings for a project integration
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 
@@ -65,7 +65,7 @@ is proposed in [epic 2137](https://gitlab.com/groups/gitlab-org/-/epics/2137).
 
 ### Remove an instance-level default setting
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 
@@ -83,7 +83,7 @@ Resetting an instance-level default setting removes the integration from all pro
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218252) in GitLab 14.2.
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 

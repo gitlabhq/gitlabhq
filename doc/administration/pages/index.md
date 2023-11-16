@@ -683,7 +683,7 @@ Follow the steps below to configure the proxy listener of GitLab Pages.
 
 ## Set global maximum size of each GitLab Pages site **(FREE SELF)**
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 
@@ -698,7 +698,7 @@ To set the global maximum pages size for a project:
 
 ## Set maximum size of each GitLab Pages site in a group **(PREMIUM SELF)**
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 
@@ -712,7 +712,7 @@ To set the maximum size of each GitLab Pages site in a group, overriding the inh
 
 ## Set maximum size of GitLab Pages site in a project **(PREMIUM SELF)**
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 
@@ -725,7 +725,7 @@ To set the maximum size of GitLab Pages site in a project, overriding the inheri
 
 ## Set maximum number of GitLab Pages custom domains for a project
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 

@@ -113,7 +113,7 @@ graph TD
 Add users to a project so they become direct members and have permission
 to perform actions.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner or Maintainer role.
 
@@ -201,7 +201,7 @@ The **Members** tab shows:
 You can import another project's members to your own project.
 Imported project members retain the same permissions as the project you import them from.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Maintainer or Owner role.
 
@@ -342,7 +342,7 @@ To withdraw the access request:
 
 You can prevent users from requesting access to a project.
 
-Prerequisite:
+Prerequisites:
 
 - You must be the project owner.
 

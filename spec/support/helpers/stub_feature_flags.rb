@@ -29,7 +29,7 @@ module StubFeatureFlags
     return unless Gitlab::SafeRequestStore.active?
 
     new_request = Feature::FlipperRequest.new
-    allow(new_request).to receive(:id).and_return(SecureRandom.uuid)
+    allow(new_request).to receive(:flipper_id).and_return("FlipperRequest:#{SecureRandom.uuid}")
 
     allow(Feature).to receive(:current_request).and_return(new_request)
   end

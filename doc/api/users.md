@@ -1715,7 +1715,7 @@ Parameters:
 
 ## Delete email for given user **(FREE SELF)**
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator of a self-managed GitLab instance.
 

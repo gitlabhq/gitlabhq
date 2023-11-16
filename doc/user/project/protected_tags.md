@@ -125,7 +125,7 @@ To allow a deploy key to create a protected tag:
 You can manually delete protected tags with the GitLab API, or the
 GitLab user interface.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role in your project.
 

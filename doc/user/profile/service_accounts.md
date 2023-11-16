@@ -40,7 +40,7 @@ How you create an account differs depending on whether you are on GitLab.com or 
 
 ### GitLab.com
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role in a top-level group.
 
@@ -62,7 +62,7 @@ Prerequisite:
 
 ### Self-managed GitLab
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator for your self-managed instance.
 

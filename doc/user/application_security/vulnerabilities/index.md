@@ -180,7 +180,7 @@ Adding a link helps track the issue that resolves or mitigates a vulnerability.
 
 ### Link a vulnerability to existing GitLab issues
 
-Prerequisite:
+Prerequisites:
 
 - [Jira issue integration](../../../integration/jira/configure.md) must not be enabled.
 
@@ -209,7 +209,7 @@ Be aware of the following conditions between a vulnerability and a linked GitLab
 
 ### Link a vulnerability to existing Jira issues
 
-Prerequisite:
+Prerequisites:
 
 - [Jira issue integration](../../../integration/jira/configure.md) must be enabled, with option **Enable Jira issue creation from vulnerabilities** also enabled.
 

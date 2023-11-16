@@ -110,7 +110,7 @@ When the **Pipelines must succeed** checkbox is checked,
 [skipped pipelines](../../../ci/pipelines/index.md#skip-a-pipeline) prevent
 merge requests from being merged.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role in the project.
 

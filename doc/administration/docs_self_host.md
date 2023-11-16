@@ -82,7 +82,7 @@ To run the GitLab product documentation website in a Docker container:
 
 You can use GitLab Pages to host the GitLab product documentation.
 
-Prerequisite:
+Prerequisites:
 
 - Ensure the Pages site URL does not use a subfolder. Because of the way the
   site is pre-compiled, the CSS and JavaScript files are relative to the

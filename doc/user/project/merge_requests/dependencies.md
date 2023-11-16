@@ -99,7 +99,7 @@ To create a new merge request and mark it as dependent on another:
 
 You can edit an existing merge request and mark it as dependent on another.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Developer role or be allowed to edit merge requests in the project.
 
@@ -116,7 +116,7 @@ To do this:
 
 You can edit a dependent merge request and remove a dependency.
 
-Prerequisite:
+Prerequisites:
 
 - You must have a role in the project that allows you to edit merge requests.
 

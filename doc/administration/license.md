@@ -15,7 +15,7 @@ your instance with an activation code.
 In GitLab Enterprise Edition 14.1 and later, you need an activation code to activate
 your instance.
 
-Prerequisite:
+Prerequisites:
 
 - You must [purchase a subscription](https://about.gitlab.com/pricing/).
 - You must be running GitLab Enterprise Edition (EE).

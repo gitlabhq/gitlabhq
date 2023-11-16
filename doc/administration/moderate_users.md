@@ -71,7 +71,7 @@ GitLab administrators can block and unblock users.
 
 ### Block a user
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator for the instance.
 
@@ -295,7 +295,7 @@ You can trust and untrust users from the Admin Area.
 
 By default, a user is not trusted and is blocked from creating issues, notes, and snippets considered to be spam. When you trust a user, they can create issues, notes, and snippets without being blocked.
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator.
 

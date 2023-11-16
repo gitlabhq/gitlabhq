@@ -103,7 +103,7 @@ ls:
 
 ## Trigger a CI/CD job using ChatOps
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Developer role for the project.
 - The project is configured to use a slash command integration.

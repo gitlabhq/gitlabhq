@@ -75,7 +75,7 @@ The following items are changed when they are imported:
 
 ## User assignment
 
-Prerequisite:
+Prerequisites:
 
 - Authentication token with administrator access.
 

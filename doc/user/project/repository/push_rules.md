@@ -33,7 +33,7 @@ All projects created after you configure global push rules inherit this
 configuration. However, each existing project must be updated manually, using the
 process described in [Override global push rules per project](#override-global-push-rules-per-project).
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator.
 

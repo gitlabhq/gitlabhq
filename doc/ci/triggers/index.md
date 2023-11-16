@@ -21,7 +21,7 @@ When authenticating with the API, you can use:
 You can trigger a pipeline for a branch or tag by generating a pipeline trigger token and using it
 to authenticate an API call. The token impersonates a user's project access and permissions.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 

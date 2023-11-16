@@ -62,6 +62,7 @@ module Admin
         Feature.disable(name)
       elsif percentage_of_actors?
         Feature.enable_percentage_of_actors(name, percentage)
+      # Deprecated in favor of Feature.enabled?(name, :instance) + Feature.enable_percentage_of_actors(name, percentage)
       elsif percentage_of_time?
         Feature.enable_percentage_of_time(name, percentage)
       else

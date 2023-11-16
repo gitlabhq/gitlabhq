@@ -14055,9 +14055,6 @@ msgstr ""
 msgid "Couldn't link epics. You must have at least the Guest role in the epic's group."
 msgstr ""
 
-msgid "Couldn't link issues. You must have at least the Guest role in the source issue's project."
-msgstr ""
-
 msgid "Country / Region"
 msgstr ""
 

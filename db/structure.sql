@@ -20738,6 +20738,7 @@ CREATE TABLE pages_deployments (
     path_prefix text,
     build_ref text,
     deleted_at timestamp with time zone,
+    upload_ready boolean DEFAULT false,
     CONSTRAINT check_4d04b8dc9a CHECK ((char_length(path_prefix) <= 128)),
     CONSTRAINT check_5f9132a958 CHECK ((size IS NOT NULL)),
     CONSTRAINT check_7e938c810a CHECK ((char_length(root_directory) <= 255)),

@@ -422,7 +422,7 @@ code_quality:
 
 You can use a Dependency Proxy to reduce the time taken to download dependencies.
 
-Prerequisite:
+Prerequisites:
 
 - [Dependency Proxy](../../user/packages/dependency_proxy/index.md) enabled in the project's
   group.

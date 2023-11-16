@@ -22,7 +22,7 @@ To use on-call schedules:
 
 Set up an on-call schedule for your team to add rotations to.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role.
 

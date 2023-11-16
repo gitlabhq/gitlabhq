@@ -12,7 +12,7 @@ Use the following tasks when you work with the agent for Kubernetes.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340882) in GitLab 14.8, the installed `agentk` version is displayed on the **Agent** tab.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Developer role.
 

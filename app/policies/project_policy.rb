@@ -379,6 +379,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_label
     enable :admin_milestone
     enable :admin_issue_board_list
+    enable :admin_issue_link
     enable :read_commit_status
     enable :read_build
     enable :read_container_image

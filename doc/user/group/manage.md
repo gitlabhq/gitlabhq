@@ -23,7 +23,7 @@ A single top-level group provides insights in your entire organization via a com
 As a group owner or member, you can use a README to provide more information about your team, and invite users to contribute to your projects.
 The README is displayed on the group overview page, and can be changed in the group settings. All group members can edit the README.
 
-Prerequisite:
+Prerequisites:
 
 - To create the README from the group settings, you must have the Owner role for the group.
 
@@ -254,7 +254,7 @@ disabled for the group and its subgroups.
 
 ### Specify a user cap for a group
 
-Prerequisite:
+Prerequisites:
 
 - You must be assigned the Owner role for the group.
 
@@ -276,7 +276,7 @@ Increasing the user cap does not approve pending members.
 
 You can remove the user cap, so there is no limit on the number of members you can add to a group.
 
-Prerequisite:
+Prerequisites:
 
 - You must be assigned the Owner role for the group.
 
@@ -297,9 +297,9 @@ and must be approved.
 
 Pending members do not count as billable. Members count as billable only after they have been approved and are no longer in a pending state.
 
-Prerequisite:
+Prerequisites:
 
-- You must be assigned the Owner role) for the group.
+- You must be assigned the Owner role for the group.
 
 To approve members that are pending because they've exceeded the user cap:
 
@@ -390,7 +390,7 @@ You can configure [skipped pipelines](../../ci/pipelines/index.md#skip-a-pipelin
 
 See also [the project-level setting](../project/merge_requests/merge_when_pipeline_succeeds.md#allow-merge-after-skipped-pipelines).
 
-Prerequisite:
+Prerequisites:
 
 - You must be the owner of the group.
 
@@ -409,7 +409,7 @@ To change this behavior:
 You can prevent merge requests from being merged until all threads are resolved. When this setting is enabled, for all child projects in your group, the
 **Unresolved threads** count in a merge request is shown in orange when at least one thread remains unresolved.
 
-Prerequisite:
+Prerequisites:
 
 - You must be the owner of the group.
 

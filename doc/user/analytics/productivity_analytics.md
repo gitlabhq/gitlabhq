@@ -22,7 +22,7 @@ To view merge request data for projects, use [Merge request analytics](../analyt
 
 ## View productivity analytics
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role for the group.
 

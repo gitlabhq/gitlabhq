@@ -152,7 +152,7 @@ Allowing personal access tokens for service accounts to be created with no expir
 
 #### GitLab.com
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role in the top-level group.
 
@@ -164,7 +164,7 @@ You can now create personal access tokens for a service account user with no exp
 
 #### Self-managed GitLab
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator for your self-managed instance.
 
@@ -181,7 +181,7 @@ You can now create personal access tokens for a service account user with no exp
 You can create a predetermined personal access token
 as part of your tests or automation.
 
-Prerequisite:
+Prerequisites:
 
 - You need sufficient access to run a
   [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session)
@@ -221,7 +221,7 @@ sudo gitlab-rails runner "token = User.find_by_username('automation-bot').person
 You can programmatically revoke a personal access token
 as part of your tests or automation.
 
-Prerequisite:
+Prerequisites:
 
 - You need sufficient access to run a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session)
   for your GitLab instance.

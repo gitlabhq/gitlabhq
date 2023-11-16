@@ -120,7 +120,7 @@ You can set description templates at various levels:
 
 The templates are inherited. For example, in a project, you can also access templates set for the instance, or the project's parent groups.
 
-Prerequisite:
+Prerequisites:
 
 - You must have [created a description template](../description_templates.md#create-an-issue-template).
 

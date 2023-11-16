@@ -133,7 +133,7 @@ Auto DevOps detects CI/CD variables starting with `K8S_SECRET_`,
 and makes them available to the deployed application as
 environment variables.
 
-Prerequisite:
+Prerequisites:
 
 - The variable value must be a single line.
 

@@ -81,7 +81,7 @@ On self-managed GitLab, by default this feature is available. To hide the featur
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 
@@ -96,7 +96,7 @@ To retrieve aggregated usage counts in the group, use the [GraphQL API](../../ap
 
 ## View the value streams dashboard
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role for the group.
 - Overview background aggregation for Value Streams Dashboards must be enabled.
@@ -136,7 +136,7 @@ Query parameters can still be used to override the YAML configuration.
 
 First, you need to set up the project.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the group.
 

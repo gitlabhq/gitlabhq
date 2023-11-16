@@ -33,14 +33,19 @@ module Feature
   # Generates the same flipper_id when in a request
   # If not in a request, it generates a unique flipper_id every time
   class FlipperRequest
-    def id
+    def flipper_id
       Gitlab::SafeRequestStore.fetch("flipper_request_id") do
-        SecureRandom.uuid
+        "FlipperRequest:#{SecureRandom.uuid}".freeze
       end
     end
+  end
 
-    def flipper_id
-      "FlipperRequest:#{id}"
+  # Generates a unique flipper_id for the current GitLab instance.
+  class FlipperGitlabInstance
+    attr_reader :flipper_id
+
+    def initialize
+      @flipper_id = "FlipperGitlabInstance:#{::Gitlab.config.gitlab.host}".freeze
     end
   end
 
@@ -89,14 +94,9 @@ module Feature
     # 2. The `default_enabled_if_undefined:` is tech debt related to Gitaly flags
     #    and should not be used outside of Gitaly's `lib/feature/gitaly.rb`
     def enabled?(key, thing = nil, type: :development, default_enabled_if_undefined: nil)
-      if check_feature_flags_definition?
-        if thing && !thing.respond_to?(:flipper_id) && !thing.is_a?(Flipper::Types::Group)
-          raise InvalidFeatureFlagError,
-            "The thing '#{thing.class.name}' for feature flag '#{key}' needs to include `FeatureGate` or implement `flipper_id`"
-        end
+      thing = sanitized_thing(thing)
 
-        Feature::Definition.valid_usage!(key, type: type)
-      end
+      check_feature_flags_definition!(key, thing, type)
 
       default_enabled = Feature::Definition.default_enabled?(key, default_enabled_if_undefined: default_enabled_if_undefined)
       feature_value = current_feature_value(key, thing, default_enabled: default_enabled)
@@ -111,11 +111,15 @@ module Feature
     end
 
     def disabled?(key, thing = nil, type: :development, default_enabled_if_undefined: nil)
+      thing = sanitized_thing(thing)
+
       # we need to make different method calls to make it easy to mock / define expectations in test mode
       thing.nil? ? !enabled?(key, type: type, default_enabled_if_undefined: default_enabled_if_undefined) : !enabled?(key, thing, type: type, default_enabled_if_undefined: default_enabled_if_undefined)
     end
 
     def enable(key, thing = true)
+      thing = sanitized_thing(thing)
+
       log(key: key, action: __method__, thing: thing)
 
       return_value = with_feature(key) { _1.enable(thing) }
@@ -129,12 +133,16 @@ module Feature
     end
 
     def disable(key, thing = false)
+      thing = sanitized_thing(thing)
+
       log(key: key, action: __method__, thing: thing)
 
       with_feature(key) { _1.disable(thing) }
     end
 
     def opted_out?(key, thing)
+      thing = sanitized_thing(thing)
+
       return false unless thing.respond_to?(:flipper_id) # Ignore Feature::Types::Group
       return false unless persisted_name?(key)
 
@@ -144,6 +152,8 @@ module Feature
     end
 
     def opt_out(key, thing)
+      thing = sanitized_thing(thing)
+
       return unless thing.respond_to?(:flipper_id) # Ignore Feature::Types::Group
 
       log(key: key, action: __method__, thing: thing)
@@ -153,6 +163,8 @@ module Feature
     end
 
     def remove_opt_out(key, thing)
+      thing = sanitized_thing(thing)
+
       return unless thing.respond_to?(:flipper_id) # Ignore Feature::Types::Group
       return unless persisted_name?(key)
 
@@ -228,6 +240,10 @@ module Feature
       end
     end
 
+    def gitlab_instance
+      @flipper_gitlab_instance ||= FlipperGitlabInstance.new
+    end
+
     def logger
       @logger ||= Feature::Logger.build
     end
@@ -245,6 +261,17 @@ module Feature
     end
 
     private
+
+    def sanitized_thing(thing)
+      case thing
+      when :instance
+        gitlab_instance
+      when :request, :current_request
+        current_request
+      else
+        thing
+      end
+    end
 
     # Compute if thing is enabled, taking opt-out overrides into account
     # Evaluate if `default enabled: false` or the feature has been persisted.
@@ -341,6 +368,17 @@ module Feature
       # We want to check feature flags usage only when
       # running in development or test environment
       Gitlab.dev_or_test_env?
+    end
+
+    def check_feature_flags_definition!(key, thing, type)
+      return unless check_feature_flags_definition?
+
+      if thing && !thing.respond_to?(:flipper_id) && !thing.is_a?(Flipper::Types::Group)
+        raise InvalidFeatureFlagError,
+          "The thing '#{thing.class.name}' for feature flag '#{key}' needs to include `FeatureGate` or implement `flipper_id`"
+      end
+
+      Feature::Definition.valid_usage!(key, type: type)
     end
 
     def l1_cache_backend

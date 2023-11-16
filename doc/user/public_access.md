@@ -63,7 +63,7 @@ then `/public` is visible only to authenticated users.
 
 You can change the visibility of a project.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role for a project.
 

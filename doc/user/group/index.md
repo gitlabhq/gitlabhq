@@ -255,7 +255,7 @@ You can sort members by **Account**, **Access granted**, **Max role**, or **Last
 
 You can give a user access to all projects in a group.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role.
 

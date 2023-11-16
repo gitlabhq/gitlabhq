@@ -21,7 +21,7 @@ You can also configure [custom templates for the instance](../../administration/
 
 ## Set up group-level project templates
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role for the group.
 

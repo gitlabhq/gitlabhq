@@ -23,7 +23,7 @@ require approvals for deployments to production environments.
 You can require approvals for deployments to protected environments in
 a project.
 
-Prerequisite:
+Prerequisites:
 
 - To update an environment, you must have at least the Maintainer role.
 

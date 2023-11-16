@@ -326,7 +326,7 @@ of the regular cleanup of expired job artifacts. Job logs are never deleted.
 The regular cleanup occurs asynchronously on a schedule, so there might be a short delay
 before artifacts are deleted.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 

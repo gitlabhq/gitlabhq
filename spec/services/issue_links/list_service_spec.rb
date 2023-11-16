@@ -6,10 +6,10 @@ RSpec.describe IssueLinks::ListService, feature_category: :team_planning do
   let(:user) { create :user }
   let(:project) { create(:project_empty_repo, :private) }
   let(:issue) { create :issue, project: project }
-  let(:user_role) { :guest }
+  let(:user_role) { :developer }
 
   before do
-    project.add_role(user, user_role) if user_role
+    project.add_role(user, user_role)
   end
 
   describe '#execute' do
@@ -161,7 +161,19 @@ RSpec.describe IssueLinks::ListService, feature_category: :team_planning do
       end
 
       context 'user can admin related issues just on target project' do
-        let(:user_role) { nil }
+        let(:user_role) { :guest }
+        let(:target_project) { create :project }
+        let(:referenced_issue) { create :issue, project: target_project }
+
+        it 'returns no destroy relation path' do
+          target_project.add_developer(user)
+
+          expect(subject.first[:relation_path]).to be_nil
+        end
+      end
+
+      context 'user can admin related issues just on source project' do
+        let(:user_role) { :developer }
         let(:target_project) { create :project }
         let(:referenced_issue) { create :issue, project: target_project }
 
@@ -169,15 +181,6 @@ RSpec.describe IssueLinks::ListService, feature_category: :team_planning do
           target_project.add_guest(user)
 
           expect(subject.first[:relation_path]).to be_nil
-        end
-      end
-
-      context 'user can admin related issues just on source project' do
-        let(:target_project) { create :project }
-        let(:referenced_issue) { create :issue, project: target_project }
-
-        it 'returns no destroy relation path' do
-          expect(subject).to eq([])
         end
       end
 

@@ -11,7 +11,7 @@ Use the **Settings** page to manage the configuration options in your [project](
 
 ## View project settings
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
@@ -42,7 +42,7 @@ The assigned topics are visible only to users with access to the project, but ev
 A project's repository name defines its URL and its place on the file disk
 where GitLab is installed.
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator or have the Maintainer or Owner role for the project.
 
@@ -187,7 +187,7 @@ To archive a project:
 When you unarchive a project, the read-only restriction is removed,
 and the project becomes available in project lists.
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator or have the Owner role for the project.
 
@@ -244,7 +244,7 @@ To disable the CVE identifier request option in issues in your project:
 
 ## Disable project email notifications
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role for the project.
 

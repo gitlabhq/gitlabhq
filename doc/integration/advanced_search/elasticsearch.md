@@ -162,7 +162,7 @@ These errors may occur when indexing Git repository data.
 
 ## Enable advanced search
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 

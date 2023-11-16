@@ -18,7 +18,7 @@ The app is a private one-time copy installed in your Slack workspace only and no
 
 ## Create a GitLab for Slack app
 
-Prerequisite:
+Prerequisites:
 
 - You must be at least a [Slack workspace administrator](https://slack.com/help/articles/360018112273-Types-of-roles-in-Slack).
 
@@ -70,7 +70,7 @@ To use Slash commands for a project, configure the [GitLab for Slack app](../../
 
 ## Update the GitLab for Slack app
 
-Prerequisite:
+Prerequisites:
 
 - You must be at least a [Slack workspace administrator](https://slack.com/help/articles/360018112273-Types-of-roles-in-Slack).
 

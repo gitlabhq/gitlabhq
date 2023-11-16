@@ -101,7 +101,7 @@ When you connect to `gitlab-workspaces-proxy` through the TCP load balancer,
 
 ### Set up `gitlab-workspaces-proxy` for SSH connections
 
-Prerequisite:
+Prerequisites:
 
 - You must have an SSH host key for client verification.
 
