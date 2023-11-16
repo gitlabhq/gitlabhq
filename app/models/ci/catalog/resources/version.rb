@@ -28,6 +28,9 @@ module Ci
 
         delegate :name, :description, :tag, :sha, :released_at, :author_id, to: :release
 
+        after_destroy :update_catalog_resource
+        after_save :update_catalog_resource
+
         class << self
           # In the future, we should support semantic versioning.
           # See https://gitlab.com/gitlab-org/gitlab/-/issues/427286
@@ -109,6 +112,12 @@ module Ci
               order_by_released_at_desc
             end
           end
+        end
+
+        private
+
+        def update_catalog_resource
+          catalog_resource.update_latest_released_at!
         end
       end
     end

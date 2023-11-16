@@ -3,9 +3,9 @@
 RSpec.shared_context 'when there are catalog resources with versions' do
   let_it_be(:current_user) { create(:user) }
 
-  let_it_be(:project1) { create(:project, :repository) }
-  let_it_be(:project2) { create(:project, :repository) }
-  let_it_be(:project3) { create(:project, :repository) }
+  let_it_be(:project1) { create(:project, :repository, name: 'A') }
+  let_it_be(:project2) { create(:project, :repository, name: 'Z') }
+  let_it_be(:project3) { create(:project, :repository, name: 'L', description: 'Z') }
   let_it_be_with_reload(:resource1) { create(:ci_catalog_resource, project: project1) }
   let_it_be_with_reload(:resource2) { create(:ci_catalog_resource, project: project2) }
   let_it_be(:resource3) { create(:ci_catalog_resource, project: project3) }

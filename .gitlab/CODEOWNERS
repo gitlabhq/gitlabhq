@@ -51,7 +51,7 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 [Clickhouse] @gitlab-org/maintainers/clickhouse
 /db/click_house/
 /ee/db/click_house/
-/**/click(_|-)?house/
+/**/click_house/
 
 ## We list db/ subfolders explicitly as we don't want to match Clickhouse files
 [Database] @gitlab-org/maintainers/database

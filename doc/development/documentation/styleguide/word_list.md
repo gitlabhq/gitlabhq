@@ -1302,6 +1302,8 @@ in the context of other subscription tiers, follow [the subscription tier](#subs
 
 Use **prerequisites** when documenting the tasks that must be completed or the conditions that must be met before a user can complete a task. Do not use **requirements**.
 
+**Prerequisites** must always be plural, even if the list includes only one item.
+
 For more information, see [the task topic type](../topic_types/task.md).
 
 For tutorial page types, use [**before you begin**](#before-you-begin) instead.

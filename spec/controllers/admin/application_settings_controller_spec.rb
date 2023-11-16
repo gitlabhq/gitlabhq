@@ -377,46 +377,6 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       end
     end
 
-    describe 'user_email_lookup_limit aliasing' do
-      let(:application_setting) { ApplicationSetting.current }
-      let(:user_email_lookup_limit) { 8675 }
-      let(:search_rate_limit) { 309 }
-
-      context 'when search_rate_limit is specified' do
-        let(:settings_params) do
-          {
-            user_email_lookup_limit: user_email_lookup_limit,
-            search_rate_limit: search_rate_limit
-          }
-        end
-
-        it 'updates search_rate_limit with correct value' do
-          expect(application_setting.search_rate_limit).not_to eq user_email_lookup_limit
-          expect(application_setting.search_rate_limit).not_to eq search_rate_limit
-
-          put :update, params: { application_setting: settings_params }
-
-          expect(application_setting.reload.search_rate_limit).to eq search_rate_limit
-        end
-      end
-
-      context 'when search_rate_limit is not specified' do
-        let(:settings_params) do
-          {
-            user_email_lookup_limit: search_rate_limit
-          }
-        end
-
-        it 'applies user_email_lookup_limit value to search_rate_limit' do
-          expect(application_setting.search_rate_limit).not_to eq search_rate_limit
-
-          put :update, params: { application_setting: settings_params }
-
-          expect(application_setting.reload.search_rate_limit).to eq search_rate_limit
-        end
-      end
-    end
-
     context 'pipeline creation rate limiting' do
       let(:application_settings) { ApplicationSetting.current }
 

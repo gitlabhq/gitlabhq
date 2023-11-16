@@ -52,5 +52,4 @@ Style/SoleNestedConditional:
     - 'lib/mattermost/session.rb'
     - 'lib/object_storage/direct_upload.rb'
     - 'qa/qa/flow/login.rb'
-    - 'qa/qa/page/project/web_ide/edit.rb'
     - 'spec/spec_helper.rb'

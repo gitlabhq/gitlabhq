@@ -14,9 +14,14 @@ module Ci
     self.table_name = 'p_ci_builds_metadata'
     self.primary_key = 'id'
 
+    query_constraints :id, :partition_id
     partitionable scope: :build, partitioned: true
 
-    belongs_to :build, class_name: 'CommitStatus'
+    belongs_to :build, # rubocop: disable Rails/InverseOf -- this relation is not present on CommitStatus
+      ->(metadata) { in_partition(metadata) },
+      partition_foreign_key: :partition_id,
+      class_name: 'CommitStatus'
+
     belongs_to :project
 
     before_create :set_build_project
@@ -41,6 +46,10 @@ module Ci
         runner_timeout_source: 3,
         job_timeout_source: 4
     }
+
+    def self.use_partition_id_filter?
+      Ci::Pipeline.use_partition_id_filter?
+    end
 
     def update_timeout_state
       timeout = timeout_with_highest_precedence

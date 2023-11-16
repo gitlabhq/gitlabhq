@@ -68,7 +68,6 @@ end
 # rubocop:disable Style/For
 # rubocop:disable Style/SlicingWithRange
 # rubocop:disable Style/GuardClause
-# rubocop:disable Style/ZeroLengthPredicate
 # rubocop:disable Cop/LineBreakAfterGuardClauses
 # rubocop:disable Layout/MultilineHashBraceLayout
 module WikiCloth
@@ -127,7 +126,7 @@ module WikiCloth
             temp = p.split("=")
             if p !~ /=/ && temp.length == 1 && p == params.last
               return p
-            elsif temp.instance_of?(Array) && temp.length > 0
+            elsif temp.instance_of?(Array) && !temp.empty?
               test = temp.first.strip
               default = temp[1..-1].join("=").strip if test == "#default"
               return temp[1..-1].join("=").strip if test == match || (test == "none" && match.blank?)
@@ -267,6 +266,5 @@ end
 # rubocop:enable Style/For
 # rubocop:enable Style/SlicingWithRange
 # rubocop:enable Style/GuardClause
-# rubocop:enable Style/ZeroLengthPredicate
 # rubocop:enable Cop/LineBreakAfterGuardClauses
 # rubocop:enable Layout/MultilineHashBraceLayout

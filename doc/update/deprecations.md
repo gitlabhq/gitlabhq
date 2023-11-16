@@ -1322,6 +1322,26 @@ To prepare for GitLab 15.8 and later, you should:
 </div>
 </div>
 
+<div class="milestone-wrapper" data-milestone="16.7">
+
+## GitLab 16.7
+
+<div class="deprecation breaking-change" data-milestone="16.7">
+
+### `user_email_lookup_limit` API field
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">14.9</span>
+- Removal in GitLab <span class="milestone">16.7</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+</div>
+
+The `user_email_lookup_limit` [API field](https://docs.gitlab.com/ee/api/settings.html) is deprecated in GitLab 14.9 and removed in GitLab 16.7. Until the feature is removed, `user_email_lookup_limit` is aliased to `search_rate_limit` and existing workflows still work.
+
+Any API calls to change the rate limits for `user_email_lookup_limit` must use `search_rate_limit` instead.
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="16.6">
 
 ## GitLab 16.6
@@ -4568,21 +4588,6 @@ If you have explicitly excluded bundler-audit using DS_EXCLUDED_ANALYZERS you wi
 The Container Registry supports [authentication](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md#auth) with `htpasswd`. It relies on an [Apache `htpasswd` file](https://httpd.apache.org/docs/2.4/programs/htpasswd.html), with passwords hashed using `bcrypt`.
 
 Since it isn't used in the context of GitLab (the product), `htpasswd` authentication will be deprecated in GitLab 14.9 and removed in GitLab 15.0.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="15.0">
-
-### user_email_lookup_limit API field
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">14.9</span>
-- Removal in GitLab <span class="milestone">15.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-</div>
-
-The `user_email_lookup_limit` [API field](https://docs.gitlab.com/ee/api/settings.html) is deprecated and will be removed in GitLab 15.0. Until GitLab 15.0, `user_email_lookup_limit` is aliased to `search_rate_limit` and existing workflows will continue to work.
-
-Any API calls attempting to change the rate limits for `user_email_lookup_limit` should use `search_rate_limit` instead.
 
 </div>
 </div>

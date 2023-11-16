@@ -129,7 +129,7 @@ export default {
         <label class="gl-mb-1 gl-mr-2">
           {{ $options.i18n.ciCatalogLabel }}
         </label>
-        <gl-badge size="sm" variant="info"> {{ $options.i18n.badgeText }} </gl-badge>
+        <gl-badge size="sm" variant="neutral"> {{ $options.i18n.badgeText }} </gl-badge>
       </div>
       <gl-sprintf :message="$options.i18n.ciCatalogHelpText">
         <template #link="{ content }">

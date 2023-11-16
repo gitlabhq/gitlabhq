@@ -132,11 +132,7 @@ export default {
     @click="clickFile"
     @mouseleave="$emit('mouseleave', $event)"
   >
-    <div
-      class="file-row-name-container"
-      data-qa-selector="file_row_container"
-      :data-qa-file-name="file.name"
-    >
+    <div class="file-row-name-container">
       <span
         ref="textOutput"
         class="file-row-name"

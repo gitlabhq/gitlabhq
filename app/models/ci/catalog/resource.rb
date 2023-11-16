@@ -50,6 +50,11 @@ module Ci
         save!
       end
 
+      # Triggered in Ci::Catalog::Resources::Version and Release model callbacks.
+      def update_latest_released_at!
+        update!(latest_released_at: versions.latest&.released_at)
+      end
+
       private
 
       # These columns are denormalized from the `projects` table. We first sync these

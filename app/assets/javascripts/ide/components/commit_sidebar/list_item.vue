@@ -86,11 +86,7 @@ export default {
       role="button"
       @click="openFileInEditor"
     >
-      <span
-        class="multi-file-commit-list-file-path d-flex align-items-center"
-        data-qa-selector="file_to_commit_content"
-        :data-qa-file-name="file.name"
-      >
+      <span class="multi-file-commit-list-file-path d-flex align-items-center">
         <file-icon :file-name="file.name" class="gl-mr-3" />
         <template v-if="file.prevName && file.prevName !== file.name">
           {{ file.prevName }} &#x2192;

@@ -74,11 +74,7 @@ export default {
 </script>
 
 <template>
-  <div
-    :class="`ide-${side}-sidebar`"
-    :data-qa-selector="`ide_${side}_sidebar`"
-    class="multi-file-commit-panel ide-sidebar"
-  >
+  <div :class="`ide-${side}-sidebar`" class="multi-file-commit-panel ide-sidebar">
     <div
       v-show="isOpen"
       :class="`ide-${side}-sidebar-${currentView}`"

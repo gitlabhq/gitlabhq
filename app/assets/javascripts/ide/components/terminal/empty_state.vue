@@ -53,13 +53,7 @@ export default {
     <template v-else>
       <p>{{ __('Run tests against your code live using the Web Terminal') }}</p>
       <p>
-        <gl-button
-          :disabled="!isValid"
-          category="primary"
-          variant="confirm"
-          data-qa-selector="start_web_terminal_button"
-          @click="onStart"
-        >
+        <gl-button :disabled="!isValid" category="primary" variant="confirm" @click="onStart">
           {{ __('Start Web Terminal') }}
         </gl-button>
       </p>

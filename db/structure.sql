@@ -33957,8 +33957,6 @@ CREATE INDEX index_project_statistics_on_storage_size_and_project_id ON project_
 
 CREATE INDEX index_project_statistics_on_wiki_size_and_project_id ON project_statistics USING btree (wiki_size, project_id);
 
-CREATE INDEX index_project_topics_on_project_id ON project_topics USING btree (project_id);
-
 CREATE UNIQUE INDEX index_project_topics_on_project_id_and_topic_id ON project_topics USING btree (project_id, topic_id);
 
 CREATE INDEX index_project_topics_on_topic_id ON project_topics USING btree (topic_id);

@@ -22,9 +22,7 @@ module Packages
       attr_reader :package_file
 
       def valid_package_file?
-        package_file &&
-          package_file.package&.nuget? &&
-          package_file.file.size > 0 # rubocop:disable Style/ZeroLengthPredicate
+        package_file && package_file.package&.nuget? && !package_file.file.empty_size?
       end
 
       def with_zip_file(&block)

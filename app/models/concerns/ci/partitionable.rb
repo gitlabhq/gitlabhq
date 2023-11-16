@@ -61,6 +61,10 @@ module Ci
       before_validation :set_partition_id, on: :create
       validates :partition_id, presence: true
 
+      scope :in_partition, ->(id) do
+        where(partition_id: (id.respond_to?(:partition_id) ? id.partition_id : id))
+      end
+
       def set_partition_id
         return if partition_id_changed? && partition_id.present?
         return unless partition_scope_value

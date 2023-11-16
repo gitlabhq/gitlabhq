@@ -86,6 +86,42 @@ RSpec.describe Release, feature_category: :release_orchestration do
     end
   end
 
+  describe '#update_catalog_resource' do
+    let_it_be(:project) { create(:project) }
+    let_it_be_with_refind(:release) { create(:release, project: project, author: user) }
+
+    context 'when the project is a catalog resource' do
+      before_all do
+        create(:ci_catalog_resource, project: project)
+      end
+
+      context 'when released_at is updated' do
+        it 'calls update_catalog_resource' do
+          expect(release).to receive(:update_catalog_resource).once
+
+          release.update!(released_at: release.released_at + 1.day)
+        end
+      end
+
+      context 'when the release is destroyed' do
+        it 'calls update_catalog_resource' do
+          expect(release).to receive(:update_catalog_resource).once
+
+          release.destroy!
+        end
+      end
+    end
+
+    context 'when the project is not a catalog resource' do
+      it 'does not call update_catalog_resource' do
+        expect(release).not_to receive(:update_catalog_resource)
+
+        release.update!(released_at: release.released_at + 1.day)
+        release.destroy!
+      end
+    end
+  end
+
   describe 'latest releases' do
     let_it_be(:yesterday) { Time.zone.now - 1.day }
     let_it_be(:tomorrow) { Time.zone.now + 1.day }

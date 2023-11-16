@@ -157,7 +157,6 @@ export default {
   <gl-modal
     ref="modal"
     modal-id="ide-new-entry"
-    data-qa-selector="new_file_modal"
     data-testid="ide-new-entry"
     :title="modalTitle"
     size="lg"
@@ -179,11 +178,7 @@ export default {
             :placeholder="placeholder"
           />
         </form>
-        <ul
-          v-if="isCreatingNewFile"
-          class="file-templates gl-mt-3 list-inline"
-          data-qa-selector="template_list_content"
-        >
+        <ul v-if="isCreatingNewFile" class="file-templates gl-mt-3 list-inline">
           <li v-for="(template, index) in templateTypes" :key="index" class="list-inline-item">
             <gl-button
               variant="dashed"

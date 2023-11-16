@@ -164,10 +164,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     params.delete(:domain_denylist_raw) if params[:domain_denylist]
     params.delete(:domain_allowlist_raw) if params[:domain_allowlist]
 
-    if params[:application_setting].key?(:user_email_lookup_limit)
-      params[:application_setting][:search_rate_limit] ||= params[:application_setting][:user_email_lookup_limit]
-    end
-
     params[:application_setting].permit(visible_application_setting_attributes)
   end
 

@@ -104,4 +104,27 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
       end
     end
   end
+
+  describe '#update_catalog_resource' do
+    let_it_be(:release) { create(:release, project: project1, tag: 'v1') }
+    let(:version) { build(:ci_catalog_resource_version, catalog_resource: resource1, release: release) }
+
+    context 'when a version is created' do
+      it 'calls update_catalog_resource' do
+        expect(version).to receive(:update_catalog_resource).once
+
+        version.save!
+      end
+    end
+
+    context 'when a version is destroyed' do
+      it 'calls update_catalog_resource' do
+        version.save!
+
+        expect(version).to receive(:update_catalog_resource).once
+
+        version.destroy!
+      end
+    end
+  end
 end

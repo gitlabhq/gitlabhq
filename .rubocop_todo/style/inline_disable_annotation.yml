@@ -2801,7 +2801,6 @@ Style/InlineDisableAnnotation:
     - 'qa/qa/page/component/issuable/sidebar.rb'
     - 'qa/qa/page/component/new_snippet.rb'
     - 'qa/qa/page/component/visibility_setting.rb'
-    - 'qa/qa/page/component/web_ide/web_terminal_panel.rb'
     - 'qa/qa/page/file/show.rb'
     - 'qa/qa/page/layout/banner.rb'
     - 'qa/qa/page/merge_request/show.rb'

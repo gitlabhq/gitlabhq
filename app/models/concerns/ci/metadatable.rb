@@ -10,8 +10,10 @@ module Ci
 
     included do
       has_one :metadata,
+        ->(build) { where(partition_id: build.partition_id) },
         class_name: 'Ci::BuildMetadata',
         foreign_key: :build_id,
+        partition_foreign_key: :partition_id,
         inverse_of: :build,
         autosave: true
 

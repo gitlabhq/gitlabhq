@@ -78,7 +78,6 @@ export default {
       :value="$options.commitToCurrentBranch"
       :disabled="!canPushToBranch"
       :title="$options.currentBranchPermissionsTooltip"
-      data-qa-selector="commit_to_current_branch_radio_container"
     >
       <span class="ide-option-label">
         <gl-sprintf :message="s__('IDE|Commit to %{branchName} branch')">

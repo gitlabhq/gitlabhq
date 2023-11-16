@@ -16,4 +16,5 @@ issues, epics, and more.
 | [Run an agile iteration](agile_sprint/index.md) | Use group, projects, and iterations to run an agile development iteration. |
 | [Set up a single project for issue triage](issue_triage/index.md) | Use labels to set up a project for issue triage. | **{star}** |
 | [Set up issue boards for team hand-off](boards_for_teams/index.md) | Use issue boards and scoped labels to set up collaboration across many teams. | **{star}** |
-| <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Epics and Issue Boards](https://www.youtube.com/watch?v=eQUnHwbKEkY) | Find out how to use epics and issue boards for project management. | |
+| <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Epics and issue boards](https://www.youtube.com/watch?v=eQUnHwbKEkY) | Find out how to use epics and issue boards for project management. | |
+| <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Portfolio Planning - Portfolio Management](https://www.youtube.com/watch?v=d9scVJUIF4c) | Find out how manage your portfolio with requirements, issues, epics, milestones, and time tracking. | |

@@ -322,8 +322,12 @@ An issue, merge request, or epic cannot have two scoped labels, of the form `key
 with the same `key`. If you add a new label with the same `key` but a different `value`,
 the previous `key` label is replaced with the new label.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a video overview, see [Scoped Labels Speed Run](https://www.youtube.com/watch?v=ebyCiKMFODg).
+<div class="video-fallback">
+  See the video: <a href="https://www.youtube.com/watch?v=7l7tnEva6I8">Scoped Labels - Setting up your Organization with GitLab</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube-nocookie.com/embed/7l7tnEva6I8" frameborder="0" allowfullscreen> </iframe>
+</figure>
 
 ### Filter by scoped labels
 

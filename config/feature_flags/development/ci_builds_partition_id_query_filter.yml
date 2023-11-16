@@ -1,0 +1,8 @@
+---
+name: ci_builds_partition_id_query_filter
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130073
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/431361
+milestone: '16.6'
+type: development
+group: group::pipeline execution
+default_enabled: false

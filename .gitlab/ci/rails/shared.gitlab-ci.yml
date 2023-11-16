@@ -82,6 +82,7 @@ include:
     - rspec_paralellized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~level:background_migration --tag ~click_house --tag ~real_ai_request"
   after_script:
     - echo -e "\e[0Ksection_start:`date +%s`:report_results_section[collapsed=true]\r\e[0KReport results"
+    - bundle exec gem list gitlab_quality-test_tooling
     - |
       if [ "$CREATE_RAILS_TEST_FAILURE_ISSUES" == "true" ]; then
         bundle exec relate-failure-issue --input-files "rspec/rspec-*.json" --system-log-files "log" --project "gitlab-org/gitlab" --token "${TEST_FAILURES_PROJECT_TOKEN}" --related-issues-file "rspec/${CI_JOB_ID}-failed-test-issues.json";

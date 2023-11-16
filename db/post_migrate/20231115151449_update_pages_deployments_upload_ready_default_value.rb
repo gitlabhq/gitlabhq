@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class UpdatePagesDeploymentsUploadReadyDefaultValue < Gitlab::Database::Migration[2.2]
-  milestone '16.6'
+  milestone '16.7'
+  enable_lock_retries!
 
   def up
     change_column_default :pages_deployments, :upload_ready, from: true, to: false

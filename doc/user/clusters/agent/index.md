@@ -63,8 +63,8 @@ GitLab in a Kubernetes cluster, you might need a different version of Kubernetes
 You can upgrade your
 Kubernetes version to a supported version at any time:
 
-- 1.27 (support ends on July 22, 2024 or when 1.30 becomes supported)
-- 1.26 (support ends on March 22, 2024 or when 1.29 becomes supported)
+- 1.27 (support ends on July 18, 2024 or when 1.30 becomes supported)
+- 1.26 (support ends on March 21, 2024 or when 1.29 becomes supported)
 - 1.25 (support ends on October 22, 2023 or when 1.28 becomes supported)
 
 GitLab aims to support a new minor Kubernetes version three months after its initial release. GitLab supports at least three production-ready Kubernetes minor

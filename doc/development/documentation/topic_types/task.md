@@ -155,7 +155,7 @@ As a best practice, if the task requires the user to have a role other than Gues
 put the minimum role in the prerequisites. See [the Word list](../styleguide/word_list.md) for
 how to write the phrase for each role.
 
-`Prerequisites` should always be plural, even if it includes only one item.
+`Prerequisites` must always be plural, even if the list includes only one item.
 
 ## Related topics
 

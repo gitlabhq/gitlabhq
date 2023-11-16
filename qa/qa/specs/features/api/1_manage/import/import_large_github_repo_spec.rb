@@ -208,6 +208,8 @@ module QA
         end
       end
 
+      let(:import_status) { imported_project.project_import_status }
+
       before do
         QA::Support::Helpers::ImportSource.enable('github')
       end
@@ -230,7 +232,8 @@ module QA
             status: example.exception ? "failed" : "passed",
             import_time: @import_time,
             import_finished: true,
-            errors: imported_project.project_import_status[:failed_relations],
+            errors: import_status[:failed_relations],
+            correlation_id: import_status[:correlation_id],
             reported_stats: @stats
           }))
         end
@@ -239,7 +242,8 @@ module QA
           status: example.exception ? "failed" : "passed",
           import_time: @import_time,
           import_finished: true,
-          errors: imported_project.project_import_status[:failed_relations],
+          errors: import_status[:failed_relations],
+          correlation_id: import_status[:correlation_id],
           reported_stats: @stats,
           source: {
             data: {

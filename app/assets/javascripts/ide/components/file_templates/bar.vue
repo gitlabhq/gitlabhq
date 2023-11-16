@@ -84,7 +84,6 @@ export default {
   <div
     class="gl-display-flex gl-align-items-center ide-file-templates gl-relative gl-z-index-1"
     data-testid="file-templates-bar"
-    data-qa-selector="file_templates_container"
   >
     <strong class="gl-mr-3"> {{ $options.i18n.barLabel }} </strong>
     <gl-dropdown
@@ -102,12 +101,11 @@ export default {
     <gl-dropdown
       v-if="showTemplatesDropdown"
       class="gl-mr-6"
-      data-qa-selector="file_template_dropdown"
       :text="$options.i18n.templateListDropdownLabel"
       @show="fetchTemplateTypes"
     >
       <template #header>
-        <gl-search-box-by-type v-model.trim="search" data-qa-selector="dropdown_filter_input" />
+        <gl-search-box-by-type v-model.trim="search" />
       </template>
       <div>
         <gl-loading-icon v-if="isLoading" />

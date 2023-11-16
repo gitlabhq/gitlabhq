@@ -126,17 +126,9 @@ To change a vulnerability's status from its Vulnerability Page:
 Details of the status change, including who made the change and when, are recorded in the
 vulnerability's action log.
 
-## Creating an issue for a vulnerability
+## Create a GitLab issue for a vulnerability
 
-From a vulnerability's page you can create an issue to track all action taken to resolve or
-mitigate it.
-
-You can create either:
-
-- [A GitLab issue](#create-a-gitlab-issue-for-a-vulnerability) (default).
-- [A Jira issue](#create-a-jira-issue-for-a-vulnerability).
-
-### Create a GitLab issue for a vulnerability
+You can create a GitLab issue to track any action taken to resolve or mitigate a vulnerability.
 
 To create a GitLab issue for a vulnerability:
 
@@ -145,37 +137,14 @@ To create a GitLab issue for a vulnerability:
 1. Select the vulnerability's description.
 1. Select **Create issue**.
 
-An issue is created in the project, pre-populated with information from the vulnerability report.
-The issue is then opened so you can take further action.
+A GitLab issue is created in the project with information from the vulnerability report.
 
-### Create a Jira issue for a vulnerability
-
-Prerequisites:
-
-- [Enable Jira integration](../../../integration/jira/configure.md). The
-  **Enable Jira issue creation from vulnerabilities** option must be selected as part
-  of the configuration.
-- Each user must have a personal Jira user account with permission to create issues in the target
-  project.
-
-To create a Jira issue for a vulnerability:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Vulnerability report**.
-1. Select the vulnerability's description.
-1. Select **Create Jira issue**.
-1. If you're not already logged in to Jira, sign in.
-
-The Jira issue is created and opened in a new browser tab. The **Summary** and **Description**
-fields are pre-populated from the vulnerability's details.
-
-Unlike GitLab issues, the status of whether a Jira issue is open or closed does not display in the
-GitLab user interface.
+To create a Jira issue, see [Create a Jira issue for a vulnerability](../../../integration/jira/configure.md#create-a-jira-issue-for-a-vulnerability).
 
 ## Linking a vulnerability to GitLab and Jira issues
 
 You can link a vulnerability to one or more existing [GitLab](#create-a-gitlab-issue-for-a-vulnerability)
-or [Jira](#create-a-jira-issue-for-a-vulnerability) issues. Only one linking feature is available at the same time.
+or [Jira](../../../integration/jira/configure.md#create-a-jira-issue-for-a-vulnerability) issues. Only one linking feature is available at the same time.
 Adding a link helps track the issue that resolves or mitigates a vulnerability.
 
 ### Link a vulnerability to existing GitLab issues

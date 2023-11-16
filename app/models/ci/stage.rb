@@ -21,19 +21,45 @@ module Ci
     belongs_to :project
     belongs_to :pipeline
 
-    has_many :statuses, class_name: 'CommitStatus', foreign_key: :stage_id, inverse_of: :ci_stage
-    has_many :latest_statuses, -> { ordered.latest },
+    has_many :statuses,
+      ->(stage) { in_partition(stage) },
       class_name: 'CommitStatus',
       foreign_key: :stage_id,
+      partition_foreign_key: :partition_id,
       inverse_of: :ci_stage
-    has_many :retried_statuses, -> { ordered.retried },
+    has_many :latest_statuses,
+      ->(stage) { in_partition(stage).ordered.latest },
       class_name: 'CommitStatus',
       foreign_key: :stage_id,
+      partition_foreign_key: :partition_id,
       inverse_of: :ci_stage
-    has_many :processables, class_name: 'Ci::Processable', foreign_key: :stage_id, inverse_of: :ci_stage
-    has_many :builds, foreign_key: :stage_id, inverse_of: :ci_stage
-    has_many :bridges, foreign_key: :stage_id, inverse_of: :ci_stage
-    has_many :generic_commit_statuses, foreign_key: :stage_id, inverse_of: :ci_stage
+    has_many :retried_statuses,
+      ->(stage) { in_partition(stage).ordered.retried },
+      class_name: 'CommitStatus',
+      foreign_key: :stage_id,
+      partition_foreign_key: :partition_id,
+      inverse_of: :ci_stage
+    has_many :processables,
+      ->(stage) { in_partition(stage) },
+      class_name: 'Ci::Processable',
+      foreign_key: :stage_id,
+      partition_foreign_key: :partition_id,
+      inverse_of: :ci_stage
+    has_many :builds,
+      ->(stage) { in_partition(stage) },
+      foreign_key: :stage_id,
+      partition_foreign_key: :partition_id,
+      inverse_of: :ci_stage
+    has_many :bridges,
+      ->(stage) { in_partition(stage) },
+      foreign_key: :stage_id,
+      partition_foreign_key: :partition_id,
+      inverse_of: :ci_stage
+    has_many :generic_commit_statuses,
+      ->(stage) { in_partition(stage) },
+      foreign_key: :stage_id,
+      partition_foreign_key: :partition_id,
+      inverse_of: :ci_stage
 
     scope :ordered, -> { order(position: :asc) }
     scope :in_pipelines, ->(pipelines) { where(pipeline: pipelines) }
@@ -105,6 +131,10 @@ module Ci
       event :delay do
         transition any - [:scheduled] => :scheduled
       end
+    end
+
+    def self.use_partition_id_filter?
+      Ci::Pipeline.use_partition_id_filter?
     end
 
     def set_status(new_status)

@@ -21,6 +21,7 @@ For information on how to control the application settings cache for an instance
 > - `delayed_project_deletion` and `delayed_group_deletion` attributes removed in GitLab 16.0.
 > - `in_product_marketing_emails_enabled` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/418137) in GitLab 16.6.
 > - `repository_storages` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/429675) in GitLab 16.6.
+> - `user_email_lookup_limit` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136886) in GitLab 16.7.
 
 List the current [application settings](#list-of-settings-that-can-be-accessed-via-api-calls)
 of the GitLab instance.
@@ -160,6 +161,7 @@ these parameters:
 
 > - `always_perform_delayed_deletion` feature flag [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113332) in GitLab 15.11.
 > - `delayed_project_deletion` and `delayed_group_deletion` attributes removed in GitLab 16.0.
+> - `user_email_lookup_limit` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136886) in GitLab 16.7.
 
 Use an API call to modify GitLab instance
 [application settings](#list-of-settings-that-can-be-accessed-via-api-calls).
@@ -526,7 +528,6 @@ listed in the descriptions of the relevant settings.
 | `push_event_hooks_limit`                 | integer          | no                                   | Maximum number of changes (branches or tags) in a single push above which webhooks and integrations are not triggered. Setting to `0` does not disable throttling. |
 | `rate_limiting_response_text`            | string           | no                                   | When rate limiting is enabled via the `throttle_*` settings, send this plain text response when a rate limit is exceeded. 'Retry later' is sent if this is blank. |
 | `raw_blob_request_limit`                 | integer          | no                                   | Maximum number of requests per minute for each raw path (default is `300`). Set to `0` to disable throttling.|
-| `user_email_lookup_limit`                | integer          | no                                   | **{warning}** **[Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80631/)** in GitLab 14.9 will be removed in 15.0. Replaced by `search_rate_limit`. Max number of requests per minute for email lookup. Default: 60. To disable throttling set to 0.|
 | `search_rate_limit`                      | integer          | no                                   | Max number of requests per minute for performing a search while authenticated. Default: 30. To disable throttling set to 0.|
 | `search_rate_limit_unauthenticated`      | integer          | no                                   | Max number of requests per minute for performing a search while unauthenticated. Default: 10. To disable throttling set to 0.|
 | `recaptcha_enabled`                      | boolean          | no                                   | (**If enabled, requires:** `recaptcha_private_key` and `recaptcha_site_key`) Enable reCAPTCHA. |

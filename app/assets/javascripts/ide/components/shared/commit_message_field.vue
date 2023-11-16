@@ -121,7 +121,6 @@ export default {
         :placeholder="placeholder"
         :value="text"
         class="gl-absolute gl-w-full gl-h-full gl-z-index-2 gl-font-monospace p-0 gl-outline-0 gl-bg-transparent gl-border-0"
-        data-qa-selector="ide_commit_message_field"
         dir="auto"
         name="commit-message"
         @scroll="handleScroll"

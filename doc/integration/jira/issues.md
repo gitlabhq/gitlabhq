@@ -212,7 +212,3 @@ adding a comment to the Jira issue:
 
 1. Refer to the [Configure GitLab](configure.md) instructions.
 1. Clear the **Enable comments** checkbox.
-
-## Related topics
-
-- [Create a Jira issue for a vulnerability](../../user/application_security/vulnerabilities/index.md#create-a-jira-issue-for-a-vulnerability)

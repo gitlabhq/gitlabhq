@@ -25,11 +25,12 @@ class CommitStatus < Ci::ApplicationRecord
   self.sequence_name = :ci_builds_id_seq
   self.primary_key = :id
 
+  query_constraints :id, :partition_id
   partitionable scope: :pipeline, partitioned: true
 
   belongs_to :user
   belongs_to :project
-  belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id, inverse_of: :statuses
+  belongs_to :pipeline, ->(build) { in_partition(build) }, class_name: 'Ci::Pipeline', foreign_key: :commit_id, inverse_of: :statuses, partition_foreign_key: :partition_id
   belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline', inverse_of: :auto_canceled_jobs
   belongs_to :ci_stage, class_name: 'Ci::Stage', foreign_key: :stage_id
 
@@ -231,6 +232,10 @@ class CommitStatus < Ci::ApplicationRecord
 
   def self.locking_enabled?
     false
+  end
+
+  def self.use_partition_id_filter?
+    Ci::Pipeline.use_partition_id_filter?
   end
 
   def locking_enabled?

@@ -924,7 +924,6 @@ Style/IfUnlessModifier:
     - 'qa/qa/page/mattermost/login.rb'
     - 'qa/qa/page/page_concern.rb'
     - 'qa/qa/page/project/settings/deploy_tokens.rb'
-    - 'qa/qa/page/project/web_ide/edit.rb'
     - 'qa/qa/page/view.rb'
     - 'qa/qa/resource/registry_repository.rb'
     - 'qa/qa/resource/repository/push.rb'

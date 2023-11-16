@@ -59,7 +59,8 @@ module Gitlab
         )
       }mix
 
-      EXCLUSION_REGEX = %r{
+      EXCLUSION_REGEX = %r{#{INLINE_CODE_REGEX} | #{HTML_BLOCK_REGEX}}mix
+      EXCLUSION_REGEX_ORG = %r{
         #{CODE_REGEX} | #{INLINE_CODE_REGEX} | #{HTML_BLOCK_REGEX} | #{QUOTE_BLOCK_REGEX}
       }mix
 
@@ -92,10 +93,16 @@ module Gitlab
       # commands = extractor.extract_commands(msg) #=> [['labels', '~foo ~"bar baz"']]
       # msg #=> "hello\n/labels ~foo ~"bar baz"\n\nworld"
       # ```
-      def extract_commands(content, only: nil)
+      # TODO: target is only needed for feature flag
+      def extract_commands(content, only: nil, target: nil)
         return [content, []] unless content
 
-        perform_regex(content, only: only)
+        actor = target&.project&.group if target.respond_to?(:project)
+        if Feature.enabled?(:quick_action_refactor, actor)
+          perform_regex(content, only: only)
+        else
+          perform_regex_org(content, only: only)
+        end
       end
 
       # Encloses quick action commands into code span markdown
@@ -105,7 +112,13 @@ module Gitlab
       def redact_commands(content)
         return "" unless content
 
-        content, _ = perform_regex(content, redact: true)
+        # TODO: we don't have an actor at this point, so just check the global
+        #       feature flag.
+        content, _ = if Feature.enabled?(:quick_action_refactor)
+                       perform_regex(content, redact: true)
+                     else
+                       perform_regex_org(content, redact: true)
+                     end
 
         content
       end
@@ -119,7 +132,53 @@ module Gitlab
         content   = content.dup
         content.delete!("\r")
 
-        content.gsub!(commands_regex(names: names, sub_names: sub_names)) do
+        # use a markdown based pipeline to grab possible paragraphs that might
+        # contain quick actions. This ensures they are not in HTML blocks, quote blocks,
+        # or code blocks.
+        pipeline = Banzai::Pipeline::QuickActionPipeline.html_pipeline
+        possible_paragraphs = pipeline.call(content, {}, {})[:quick_action_paragraphs]
+
+        if possible_paragraphs.present?
+          content_lines = content.lines
+
+          # Each paragraph that possibly contains quick actions must be searched. In order
+          # to use the `sourcepos` information, we need to convert into individual lines,
+          # and then replace the specific lines.
+          possible_paragraphs.each do |possible|
+            endpos = possible[:end_line]
+            endpos += 1 if content_lines[endpos + 1] == "\n"
+
+            paragraph = content_lines[possible[:start_line]..endpos].join
+
+            paragraph.gsub!(commands_regex(names: names, sub_names: sub_names)) do
+              command, output = if $~[:substitution]
+                                  process_substitutions($~)
+                                else
+                                  process_commands($~, redact)
+                                end
+
+              commands << command
+              output
+            end
+
+            content_lines.fill('', possible[:start_line]..endpos)
+            content_lines[possible[:start_line]] = paragraph
+          end
+
+          content = content_lines.join
+        end
+
+        [content.rstrip, commands.reject(&:empty?)]
+      end
+
+      def perform_regex_org(content, only: nil, redact: false)
+        names     = command_names(limit_to_commands: only).map(&:to_s)
+        sub_names = substitution_names.map(&:to_s)
+        commands  = []
+        content   = content.dup
+        content.delete!("\r")
+
+        content.gsub!(commands_regex(names: names, sub_names: sub_names, use_org_regex: true)) do
           command, output = if $~[:substitution]
                               process_substitutions($~)
                             else
@@ -176,12 +235,13 @@ module Gitlab
       # It looks something like:
       #
       #   /^\/(?<cmd>close|reopen|...)(?:( |$))(?<arg>[^\/\n]*)(?:\n|$)/
-      def commands_regex(names:, sub_names:)
+      def commands_regex(names:, sub_names:, use_org_regex: false)
+        names += ['use_org_regex'] if use_org_regex
         @commands_regex[names] ||= %r{
-            #{EXCLUSION_REGEX}
+            #{use_org_regex ? EXCLUSION_REGEX_ORG : EXCLUSION_REGEX}
           |
             (?:
-              # Command not in a blockquote, blockcode, or HTML tag:
+              # Command such as:
               # /close
 
               ^\/
@@ -194,7 +254,8 @@ module Gitlab
             )
           |
             (?:
-              # Substitution not in a blockquote, blockcode, or HTML tag:
+              # Substitution such as:
+              # /shrug
 
               ^\/
               (?<substitution>#{Regexp.new(Regexp.union(sub_names).source, Regexp::IGNORECASE)})

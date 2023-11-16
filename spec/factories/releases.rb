@@ -35,5 +35,15 @@ FactoryBot.define do
         create_list(:milestone, evaluator.milestones_count, project: evaluator.project, releases: [release])
       end
     end
+
+    trait :with_catalog_resource_version do
+      catalog_resource_version do
+        if instance.project&.catalog_resource
+          association :ci_catalog_resource_version,
+            catalog_resource: instance.project&.catalog_resource,
+            release: instance
+        end
+      end
+    end
   end
 end

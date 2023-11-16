@@ -128,4 +128,30 @@ RSpec.describe Ci::Partitionable do
       it { expect(ci_model).not_to respond_to(:partitioning_strategy) }
     end
   end
+
+  describe '.in_partition' do
+    before do
+      stub_const("#{described_class}::Testing::PARTITIONABLE_MODELS", [ci_model.name])
+      ci_model.table_name = :p_ci_builds
+      ci_model.include(described_class)
+    end
+
+    subject(:scope_values) { ci_model.in_partition(value).where_values_hash }
+
+    context 'with integer parameters' do
+      let(:value) { 101 }
+
+      it 'adds a partition_id filter' do
+        expect(scope_values).to include('partition_id' => 101)
+      end
+    end
+
+    context 'with partitionable records' do
+      let(:value) { build_stubbed(:ci_pipeline, partition_id: 101) }
+
+      it 'adds a partition_id filter' do
+        expect(scope_values).to include('partition_id' => 101)
+      end
+    end
+  end
 end

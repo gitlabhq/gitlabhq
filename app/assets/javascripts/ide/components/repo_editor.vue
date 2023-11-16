@@ -543,7 +543,6 @@ export default {
         'is-added': file.tempFile,
       }"
       class="multi-file-editor-holder"
-      data-qa-selector="editor_container"
       data-testid="editor-container"
       :data-editor-loading="isEditorLoading"
       @focusout="triggerFilesChange"

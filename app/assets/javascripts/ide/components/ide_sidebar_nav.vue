@@ -71,7 +71,6 @@ export default {
           :title="tab.title"
           :aria-label="tab.title"
           :class="buttonClasses(tab)"
-          :data-qa-selector="`${tab.title.toLowerCase()}_tab_button`"
           class="ide-sidebar-link"
           type="button"
           @click="clickTab($event, tab)"

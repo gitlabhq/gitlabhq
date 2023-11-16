@@ -154,9 +154,6 @@ project_relation_exports:
 project_repositories:
   index_project_repositories_on_shard_id_and_project_id:
     - index_project_repositories_on_shard_id
-project_topics:
-  index_project_topics_on_project_id_and_topic_id:
-    - index_project_topics_on_project_id
 protected_environments:
   index_protected_environments_on_project_id_and_name:
     - index_protected_environments_on_project_id
