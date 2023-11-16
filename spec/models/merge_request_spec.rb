@@ -404,7 +404,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
       end
 
-      context "with the skip_validations_during_transition_feature_flag" do
+      context "when transitioning between states" do
         let(:merge_request) { build(:merge_request, transitioning: transitioning) }
 
         where(:transitioning, :to_or_not_to) do

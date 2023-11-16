@@ -19,7 +19,14 @@ RSpec.describe Gitlab::BitbucketImport::RefConverter, feature_category: :importe
 
   context 'when the note has an issue ref' do
     let(:note) { "[https://bitbucket.org/namespace/repo/issues/1/first-issue](https://bitbucket.org/namespace/repo/issues/1/first-issue){: data-inline-card='' } " }
-    let(:expected) { "[http://localhost/#{path}/-/issues/1/](http://localhost/#{path}/-/issues/1/)" }
+    let(:expected) { "[http://localhost/#{path}/-/issues/1](http://localhost/#{path}/-/issues/1)" }
+
+    it_behaves_like 'converts the ref correctly'
+  end
+
+  context 'when the note references issues without an issue name' do
+    let(:note) { "[https://bitbucket.org/namespace/repo/issues](https://bitbucket.org/namespace/repo/issues){: data-inline-card='' } " }
+    let(:expected) { "[http://localhost/#{path}/-/issues](http://localhost/#{path}/-/issues)" }
 
     it_behaves_like 'converts the ref correctly'
   end

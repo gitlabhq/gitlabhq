@@ -6,9 +6,7 @@ module Transitionable
   attr_accessor :transitioning
 
   def transitioning?
-    return false unless transitioning && Feature.enabled?(:skip_validations_during_transitions, project)
-
-    true
+    transitioning
   end
 
   def enable_transitioning

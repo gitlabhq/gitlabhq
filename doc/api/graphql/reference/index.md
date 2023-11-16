@@ -7528,6 +7528,34 @@ Input type: `UpdatePackagesCleanupPolicyInput`
 | <a id="mutationupdatepackagescleanuppolicyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationupdatepackagescleanuppolicypackagescleanuppolicy"></a>`packagesCleanupPolicy` | [`PackagesCleanupPolicy`](#packagescleanuppolicy) | Packages cleanup policy after mutation. |
 
+### `Mutation.updatePackagesProtectionRule`
+
+Updates a package protection rule to restrict access to project packages. You can prevent users without certain permissions from altering packages. Available only when feature flag `packages_protected_packages` is enabled.
+
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `UpdatePackagesProtectionRuleInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationupdatepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatepackagesprotectionruleid"></a>`id` | [`PackagesProtectionRuleID!`](#packagesprotectionruleid) | Global ID of the package protection rule to be updated. |
+| <a id="mutationupdatepackagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String`](#string) | Package name protected by the protection rule. For example, `@my-scope/my-package-*`. Wildcard character `*` allowed. |
+| <a id="mutationupdatepackagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType`](#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example, `NPM`. |
+| <a id="mutationupdatepackagesprotectionrulepushprotecteduptoaccesslevel"></a>`pushProtectedUpToAccessLevel` | [`PackagesProtectionRuleAccessLevel`](#packagesprotectionruleaccesslevel) | Maximum GitLab access level unable to push a package. For example, `DEVELOPER`, `MAINTAINER`, `OWNER`. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationupdatepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatepackagesprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationupdatepackagesprotectionrulepackageprotectionrule"></a>`packageProtectionRule` | [`PackagesProtectionRule`](#packagesprotectionrule) | Packages protection rule after mutation. |
+
 ### `Mutation.updateRequirement`
 
 Input type: `UpdateRequirementInput`

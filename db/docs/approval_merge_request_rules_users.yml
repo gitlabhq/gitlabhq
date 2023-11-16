@@ -1,6 +1,7 @@
 ---
 table_name: approval_merge_request_rules_users
-classes: []
+classes:
+- ApprovalMergeRequestRulesUser
 feature_categories:
 - source_code_management
 description: Keeps connection between user and a merge request approval rule
