@@ -21,7 +21,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, f
 
     before do
       allow_next_instance_of(BitbucketServer::Client) do |client|
-        allow(client).to receive(:pull_requests).and_return(
+        allow(client).to receive(:pull_requests).with('key', 'slug', a_hash_including(limit: 50)).and_return(
           [
             BitbucketServer::Representation::PullRequest.new(
               {

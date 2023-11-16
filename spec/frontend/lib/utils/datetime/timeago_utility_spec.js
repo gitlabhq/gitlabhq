@@ -1,5 +1,6 @@
-import { DATE_ONLY_FORMAT } from '~/lib/utils/datetime/constants';
 import { getTimeago, localTimeAgo, timeFor, duration } from '~/lib/utils/datetime/timeago_utility';
+import { DATE_ONLY_FORMAT, localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
+
 import { s__ } from '~/locale';
 import '~/commons/bootstrap';
 
@@ -168,6 +169,7 @@ describe('TimeAgo utils', () => {
         ${1}              | ${'12-hour'} | ${'Feb 18, 2020, 10:22 PM'}
         ${2}              | ${'24-hour'} | ${'Feb 18, 2020, 22:22'}
       `(`'$display' renders as '$text'`, ({ timeDisplayFormat, text }) => {
+        localeDateFormat.reset();
         gon.time_display_relative = false;
         gon.time_display_format = timeDisplayFormat;
 

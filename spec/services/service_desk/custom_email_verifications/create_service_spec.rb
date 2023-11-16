@@ -45,7 +45,7 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::CreateService, feature_cat
       end
     end
 
-    shared_examples 'a verification process with ramp up error' do |error, error_identifier|
+    shared_examples 'a verification process with ramp up error' do
       it 'aborts verification process', :aggregate_failures do
         allow(message).to receive(:deliver).and_raise(error)
 
@@ -115,7 +115,7 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::CreateService, feature_cat
       end
 
       context 'when user has maintainer role in project' do
-        before do
+        before_all do
           project.add_maintainer(user)
         end
 
@@ -151,10 +151,25 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::CreateService, feature_cat
             allow(Notify).to receive(:service_desk_verification_result_email).and_return(message_delivery)
           end
 
-          it_behaves_like 'a verification process with ramp up error', SocketError, 'smtp_host_issue'
-          it_behaves_like 'a verification process with ramp up error', OpenSSL::SSL::SSLError, 'smtp_host_issue'
-          it_behaves_like 'a verification process with ramp up error',
-            Net::SMTPAuthenticationError.new('Invalid username or password'), 'invalid_credentials'
+          it_behaves_like 'a verification process with ramp up error' do
+            let(:error) { SocketError }
+            let(:error_identifier) { 'smtp_host_issue' }
+          end
+
+          it_behaves_like 'a verification process with ramp up error' do
+            let(:error) { OpenSSL::SSL::SSLError }
+            let(:error_identifier) { 'smtp_host_issue' }
+          end
+
+          it_behaves_like 'a verification process with ramp up error' do
+            let(:error) { Net::SMTPAuthenticationError.new('Invalid username or password') }
+            let(:error_identifier) { 'invalid_credentials' }
+          end
+
+          it_behaves_like 'a verification process with ramp up error' do
+            let(:error) { Net::ReadTimeout }
+            let(:error_identifier) { 'read_timeout' }
+          end
         end
       end
     end

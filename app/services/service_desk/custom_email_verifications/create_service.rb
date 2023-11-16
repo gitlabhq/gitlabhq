@@ -53,6 +53,9 @@ module ServiceDesk
       rescue Net::SMTPAuthenticationError
         # incorrect username or password
         @ramp_up_error = :invalid_credentials
+      rescue Net::ReadTimeout
+        # Server is slow to respond
+        @ramp_up_error = :read_timeout
       end
 
       def handle_error_case

@@ -179,4 +179,46 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
       end
     end
   end
+
+  describe '#find_resource' do
+    subject { list.find_resource(id: id) }
+
+    context 'when the resource is published and visible to the user' do
+      let_it_be(:accessible_resource) { create(:ci_catalog_resource, project: project_a, state: :published) }
+
+      let(:id) { accessible_resource.id }
+
+      it 'fetches the resource' do
+        is_expected.to eq(accessible_resource)
+      end
+    end
+
+    context 'when the resource is not found' do
+      let(:id) { 'not-an-id' }
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+
+    context 'when the resource is not published' do
+      let_it_be(:draft_resource) { create(:ci_catalog_resource, project: project_a, state: :draft) }
+
+      let(:id) { draft_resource.id }
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+
+    context "when the current user cannot read code on the resource's project" do
+      let_it_be(:inaccessible_resource) { create(:ci_catalog_resource, project: project_noaccess, state: :published) }
+
+      let(:id) { inaccessible_resource.id }
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+  end
 end

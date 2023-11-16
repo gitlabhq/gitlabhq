@@ -13,7 +13,17 @@ module UpdateRepositoryStorageWorker
 
   LEASE_TIMEOUT = 30.minutes.to_i
 
-  def perform(container_id, new_repository_storage_key, repository_storage_move_id = nil)
+  # `container_id` and `new_repository_storage_key` arguments have been deprecated.
+  # `repository_storage_move_id` is now a mandatory argument.
+  # We are using *args for backwards compatability. Previously defined as:
+  # perform(container_id, new_repository_storage_key, repository_storage_move_id = nil)
+  def perform(*args)
+    if args.length == 1
+      repository_storage_move_id = args[0]
+    else
+      container_id, new_repository_storage_key, repository_storage_move_id = *args
+    end
+
     repository_storage_move =
       if repository_storage_move_id
         find_repository_storage_move(repository_storage_move_id)
@@ -25,6 +35,8 @@ module UpdateRepositoryStorageWorker
           destination_storage_name: new_repository_storage_key
         )
       end
+
+    container_id ||= repository_storage_move.container_id
 
     if Feature.enabled?(:use_lock_for_update_repository_storage)
       # Use exclusive lock to prevent multiple storage migrations at the same time

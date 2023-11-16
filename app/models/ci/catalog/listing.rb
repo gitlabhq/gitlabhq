@@ -29,6 +29,16 @@ module Ci
         end
       end
 
+      def find_resource(id:)
+        resource = Ci::Catalog::Resource.find_by_id(id)
+
+        return unless resource.present?
+        return unless resource.published?
+        return unless current_user.can?(:read_code, resource.project)
+
+        resource
+      end
+
       private
 
       attr_reader :current_user

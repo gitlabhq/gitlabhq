@@ -106,7 +106,7 @@
     a,
     .wiki-list-expand-button,
     .wiki-list-collapse-button {
-      color: $black;
+      color: var(--gl-text-color, $gl-text-color);
     }
   }
 
@@ -149,7 +149,7 @@
   }
 
   ul.wiki-pages ul,
-  ul.wiki-pages li:not(.wiki-directory){ 
+  ul.wiki-pages li:not(.wiki-directory){
     padding-left: 20px;
   }
 
@@ -158,16 +158,6 @@
 
     .gutter-toggle {
       margin-top: 0;
-    }
-  }
-}
-
-.right-sidebar.wiki-sidebar {
-  .active > .wiki-list {
-    a,
-    .wiki-list-expand-button,
-    .wiki-list-collapse-button {
-      color: $white;
     }
   }
 }

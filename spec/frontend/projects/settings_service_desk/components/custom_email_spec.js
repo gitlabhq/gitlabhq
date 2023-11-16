@@ -76,6 +76,7 @@ describe('CustomEmail', () => {
       'mail_not_received_within_timeframe',
       'incorrect_from',
       'incorrect_token',
+      'read_timeout',
     ])('displays %s label and description', (error) => {
       createWrapper({ verificationError: error });
       const text = wrapper.text();

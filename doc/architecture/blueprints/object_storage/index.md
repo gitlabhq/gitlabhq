@@ -4,7 +4,7 @@ creation-date: "2021-11-18"
 authors: [ "@nolith" ]
 coach: "@glopezfernandez"
 approvers: [ "@marin" ]
-owning-stage: "~devops::data_stores"
+owning-stage: "~devops::data stores"
 participating-stages: []
 ---
 

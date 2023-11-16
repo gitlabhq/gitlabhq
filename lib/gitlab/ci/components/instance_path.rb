@@ -78,7 +78,11 @@ module Gitlab
         strong_memoize_attr :component_name
 
         def latest_version_sha
-          project.releases.latest&.sha
+          if project.catalog_resource
+            project.catalog_resource.versions.latest&.sha
+          else
+            project.releases.latest&.sha
+          end
         end
       end
     end

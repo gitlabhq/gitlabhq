@@ -127,13 +127,32 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
             released_at: Time.zone.now)
         end
 
-        it 'fetches the component content', :aggregate_failures do
+        it 'returns the component content of the latest project release', :aggregate_failures do
           result = path.fetch_content!(current_user: user)
           expect(result.content).to eq('image: alpine_2')
           expect(result.path).to eq('templates/secret-detection.yml')
           expect(path.host).to eq(current_host)
           expect(path.project).to eq(project)
           expect(path.sha).to eq(latest_sha)
+        end
+
+        context 'when the project is a catalog resource' do
+          let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
+
+          before do
+            project.releases.each do |release|
+              create(:ci_catalog_resource_version, catalog_resource: resource, release: release)
+            end
+          end
+
+          it 'returns the component content of the latest catalog resource version', :aggregate_failures do
+            result = path.fetch_content!(current_user: user)
+            expect(result.content).to eq('image: alpine_2')
+            expect(result.path).to eq('templates/secret-detection.yml')
+            expect(path.host).to eq(current_host)
+            expect(path.project).to eq(project)
+            expect(path.sha).to eq(latest_sha)
+          end
         end
       end
 

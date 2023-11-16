@@ -566,7 +566,6 @@ lib/gitlab/checks/**
 /doc/administration/settings/slack_app.md @eread @ashrafkhamis
 /doc/administration/settings/terraform_limits.md @phillipwells
 /doc/administration/settings/third_party_offers.md @lciutacu
-/doc/administration/settings/usage_statistics.md @lciutacu
 /doc/administration/settings/visibility_and_access_controls.md @msedlakjakubowski
 /doc/administration/sidekiq/ @axil
 /doc/administration/sidekiq/sidekiq_memory_killer.md @jglassman1
@@ -733,7 +732,6 @@ lib/gitlab/checks/**
 /doc/api/templates/licenses.md @rdickenson
 /doc/api/todos.md @msedlakjakubowski
 /doc/api/topics.md @lciutacu
-/doc/api/usage_data.md @lciutacu
 /doc/api/users.md @jglassman1
 /doc/api/version.md @phillipwells
 /doc/api/visual_review_discussions.md @marcel.amirault

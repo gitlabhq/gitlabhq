@@ -13551,7 +13551,8 @@ CREATE TABLE catalog_resources (
     latest_released_at timestamp with time zone,
     name character varying,
     description text,
-    visibility_level integer DEFAULT 0 NOT NULL
+    visibility_level integer DEFAULT 0 NOT NULL,
+    search_vector tsvector GENERATED ALWAYS AS ((setweight(to_tsvector('english'::regconfig, (COALESCE(name, ''::character varying))::text), 'A'::"char") || setweight(to_tsvector('english'::regconfig, COALESCE(description, ''::text)), 'B'::"char"))) STORED
 );
 
 CREATE SEQUENCE catalog_resources_id_seq
@@ -31791,10 +31792,6 @@ CREATE INDEX index_catalog_resource_versions_on_catalog_resource_id ON catalog_r
 CREATE INDEX index_catalog_resource_versions_on_project_id ON catalog_resource_versions USING btree (project_id);
 
 CREATE UNIQUE INDEX index_catalog_resource_versions_on_release_id ON catalog_resource_versions USING btree (release_id);
-
-CREATE INDEX index_catalog_resources_on_description_trigram ON catalog_resources USING gin (description gin_trgm_ops);
-
-CREATE INDEX index_catalog_resources_on_name_trigram ON catalog_resources USING gin (name gin_trgm_ops);
 
 CREATE UNIQUE INDEX index_catalog_resources_on_project_id ON catalog_resources USING btree (project_id);
 

@@ -32602,6 +32602,9 @@ msgstr ""
 msgid "Notify|Project %{project_name} was exported successfully."
 msgstr ""
 
+msgid "Notify|Read timeout:"
+msgstr ""
+
 msgid "Notify|Remote mirror"
 msgstr ""
 
@@ -32615,6 +32618,9 @@ msgid "Notify|The Administrator created an account for you. Now you are a member
 msgstr ""
 
 msgid "Notify|The Auto DevOps pipeline failed for pipeline %{pipeline_link} and has been disabled for %{project_link}. In order to use the Auto DevOps pipeline with your project, please review the %{supported_langs_link}, adjust your project accordingly, and turn on the Auto DevOps pipeline within your %{settings_link}."
+msgstr ""
+
+msgid "Notify|The SMTP server did not respond in time."
 msgstr ""
 
 msgid "Notify|The diff for this file was not included because it is too large."
@@ -42737,6 +42743,36 @@ msgstr ""
 msgid "Secrets"
 msgstr ""
 
+msgid "Secrets|Add a new secret to the group by following the instructions in the form below."
+msgstr ""
+
+msgid "Secrets|Add secret"
+msgstr ""
+
+msgid "Secrets|Audit log"
+msgstr ""
+
+msgid "Secrets|Edit %{key}"
+msgstr ""
+
+msgid "Secrets|New secret"
+msgstr ""
+
+msgid "Secrets|Secret details"
+msgstr ""
+
+msgid "Secrets|Secret name"
+msgstr ""
+
+msgid "Secrets|Secrets"
+msgstr ""
+
+msgid "Secrets|Secrets represent sensitive information your CI job needs to complete work. This sensitive information can be items like API tokens, database credentials, or private keys. Unlike CI/CD variables, which are always presented to a job, secrets must be explicitly required by a job. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "Secrets|Stored secrets"
+msgstr ""
+
 msgid "Secure Code Warrior"
 msgstr ""
 
@@ -43738,6 +43774,9 @@ msgstr ""
 msgid "SecurityReports|Dismissed as..."
 msgstr ""
 
+msgid "SecurityReports|Does not have a solution"
+msgstr ""
+
 msgid "SecurityReports|Does not have issue"
 msgstr ""
 
@@ -43789,6 +43828,9 @@ msgstr ""
 msgid "SecurityReports|Group your vulnerabilities by one of the provided categories. Leave feedback or suggestions in %{feedbackIssueStart}this issue%{feedbackIssueEnd}."
 msgstr ""
 
+msgid "SecurityReports|Has a solution"
+msgstr ""
+
 msgid "SecurityReports|Has issue"
 msgstr ""
 
@@ -43802,12 +43844,6 @@ msgid "SecurityReports|Image"
 msgstr ""
 
 msgid "SecurityReports|Investigate this vulnerability by creating an issue"
-msgstr ""
-
-msgid "SecurityReports|Is available"
-msgstr ""
-
-msgid "SecurityReports|Is not available"
 msgstr ""
 
 msgid "SecurityReports|Issue"
@@ -44514,6 +44550,9 @@ msgstr ""
 msgid "ServiceDesk|Please try again. Check email forwarding settings and credentials, and then restart verification."
 msgstr ""
 
+msgid "ServiceDesk|Read timeout"
+msgstr ""
+
 msgid "ServiceDesk|Reset custom email"
 msgstr ""
 
@@ -44572,6 +44611,9 @@ msgid "ServiceDesk|Service Desk setting missing"
 msgstr ""
 
 msgid "ServiceDesk|Service Desk setting or verification object missing"
+msgstr ""
+
+msgid "ServiceDesk|The SMTP server did not respond in time."
 msgstr ""
 
 msgid "ServiceDesk|The given credentials (username and password) were rejected by the SMTP server."

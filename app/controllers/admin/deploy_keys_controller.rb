@@ -55,7 +55,7 @@ class Admin::DeployKeysController < Admin::ApplicationController
   end
 
   def create_params
-    params.require(:deploy_key).permit(:key, :title)
+    params.require(:deploy_key).permit(:key, :title, :expires_at)
   end
 
   def update_params

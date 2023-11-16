@@ -1797,18 +1797,6 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes diff_discussion discussion_path individual_note resolvable commit_id for_commit project_id confidential resolve_path resolved resolved_at resolved_by resolved_by_push])
       end
 
-      context 'when resolvable_issue_threads is disabled' do
-        before do
-          stub_feature_flags(resolvable_issue_threads: false)
-        end
-
-        it 'returns discussion json without resolved fields' do
-          get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
-
-          expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes diff_discussion discussion_path individual_note resolvable commit_id for_commit project_id confidential])
-        end
-      end
-
       it 'renders the author status html if there is a status' do
         create(:user_status, user: discussion.author)
 

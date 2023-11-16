@@ -11,7 +11,13 @@ import { debounce, last } from 'lodash';
 
 import { stripQuotes } from '~/lib/utils/text_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { DEBOUNCE_DELAY, FILTERS_NONE_ANY, OPERATOR_NOT, OPERATOR_OR } from '../constants';
+import {
+  DEBOUNCE_DELAY,
+  FILTERS_NONE_ANY,
+  OPERATOR_NOT,
+  OPERATOR_OR,
+  OPERATORS_TO_GROUP,
+} from '../constants';
 import { getRecentlyUsedSuggestions, setTokenValueToRecentlyUsed } from '../filtered_search_utils';
 
 export default {
@@ -102,7 +108,7 @@ export default {
     },
     activeTokenValue() {
       const data =
-        this.glFeatures.groupMultiSelectTokens && Array.isArray(this.value.data)
+        this.multiSelectEnabled && Array.isArray(this.value.data)
           ? last(this.value.data)
           : this.value.data;
       return this.getActiveTokenValue(this.suggestions, data);
@@ -153,6 +159,22 @@ export default {
         ? this.activeTokenValue[this.searchBy]
         : undefined;
     },
+    multiSelectEnabled() {
+      return (
+        this.config.multiSelect &&
+        this.glFeatures.groupMultiSelectTokens &&
+        OPERATORS_TO_GROUP.includes(this.value.operator)
+      );
+    },
+    validatedConfig() {
+      if (this.config.multiSelect && !this.multiSelectEnabled) {
+        return {
+          ...this.config,
+          multiSelect: false,
+        };
+      }
+      return this.config;
+    },
   },
   watch: {
     active: {
@@ -199,7 +221,7 @@ export default {
       }
     }, DEBOUNCE_DELAY),
     handleTokenValueSelected(selectedValue) {
-      if (this.glFeatures.groupMultiSelectTokens) {
+      if (this.multiSelectEnabled) {
         this.$emit('token-selected', selectedValue);
       }
 
@@ -228,7 +250,7 @@ export default {
 
 <template>
   <gl-filtered-search-token
-    :config="config"
+    :config="validatedConfig"
     :value="value"
     :active="active"
     :multi-select-values="multiSelectValues"

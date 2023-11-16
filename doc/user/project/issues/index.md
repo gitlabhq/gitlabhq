@@ -23,10 +23,10 @@ Issues are always associated with a specific project. If you have multiple
 projects in a group, you can view all of the projects' issues at once.
 
 <div class="video-fallback">
-  See the video: <a href="https://www.youtube.com/watch?v=tTE6omrBBZI">Issues - Setting up your Organization with GitLab</a>.
+  See the video: <a href="https://www.youtube.com/watch?v=Mt1EzlKToig">Issues - Setting up your Organization with GitLab</a>.
 </div>
 <figure class="video-container">
-  <iframe src="https://www.youtube-nocookie.com/embed/tTE6omrBBZI" frameborder="0" allowfullscreen> </iframe>
+  <iframe src="https://www.youtube-nocookie.com/embed/Mt1EzlKToig" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>

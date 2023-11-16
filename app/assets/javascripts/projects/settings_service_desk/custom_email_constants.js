@@ -128,6 +128,10 @@ export const I18N_ERROR_INCORRECT_TOKEN_LABEL = s__('ServiceDesk|Incorrect verif
 export const I18N_ERROR_INCORRECT_TOKEN_DESC = s__(
   "ServiceDesk|The received email didn't contain the verification token that was sent to your email address.",
 );
+export const I18N_ERROR_READ_TIMEOUT_LABEL = s__('ServiceDesk|Read timeout');
+export const I18N_ERROR_READ_TIMEOUT_DESC = s__(
+  'ServiceDesk|The SMTP server did not respond in time.',
+);
 
 export const I18N_VERIFICATION_ERRORS = {
   smtp_host_issue: {
@@ -149,5 +153,9 @@ export const I18N_VERIFICATION_ERRORS = {
   incorrect_token: {
     label: I18N_ERROR_INCORRECT_TOKEN_LABEL,
     description: I18N_ERROR_INCORRECT_TOKEN_DESC,
+  },
+  read_timeout: {
+    label: I18N_ERROR_READ_TIMEOUT_LABEL,
+    description: I18N_ERROR_READ_TIMEOUT_DESC,
   },
 };

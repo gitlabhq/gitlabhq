@@ -3,8 +3,8 @@ import { GlTruncate } from '@gitlab/ui';
 
 import timezoneMock from 'timezone-mock';
 import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
-import { DATE_ONLY_FORMAT } from '~/lib/utils/datetime/constants';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { DATE_ONLY_FORMAT } from '~/lib/utils/datetime/locale_dateformat';
 
 describe('Time ago with tooltip component', () => {
   let vm;

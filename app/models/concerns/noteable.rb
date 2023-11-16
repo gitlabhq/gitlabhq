@@ -49,8 +49,6 @@ module Noteable
   end
 
   def supports_resolvable_notes?
-    return false if is_a?(Issue) && Feature.disabled?(:resolvable_issue_threads, project)
-
     self.class.resolvable_types.include?(base_class_name)
   end
 

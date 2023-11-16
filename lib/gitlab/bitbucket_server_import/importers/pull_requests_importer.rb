@@ -6,16 +6,20 @@ module Gitlab
       class PullRequestsImporter
         include ParallelScheduling
 
+        # Reduce fetch limit (from 100) to avoid Gitlab::Git::ResourceExhaustedError
+        PULL_REQUESTS_BATCH_SIZE = 50
+
         def execute
           page = 1
 
           loop do
             log_info(
-              import_stage: 'import_pull_requests', message: "importing page #{page} using batch-size #{BATCH_SIZE}"
+              import_stage: 'import_pull_requests',
+              message: "importing page #{page} using batch-size #{PULL_REQUESTS_BATCH_SIZE}"
             )
 
             pull_requests = client.pull_requests(
-              project_key, repository_slug, page_offset: page, limit: BATCH_SIZE
+              project_key, repository_slug, page_offset: page, limit: PULL_REQUESTS_BATCH_SIZE
             ).to_a
 
             break if pull_requests.empty?

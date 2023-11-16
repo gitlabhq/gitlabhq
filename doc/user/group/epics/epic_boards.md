@@ -17,10 +17,10 @@ labels.
 On the top of each list, you can see the number of epics in the list (**{epic}**) and the total weight of all its epics (**{weight}**).
 
 <div class="video-fallback">
-  See the video: <a href="https://www.youtube.com/watch?v=I1bFIAQBHB8">Epics and Issue Boards - Project Management</a>.
+  See the video: <a href="https://www.youtube.com/watch?v=eQUnHwbKEkY">Epics and Issue Boards - Project Management</a>.
 </div>
 <figure class="video-container">
-  <iframe src="https://www.youtube-nocookie.com/embed/I1bFIAQBHB8" frameborder="0" allowfullscreen> </iframe>
+  <iframe src="https://www.youtube-nocookie.com/embed/eQUnHwbKEkY" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
 To view an epic board:

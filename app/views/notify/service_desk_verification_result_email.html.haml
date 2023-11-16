@@ -54,5 +54,10 @@
           %b
             = s_('Notify|Incorrect verification token:')
           = s_('Notify|We could not verify that we received the email we sent to your email inbox.')
+      - if @verification.read_timeout?
+        %p
+          %b
+            = s_('Notify|Read timeout:')
+          = s_('Notify|The SMTP server did not respond in time.')
       %p
         = html_escape(s_('Notify|To restart the verification process, go to your %{settings_link_start}project\'s Service Desk settings page%{settings_link_end}.')) % { settings_link_start: settings_link_start, settings_link_end: settings_link_end }

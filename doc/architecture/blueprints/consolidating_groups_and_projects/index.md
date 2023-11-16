@@ -5,7 +5,7 @@ authors: [ "@alexpooley", "@ifarkas" ]
 coach: "@grzesiek"
 approvers: [ "@m_gill", "@mushakov" ]
 author-stage: "~devops::plan"
-owning-stage: "~devops::data_stores"
+owning-stage: "~devops::data stores"
 participating-stages: []
 ---
 

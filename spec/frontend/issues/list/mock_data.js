@@ -231,19 +231,33 @@ export const locationSearchWithSpecialValues = [
   'health_status=None',
 ].join('&');
 
-export const filteredTokens = [
+const makeFilteredTokens = ({ grouped }) => [
   { type: FILTERED_SEARCH_TERM, value: { data: 'find issues', operator: 'undefined' } },
   { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
-  { type: TOKEN_TYPE_AUTHOR, value: { data: 'marge', operator: OPERATOR_NOT } },
-  { type: TOKEN_TYPE_AUTHOR, value: { data: 'burns', operator: OPERATOR_OR } },
-  { type: TOKEN_TYPE_AUTHOR, value: { data: 'smithers', operator: OPERATOR_OR } },
+  ...(grouped
+    ? [
+        { type: TOKEN_TYPE_AUTHOR, value: { data: ['marge'], operator: OPERATOR_NOT } },
+        { type: TOKEN_TYPE_AUTHOR, value: { data: ['burns', 'smithers'], operator: OPERATOR_OR } },
+      ]
+    : [
+        { type: TOKEN_TYPE_AUTHOR, value: { data: 'marge', operator: OPERATOR_NOT } },
+        { type: TOKEN_TYPE_AUTHOR, value: { data: 'burns', operator: OPERATOR_OR } },
+        { type: TOKEN_TYPE_AUTHOR, value: { data: 'smithers', operator: OPERATOR_OR } },
+      ]),
   { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'bart', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'lisa', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_ASSIGNEE, value: { data: '5', operator: OPERATOR_IS } },
-  { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'patty', operator: OPERATOR_NOT } },
-  { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'selma', operator: OPERATOR_NOT } },
-  { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'carl', operator: OPERATOR_OR } },
-  { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'lenny', operator: OPERATOR_OR } },
+  ...(grouped
+    ? [
+        { type: TOKEN_TYPE_ASSIGNEE, value: { data: ['patty', 'selma'], operator: OPERATOR_NOT } },
+        { type: TOKEN_TYPE_ASSIGNEE, value: { data: ['carl', 'lenny'], operator: OPERATOR_OR } },
+      ]
+    : [
+        { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'patty', operator: OPERATOR_NOT } },
+        { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'selma', operator: OPERATOR_NOT } },
+        { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'carl', operator: OPERATOR_OR } },
+        { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'lenny', operator: OPERATOR_OR } },
+      ]),
   { type: TOKEN_TYPE_MILESTONE, value: { data: 'season 3', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_MILESTONE, value: { data: 'season 4', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_MILESTONE, value: { data: 'season 20', operator: OPERATOR_NOT } },
@@ -278,6 +292,9 @@ export const filteredTokens = [
   { type: TOKEN_TYPE_HEALTH, value: { data: 'atRisk', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_HEALTH, value: { data: 'onTrack', operator: OPERATOR_NOT } },
 ];
+
+export const filteredTokens = makeFilteredTokens({ grouped: false });
+export const groupedFilteredTokens = makeFilteredTokens({ grouped: true });
 
 export const filteredTokensWithSpecialValues = [
   { type: TOKEN_TYPE_ASSIGNEE, value: { data: '123', operator: OPERATOR_IS } },

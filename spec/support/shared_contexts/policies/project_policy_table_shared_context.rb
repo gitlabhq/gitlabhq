@@ -83,16 +83,16 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :public   | :anonymous  | nil   | 1
 
     :internal | :admin      | true  | 1
-    :internal | :admin      | false | 0
-    :internal | :reporter   | nil   | 0
-    :internal | :guest      | nil   | 0
-    :internal | :non_member | nil   | 0
+    :internal | :admin      | false | 1
+    :internal | :reporter   | nil   | 1
+    :internal | :guest      | nil   | 1
+    :internal | :non_member | nil   | 1
     :internal | :anonymous  | nil   | 0
 
     :private  | :admin      | true  | 1
     :private  | :admin      | false | 0
-    :private  | :reporter   | nil   | 0
-    :private  | :guest      | nil   | 0
+    :private  | :reporter   | nil   | 1
+    :private  | :guest      | nil   | 1
     :private  | :non_member | nil   | 0
     :private  | :anonymous  | nil   | 0
   end

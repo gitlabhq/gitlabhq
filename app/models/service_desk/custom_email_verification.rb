@@ -10,7 +10,8 @@ module ServiceDesk
       incorrect_from: 1,
       mail_not_received_within_timeframe: 2,
       invalid_credentials: 3,
-      smtp_host_issue: 4
+      smtp_host_issue: 4,
+      read_timeout: 5
     }
 
     attr_encrypted :token,

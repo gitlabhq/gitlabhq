@@ -110,6 +110,11 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.{rb,rake}'
       run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion --no-server {files}
+    verify-tff-mapping:
+      tags: backend style
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: 'tests.yml'
+      run: scripts/verify-tff-mapping
 
   scripts:
     "merge_conflicts":
@@ -127,6 +132,11 @@ pre-commit:
       files: git diff --name-only --diff-filter=d --staged
       glob: '*.{rb,rake}'
       run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion --no-server {files}
+    verify-tff-mapping:
+      tags: backend style
+      files: git diff --name-only --diff-filter=d --staged
+      glob: 'tests.yml'
+      run: scripts/verify-tff-mapping
     secrets-detection:
       tags: secrets
       files: git diff --name-only --diff-filter=d --staged

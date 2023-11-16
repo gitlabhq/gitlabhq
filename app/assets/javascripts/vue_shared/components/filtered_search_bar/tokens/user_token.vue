@@ -7,7 +7,7 @@ import { __ } from '~/locale';
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import usersAutocompleteQuery from '~/graphql_shared/queries/users_autocomplete.query.graphql';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { OPTIONS_NONE_ANY } from '../constants';
+import { OPERATORS_TO_GROUP, OPTIONS_NONE_ANY } from '../constants';
 
 import BaseToken from './base_token.vue';
 
@@ -57,7 +57,11 @@ export default {
       return this.config.fetchUsers ? this.config.fetchUsers : this.fetchUsersBySearchTerm;
     },
     multiSelectEnabled() {
-      return this.config.multiSelect && this.glFeatures.groupMultiSelectTokens;
+      return (
+        this.config.multiSelect &&
+        this.glFeatures.groupMultiSelectTokens &&
+        OPERATORS_TO_GROUP.includes(this.value.operator)
+      );
     },
   },
   watch: {
@@ -94,7 +98,7 @@ export default {
       return user?.avatarUrl || user?.avatar_url;
     },
     displayNameFor(username) {
-      return this.getActiveUser(this.allUsers, username)?.name || `@${username}`;
+      return this.getActiveUser(this.allUsers, username)?.name || username;
     },
     avatarFor(username) {
       const user = this.getActiveUser(this.allUsers, username);

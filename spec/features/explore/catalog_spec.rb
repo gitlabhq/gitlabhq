@@ -16,6 +16,7 @@ RSpec.describe 'Global Catalog', :js, feature_category: :pipeline_composition do
 
   describe 'GET explore/catalog' do
     let_it_be(:project) { create(:project, :repository, namespace: namespace) }
+
     let_it_be(:ci_resource_projects) do
       create_list(
         :project,
@@ -26,11 +27,13 @@ RSpec.describe 'Global Catalog', :js, feature_category: :pipeline_composition do
       )
     end
 
-    before do
-      ci_resource_projects.each do |current_project|
+    let_it_be(:ci_catalog_resources) do
+      ci_resource_projects.map do |current_project|
         create(:ci_catalog_resource, project: current_project)
       end
+    end
 
+    before do
       visit explore_catalog_index_path
       wait_for_requests
     end
@@ -107,14 +110,26 @@ RSpec.describe 'Global Catalog', :js, feature_category: :pipeline_composition do
 
   describe 'GET explore/catalog/:id' do
     let_it_be(:project) { create(:project, :repository, namespace: namespace) }
-    let_it_be(:new_ci_resource) { create(:ci_catalog_resource, project: project) }
 
     before do
       visit explore_catalog_path(id: new_ci_resource["id"])
     end
 
-    it 'navigates to the details page' do
-      expect(page).to have_content('Go to the project')
+    context 'when the resource is published' do
+      let_it_be(:new_ci_resource) { create(:ci_catalog_resource, project: project, state: :published) }
+
+      it 'navigates to the details page' do
+        expect(page).to have_content('Go to the project')
+      end
+    end
+
+    context 'when the resource is not published' do
+      let_it_be(:new_ci_resource) { create(:ci_catalog_resource, project: project, state: :draft) }
+
+      it 'returns a 404' do
+        expect(page).to have_title('Not Found')
+        expect(page).to have_content('Page Not Found')
+      end
     end
   end
 end

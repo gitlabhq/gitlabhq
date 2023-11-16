@@ -162,19 +162,6 @@ RSpec.describe Projects::DiscussionsController, feature_category: :team_planning
           expect(note.reload.resolved_at).not_to be_nil
           expect(response).to have_gitlab_http_status(:ok)
         end
-
-        context 'when resolvable_issue_threads is disabled' do
-          before do
-            stub_feature_flags(resolvable_issue_threads: false)
-          end
-
-          it 'does not resolve the discussion and returns status 404' do
-            post :resolve, params: request_params
-
-            expect(note.reload.resolved_at).to be_nil
-            expect(response).to have_gitlab_http_status(:not_found)
-          end
-        end
       end
     end
   end
@@ -260,19 +247,6 @@ RSpec.describe Projects::DiscussionsController, feature_category: :team_planning
 
           expect(note.reload.resolved_at).to be_nil
           expect(response).to have_gitlab_http_status(:ok)
-        end
-
-        context 'when resolvable_issue_threads is disabled' do
-          before do
-            stub_feature_flags(resolvable_issue_threads: false)
-          end
-
-          it 'does not unresolve the discussion and returns status 404' do
-            delete :unresolve, params: request_params
-
-            expect(note.reload.resolved_at).not_to be_nil
-            expect(response).to have_gitlab_http_status(:not_found)
-          end
         end
       end
     end

@@ -167,12 +167,6 @@ tests = [
   },
 
   {
-    explanation: 'Known events',
-    source: 'lib/gitlab/usage_data_counters/known_events/common.yml',
-    expected: ['spec/lib/gitlab/usage_data_counters/hll_redis_counter_spec.rb', 'spec/lib/gitlab/usage_data_spec.rb']
-  },
-
-  {
     explanation: 'FOSS mailer previews',
     source: 'app/mailers/previews/foo.rb',
     expected: ['spec/mailers/previews_spec.rb']
@@ -204,11 +198,6 @@ tests = [
     expected: ['ee/spec/config/metrics/every_metric_definition_spec.rb']
   },
 
-  {
-    explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/287#note_1192008962',
-    source: 'ee/lib/ee/gitlab/usage_data_counters/known_events/common.yml',
-    expected: ['ee/spec/config/metrics/every_metric_definition_spec.rb']
-  },
   {
     explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/146',
     source: 'config/feature_categories.yml',

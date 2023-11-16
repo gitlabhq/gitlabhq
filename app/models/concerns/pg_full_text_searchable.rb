@@ -17,6 +17,9 @@
 # This also adds a `pg_full_text_search` scope so you can do:
 #
 # Model.pg_full_text_search("some search term")
+#
+# For situations where the `search_vector` column exists within the model table and not
+# in a `search_data` association, you may instead use `pg_full_text_search_in_model`.
 
 module PgFullTextSearchable
   extend ActiveSupport::Concern
@@ -106,19 +109,26 @@ module PgFullTextSearchable
     def pg_full_text_search(query, matched_columns: [])
       search_data_table = reflect_on_association(:search_data).klass.arel_table
 
-      joins(:search_data).where(
-        Arel::Nodes::InfixOperation.new(
-          '@@',
-          search_data_table[:search_vector],
-          Arel::Nodes::NamedFunction.new(
-            'to_tsquery',
-            [Arel::Nodes.build_quoted(TEXT_SEARCH_DICTIONARY), build_tsquery(query, matched_columns)]
-          )
-        )
-      )
+      joins(:search_data)
+        .where(pg_full_text_search_query(query, search_data_table, matched_columns: matched_columns))
+    end
+
+    def pg_full_text_search_in_model(query, matched_columns: [])
+      where(pg_full_text_search_query(query, arel_table, matched_columns: matched_columns))
     end
 
     private
+
+    def pg_full_text_search_query(query, search_table, matched_columns: [])
+      Arel::Nodes::InfixOperation.new(
+        '@@',
+        search_table[:search_vector],
+        Arel::Nodes::NamedFunction.new(
+          'to_tsquery',
+          [Arel::Nodes.build_quoted(TEXT_SEARCH_DICTIONARY), build_tsquery(query, matched_columns)]
+        )
+      )
+    end
 
     def build_tsquery(query, matched_columns)
       # URLs get broken up into separate words when : is removed below, so we just remove the whole scheme.

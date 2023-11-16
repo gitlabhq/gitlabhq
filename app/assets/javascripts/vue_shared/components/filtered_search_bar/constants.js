@@ -31,6 +31,8 @@ export const OPERATORS_IS_NOT = [...OPERATORS_IS, ...OPERATORS_NOT];
 export const OPERATORS_IS_NOT_OR = [...OPERATORS_IS, ...OPERATORS_NOT, ...OPERATORS_OR];
 export const OPERATORS_AFTER_BEFORE = [...OPERATORS_AFTER, ...OPERATORS_BEFORE];
 
+export const OPERATORS_TO_GROUP = [OPERATOR_OR, OPERATOR_NOT];
+
 export const OPTION_NONE = { value: FILTER_NONE, text: __('None'), title: __('None') };
 export const OPTION_ANY = { value: FILTER_ANY, text: __('Any'), title: __('Any') };
 export const OPTION_CURRENT = { value: FILTER_CURRENT, text: __('Current') };
