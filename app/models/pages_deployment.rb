@@ -5,6 +5,9 @@ class PagesDeployment < ApplicationRecord
   include EachBatch
   include FileStoreMounter
   include Gitlab::Utils::StrongMemoize
+  include SafelyChangeColumnDefault
+
+  columns_changing_default :upload_ready
 
   attribute :file_store, :integer, default: -> { ::Pages::DeploymentUploader.default_store }
 
@@ -18,7 +21,12 @@ class PagesDeployment < ApplicationRecord
   scope :with_files_stored_remotely, -> { where(file_store: ::ObjectStorage::Store::REMOTE) }
   scope :project_id_in, ->(ids) { where(project_id: ids) }
   scope :with_path_prefix, ->(prefix) { where("COALESCE(path_prefix, '') = ?", prefix.to_s) }
-  scope :active, -> { where(deleted_at: nil).order(created_at: :desc) }
+
+  # We have to mark the PagesDeployment upload as ready to ensure we only
+  # serve PagesDeployment which files are already uploaded.
+  scope :upload_ready, -> { where(upload_ready: true) }
+
+  scope :active, -> { upload_ready.where(deleted_at: nil).order(created_at: :desc) }
   scope :deactivated, -> { where('deleted_at < ?', Time.now.utc) }
 
   validates :file, presence: true
@@ -64,6 +72,18 @@ class PagesDeployment < ApplicationRecord
     return unless previous_changes.key?(:file)
 
     store_file_now!
+    mark_upload_as_finished!
+  end
+
+  # We have to mark the PagesDeployment upload as ready to ensure we only
+  # serve PagesDeployment which files are already uploaded.
+  #
+  # This is required because we're uploading the file outside of the db transaction
+  # (https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114774)
+  def mark_upload_as_finished!
+    return unless file && file.exists?
+
+    update_column(:upload_ready, true)
   end
 end
 

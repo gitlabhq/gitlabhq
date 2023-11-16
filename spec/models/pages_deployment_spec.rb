@@ -71,6 +71,16 @@ RSpec.describe PagesDeployment, feature_category: :pages do
     end
   end
 
+  describe '#upload_ready' do
+    it 'marks #upload_ready as true when upload finishes' do
+      deployment = build(:pages_deployment)
+
+      expect { deployment.save! }
+        .to change { deployment.upload_ready }
+        .from(false).to(true)
+    end
+  end
+
   describe '.deactivate_all', :freeze_time do
     let!(:deployment) { create(:pages_deployment, project: project, updated_at: 5.minutes.ago) }
     let!(:nil_path_prefix_deployment) { create(:pages_deployment, project: project, path_prefix: nil) }
