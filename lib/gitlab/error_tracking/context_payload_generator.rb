@@ -3,14 +3,14 @@
 module Gitlab
   module ErrorTracking
     class ContextPayloadGenerator
-      def self.generate(exception, extra = {})
-        new.generate(exception, extra)
+      def self.generate(exception, extra = {}, tags = {})
+        new.generate(exception, extra, tags)
       end
 
-      def generate(exception, extra = {})
+      def generate(exception, extra = {}, tags = {})
         {
           extra: extra_payload(exception, extra),
-          tags: tags_payload,
+          tags: tags_payload(tags),
           user: user_payload
         }
       end
@@ -31,12 +31,14 @@ module Gitlab
         filter.filter(parameters)
       end
 
-      def tags_payload
-        extra_tags_from_env.merge!(
-          program: Gitlab.process_name,
-          locale: I18n.locale,
-          feature_category: current_context['meta.feature_category'],
-          Labkit::Correlation::CorrelationId::LOG_KEY.to_sym => Labkit::Correlation::CorrelationId.current_id
+      def tags_payload(tags)
+        tags.merge(
+          extra_tags_from_env.merge!(
+            program: Gitlab.process_name,
+            locale: I18n.locale,
+            feature_category: current_context['meta.feature_category'],
+            Labkit::Correlation::CorrelationId::LOG_KEY.to_sym => Labkit::Correlation::CorrelationId.current_id
+          )
         )
       end
 

@@ -35,9 +35,9 @@ RSpec.describe API::Ml::Mlflow::ModelVersions, feature_category: :mlops do
     response
   end
 
-  describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/model_versions/get' do
+  describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/model-versions/get' do
     let(:route) do
-      "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/model_versions/get?name=#{name}&version=#{version}"
+      "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/model-versions/get?name=#{name}&version=#{version}"
     end
 
     it 'returns the model version', :aggregate_failures do
@@ -51,7 +51,7 @@ RSpec.describe API::Ml::Mlflow::ModelVersions, feature_category: :mlops do
       context 'when has access' do
         context 'and model name in incorrect' do
           let(:route) do
-            "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/model_versions/get?name=--&version=#{version}"
+            "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/model-versions/get?name=--&version=#{version}"
           end
 
           it_behaves_like 'MLflow|Not Found - Resource Does Not Exist'
@@ -59,7 +59,7 @@ RSpec.describe API::Ml::Mlflow::ModelVersions, feature_category: :mlops do
 
         context 'and version in incorrect' do
           let(:route) do
-            "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/model_versions/get?name=#{name}&version=--"
+            "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/model-versions/get?name=#{name}&version=--"
           end
 
           it_behaves_like 'MLflow|Not Found - Resource Does Not Exist'

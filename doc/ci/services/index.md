@@ -445,7 +445,7 @@ First start with creating a file named `build_script`:
 cat <<EOF > build_script
 git clone https://gitlab.com/gitlab-org/gitlab-runner.git /builds/gitlab-org/gitlab-runner
 cd /builds/gitlab-org/gitlab-runner
-make
+make runner-bin-host
 EOF
 ```
 
@@ -456,8 +456,7 @@ Instead of `make`, you could run the command which is specific to your project.
 Then create some service containers:
 
 ```shell
-docker run -d --name service-mysql mysql:latest
-docker run -d --name service-postgres postgres:latest
+docker run -d --name service-redis redis:latest
 ```
 
 The previous commands create two service containers. The service container named `service-mysql` uses the latest MySQL image. The one named `service-postgres` uses the latest PostgreSQL image. Both service containers run in the background (`-d`).
@@ -466,7 +465,7 @@ Finally, create a build container by executing the `build_script` file we
 created earlier:
 
 ```shell
-docker run --name build -i --link=service-mysql:mysql --link=service-postgres:postgres ruby:2.6 /bin/bash < build_script
+docker run --name build -i --link=service-redis:redis golang:latest /bin/bash < build_script
 ```
 
 The above command creates a container named `build` that's spawned from

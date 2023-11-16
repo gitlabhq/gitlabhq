@@ -336,13 +336,13 @@ period is prorated from the date of purchase through the end of the subscription
 
 To add seats to a subscription:
 
-1. Log in to the [Customers Portal](https://customers.gitlab.com/).
-1. Navigate to the **Manage Purchases** page.
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/).
+1. Go to the **Manage Purchases** page.
 1. Select **Add more seats** on the relevant subscription card.
 1. Enter the number of additional users.
-1. Select **Proceed to checkout**.
-1. Review the **Subscription Upgrade Detail**. The system lists the total price for all users on the system and a credit for what you've already paid. You are only be charged for the net change.
-1. Select **Confirm Upgrade**.
+1. Review the **Purchase summary** section. The system lists the total price for all users on the system and a credit for what you've already paid. You are only charged for the net change.
+1. Enter your payment information.
+1. Select **Purchase seats**.
 
 A payment receipt is emailed to you, which you can also access in the Customers Portal under [**View invoices**](https://customers.gitlab.com/receipts).
 
@@ -359,9 +359,7 @@ You should follow these steps during renewal:
 
 1. Prior to the renewal date, prune any inactive or unwanted users by [blocking them](../../administration/moderate_users.md#block-a-user).
 1. Determine if you have a need for user growth in the upcoming subscription.
-1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) and select the **Renew** button beneath your existing subscription.
-The **Renew** button remains disabled (grayed-out) until 15 days before a subscription expires.
-You can hover your mouse on the **Renew** button to see the date when it will become active.
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) and beneath your existing subscription, select **Renew**. The **Renew** button displays only 15 days before a subscription expires. If there are more than 15 days before the subscription expires, select **Subscription actions** (**{ellipsis_v}**), then select **Renew subscription** to view the date when you can renew.
 
    NOTE:
    If you need to change your [GitLab tier](https://about.gitlab.com/pricing/), contact our sales team with [the sales contact form](https://about.gitlab.com/sales/) for assistance as this can't be done in the Customers Portal.
@@ -396,10 +394,8 @@ You can view and download your renewal invoice on the Customers Portal [View inv
 To view or change automatic subscription renewal (at the same tier as the
 previous period), sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in), and:
 
-- If a **Turn on auto-renew** button is displayed, your subscription was canceled
-  previously. Select it to resume automatic renewal.
-- If a **Cancel subscription** button is displayed, your subscription is set to automatically
-  renew at the end of the subscription period. Select it to cancel automatic renewal.
+- If the subscription card displays `Expires on DATE`, your subscription is not set to automatically renew. To enable automatic renewal, in **Subscription actions** (**{ellipsis_v}**), select **Turn on auto-renew**.
+- If the subscription card displays `Autorenews on DATE`, your subscription is set to automatically renew at the end of the subscription period. To cancel automatic renewal, in **Subscription actions** (**{ellipsis_v}**), select **Cancel subscription**.
 
 If you have difficulty during the renewal process, contact the
 [Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.
@@ -416,9 +412,8 @@ There are several options to renew a subscription for fewer seats, as long as th
 
 To upgrade your [GitLab tier](https://about.gitlab.com/pricing/):
 
-1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Select the **Upgrade** button on the relevant subscription card on the
-   [Manage purchases](https://customers.gitlab.com/subscriptions) page.
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Select **Upgrade** on the relevant subscription card.
 1. Select the desired upgrade.
 1. Confirm the active form of payment, or add a new form of payment.
 1. Select the **I accept the Privacy Policy and Terms of Service** checkbox.

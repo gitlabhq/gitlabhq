@@ -29,6 +29,7 @@
 #     repository_storage: string
 #     not_aimed_for_deletion: boolean
 #     full_paths: string[]
+#     organization_id: int
 #
 class ProjectsFinder < UnionFinder
   include CustomAttributesFilter
@@ -95,6 +96,7 @@ class ProjectsFinder < UnionFinder
     collection = by_language(collection)
     collection = by_feature_availability(collection)
     collection = by_updated_at(collection)
+    collection = by_organization_id(collection)
     by_repository_storage(collection)
   end
 
@@ -291,6 +293,10 @@ class ProjectsFinder < UnionFinder
     items = items.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
     items = items.with_merge_requests_available_for_user(current_user) if params[:with_merge_requests_enabled]
     items
+  end
+
+  def by_organization_id(items)
+    params[:organization_id].present? ? items.in_organization(params[:organization_id]) : items
   end
 
   def finder_params

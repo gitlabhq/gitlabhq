@@ -4,13 +4,20 @@ module Gitlab
   module InternalEvents
     UnknownEventError = Class.new(StandardError)
     InvalidPropertyError = Class.new(StandardError)
-    InvalidMethodError = Class.new(StandardError)
+    InvalidPropertyTypeError = Class.new(StandardError)
 
     class << self
       include Gitlab::Tracking::Helpers
 
       def track_event(event_name, send_snowplow_event: true, **kwargs)
         raise UnknownEventError, "Unknown event: #{event_name}" unless EventDefinitions.known_event?(event_name)
+
+        validate_property!(kwargs, :user, User)
+        validate_property!(kwargs, :namespace, Namespaces::UserNamespace, Group)
+        validate_property!(kwargs, :project, Project)
+
+        project = kwargs[:project]
+        kwargs[:namespace] ||= project.namespace if project
 
         increase_total_counter(event_name)
         increase_weekly_total_counter(event_name)
@@ -22,6 +29,14 @@ module Gitlab
       end
 
       private
+
+      def validate_property!(kwargs, property_name, *class_names)
+        return unless kwargs.has_key?(property_name)
+        return if kwargs[property_name].nil?
+        return if class_names.include?(kwargs[property_name].class)
+
+        raise InvalidPropertyTypeError, "#{property_name} should be an instance of #{class_names.join(', ')}"
+      end
 
       def increase_total_counter(event_name)
         redis_counter_key =
@@ -43,10 +58,6 @@ module Gitlab
 
         unless kwargs.has_key?(unique_property)
           raise InvalidPropertyError, "#{event_name} should be triggered with a named parameter '#{unique_property}'."
-        end
-
-        unless kwargs[unique_property].respond_to?(unique_method)
-          raise InvalidMethodError, "'#{unique_property}' should have a '#{unique_method}' method."
         end
 
         unique_value = kwargs[unique_property].public_send(unique_method) # rubocop:disable GitlabSecurity/PublicSend

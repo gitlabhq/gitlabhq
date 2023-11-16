@@ -781,6 +781,8 @@ class Project < ApplicationRecord
     .order(id: :desc)
   end
 
+  scope :in_organization, -> (organization) { where(organization: organization) }
+
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
   chronic_duration_attr :build_timeout_human_readable, :build_timeout,

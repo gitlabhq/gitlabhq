@@ -28,7 +28,6 @@ import initLogoAnimation from './logo';
 import initBreadcrumbs from './breadcrumb';
 import initPersistentUserCallouts from './persistent_user_callouts';
 import { initUserTracking, initDefaultTrackers } from './tracking';
-import { initSidebarTracking } from './pages/shared/nav/sidebar_tracking';
 import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
 import initBroadcastNotifications from './broadcast_notification';
@@ -96,7 +95,6 @@ function deferredInitialisation() {
   initBroadcastNotifications();
   initPersistentUserCallouts();
   initDefaultTrackers();
-  initSidebarTracking();
   initFeatureHighlight();
   initCopyCodeButton();
   initGitlabVersionCheck();

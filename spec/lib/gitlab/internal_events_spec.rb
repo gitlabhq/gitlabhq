@@ -12,11 +12,23 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     allow(redis).to receive(:incr)
     allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis)
     allow(Gitlab::Tracking).to receive(:tracker).and_return(fake_snowplow)
-    allow(Gitlab::InternalEvents::EventDefinitions).to receive(:unique_property).and_return(:user)
+    allow(Gitlab::InternalEvents::EventDefinitions).to receive(:unique_property).and_return(unique_property)
     allow(fake_snowplow).to receive(:event)
   end
 
-  def expect_redis_hll_tracking(event_name)
+  shared_examples 'an event that logs an error' do
+    it 'logs an error' do
+      described_class.track_event(event_name, **event_kwargs)
+
+      expect(Gitlab::ErrorTracking).to have_received(:track_and_raise_for_dev_exception)
+        .with(described_class::InvalidPropertyTypeError,
+          event_name: event_name,
+          kwargs: event_kwargs
+        )
+    end
+  end
+
+  def expect_redis_hll_tracking
     expect(Gitlab::UsageDataCounters::HLLRedisCounter).to have_received(:track_event)
       .with(event_name, values: unique_value)
   end
@@ -29,7 +41,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     end
   end
 
-  def expect_snowplow_tracking(event_name)
+  def expect_snowplow_tracking(expected_namespace = nil)
     service_ping_context = Gitlab::Tracking::ServicePingContext
       .new(data_source: :redis_hll, event: event_name)
       .to_context
@@ -38,34 +50,125 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     expect(SnowplowTracker::SelfDescribingJson).to have_received(:new)
       .with(service_ping_context[:schema], service_ping_context[:data]).at_least(:once)
 
-    # Add test for creation of both contexts
-    contexts = [instance_of(SnowplowTracker::SelfDescribingJson), instance_of(SnowplowTracker::SelfDescribingJson)]
+    expect(fake_snowplow).to have_received(:event) do |category, provided_event_name, args|
+      expect(category).to eq('InternalEventTracking')
+      expect(provided_event_name).to eq(event_name)
 
-    expect(fake_snowplow).to have_received(:event)
-      .with('InternalEventTracking', event_name, context: contexts)
+      contexts = args[:context]&.map(&:to_json)
+
+      # Verify Standard Context
+      standard_context = contexts.find do |c|
+        c[:schema] == Gitlab::Tracking::StandardContext::GITLAB_STANDARD_SCHEMA_URL
+      end
+
+      validate_standard_context(standard_context, expected_namespace)
+
+      # Verify Service Ping context
+      service_ping_context = contexts.find { |c| c[:schema] == Gitlab::Tracking::ServicePingContext::SCHEMA_URL }
+
+      validate_service_ping_context(service_ping_context)
+    end
+  end
+
+  def validate_standard_context(standard_context, expected_namespace)
+    namespace = expected_namespace || project&.namespace
+    expect(standard_context).not_to eq(nil)
+    expect(standard_context[:data][:user_id]).to eq(user&.id)
+    expect(standard_context[:data][:namespace_id]).to eq(namespace&.id)
+    expect(standard_context[:data][:project_id]).to eq(project&.id)
+  end
+
+  def validate_service_ping_context(service_ping_context)
+    expect(service_ping_context).not_to eq(nil)
+    expect(service_ping_context[:data][:data_source]).to eq(:redis_hll)
+    expect(service_ping_context[:data][:event_name]).to eq(event_name)
   end
 
   let_it_be(:user) { build(:user, id: 1) }
-  let_it_be(:project) { build(:project, id: 2) }
-  let_it_be(:namespace) { project.namespace }
+  let_it_be(:project_namespace) { build(:namespace, id: 2) }
+  let_it_be(:project) { build(:project, id: 3, namespace: project_namespace) }
 
   let(:redis) { instance_double('Redis') }
   let(:fake_snowplow) { instance_double(Gitlab::Tracking::Destinations::Snowplow) }
   let(:event_name) { 'g_edit_by_web_ide' }
+  let(:unique_property) { :user }
   let(:unique_value) { user.id }
   let(:redis_arguments) { [event_name, Date.today.strftime('%G-%V')] }
 
+  context 'when only user is passed' do
+    let(:project) { nil }
+    let(:namespace) { nil }
+
+    it 'updated all tracking methods' do
+      described_class.track_event(event_name, user: user)
+
+      expect_redis_tracking
+      expect_redis_hll_tracking
+      expect_snowplow_tracking
+    end
+  end
+
+  context 'when namespace is passed' do
+    let(:namespace) { build(:namespace, id: 4) }
+
+    it 'uses id from namespace' do
+      described_class.track_event(event_name, user: user, project: project, namespace: namespace)
+
+      expect_redis_tracking
+      expect_redis_hll_tracking
+      expect_snowplow_tracking(namespace)
+    end
+  end
+
+  context 'when namespace is not passed' do
+    let(:unique_property) { :namespace }
+    let(:unique_value) { project.namespace.id }
+
+    it 'uses id from projects namespace' do
+      described_class.track_event(event_name, user: user, project: project)
+
+      expect_redis_tracking
+      expect_redis_hll_tracking
+      expect_snowplow_tracking(project.namespace)
+    end
+  end
+
+  context 'when arguments are invalid' do
+    context 'when user is not an instance of User' do
+      let(:user) { 'a_string' }
+
+      it_behaves_like 'an event that logs an error' do
+        let(:event_kwargs) { { user: user, project: project } }
+      end
+    end
+
+    context 'when project is not an instance of Project' do
+      let(:project) { 42 }
+
+      it_behaves_like 'an event that logs an error' do
+        let(:event_kwargs) { { user: user, project: project } }
+      end
+    end
+
+    context 'when namespace is not an instance of Namespace' do
+      let(:namespace) { false }
+
+      it_behaves_like 'an event that logs an error' do
+        let(:event_kwargs) { { user: user, namespace: namespace } }
+      end
+    end
+  end
+
   it 'updates Redis, RedisHLL and Snowplow', :aggregate_failures do
-    params = { user: user, project: project, namespace: namespace }
-    described_class.track_event(event_name, **params)
+    described_class.track_event(event_name, user: user, project: project)
 
     expect_redis_tracking
-    expect_redis_hll_tracking(event_name)
-    expect_snowplow_tracking(event_name) # Add test for arguments
+    expect_redis_hll_tracking
+    expect_snowplow_tracking
   end
 
   it 'rescues error', :aggregate_failures do
-    params = { user: user, project: project, namespace: namespace }
+    params = { user: user, project: project }
     error = StandardError.new("something went wrong")
     allow(fake_snowplow).to receive(:event).and_raise(error)
 
@@ -123,8 +226,8 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       described_class.track_event(event_name, user: user, project: project)
 
       expect_redis_tracking
-      expect_redis_hll_tracking(event_name)
-      expect_snowplow_tracking(event_name)
+      expect_redis_hll_tracking
+      expect_snowplow_tracking
     end
 
     context 'when property is missing' do
@@ -136,22 +239,12 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       end
     end
 
-    context 'when method does not exist on property', :aggregate_failures do
-      it 'logs error on missing method' do
-        expect { described_class.track_event(event_name, project: "a_string") }.not_to raise_error
-
-        expect_redis_tracking
-        expect(Gitlab::ErrorTracking).to have_received(:track_and_raise_for_dev_exception)
-          .with(described_class::InvalidMethodError, event_name: event_name, kwargs: { project: 'a_string' })
-      end
-    end
-
     context 'when send_snowplow_event is false' do
       it 'logs to Redis and RedisHLL but not Snowplow' do
         described_class.track_event(event_name, send_snowplow_event: false, user: user, project: project)
 
         expect_redis_tracking
-        expect_redis_hll_tracking(event_name)
+        expect_redis_hll_tracking
         expect(fake_snowplow).not_to have_received(:event)
       end
     end
@@ -170,7 +263,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       described_class.track_event(event_name, user: user, project: project)
 
       expect_redis_tracking
-      expect_snowplow_tracking(event_name)
+      expect_snowplow_tracking(project.namespace)
       expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to have_received(:track_event)
     end
   end

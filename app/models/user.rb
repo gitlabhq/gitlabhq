@@ -1767,7 +1767,7 @@ class User < MainClusterwide::ApplicationRecord
   def contributed_projects
     events = Event.select(:project_id)
       .contributions.where(author_id: self)
-      .where("created_at > ?", Time.current - 1.year)
+      .created_after(Time.current - 1.year)
       .distinct
       .reorder(nil)
 

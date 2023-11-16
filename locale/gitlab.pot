@@ -40680,9 +40680,6 @@ msgstr ""
 msgid "Resolve locally"
 msgstr ""
 
-msgid "Resolve these conflicts, or ask someone with write access to this repository to resolve them locally."
-msgstr ""
-
 msgid "Resolve thread"
 msgstr ""
 
@@ -48156,9 +48153,6 @@ msgstr ""
 msgid "The commit does not exist"
 msgstr ""
 
-msgid "The comparison view may be inaccurate due to merge conflicts."
-msgstr ""
-
 msgid "The complete DevOps platform. One application with endless possibilities. Organizations rely on GitLab’s source code management, CI/CD, security, and more to deliver software rapidly."
 msgstr ""
 
@@ -48650,9 +48644,6 @@ msgid "There are currently no mirrored repositories."
 msgstr ""
 
 msgid "There are currently no target branch rules"
-msgstr ""
-
-msgid "There are merge conflicts"
 msgstr ""
 
 msgid "There are no GPG keys associated with this account."

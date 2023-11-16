@@ -482,6 +482,19 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
         it { is_expected.to match_array([internal_project]) }
       end
 
+      describe 'filter by organization_id' do
+        let_it_be(:organization) { create(:organization) }
+        let_it_be(:organization_project) { create(:project, organization: organization) }
+
+        let(:params) { { organization_id: organization.id } }
+
+        before do
+          organization_project.add_maintainer(current_user)
+        end
+
+        it { is_expected.to match_array([organization_project]) }
+      end
+
       describe 'when with_issues_enabled is true' do
         let(:params) { { with_issues_enabled: true } }
 

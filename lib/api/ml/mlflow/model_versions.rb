@@ -6,7 +6,7 @@ module API
       class ModelVersions < ::API::Base
         feature_category :mlops
 
-        resource :model_versions do
+        resource 'model-versions' do
           desc 'Fetch model version by name and version' do
             success Entities::Ml::Mlflow::ModelVersions::Responses::Get
             detail 'https://mlflow.org/docs/2.6.0/rest-api.html#get-modelversion'

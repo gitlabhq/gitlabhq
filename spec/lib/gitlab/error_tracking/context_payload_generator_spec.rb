@@ -64,8 +64,11 @@ RSpec.describe Gitlab::ErrorTracking::ContextPayloadGenerator do
     end
 
     context 'when the GITLAB_SENTRY_EXTRA_TAGS env is a JSON hash' do
-      it 'includes those tags in all events' do
+      before do
         stub_env('GITLAB_SENTRY_EXTRA_TAGS', { foo: 'bar', baz: 'quux' }.to_json)
+      end
+
+      it 'includes those tags in all events' do
         payload = {}
 
         Gitlab::ApplicationContext.with_context(feature_category: 'feature_a') do
@@ -86,6 +89,26 @@ RSpec.describe Gitlab::ErrorTracking::ContextPayloadGenerator do
         expect(Gitlab::AppLogger).not_to receive(:debug)
 
         generator.generate(exception, extra)
+      end
+
+      context 'with generated tags' do
+        it 'includes all tags' do
+          payload = {}
+
+          Gitlab::ApplicationContext.with_context(feature_category: 'feature_a') do
+            payload = generator.generate(exception, extra, { 'mytag' => '123' })
+          end
+
+          expect(payload[:tags]).to eql(
+            correlation_id: 'cid',
+            locale: 'en',
+            program: 'test',
+            feature_category: 'feature_a',
+            'foo' => 'bar',
+            'baz' => 'quux',
+            'mytag' => '123'
+          )
+        end
       end
     end
 

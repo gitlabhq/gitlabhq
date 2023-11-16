@@ -63,6 +63,12 @@ Gitlab::InternalEvents.track_event(
 
 This method automatically increments all RedisHLL metrics relating to the event `i_code_review_user_apply_suggestion`, and sends a corresponding Snowplow event with all named arguments and standard context (SaaS only).
 
+If you have defined a metric with a `unique` property such as `unique: project.id` it is required that you provide the `project` argument.
+
+It is encouraged to fill out as many of `user`, `namespace` and `project` as possible as it increases the data quality and make it easier to define metrics in the future.
+
+If a `project` but no `namespace` is provided, the `project.namespace` is used as the `namespace` for the event.
+
 ### Frontend tracking
 
 #### Vue components

@@ -89,10 +89,26 @@ class Event < ApplicationRecord
   scope :for_wiki_page, -> { where(target_type: 'WikiPage::Meta') }
   scope :for_design, -> { where(target_type: 'DesignManagement::Design') }
   scope :for_issue, -> { where(target_type: ISSUE_TYPES) }
+  scope :for_merge_request, -> { where(target_type: 'MergeRequest') }
   scope :for_fingerprint, ->(fingerprint) do
     fingerprint.present? ? where(fingerprint: fingerprint) : none
   end
   scope :for_action, ->(action) { where(action: action) }
+  scope :created_between, ->(start_time, end_time) { where(created_at: start_time..end_time) }
+  scope :count_by_dates, ->(date_interval) { group("DATE(created_at + #{date_interval})").count }
+
+  scope :contributions, -> do
+    contribution_actions = [actions[:pushed], actions[:commented]]
+
+    contributable_target_types = %w[MergeRequest Issue WorkItem]
+    target_contribution_actions = [actions[:created], actions[:closed], actions[:merged], actions[:approved]]
+
+    where(
+      'action IN (?) OR (target_type IN (?) AND action IN (?))',
+      contribution_actions,
+      contributable_target_types, target_contribution_actions
+    )
+  end
 
   scope :with_associations, -> do
     # We're using preload for "push_event_payload" as otherwise the association
@@ -131,15 +147,6 @@ class Event < ApplicationRecord
       else
         Event
       end
-    end
-
-    # Update Gitlab::ContributionsCalendar#activity_dates if this changes
-    def contributions
-      where(
-        'action IN (?) OR (target_type IN (?) AND action IN (?))',
-        [actions[:pushed], actions[:commented]],
-        %w[MergeRequest Issue WorkItem], [actions[:created], actions[:closed], actions[:merged]]
-      )
     end
 
     def limit_recent(limit = 20, offset = nil)
