@@ -32,15 +32,20 @@ module API
       helpers Gitlab::Tracking::Helpers::WeakPasswordErrorEvent
 
       helpers do
+        def custom_order_by_or_sort?
+          params[:order_by].present? || params[:sort].present?
+        end
+
         # rubocop: disable CodeReuse/ActiveRecord
         def reorder_users(users)
           # Users#search orders by exact matches and handles pagination,
-          # so we should prioritize that.
-          if params[:search]
+          # so we should prioritize that, unless the user specifies some custom
+          # sort.
+          if params[:search] && !custom_order_by_or_sort?
             users
           else
-            # Note that params[:order_by] and params[:sort] will always be present and
-            # default to "id" and "desc" as defined in `sort_params`.
+            params[:order_by] ||= 'id'
+            params[:sort] ||= 'desc'
             users.reorder(order_options_with_tie_breaker)
           end
         end
@@ -82,6 +87,17 @@ module API
           optional :sort, type: String, values: %w[asc desc], default: 'desc',
                           desc: 'Return users sorted in ascending and descending order'
         end
+
+        # Grape doesn't make it easy to tell whether a user supplied a
+        # value for optional parameters with defaults. Disable the
+        # defaults so that we can manually assign defaults if they are
+        # not provided.
+        params :sort_params_no_defaults do
+          optional :order_by, type: String, values: %w[id name username created_at updated_at],
+                              desc: 'Return users ordered by a field'
+          optional :sort, type: String, values: %w[asc desc],
+                          desc: 'Return users sorted in ascending and descending order'
+        end
       end
 
       desc 'Get the list of users' do
@@ -106,7 +122,7 @@ module API
         optional :two_factor, type: String, desc: 'Filter users by Two-factor authentication.'
         all_or_none_of :extern_uid, :provider
 
-        use :sort_params
+        use :sort_params_no_defaults
         use :pagination
         use :with_custom_attributes
         use :optional_index_params_ee

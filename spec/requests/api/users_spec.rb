@@ -238,6 +238,22 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
             expect(json_response.first['username']).to eq('a-user')
             expect(json_response.second['username']).to eq('a-user2')
           end
+
+          it 'preserves requested ordering with order_by and sort' do
+            get api(path, user, admin_mode: true), params: { search: first_user.username, order_by: 'name', sort: 'desc' }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.first['username']).to eq('a-user2')
+            expect(json_response.second['username']).to eq('a-user')
+          end
+
+          it 'preserves requested ordering with sort' do
+            get api(path, user, admin_mode: true), params: { search: first_user.username, sort: 'desc' }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.first['username']).to eq('a-user2')
+            expect(json_response.second['username']).to eq('a-user')
+          end
         end
 
         context 'N+1 queries' do
