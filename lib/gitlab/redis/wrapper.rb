@@ -111,6 +111,8 @@ module Gitlab
       end
 
       def secret_file
+        return unless defined?(Settings)
+
         if raw_config_hash[:secret_file].blank?
           File.join(Settings.encrypted_settings['path'], 'redis.yaml.enc')
         else
@@ -132,9 +134,11 @@ module Gitlab
         # the file. In other cases, like when being loaded as part of spinning
         # up test environment via `scripts/setup-test-env`, we should gate on
         # the presence of the specified secret file so that
-        # `Settings.encrypted`, which might not be loadable does not gets
-        # called.
-        Settings.encrypted(secret_file) if File.exist?(secret_file) || ::Gitlab::Runtime.rake?
+        # `Settings.encrypted`, which might not be loadable does not get
+        # called. Same is the case when this library gets called by Mailroom
+        # which does not have rails environment available.
+        Settings.encrypted(secret_file) if (secret_file && File.exist?(secret_file)) ||
+          (defined?(Gitlab::Runtime) && Gitlab::Runtime.rake?)
       end
 
       private
