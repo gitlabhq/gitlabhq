@@ -1447,6 +1447,21 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
 
+    context 'when there is user that does not exist' do
+      before do
+        # Simulate that the user is deleted but the LFK worker has not
+        # started yet.
+        deleted_user = create(:user)
+        create(:group_member, source: group, user: deleted_user)
+
+        deleted_user.destroy!
+      end
+
+      it 'returns the member-owners' do
+        expect(group.member_owners_excluding_project_bots).to contain_exactly(member_owner)
+      end
+    end
+
     context 'with owners from a parent' do
       context 'when top-level group' do
         context 'with group sharing' do
