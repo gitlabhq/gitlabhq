@@ -28,7 +28,7 @@ const mockPipelineNodes = [
 const mockQueryHandler = ({
   rebaseInProgress = false,
   targetBranch = '',
-  pushToSourceBranch = false,
+  pushToSourceBranch = true,
   nodes = mockPipelineNodes,
 } = {}) =>
   jest.fn().mockResolvedValue({
@@ -279,7 +279,7 @@ describe('Merge request merge checks rebase component', () => {
 
       await waitForPromises();
 
-      expect(findRebaseWithoutCiButton().exists()).toBe(true);
+      expect(findRebaseWithoutCiButton().exists()).toBe(false);
     });
   });
 

@@ -415,7 +415,6 @@ module Ci
 
         pipeline.run_after_commit do
           next if pipeline.child?
-          next unless Feature.enabled?(:widget_pipeline_pass_subscription_update, project) || project.only_allow_merge_if_pipeline_succeeds?(inherit_group_setting: true)
 
           pipeline.all_merge_requests.opened.each do |merge_request|
             GraphqlTriggers.merge_request_merge_status_updated(merge_request)

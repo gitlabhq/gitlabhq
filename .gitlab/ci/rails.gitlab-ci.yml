@@ -765,46 +765,41 @@ rspec system pg14-as-if-foss clusterwide-db:
     - .clusterwide-db
     - .rails:rules:clusterwide-db
 
-.rspec-ee-base-gitlab-duo:
-  extends:
-    - .rspec-ee-base-pg14
+rspec-ee unit gitlab-duo-chat pg14:
   variables:
     REAL_AI_REQUEST: "true"
-
-rspec-ee unit gitlab-duo-chat-zeroshot pg14:
+    RSPEC_RETRY_RETRY_COUNT: 0
   extends:
-    - .rspec-ee-base-gitlab-duo
-    - .rails:rules:ee-gitlab-duo-chat-optional
+    - .rspec-ee-base-pg14
+    - .rails:rules:ee-gitlab-duo-chat-base
+  parallel:
+    matrix:
+      - DUO_RSPEC: ["lib/gitlab/llm/chain/agents/zero_shot/executor_real_requests_spec.rb", "support_specs/helpers/chat_qa_evaluation_helpers_spec.rb"]
   script:
     - !reference [.base-script, script]
-    - rspec_paralellized_job "--tag zeroshot_executor"
-
-rspec-ee unit gitlab-duo-chat-qa-fast pg14:
-  extends:
-    - .rspec-ee-base-gitlab-duo
-    - .rails:rules:ee-gitlab-duo-chat-fast
-  script:
-    - !reference [.base-script, script]
-    - bundle exec rspec -Ispec -rspec_helper --color --tag fast_chat_qa_evaluation -- ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb
+    - bundle exec rspec -Ispec -rspec_helper --failure-exit-code 0 --tag real_ai_request --color -- ee/spec/${DUO_RSPEC}
 
 rspec-ee unit gitlab-duo-chat-qa pg14:
   variables:
-    QA_EVAL_REPORT_FILENAME: "qa_evaluation_report.md"
+    REAL_AI_REQUEST: "true"
     RSPEC_RETRY_RETRY_COUNT: 0
   extends:
-    - .rspec-ee-base-gitlab-duo
-    - .rails:rules:ee-gitlab-duo-chat-optional
+    - .rspec-ee-base-pg14
+    - .rails:rules:ee-gitlab-duo-chat-base
+  parallel:
+    matrix:
+      - DUO_RSPEC: ["qa_epic_spec.rb", "qa_issue_spec.rb"]
   script:
     - !reference [.base-script, script]
     - source ./scripts/utils.sh
     - install_gitlab_gem
-    - bundle exec rspec -Ispec -rspec_helper --failure-exit-code 0 --color --tag chat_qa_evaluation -- ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb
+    - bundle exec rspec -Ispec -rspec_helper --failure-exit-code 0 --tag real_ai_request --color -- ee/spec/lib/gitlab/llm/chain/agents/zero_shot/${DUO_RSPEC}
     - ./scripts/duo_chat/reporter.rb
   artifacts:
     expire_in: 5d
     paths:
       - tmp/duo_chat/qa*.json
-      - "${QA_EVAL_REPORT_FILENAME}"
+      - "${DUO_RSPEC}.md"
 
 rspec-ee migration pg14:
   extends:

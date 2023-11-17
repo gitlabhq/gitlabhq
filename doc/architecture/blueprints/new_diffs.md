@@ -118,6 +118,108 @@ To measure our success, we need to set meaningful metrics. These metrics should 
 ---
 <sup>1</sup>: [The Performance Inequality Gap, 2023](https://infrequently.org/2022/12/performance-baseline-2023/)
 
+### Front end
+
+Ideally, we would meet our definition of done and our accountability metrics on our first try.
+We also need to continue to stay within those boundaries as we move forward. To ensure this,
+we need to design an application architecture that:
+
+1. Is:
+   1. Scalable.
+   1. Malleable.
+   1. Flexible.
+1. Considers itself a mission-critical part of the overall GitLab product.
+1. Treats itself as a complex, unique application with concerns that cannot be addressed
+   as side effects of other parts of the product.
+1. Can handle data access/format changes without making UI changes.
+1. Can handle UI changes without making data access/format changes.
+1. Provides a hookable, inspectable API and avoids code coupling.
+1. Separates:
+    - State and application data.
+    - Application behavior and UI.
+    - Data access and network access.
+
+#### High-level implementation
+
+(See [New Diffs: Technical Architecture Design](https://gitlab.com/gitlab-org/gitlab/-/issues/431276) for nicer visuals of this chart)
+
+```mermaid
+flowchart TB
+    classDef sticky fill:#d0cabf, color:black
+    stickyMetricsA>"Metrics 3, 4, & 5 apply to<br>the entire front end application"]
+
+    stickyMetricsA -.- fe
+    fe
+
+    Socket((WebSocket))
+
+    be
+
+subgraph fe [Front End]
+    stickyMetricsB>"Metrics 1 & 2 apply<br>to all UI elements"]
+    stickyInbound>"All data is formatted precisely<br>how the UI needs to interact with it"]
+    stickyOutbound>"All data is formatted precisely<br>how the back end expects it"]
+    stickyIdb>"Long-term.
+
+    e.g. diffs, MRs, emoji, notes, drafts, user-only data<br>like file reviews, collapse states, etc."]
+    stickySession>"Session-term.
+
+    e.g. selected tab, scroll position,<br>temporary changes to user settings, etc."]
+
+    Events([Event Hub])
+    UI[UI]
+    uiState((Local State))
+    Logic[Application Logic]
+    Normalizer[Data Normalizer]
+    Inbound{{Inbound Contract}}
+    Outbound{{Outbound Contract}}
+    Data[Data Access]
+    idb((indexedDB))
+    session((sessionStorage))
+    Network[Network Access]
+end
+
+subgraph be [Back End]
+    stickyApi>"A large list of defined actions a<br>Diffs/Merge Request UI could perform.
+
+    e.g.: <code>mergeRequest:notes:saveDraft</code> or<br><code>mergeRequest:changeStatus</code> (with <br><code>status: 'draft'</code> or <code>status: 'ready'</code>, etc.).
+
+    Must not expose any implementation detail,<br>like models, storage structure, etc."]
+    API[Activities API]
+    unk[\"?"/]
+
+    API -.- stickyApi
+end
+
+    %% Make stickies look like paper sort of?
+    class stickyMetricsA,stickyMetricsB,stickyInbound,stickyOutbound,stickyIdb,stickySession,stickyApi sticky
+
+    UI <--> uiState
+    stickyMetricsB -.- UI
+    Network ~~~ stickyMetricsB
+
+    Logic <--> Normalizer
+
+    Normalizer --> Outbound
+    Outbound --> Data
+    Inbound --> Normalizer
+    Data --> Inbound
+
+    Inbound -.- stickyInbound
+    Outbound -.- stickyOutbound
+
+    Data <--> idb
+    Data <--> session
+    idb -.- stickyIdb
+    session -.- stickySession
+
+    Events <--> UI
+    Events <--> Logic
+    Events <--> Data
+    Events <--> Network
+
+    Network --> Socket --> API --> unk
+```
 <!--
 This section should contain enough information that the specifics of your
 change are understandable. This may include API specs (though not always

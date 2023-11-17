@@ -28,19 +28,19 @@ After your merge request has been approved according to our [approval guidelines
 
 ## Backports
 
-- [ ] Once the MR is ready to be merged, create MRs targeting the latest 3 stable branches
-   * The 3 stable branches correspond to the versions in the title of the Security Release Tracking Issue.
+- [ ] Once the MR is ready to be merged, create MRs targeting the latest 3 stable branches.
+   * The 3 stable branches correspond to the versions in the title of the [Security Release Tracking Issue].
    * At this point, it might be easy to squash the commits from the MR into one
    * You can use the script `bin/secpick` instead of the following steps, to help you cherry-picking. See the [secpick documentation]
 - [ ] Create each MR targeting the stable branch `X-Y-stable`, using the [Security Release merge request template].
    * Every merge request will have its own set of to-dos, so make sure to complete those.
 - [ ] On the "Related merge requests" section, ensure that `4` merge requests are associated: The one targeting `master` and the `3` backports.
-- [ ] If this issue requires less than `4` merge requests, post a message on the Security Release Tracking Issue and ping the Release Managers.
+- [ ] If this issue requires less than `4` merge requests, add the ~"reduced backports" label.
 
 ## Assigning to a release
 
-- [ ]  **IMPORTANT**: When this issue is ready for release (Default branch MR and backports are approved and ready to be merged), apply the ~"security-target" label. 
-   * The `gitlab-release-tools-bot` evaluates and links issues with the label to the next planned security release tracking issue. If the bot finds the issue is not ready to be included in the security release, it will leave a comment on the issue explaining what needs to be done. 
+- [ ]  **IMPORTANT**: When this issue is ready for release (Default branch MR and backports are approved and ready to be merged), apply the ~"security-target" label.
+   * The `gitlab-release-tools-bot` evaluates and links issues with the label to the next planned security release tracking issue. If the bot finds the issue is not ready to be included in the security release, it will leave a comment on the issue explaining what needs to be done.
    * This issue will only be included in a security release if it is successfully linked to the security release tracking issue.
 
 ## Documentation and final details
@@ -82,5 +82,6 @@ After your merge request has been approved according to our [approval guidelines
 [issue as linked]: https://docs.gitlab.com/ee/user/project/issues/related_issues.html#add-a-linked-issue
 [issue really needs to follow the security release workflow]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/developer.md#making-sure-the-issue-needs-to-follow-the-security-release-workflow
 [breaking changes workflow]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/far_reaching_impact_fixes_or_breaking_change_fixes.md
+[Security Release Tracking Issue]: https://gitlab.com/gitlab-org/gitlab/-/issues/?label_name%5B%5D=upcoming%20security%20release
 
 /label ~security ~"security-notifications"

@@ -77,11 +77,19 @@ example configurations for [Azure AD](../../../user/group/saml_sso/example_saml_
 
 ## Configure SAML Group Links
 
-When SAML is enabled, users with the Maintainer or Owner role
-see a new menu item in group **Settings > SAML Group Links**. You can configure one or more **SAML Group Links** to map
-a SAML identity provider group name to a GitLab role. This can be done for a top-level group or any subgroup.
+When SAML is enabled, users with the Maintainer or Owner role see a new menu
+item in group **Settings > SAML Group Links**.
 
-SAML Group Sync only manages a group if that group has one or more SAML group links. If a SAML group link is created then removed, the user remains in the group until they are removed from the group in the identity provider.
+- You can configure one or more **SAML Group Links** to map a SAML identity
+provider group name to a GitLab role.
+- Members of the SAML identity provider group are added as members of the GitLab
+group on their next SAML sign-in.
+- Group membership is evaluated each time a user signs in using SAML.
+- SAML Group Links can be configured for a top-level group or any subgroup.
+- SAML Group Sync only manages a group if that group has one or more SAML group
+links.
+  - If a SAML group link is created then removed, the user remains in the
+group until they are removed from the group in the identity provider.
 
 Prerequisites:
 
@@ -108,8 +116,6 @@ Users granted:
   [direct membership](../../project/members/index.md#display-direct-members) of the group.
 - A lower or the same role with Group Sync are displayed as having
   [inherited membership](../../project/members/index.md#display-inherited-members) of the group.
-
-SAML group membership is evaluated each time a user signs in.
 
 ### Use the API
 

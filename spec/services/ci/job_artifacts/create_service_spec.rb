@@ -139,12 +139,18 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
     shared_examples_for 'handling accessibility' do
       shared_examples 'public accessibility' do
         it 'sets accessibility to public level' do
+          subject
+
+          expect(job.job_artifacts).not_to be_empty
           expect(job.job_artifacts).to all be_public_accessibility
         end
       end
 
       shared_examples 'private accessibility' do
         it 'sets accessibility to private level' do
+          subject
+
+          expect(job.job_artifacts).not_to be_empty
           expect(job.job_artifacts).to all be_private_accessibility
         end
       end

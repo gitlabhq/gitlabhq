@@ -705,13 +705,21 @@ module Ci
     end
 
     def artifacts_public?
-      return true unless Feature.enabled?(:non_public_artifacts, type: :development)
+      return true if Feature.disabled?(:non_public_artifacts, type: :development)
+
+      return true if job_artifacts_archive.nil? # To backward compatibility return true if no artifacts found
+
+      job_artifacts_archive.public_access?
+    end
+
+    def artifact_is_public_in_config?
+      return true if Feature.disabled?(:non_public_artifacts, type: :development)
 
       artifacts_public = options.dig(:artifacts, :public)
 
       return true if artifacts_public.nil? # Default artifacts:public to true
 
-      options.dig(:artifacts, :public)
+      artifacts_public
     end
 
     def artifacts_metadata_entry(path, **options)

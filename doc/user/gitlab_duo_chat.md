@@ -58,6 +58,30 @@ To use this feature, at least one group you're a member of must:
 NOTE:
 Only the last 50 messages are retained in the chat history. The chat history expires 3 days after last use.
 
+## Use GitLab Duo Chat in the Web IDE and VSCode **(ULTIMATE SAAS EXPERIMENT)**
+
+> Introduced in GitLab 16.6 as an [EXPERIMENT](../policy/experiment-beta-support.md#experiment).
+
+### Web IDE
+
+To use GitLab Duo Chat in the Web IDE:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select a file. Then in the upper right, select **Edit > Open in Web IDE**.
+1. On the left sidebar, select **GitLab Duo Chat**. A drawer opens.
+1. In the text box, enter your question and press **Enter** or select **Send**. It may take a few seconds for the interactive AI chat to produce an answer.
+
+### GitLab Workflow extension for VS Code
+
+To disable GitLab Duo Chat in VS Code, go to the VS Code extension settings and clear the **Enable GitLab Duo Chat assistant** checkbox.
+
+To use GitLab Duo Chat in VS Code:
+
+1. Install the [GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) in VS Code.
+1. In VS Code, open your GitLab project.
+1. On the left side of the toolbar, select **GitLab Duo Chat**. A drawer opens.
+1. In the text box, enter your question and press **Enter** or select **Send**. It may take a few seconds for the interactive AI chat to produce an answer.
+
 ## Give Feedback
 
 Your feedback is important to us as we continually enhance your GitLab Duo Chat experience:

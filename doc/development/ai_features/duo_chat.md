@@ -109,28 +109,17 @@ make sure a new fixture is generated and committed together with the change.
 
 ## Running the rspecs tagged with `real_ai_request`
 
-The following CI jobs for GitLab project run the rspecs tagged with `real_ai_request`:
-
-- `rspec-ee unit gitlab-duo-chat-zeroshot`:
-   the job runs `ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_real_requests_spec.rb`.
-   The job is optionally triggered and allowed to fail.
-
-- `rspec-ee unit gitlab-duo-chat-qa`:
-   The job runs the QA evaluation tests in
-   `ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb`.
-   The job is optionally triggered and allowed to fail.
-
-- `rspec-ee unit gitlab-duo-chat-qa-fast`:
-  The job runs a single QA evaluation test from `ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb`.
-  The job is always run and not allowed to fail. Although there's a chance that the QA test still might fail,
-  it is cheap and fast to run and intended to prevent a regression in the QA test helpers.
+The rspecs tagged with the metadata `real_ai_request` can be run in GitLab project's CI by triggering
+`rspec-ee unit gitlab-duo-chat`.
+The former runs with Vertex APIs enabled. The CI jobs are optional and allowed to fail to account for
+the non-deterministic nature of LLM responses.
 
 ### Management of credentials and API keys for CI jobs
 
 All API keys required to run the rspecs should be [masked](../../ci/variables/index.md#mask-a-cicd-variable)
 
 The exception is GCP credentials as they contain characters that prevent them from being masked.
-Because the CI jobs need to run on MR branches, GCP credentials cannot be added as a protected variable
+Because `rspec-ee unit gitlab-duo-chat` needs to run on MR branches, GCP credentials cannot be added as a protected variable
 and must be added as a regular CI variable.
 For security, the GCP credentials and the associated project added to
 GitLab project's CI must not be able to access any production infrastructure and sandboxed.

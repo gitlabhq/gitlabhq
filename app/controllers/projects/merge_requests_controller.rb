@@ -45,7 +45,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:ci_job_failures_in_mr, project)
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
-    push_frontend_feature_flag(:widget_pipeline_pass_subscription_update, project)
     push_frontend_feature_flag(:mr_request_changes, current_user)
   end
 

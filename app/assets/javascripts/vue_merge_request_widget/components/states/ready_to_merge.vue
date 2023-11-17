@@ -59,6 +59,7 @@ export default {
   apollo: {
     state: {
       query: readyToMergeQuery,
+      fetchPolicy: fetchPolicies.NO_CACHE,
       variables() {
         return this.mergeRequestQueryVariables;
       },
@@ -349,12 +350,6 @@ export default {
     eventHub.$on('ApprovalUpdated', this.updateGraphqlState);
     eventHub.$on('MRWidgetUpdateRequested', this.updateGraphqlState);
     eventHub.$on('mr.discussion.updated', this.updateGraphqlState);
-
-    if (this.glFeatures.widgetPipelinePassSubscriptionUpdate) {
-      this.$apollo.queries.state.setOptions({
-        fetchPolicy: fetchPolicies.NO_CACHE,
-      });
-    }
   },
   beforeDestroy() {
     eventHub.$off('ApprovalUpdated', this.updateGraphqlState);

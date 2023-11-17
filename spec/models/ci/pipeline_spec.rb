@@ -2028,17 +2028,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           end
         end
 
-        context 'when only_allow_merge_if_pipeline_succeeds? returns false and widget_pipeline_pass_subscription_update disabled' do
-          let(:only_allow_merge_if_pipeline_succeeds?) { false }
-
-          before do
-            stub_feature_flags(widget_pipeline_pass_subscription_update: false)
-          end
-
-          it_behaves_like 'state transition not triggering GraphQL subscription mergeRequestMergeStatusUpdated'
-        end
-
-        context 'when only_allow_merge_if_pipeline_succeeds? returns false and widget_pipeline_pass_subscription_update enabled' do
+        context 'when only_allow_merge_if_pipeline_succeeds? returns false' do
           let(:only_allow_merge_if_pipeline_succeeds?) { false }
 
           it_behaves_like 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
