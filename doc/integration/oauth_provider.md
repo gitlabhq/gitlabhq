@@ -99,7 +99,7 @@ different actions. See the following table for all available scopes.
 
 | Scope              | Description |
 |--------------------| ----------- |
-| `api`              | Grants complete read/write access to the API, including all groups and projects, the container registry, and the package registry. |
+| `api`              | Grants complete read/write access to the API, including all groups and projects, the container registry, the dependency proxy, and the package registry. |
 | `read_user`        | Grants read-only access to the authenticated user's profile through the /user API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under /users. |
 | `read_api`         | Grants read access to the API, including all groups and projects, the container registry, and the package registry. |
 | `read_repository`  | Grants read-only access to repositories on private projects using Git-over-HTTP or the Repository Files API. |

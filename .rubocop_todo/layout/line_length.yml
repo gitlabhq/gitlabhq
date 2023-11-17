@@ -1630,7 +1630,6 @@ Layout/LineLength:
     - 'ee/spec/lib/gitlab/auth/ldap/person_spec.rb'
     - 'ee/spec/lib/gitlab/auth/ldap/user_spec.rb'
     - 'ee/spec/lib/gitlab/auth/saml/user_spec.rb'
-    - 'ee/spec/lib/gitlab/background_migration/migrate_requirements_to_work_items_spec.rb'
     - 'ee/spec/lib/gitlab/checks/diff_check_spec.rb'
     - 'ee/spec/lib/gitlab/ci/config/entry/job_spec.rb'
     - 'ee/spec/lib/gitlab/ci/config/security_orchestration_policies/processor_spec.rb'

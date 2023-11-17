@@ -63,7 +63,6 @@ Style/SymbolProc:
     - 'config/initializers/doorkeeper_openid_connect.rb'
     - 'config/initializers/mail_encoding_patch.rb'
     - 'config/settings.rb'
-    - 'db/post_migrate/20220803042352_cleanup_mr_attention_request_todos.rb'
     - 'ee/app/helpers/ee/mirror_helper.rb'
     - 'ee/app/helpers/ee/registrations_helper.rb'
     - 'ee/app/models/concerns/epic_tree_sorting.rb'

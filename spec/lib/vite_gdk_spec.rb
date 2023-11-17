@@ -26,7 +26,7 @@ RSpec.describe ViteGdk, feature_category: :tooling do
             expect(file_path).to end_with(VITE_GDK_CONFIG_FILEPATH)
           end.and_return('enabled' => true, 'port' => 3038)
           expect(ViteRuby).to receive(:configure).with(port: 3038)
-          expect(ViteRuby.env).to receive(:[]=).with('VITE_ENABLED', true)
+          expect(ViteRuby.env).to receive(:[]=).with('VITE_ENABLED', 'true')
 
           described_class.load_gdk_vite_config
         end
@@ -38,8 +38,8 @@ RSpec.describe ViteGdk, feature_category: :tooling do
             expect(file_path).to end_with(VITE_GDK_CONFIG_FILEPATH)
           end.and_return(false)
           expect(ViteRuby).not_to receive(:configure)
-          expect(ViteRuby.env).not_to receive(:[]=).with('VITE_ENABLED', false)
-          expect(ViteRuby.env).not_to receive(:[]=).with('VITE_ENABLED', true)
+          expect(ViteRuby.env).not_to receive(:[]=).with('VITE_ENABLED', 'false')
+          expect(ViteRuby.env).not_to receive(:[]=).with('VITE_ENABLED', 'true')
 
           described_class.load_gdk_vite_config
         end

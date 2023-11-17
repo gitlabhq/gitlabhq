@@ -312,7 +312,7 @@ export default {
     canCancelPipeline() {
       const { cancelable, userPermissions } = this.pipeline;
 
-      return cancelable && userPermissions.updatePipeline;
+      return cancelable && userPermissions.cancelPipeline;
     },
     showComputeMinutes() {
       return this.isFinished && this.computeMinutes;

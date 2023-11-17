@@ -2335,6 +2335,7 @@
 
 .rails:rules:clickhouse-changes:
   rules:
+    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
     - <<: *if-merge-request
       changes: *backend-patterns
 

@@ -157,18 +157,7 @@ module Gitlab
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      def features_usage_data
-        features_usage_data_ce
-      end
-
-      def features_usage_data_ce
-        {
-          omniauth_enabled: alt_usage_data(fallback: nil) { Gitlab::Auth.omniauth_enabled? },
-          prometheus_enabled: alt_usage_data(fallback: nil) { Gitlab::Prometheus::Internal.prometheus_enabled? },
-          prometheus_metrics_enabled: alt_usage_data(fallback: nil) { Gitlab::Metrics.prometheus_metrics_enabled? },
-          reply_by_email_enabled: alt_usage_data(fallback: nil) { Gitlab::Email::IncomingEmail.enabled? }
-        }
-      end
+      def features_usage_data = {}
 
       def components_usage_data
         {

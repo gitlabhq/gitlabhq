@@ -88,17 +88,17 @@ The scope determines the actions you can perform when you authenticate with a pr
 NOTE:
 See the warning in [create a project access token](#create-a-project-access-token) regarding internal projects.
 
-| Scope              | Description                            |
-|:-------------------|:---------------------------------------|
-| `api`              | Grants complete read and write access to the scoped project API, including the [package registry](../../packages/package_registry/index.md).                   |
-| `read_api`         | Grants read access to the scoped project API, including the [package registry](../../packages/package_registry/index.md).                                   |
-| `read_registry`    | Grants read access (pull) to the [container registry](../../packages/container_registry/index.md) images if a project is private and authorization is required. |
-| `write_registry`   | Grants write access (push) to the [Container Registry](../../packages/container_registry/index.md).                                                          |
-| `read_repository`  | Grants read access (pull) to the repository.                                                      |
-| `write_repository` | Grants read and write access (pull and push) to the repository.                                   |
-| `create_runner`    | Grants permission to create runners in the project.                                               |
-| `ai_features`      | Grants permission to perform API actions for GitLab Duo.                                          |
-| `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes in the project.  |
+| Scope              | Description                                                                                                                                                                                                                                                                              |
+|:-------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `api`              | Grants complete read and write access to the scoped project API, including the [container registry](../../packages/container_registry/index.md), the [dependency proxy](../../packages/dependency_proxy/index.md), and the [package registry](../../packages/package_registry/index.md). |
+| `read_api`         | Grants read access to the scoped project API, including the [package registry](../../packages/package_registry/index.md).                                                                                                                                                                |
+| `read_registry`    | Grants read access (pull) to the [container registry](../../packages/container_registry/index.md) images if a project is private and authorization is required.                                                                                                                          |
+| `write_registry`   | Grants write access (push) to the [container registry](../../packages/container_registry/index.md).                                                                                                                                                                                      |
+| `read_repository`  | Grants read access (pull) to the repository.                                                                                                                                                                                                                                             |
+| `write_repository` | Grants read and write access (pull and push) to the repository.                                                                                                                                                                                                                          |
+| `create_runner`    | Grants permission to create runners in the project.                                                                                                                                                                                                                                      |
+| `ai_features`      | Grants permission to perform API actions for GitLab Duo.                                                                                                                                                                                                                                 |
+| `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes in the project.                                                                                                                                                                                         |
 
 ## Enable or disable project access token creation
 

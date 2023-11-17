@@ -77,13 +77,10 @@ module UsageDataHelpers
   USAGE_DATA_KEYS = %i[
     counts
     recorded_at
-    omniauth_enabled
-    reply_by_email_enabled
     gitlab_pages
     git
     gitaly
     database
-    prometheus_metrics_enabled
     object_store
     topology
   ].freeze

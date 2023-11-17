@@ -15,6 +15,7 @@ import getPipelineDetailsQuery from '~/ci/pipeline_details/header/graphql/querie
 import {
   pipelineHeaderSuccess,
   pipelineHeaderRunning,
+  pipelineHeaderRunningNoPermissions,
   pipelineHeaderRunningWithDuration,
   pipelineHeaderFailed,
   pipelineRetryMutationResponseSuccess,
@@ -33,6 +34,9 @@ describe('Pipeline details header', () => {
 
   const successHandler = jest.fn().mockResolvedValue(pipelineHeaderSuccess);
   const runningHandler = jest.fn().mockResolvedValue(pipelineHeaderRunning);
+  const runningHandlerNoPermissions = jest
+    .fn()
+    .mockResolvedValue(pipelineHeaderRunningNoPermissions);
   const runningHandlerWithDuration = jest.fn().mockResolvedValue(pipelineHeaderRunningWithDuration);
   const failedHandler = jest.fn().mockResolvedValue(pipelineHeaderFailed);
 
@@ -374,46 +378,58 @@ describe('Pipeline details header', () => {
     });
 
     describe('cancel action', () => {
-      it('should call cancelPipeline Mutation with pipeline id', async () => {
-        createComponent([
-          [getPipelineDetailsQuery, runningHandler],
-          [cancelPipelineMutation, cancelMutationHandlerSuccess],
-        ]);
+      describe('with permissions', () => {
+        it('should call cancelPipeline Mutation with pipeline id', async () => {
+          createComponent([
+            [getPipelineDetailsQuery, runningHandler],
+            [cancelPipelineMutation, cancelMutationHandlerSuccess],
+          ]);
 
-        await waitForPromises();
+          await waitForPromises();
 
-        findCancelButton().vm.$emit('click');
+          findCancelButton().vm.$emit('click');
 
-        expect(cancelMutationHandlerSuccess).toHaveBeenCalledWith({
-          id: pipelineHeaderRunning.data.project.pipeline.id,
+          expect(cancelMutationHandlerSuccess).toHaveBeenCalledWith({
+            id: pipelineHeaderRunning.data.project.pipeline.id,
+          });
+          expect(findAlert().exists()).toBe(false);
         });
-        expect(findAlert().exists()).toBe(false);
+
+        it('should render cancel action tooltip', async () => {
+          createComponent([
+            [getPipelineDetailsQuery, runningHandler],
+            [cancelPipelineMutation, cancelMutationHandlerSuccess],
+          ]);
+
+          await waitForPromises();
+
+          expect(findCancelButton().attributes('title')).toBe(BUTTON_TOOLTIP_CANCEL);
+        });
+
+        it('should display error message on failure', async () => {
+          createComponent([
+            [getPipelineDetailsQuery, runningHandler],
+            [cancelPipelineMutation, cancelMutationHandlerFailed],
+          ]);
+
+          await waitForPromises();
+
+          findCancelButton().vm.$emit('click');
+
+          await waitForPromises();
+
+          expect(findAlert().exists()).toBe(true);
+        });
       });
 
-      it('should render cancel action tooltip', async () => {
-        createComponent([
-          [getPipelineDetailsQuery, runningHandler],
-          [cancelPipelineMutation, cancelMutationHandlerSuccess],
-        ]);
+      describe('without permissions', () => {
+        it('should not display cancel pipeline button', async () => {
+          createComponent([[getPipelineDetailsQuery, runningHandlerNoPermissions]]);
 
-        await waitForPromises();
+          await waitForPromises();
 
-        expect(findCancelButton().attributes('title')).toBe(BUTTON_TOOLTIP_CANCEL);
-      });
-
-      it('should display error message on failure', async () => {
-        createComponent([
-          [getPipelineDetailsQuery, runningHandler],
-          [cancelPipelineMutation, cancelMutationHandlerFailed],
-        ]);
-
-        await waitForPromises();
-
-        findCancelButton().vm.$emit('click');
-
-        await waitForPromises();
-
-        expect(findAlert().exists()).toBe(true);
+          expect(findCancelButton().exists()).toBe(false);
+        });
       });
     });
 

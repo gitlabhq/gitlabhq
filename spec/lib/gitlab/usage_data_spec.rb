@@ -564,29 +564,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
   end
 
   context 'when not relying on database records' do
-    describe '.features_usage_data_ce' do
-      subject { described_class.features_usage_data_ce }
-
-      it 'gathers feature usage data', :aggregate_failures do
-        expect(subject[:omniauth_enabled]).to eq(Gitlab::Auth.omniauth_enabled?)
-        expect(subject[:reply_by_email_enabled]).to eq(Gitlab::Email::IncomingEmail.enabled?)
-      end
-
-      context 'with embedded Prometheus' do
-        it 'returns true when embedded Prometheus is enabled' do
-          allow(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(true)
-
-          expect(subject[:prometheus_enabled]).to eq(true)
-        end
-
-        it 'returns false when embedded Prometheus is disabled' do
-          allow(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(false)
-
-          expect(subject[:prometheus_enabled]).to eq(false)
-        end
-      end
-    end
-
     describe '.components_usage_data' do
       subject { described_class.components_usage_data }
 

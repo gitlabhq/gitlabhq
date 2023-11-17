@@ -18546,7 +18546,7 @@ ALTER SEQUENCE loose_foreign_keys_deleted_records_id_seq OWNED BY loose_foreign_
 
 CREATE TABLE member_roles (
     id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
+    namespace_id bigint,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     base_access_level integer NOT NULL,

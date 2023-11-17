@@ -65,8 +65,6 @@ Style/EmptyMethod:
     - 'app/services/issuable_base_service.rb'
     - 'app/services/projects/transfer_service.rb'
     - 'app/workers/namespaces/root_statistics_worker.rb'
-    - 'db/post_migrate/20220425121435_backfill_integrations_enable_ssl_verification.rb'
-    - 'db/post_migrate/20220524074947_finalize_backfill_null_note_discussion_ids.rb'
     - 'ee/app/controllers/admin/emails_controller.rb'
     - 'ee/app/controllers/admin/geo/designs_controller.rb'
     - 'ee/app/controllers/admin/geo/settings_controller.rb'

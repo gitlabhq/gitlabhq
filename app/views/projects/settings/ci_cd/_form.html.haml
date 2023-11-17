@@ -36,6 +36,8 @@
             s_("CICD|Use separate caches for protected branches"),
             help_text: (s_('CICD|Unprotected branches will not have access to the cache from protected branches.') + ' ' + help_link_separated_caches).html_safe
 
+        = render_if_exists 'projects/settings/ci_cd/pipeline_cancelation', form: f
+
         .form-group
           = f.label :ci_config_path, _('CI/CD configuration file'), class: 'label-bold'
           = f.text_field :ci_config_path, class: 'form-control', placeholder: '.gitlab-ci.yml'

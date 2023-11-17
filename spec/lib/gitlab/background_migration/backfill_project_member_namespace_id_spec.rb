@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillProjectMemberNamespaceId, :migration, schema: 20220516054011 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillProjectMemberNamespaceId, :migration, schema: 20220126191624 do
   let(:migration) do
     described_class.new(
       start_id: 1, end_id: 10,

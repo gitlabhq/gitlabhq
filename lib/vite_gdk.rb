@@ -9,7 +9,8 @@ module ViteGdk
 
     config = YAML.safe_load_file(vite_gdk_config_path)
     enabled = config.fetch('enabled', false)
-    ViteRuby.env['VITE_ENABLED'] = enabled
+    # ViteRuby doesn't like if env vars aren't strings
+    ViteRuby.env['VITE_ENABLED'] = enabled.to_s
 
     return unless enabled
 

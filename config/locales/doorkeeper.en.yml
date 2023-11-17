@@ -81,7 +81,7 @@ en:
       ai_features: Access to API endpoints needed for GitLab Duo features
     scope_desc:
       api:
-        Grants complete read/write access to the API, including all groups and projects, the container registry, and the package registry.
+        Grants complete read/write access to the API, including all groups and projects, the container registry, the dependency proxy, and the package registry.
       read_api:
         Grants read access to the API, including all groups and projects, the container registry, and the package registry.
       read_user:
@@ -116,9 +116,9 @@ en:
         Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
     group_access_token_scope_desc:
       api:
-        Grants complete read and write access to the scoped group and related project API, including the Package Registry.
+        Grants complete read and write access to the scoped group and related project API, including the container registry, the dependency proxy, and the package registry.
       read_api:
-        Grants read access to the scoped group and related project API, including the Package Registry.
+        Grants read access to the scoped group and related project API, including the package registry.
       read_user:
         Grants read-only access to the authenticated user's profile through the /user API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under /users.
       read_repository:
@@ -126,9 +126,9 @@ en:
       write_repository:
         Grants read and write access (pull and push) to all repositories within a group.
       read_registry:
-        Grants read access (pull) to the Container Registry images if any project within a group is private and authorization is required.
+        Grants read access (pull) to the container registry images if any project within a group is private and authorization is required.
       write_registry:
-        Grants write access (push) to the Container Registry.
+        Grants write access (push) to the container registry.
       read_observability:
         Grants read-only access to GitLab Observability.
       write_observability:
@@ -151,7 +151,7 @@ en:
         Grants permission to perform Kubernetes API calls using the agent for Kubernetes in a group.
     project_access_token_scope_desc:
       api:
-        Grants complete read and write access to the scoped project API, including the Package Registry.
+        Grants complete read and write access to the scoped project API, including the container registry, the dependency proxy, and the package registry.
       read_api:
         Grants read access to the scoped project API, including the Package Registry.
       read_repository:

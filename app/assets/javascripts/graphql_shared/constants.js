@@ -29,3 +29,4 @@ export const TYPENAME_WORK_ITEM = 'WorkItem';
 export const TYPENAME_ORGANIZATION = 'Organization';
 export const TYPE_USERS_SAVED_REPLY = 'Users::SavedReply';
 export const TYPE_WORKSPACE = 'RemoteDevelopment::Workspace';
+export const TYPE_COMPLIANCE_FRAMEWORK = 'ComplianceManagement::Framework';

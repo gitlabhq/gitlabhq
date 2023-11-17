@@ -27,7 +27,6 @@ RSpec/ExpectChange:
     - 'ee/spec/lib/gitlab/legacy_github_import/project_creator_spec.rb'
     - 'ee/spec/lib/quality/seeders/vulnerabilities_spec.rb'
     - 'ee/spec/mailers/license_mailer_spec.rb'
-    - 'ee/spec/migrations/20220517144749_remove_vulnerability_approval_rules_spec.rb'
     - 'ee/spec/models/ee/ci/pending_build_spec.rb'
     - 'ee/spec/models/ee/group_spec.rb'
     - 'ee/spec/models/ee/namespace_spec.rb'

@@ -374,7 +374,6 @@ Style/IfUnlessModifier:
     - 'config/routes.rb'
     - 'danger/database/Dangerfile'
     - 'danger/pipeline/Dangerfile'
-    - 'db/post_migrate/20220523171107_drop_deploy_tokens_token_column.rb'
     - 'ee/app/components/namespaces/storage/limit_alert_component.rb'
     - 'ee/app/controllers/admin/elasticsearch_controller.rb'
     - 'ee/app/controllers/admin/emails_controller.rb'

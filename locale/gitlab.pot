@@ -237,11 +237,6 @@ msgid_plural "%d completed issues"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d compliance framework selected"
-msgid_plural "%d compliance frameworks selected"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d contribution"
 msgid_plural "%d contributions"
 msgstr[0] ""
@@ -4799,9 +4794,6 @@ msgstr ""
 msgid "All environments"
 msgstr ""
 
-msgid "All frameworks selected"
-msgstr ""
-
 msgid "All groups"
 msgstr ""
 
@@ -9315,6 +9307,9 @@ msgstr ""
 msgid "CICD|Deployment strategy"
 msgstr ""
 
+msgid "CICD|Developer"
+msgstr ""
+
 msgid "CICD|Disabling this feature is a permanent change."
 msgstr ""
 
@@ -9334,6 +9329,12 @@ msgid "CICD|Limit access %{italicStart}from%{italicEnd} this project (Deprecated
 msgstr ""
 
 msgid "CICD|Limit access %{italicStart}to%{italicEnd} this project"
+msgstr ""
+
+msgid "CICD|Maintainer"
+msgstr ""
+
+msgid "CICD|Pipelines and jobs cannot be cancelled"
 msgstr ""
 
 msgid "CICD|Prevent CI/CD job tokens from this project from being used to access other projects unless the other project is added to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more%{linkEnd}."
@@ -30569,6 +30570,9 @@ msgstr ""
 msgid "Minimum capacity to be available before we schedule more mirrors preemptively."
 msgstr ""
 
+msgid "Minimum role required to cancel a pipeline or job"
+msgstr ""
+
 msgid "Minutes"
 msgstr ""
 
@@ -43121,13 +43125,13 @@ msgstr ""
 msgid "SecurityOrchestration|Choose approver type"
 msgstr ""
 
-msgid "SecurityOrchestration|Choose framework labels"
-msgstr ""
-
 msgid "SecurityOrchestration|Choose specific role"
 msgstr ""
 
 msgid "SecurityOrchestration|Clear all"
+msgstr ""
+
+msgid "SecurityOrchestration|Compliance Framework ID(s) can only be set for group policies"
 msgstr ""
 
 msgid "SecurityOrchestration|Create more robust vulnerability rules and apply them to all your projects."
@@ -43227,6 +43231,9 @@ msgid "SecurityOrchestration|Inherited"
 msgstr ""
 
 msgid "SecurityOrchestration|Inherited from %{namespace}"
+msgstr ""
+
+msgid "SecurityOrchestration|Invalid Compliance Framework ID(s)"
 msgstr ""
 
 msgid "SecurityOrchestration|Invalid branch type detected - rule will not be applied."
@@ -43586,6 +43593,9 @@ msgid "SecurityOrchestration|branches"
 msgstr ""
 
 msgid "SecurityOrchestration|by the agent named %{agents} %{cadence}%{branchExceptionsString}"
+msgstr ""
+
+msgid "SecurityOrchestration|compliance frameworks"
 msgstr ""
 
 msgid "SecurityOrchestration|except projects"

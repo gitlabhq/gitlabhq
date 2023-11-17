@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!
 
 # rubocop:disable Layout/HashAlignment
 RSpec.describe Gitlab::BackgroundMigration::BackfillProjectImportLevel do

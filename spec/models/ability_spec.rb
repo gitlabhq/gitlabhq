@@ -498,8 +498,9 @@ RSpec.describe Ability do
         expect(Gitlab::AppLogger).to have_received(:info) do |args|
           expect(args[:message]).to eq('Ability is in use')
           expect(args[:ability]).to eq(:read_namespace)
-          expect(args[:caller_locations].first)
-            .to include('/spec/models/ability_spec.rb:489:in `block (4 levels) in <top (required)>')
+          expect(args[:caller_locations].first).to(
+            match(%r{/spec/models/ability_spec.rb:\d+:in `block \(4 levels\) in <top \(required\)>})
+          )
           expect(args[:caller_locations].length).to eq(5)
         end
       end

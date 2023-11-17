@@ -45,7 +45,6 @@ Layout/ArrayAlignment:
     - 'config/application.rb'
     - 'config/initializers/0_marginalia.rb'
     - 'config/initializers/direct_upload_support.rb'
-    - 'db/post_migrate/20220728134255_update_index_vulnerabilities_common_finder.rb'
     - 'ee/app/controllers/admin/push_rules_controller.rb'
     - 'ee/app/controllers/ee/admin/application_settings_controller.rb'
     - 'ee/app/controllers/ee/projects/merge_requests_controller.rb'

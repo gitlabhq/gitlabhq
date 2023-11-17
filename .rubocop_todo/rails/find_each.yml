@@ -9,7 +9,6 @@ Rails/FindEach:
     - 'app/services/groups/destroy_service.rb'
     - 'app/services/merge_requests/refresh_service.rb'
     - 'app/views/issues/_issues_calendar.ics.ruby'
-    - 'db/post_migrate/20220411173544_cleanup_orphans_approval_project_rules.rb'
     - 'db/post_migrate/20231003045342_migrate_sidekiq_namespaced_jobs.rb'
     - 'ee/app/workers/compliance_management/merge_requests/compliance_violations_consistency_worker.rb'
     - 'ee/lib/ee/gitlab/background_migration/backfill_compliance_violations.rb'

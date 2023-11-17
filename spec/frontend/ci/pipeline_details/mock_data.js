@@ -1,5 +1,7 @@
+// pipeline header fixtures located in spec/frontend/fixtures/pipeline_header.rb
 import pipelineHeaderSuccess from 'test_fixtures/graphql/pipelines/pipeline_header_success.json';
 import pipelineHeaderRunning from 'test_fixtures/graphql/pipelines/pipeline_header_running.json';
+import pipelineHeaderRunningNoPermissions from 'test_fixtures/graphql/pipelines/pipeline_header_running_no_permissions.json';
 import pipelineHeaderRunningWithDuration from 'test_fixtures/graphql/pipelines/pipeline_header_running_with_duration.json';
 import pipelineHeaderFailed from 'test_fixtures/graphql/pipelines/pipeline_header_failed.json';
 
@@ -13,6 +15,7 @@ threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
 export {
   pipelineHeaderSuccess,
   pipelineHeaderRunning,
+  pipelineHeaderRunningNoPermissions,
   pipelineHeaderRunningWithDuration,
   pipelineHeaderFailed,
 };
