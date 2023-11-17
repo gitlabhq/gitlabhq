@@ -65,7 +65,12 @@ describe('BoardFilteredSearch', () => {
   const createComponent = ({ initialFilterParams = {}, props = {}, provide = {} } = {}) => {
     store = createStore();
     wrapper = shallowMount(BoardFilteredSearch, {
-      provide: { initialFilterParams, fullPath: '', isApolloBoard: false, ...provide },
+      provide: {
+        initialFilterParams,
+        fullPath: '',
+        isApolloBoard: false,
+        ...provide,
+      },
       store,
       propsData: {
         ...props,
@@ -107,7 +112,7 @@ describe('BoardFilteredSearch', () => {
   });
 
   describe('when eeFilters is not empty', () => {
-    it('passes the correct initialFilterValue to FitleredSearchBarRoot', () => {
+    it('passes the correct initialFilterValue to FilteredSearchBarRoot', () => {
       createComponent({ props: { eeFilters: { labelName: ['label'] } } });
 
       expect(findFilteredSearch().props('initialFilterValue')).toEqual([
@@ -208,6 +213,41 @@ describe('BoardFilteredSearch', () => {
       });
 
       expect(wrapper.emitted('setFilters')).toHaveLength(1);
+    });
+
+    describe('when iteration is passed a wildcard value with a cadence id', () => {
+      const url = (arg) => `http://test.host/?iteration_id=${arg}&iteration_cadence_id=1349`;
+
+      it.each([
+        ['Current&1349', url('Current'), 'Current'],
+        ['Any&1349', url('Any'), 'Any'],
+      ])('sets the url param %s', (iterationParam, expected, wildCardId) => {
+        Object.defineProperty(window, 'location', {
+          writable: true,
+          value: new URL(expected),
+        });
+
+        const mockFilters = [
+          { type: TOKEN_TYPE_ITERATION, value: { data: iterationParam, operator: '=' } },
+        ];
+
+        findFilteredSearch().vm.$emit('onFilter', mockFilters);
+
+        expect(updateHistory).toHaveBeenCalledWith({
+          title: '',
+          replace: true,
+          url: expected,
+        });
+
+        expect(wrapper.emitted('setFilters')).toStrictEqual([
+          [
+            {
+              iterationCadenceId: '1349',
+              iterationId: wildCardId,
+            },
+          ],
+        ]);
+      });
     });
   });
 });

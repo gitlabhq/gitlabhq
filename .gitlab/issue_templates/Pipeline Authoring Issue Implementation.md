@@ -12,6 +12,8 @@
 
 ## Proposal
 
+## Confirm purpose and User Reception (how does this benefit the user?)
+
 ## Additional details
 <!--
 _NOTE: If the issue has addressed all of these questions, this separate section can be removed._
