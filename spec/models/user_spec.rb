@@ -175,7 +175,6 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:uploads) }
     it { is_expected.to have_many(:abuse_reports).dependent(:nullify).inverse_of(:user) }
     it { is_expected.to have_many(:reported_abuse_reports).dependent(:nullify).class_name('AbuseReport').inverse_of(:reporter) }
-    it { is_expected.to have_many(:assigned_abuse_reports).class_name('AbuseReport').inverse_of(:assignee) }
     it { is_expected.to have_many(:resolved_abuse_reports).class_name('AbuseReport').inverse_of(:resolved_by) }
     it { is_expected.to have_many(:abuse_events).class_name('Abuse::Event').inverse_of(:user) }
     it { is_expected.to have_many(:custom_attributes).class_name('UserCustomAttribute') }
@@ -199,6 +198,13 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:abuse_trust_scores).class_name('Abuse::TrustScore') }
     it { is_expected.to have_many(:issue_assignment_events).class_name('ResourceEvents::IssueAssignmentEvent') }
     it { is_expected.to have_many(:merge_request_assignment_events).class_name('ResourceEvents::MergeRequestAssignmentEvent') }
+    it { is_expected.to have_many(:admin_abuse_report_assignees).class_name('Admin::AbuseReportAssignee') }
+
+    it do
+      is_expected.to have_many(:assigned_abuse_reports).class_name('AbuseReport')
+        .through(:admin_abuse_report_assignees)
+        .source(:abuse_report)
+    end
 
     it do
       is_expected.to have_many(:organization_users).class_name('Organizations::OrganizationUser').inverse_of(:user)
@@ -6130,6 +6136,15 @@ RSpec.describe User, feature_category: :user_profile do
         end
       end
 
+      it 'adds a custom attribute that indicates the user deleted their own account' do
+        freeze_time do
+          expect { user.delete_async(deleted_by: deleted_by) }.to change { user.custom_attributes.count }.by(1)
+
+          expect(user.custom_attributes.last.key).to eq UserCustomAttribute::DELETED_OWN_ACCOUNT_AT
+          expect(user.custom_attributes.last.value).to eq Time.zone.now.to_s
+        end
+      end
+
       context 'when delay_delete_own_user feature flag is disabled' do
         before do
           stub_feature_flags(delay_delete_own_user: false)
@@ -6141,6 +6156,10 @@ RSpec.describe User, feature_category: :user_profile do
 
         it 'does not update the note' do
           expect { user.delete_async(deleted_by: deleted_by) }.not_to change { user.note }
+        end
+
+        it 'does not add any new custom attrribute' do
+          expect { user.delete_async(deleted_by: deleted_by) }.not_to change { user.custom_attributes.count }
         end
       end
 
@@ -8007,6 +8026,26 @@ RSpec.describe User, feature_category: :user_profile do
           expect(emails).to eq(project_commit_email)
         end
       end
+    end
+  end
+
+  describe '#deleted_own_account?' do
+    let_it_be(:user) { create(:user) }
+
+    subject(:result) { user.deleted_own_account? }
+
+    context 'when user has a DELETED_OWN_ACCOUNT_AT custom attribute' do
+      let_it_be(:custom_attr) do
+        create(:user_custom_attribute, user: user, key: UserCustomAttribute::DELETED_OWN_ACCOUNT_AT, value: 'now')
+      end
+
+      it { is_expected.to eq true }
+    end
+
+    context 'when user does not have a DELETED_OWN_ACCOUNT_AT custom attribute' do
+      let_it_be(:user) { create(:user) }
+
+      it { is_expected.to eq false }
     end
   end
 end

@@ -236,9 +236,10 @@ class User < MainClusterwide::ApplicationRecord
   has_many :releases,                 dependent: :nullify, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :subscriptions,            dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :abuse_reports,            dependent: :nullify, foreign_key: :user_id, inverse_of: :user # rubocop:disable Cop/ActiveRecordDependent
+  has_many :abuse_reports, dependent: :nullify, foreign_key: :user_id, inverse_of: :user # rubocop:disable Cop/ActiveRecordDependent
+  has_many :admin_abuse_report_assignees, class_name: "Admin::AbuseReportAssignee"
+  has_many :assigned_abuse_reports, class_name: "AbuseReport", through: :admin_abuse_report_assignees, source: :abuse_report
   has_many :reported_abuse_reports,   dependent: :nullify, foreign_key: :reporter_id, class_name: "AbuseReport", inverse_of: :reporter # rubocop:disable Cop/ActiveRecordDependent
-  has_many :assigned_abuse_reports,   foreign_key: :assignee_id, class_name: "AbuseReport", inverse_of: :assignee
   has_many :resolved_abuse_reports,   foreign_key: :resolved_by_id, class_name: "AbuseReport", inverse_of: :resolved_by
   has_many :abuse_events,             foreign_key: :user_id, class_name: 'Abuse::Event', inverse_of: :user
   has_many :spam_logs,                dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -1636,6 +1637,7 @@ class User < MainClusterwide::ApplicationRecord
     if should_delay_delete?(deleted_by)
       new_note = format(_("User deleted own account on %{timestamp}"), timestamp: Time.zone.now)
       self.note = "#{new_note}\n#{note}".strip
+      UserCustomAttribute.set_deleted_own_account_at(self)
 
       block_or_ban
       DeleteUserWorker.perform_in(DELETION_DELAY_IN_DAYS, deleted_by.id, id, params.to_h)
@@ -2239,6 +2241,10 @@ class User < MainClusterwide::ApplicationRecord
     return if namespace.nil?
 
     namespace_commit_emails.find_by(namespace: namespace)
+  end
+
+  def deleted_own_account?
+    custom_attributes.by_key(UserCustomAttribute::DELETED_OWN_ACCOUNT_AT).exists?
   end
 
   protected

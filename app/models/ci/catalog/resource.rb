@@ -31,7 +31,7 @@ module Ci
       scope :order_by_latest_released_at_desc, -> { reorder(arel_table[:latest_released_at].desc.nulls_last) }
       scope :order_by_latest_released_at_asc, -> { reorder(arel_table[:latest_released_at].asc.nulls_last) }
 
-      delegate :avatar_path, :star_count, :forks_count, to: :project
+      delegate :avatar_path, :star_count, to: :project
 
       enum state: { draft: 0, published: 1 }
 

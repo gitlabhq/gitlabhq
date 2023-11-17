@@ -44,7 +44,6 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
             webPath
             latestReleasedAt
             starCount
-            forksCount
             readmeHtml
           }
         }
@@ -83,7 +82,6 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
         icon: project1.avatar_path,
         webPath: "/#{project1.full_path}",
         starCount: project1.star_count,
-        forksCount: project1.forks_count,
         readmeHtml: a_string_including('Test</strong>'),
         latestReleasedAt: resource1.latest_released_at
       ),
@@ -338,7 +336,6 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
             icon: project2.avatar_path,
             webPath: "/#{project2.full_path}",
             starCount: project2.star_count,
-            forksCount: project2.forks_count,
             readmeHtml: '',
             latestReleasedAt: resource2.latest_released_at
           )

@@ -1,6 +1,19 @@
 {
   "type": "object",
-  "required": ["id", "name", "path", "location", "createdAt", "updatedAt", "tagsCount", "canDelete", "expirationPolicyCleanupStatus", "project", "lastCleanupDeletedTagsCount"],
+  "required": [
+    "id",
+    "name",
+    "path",
+    "location",
+    "createdAt",
+    "updatedAt",
+    "tagsCount",
+    "canDelete",
+    "expirationPolicyCleanupStatus",
+    "project",
+    "lastCleanupDeletedTagsCount",
+    "userPermissions"
+  ],
   "properties": {
     "id": {
       "type": "string"
@@ -21,10 +34,16 @@
       "type": "string"
     },
     "expirationPolicyStartedAt": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "status": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "tagsCount": {
       "type": "integer"
@@ -34,13 +53,30 @@
     },
     "expirationPolicyCleanupStatus": {
       "type": "string",
-      "enum": ["UNSCHEDULED", "SCHEDULED", "UNFINISHED", "ONGOING"]
+      "enum": [
+        "UNSCHEDULED",
+        "SCHEDULED",
+        "UNFINISHED",
+        "ONGOING"
+      ]
     },
     "project": {
       "type": "object"
     },
     "lastCleanupDeletedTagsCount": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "userPermissions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "destroyContainerRepository": {
+          "type": "boolean"
+        }
+      }
     }
   }
 }

@@ -43,7 +43,7 @@ RSpec.describe WebpackHelper do
       stub_feature_flags(vite: true)
 
       allow(helper).to receive(:vite_javascript_tag).and_return('vite')
-      allow(helper).to receive(:vite_running).and_return(true)
+      allow(helper).to receive(:vite_enabled?).and_return(true)
     end
 
     describe '#webpack_bundle_tag' do

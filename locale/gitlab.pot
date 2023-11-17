@@ -6811,6 +6811,9 @@ msgstr ""
 msgid "At least one field of %{one_of_required_fields} must be present"
 msgstr ""
 
+msgid "At least one of %{params} must be true"
+msgstr ""
+
 msgid "At least one of group_id or project_id must be specified"
 msgstr ""
 
@@ -32099,18 +32102,6 @@ msgstr ""
 msgid "Normal view"
 msgstr ""
 
-msgid "NorthstarNavigation|Could not update the new navigation preference. Please try again later."
-msgstr ""
-
-msgid "NorthstarNavigation|Navigation redesign"
-msgstr ""
-
-msgid "NorthstarNavigation|New navigation"
-msgstr ""
-
-msgid "NorthstarNavigation|Toggle new navigation"
-msgstr ""
-
 msgid "Not all browsers support WebAuthn. Therefore, we require that you set up a two-factor authentication app first. That way you'll always be able to sign in, even from an unsupported browser."
 msgstr ""
 
@@ -45703,6 +45694,9 @@ msgstr ""
 msgid "Snippets|Snippets can't contain empty files. Ensure all files have content, or delete them."
 msgstr ""
 
+msgid "Snippets|This snippet is hidden because its author has been banned"
+msgstr ""
+
 msgid "Snowplow"
 msgstr ""
 
@@ -56849,6 +56843,9 @@ msgid "ciReport|No changes to code quality"
 msgstr ""
 
 msgid "ciReport|No code quality issues found"
+msgstr ""
+
+msgid "ciReport|Parsing schema failed. Check the output of the scanner."
 msgstr ""
 
 msgid "ciReport|RPS"

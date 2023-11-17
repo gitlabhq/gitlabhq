@@ -15,11 +15,12 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
   describe 'associations' do
     it { is_expected.to belong_to(:reporter).class_name('User').inverse_of(:reported_abuse_reports) }
     it { is_expected.to belong_to(:resolved_by).class_name('User').inverse_of(:resolved_abuse_reports) }
-    it { is_expected.to belong_to(:assignee).class_name('User').inverse_of(:assigned_abuse_reports) }
     it { is_expected.to belong_to(:user).inverse_of(:abuse_reports) }
     it { is_expected.to have_many(:events).class_name('ResourceEvents::AbuseReportEvent').inverse_of(:abuse_report) }
     it { is_expected.to have_many(:notes) }
     it { is_expected.to have_many(:user_mentions).class_name('Abuse::Reports::UserMention') }
+    it { is_expected.to have_many(:admin_abuse_report_assignees).class_name('Admin::AbuseReportAssignee') }
+    it { is_expected.to have_many(:assignees).class_name('User').through(:admin_abuse_report_assignees) }
 
     it "aliases reporter to author" do
       expect(subject.author).to be(subject.reporter)

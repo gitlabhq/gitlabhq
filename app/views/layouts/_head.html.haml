@@ -50,7 +50,7 @@
     = webpack_bundle_tag 'legacy_sentry'
   = webpack_bundle_tag 'performance_bar' if performance_bar_enabled?
 
-  - if vite_enabled
+  - if vite_enabled?
     %meta{ name: 'controller-path', content: controller_full_path }
     - if Rails.env.development?
       = vite_client_tag

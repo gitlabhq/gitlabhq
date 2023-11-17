@@ -18,7 +18,7 @@ FactoryBot.define do
     end
 
     trait :with_assignee do
-      assignee factory: :user
+      assignees { [association(:assignee)] }
     end
 
     trait :with_evidence do

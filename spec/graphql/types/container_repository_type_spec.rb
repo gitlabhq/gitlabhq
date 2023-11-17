@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['ContainerRepository'] do
+RSpec.describe GitlabSchema.types['ContainerRepository'], feature_category: :container_registry do
   fields = %i[id name path location created_at updated_at expiration_policy_started_at
               status tags_count can_delete expiration_policy_cleanup_status project
-              migration_state last_cleanup_deleted_tags_count]
+              migration_state last_cleanup_deleted_tags_count user_permissions]
 
   it { expect(described_class.graphql_name).to eq('ContainerRepository') }
 
@@ -14,6 +14,8 @@ RSpec.describe GitlabSchema.types['ContainerRepository'] do
   it { expect(described_class).to require_graphql_authorizations(:read_container_image) }
 
   it { expect(described_class).to have_graphql_fields(fields) }
+
+  it { expect(described_class).to expose_permissions_using(Types::PermissionTypes::ContainerRepository) }
 
   describe 'status field' do
     subject { described_class.fields['status'] }

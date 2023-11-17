@@ -126,7 +126,7 @@
     "core-js": "^3.33.2",
     "cron-validator": "^1.1.1",
     "cronstrue": "^1.122.0",
-    "cropper": "^2.3.0",
+    "cropperjs": "^1.6.1",
     "css-loader": "^2.1.1",
     "d3": "^5.16.0",
     "d3-sankey": "^0.12.3",

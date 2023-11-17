@@ -8,6 +8,9 @@ class AbuseReport < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include Mentionable
   include Noteable
+  include IgnorableColumns
+
+  ignore_column :assignee_id, remove_with: '16.9', remove_after: '2024-01-19'
 
   MAX_CHAR_LIMIT_URL = 512
   MAX_FILE_SIZE = 1.megabyte
@@ -17,11 +20,12 @@ class AbuseReport < ApplicationRecord
   belongs_to :reporter, class_name: 'User', inverse_of: :reported_abuse_reports
   belongs_to :user, inverse_of: :abuse_reports
   belongs_to :resolved_by, class_name: 'User', inverse_of: :resolved_abuse_reports
-  belongs_to :assignee, class_name: 'User', inverse_of: :assigned_abuse_reports
 
   has_many :events, class_name: 'ResourceEvents::AbuseReportEvent', inverse_of: :abuse_report
   has_many :label_links, as: :target, inverse_of: :target
   has_many :labels, through: :label_links
+  has_many :admin_abuse_report_assignees, class_name: "Admin::AbuseReportAssignee"
+  has_many :assignees, class_name: "User", through: :admin_abuse_report_assignees
 
   has_many :abuse_events, class_name: 'Abuse::Event', inverse_of: :abuse_report
 

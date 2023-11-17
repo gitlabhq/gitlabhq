@@ -8,7 +8,15 @@ module Types
 
     authorize :read_container_image
 
-    field :can_delete, GraphQL::Types::Boolean, null: false, description: 'Can the current user delete this tag.'
+    expose_permissions Types::PermissionTypes::ContainerRepositoryTag
+
+    field :can_delete, GraphQL::Types::Boolean,
+      null: false,
+      deprecated: {
+        reason: 'Use `userPermissions` field. See `ContainerRepositoryTagPermissions` type',
+        milestone: '16.7'
+      },
+      description: 'Can the current user delete this tag.'
     field :created_at, Types::TimeType, null: true, description: 'Timestamp when the tag was created.'
     field :digest, GraphQL::Types::String, null: true, description: 'Digest of the tag.'
     field :location, GraphQL::Types::String, null: false, description: 'URL of the tag.'

@@ -49,10 +49,6 @@ module Types
           description: 'Number of times the catalog resource has been starred.',
           alpha: { milestone: '16.1' }
 
-        field :forks_count, GraphQL::Types::Int, null: false, calls_gitaly: true,
-          description: 'Number of times the catalog resource has been forked.',
-          alpha: { milestone: '16.1' }
-
         field :root_namespace, Types::NamespaceType, null: true,
           description: 'Root namespace of the catalog resource.',
           alpha: { milestone: '16.1' }
@@ -80,10 +76,6 @@ module Types
               loader.call(project, latest_release)
             end
           end
-        end
-
-        def forks_count
-          BatchLoader::GraphQL.wrap(object.forks_count)
         end
 
         def root_namespace

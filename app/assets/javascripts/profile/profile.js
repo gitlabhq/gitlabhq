@@ -23,7 +23,7 @@ export default class Profile {
       modalCrop: '.modal-profile-crop',
       pickImageEl: '.js-choose-user-avatar-button',
       uploadImageBtn: '.js-upload-user-avatar',
-      modalCropImg: '.modal-profile-crop-image',
+      modalCropImg: document.querySelector('.modal-profile-crop-image'),
     };
     this.avatarGlCrop = $('.js-user-avatar-input').glCrop(cropOpts).data('glcrop');
   }

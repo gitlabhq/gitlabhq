@@ -2,11 +2,9 @@
 // See https://gitlab.com/groups/gitlab-org/-/epics/11875.
 
 import Vue from 'vue';
-import NewNavToggle from '~/nav/components/new_nav_toggle.vue';
 import { highCountTrim } from '~/lib/utils/text_utility';
 import Tracking from '~/tracking';
 import Translate from '~/vue_shared/translate';
-import { parseBoolean } from '~/lib/utils/common_utils';
 
 /**
  * Updates todo counter when todos are toggled.
@@ -121,25 +119,7 @@ export function initNavUserDropdownTracking() {
   }
 }
 
-function initNewNavToggle() {
-  const el = document.querySelector('.js-new-nav-toggle');
-  if (!el) return false;
-
-  return new Vue({
-    el,
-    render(h) {
-      return h(NewNavToggle, {
-        props: {
-          enabled: parseBoolean(el.dataset.enabled),
-          endpoint: el.dataset.endpoint,
-        },
-      });
-    },
-  });
-}
-
 if (!gon?.use_new_navigation) {
   requestIdleCallback(initStatusTriggers);
 }
 requestIdleCallback(initNavUserDropdownTracking);
-requestIdleCallback(initNewNavToggle);

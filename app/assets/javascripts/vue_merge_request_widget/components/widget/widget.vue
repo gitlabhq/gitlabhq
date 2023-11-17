@@ -19,7 +19,7 @@ import ActionButtons from './action_buttons.vue';
 
 const WIDGET_PREFIX = 'Widget';
 const MISSING_RESPONSE_HEADERS =
-  'MR Widget: raesponse object should contain status and headers object. Make sure to include that in your `fetchCollapsedData` and `fetchExpandedData` functions.';
+  'MR Widget: response object should contain status and headers object. Make sure to include that in your `fetchCollapsedData` and `fetchExpandedData` functions.';
 
 const LOADING_STATE_COLLAPSED = 'collapsed';
 const LOADING_STATE_EXPANDED = 'expanded';

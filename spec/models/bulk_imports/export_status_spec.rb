@@ -100,7 +100,7 @@ RSpec.describe BulkImports::ExportStatus, feature_category: :importers do
       end
 
       it 'returns false' do
-        expect(subject.started?).to eq(false)
+        expect(subject.failed?).to eq(false)
       end
     end
 
@@ -113,8 +113,8 @@ RSpec.describe BulkImports::ExportStatus, feature_category: :importers do
         end
       end
 
-      it 'returns false' do
-        expect(subject.started?).to eq(false)
+      it 'returns true' do
+        expect(subject.failed?).to eq(true)
       end
     end
   end
@@ -156,7 +156,7 @@ RSpec.describe BulkImports::ExportStatus, feature_category: :importers do
       end
 
       it 'returns false' do
-        expect(subject.started?).to eq(false)
+        expect(subject.empty?).to eq(false)
       end
     end
   end

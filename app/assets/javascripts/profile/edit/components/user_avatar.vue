@@ -50,7 +50,7 @@ export default {
         modalCrop: '.modal-profile-crop',
         pickImageEl: '.js-choose-user-avatar-button',
         uploadImageBtn: '.js-upload-user-avatar',
-        modalCropImg: '.modal-profile-crop-image',
+        modalCropImg: document.querySelector('.modal-profile-crop-image'),
         onBlobChange: this.onBlobChange,
       };
       // This has to be used with jQuery, considering migrate that from jQuery to Vue in the future.

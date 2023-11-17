@@ -77,10 +77,6 @@ module QA
           element :global_new_snippet_link
         end
 
-        view 'app/assets/javascripts/nav/components/new_nav_toggle.vue' do
-          element :new_navigation_toggle
-        end
-
         def go_to_projects
           click_element('nav-item-link', submenu_item: 'Projects')
         end

@@ -11056,6 +11056,23 @@ CREATE SEQUENCE abuse_events_id_seq
 
 ALTER SEQUENCE abuse_events_id_seq OWNED BY abuse_events.id;
 
+CREATE TABLE abuse_report_assignees (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    abuse_report_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE abuse_report_assignees_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE abuse_report_assignees_id_seq OWNED BY abuse_report_assignees.id;
+
 CREATE TABLE abuse_report_events (
     id bigint NOT NULL,
     abuse_report_id bigint NOT NULL,
@@ -26058,6 +26075,8 @@ ALTER TABLE ONLY p_ci_builds_metadata ATTACH PARTITION ci_builds_metadata FOR VA
 
 ALTER TABLE ONLY abuse_events ALTER COLUMN id SET DEFAULT nextval('abuse_events_id_seq'::regclass);
 
+ALTER TABLE ONLY abuse_report_assignees ALTER COLUMN id SET DEFAULT nextval('abuse_report_assignees_id_seq'::regclass);
+
 ALTER TABLE ONLY abuse_report_events ALTER COLUMN id SET DEFAULT nextval('abuse_report_events_id_seq'::regclass);
 
 ALTER TABLE ONLY abuse_report_user_mentions ALTER COLUMN id SET DEFAULT nextval('abuse_report_user_mentions_id_seq'::regclass);
@@ -27838,6 +27857,9 @@ ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_
 
 ALTER TABLE ONLY abuse_events
     ADD CONSTRAINT abuse_events_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY abuse_report_assignees
+    ADD CONSTRAINT abuse_report_assignees_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY abuse_report_events
     ADD CONSTRAINT abuse_report_events_pkey PRIMARY KEY (id);
@@ -31466,6 +31488,10 @@ CREATE INDEX index_abuse_events_on_abuse_report_id ON abuse_events USING btree (
 CREATE INDEX index_abuse_events_on_category_and_source ON abuse_events USING btree (category, source);
 
 CREATE INDEX index_abuse_events_on_user_id ON abuse_events USING btree (user_id);
+
+CREATE INDEX index_abuse_report_assignees_on_abuse_report_id ON abuse_report_assignees USING btree (abuse_report_id);
+
+CREATE UNIQUE INDEX index_abuse_report_assignees_on_user_id_and_abuse_report_id ON abuse_report_assignees USING btree (user_id, abuse_report_id);
 
 CREATE INDEX index_abuse_report_events_on_abuse_report_id ON abuse_report_events USING btree (abuse_report_id);
 
@@ -39888,6 +39914,9 @@ ALTER TABLE ONLY customer_relations_contacts
 
 ALTER TABLE ONLY external_approval_rules
     ADD CONSTRAINT fk_rails_fd4f9ac573 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY abuse_report_assignees
+    ADD CONSTRAINT fk_rails_fd5f22166b FOREIGN KEY (abuse_report_id) REFERENCES abuse_reports(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY cluster_groups
     ADD CONSTRAINT fk_rails_fdb8648a96 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;

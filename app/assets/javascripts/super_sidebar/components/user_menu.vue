@@ -19,9 +19,6 @@ const DROPDOWN_X_OFFSET_IMPERSONATING = DROPDOWN_X_OFFSET_BASE + IMPERSONATING_O
 
 export default {
   i18n: {
-    newNavigation: {
-      sectionTitle: s__('NorthstarNavigation|Navigation redesign'),
-    },
     setStatus: s__('SetStatusModal|Set status'),
     editStatus: s__('SetStatusModal|Edit status'),
     editProfile: s__('CurrentUser|Edit profile'),

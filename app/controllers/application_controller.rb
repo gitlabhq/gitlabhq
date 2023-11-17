@@ -116,7 +116,7 @@ class ApplicationController < ActionController::Base
   content_security_policy do |p|
     next if p.directives.blank?
 
-    if Rails.env.development? && Feature.enabled?(:vite)
+    if helpers.vite_enabled?
       vite_host = ViteRuby.instance.config.host
       vite_port = ViteRuby.instance.config.port
       vite_origin = "#{vite_host}:#{vite_port}"

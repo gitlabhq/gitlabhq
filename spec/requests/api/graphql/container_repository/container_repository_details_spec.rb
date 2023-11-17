@@ -11,11 +11,12 @@ RSpec.describe 'container repository details', feature_category: :container_regi
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be_with_reload(:container_repository) { create(:container_repository, project: project) }
 
+  let(:excluded) { %w[pipeline size agentConfigurations iterations iterationCadences productAnalyticsState] }
   let(:query) do
     graphql_query_for(
       'containerRepository',
       { id: container_repository_global_id },
-      all_graphql_fields_for('ContainerRepositoryDetails', excluded: %w[pipeline size])
+      all_graphql_fields_for('ContainerRepositoryDetails', excluded: excluded, max_depth: 4)
     )
   end
 

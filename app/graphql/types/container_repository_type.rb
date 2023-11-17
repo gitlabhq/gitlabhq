@@ -8,7 +8,15 @@ module Types
 
     authorize :read_container_image
 
-    field :can_delete, GraphQL::Types::Boolean, null: false, description: 'Can the current user delete the container repository.'
+    expose_permissions Types::PermissionTypes::ContainerRepository
+
+    field :can_delete, GraphQL::Types::Boolean,
+      null: false,
+      deprecated: {
+        reason: 'Use `userPermissions` field. See `ContainerRepositoryPermissions` type',
+        milestone: '16.7'
+      },
+      description: 'Can the current user delete the container repository.'
     field :created_at, Types::TimeType, null: false, description: 'Timestamp when the container repository was created.'
     field :expiration_policy_cleanup_status, Types::ContainerRepositoryCleanupStatusEnum, null: true, description: 'Tags cleanup status for the container repository.'
     field :expiration_policy_started_at, Types::TimeType, null: true, description: 'Timestamp when the cleanup done by the expiration policy was started on the container repository.'

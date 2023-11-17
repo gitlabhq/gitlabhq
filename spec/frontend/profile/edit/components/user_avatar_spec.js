@@ -46,6 +46,7 @@ describe('Edit User Avatar', () => {
         ...defaultProvides,
         ...provides,
       },
+      attachTo: document.body,
     });
   };
 
@@ -65,7 +66,7 @@ describe('Edit User Avatar', () => {
         modalCrop: '.modal-profile-crop',
         pickImageEl: '.js-choose-user-avatar-button',
         uploadImageBtn: '.js-upload-user-avatar',
-        modalCropImg: '.modal-profile-crop-image',
+        modalCropImg: expect.any(HTMLImageElement),
         onBlobChange: expect.any(Function),
       });
       expect(glCropDataMock).toHaveBeenCalledWith('glcrop');
