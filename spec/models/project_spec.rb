@@ -2176,19 +2176,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '.with_jira_dvcs_cloud' do
-    it 'returns the correct project' do
-      jira_dvcs_cloud_project = create(:project, :jira_dvcs_cloud)
-      create(:project, :jira_dvcs_server)
-
-      expect(described_class.with_jira_dvcs_cloud).to contain_exactly(jira_dvcs_cloud_project)
-    end
-  end
-
   describe '.with_jira_dvcs_server' do
     it 'returns the correct project' do
       jira_dvcs_server_project = create(:project, :jira_dvcs_server)
-      create(:project, :jira_dvcs_cloud)
 
       expect(described_class.with_jira_dvcs_server).to contain_exactly(jira_dvcs_server_project)
     end

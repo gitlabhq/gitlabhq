@@ -68,7 +68,6 @@ stages:
     QA_INTERCEPT_REQUESTS: "true"
     GITLAB_LICENSE_MODE: test
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
-    GITLAB_QA_OPTS: $EXTRA_GITLAB_QA_OPTS
   before_script:
     - !reference [.qa-base, before_script]
     # Prepend the file paths with the absolute path from inside the container since the files will be read from there

@@ -198,17 +198,5 @@ RSpec.describe Gitlab::GithubImport::StageMethods, feature_category: :importers 
 
       is_expected.to include('max_retries_after_interruption' => 20)
     end
-
-    context 'when the flag is disabled' do
-      before do
-        stub_feature_flags(github_importer_raise_max_interruptions: false)
-      end
-
-      it 'does not set `max_retries_after_interruption`' do
-        worker.class.resumes_work_when_interrupted!
-
-        is_expected.not_to have_key('max_retries_after_interruption')
-      end
-    end
   end
 end

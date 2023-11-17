@@ -16,12 +16,16 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
       def self.file_extraction_pipeline?
         false
       end
+
+      def self.abort_on_failure?
+        false
+      end
     end
   end
 
   let_it_be(:bulk_import) { create(:bulk_import) }
   let_it_be(:config) { create(:bulk_import_configuration, bulk_import: bulk_import) }
-  let_it_be(:entity) { create(:bulk_import_entity, bulk_import: bulk_import) }
+  let_it_be_with_reload(:entity) { create(:bulk_import_entity, bulk_import: bulk_import) }
 
   let(:pipeline_tracker) do
     create(
@@ -156,6 +160,21 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
 
       expect(pipeline_tracker.status_name).to eq(:failed)
       expect(pipeline_tracker.jid).to eq('jid')
+      expect(entity.reload.status_name).to eq(:created)
+    end
+
+    context 'when pipeline has abort_on_failure' do
+      before do
+        allow(pipeline_class).to receive(:abort_on_failure?).and_return(true)
+      end
+
+      it 'marks entity as failed' do
+        job = { 'args' => [pipeline_tracker.id, pipeline_tracker.stage, entity.id] }
+
+        described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new('Error!'))
+
+        expect(entity.reload.status_name).to eq(:failed)
+      end
     end
   end
 
@@ -266,6 +285,10 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
 
   describe '#perform' do
     context 'when entity is failed' do
+      before do
+        entity.update!(status: -1)
+      end
+
       it 'marks tracker as skipped and logs the skip' do
         pipeline_tracker = create(
           :bulk_import_tracker,
@@ -273,8 +296,6 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
           pipeline_name: 'FakePipeline',
           status_event: 'enqueue'
         )
-
-        entity.update!(status: -1)
 
         expect_next_instance_of(BulkImports::Logger) do |logger|
           allow(logger).to receive(:info)

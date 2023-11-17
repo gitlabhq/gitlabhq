@@ -8,6 +8,10 @@ module BulkImports
           false
         end
 
+        def self.abort_on_failure?
+          false
+        end
+
         def initialize(context)
           @context = context
           @entity = @context.entity

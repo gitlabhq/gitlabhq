@@ -85,12 +85,6 @@ Sidekiq.configure_server do |config|
   end
 
   if enable_reliable_fetch?
-    if Gitlab::Utils.to_boolean(ENV['SIDEKIQ_ENABLE_DUAL_NAMESPACE_POLLING'], default: true)
-      # set non-namespaced store for fetcher to poll both namespaced and non-namespaced queues
-      config[:alternative_store] = ::Gitlab::Redis::Queues
-      config[:namespace] = Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE
-    end
-
     config[:semi_reliable_fetch] = enable_semi_reliable_fetch_mode?
     Sidekiq::ReliableFetch.setup_reliable_fetch!(config)
   end
@@ -119,7 +113,6 @@ Sidekiq.configure_client do |config|
   config.client_middleware(&Gitlab::SidekiqMiddleware.client_configurator)
 end
 
-Sidekiq::Scheduled::Enq.prepend Gitlab::Patch::SidekiqScheduledEnq
 Sidekiq::Scheduled::Poller.prepend Gitlab::Patch::SidekiqPoller
 Sidekiq::Cron::Poller.prepend Gitlab::Patch::SidekiqPoller
 Sidekiq::Cron::Poller.prepend Gitlab::Patch::SidekiqCronPoller

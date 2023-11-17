@@ -470,7 +470,7 @@ RSpec.describe ApplicationController, feature_category: :shared do
 
       enforce_terms
 
-      expect { get :index }.not_to exceed_query_limit(control)
+      expect { get :index }.not_to exceed_query_limit(control.count).with_threshold(1)
     end
 
     context 'when terms are enforced' do

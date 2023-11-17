@@ -201,5 +201,9 @@
     "WorkItemWidgetStatus",
     "WorkItemWidgetTestReports",
     "WorkItemWidgetWeight"
+  ],
+  "WorkItemWidgetDefinition": [
+    "WorkItemWidgetDefinitionAssignees",
+    "WorkItemWidgetDefinitionGeneric"
   ]
 }

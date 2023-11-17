@@ -72,6 +72,7 @@ In the following table, you can see:
 | [Advanced search](../../user/search/advanced_search.md) | GitLab 16.6 and later |
 | [DevOps Adoption](../../user/group/devops_adoption/index.md) | GitLab 16.6 and later |
 | [Сross-project pipelines with artifacts dependencies](../../ci/yaml/index.md#needsproject) | GitLab 16.7 and later |
+| [Feature flag related issues](../../operations/feature_flags.md#feature-flag-related-issues) | GitLab 16.7 and later |
 
 ### Enable registration features
 

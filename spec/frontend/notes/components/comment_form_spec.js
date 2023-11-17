@@ -9,7 +9,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import batchComments from '~/batch_comments/stores/modules/batch_comments';
-import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
+import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 import { createAlert } from '~/alert';
 import { STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import axios from '~/lib/utils/axios_utils';
@@ -26,7 +26,7 @@ import { mockTracking } from 'helpers/tracking_helper';
 import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } from '../mock_data';
 
 jest.mock('autosize');
-jest.mock('~/commons/nav/user_merge_requests');
+jest.mock('~/super_sidebar/user_counts_fetch');
 jest.mock('~/alert');
 
 Vue.use(Vuex);
@@ -586,7 +586,7 @@ describe('issue_comment_form component', () => {
 
           await nextTick();
 
-          expect(refreshUserMergeRequestCounts).toHaveBeenCalled();
+          expect(fetchUserCounts).toHaveBeenCalled();
         });
       });
     });

@@ -2064,7 +2064,11 @@ class User < MainClusterwide::ApplicationRecord
   def terms_accepted?
     return true if project_bot? || service_account? || security_policy_bot?
 
-    accepted_term_id.present?
+    if Feature.enabled?(:enforce_acceptance_of_changed_terms)
+      !!ApplicationSetting::Term.latest&.accepted_by_user?(self)
+    else
+      accepted_term_id.present?
+    end
   end
 
   def required_terms_not_accepted?

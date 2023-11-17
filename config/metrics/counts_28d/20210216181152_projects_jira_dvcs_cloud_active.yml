@@ -7,7 +7,7 @@ product_section: dev
 product_stage: manage
 product_group: integration
 value_type: number
-status: active
+status: removed
 time_frame: 28d
 data_source: database
 distribution:
@@ -20,3 +20,5 @@ tier:
 performance_indicator_type:
 - customer_health_score
 milestone: "<13.9"
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136484
+milestone_removed: "16.7"

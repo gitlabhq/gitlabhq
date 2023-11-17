@@ -261,7 +261,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(page).to have_content "Application settings saved successfully"
       end
 
-      it 'terms of Service' do
+      it 'terms of Service', :js do
         # Already have the admin accept terms, so they don't need to accept in this spec.
         _existing_terms = create(:term)
         accept_terms(admin)
@@ -274,7 +274,10 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
         expect(current_settings.enforce_terms).to be(true)
         expect(current_settings.terms).to eq 'Be nice!'
-        expect(page).to have_content 'Application settings saved successfully'
+
+        click_button 'Accept terms'
+
+        expect(page).to have_current_path(general_admin_application_settings_path, ignore_query: true)
       end
 
       it 'modify oauth providers' do

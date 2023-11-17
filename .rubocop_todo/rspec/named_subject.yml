@@ -2356,7 +2356,6 @@ RSpec/NamedSubject:
     - 'spec/lib/gitlab/pagination/offset_pagination_spec.rb'
     - 'spec/lib/gitlab/patch/draw_route_spec.rb'
     - 'spec/lib/gitlab/patch/prependable_spec.rb'
-    - 'spec/lib/gitlab/patch/sidekiq_scheduled_enq_spec.rb'
     - 'spec/lib/gitlab/path_regex_spec.rb'
     - 'spec/lib/gitlab/performance_bar/stats_spec.rb'
     - 'spec/lib/gitlab/performance_bar/with_top_level_warnings_spec.rb'

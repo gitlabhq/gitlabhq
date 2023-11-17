@@ -395,9 +395,9 @@ class Deployment < ApplicationRecord
   def update_status(status)
     update_status!(status)
   rescue StandardError => e
-    Gitlab::ErrorTracking.track_exception(
-      StatusUpdateError.new(e.message), deployment_id: self.id)
-
+    error = StatusUpdateError.new(e.message)
+    error.set_backtrace(caller)
+    Gitlab::ErrorTracking.track_exception(error, deployment_id: self.id)
     false
   end
 
@@ -410,9 +410,9 @@ class Deployment < ApplicationRecord
 
     update_status!(job_status)
   rescue StandardError => e
-    Gitlab::ErrorTracking.track_exception(
-      StatusSyncError.new(e.message), deployment_id: self.id, job_id: job.id)
-
+    error = StatusSyncError.new(e.message)
+    error.set_backtrace(caller)
+    Gitlab::ErrorTracking.track_exception(error, deployment_id: self.id, job_id: job.id)
     false
   end
 

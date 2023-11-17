@@ -1270,10 +1270,15 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
 
       shared_examples_for 'gracefully handling error' do
         it 'tracks an exception' do
-          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
-            instance_of(described_class::StatusSyncError),
-            deployment_id: deployment.id,
-            job_id: job.id)
+          expect(Gitlab::ErrorTracking).to(
+            receive(:track_exception).with(
+              instance_of(described_class::StatusSyncError),
+              deployment_id: deployment.id,
+              job_id: job.id
+            ) do |error|
+              expect(error.backtrace).to be_present
+            end
+          )
 
           is_expected.to eq(false)
 

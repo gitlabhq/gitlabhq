@@ -76,8 +76,7 @@ instance-ff-inverse:
     - .parallel
   variables:
     QA_SCENARIO: Test::Instance::Image
-    QA_KNAPSACK_REPORT_NAME: ee-instance
-    GITLAB_QA_OPTS: --set-feature-flags $QA_FEATURE_FLAGS
+    QA_KNAPSACK_REPORT_NAME: instance
   rules:
     - !reference [.rules:test:feature-flags-set, rules]
 
@@ -167,7 +166,7 @@ decomposition-single-db:
     - .parallel
   variables:
     QA_SCENARIO: Test::Instance::Image
-    GITLAB_QA_OPTS: --omnibus-config decomposition_single_db $EXTRA_GITLAB_QA_OPTS
+    GITLAB_QA_OPTS: --omnibus-config decomposition_single_db
   rules:
     - !reference [.rules:test:smoke-for-omnibus-mr, rules]
     - !reference [.rules:test:qa-parallel, rules]
@@ -177,7 +176,7 @@ decomposition-single-db-selective:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Instance::Image
-    GITLAB_QA_OPTS: --omnibus-config decomposition_single_db $EXTRA_GITLAB_QA_OPTS
+    GITLAB_QA_OPTS: --omnibus-config decomposition_single_db
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
@@ -188,7 +187,7 @@ decomposition-single-db-selective-parallel:
     - .parallel
   variables:
     QA_SCENARIO: Test::Instance::Image
-    GITLAB_QA_OPTS: --omnibus-config decomposition_single_db $EXTRA_GITLAB_QA_OPTS
+    GITLAB_QA_OPTS: --omnibus-config decomposition_single_db
   rules:
     - !reference [.rules:test:qa-selective-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
@@ -204,7 +203,7 @@ decomposition-multiple-db:
   variables:
     QA_SCENARIO: Test::Instance::Image
     GITLAB_ALLOW_SEPARATE_CI_DATABASE: "true"
-    GITLAB_QA_OPTS: --omnibus-config decomposition_multiple_db $EXTRA_GITLAB_QA_OPTS
+    GITLAB_QA_OPTS: --omnibus-config decomposition_multiple_db
   rules:
     - !reference [.rules:test:smoke-for-omnibus-mr, rules]
     - !reference [.rules:test:qa-parallel, rules]
@@ -215,7 +214,7 @@ decomposition-multiple-db-selective:
   variables:
     QA_SCENARIO: Test::Instance::Image
     GITLAB_ALLOW_SEPARATE_CI_DATABASE: "true"
-    GITLAB_QA_OPTS: --omnibus-config decomposition_multiple_db $EXTRA_GITLAB_QA_OPTS
+    GITLAB_QA_OPTS: --omnibus-config decomposition_multiple_db
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
@@ -227,7 +226,7 @@ decomposition-multiple-db-selective-parallel:
   variables:
     QA_SCENARIO: Test::Instance::Image
     GITLAB_ALLOW_SEPARATE_CI_DATABASE: "true"
-    GITLAB_QA_OPTS: --omnibus-config decomposition_multiple_db $EXTRA_GITLAB_QA_OPTS
+    GITLAB_QA_OPTS: --omnibus-config decomposition_multiple_db
   rules:
     - !reference [.rules:test:qa-selective-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
@@ -244,7 +243,7 @@ object-storage:
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RSPEC_TAGS: --tag object_storage
-    GITLAB_QA_OPTS: --omnibus-config object_storage $EXTRA_GITLAB_QA_OPTS
+    GITLAB_QA_OPTS: --omnibus-config object_storage
   rules:
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::ObjectStorage/
@@ -254,7 +253,7 @@ object-storage-selective:
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RSPEC_TAGS: --tag object_storage
-    GITLAB_QA_OPTS: --omnibus-config object_storage $EXTRA_GITLAB_QA_OPTS
+    GITLAB_QA_OPTS: --omnibus-config object_storage
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::ObjectStorage/
@@ -265,7 +264,7 @@ object-storage-selective-parallel:
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RSPEC_TAGS: --tag object_storage
-    GITLAB_QA_OPTS: --omnibus-config object_storage $EXTRA_GITLAB_QA_OPTS
+    GITLAB_QA_OPTS: --omnibus-config object_storage
   rules:
     - !reference [.rules:test:qa-selective-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::ObjectStorage/
@@ -283,7 +282,7 @@ object-storage-aws:
     AWS_S3_BUCKET_NAME: $QA_AWS_S3_BUCKET_NAME
     AWS_S3_KEY_ID: $QA_AWS_S3_KEY_ID
     AWS_S3_REGION: $QA_AWS_S3_REGION
-    GITLAB_QA_OPTS: --omnibus-config object_storage_aws $EXTRA_GITLAB_QA_OPTS
+    GITLAB_QA_OPTS: --omnibus-config object_storage_aws
 
 object-storage-aws-selective:
   extends: object-storage-selective
@@ -292,7 +291,7 @@ object-storage-aws-selective:
     AWS_S3_BUCKET_NAME: $QA_AWS_S3_BUCKET_NAME
     AWS_S3_KEY_ID: $QA_AWS_S3_KEY_ID
     AWS_S3_REGION: $QA_AWS_S3_REGION
-    GITLAB_QA_OPTS: --omnibus-config object_storage_aws $EXTRA_GITLAB_QA_OPTS
+    GITLAB_QA_OPTS: --omnibus-config object_storage_aws
 
 object-storage-aws-selective-parallel:
   extends: object-storage-selective-parallel
@@ -301,7 +300,7 @@ object-storage-aws-selective-parallel:
     AWS_S3_BUCKET_NAME: $QA_AWS_S3_BUCKET_NAME
     AWS_S3_KEY_ID: $QA_AWS_S3_KEY_ID
     AWS_S3_REGION: $QA_AWS_S3_REGION
-    GITLAB_QA_OPTS: --omnibus-config object_storage_aws $EXTRA_GITLAB_QA_OPTS
+    GITLAB_QA_OPTS: --omnibus-config object_storage_aws
 
 
 # ========== object-storage-gcs ===========
@@ -315,7 +314,7 @@ object-storage-gcs:
     GOOGLE_PROJECT: $QA_GOOGLE_PROJECT
     GOOGLE_JSON_KEY: $QA_GOOGLE_JSON_KEY
     GOOGLE_CLIENT_EMAIL: $QA_GOOGLE_CLIENT_EMAIL
-    GITLAB_QA_OPTS: --omnibus-config object_storage_gcs $EXTRA_GITLAB_QA_OPTS
+    GITLAB_QA_OPTS: --omnibus-config object_storage_gcs
 
 object-storage-gcs-selective:
   extends: object-storage-selective
@@ -324,7 +323,7 @@ object-storage-gcs-selective:
     GOOGLE_PROJECT: $QA_GOOGLE_PROJECT
     GOOGLE_JSON_KEY: $QA_GOOGLE_JSON_KEY
     GOOGLE_CLIENT_EMAIL: $QA_GOOGLE_CLIENT_EMAIL
-    GITLAB_QA_OPTS: --omnibus-config object_storage_gcs $EXTRA_GITLAB_QA_OPTS
+    GITLAB_QA_OPTS: --omnibus-config object_storage_gcs
 
 object-storage-gcs-selective-parallel:
   extends: object-storage-selective-parallel
@@ -333,7 +332,7 @@ object-storage-gcs-selective-parallel:
     GOOGLE_PROJECT: $QA_GOOGLE_PROJECT
     GOOGLE_JSON_KEY: $QA_GOOGLE_JSON_KEY
     GOOGLE_CLIENT_EMAIL: $QA_GOOGLE_CLIENT_EMAIL
-    GITLAB_QA_OPTS: --omnibus-config object_storage_gcs $EXTRA_GITLAB_QA_OPTS
+    GITLAB_QA_OPTS: --omnibus-config object_storage_gcs
 
 # ------------------------------------------
 # Non parallel jobs
@@ -567,7 +566,7 @@ registry-object-storage-tls:
     QA_SCENARIO: Test::Integration::RegistryTLS
     QA_RSPEC_TAGS: ""
     GITLAB_TLS_CERTIFICATE: $QA_GITLAB_TLS_CERTIFICATE
-    GITLAB_QA_OPTS: --omnibus-config registry_object_storage $EXTRA_GITLAB_QA_OPTS
+    GITLAB_QA_OPTS: --omnibus-config registry_object_storage
 
 importers:
   extends:

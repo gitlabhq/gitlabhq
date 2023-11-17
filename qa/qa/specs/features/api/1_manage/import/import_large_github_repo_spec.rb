@@ -367,7 +367,14 @@ module QA
         logger.info("== Verifying repository import ==")
         expect(imported_project.description).to eq(gh_repo.description)
         expect(gl_branches).to include(*gh_branches)
-        expect(gl_commits).to include(*gh_commits)
+
+        # When testing with very large repositories, comparing with include will raise 'stack level too deep' error
+        # Compare just the size in this case
+        if gh_commits.size > 10000
+          expect(gl_commits.size).to be >= gh_commits.size
+        else
+          expect(gl_commits).to include(*gh_commits)
+        end
       end
 
       # Verify imported labels

@@ -211,6 +211,7 @@ export default {
         id="work-item-parent-listbox-value"
         class="gl-max-w-max-content"
         data-testid="work-item-parent-listbox"
+        block
         searchable
         is-check-centered
         category="tertiary"

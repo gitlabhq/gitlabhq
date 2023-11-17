@@ -344,15 +344,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def discussions
-    if Feature.enabled?(:only_highlight_discussions_requested, project)
-      super do |discussion_notes|
-        note_ids = discussion_notes.flat_map { |x| x.notes.collect(&:id) }
-        merge_request.discussions_diffs.load_highlight(diff_note_ids: note_ids)
-      end
-    else
-      merge_request.discussions_diffs.load_highlight
-
-      super
+    super do |discussion_notes|
+      note_ids = discussion_notes.flat_map { |x| x.notes.collect(&:id) }
+      merge_request.discussions_diffs.load_highlight(diff_note_ids: note_ids)
     end
   end
 

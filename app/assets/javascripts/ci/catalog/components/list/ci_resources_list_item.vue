@@ -112,7 +112,7 @@ export default {
         </div>
       </div>
       <div
-        class="gl-display-flex gl-sm-flex-direction-column gl-justify-content-space-between gl-font-sm"
+        class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-justify-content-space-between gl-font-sm"
       >
         <span class="gl-display-flex gl-flex-basis-two-thirds">{{ resource.description }}</span>
         <div class="gl-display-flex gl-justify-content-end">

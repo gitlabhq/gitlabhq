@@ -19,9 +19,6 @@ import eventHub from '~/vue_merge_request_widget/event_hub';
 jest.mock('~/lib/utils/simple_poll', () =>
   jest.fn().mockImplementation(jest.requireActual('~/lib/utils/simple_poll').default),
 );
-jest.mock('~/commons/nav/user_merge_requests', () => ({
-  refreshUserMergeRequestCounts: jest.fn(),
-}));
 
 const commitMessage = readyToMergeResponse.data.project.mergeRequest.defaultMergeCommitMessage;
 const squashCommitMessage =

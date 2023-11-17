@@ -6,7 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Vulnerabilities API **(ULTIMATE ALL)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10242) in GitLab 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10242) in GitLab 12.6.
+> - `last_edited_at` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
 
 NOTE:
 The former Vulnerabilities API was renamed to Vulnerability Findings API
@@ -67,7 +68,6 @@ Example response:
   "due_date": null,
   "created_at": "2019-10-13T15:08:40.219Z",
   "updated_at": "2019-10-13T15:09:40.382Z",
-  "last_edited_at": null,
   "closed_at": null
 }
 ```
@@ -117,7 +117,6 @@ Example response:
   "due_date": null,
   "created_at": "2019-10-13T15:08:40.219Z",
   "updated_at": "2019-10-13T15:09:40.382Z",
-  "last_edited_at": null,
   "closed_at": null
 }
 ```
@@ -167,7 +166,6 @@ Example response:
   "due_date": null,
   "created_at": "2019-10-13T15:08:40.219Z",
   "updated_at": "2019-10-13T15:09:40.382Z",
-  "last_edited_at": null,
   "closed_at": null
 }
 ```
@@ -217,7 +215,6 @@ Example response:
   "due_date": null,
   "created_at": "2019-10-13T15:08:40.219Z",
   "updated_at": "2019-10-13T15:09:40.382Z",
-  "last_edited_at": null,
   "closed_at": null
 }
 ```
@@ -267,7 +264,6 @@ Example response:
   "due_date": null,
   "created_at": "2019-10-13T15:08:40.219Z",
   "updated_at": "2019-10-13T15:09:40.382Z",
-  "last_edited_at": null,
   "closed_at": null
 }
 ```

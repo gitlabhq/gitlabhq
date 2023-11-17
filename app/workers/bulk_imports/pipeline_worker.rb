@@ -62,7 +62,7 @@ module BulkImports
       @entity = ::BulkImports::Entity.find(entity_id)
       @pipeline_tracker = ::BulkImports::Tracker.find(pipeline_tracker_id)
 
-      fail_tracker(exception)
+      fail_pipeline(exception)
     end
 
     private
@@ -100,8 +100,10 @@ module BulkImports
       entity.bulk_import.source_version_info.to_s
     end
 
-    def fail_tracker(exception)
+    def fail_pipeline(exception)
       pipeline_tracker.update!(status_event: 'fail_op', jid: jid)
+
+      entity.fail_op! if pipeline_tracker.abort_on_failure?
 
       log_exception(exception, log_attributes(message: 'Pipeline failed'))
 

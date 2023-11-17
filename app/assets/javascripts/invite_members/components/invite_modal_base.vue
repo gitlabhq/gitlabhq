@@ -168,7 +168,6 @@ export default {
           variant: 'confirm',
           disabled: this.submitDisabled,
           loading: this.isLoading,
-          'data-qa-selector': 'invite_button',
         },
       };
     },
@@ -298,7 +297,6 @@ export default {
           <gl-collapsible-listbox
             :id="dropdownId"
             v-model="selectedAccessLevel"
-            data-qa-selector="access_level_dropdown"
             data-testid="access-level-dropdown"
             :items="accessLevelsOptions"
             block

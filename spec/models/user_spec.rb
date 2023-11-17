@@ -6381,6 +6381,49 @@ RSpec.describe User, feature_category: :user_profile do
           end
         end
       end
+
+      context 'with multiple versions of terms' do
+        shared_examples 'terms acceptance' do
+          let(:another_term) { create :term }
+          let(:required_terms_are_accepted) { !required_terms_not_accepted }
+
+          context 'when the latest term is not accepted' do
+            before do
+              accept_terms(user)
+              another_term
+            end
+
+            it { expect(required_terms_are_accepted).to be result_for_latest_not_accepted }
+          end
+
+          context 'when the latest term is accepted' do
+            before do
+              another_term
+              accept_terms(user)
+            end
+
+            it { expect(required_terms_are_accepted).to be result_for_latest_accepted }
+          end
+        end
+
+        context 'when enforce_acceptance_of_changed_terms is enabled' do
+          let(:result_for_latest_not_accepted) { false }
+          let(:result_for_latest_accepted) { true }
+
+          include_examples 'terms acceptance'
+        end
+
+        context 'when enforce_acceptance_of_changed_terms is disabled' do
+          let(:result_for_latest_not_accepted) { true }
+          let(:result_for_latest_accepted) { true }
+
+          before do
+            stub_feature_flags(enforce_acceptance_of_changed_terms: false)
+          end
+
+          include_examples 'terms acceptance'
+        end
+      end
     end
   end
 

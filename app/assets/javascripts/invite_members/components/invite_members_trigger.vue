@@ -4,7 +4,7 @@ import { s__ } from '~/locale';
 import eventHub from '../event_hub';
 import {
   TRIGGER_ELEMENT_BUTTON,
-  TRIGGER_DEFAULT_QA_SELECTOR,
+  TRIGGER_DEFAULT_TESTID,
   TRIGGER_ELEMENT_WITH_EMOJI,
   TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI,
   TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
@@ -42,18 +42,17 @@ export default {
       required: false,
       default: 'button',
     },
-    qaSelector: {
+    testId: {
       type: String,
       required: false,
-      default: TRIGGER_DEFAULT_QA_SELECTOR,
+      default: TRIGGER_DEFAULT_TESTID,
     },
   },
   computed: {
     componentAttributes() {
       return {
         class: this.classes,
-        'data-qa-selector': this.qaSelector,
-        'data-test-id': 'invite-members-button',
+        'data-testid': this.testId,
       };
     },
     item() {

@@ -7,7 +7,8 @@ type: reference, api
 
 # Project Vulnerabilities API **(ULTIMATE ALL)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10242) in GitLab 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10242) in GitLab 12.6.
+> - `last_edited_at` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
 
 WARNING:
 This API is in the process of being deprecated and considered unstable.
@@ -79,7 +80,6 @@ Example response:
             "vulnerability_id": 103
         },
         "id": 103,
-        "last_edited_at": null,
         "last_edited_by_id": null,
         "project": {
             "created_at": "2020-04-07T13:54:25.634Z",
@@ -167,7 +167,6 @@ Example response:
         "vulnerability_id": 103
     },
     "id": 103,
-    "last_edited_at": null,
     "last_edited_by_id": null,
     "project": {
         "created_at": "2020-04-07T13:54:25.634Z",

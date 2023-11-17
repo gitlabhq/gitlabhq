@@ -37,8 +37,6 @@ module Gitlab
         # - Continue their loop from where it left off:
         #   https://gitlab.com/gitlab-org/gitlab/-/blob/024235ec/lib/gitlab/github_import/importer/pull_requests/review_requests_importer.rb#L15
         def resumes_work_when_interrupted!
-          return unless Feature.enabled?(:github_importer_raise_max_interruptions)
-
           sidekiq_options max_retries_after_interruption: MAX_RETRIES_AFTER_INTERRUPTION
         end
       end

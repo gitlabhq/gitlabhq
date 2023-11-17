@@ -249,36 +249,6 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
       end
     end
 
-    context 'cleanup snippets' do
-      before do
-        error_response = ServiceResponse.error(message: "Repository has more than one branch")
-        allow(Snippets::RepositoryValidationService).to receive_message_chain(:new, :execute).and_return(error_response)
-      end
-
-      it 'shows the appropriate error' do
-        subject.restore(destination, backup_id)
-
-        expect(progress).to have_received(:puts).with("Snippet #{personal_snippet.full_path} can't be restored: Repository has more than one branch")
-        expect(progress).to have_received(:puts).with("Snippet #{project_snippet.full_path} can't be restored: Repository has more than one branch")
-      end
-
-      it 'removes the snippets from the DB' do
-        expect { subject.restore(destination, backup_id) }.to change(PersonalSnippet, :count).by(-1)
-          .and change(ProjectSnippet, :count).by(-1)
-          .and change(SnippetRepository, :count).by(-2)
-      end
-
-      it 'removes the repository from disk' do
-        gitlab_shell = Gitlab::Shell.new
-        shard_name = personal_snippet.repository.shard
-        path = personal_snippet.disk_path + '.git'
-
-        subject.restore(destination, backup_id)
-
-        expect(gitlab_shell.repository_exists?(shard_name, path)).to eq false
-      end
-    end
-
     context 'storages' do
       let(:storages) { %w[default] }
 

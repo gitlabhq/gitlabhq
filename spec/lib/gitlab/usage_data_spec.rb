@@ -343,7 +343,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         create(:issue, project: project, author: Users::Internal.support_bot)
         create(:note, project: project, noteable: issue, author: user)
         create(:todo, project: project, target: issue, author: user)
-        create(:jira_integration, :jira_cloud_service, active: true, project: create(:project, :jira_dvcs_cloud, creator: user))
         create(:jira_integration, active: true, project: create(:project, :jira_dvcs_server, creator: user))
       end
 
@@ -354,7 +353,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         service_desk_enabled_projects: 2,
         service_desk_issues: 2,
         projects_jira_active: 2,
-        projects_jira_dvcs_cloud_active: 2,
         projects_jira_dvcs_server_active: 2
       )
       expect(described_class.usage_activity_by_stage_plan(described_class.monthly_time_range_db_params)).to include(
@@ -364,7 +362,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         service_desk_enabled_projects: 1,
         service_desk_issues: 1,
         projects_jira_active: 1,
-        projects_jira_dvcs_cloud_active: 1,
         projects_jira_dvcs_server_active: 1
       )
     end

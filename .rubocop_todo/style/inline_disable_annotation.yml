@@ -2677,7 +2677,6 @@ Style/InlineDisableAnnotation:
     - 'lib/gitlab/patch/prependable.rb'
     - 'lib/gitlab/patch/redis_cache_store.rb'
     - 'lib/gitlab/patch/sidekiq_cron_poller.rb'
-    - 'lib/gitlab/patch/sidekiq_scheduled_enq.rb'
     - 'lib/gitlab/performance_bar.rb'
     - 'lib/gitlab/performance_bar/redis_adapter_when_peek_enabled.rb'
     - 'lib/gitlab/popen/runner.rb'

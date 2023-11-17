@@ -97,6 +97,7 @@ FROM common_mart.mart_behavior_structured_event
 WHERE event_action = 'feature_used'
 AND event_category = 'InternalEventTracking'
 AND behavior_date > '2023-08-01' --restricted minimum date for performance
+AND app_id='gitlab' -- use gitlab for production events and gitlab-staging for events from staging
 GROUP BY 1 ORDER BY 1 desc
 ```
 

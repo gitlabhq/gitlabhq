@@ -129,7 +129,29 @@ RSpec.describe Ci::RunnerManagerPolicy, feature_category: :runner_fleet do
       context 'with project runner' do
         let(:runner) { project_runner }
 
-        it { expect_disallowed :read_runner_manager }
+        it { expect_allowed :read_runner_manager }
+
+        context 'when user is not developer in parent group' do
+          let_it_be(:developers_group_developer) { create(:user) }
+          let_it_be_with_reload(:developers_group) { create(:group, name: 'developers', path: 'developers') }
+
+          let(:user) { developers_group_developer }
+
+          before_all do
+            create(:project_group_link, :developer, group: developers_group, project: project)
+            developers_group.add_reporter(developers_group_developer)
+          end
+
+          it { expect_disallowed :read_runner_manager }
+
+          context 'when user is developer in a group invited to project as developer' do
+            before_all do
+              developers_group.add_developer(developers_group_developer)
+            end
+
+            it { expect_allowed :read_runner_manager }
+          end
+        end
       end
     end
 
