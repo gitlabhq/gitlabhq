@@ -21,6 +21,7 @@ constraints(::Constraints::ActivityPubConstrainer.new) do
             resources :releases, only: :index do
               collection do
                 get 'outbox'
+                post 'inbox'
               end
             end
           end

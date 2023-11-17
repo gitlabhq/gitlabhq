@@ -64,7 +64,7 @@ module Gitlab
 
       def paginate_via_gitaly(finder)
         finder.execute(gitaly_pagination: true).tap do |records|
-          apply_headers(records)
+          apply_headers(records, finder.next_cursor)
         end
       end
 
@@ -82,20 +82,18 @@ module Gitlab
         end
       end
 
-      def apply_headers(records)
+      def apply_headers(records, next_cursor)
         if records.count == params[:per_page]
           Gitlab::Pagination::Keyset::HeaderBuilder
             .new(request_context)
             .add_next_page_header(
-              query_params_for(records.last)
+              query_params_for(next_cursor)
             )
         end
       end
 
-      def query_params_for(record)
-        # NOTE: page_token is name for now, but it could be dynamic if we have other gitaly finders
-        # that is based on something other than name
-        { page_token: record.name }
+      def query_params_for(next_cursor)
+        { page_token: next_cursor }
       end
     end
   end

@@ -3,9 +3,12 @@
 class GitRefsFinder
   include Gitlab::Utils::StrongMemoize
 
+  attr_reader :next_cursor
+
   def initialize(repository, params = {})
     @repository = repository
     @params = params
+    @next_cursor = nil
   end
 
   protected
@@ -53,5 +56,14 @@ class GitRefsFinder
 
   def unescape_regex_operators(regex_string)
     regex_string.sub('\^', '^').gsub('\*', '.*?').sub('\$', '$')
+  end
+
+  def set_next_cursor(records)
+    return if records.blank?
+
+    # TODO: Gitaly should be responsible for a cursor generation
+    # Follow-up for branches: https://gitlab.com/gitlab-org/gitlab/-/issues/431903
+    # Follow-up for tags: https://gitlab.com/gitlab-org/gitlab/-/issues/431904
+    @next_cursor = records.last.name
   end
 end

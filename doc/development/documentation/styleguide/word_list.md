@@ -989,6 +989,14 @@ Instead of:
 - In GitLab 14.1 and lower.
 - In GitLab 14.1 and older.
 
+## machine learning
+
+Use lowercase for **machine learning**.
+
+When machine learning is used as an adjective, like **a machine learning model**,
+do not hyphenate. While a hyphen might be more grammatically correct, we risk
+becoming inconsistent if we try to be more precise.
+
 ## Maintainer
 
 When writing about the Maintainer role:

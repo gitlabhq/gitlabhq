@@ -2,13 +2,18 @@
 import { GlFormRadio, GlFormRadioGroup, GlIcon, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { getWeekdayNames } from '~/lib/utils/datetime_utility';
 import { __, s__, sprintf } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
 
 const KEY_EVERY_DAY = 'everyDay';
 const KEY_EVERY_WEEK = 'everyWeek';
 const KEY_EVERY_MONTH = 'everyMonth';
 const KEY_CUSTOM = 'custom';
+
+const MINUTE = 60; // minute between 0-59
+const HOUR = 24; // hour between 0-23
+const WEEKDAY_INDEX = 7; // week index Sun-Sat
+const DAY = 29; // day between 0-28
+const getRandomCronValue = (max) => Math.floor(Math.random() * max);
 
 export default {
   components: {
@@ -20,7 +25,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     initialCronInterval: {
       type: String,
@@ -41,9 +45,10 @@ export default {
   data() {
     return {
       isEditingCustom: false,
-      randomHour: this.generateRandomHour(),
-      randomWeekDayIndex: this.generateRandomWeekDayIndex(),
-      randomDay: this.generateRandomDay(),
+      randomMinute: getRandomCronValue(MINUTE),
+      randomHour: getRandomCronValue(HOUR),
+      randomWeekDayIndex: getRandomCronValue(WEEKDAY_INDEX),
+      randomDay: getRandomCronValue(DAY),
       inputNameAttribute: 'schedule[cron]',
       radioValue: this.initialCronInterval ? KEY_CUSTOM : KEY_EVERY_DAY,
       cronInterval: this.initialCronInterval,
@@ -53,19 +58,22 @@ export default {
   computed: {
     cronIntervalPresets() {
       return {
-        [KEY_EVERY_DAY]: `0 ${this.randomHour} * * *`,
-        [KEY_EVERY_WEEK]: `0 ${this.randomHour} * * ${this.randomWeekDayIndex}`,
-        [KEY_EVERY_MONTH]: `0 ${this.randomHour} ${this.randomDay} * *`,
+        [KEY_EVERY_DAY]: `${this.randomMinute} ${this.randomHour} * * *`,
+        [KEY_EVERY_WEEK]: `${this.randomMinute} ${this.randomHour} * * ${this.randomWeekDayIndex}`,
+        [KEY_EVERY_MONTH]: `${this.randomMinute} ${this.randomHour} ${this.randomDay} * *`,
       };
+    },
+    formattedMinutes() {
+      return String(this.randomMinute).padStart(2, '0');
     },
     formattedTime() {
       if (this.randomHour > 12) {
-        return `${this.randomHour - 12}:00pm`;
+        return `${this.randomHour - 12}:${this.formattedMinutes}pm`;
       }
       if (this.randomHour === 12) {
-        return `12:00pm`;
+        return `12:${this.formattedMinutes}pm`;
       }
-      return `${this.randomHour}:00am`;
+      return `${this.randomHour}:${this.formattedMinutes}am`;
     },
     radioOptions() {
       return [
@@ -132,15 +140,6 @@ export default {
   methods: {
     onCustomInput() {
       this.radioValue = KEY_CUSTOM;
-    },
-    generateRandomHour() {
-      return Math.floor(Math.random() * 23);
-    },
-    generateRandomWeekDayIndex() {
-      return Math.floor(Math.random() * 6);
-    },
-    generateRandomDay() {
-      return Math.floor(Math.random() * 28);
     },
     showDailyLimitMessage({ value }) {
       return value === KEY_CUSTOM && this.dailyLimit;

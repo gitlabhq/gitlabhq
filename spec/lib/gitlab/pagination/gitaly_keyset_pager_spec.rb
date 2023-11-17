@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Pagination::GitalyKeysetPager do
+RSpec.describe Gitlab::Pagination::GitalyKeysetPager, feature_category: :source_code_management do
   let(:pager) { described_class.new(request_context, project) }
 
   let_it_be(:project) { create(:project, :repository) }
@@ -101,12 +101,17 @@ RSpec.describe Gitlab::Pagination::GitalyKeysetPager do
           allow(request_context).to receive(:request).and_return(fake_request)
           allow(BranchesFinder).to receive(:===).with(finder).and_return(true)
           expect(finder).to receive(:execute).with(gitaly_pagination: true).and_return(branches)
+          allow(finder).to receive(:next_cursor)
         end
 
         context 'when next page could be available' do
           let(:branches) { [branch1, branch2] }
+          let(:next_cursor) { branch2.name }
+          let(:expected_next_page_link) { %(<#{incoming_api_projects_url}?#{query.merge(page_token: next_cursor).to_query}>; rel="next") }
 
-          let(:expected_next_page_link) { %(<#{incoming_api_projects_url}?#{query.merge(page_token: branch2.name).to_query}>; rel="next") }
+          before do
+            allow(finder).to receive(:next_cursor).and_return(next_cursor)
+          end
 
           it 'uses keyset pagination and adds link headers' do
             expect(request_context).to receive(:header).with('Link', expected_next_page_link)

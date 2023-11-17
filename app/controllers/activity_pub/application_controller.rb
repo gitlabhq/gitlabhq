@@ -8,6 +8,8 @@ module ActivityPub
     skip_before_action :authenticate_user!
     after_action :set_content_type
 
+    protect_from_forgery with: :null_session
+
     def can?(object, action, subject = :global)
       Ability.allowed?(object, action, subject)
     end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'check.rake', :silence_stdout, feature_category: :gitaly do
+RSpec.describe 'check.rake', :delete, :silence_stdout, feature_category: :gitaly do
   before do
     Rake.application.rake_require 'tasks/gitlab/check'
 

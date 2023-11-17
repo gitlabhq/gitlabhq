@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
 class BranchesFinder < GitRefsFinder
-  def initialize(repository, params = {})
-    super(repository, params)
-  end
-
   def execute(gitaly_pagination: false)
     if gitaly_pagination && names.blank? && search.blank? && regex.blank?
-      repository.branches_sorted_by(sort, pagination_params)
+      repository.branches_sorted_by(sort, pagination_params).tap do |branches|
+        set_next_cursor(branches)
+      end
     else
       branches = repository.branches_sorted_by(sort)
       branches = by_search(branches)

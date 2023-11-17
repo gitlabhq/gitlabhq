@@ -7,10 +7,8 @@ type: concepts, howto
 
 # Use Azure Key Vault secrets in GitLab CI/CD **(PREMIUM ALL)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271271) in GitLab and GitLab Runner 16.3.
-
-NOTE:
-A [bug was discovered](https://gitlab.com/gitlab-org/gitlab/-/issues/424746) and this feature might not work as expected or at all. A fix is scheduled for a future release.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271271) in GitLab and GitLab Runner 16.3. Due to [issue 424746](https://gitlab.com/gitlab-org/gitlab/-/issues/424746) this feature did not work as expected.
+> - [Issue 424746](https://gitlab.com/gitlab-org/gitlab/-/issues/424746) resolved and this feature made generally available in GitLab and GitLab Runner 16.6.
 
 You can use secrets stored in the [Azure Key Vault](https://azure.microsoft.com/en-us/products/key-vault/)
 in your GitLab CI/CD pipelines.
