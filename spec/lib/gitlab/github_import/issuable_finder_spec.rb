@@ -48,34 +48,6 @@ RSpec.describe Gitlab::GithubImport::IssuableFinder, :clean_gitlab_redis_cache, 
       expect { finder.database_id }.to raise_error(TypeError)
     end
 
-    context 'with FF import_fallback_to_db_empty_cache disabled' do
-      before do
-        stub_feature_flags(import_fallback_to_db_empty_cache: false)
-      end
-
-      it 'returns nil if object does not exist' do
-        missing_issue = double(:issue, issuable_type: 'MergeRequest', issuable_id: 999)
-
-        expect(described_class.new(project, missing_issue).database_id).to be_nil
-      end
-
-      it 'does not fetch object id from database if not in cache' do
-        expect(finder.database_id).to eq(nil)
-      end
-
-      it 'fetches object id from cache if present' do
-        finder.cache_database_id(10)
-
-        expect(finder.database_id).to eq(10)
-      end
-
-      it 'returns -1 if cache is -1' do
-        finder.cache_database_id(-1)
-
-        expect(finder.database_id).to eq(-1)
-      end
-    end
-
     context 'when group is present' do
       context 'when settings single_endpoint_notes_import is enabled' do
         let(:single_endpoint_optional_stage) { true }

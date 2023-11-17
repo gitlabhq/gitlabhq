@@ -26,8 +26,6 @@ module Gitlab
       def database_id
         val = Gitlab::Cache::Import::Caching.read_integer(cache_key, timeout: timeout)
 
-        return val if Feature.disabled?(:import_fallback_to_db_empty_cache, project)
-
         return if val == CACHE_OBJECT_NOT_FOUND
         return val if val.present?
 

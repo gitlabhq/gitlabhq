@@ -29,8 +29,10 @@ import {
   EVENT_ACTION,
   EXPANDED_VARIABLES_NOTE,
   FLAG_LINK_TITLE,
+  MASKED_VALUE_MIN_LENGTH,
   VARIABLE_ACTIONS,
   variableOptions,
+  WHITESPACE_REG_EX,
 } from '../constants';
 import CiEnvironmentsDropdown from './ci_environments_dropdown.vue';
 import { awsTokenList } from './ci_variable_autocomplete_tokens';
@@ -54,20 +56,29 @@ export const i18n = {
   maskedDescription: s__(
     'CiVariables|Variable will be masked in job logs. Requires values to meet regular expression requirements.',
   ),
+  maskedValueMinLengthValidationText: s__(
+    'CiVariables|The value must have at least %{charsAmount} characters.',
+  ),
   modalDeleteMessage: s__('CiVariables|Do you want to delete the variable %{key}?'),
   protectedField: s__('CiVariables|Protect variable'),
   protectedDescription: s__(
     'CiVariables|Export variable to pipelines running on protected branches and tags only.',
   ),
+  unsupportedCharsValidationText: s__(
+    'CiVariables|This value cannot be masked because it contains the following characters: %{unsupportedChars}.',
+  ),
+  unsupportedAndWhitespaceCharsValidationText: s__(
+    'CiVariables|This value cannot be masked because it contains the following characters: %{unsupportedChars} and whitespace characters.',
+  ),
   valueFeedback: {
     rawHelpText: s__('CiVariables|Variable value will be evaluated as raw string.'),
-    maskedReqsNotMet: s__(
-      'CiVariables|This variable value does not meet the masking requirements.',
-    ),
   },
   variableReferenceTitle: s__('CiVariables|Value might contain a variable reference'),
   variableReferenceDescription: s__(
     'CiVariables|Unselect "Expand variable reference" if you want to use the variable value as a raw string.',
+  ),
+  whitespaceCharsValidationText: s__(
+    'CiVariables|This value cannot be masked because it contains the following characters: whitespace characters.',
   ),
   type: __('Type'),
   value: __('Value'),
@@ -169,11 +180,76 @@ export default {
     isEditing() {
       return this.mode === EDIT_VARIABLE_ACTION;
     },
+    isMaskedValueContainsWhitespaceChars() {
+      return this.isValueMaskable && WHITESPACE_REG_EX.test(this.variable.value);
+    },
     maskedRegexToUse() {
       return this.variable.raw ? this.maskableRawRegex : this.maskableRegex;
     },
-    maskedReqsNotMetText() {
-      return !this.isMaskedReqsMet ? this.$options.i18n.valueFeedback.maskedReqsNotMet : '';
+    maskedSupportedCharsRegEx() {
+      const supportedChars = this.maskedRegexToUse.replace('^', '').replace(/{(\d,)}\$/, '');
+      return new RegExp(supportedChars, 'g');
+    },
+    maskedValueMinLengthValidationText() {
+      return sprintf(this.$options.i18n.maskedValueMinLengthValidationText, {
+        charsAmount: MASKED_VALUE_MIN_LENGTH,
+      });
+    },
+    unsupportedCharsList() {
+      if (this.isMaskedReqsMet) {
+        return [];
+      }
+
+      return [
+        ...new Set(
+          this.variable.value
+            .replace(WHITESPACE_REG_EX, '')
+            .replace(this.maskedSupportedCharsRegEx, '')
+            .split(''),
+        ),
+      ];
+    },
+    unsupportedChars() {
+      return this.unsupportedCharsList.join(', ');
+    },
+    unsupportedCharsValidationText() {
+      return sprintf(
+        this.$options.i18n.unsupportedCharsValidationText,
+        {
+          unsupportedChars: this.unsupportedChars,
+        },
+        false,
+      );
+    },
+    unsupportedAndWhitespaceCharsValidationText() {
+      return sprintf(
+        this.$options.i18n.unsupportedAndWhitespaceCharsValidationText,
+        {
+          unsupportedChars: this.unsupportedChars,
+        },
+        false,
+      );
+    },
+    maskedValidationIssuesText() {
+      if (this.isMaskedReqsMet) {
+        return '';
+      }
+
+      let validationIssuesText = '';
+
+      if (this.unsupportedCharsList.length && !this.isMaskedValueContainsWhitespaceChars) {
+        validationIssuesText = this.unsupportedCharsValidationText;
+      } else if (this.unsupportedCharsList.length && this.isMaskedValueContainsWhitespaceChars) {
+        validationIssuesText = this.unsupportedAndWhitespaceCharsValidationText;
+      } else if (!this.unsupportedCharsList.length && this.isMaskedValueContainsWhitespaceChars) {
+        validationIssuesText = this.$options.i18n.whitespaceCharsValidationText;
+      }
+
+      if (this.variable.value.length < MASKED_VALUE_MIN_LENGTH) {
+        validationIssuesText += ` ${this.maskedValueMinLengthValidationText}`;
+      }
+
+      return validationIssuesText.trim();
     },
     modalActionText() {
       return this.isEditing ? this.$options.i18n.editVariable : this.$options.i18n.addVariable;
@@ -218,9 +294,7 @@ export default {
 
       let property;
       if (this.isValueMaskable) {
-        const supportedChars = this.maskedRegexToUse.replace('^', '').replace(/{(\d,)}\$/, '');
-        const regex = new RegExp(supportedChars, 'g');
-        property = this.variable.value.replace(regex, '');
+        property = this.variable.value.replace(this.maskedSupportedCharsRegEx, '');
       } else if (this.hasVariableReference) {
         property = '$';
       }
@@ -382,7 +456,7 @@ export default {
         label-for="ci-variable-value"
         class="gl-border-none gl-mb-n2"
         data-testid="ci-variable-value-label"
-        :invalid-feedback="maskedReqsNotMetText"
+        :invalid-feedback="maskedValidationIssuesText"
         :state="isValueValid"
       >
         <gl-form-textarea

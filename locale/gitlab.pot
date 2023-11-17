@@ -10561,13 +10561,22 @@ msgstr ""
 msgid "CiVariables|State"
 msgstr ""
 
+msgid "CiVariables|The value must have at least %{charsAmount} characters."
+msgstr ""
+
 msgid "CiVariables|There was an error fetching the inherited CI variables."
 msgstr ""
 
 msgid "CiVariables|This %{entity} has %{currentVariableCount} defined CI/CD variables. The maximum number of variables per %{entity} is %{maxVariableLimit}. To add new variables, you must reduce the number of defined variables."
 msgstr ""
 
-msgid "CiVariables|This variable value does not meet the masking requirements."
+msgid "CiVariables|This value cannot be masked because it contains the following characters: %{unsupportedChars} and whitespace characters."
+msgstr ""
+
+msgid "CiVariables|This value cannot be masked because it contains the following characters: %{unsupportedChars}."
+msgstr ""
+
+msgid "CiVariables|This value cannot be masked because it contains the following characters: whitespace characters."
 msgstr ""
 
 msgid "CiVariables|Type"

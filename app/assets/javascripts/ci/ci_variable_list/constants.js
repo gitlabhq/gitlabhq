@@ -2,6 +2,10 @@ import { __, s__, sprintf } from '~/locale';
 
 export const ENVIRONMENT_QUERY_LIMIT = 30;
 
+export const MASKED_VALUE_MIN_LENGTH = 8;
+
+export const WHITESPACE_REG_EX = /\s/;
+
 export const SORT_DIRECTIONS = {
   ASC: 'KEY_ASC',
   DESC: 'KEY_DESC',

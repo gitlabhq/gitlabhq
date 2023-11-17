@@ -29,6 +29,10 @@ strings.
 
 See [Externalization for GitLab](externalization.md).
 
+### Editing externalized strings
+
+If you edit externalized strings in GitLab, you must [update the `pot` file](externalization.md#updating-the-po-files-with-the-new-content) before pushing your changes.
+
 ## Translate strings
 
 The translation process is managed at [https://crowdin.com/project/gitlab-ee](https://crowdin.com/project/gitlab-ee)

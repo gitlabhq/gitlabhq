@@ -20,6 +20,8 @@ describe('CI Variable Drawer', () => {
   let wrapper;
   let trackingSpy;
 
+  const itif = (condition) => (condition ? it : it.skip);
+
   const mockProjectVariable = mockVariablesWithScopes(projectString)[0];
   const mockProjectVariableFileType = mockVariablesWithScopes(projectString)[1];
   const mockEnvScope = 'staging';
@@ -284,52 +286,106 @@ describe('CI Variable Drawer', () => {
         expect(findConfirmBtn().attributes('disabled')).toBeUndefined();
       });
 
+      const invalidValues = {
+        short: 'short',
+        multiLine: 'multiline\nvalue',
+        unsupportedChar: 'unsupported|char',
+        twoUnsupportedChars: 'unsupported|chars!',
+        threeUnsupportedChars: '%unsupported|chars!',
+        shortAndMultiLine: 'sho\nrt',
+        shortAndUnsupportedChar: 'short!',
+        shortAndMultiLineAndUnsupportedChar: 'short\n!',
+        multiLineAndUnsupportedChar: 'multiline\nvalue!',
+      };
+      const maskedValidationIssuesText = {
+        short: 'The value must have at least 8 characters.',
+        multiLine:
+          'This value cannot be masked because it contains the following characters: whitespace characters.',
+        unsupportedChar:
+          'This value cannot be masked because it contains the following characters: |.',
+        unsupportedDollarChar:
+          'This value cannot be masked because it contains the following characters: $.',
+        twoUnsupportedChars:
+          'This value cannot be masked because it contains the following characters: |, !.',
+        threeUnsupportedChars:
+          'This value cannot be masked because it contains the following characters: %, |, !.',
+        shortAndMultiLine:
+          'This value cannot be masked because it contains the following characters: whitespace characters. The value must have at least 8 characters.',
+        shortAndUnsupportedChar:
+          'This value cannot be masked because it contains the following characters: !. The value must have at least 8 characters.',
+        shortAndMultiLineAndUnsupportedChar:
+          'This value cannot be masked because it contains the following characters: ! and whitespace characters. The value must have at least 8 characters.',
+        multiLineAndUnsupportedChar:
+          'This value cannot be masked because it contains the following characters: ! and whitespace characters.',
+      };
+
       describe.each`
-        value                 | canSubmit | trackingErrorProperty
-        ${'secretValue'}      | ${true}   | ${null}
-        ${'~v@lid:symbols.'}  | ${true}   | ${null}
-        ${'short'}            | ${false}  | ${null}
-        ${'multiline\nvalue'} | ${false}  | ${'\n'}
-        ${'dollar$ign'}       | ${false}  | ${'$'}
-        ${'unsupported|char'} | ${false}  | ${'|'}
-      `('masking requirements', ({ value, canSubmit, trackingErrorProperty }) => {
-        beforeEach(async () => {
-          createComponent();
+        value                                                | canSubmit | trackingErrorProperty | validationIssueKey
+        ${'secretValue'}                                     | ${true}   | ${null}               | ${''}
+        ${'~v@lid:symbols.'}                                 | ${true}   | ${null}               | ${''}
+        ${invalidValues.short}                               | ${false}  | ${null}               | ${'short'}
+        ${invalidValues.multiLine}                           | ${false}  | ${'\n'}               | ${'multiLine'}
+        ${'dollar$ign'}                                      | ${false}  | ${'$'}                | ${'unsupportedDollarChar'}
+        ${invalidValues.unsupportedChar}                     | ${false}  | ${'|'}                | ${'unsupportedChar'}
+        ${invalidValues.twoUnsupportedChars}                 | ${false}  | ${'|!'}               | ${'twoUnsupportedChars'}
+        ${invalidValues.threeUnsupportedChars}               | ${false}  | ${'%|!'}              | ${'threeUnsupportedChars'}
+        ${invalidValues.shortAndMultiLine}                   | ${false}  | ${'\n'}               | ${'shortAndMultiLine'}
+        ${invalidValues.shortAndUnsupportedChar}             | ${false}  | ${'!'}                | ${'shortAndUnsupportedChar'}
+        ${invalidValues.shortAndMultiLineAndUnsupportedChar} | ${false}  | ${'\n!'}              | ${'shortAndMultiLineAndUnsupportedChar'}
+        ${invalidValues.multiLineAndUnsupportedChar}         | ${false}  | ${'\n!'}              | ${'multiLineAndUnsupportedChar'}
+      `(
+        'masking requirements',
+        ({ value, canSubmit, trackingErrorProperty, validationIssueKey }) => {
+          beforeEach(() => {
+            createComponent();
 
-          trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
-          await findKeyField().vm.$emit('input', 'NEW_VARIABLE');
-          await findValueField().vm.$emit('input', value);
-          await findMaskedCheckbox().vm.$emit('input', true);
-        });
+            trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+            findKeyField().vm.$emit('input', 'NEW_VARIABLE');
+            findValueField().vm.$emit('input', value);
+            findMaskedCheckbox().vm.$emit('input', true);
+          });
 
-        it(`${
-          canSubmit ? 'can submit' : 'shows validation errors and disables submit button'
-        } when value is '${value}'`, () => {
-          if (canSubmit) {
+          itif(canSubmit)(`can submit when value is ${value}`, () => {
+            /* eslint-disable jest/no-standalone-expect */
             expect(findValueLabel().attributes('invalid-feedback')).toBe('');
             expect(findConfirmBtn().attributes('disabled')).toBeUndefined();
-          } else {
-            expect(findValueLabel().attributes('invalid-feedback')).toBe(
-              'This variable value does not meet the masking requirements.',
-            );
-            expect(findConfirmBtn().attributes('disabled')).toBeDefined();
-          }
-        });
+            /* eslint-enable jest/no-standalone-expect */
+          });
 
-        it(`${
-          trackingErrorProperty ? 'sends the correct' : 'does not send the'
-        } variable validation tracking event when value is '${value}'`, () => {
-          const trackingEventSent = trackingErrorProperty ? 1 : 0;
-          expect(trackingSpy).toHaveBeenCalledTimes(trackingEventSent);
+          itif(!canSubmit)(
+            `shows validation errors and disables submit button when value is ${value}`,
+            () => {
+              const validationIssueText = maskedValidationIssuesText[validationIssueKey] || '';
 
-          if (trackingErrorProperty) {
-            expect(trackingSpy).toHaveBeenCalledWith(undefined, EVENT_ACTION, {
-              label: DRAWER_EVENT_LABEL,
-              property: trackingErrorProperty,
-            });
-          }
-        });
-      });
+              /* eslint-disable jest/no-standalone-expect */
+              expect(findValueLabel().attributes('invalid-feedback')).toBe(validationIssueText);
+              expect(findConfirmBtn().attributes('disabled')).toBeDefined();
+              /* eslint-enable jest/no-standalone-expect */
+            },
+          );
+
+          itif(trackingErrorProperty)(
+            `sends the correct variable validation tracking event when value is ${value}`,
+            () => {
+              /* eslint-disable jest/no-standalone-expect */
+              expect(trackingSpy).toHaveBeenCalledTimes(1);
+              expect(trackingSpy).toHaveBeenCalledWith(undefined, EVENT_ACTION, {
+                label: DRAWER_EVENT_LABEL,
+                property: trackingErrorProperty,
+              });
+              /* eslint-enable jest/no-standalone-expect */
+            },
+          );
+
+          itif(!trackingErrorProperty)(
+            `does not send the the correct variable validation tracking event when value is ${value}`,
+            () => {
+              // eslint-disable-next-line jest/no-standalone-expect
+              expect(trackingSpy).toHaveBeenCalledTimes(0);
+            },
+          );
+        },
+      );
 
       it('only sends the tracking event once', async () => {
         trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);

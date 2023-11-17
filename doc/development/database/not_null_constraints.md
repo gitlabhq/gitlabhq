@@ -204,11 +204,118 @@ If you have to clean up a nullable column for a [high-traffic table](../migratio
 it needs an additional [batched background migration cleaning up](batched_background_migrations.md#cleaning-up-a-batched-background-migration)
 in the release after adding the data migration.
 
-In that rare case you need 3 releases end-to-end:
+In this case the number of releases depends on the amount of time needed to migrate existing records. The cleanup is
+scheduled after the background migration has completed, which could be several releases after the constraint was added.
 
-1. Release `N.M` - Add the `NOT NULL` constraint and the background-migration to fix the existing records.
-1. Release `N.M+1` - Cleanup the background migration.
-1. Release `N.M+2` - Validate the `NOT NULL` constraint.
+1. Release `N.M`:
+   - Add the `NOT NULL` constraint without validating it:
+
+     ```ruby
+     # db/post_migrate/
+     class AddMergeRequestDiffsProjectIdNotNullConstraint < Gitlab::Database::Migration[2.2]
+       disable_ddl_transaction!
+       milestone '16.7'
+
+       def up
+         add_not_null_constraint :merge_request_diffs, :project_id, validate: false
+       end
+
+       def down
+         remove_not_null_constraint :merge_request_diffs, :project_id
+       end
+     end
+     ```
+
+   - Add the background-migration to fix the existing records:
+
+     ```ruby
+     # db/post_migrate/
+     class QueueBackfillMergeRequestDiffsProjectId < Gitlab::Database::Migration[2.2]
+       milestone '16.7'
+       restrict_gitlab_migration gitlab_schema: :gitlab_main
+
+       MIGRATION = 'BackfillMergeRequestDiffsProjectId'
+       DELAY_INTERVAL = 2.minutes
+
+       def up
+         queue_batched_background_migration(
+           MIGRATION,
+           :merge_request_diffs,
+           :id,
+           job_interval: DELAY_INTERVAL,
+           queued_migration_version: '20231114043522'
+         )
+       end
+
+       def down
+         delete_batched_background_migration(MIGRATION, :merge_request_diffs, :id, [])
+       end
+     end
+     ```
+
+1. Release `N.M+X`, where `X` is the number of releases the migration was running:
+   - Cleanup the background migration:
+
+     ```ruby
+     # db/post_migrate/
+     class FinalizeMergeRequestDiffsProjectIdBackfill < Gitlab::Database::Migration[2.2]
+       disable_ddl_transaction!
+       milestone '16.10'
+       restrict_gitlab_migration gitlab_schema: :gitlab_main
+
+       MIGRATION = 'BackfillMergeRequestDiffsProjectId'
+
+       def up
+         ensure_batched_background_migration_is_finished(
+           job_class_name: MIGRATION,
+           table_name: :merge_request_diffs,
+           column_name: :id,
+           job_arguments: [],
+           finalize: true
+         )
+       end
+
+       def down
+         # no-op
+       end
+     end
+     ```
+
+   - **Optional.** For very large tables, schedule asynchronous validation of the `NOT NULL` constraint:
+
+     ```ruby
+     # db/post_migrate/
+     class PrepareMergeRequestDiffsProjectIdNotNullValidation < Gitlab::Database::Migration[2.2]
+       milestone '16.10'
+
+       CONSTRAINT_NAME = 'check_11c5f029ad'
+
+       def up
+         prepare_async_check_constraint_validation :merge_request_diffs, name: CONSTRAINT_NAME
+       end
+
+       def down
+         unprepare_async_check_constraint_validation :merge_request_diffs, name: CONSTRAINT_NAME
+       end
+     end
+     ```
+
+1. Validate the `NOT NULL` constraint (if the constraint was validated asynchronously, wait for this validation to finish):
+
+   ```ruby
+   # db/post_migrate/
+   class ValidateMergeRequestDiffsProjectIdNullConstraint < Gitlab::Database::Migration[2.2]
+     milestone '16.10'
+
+     def up
+       validate_not_null_constraint :merge_request_diffs, :project_id
+     end
+
+     def down
+       # no-op
+     end
+   end
+   ```
 
 For these cases, consult the database team early in the update cycle. The `NOT NULL`
 constraint may not be required or other options could exist that do not affect really large

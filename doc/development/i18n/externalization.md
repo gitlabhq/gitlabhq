@@ -258,6 +258,11 @@ expect(wrapper.text()).toBe('There was an error: Please refresh and hope for the
 
 For more details you can see how we [keep translations dynamic](#keep-translations-dynamic).
 
+## Making changes to translated strings
+
+If you change the source strings in GitLab, you must [update the `pot` file](#updating-the-po-files-with-the-new-content) before pushing your changes.
+If the `pot` file is out of date, pre-push checks and a pipeline job for `gettext` fail.
+
 ## Working with special content
 
 ### Interpolation

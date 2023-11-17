@@ -1,8 +1,0 @@
----
-name: import_fallback_to_db_empty_cache
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133914
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/428700
-milestone: '16.6'
-type: development
-group: group::import and integrate
-default_enabled: false
