@@ -8925,6 +8925,30 @@ The edge type for [`CiCatalogResource`](#cicatalogresource).
 | <a id="cicatalogresourceedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cicatalogresourceedgenode"></a>`node` | [`CiCatalogResource`](#cicatalogresource) | The item at the end of the edge. |
 
+#### `CiCatalogResourceVersionConnection`
+
+The connection type for [`CiCatalogResourceVersion`](#cicatalogresourceversion).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourceversionconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="cicatalogresourceversionconnectionedges"></a>`edges` | [`[CiCatalogResourceVersionEdge]`](#cicatalogresourceversionedge) | A list of edges. |
+| <a id="cicatalogresourceversionconnectionnodes"></a>`nodes` | [`[CiCatalogResourceVersion]`](#cicatalogresourceversion) | A list of nodes. |
+| <a id="cicatalogresourceversionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiCatalogResourceVersionEdge`
+
+The edge type for [`CiCatalogResourceVersion`](#cicatalogresourceversion).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourceversionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cicatalogresourceversionedgenode"></a>`node` | [`CiCatalogResourceVersion`](#cicatalogresourceversion) | The item at the end of the edge. |
+
 #### `CiConfigGroupConnection`
 
 The connection type for [`CiConfigGroup`](#ciconfiggroup).
@@ -15002,7 +15026,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cicatalogresourceicon"></a>`icon` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Icon for the catalog resource. |
 | <a id="cicatalogresourceid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. ID of the catalog resource. |
 | <a id="cicatalogresourcelatestreleasedat"></a>`latestReleasedAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Release date of the catalog resource's latest version. |
-| <a id="cicatalogresourcelatestversion"></a>`latestVersion` **{warning-solid}** | [`Release`](#release) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Latest version of the catalog resource. |
+| <a id="cicatalogresourcelatestversion"></a>`latestVersion` **{warning-solid}** | [`CiCatalogResourceVersion`](#cicatalogresourceversion) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Latest version of the catalog resource. |
 | <a id="cicatalogresourcename"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Name of the catalog resource. |
 | <a id="cicatalogresourceopenissuescount"></a>`openIssuesCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.3. This feature is an Experiment. It can be changed or removed at any time. Count of open issues that belong to the the catalog resource. |
 | <a id="cicatalogresourceopenmergerequestscount"></a>`openMergeRequestsCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.3. This feature is an Experiment. It can be changed or removed at any time. Count of open merge requests that belong to the the catalog resource. |
@@ -15021,7 +15045,7 @@ WARNING:
 **Introduced** in 16.2.
 This feature is an Experiment. It can be changed or removed at any time.
 
-Returns [`ReleaseConnection`](#releaseconnection).
+Returns [`CiCatalogResourceVersionConnection`](#cicatalogresourceversionconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
@@ -15031,7 +15055,21 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cicatalogresourceversionssort"></a>`sort` | [`ReleaseSort`](#releasesort) | Sort releases by given criteria. |
+| <a id="cicatalogresourceversionssort"></a>`sort` | [`CiCatalogResourceVersionSort`](#cicatalogresourceversionsort) | Sort versions by given criteria. |
+
+### `CiCatalogResourceVersion`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourceversionauthor"></a>`author` **{warning-solid}** | [`UserCore`](#usercore) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. User that created the version. |
+| <a id="cicatalogresourceversioncommit"></a>`commit` **{warning-solid}** | [`Commit`](#commit) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Commit associated with the version. |
+| <a id="cicatalogresourceversioncreatedat"></a>`createdAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Timestamp of when the version was created. |
+| <a id="cicatalogresourceversionid"></a>`id` **{warning-solid}** | [`CiCatalogResourcesVersionID!`](#cicatalogresourcesversionid) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Global ID of the version. |
+| <a id="cicatalogresourceversionreleasedat"></a>`releasedAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Timestamp of when the version was released. |
+| <a id="cicatalogresourceversiontagname"></a>`tagName` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Name of the tag associated with the version. |
+| <a id="cicatalogresourceversiontagpath"></a>`tagPath` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Relative web path to the tag associated with the version. |
 
 ### `CiConfig`
 
@@ -28391,6 +28429,17 @@ Values for sorting catalog resources.
 | <a id="cicatalogresourcesortname_asc"></a>`NAME_ASC` | Name by ascending order. |
 | <a id="cicatalogresourcesortname_desc"></a>`NAME_DESC` | Name by descending order. |
 
+### `CiCatalogResourceVersionSort`
+
+Values for sorting catalog resource versions.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cicatalogresourceversionsortcreated_asc"></a>`CREATED_ASC` | Created at ascending order. |
+| <a id="cicatalogresourceversionsortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
+| <a id="cicatalogresourceversionsortreleased_at_asc"></a>`RELEASED_AT_ASC` | Released at by ascending order. |
+| <a id="cicatalogresourceversionsortreleased_at_desc"></a>`RELEASED_AT_DESC` | Released at by descending order. |
+
 ### `CiConfigIncludeType`
 
 Include type.
@@ -31006,6 +31055,12 @@ An example `CiBuildID` is: `"gid://gitlab/Ci::Build/1"`.
 A `CiCatalogResourceID` is a global ID. It is encoded as a string.
 
 An example `CiCatalogResourceID` is: `"gid://gitlab/Ci::Catalog::Resource/1"`.
+
+### `CiCatalogResourcesVersionID`
+
+A `CiCatalogResourcesVersionID` is a global ID. It is encoded as a string.
+
+An example `CiCatalogResourcesVersionID` is: `"gid://gitlab/Ci::Catalog::Resources::Version/1"`.
 
 ### `CiJobArtifactID`
 

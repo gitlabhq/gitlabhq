@@ -1,0 +1,25 @@
+# frozen_string_literal: true
+
+module Resolvers
+  module Ci
+    module Catalog
+      module Resources
+        class VersionsResolver < BaseResolver
+          type Types::Ci::Catalog::Resources::VersionType.connection_type, null: true
+
+          # This allows a maximum of 1 call to the field that uses this resolver. If the
+          # field is evaluated on more than one node, it causes performance degradation.
+          extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
+
+          argument :sort, Types::Ci::Catalog::Resources::VersionSortEnum,
+            required: false,
+            description: 'Sort versions by given criteria.'
+
+          def resolve(sort: nil)
+            ::Ci::Catalog::Resources::VersionsFinder.new(object, current_user, sort: sort).execute
+          end
+        end
+      end
+    end
+  end
+end

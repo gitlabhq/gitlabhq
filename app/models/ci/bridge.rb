@@ -168,6 +168,18 @@ module Ci
     end
     # rubocop: enable CodeReuse/ServiceClass
 
+    def job_artifacts
+      Ci::JobArtifact.none
+    end
+
+    def artifacts_expire_at; end
+
+    def runner; end
+
+    def tag_list
+      ActsAsTaggableOn::TagList.new
+    end
+
     def artifacts?
       false
     end

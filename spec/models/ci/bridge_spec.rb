@@ -36,6 +36,24 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     expect(bridge).to have_one(:downstream_pipeline)
   end
 
+  describe 'no-op methods for compatibility with Ci::Build' do
+    it 'returns an empty array job_artifacts' do
+      expect(bridge.job_artifacts).to eq(Ci::JobArtifact.none)
+    end
+
+    it 'return nil for artifacts_expire_at' do
+      expect(bridge.artifacts_expire_at).to be_nil
+    end
+
+    it 'return nil for runner' do
+      expect(bridge.runner).to be_nil
+    end
+
+    it 'returns an empty TagList for tag_list' do
+      expect(bridge.tag_list).to be_a(ActsAsTaggableOn::TagList)
+    end
+  end
+
   describe '#retryable?' do
     let(:bridge) { create(:ci_bridge, :success) }
 

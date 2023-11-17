@@ -81,6 +81,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
               nodes {
                 id
                 tagName
+                tagPath
                 releasedAt
                 author {
                   id
@@ -98,11 +99,13 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
       let_it_be(:author) { create(:user, name: 'author') }
 
       let_it_be(:version1) do
-        create(:release, project: project, released_at: '2023-01-01T00:00:00Z', author: author)
+        create(:release, :with_catalog_resource_version, project: project, released_at: '2023-01-01T00:00:00Z',
+          author: author).catalog_resource_version
       end
 
       let_it_be(:version2) do
-        create(:release, project: project, released_at: '2023-02-01T00:00:00Z', author: author)
+        create(:release, :with_catalog_resource_version, project: project, released_at: '2023-02-01T00:00:00Z',
+          author: author).catalog_resource_version
       end
 
       it 'returns the resource with the versions data' do
@@ -115,13 +118,15 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
         expect(graphql_data_at(:ciCatalogResource, :versions, :nodes)).to contain_exactly(
           a_graphql_entity_for(
             version1,
-            tagName: version1.tag,
+            tagName: version1.name,
+            tagPath: project_tag_path(project, version1.name),
             releasedAt: version1.released_at,
             author: a_graphql_entity_for(author, :name)
           ),
           a_graphql_entity_for(
             version2,
-            tagName: version2.tag,
+            tagName: version2.name,
+            tagPath: project_tag_path(project, version2.name),
             releasedAt: version2.released_at,
             author: a_graphql_entity_for(author, :name)
           )
@@ -157,6 +162,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
             latestVersion {
               id
               tagName
+              tagPath
               releasedAt
               author {
                 id
@@ -173,12 +179,14 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
       let_it_be(:author) { create(:user, name: 'author') }
 
       let_it_be(:latest_version) do
-        create(:release, project: project, released_at: '2023-02-01T00:00:00Z', author: author)
+        create(:release, :with_catalog_resource_version, project: project, released_at: '2023-02-01T00:00:00Z',
+          author: author).catalog_resource_version
       end
 
       before_all do
-        # Previous version of the project
-        create(:release, project: project, released_at: '2023-01-01T00:00:00Z', author: author)
+        # Previous version of the catalog resource
+        create(:release, :with_catalog_resource_version, project: project, released_at: '2023-01-01T00:00:00Z',
+          author: author)
       end
 
       it 'returns the resource with the latest version data' do
@@ -189,7 +197,8 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
             resource,
             latestVersion: a_graphql_entity_for(
               latest_version,
-              tagName: latest_version.tag,
+              tagName: latest_version.name,
+              tagPath: project_tag_path(project, latest_version.name),
               releasedAt: latest_version.released_at,
               author: a_graphql_entity_for(author, :name)
             )

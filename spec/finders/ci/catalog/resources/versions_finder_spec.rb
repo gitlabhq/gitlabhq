@@ -22,13 +22,13 @@ RSpec.describe Ci::Catalog::Resources::VersionsFinder, feature_category: :pipeli
     end.not_to exceed_query_limit(control_count)
   end
 
-  context 'when the user is not authorized for any catalog resource' do
+  context 'when the user is not authorized' do
     it 'returns empty response' do
       is_expected.to be_empty
     end
   end
 
-  describe 'versions' do
+  context 'when the user is authorized' do
     before_all do
       resource1.project.add_guest(current_user)
     end
@@ -74,7 +74,7 @@ RSpec.describe Ci::Catalog::Resources::VersionsFinder, feature_category: :pipeli
     end
   end
 
-  describe 'latest versions' do
+  context 'when `latest` parameter is true' do
     before_all do
       resource1.project.add_guest(current_user)
       resource2.project.add_guest(current_user)
@@ -84,23 +84,6 @@ RSpec.describe Ci::Catalog::Resources::VersionsFinder, feature_category: :pipeli
 
     it 'returns the latest version for each authorized catalog resource' do
       expect(execute).to match_array([v1_1, v2_1])
-    end
-
-    context 'when one catalog resource does not have versions' do
-      it 'returns the latest version of only the catalog resource with versions' do
-        resource1.versions.delete_all(:delete_all)
-
-        is_expected.to match_array([v2_1])
-      end
-    end
-
-    context 'when no catalog resource has versions' do
-      it 'returns empty response' do
-        resource1.versions.delete_all(:delete_all)
-        resource2.versions.delete_all(:delete_all)
-
-        is_expected.to be_empty
-      end
     end
   end
 end

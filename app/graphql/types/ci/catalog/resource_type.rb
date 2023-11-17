@@ -32,13 +32,14 @@ module Types
         field :web_path, GraphQL::Types::String, null: true, description: 'Web path of the catalog resource.',
           alpha: { milestone: '16.1' }
 
-        field :versions, Types::ReleaseType.connection_type, null: true,
+        field :versions, Types::Ci::Catalog::Resources::VersionType.connection_type, null: true,
           description: 'Versions of the catalog resource. This field can only be ' \
                        'resolved for one catalog resource in any single request.',
-          resolver: Resolvers::Ci::Catalog::VersionsResolver,
+          resolver: Resolvers::Ci::Catalog::Resources::VersionsResolver,
           alpha: { milestone: '16.2' }
 
-        field :latest_version, Types::ReleaseType, null: true, description: 'Latest version of the catalog resource.',
+        field :latest_version, Types::Ci::Catalog::Resources::VersionType, null: true,
+          description: 'Latest version of the catalog resource.',
           alpha: { milestone: '16.1' }
 
         field :latest_released_at, Types::TimeType, null: true,
@@ -69,11 +70,12 @@ module Types
         end
 
         def latest_version
-          BatchLoader::GraphQL.for(object.project).batch do |projects, loader|
-            latest_releases = ReleasesFinder.new(projects, current_user, latest: true).execute
+          BatchLoader::GraphQL.for(object).batch do |catalog_resources, loader|
+            latest_versions = ::Ci::Catalog::Resources::VersionsFinder.new(
+              catalog_resources, current_user, latest: true).execute
 
-            latest_releases.index_by(&:project).each do |project, latest_release|
-              loader.call(project, latest_release)
+            latest_versions.index_by(&:catalog_resource).each do |catalog_resource, latest_version|
+              loader.call(catalog_resource, latest_version)
             end
           end
         end

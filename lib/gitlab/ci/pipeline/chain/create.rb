@@ -34,7 +34,7 @@ module Gitlab
               pipeline
                 .stages
                 .flat_map(&:statuses)
-                .select { |status| status.respond_to?(:tag_list) }
+                .select { |status| status.respond_to?(:tag_list=) }
             end
           end
         end

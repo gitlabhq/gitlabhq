@@ -15,7 +15,7 @@
     "require_password_to_approve": {
       "type": "boolean"
     },
-    "block_unprotecting_branches": {
+    "block_branch_modification": {
       "type": "boolean"
     }
   }

@@ -1,5 +1,5 @@
 import { reportIssues, parsedReportIssues } from 'jest/ci/reports/codequality_report/mock_data';
-import { parseCodeclimateMetrics } from '~/ci/reports/codequality_report/store/utils/codequality_parser';
+import { parseCodeclimateMetrics } from '~/ci/reports/codequality_report/utils/codequality_parser';
 
 describe('Codequality report store utils', () => {
   let result;

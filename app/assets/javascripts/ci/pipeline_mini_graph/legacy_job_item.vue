@@ -38,7 +38,7 @@ export default {
   },
   tooltipConfig: {
     boundary: 'viewport',
-    placement: 'bottom',
+    placement: 'top',
     customClass: 'gl-pointer-events-none',
   },
   components: {

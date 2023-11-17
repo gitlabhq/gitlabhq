@@ -13,5 +13,6 @@ distribution:
 - ce
 tier:
 - free
-performance_indicator_type: []
+performance_indicator_type:
+- customer_health_score
 milestone: "<13.9"

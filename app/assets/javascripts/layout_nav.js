@@ -1,6 +1,4 @@
 import $ from 'jquery';
-import ContextualSidebar from './contextual_sidebar';
-import initFlyOutNav from './fly_out_nav';
 import { setNotification } from './whats_new/utils/notification';
 
 function hideEndFade($scrollingTabs) {
@@ -113,11 +111,5 @@ function initDeferred() {
 }
 
 export default function initLayoutNav() {
-  if (!gon.use_new_navigation) {
-    const contextualSidebar = new ContextualSidebar();
-    contextualSidebar.bindEvents();
-    initFlyOutNav();
-  }
-
   requestIdleCallback(initDeferred);
 }

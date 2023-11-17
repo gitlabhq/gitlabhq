@@ -1,7 +1,7 @@
 ---
 status: proposed
 creation-date: "2023-08-23"
-authors: [ "@ayufan" ]
+authors: [ "@ayufan", "@josephburnett" ]
 coach: "@grzegorz"
 approvers: [ "@dhershkovitch", "@DarrenEastman", "@cheryl.li" ]
 owning-stage: "~devops::verify"
@@ -57,7 +57,7 @@ have to be part of CI syntax. Instead, they can be provided in the form of reusa
 that are configured in a generic way in the CI config, and later downloaded and executed according
 to inputs and parameters.
 
-The GitLab Steps is meant to fill that product-gap by following similar model to competitors
+GitLab Steps is meant to fill that product-gap by following similar model to competitors
 and to some extent staying compatible with them. The GitLab Steps is meant to replace all
 purpose-specific syntax to handle specific features. By providing and using reusable components,
 that are build outside of `.gitlab-ci.yml`, that are versioned, and requested when needed
@@ -131,6 +131,80 @@ TBD
 
 ## Proposal
 
+Step Runner will be a new go binary which lives at `https://gitlab.com/gitlab-org/step-runner`.
+It will be able to accept a number of input formats which are compiled to a standard proto format.
+Output will be a standard proto trace which will include details for debugging and reproducing the build.
+
+### Capabilities
+
+- Read steps
+  - from environment variable
+  - from `.gitlab-ci.yml` file
+  - from gRPC server in step-runner
+  - from commandline JSON input
+- Compile GitLab Steps and GitHub Actions to a baseline step definition
+  - explicit inputs and outputs
+  - explicit environment and exports
+  - baseline steps can be type `exec` or more steps
+- Download and run steps from:
+  - Git repos
+  - zip files
+  - locally provided
+- A job can be composed of different kinds of steps
+  - steps can come from different sources and be run in different ways
+  - steps can access environment exports and output of previous steps
+- Produce a step-by-step trace of execution
+  - including final inputs and outputs
+  - including final environment and exports
+  - including logs of each step
+  - each step specifies the exact runtime and component used (hash)
+  - (optional) masking sensitive inputs, outputs, environment and exports
+- Replaying a trace
+  - reuses the exact runtimes and components from trace
+  - output of trace will be the same trace if build is deterministic
+
+### Example invocations
+
+#### Commandline
+
+- `STEPS=$(cat steps.yml) step-runner ci`
+- `step-runner local .gitlab-ci.yml --format gitlab-ci --job-name hello-world --output-file trace.json`
+- `step-runner replay trace.json`
+- `step-runner ci --port 8080`
+
+#### GitLab CI
+
+```yaml
+hello-world:
+  image: registry.gitlab.com/gitlab-org/step-runner
+  variables:
+    STEPS: |
+      - step: gitlab.com/josephburnett/component-hello-steppy@master
+        inputs:
+          greeting: "hello ${{ env.name }}"
+        env:
+          name: world
+  script:
+    - /step-runner ci
+  artifacts:
+    paths:
+      - trace.json
+```
+
+### Basic compilation and execution process
+
+Steps as expressed in GitLab CI are complied to the baseline step definition.
+Referenced steps are loaded and compliled to produce an `exec` command,
+or to produce an additional list of GitLab CI steps which are compiled recursively.
+Each steps is executed immediately after compilation so its output will be available for subsequent compilations.
+
+![diagram of data during compilation](data.drawio.png)
+
+Steps return outputs and exports via files which are collected by Step Runner after each step.
+Finally all the compiled inputs and outputs for each step are collected in a step trace.
+
+![sequenced diagram of step runner compilation and execution](step-runner-sequence.drawio.png)
+
 ### GitLab Steps definition and syntax
 
 - [Step Definition](step-definition.md).
@@ -142,8 +216,20 @@ TBD
 
 ## Design and implementation details
 
-TBD
+See [implementation.md](implementation.md) and [runner-integration.md](runner-integration.md).
 
 ## References
 
+- [GitLab Issue #215511](https://gitlab.com/gitlab-org/gitlab/-/issues/215511)
+- [Step Runner Code](https://gitlab.com/josephburnett/step-runner/-/tree/blueprint2).
+  This is the exploratory code created during the writing of this blueprint.
+  It shows the structure of the Step Runner binary and how the pieces fit together.
+  It runs but doesn't quite do the right thing (see all the TODOs).
+- [CI Steps / CI Events / Executors / Taskonaut (video)](https://youtu.be/nZoO547IISM).
+  Some high-level discussion about how these 4 blueprints relate to each other.
+  And a good prequel to the video about this MR.
+- [Steps in Runner (video)](https://youtu.be/82WLQ4zHYts).
+  A walk through of the Step Runner details from the code perspective.
+- [CI YAML keywords](https://gitlab.com/gitlab-org/gitlab/-/issues/398129#note_1324467337).
+  An inventory of affected keywords.
 - [GitLab Epic 11535](https://gitlab.com/groups/gitlab-org/-/epics/11535)

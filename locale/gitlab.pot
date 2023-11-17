@@ -27875,7 +27875,7 @@ msgstr ""
 msgid "Last Accessed On"
 msgstr ""
 
-msgid "Last Activity"
+msgid "Last GitLab activity"
 msgstr ""
 
 msgid "Last Name"
@@ -42328,7 +42328,7 @@ msgstr ""
 msgid "ScanResultPolicy|Prevent approval by merge request's author"
 msgstr ""
 
-msgid "ScanResultPolicy|Prevent branch protection modification"
+msgid "ScanResultPolicy|Prevent branch modification"
 msgstr ""
 
 msgid "ScanResultPolicy|Prevent pushing and force pushing"

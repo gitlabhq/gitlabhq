@@ -8,12 +8,13 @@ import {
   GlTableLite,
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
+import { isEqual } from 'lodash';
 
 import { s__, __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
-import { joinPaths } from '~/lib/utils/url_utility';
-import { getBulkImportsHistory } from '~/rest_api';
+import { joinPaths, getParameterValues } from '~/lib/utils/url_utility';
+import { getBulkImportHistory, getBulkImportsHistory } from '~/rest_api';
 import ImportStatus from '~/import_entities/import_groups/components/import_status.vue';
 import { StatusPoller } from '~/import_entities/import_groups/services/status_poller';
 
@@ -110,12 +111,18 @@ export default {
     showDetailsLink() {
       return this.glFeatures.bulkImportDetailsPage;
     },
+
+    paginationConfigCopy() {
+      return { ...this.paginationConfig };
+    },
   },
 
   watch: {
-    paginationConfig: {
-      handler() {
-        this.loadHistoryItems();
+    paginationConfigCopy: {
+      handler(newValue, oldValue) {
+        if (!isEqual(newValue, oldValue)) {
+          this.loadHistoryItems();
+        }
       },
       deep: true,
     },
@@ -159,10 +166,19 @@ export default {
   },
 
   methods: {
+    fetchFn(params) {
+      const bulkImportId = getParameterValues('bulk_import_id')[0];
+
+      return bulkImportId
+        ? getBulkImportHistory(bulkImportId, params)
+        : getBulkImportsHistory(params);
+    },
+
     async loadHistoryItems() {
       try {
         this.loading = true;
-        const { data: historyItems, headers } = await getBulkImportsHistory({
+
+        const { data: historyItems, headers } = await this.fetchFn({
           page: this.paginationConfig.page,
           per_page: this.paginationConfig.perPage,
         });

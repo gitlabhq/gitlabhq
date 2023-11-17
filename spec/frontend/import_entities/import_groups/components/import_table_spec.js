@@ -13,6 +13,7 @@ import { STATUSES } from '~/import_entities/constants';
 import { i18n, ROOT_NAMESPACE } from '~/import_entities/import_groups/constants';
 import ImportTable from '~/import_entities/import_groups/components/import_table.vue';
 import ImportStatus from '~/import_entities/import_groups/components/import_status.vue';
+import ImportHistoryLink from '~/import_entities/import_groups/components//import_history_link.vue';
 import importGroupsMutation from '~/import_entities/import_groups/graphql/mutations/import_groups.mutation.graphql';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
@@ -177,6 +178,23 @@ describe('import table', () => {
     await waitForPromises();
 
     expect(findAllImportStatuses().wrappers.map((w) => w.text())).toEqual(expectedStatuses);
+  });
+
+  it('renders import history link for imports with id', async () => {
+    createComponent({
+      bulkImportSourceGroups: () => ({
+        nodes: FAKE_GROUPS,
+        pageInfo: FAKE_PAGE_INFO,
+        versionValidation: FAKE_VERSION_VALIDATION,
+      }),
+    });
+    await waitForPromises();
+
+    const importHistoryLinks = wrapper.findAllComponents(ImportHistoryLink);
+
+    expect(importHistoryLinks).toHaveLength(2);
+    expect(importHistoryLinks.at(0).props('id')).toBe(FAKE_GROUPS[1].id);
+    expect(importHistoryLinks.at(1).props('id')).toBe(FAKE_GROUPS[3].id);
   });
 
   it('correctly maintains root namespace as last import target', async () => {

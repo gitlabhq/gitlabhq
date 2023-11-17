@@ -13,7 +13,7 @@ import {
   GlFormCheckbox,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce, isNumber } from 'lodash';
 import { createAlert } from '~/alert';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __, n__, sprintf } from '~/locale';
@@ -36,6 +36,7 @@ import { NEW_NAME_FIELD, ROOT_NAMESPACE, i18n } from '../constants';
 import { StatusPoller } from '../services/status_poller';
 import { isFinished, isAvailableForImport, isNameValid, isSameTarget } from '../utils';
 import ImportActionsCell from './import_actions_cell.vue';
+import ImportHistoryLink from './import_history_link.vue';
 import ImportSourceCell from './import_source_cell.vue';
 import ImportStatusCell from './import_status.vue';
 import ImportTargetCell from './import_target_cell.vue';
@@ -61,6 +62,7 @@ export default {
     ImportTargetCell,
     ImportStatusCell,
     ImportActionsCell,
+    ImportHistoryLink,
     PaginationBar,
     HelpPopover,
   },
@@ -350,6 +352,12 @@ export default {
 
     hasFailures(group) {
       return group.progress?.hasFailures;
+    },
+
+    showHistoryLink(group) {
+      // We need to check for `isNumber` to make sure `id` is passed from the backend
+      // and not "LOCAL-PROGRESS-${id}" as defined by client_factory.js
+      return group.progress?.id && isNumber(group.progress.id);
     },
 
     updateImportTarget(group, changes) {
@@ -800,6 +808,12 @@ export default {
           </template>
           <template #cell(progress)="{ item: group }">
             <import-status-cell :status="group.visibleStatus" :has-failures="hasFailures(group)" />
+            <import-history-link
+              v-if="showHistoryLink(group)"
+              :id="group.progress.id"
+              :history-path="historyPath"
+              class="gl-display-inline-block gl-mt-2"
+            />
           </template>
           <template #cell(actions)="{ item: group, index }">
             <import-actions-cell

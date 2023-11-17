@@ -26,7 +26,7 @@ module Ci
         scope :order_by_released_at_asc, -> { joins(:release).keyset_order_by_released_at_asc }
         scope :order_by_released_at_desc, -> { joins(:release).keyset_order_by_released_at_desc }
 
-        delegate :name, :description, :tag, :sha, :released_at, :author_id, to: :release
+        delegate :sha, :released_at, :author_id, to: :release
 
         after_destroy :update_catalog_resource
         after_save :update_catalog_resource
@@ -112,6 +112,14 @@ module Ci
               order_by_released_at_desc
             end
           end
+        end
+
+        def name
+          release.tag
+        end
+
+        def commit
+          project.commit_by(oid: sha)
         end
 
         private

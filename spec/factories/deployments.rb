@@ -69,5 +69,9 @@ FactoryBot.define do
         deployment.succeed!
       end
     end
+
+    trait :with_bridge do
+      deployable { association :ci_bridge, environment: environment.name, pipeline: association(:ci_pipeline, project: environment.project) }
+    end
   end
 end

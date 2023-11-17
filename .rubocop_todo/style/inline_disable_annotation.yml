@@ -2938,7 +2938,6 @@ Style/InlineDisableAnnotation:
     - 'spec/graphql/mutations/design_management/delete_spec.rb'
     - 'spec/graphql/resolvers/board_resolver_spec.rb'
     - 'spec/graphql/resolvers/boards_resolver_spec.rb'
-    - 'spec/graphql/resolvers/ci/catalog/versions_resolver_spec.rb'
     - 'spec/haml_lint/linter/inline_javascript_spec.rb'
     - 'spec/haml_lint/linter/no_plain_nodes_spec.rb'
     - 'spec/helpers/admin/abuse_reports_helper_spec.rb'

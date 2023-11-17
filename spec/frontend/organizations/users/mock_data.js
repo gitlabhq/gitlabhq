@@ -40,3 +40,11 @@ export const MOCK_USERS = [
 export const MOCK_USERS_FORMATTED = MOCK_USERS.map(({ badges, user }) => {
   return { ...user, badges, email: user.publicEmail };
 });
+
+export const MOCK_PAGE_INFO = {
+  startCursor: 'aaaa',
+  endCursor: 'bbbb',
+  hasNextPage: true,
+  hasPreviousPage: true,
+  __typename: 'PageInfo',
+};

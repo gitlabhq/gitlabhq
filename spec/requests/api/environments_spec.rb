@@ -374,32 +374,71 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
   end
 
   describe 'GET /projects/:id/environments/:environment_id' do
+    let_it_be(:bridge_job) { create(:ci_bridge, :running, project: project, user: user) }
+    let_it_be(:build_job) { create(:ci_build, :running, project: project, user: user) }
+
     context 'as member of the project' do
-      it 'returns project environments' do
-        create(:deployment, :success, project: project, environment: environment)
+      shared_examples "returns project environments" do
+        it 'returns expected response' do
+          create(
+            :deployment,
+            :success,
+            project: project,
+            environment: environment,
+            deployable: job
+          )
 
-        get api("/projects/#{project.id}/environments/#{environment.id}", user)
+          get api("/projects/#{project.id}/environments/#{environment.id}", user)
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to match_response_schema('public_api/v4/environment')
-        expect(json_response['last_deployment']).to be_present
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/environment')
+          expect(json_response['last_deployment']).to be_present
+        end
       end
 
-      it 'returns 200 HTTP status when using JOB-TOKEN auth' do
-        job = create(:ci_build, :running, project: project, user: user)
+      context "when the deployable is a bridge" do
+        it_behaves_like "returns project environments" do
+          let(:job) { bridge_job }
+        end
 
-        get api("/projects/#{project.id}/environments/#{environment.id}"),
-            params: { job_token: job.token }
+        # No test for Ci::Bridge JOB-TOKEN auth because it doesn't implement the `.token` method.
+      end
 
-        expect(response).to have_gitlab_http_status(:ok)
+      context "when the deployable is a build" do
+        it_behaves_like "returns project environments" do
+          let(:job) { build_job }
+        end
+
+        it 'returns 200 HTTP status when using JOB-TOKEN auth' do
+          get(
+            api("/projects/#{project.id}/environments/#{environment.id}"),
+            params: { job_token: build_job.token }
+          )
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
       end
     end
 
     context 'as non member' do
-      it 'returns a 404 status code' do
-        get api("/projects/#{project.id}/environments/#{environment.id}", non_member)
+      shared_examples 'environment will not be found' do
+        it 'returns a 404 status code' do
+          get api("/projects/#{project.id}/environments/#{environment.id}", non_member)
 
-        expect(response).to have_gitlab_http_status(:not_found)
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context "when the deployable is a bridge" do
+        it_behaves_like "environment will not be found" do
+          let(:job) { bridge_job }
+        end
+      end
+
+      context "when the deployable is a build" do
+        it_behaves_like "environment will not be found" do
+          let(:job) { build_job }
+        end
       end
     end
   end

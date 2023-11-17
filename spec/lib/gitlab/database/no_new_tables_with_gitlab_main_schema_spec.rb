@@ -11,7 +11,9 @@ RSpec.describe 'new tables with gitlab_main schema', feature_category: :cell do
 
   # Specific tables can be exempted from this requirement, and such tables must be added to the `exempted_tables` list.
   let!(:exempted_tables) do
-    []
+    [
+      "audit_events_instance_amazon_s3_configurations" # https://gitlab.com/gitlab-org/gitlab/-/issues/431327
+    ]
   end
 
   let!(:starting_from_milestone) { 16.7 }

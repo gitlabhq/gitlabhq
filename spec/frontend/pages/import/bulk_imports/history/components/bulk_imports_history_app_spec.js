@@ -1,16 +1,23 @@
 import { GlEmptyState, GlLoadingIcon, GlTableLite } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { getParameterValues } from '~/lib/utils/url_utility';
+
+import BulkImportsHistoryApp from '~/pages/import/bulk_imports/history/components/bulk_imports_history_app.vue';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
-import BulkImportsHistoryApp from '~/pages/import/bulk_imports/history/components/bulk_imports_history_app.vue';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  getParameterValues: jest.fn().mockReturnValue([]),
+}));
 
 describe('BulkImportsHistoryApp', () => {
-  const API_URL = '/api/v4/bulk_imports/entities';
+  const BULK_IMPORTS_API_URL = '/api/v4/bulk_imports/entities';
 
   const DEFAULT_HEADERS = {
     'x-page': 1,
@@ -73,14 +80,14 @@ describe('BulkImportsHistoryApp', () => {
   }
 
   const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
+  const findPaginationBar = () => wrapper.findComponent(PaginationBar);
 
   beforeEach(() => {
     gon.api_version = 'v4';
-  });
 
-  beforeEach(() => {
+    getParameterValues.mockReturnValue([]);
     mock = new MockAdapter(axios);
-    mock.onGet(API_URL).reply(HTTP_STATUS_OK, DUMMY_RESPONSE, DEFAULT_HEADERS);
+    mock.onGet(BULK_IMPORTS_API_URL).reply(HTTP_STATUS_OK, DUMMY_RESPONSE, DEFAULT_HEADERS);
   });
 
   afterEach(() => {
@@ -94,9 +101,9 @@ describe('BulkImportsHistoryApp', () => {
     });
 
     it('renders empty state when no data is available', async () => {
-      mock.onGet(API_URL).reply(HTTP_STATUS_OK, [], DEFAULT_HEADERS);
+      mock.onGet(BULK_IMPORTS_API_URL).reply(HTTP_STATUS_OK, [], DEFAULT_HEADERS);
       createComponent();
-      await axios.waitForAll();
+      await waitForPromises();
 
       expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
       expect(wrapper.findComponent(GlEmptyState).exists()).toBe(true);
@@ -104,7 +111,7 @@ describe('BulkImportsHistoryApp', () => {
 
     it('renders table with data when history is available', async () => {
       createComponent();
-      await axios.waitForAll();
+      await waitForPromises();
 
       const table = wrapper.findComponent(GlTableLite);
       expect(table.exists()).toBe(true);
@@ -116,14 +123,34 @@ describe('BulkImportsHistoryApp', () => {
       const NEW_PAGE = 4;
 
       createComponent();
-      await axios.waitForAll();
+      await waitForPromises();
       mock.resetHistory();
 
-      wrapper.findComponent(PaginationBar).vm.$emit('set-page', NEW_PAGE);
-      await axios.waitForAll();
+      findPaginationBar().vm.$emit('set-page', NEW_PAGE);
+      await waitForPromises();
 
       expect(mock.history.get.length).toBe(1);
       expect(mock.history.get[0].params).toStrictEqual(expect.objectContaining({ page: NEW_PAGE }));
+    });
+  });
+
+  describe('when filtering by bulk_import_id param', () => {
+    const mockId = 2;
+
+    beforeEach(() => {
+      getParameterValues.mockReturnValue([mockId]);
+    });
+
+    it('makes a request to bulk_import_history endpoint', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(mock.history.get.length).toBe(1);
+      expect(mock.history.get[0].url).toBe(`/api/v4/bulk_imports/${mockId}/entities`);
+      expect(mock.history.get[0].params).toStrictEqual({
+        page: 1,
+        per_page: 20,
+      });
     });
   });
 
@@ -131,11 +158,11 @@ describe('BulkImportsHistoryApp', () => {
     const NEW_PAGE_SIZE = 4;
 
     createComponent();
-    await axios.waitForAll();
+    await waitForPromises();
     mock.resetHistory();
 
-    wrapper.findComponent(PaginationBar).vm.$emit('set-page-size', NEW_PAGE_SIZE);
-    await axios.waitForAll();
+    findPaginationBar().vm.$emit('set-page-size', NEW_PAGE_SIZE);
+    await waitForPromises();
 
     expect(mock.history.get.length).toBe(1);
     expect(mock.history.get[0].params).toStrictEqual(
@@ -146,15 +173,14 @@ describe('BulkImportsHistoryApp', () => {
   it('resets page to 1 when page size is changed', async () => {
     const NEW_PAGE_SIZE = 4;
 
-    mock.onGet(API_URL).reply(200, DUMMY_RESPONSE, DEFAULT_HEADERS);
     createComponent();
-    await axios.waitForAll();
-    wrapper.findComponent(PaginationBar).vm.$emit('set-page', 2);
-    await axios.waitForAll();
+    await waitForPromises();
+    findPaginationBar().vm.$emit('set-page', 2);
+    await waitForPromises();
     mock.resetHistory();
 
-    wrapper.findComponent(PaginationBar).vm.$emit('set-page-size', NEW_PAGE_SIZE);
-    await axios.waitForAll();
+    findPaginationBar().vm.$emit('set-page-size', NEW_PAGE_SIZE);
+    await waitForPromises();
 
     expect(mock.history.get.length).toBe(1);
     expect(mock.history.get[0].params).toStrictEqual(
@@ -166,18 +192,18 @@ describe('BulkImportsHistoryApp', () => {
     const NEW_PAGE_SIZE = 4;
 
     createComponent();
-    await axios.waitForAll();
+    await waitForPromises();
     mock.resetHistory();
 
-    wrapper.findComponent(PaginationBar).vm.$emit('set-page-size', NEW_PAGE_SIZE);
-    await axios.waitForAll();
+    findPaginationBar().vm.$emit('set-page-size', NEW_PAGE_SIZE);
+    await waitForPromises();
 
     expect(findLocalStorageSync().props('value')).toBe(NEW_PAGE_SIZE);
   });
 
   it('renders link to destination_full_path for destination group', async () => {
     createComponent({ shallow: false });
-    await axios.waitForAll();
+    await waitForPromises();
 
     expect(wrapper.find('tbody tr a').attributes().href).toBe(
       `/${DUMMY_RESPONSE[0].destination_full_path}`,
@@ -187,9 +213,9 @@ describe('BulkImportsHistoryApp', () => {
   it('renders destination as text when destination_full_path is not defined', async () => {
     const RESPONSE = [{ ...DUMMY_RESPONSE[0], destination_full_path: null }];
 
-    mock.onGet(API_URL).reply(HTTP_STATUS_OK, RESPONSE, DEFAULT_HEADERS);
+    mock.onGet(BULK_IMPORTS_API_URL).reply(HTTP_STATUS_OK, RESPONSE, DEFAULT_HEADERS);
     createComponent({ shallow: false });
-    await axios.waitForAll();
+    await waitForPromises();
 
     expect(wrapper.find('tbody tr a').exists()).toBe(false);
     expect(wrapper.find('tbody tr span').text()).toBe(
@@ -199,14 +225,14 @@ describe('BulkImportsHistoryApp', () => {
 
   it('adds slash to group urls', async () => {
     createComponent({ shallow: false });
-    await axios.waitForAll();
+    await waitForPromises();
 
     expect(wrapper.find('tbody tr a').text()).toBe(`${DUMMY_RESPONSE[0].destination_full_path}/`);
   });
 
   it('does not prefixes project urls with slash', async () => {
     createComponent({ shallow: false });
-    await axios.waitForAll();
+    await waitForPromises();
 
     expect(wrapper.findAll('tbody tr a').at(1).text()).toBe(
       DUMMY_RESPONSE[1].destination_full_path,
@@ -215,9 +241,9 @@ describe('BulkImportsHistoryApp', () => {
 
   describe('details button', () => {
     beforeEach(() => {
-      mock.onGet(API_URL).reply(HTTP_STATUS_OK, DUMMY_RESPONSE, DEFAULT_HEADERS);
+      mock.onGet(BULK_IMPORTS_API_URL).reply(HTTP_STATUS_OK, DUMMY_RESPONSE, DEFAULT_HEADERS);
       createComponent({ shallow: false });
-      return axios.waitForAll();
+      return waitForPromises();
     });
 
     it('renders details button if relevant item has failures', () => {
@@ -255,7 +281,7 @@ describe('BulkImportsHistoryApp', () => {
         createComponent({ shallow: false });
         await waitForPromises();
 
-        expect(mock.history.get.map((x) => x.url)).toEqual([API_URL]);
+        expect(mock.history.get.map((x) => x.url)).toEqual([BULK_IMPORTS_API_URL]);
       });
     });
 
@@ -279,7 +305,7 @@ describe('BulkImportsHistoryApp', () => {
         const RESPONSE = [mockCreatedImport, ...DUMMY_RESPONSE];
         const POLL_HEADERS = { 'poll-interval': pollInterval };
 
-        mock.onGet(API_URL).reply(HTTP_STATUS_OK, RESPONSE, DEFAULT_HEADERS);
+        mock.onGet(BULK_IMPORTS_API_URL).reply(HTTP_STATUS_OK, RESPONSE, DEFAULT_HEADERS);
         mock.onGet(mockRealtimeChangesPath).replyOnce(HTTP_STATUS_OK, [], POLL_HEADERS);
         mock
           .onGet(mockRealtimeChangesPath)
@@ -293,7 +319,10 @@ describe('BulkImportsHistoryApp', () => {
       it('starts polling for realtime changes', () => {
         jest.advanceTimersByTime(pollInterval);
 
-        expect(mock.history.get.map((x) => x.url)).toEqual([API_URL, mockRealtimeChangesPath]);
+        expect(mock.history.get.map((x) => x.url)).toEqual([
+          BULK_IMPORTS_API_URL,
+          mockRealtimeChangesPath,
+        ]);
         expect(wrapper.findAll('tbody tr').at(0).text()).toContain('Pending');
       });
 
@@ -305,7 +334,7 @@ describe('BulkImportsHistoryApp', () => {
         await waitForPromises();
 
         expect(mock.history.get.map((x) => x.url)).toEqual([
-          API_URL,
+          BULK_IMPORTS_API_URL,
           mockRealtimeChangesPath,
           mockRealtimeChangesPath,
         ]);

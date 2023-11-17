@@ -1,7 +1,7 @@
 import pollUntilComplete from '~/lib/utils/poll_until_complete';
 import { STATUS_NOT_FOUND } from '../../constants';
+import { parseCodeclimateMetrics } from '../utils/codequality_parser';
 import * as types from './mutation_types';
-import { parseCodeclimateMetrics } from './utils/codequality_parser';
 
 export const setPaths = ({ commit }, paths) => commit(types.SET_PATHS, paths);
 

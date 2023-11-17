@@ -2,7 +2,7 @@ import axios from '~/lib/utils/axios_utils';
 import { EXTENSION_ICONS } from '~/vue_merge_request_widget/constants';
 import { SEVERITY_ICONS_MR_WIDGET } from '~/ci/reports/codequality_report/constants';
 import { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
-import { parseCodeclimateMetrics } from '~/ci/reports/codequality_report/store/utils/codequality_parser';
+import { parseCodeclimateMetrics } from '~/ci/reports/codequality_report/utils/codequality_parser';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { i18n, codeQualityPrefixes } from './constants';
 
