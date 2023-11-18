@@ -136,7 +136,7 @@ export default {
       return REVIEW_STATE_ICONS[user.mergeRequestInteraction.reviewState];
     },
     showRequestReviewButton(user) {
-      if (this.glFeatures.mrRequestChanges) {
+      if (this.glFeatures.mrRequestChanges && !user.mergeRequestInteraction.approved) {
         return user.mergeRequestInteraction.reviewState !== 'UNREVIEWED';
       }
 

@@ -53,7 +53,7 @@ module Sidekiq
                          Sidekiq::ReliableFetch
                        end
 
-      config[:fetch] = fetch_strategy.new(config)
+      config[:fetch_class] = fetch_strategy
 
       Sidekiq.logger.info('GitLab reliable fetch activated!')
 
@@ -115,18 +115,18 @@ module Sidekiq
 
     attr_reader :cleanup_interval, :last_try_to_take_lease_at, :lease_interval,
                 :queues, :use_semi_reliable_fetch,
-                :strictly_ordered_queues
+                :strictly_ordered_queues, :config
 
-    def initialize(options)
-      raise ArgumentError, 'missing queue list' unless options[:queues]
+    def initialize(capsule)
+      raise ArgumentError, 'missing queue list' unless capsule.config.queues
 
-      @config = options
+      @config = capsule.config
       @interrupted_set = Sidekiq::InterruptedSet.new
-      @cleanup_interval = options.fetch(:cleanup_interval, DEFAULT_CLEANUP_INTERVAL)
-      @lease_interval = options.fetch(:lease_interval, DEFAULT_LEASE_INTERVAL)
+      @cleanup_interval = config.fetch(:cleanup_interval, DEFAULT_CLEANUP_INTERVAL)
+      @lease_interval = config.fetch(:lease_interval, DEFAULT_LEASE_INTERVAL)
       @last_try_to_take_lease_at = 0
-      @strictly_ordered_queues = !!options[:strict]
-      @queues = options[:queues].map { |q| "queue:#{q}" }
+      @strictly_ordered_queues = !!config[:strict]
+      @queues = config.queues.map { |q| "queue:#{q}" }
     end
 
     def retrieve_work
@@ -140,7 +140,7 @@ module Sidekiq
             "#{self.class} does not implement #{__method__}"
     end
 
-    def bulk_requeue(inprogress, _options)
+    def bulk_requeue(inprogress)
       return if inprogress.empty?
 
       Sidekiq.redis do |conn|
@@ -202,7 +202,7 @@ module Sidekiq
       Sidekiq.logger.info('Cleaning working queues')
 
       Sidekiq.redis do |conn|
-        conn.scan_each(match: "#{WORKING_QUEUE_PREFIX}:queue:*", count: SCAN_COUNT) do |key|
+        conn.scan(match: "#{WORKING_QUEUE_PREFIX}:queue:*", count: SCAN_COUNT) do |key|
           original_queue, identity = extract_queue_and_identity(key)
 
           next if original_queue.nil? || identity.nil?
@@ -234,7 +234,7 @@ module Sidekiq
       rescue NameError
       end
 
-      max_retries_after_interruption ||= @config[:max_retries_after_interruption]
+      max_retries_after_interruption ||= config[:max_retries_after_interruption]
       max_retries_after_interruption ||= DEFAULT_MAX_RETRIES_AFTER_INTERRUPTION
       max_retries_after_interruption
     end
@@ -263,7 +263,7 @@ module Sidekiq
       @last_try_to_take_lease_at = Time.now.to_f
 
       Sidekiq.redis do |conn|
-        conn.set(LEASE_KEY, 1, nx: true, ex: cleanup_interval)
+        conn.set(LEASE_KEY, 1, 'nx', 'ex', cleanup_interval)
       end
     end
 

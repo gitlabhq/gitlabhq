@@ -36,7 +36,11 @@ module Ci
 
     chronic_duration_attr_reader :timeout_human_readable, :timeout
 
-    scope :scoped_build, -> { where("#{quoted_table_name}.build_id = #{Ci::Build.quoted_table_name}.id") }
+    scope :scoped_build, -> do
+      where(arel_table[:build_id].eq(Ci::Build.arel_table[:id]))
+      .where(arel_table[:partition_id].eq(Ci::Build.arel_table[:partition_id]))
+    end
+
     scope :with_interruptible, -> { where(interruptible: true) }
     scope :with_exposed_artifacts, -> { where(has_exposed_artifacts: true) }
 

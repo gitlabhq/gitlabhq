@@ -41,7 +41,7 @@ bundle exec rails generate gitlab:analytics:internal_events \
 
 Where:
 
-- `time_frames`: Valid options are `7d` and `28d` if you provide a `unique` value and `all` for metrics without `unique`. We are working to make `7d` and `28d` work for metrics with `all` time frame in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/411264).
+- `time_frames`: Valid options are `7d` and `28d` if you provide a `unique` value and `7d`, `28d` and `all` for metrics without `unique`.
 - `unique`: Valid options are `user.id`, `project.id`, and `namespace.id`, as they are logged as part of the standard context. We [are actively working](https://gitlab.com/gitlab-org/gitlab/-/issues/411255) on a way to define uniqueness on arbitrary properties sent with the event, such as `merge_request.id`.
 
 ## Trigger events

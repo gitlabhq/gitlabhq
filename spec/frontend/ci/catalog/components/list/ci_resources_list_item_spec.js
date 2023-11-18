@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import { GlAvatar, GlBadge, GlButton, GlSprintf } from '@gitlab/ui';
+import { GlAvatar, GlBadge, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createRouter } from '~/ci/catalog/router/index';
 import CiResourcesListItem from '~/ci/catalog/components/list/ci_resources_list_item.vue';
@@ -10,6 +10,7 @@ import { catalogSinglePageResponse } from '../../mock';
 
 Vue.use(VueRouter);
 
+const defaultEvent = { preventDefault: jest.fn, ctrlKey: false, metaKey: false };
 let router;
 let routerPush;
 
@@ -43,7 +44,7 @@ describe('CiResourcesListItem', () => {
 
   const findAvatar = () => wrapper.findComponent(GlAvatar);
   const findBadge = () => wrapper.findComponent(GlBadge);
-  const findResourceName = () => wrapper.findComponent(GlButton);
+  const findResourceName = () => wrapper.findByTestId('ci-resource-link');
   const findResourceDescription = () => wrapper.findByText(defaultProps.resource.description);
   const findUserLink = () => wrapper.findByTestId('user-link');
   const findTimeAgoMessage = () => wrapper.findComponent(GlSprintf);
@@ -70,8 +71,11 @@ describe('CiResourcesListItem', () => {
       });
     });
 
-    it('renders the resource name button', () => {
+    it('renders the resource name and link', () => {
       expect(findResourceName().exists()).toBe(true);
+      expect(findResourceName().attributes().href).toBe(
+        `/${getIdFromGraphQLId(defaultProps.resource.id)}`,
+      );
     });
 
     it('renders the resource version badge', () => {
@@ -121,18 +125,37 @@ describe('CiResourcesListItem', () => {
   });
 
   describe('when clicking on an item title', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       createComponent();
-
-      await findResourceName().vm.$emit('click');
     });
 
-    it('navigates to the details page', () => {
-      expect(routerPush).toHaveBeenCalledWith({
-        name: CI_RESOURCE_DETAILS_PAGE_NAME,
-        params: {
-          id: getIdFromGraphQLId(resource.id),
-        },
+    describe('without holding down a modifier key', () => {
+      beforeEach(async () => {
+        await findResourceName().vm.$emit('click', defaultEvent);
+      });
+
+      it('navigates to the details page in the same tab', () => {
+        expect(routerPush).toHaveBeenCalledWith({
+          name: CI_RESOURCE_DETAILS_PAGE_NAME,
+          params: {
+            id: getIdFromGraphQLId(resource.id),
+          },
+        });
+      });
+    });
+
+    describe.each`
+      keyName
+      ${'ctrlKey'}
+      ${'metaKey'}
+    `('when $keyName is being held down', ({ keyName }) => {
+      beforeEach(async () => {
+        createComponent();
+        await findResourceName().vm.$emit('click', { ...defaultEvent, [keyName]: true });
+      });
+
+      it('does not call VueRouter push', () => {
+        expect(routerPush).not.toHaveBeenCalled();
       });
     });
   });
@@ -141,7 +164,7 @@ describe('CiResourcesListItem', () => {
     beforeEach(async () => {
       createComponent();
 
-      await findAvatar().vm.$emit('click');
+      await findAvatar().vm.$emit('click', defaultEvent);
     });
 
     it('navigates to the details page', () => {
@@ -160,6 +183,7 @@ describe('CiResourcesListItem', () => {
         createComponent({
           props: {
             resource: {
+              ...resource,
               starCount: 0,
             },
           },

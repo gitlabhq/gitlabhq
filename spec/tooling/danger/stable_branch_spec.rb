@@ -251,6 +251,31 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         end
       end
 
+      context 'with multiple package-and-test pipelines' do
+        let(:pipeline_bridges_response) do
+          [
+            {
+              'name' => 'e2e:package-and-test-ee',
+              'status' => 'success',
+              'downstream_pipeline' => {
+                'id' => '123',
+                'status' => package_and_qa_state
+              }
+            },
+            {
+              'name' => 'follow-up-e2e:package-and-test-ee',
+              'status' => 'failed',
+              'downstream_pipeline' => {
+                'id' => '456',
+                'status' => 'failed'
+              }
+            }
+          ]
+        end
+
+        it_behaves_like 'without a failure'
+      end
+
       context 'when the version API request fails' do
         let(:response_success) { false }
 

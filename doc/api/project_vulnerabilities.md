@@ -9,6 +9,7 @@ type: reference, api
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10242) in GitLab 12.6.
 > - `last_edited_at` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
+> - `start_date` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
 
 WARNING:
 This API is in the process of being deprecated and considered unstable.
@@ -96,7 +97,6 @@ Example response:
         "resolved_by_id": null,
         "resolved_on_default_branch": false,
         "severity": "low",
-        "start_date": null,
         "state": "detected",
         "title": "Regular Expression Denial of Service in debug",
         "updated_at": "2020-04-07T14:01:04.655Z",
@@ -183,7 +183,6 @@ Example response:
     "resolved_by_id": null,
     "resolved_on_default_branch": false,
     "severity": "low",
-    "start_date": null,
     "state": "detected",
     "title": "Regular Expression Denial of Service in debug",
     "updated_at": "2020-04-07T14:01:04.655Z",

@@ -64,7 +64,7 @@ module Gitlab
         def initialize_process_metrics
           metrics = self.metrics
 
-          metrics[:sidekiq_concurrency].set({}, Sidekiq[:concurrency].to_i)
+          metrics[:sidekiq_concurrency].set({}, Sidekiq.default_configuration[:concurrency].to_i)
 
           return unless ::Feature.enabled?(:sidekiq_job_completion_metric_initialize)
 

@@ -149,7 +149,7 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues,
 
   context 'when both multi-store feature flags are off' do
     def with_redis(&block)
-      Sidekiq.redis(&block)
+      Gitlab::Redis::Queues.with(&block)
     end
 
     before do

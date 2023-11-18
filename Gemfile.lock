@@ -169,9 +169,9 @@ PATH
 PATH
   remote: vendor/gems/sidekiq-reliable-fetch
   specs:
-    gitlab-sidekiq-fetcher (0.10.0)
+    gitlab-sidekiq-fetcher (0.11.0)
       json (>= 2.5)
-      sidekiq (~> 6.1)
+      sidekiq (~> 7.0)
 
 GEM
   remote: https://rubygems.org/
@@ -1347,6 +1347,8 @@ GEM
       actionpack (>= 5, < 8)
       redis-rack (>= 2.1.0, < 3)
       redis-store (>= 1.1.0, < 2)
+    redis-client (0.18.0)
+      connection_pool
     redis-rack (2.1.4)
       rack (>= 2.0.8, < 3)
       redis-store (>= 1.2, < 2)
@@ -1529,12 +1531,13 @@ GEM
     shellany (0.0.1)
     shoulda-matchers (5.1.0)
       activesupport (>= 5.2.0)
-    sidekiq (6.5.12)
-      connection_pool (>= 2.2.5, < 3)
-      rack (~> 2.0)
-      redis (>= 4.5.0, < 5)
-    sidekiq-cron (1.8.0)
-      fugit (~> 1)
+    sidekiq (7.1.6)
+      concurrent-ruby (< 2)
+      connection_pool (>= 2.3.0)
+      rack (>= 2.2.4)
+      redis-client (>= 0.14.0)
+    sidekiq-cron (1.9.1)
+      fugit (~> 1.8)
       sidekiq (>= 4.2.1)
     sigdump (0.2.4)
     signet (0.17.0)
@@ -2053,8 +2056,8 @@ DEPENDENCIES
   sentry-ruby (~> 5.8.0)
   sentry-sidekiq (~> 5.8.0)
   shoulda-matchers (~> 5.1.0)
-  sidekiq (~> 6.5.10)
-  sidekiq-cron (~> 1.8.0)
+  sidekiq (~> 7.1.6)
+  sidekiq-cron (~> 1.9.0)
   sigdump (~> 0.2.4)
   simple_po_parser (~> 1.1.6)
   simplecov (~> 0.21)

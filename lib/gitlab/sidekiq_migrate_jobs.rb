@@ -16,17 +16,14 @@ module Gitlab
     # Migrate jobs in SortedSets, i.e. scheduled and retry sets.
     def migrate_set(sidekiq_set)
       source_queues_regex = Regexp.union(mappings.keys)
-      cursor = 0
       scanned = 0
       migrated = 0
 
       estimated_size = Sidekiq.redis { |c| c.zcard(sidekiq_set) }
       logger&.info("Processing #{sidekiq_set} set. Estimated size: #{estimated_size}.")
 
-      begin
-        cursor, jobs = Sidekiq.redis { |c| c.zscan(sidekiq_set, cursor) }
-
-        jobs.each do |(job, score)|
+      Sidekiq.redis do |c|
+        c.zscan(sidekiq_set) do |job, score|
           if scanned > 0 && scanned % LOG_FREQUENCY == 0
             logger&.info("In progress. Scanned records: #{scanned}. Migrated records: #{migrated}.")
           end
@@ -45,7 +42,7 @@ module Gitlab
 
           migrated += migrate_job_in_set(sidekiq_set, job, score, job_hash)
         end
-      end while cursor.to_i != 0
+      end
 
       logger&.info("Done. Scanned records: #{scanned}. Migrated records: #{migrated}.")
 
@@ -61,7 +58,7 @@ module Gitlab
       logger&.info("List of queues based on routing rules: #{routing_rules_queues}")
       Sidekiq.redis do |conn|
         # Redis 6 supports conn.scan_each(match: "queue:*", type: 'list')
-        conn.scan_each(match: "queue:*") do |key|
+        conn.scan("MATCH", "queue:*") do |key|
           # Redis 5 compatibility
           next unless conn.type(key) == 'list'
 
@@ -101,13 +98,9 @@ module Gitlab
       Sidekiq.redis do |connection|
         removed = connection.zrem(sidekiq_set, job)
 
-        if removed
-          connection.zadd(sidekiq_set, score, Gitlab::Json.dump(job_hash))
+        connection.zadd(sidekiq_set, score, Gitlab::Json.dump(job_hash)) if removed > 0
 
-          1
-        else
-          0
-        end
+        removed
       end
     end
 

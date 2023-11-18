@@ -12,6 +12,10 @@ RSpec.describe MergeRequests::SetReviewerReviewedWorker, feature_category: :sour
 
   it_behaves_like 'subscribes to event' do
     let(:event) { approved_event }
+
+    before do
+      stub_feature_flags(mr_request_changes: false)
+    end
   end
 
   it 'calls MergeRequests::UpdateReviewerStateService' do

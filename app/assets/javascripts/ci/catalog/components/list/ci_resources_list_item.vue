@@ -1,13 +1,5 @@
 <script>
-import {
-  GlAvatar,
-  GlBadge,
-  GlButton,
-  GlIcon,
-  GlLink,
-  GlSprintf,
-  GlTooltipDirective,
-} from '@gitlab/ui';
+import { GlAvatar, GlBadge, GlIcon, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
@@ -21,7 +13,6 @@ export default {
   components: {
     GlAvatar,
     GlBadge,
-    GlButton,
     GlIcon,
     GlLink,
     GlSprintf,
@@ -41,6 +32,12 @@ export default {
     },
     authorProfileUrl() {
       return this.latestVersion.author.webUrl;
+    },
+    detailsPageHref() {
+      return this.$router.resolve({
+        name: CI_RESOURCE_DETAILS_PAGE_NAME,
+        params: { id: this.entityId },
+      }).href;
     },
     entityId() {
       return getIdFromGraphQLId(this.resource.id);
@@ -68,7 +65,16 @@ export default {
     },
   },
   methods: {
-    navigateToDetailsPage() {
+    navigateToDetailsPage(e) {
+      // Open link in a new tab if any of these modifier key is held down.
+      if (e?.ctrlKey || e?.metaKey) {
+        return;
+      }
+
+      // Override the <a> tag if no modifier key is held down to use Vue router and not
+      // open a new tab.
+      e.preventDefault();
+
       this.$router.push({
         name: CI_RESOURCE_DETAILS_PAGE_NAME,
         params: { id: this.entityId },
@@ -93,14 +99,14 @@ export default {
     />
     <div class="gl-display-flex gl-flex-direction-column gl-flex-grow-1">
       <div class="gl-display-flex gl-flex-wrap gl-gap-2 gl-mb-2">
-        <gl-button
-          variant="link"
+        <gl-link
           class="gl-text-gray-900! gl-mr-1"
+          :href="detailsPageHref"
           data-testid="ci-resource-link"
           @click="navigateToDetailsPage"
         >
           {{ resourcePath }} <b> {{ resource.name }}</b>
-        </gl-button>
+        </gl-link>
         <div class="gl-display-flex gl-flex-grow-1 gl-md-justify-content-space-between">
           <gl-badge size="sm">{{ tagName }}</gl-badge>
           <span class="gl-display-flex gl-align-items-center gl-ml-5">

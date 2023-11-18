@@ -99,6 +99,11 @@ class CommitStatus < Ci::ApplicationRecord
     preload(project: :namespace)
   end
 
+  scope :scoped_pipeline, -> do
+    where(arel_table[:commit_id].eq(Ci::Pipeline.arel_table[:id]))
+    .where(arel_table[:partition_id].eq(Ci::Pipeline.arel_table[:partition_id]))
+  end
+
   scope :match_id_and_lock_version, -> (items) do
     # it expects that items are an array of attributes to match
     # each hash needs to have `id` and `lock_version`

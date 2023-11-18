@@ -459,20 +459,12 @@ module Ci
     end
 
     scope :with_reports, -> (reports_scope) do
-      where('EXISTS (?)',
-        ::Ci::Build
-          .latest
-          .with_artifacts(reports_scope)
-          .where("#{quoted_table_name}.id = #{Ci::Build.quoted_table_name}.commit_id")
-          .select(1)
-      )
+      where_exists(Ci::Build.latest.scoped_pipeline.with_artifacts(reports_scope))
     end
 
     scope :with_only_interruptible_builds, -> do
-      where('NOT EXISTS (?)',
-        Ci::Build.where("#{Ci::Build.quoted_table_name}.commit_id = #{quoted_table_name}.id")
-                 .with_status(STARTED_STATUSES)
-                 .not_interruptible
+      where_not_exists(
+        Ci::Build.scoped_pipeline.with_status(STARTED_STATUSES).not_interruptible
       )
     end
 
@@ -999,15 +991,15 @@ module Ci
     end
 
     def builds_in_self_and_project_descendants
-      Ci::Build.latest.where(pipeline: self_and_project_descendants)
+      Ci::Build.in_partition(self).latest.where(pipeline: self_and_project_descendants)
     end
 
     def bridges_in_self_and_project_descendants
-      Ci::Bridge.latest.where(pipeline: self_and_project_descendants)
+      Ci::Bridge.in_partition(self).latest.where(pipeline: self_and_project_descendants)
     end
 
     def jobs_in_self_and_project_descendants
-      Ci::Processable.latest.where(pipeline: self_and_project_descendants)
+      Ci::Processable.in_partition(self).latest.where(pipeline: self_and_project_descendants)
     end
 
     def environments_in_self_and_project_descendants(deployment_status: nil)

@@ -18,8 +18,8 @@ module Gitlab
             return true unless @alive
 
             # Tell sidekiq to restart itself
-            # Keep extra safe to wait `Sidekiq[:timeout] + 2` seconds before SIGKILL
-            send_signal(:TERM, $$, 'gracefully shut down', Sidekiq[:timeout] + 2)
+            # Keep extra safe to wait `Sidekiq.default_configuration[:timeout] + 2` seconds before SIGKILL
+            send_signal(:TERM, $$, 'gracefully shut down', Sidekiq.default_configuration[:timeout] + 2)
             return true unless @alive
 
             # Ideally we should never reach this condition

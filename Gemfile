@@ -247,8 +247,8 @@ gem 'state_machines-activerecord', '~> 0.8.0' # rubocop:todo Gemfile/MissingFeat
 gem 'acts-as-taggable-on', '~> 10.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Background jobs
-gem 'sidekiq', '~> 6.5.10' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'sidekiq-cron', '~> 1.8.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'sidekiq', '~> 7.1.6' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'sidekiq-cron', '~> 1.9.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'gitlab-sidekiq-fetcher', path: 'vendor/gems/sidekiq-reliable-fetch', require: 'sidekiq-reliable-fetch' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Cron Parser

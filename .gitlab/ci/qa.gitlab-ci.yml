@@ -121,6 +121,7 @@ trigger-omnibus as-if-foss:
     # Override gitlab repository so that omnibus doesn't use foss repository for CE build
     GITLAB_ALTERNATIVE_REPO: $CI_PROJECT_URL
 
+# If a rename is required for this job, please notify the Delivery team (`@gitlab-org/delivery`)
 e2e:package-and-test-ee:
   extends:
     - .e2e-trigger-base

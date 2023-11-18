@@ -8,6 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10242) in GitLab 12.6.
 > - `last_edited_at` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
+> - `start_date` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
 
 NOTE:
 The former Vulnerabilities API was renamed to Vulnerability Findings API
@@ -64,7 +65,6 @@ Example response:
   "updated_by_id": null,
   "last_edited_by_id": null,
   "closed_by_id": null,
-  "start_date": null,
   "due_date": null,
   "created_at": "2019-10-13T15:08:40.219Z",
   "updated_at": "2019-10-13T15:09:40.382Z",
@@ -113,7 +113,6 @@ Example response:
   "updated_by_id": null,
   "last_edited_by_id": null,
   "closed_by_id": null,
-  "start_date": null,
   "due_date": null,
   "created_at": "2019-10-13T15:08:40.219Z",
   "updated_at": "2019-10-13T15:09:40.382Z",
@@ -162,7 +161,6 @@ Example response:
   "updated_by_id": null,
   "last_edited_by_id": null,
   "closed_by_id": null,
-  "start_date": null,
   "due_date": null,
   "created_at": "2019-10-13T15:08:40.219Z",
   "updated_at": "2019-10-13T15:09:40.382Z",
@@ -211,7 +209,6 @@ Example response:
   "updated_by_id": null,
   "last_edited_by_id": null,
   "closed_by_id": null,
-  "start_date": null,
   "due_date": null,
   "created_at": "2019-10-13T15:08:40.219Z",
   "updated_at": "2019-10-13T15:09:40.382Z",
@@ -260,7 +257,6 @@ Example response:
   "updated_by_id": null,
   "last_edited_by_id": null,
   "closed_by_id": null,
-  "start_date": null,
   "due_date": null,
   "created_at": "2019-10-13T15:08:40.219Z",
   "updated_at": "2019-10-13T15:09:40.382Z",

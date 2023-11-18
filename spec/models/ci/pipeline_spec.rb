@@ -4055,8 +4055,8 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#builds_in_self_and_project_descendants' do
     subject(:builds) { pipeline.builds_in_self_and_project_descendants }
 
-    let(:pipeline) { create(:ci_pipeline) }
-    let!(:build) { create(:ci_build, pipeline: pipeline) }
+    let_it_be_with_refind(:pipeline) { create(:ci_pipeline) }
+    let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
 
     context 'when pipeline is standalone' do
       it 'returns the list of builds' do
@@ -4083,6 +4083,10 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         expect(builds).to contain_exactly(build, child_build, child_of_child_build)
       end
     end
+
+    it 'includes partition_id filter' do
+      expect(builds.where_values_hash).to match(a_hash_including('partition_id' => pipeline.partition_id))
+    end
   end
 
   describe '#build_with_artifacts_in_self_and_project_descendants' do
@@ -4108,7 +4112,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#jobs_in_self_and_project_descendants' do
     subject(:jobs) { pipeline.jobs_in_self_and_project_descendants }
 
-    let(:pipeline) { create(:ci_pipeline) }
+    let_it_be_with_refind(:pipeline) { create(:ci_pipeline) }
 
     shared_examples_for 'fetches jobs in self and project descendant pipelines' do |factory_type|
       let!(:job) { create(factory_type, pipeline: pipeline) }
@@ -4140,6 +4144,10 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         it 'returns the list of jobs' do
           expect(jobs).to contain_exactly(job, child_job, child_of_child_job, child_source_bridge, child_of_child_source_bridge)
         end
+      end
+
+      it 'includes partition_id filter' do
+        expect(jobs.where_values_hash).to match(a_hash_including('partition_id' => pipeline.partition_id))
       end
     end
 

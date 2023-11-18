@@ -55,6 +55,7 @@ RSpec.shared_context 'server metrics with mocked prometheus' do
     allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_mem_total_bytes, anything, {}, :all).and_return(sidekiq_mem_total_bytes)
 
     allow(concurrency_metric).to receive(:set)
+    allow(completion_seconds_metric).to receive(:get)
   end
 end
 

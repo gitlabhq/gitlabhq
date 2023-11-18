@@ -10,22 +10,10 @@ module Gitlab
         '7d' => 'counts_7d',
         '28d' => 'counts_28d'
       }.freeze
+      TIME_FRAMES_DEFAULT = TIME_FRAME_DIRS.keys.freeze
+      TIME_FRAMES_ALLOWED_FOR_UNIQUE = (TIME_FRAMES_DEFAULT - ['all']).freeze
 
-      TIME_FRAMES_DEFAULT = TIME_FRAME_DIRS.keys.tap do |time_frame_defaults|
-        time_frame_defaults.class_eval do
-          def to_s
-            join(", ")
-          end
-        end
-      end.freeze
-
-      ALLOWED_TIERS = %w[free premium ultimate].dup.tap do |tiers_default|
-        tiers_default.class_eval do
-          def to_s
-            join(", ")
-          end
-        end
-      end.freeze
+      ALLOWED_TIERS = %w[free premium ultimate].freeze
 
       NEGATIVE_ANSWERS = %w[no n No NO N].freeze
       POSITIVE_ANSWERS = %w[yes y Yes YES Y].freeze
@@ -50,7 +38,6 @@ module Gitlab
         hide: true
       class_option :time_frames,
         optional: true,
-        default: TIME_FRAMES_DEFAULT,
         type: :array,
         banner: TIME_FRAMES_DEFAULT,
         desc: "Indicates the metrics time frames. Please select one or more from: #{TIME_FRAMES_DEFAULT}"
@@ -141,8 +128,8 @@ module Gitlab
         options[:event]
       end
 
-      def unique(time_frame)
-        return if time_frame == 'all'
+      def unique
+        return unless with_unique?
 
         "\n    unique: #{options.fetch(:unique)}"
       end
@@ -178,16 +165,14 @@ module Gitlab
         Gitlab::VERSION.match('(\d+\.\d+)').captures.first
       end
 
-      def class_name(time_frame)
-        time_frame == 'all' ? 'TotalCountMetric' : 'RedisHLLMetric'
+      def class_name
+        with_unique? ? 'RedisHLLMetric' : 'TotalCountMetric'
       end
 
       def key_path(time_frame)
-        if time_frame == 'all'
-          "count_total_#{event}"
-        else
-          "count_distinct_#{options[:unique].sub('.', '_')}_from_#{event}_#{time_frame}"
-        end
+        return "count_distinct_#{options[:unique].sub('.', '_')}_from_#{event}_#{time_frame}" if with_unique?
+
+        "count_total_#{event}_#{time_frame}"
       end
 
       def metric_file_path(time_frame)
@@ -206,16 +191,18 @@ module Gitlab
         time_frames.each do |time_frame|
           validate_time_frame!(time_frame)
 
-          raise "The option: --unique is  missing" if time_frame != 'all' && !options.key?('unique')
-
           validate_key_path!(time_frame)
         end
       end
 
       def validate_time_frame!(time_frame)
-        return if TIME_FRAME_DIRS.key?(time_frame)
+        unless TIME_FRAME_DIRS.key?(time_frame)
+          raise "Invalid time frame: #{time_frame}, allowed options are: #{TIME_FRAMES_DEFAULT}"
+        end
 
-        raise "Invalid time frame: #{time_frame}, allowed options are: #{TIME_FRAMES_DEFAULT}"
+        invalid_time_frame = with_unique? && TIME_FRAMES_ALLOWED_FOR_UNIQUE.exclude?(time_frame)
+
+        raise "Invalid time frame: #{time_frame} for a metric using `unique`" if invalid_time_frame
       end
 
       def validate_tiers!
@@ -252,12 +239,20 @@ module Gitlab
         end
       end
 
+      def with_unique?
+        options.key?(:unique)
+      end
+
       def free?
         options[:tiers].include? "free"
       end
 
       def time_frames
-        options[:time_frames]
+        @time_frames ||= options[:time_frames] || default_time_frames
+      end
+
+      def default_time_frames
+        with_unique? ? TIME_FRAMES_ALLOWED_FOR_UNIQUE : TIME_FRAMES_DEFAULT
       end
 
       def directory
