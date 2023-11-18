@@ -21,7 +21,7 @@ module Gitlab
             if @command.creates_child_pipeline?
               @command.parent_pipeline_partition_id
             else
-              ::Ci::Pipeline.current_partition_value
+              ::Ci::Pipeline.current_partition_value(project)
             end
           end
         end

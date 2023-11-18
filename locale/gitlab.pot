@@ -42263,9 +42263,6 @@ msgstr ""
 msgid "ScanResultPolicy|Fix available is only applicable to container and dependency scanning"
 msgstr ""
 
-msgid "ScanResultPolicy|If an MR receives all necessary approvals to merge, but then a new commit is added, new approvals are required. This ensures new commits that may include vulnerabilities cannot be introduced."
-msgstr ""
-
 msgid "ScanResultPolicy|If selected, the following choices will overwrite %{linkStart}project settings%{linkEnd} but only affect the branches selected in the policy."
 msgstr ""
 
@@ -42317,13 +42314,7 @@ msgstr ""
 msgid "ScanResultPolicy|Override project approval settings"
 msgstr ""
 
-msgid "ScanResultPolicy|Password confirmation on approvals provides an additional level of security. Enabling this enforces the setting on all projects targeted by this policy."
-msgstr ""
-
 msgid "ScanResultPolicy|Pre-existing"
-msgstr ""
-
-msgid "ScanResultPolicy|Prevent a user from removing a branch from the protected branches list or from deleting a protected branch."
 msgstr ""
 
 msgid "ScanResultPolicy|Prevent approval by commit author"
@@ -42336,9 +42327,6 @@ msgid "ScanResultPolicy|Prevent branch modification"
 msgstr ""
 
 msgid "ScanResultPolicy|Prevent pushing and force pushing"
-msgstr ""
-
-msgid "ScanResultPolicy|Prevent pushing and force pushing to a protected branch."
 msgstr ""
 
 msgid "ScanResultPolicy|Protected branch settings"
@@ -42371,13 +42359,7 @@ msgstr ""
 msgid "ScanResultPolicy|Status is:"
 msgstr ""
 
-msgid "ScanResultPolicy|The merge request author cannot approve their own merge request."
-msgstr ""
-
 msgid "ScanResultPolicy|Unknown"
-msgstr ""
-
-msgid "ScanResultPolicy|Users who have contributed code to the MR are ineligible for approval, ensuring code committers cannot introduce vulnerabilities and approve code to merge."
 msgstr ""
 
 msgid "ScanResultPolicy|When %{scanType} %{scanners} runs against the %{branches} %{branchExceptions} and find(s) %{vulnerabilitiesNumber} %{boldDescription} of the following criteria:"
@@ -42390,6 +42372,24 @@ msgid "ScanResultPolicy|When %{scanType} in an open that targets %{branches} %{b
 msgstr ""
 
 msgid "ScanResultPolicy|When %{scanners} find scanner specified conditions in an open merge request targeting the %{branches} %{branchExceptions} and match %{boldDescription} of the following criteria"
+msgstr ""
+
+msgid "ScanResultPolicy|When enabled, if an MR receives all necessary approvals to merge, but then a new commit is added, new approvals are required."
+msgstr ""
+
+msgid "ScanResultPolicy|When enabled, merge request authors cannot approve their own MRs."
+msgstr ""
+
+msgid "ScanResultPolicy|When enabled, prevents a user from removing a branch from the protected branches list, deleting a protected branch, or changing the default branch if that branch is included in the security policy."
+msgstr ""
+
+msgid "ScanResultPolicy|When enabled, prevents pushing and force pushing to a protected branch if that branch is included in the security policy."
+msgstr ""
+
+msgid "ScanResultPolicy|When enabled, there will be password confirmation on approvals."
+msgstr ""
+
+msgid "ScanResultPolicy|When enabled, users who have contributed code to the MR are ineligible for approval."
 msgstr ""
 
 msgid "ScanResultPolicy|You have selected any protected branch option as a condition. To better protect your project, it is recommended to enable the protect branch settings. %{linkStart}Learn more.%{linkEnd}"

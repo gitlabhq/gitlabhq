@@ -199,7 +199,7 @@ The settings set in the policy overwrite settings in the project.
 | `prevent_approval_by_commit_author` | `boolean` | false    | `true`, `false` | `Any merge request`  | When enabled, users who have contributed code to the MR are ineligible for approval. This ensures code committers cannot introduce vulnerabilities and approve code to merge. |
 | `remove_approvals_with_new_commit`  | `boolean` | false    | `true`, `false` | `Any merge request`  | When enabled, if an MR receives all necessary approvals to merge, but then a new commit is added, new approvals are required. This ensures new commits that may include vulnerabilities cannot be introduced. |
 | `require_password_to_approve`       | `boolean` | false    | `true`, `false` | `Any merge request`  | When enabled, there will be password confirmation on approvals. Password confirmation adds an extra layer of security. |
-| `prevent_pushing_and_force_pushing` | `boolean` | false    | `true`, `false` | All                  | When enabled, prevents users from pushing and force pushing to a protected branch. This ensures users do not bypass the merge request process to add vulnerable code to a branch. |
+| `prevent_pushing_and_force_pushing` | `boolean` | false    | `true`, `false` | All                  | When enabled, prevents users from pushing and force pushing to a protected branch if that branch is included in the security policy. This ensures users do not bypass the merge request process to add vulnerable code to a branch. |
 
 ## Example security scan result policies project
 

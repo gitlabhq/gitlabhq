@@ -12,12 +12,23 @@ module Gitlab
           partition_for(active_partition.value + 1)
         end
 
+        def missing_partitions
+          partitions = []
+          partitions << initial_partition if no_partitions_exist?
+          partitions << next_partition if next_partition_if.call(active_partition)
+          partitions
+        end
+
         def validate_and_fix; end
 
         def after_adding_partitions; end
 
         def extra_partitions
           []
+        end
+
+        def active_partition
+          super || initial_partition
         end
 
         private

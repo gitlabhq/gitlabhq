@@ -5649,6 +5649,22 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '.current_partition_value' do
+    subject { described_class.current_partition_value }
+
+    it { is_expected.to eq(101) }
+
+    it 'accepts an optional argument' do
+      expect(described_class.current_partition_value(build_stubbed(:project))).to eq(101)
+    end
+
+    it 'returns 100 when the flag is disabled' do
+      stub_feature_flags(ci_current_partition_value_101: false)
+
+      is_expected.to eq(100)
+    end
+  end
+
   describe '#notes=' do
     context 'when notes already exist' do
       it 'does not create duplicate notes', :aggregate_failures do

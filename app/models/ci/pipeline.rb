@@ -42,7 +42,7 @@ module Ci
 
     sha_attribute :source_sha
     sha_attribute :target_sha
-    partitionable scope: ->(_) { Ci::Pipeline.current_partition_value }
+    partitionable scope: ->(pipeline) { Ci::Pipeline.current_partition_value(pipeline.project) }
     # Ci::CreatePipelineService returns Ci::Pipeline so this is the only place
     # where we can pass additional information from the service. This accessor
     # is used for storing the processed metadata for linting purposes.
@@ -588,8 +588,14 @@ module Ci
       @auto_devops_pipelines_completed_total ||= Gitlab::Metrics.counter(:auto_devops_pipelines_completed_total, 'Number of completed auto devops pipelines')
     end
 
-    def self.current_partition_value
-      INITIAL_PARTITION_VALUE
+    def self.current_partition_value(project = nil)
+      Gitlab::SafeRequestStore.fetch(:ci_current_partition_value) do
+        if Feature.enabled?(:ci_current_partition_value_101, project)
+          NEXT_PARTITION_VALUE
+        else
+          INITIAL_PARTITION_VALUE
+        end
+      end
     end
 
     def self.object_hierarchy(relation, options = {})

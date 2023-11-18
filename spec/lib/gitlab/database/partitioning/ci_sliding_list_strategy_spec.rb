@@ -6,8 +6,8 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
   let(:connection) { ActiveRecord::Base.connection }
   let(:table_name) { :_test_gitlab_ci_partitioned_test }
   let(:model) { class_double(ApplicationRecord, table_name: table_name, connection: connection) }
-  let(:next_partition_if) { nil }
-  let(:detach_partition_if) { nil }
+  let(:next_partition_if) { ->(_) { false } }
+  let(:detach_partition_if) { ->(_) { false } }
 
   subject(:strategy) do
     described_class.new(model, :partition,
@@ -62,6 +62,16 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
     it 'is the partition with the largest value' do
       expect(strategy.active_partition.value).to eq(101)
     end
+
+    context 'when there are no partitions' do
+      before do
+        drop_partitions
+      end
+
+      it 'is the initial partition' do
+        expect(strategy.active_partition.value).to eq(100)
+      end
+    end
   end
 
   describe '#missing_partitions' do
@@ -74,6 +84,17 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
         expect(extra.length).to eq(1)
         expect(extra.first.value).to eq(102)
       end
+
+      context 'when there are no partitions for the table' do
+        it 'returns partitions for value 100 and 101' do
+          drop_partitions
+
+          missing_partitions = strategy.missing_partitions
+
+          expect(missing_partitions.size).to eq(2)
+          expect(missing_partitions.map(&:value)).to match_array([100, 101])
+        end
+      end
     end
 
     context 'when next_partition_if returns false' do
@@ -85,8 +106,8 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
     end
 
     context 'when there are no partitions for the table' do
-      it 'returns a partition for value 1' do
-        connection.execute("drop table #{table_name}_100; drop table #{table_name}_101;")
+      it 'returns a partition for value 100' do
+        drop_partitions
 
         missing_partitions = strategy.missing_partitions
 
@@ -200,5 +221,9 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
         analyze_interval: analyze_interval
       })
     end
+  end
+
+  def drop_partitions
+    connection.execute("drop table #{table_name}_100; drop table #{table_name}_101;")
   end
 end
