@@ -76,6 +76,8 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
           expect(project).not_to be_repository_read_only
           expect(project.repository_storage).to eq('test_second_storage')
           expect(project.project_repository.shard_name).to eq('test_second_storage')
+          expect(repository_storage_move.reload).to be_finished
+          expect(repository_storage_move.error_message).to be_nil
         end
       end
 
@@ -100,6 +102,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
 
           expect(project).not_to be_repository_read_only
           expect(repository_storage_move.reload).to be_failed
+          expect(repository_storage_move.error_message).to eq('Boom')
         end
       end
 
@@ -126,7 +129,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
 
           expect(project_repository_double).to receive(:replicate)
             .with(project.repository.raw)
-            .and_raise(Gitlab::Git::CommandError)
+            .and_raise(Gitlab::Git::CommandError, 'Boom')
           expect(project_repository_double).to receive(:remove)
 
           expect do
@@ -136,6 +139,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
           expect(project).not_to be_repository_read_only
           expect(project.repository_storage).to eq('default')
           expect(repository_storage_move).to be_failed
+          expect(repository_storage_move.error_message).to eq('Boom')
         end
       end
 
