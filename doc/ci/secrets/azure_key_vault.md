@@ -8,7 +8,7 @@ type: concepts, howto
 # Use Azure Key Vault secrets in GitLab CI/CD **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271271) in GitLab and GitLab Runner 16.3. Due to [issue 424746](https://gitlab.com/gitlab-org/gitlab/-/issues/424746) this feature did not work as expected.
-> - [Issue 424746](https://gitlab.com/gitlab-org/gitlab/-/issues/424746) resolved and this feature made generally available in GitLab and GitLab Runner 16.6.
+> - [Issue 424746](https://gitlab.com/gitlab-org/gitlab/-/issues/424746) resolved and this feature made generally available in GitLab Runner 16.6.
 
 You can use secrets stored in the [Azure Key Vault](https://azure.microsoft.com/en-us/products/key-vault/)
 in your GitLab CI/CD pipelines.
@@ -67,8 +67,8 @@ RESPONSE 400 Bad Request
 AADSTS50027: JWT token is invalid or malformed.
 ```
 
-This occurs due to a known issue in GitLab Runner where the JWT token isn't parsed correctly.
-A fix is [scheduled for a future GitLab Runner release](https://gitlab.com/gitlab-org/gitlab/-/issues/424746).
+This occurs due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/424746) in GitLab Runner where the JWT token isn't parsed correctly.
+To resolve this, upgrade to GitLab Runner 16.6 or later.
 
 ### `Caller is not authorized to perform action on resource` message
 

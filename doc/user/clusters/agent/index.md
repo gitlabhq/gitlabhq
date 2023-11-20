@@ -70,6 +70,13 @@ Kubernetes version to a supported version at any time:
 GitLab aims to support a new minor Kubernetes version three months after its initial release. GitLab supports at least three production-ready Kubernetes minor
 versions at any given time.
 
+When a new version of Kubernetes is released, we will:
+
+- Update this page with the results of our early smoke tests within approximately
+  four weeks.
+- If we expect a delay in releasing new version support, we will update this page
+  with the expected GitLab support version within approximately eight weeks.
+
 When installing the agent, use a Helm version compatible with your Kubernetes version. Other versions of Helm might not work. For a list of compatible versions, see the [Helm version support policy](https://helm.sh/docs/topics/version_skew/).
 
 Support for deprecated APIs can be removed from the GitLab codebase when we drop support for the Kubernetes version that only supports the deprecated API.
