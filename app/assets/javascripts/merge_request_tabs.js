@@ -237,7 +237,8 @@ export default class MergeRequestTabs {
 
   bindEvents() {
     $('.merge-request-tabs a[data-toggle="tabvue"]').on('click', this.clickTab);
-    window.addEventListener('popstate', () => {
+    window.addEventListener('popstate', (event) => {
+      if (event?.state?.skipScrolling) return;
       const action = getActionFromHref(location.href);
 
       this.tabShown(action, location.href);

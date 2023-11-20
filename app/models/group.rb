@@ -434,15 +434,8 @@ class Group < Namespace
     )
   end
 
-  def add_member(user, access_level, current_user: nil, expires_at: nil, ldap: false)
-    Members::Groups::CreatorService.add_member( # rubocop:disable CodeReuse/ServiceClass
-      self,
-      user,
-      access_level,
-      current_user: current_user,
-      expires_at: expires_at,
-      ldap: ldap
-    )
+  def add_member(user, access_level, ...)
+    Members::Groups::CreatorService.add_member(self, user, access_level, ...) # rubocop:disable CodeReuse/ServiceClass
   end
 
   def add_guest(user, current_user = nil)

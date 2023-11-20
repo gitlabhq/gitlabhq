@@ -348,7 +348,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'spec/lib/sidebars/projects/menus/project_information_menu_spec.rb'
     - 'spec/lib/sidebars/projects/menus/repository_menu_spec.rb'
     - 'spec/lib/sidebars/projects/menus/security_compliance_menu_spec.rb'
-    - 'spec/lib/sidebars/projects/menus/shimo_menu_spec.rb'
     - 'spec/lib/sidebars/projects/panel_spec.rb'
     - 'spec/mailers/abuse_report_mailer_spec.rb'
     - 'spec/mailers/devise_mailer_spec.rb'

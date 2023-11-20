@@ -45,20 +45,7 @@ RSpec.describe Gitlab::Tracking::EventDefinition do
 
     event_names = Gitlab::Tracking::EventDefinition.definitions.values.map { |e| e.attributes[:action] }
 
-    # This is the list of events that are used in Internal Events but doesn't have an event definition yet.
-    events_that_needs_definitions = %w[
-      g_compliance_dashboard
-      g_project_management_users_epic_issue_added_from_epic
-      i_analytics_dev_ops_adoption
-      i_analytics_dev_ops_score
-      user_edited_cluster_configuration
-      user_viewed_cluster_configuration
-      user_viewed_dashboard_list
-      user_viewed_instrumentation_directions
-      user_visited_dashboard
-    ]
-
-    (from_metric_definitions - events_that_needs_definitions).each do |event|
+    from_metric_definitions.each do |event|
       expect(event_names).to include(event),
         "Event '#{event}' is used in Internal Events but does not have an event definition yet. Please define it."
     end

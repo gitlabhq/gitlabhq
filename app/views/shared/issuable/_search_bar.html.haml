@@ -1,6 +1,8 @@
 - type = local_assigns.fetch(:type)
 - show_sorting_dropdown = local_assigns.fetch(:show_sorting_dropdown, true)
 - disable_target_branch = local_assigns.fetch(:disable_target_branch, false)
+- disable_releases = local_assigns.fetch(:disable_releases, false)
+- disable_environments = local_assigns.fetch(:disable_environments, false)
 - placeholder = local_assigns[:placeholder] || _('Search or filter results…')
 - block_css_class = type != :productivity_analytics ? 'row-content-block second-block' : ''
 
@@ -111,19 +113,20 @@
                     %button.btn.btn-link.js-data-value{ type: 'button' }
                       {{title}}
               = render_if_exists 'shared/issuable/filter_iteration', type: type
-              #js-dropdown-release.filtered-search-input-dropdown-menu.dropdown-menu
-                %ul{ data: { dropdown: true } }
-                  %li.filter-dropdown-item{ data: { value: 'None' } }
-                    %button.btn.btn-link{ type: 'button' }
-                      = _('None')
-                  %li.filter-dropdown-item{ data: { value: 'Any' } }
-                    %button.btn.btn-link{ type: 'button' }
-                      = _('Any')
-                  %li.divider.droplab-item-ignore
-                %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
-                  %li.filter-dropdown-item
-                    %button.btn.btn-link.js-data-value{ type: 'button' }
-                      {{title}}
+              - unless disable_releases
+                #js-dropdown-release.filtered-search-input-dropdown-menu.dropdown-menu
+                  %ul{ data: { dropdown: true } }
+                    %li.filter-dropdown-item{ data: { value: 'None' } }
+                      %button.btn.btn-link{ type: 'button' }
+                        = _('None')
+                    %li.filter-dropdown-item{ data: { value: 'Any' } }
+                      %button.btn.btn-link{ type: 'button' }
+                        = _('Any')
+                    %li.divider.droplab-item-ignore
+                  %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                    %li.filter-dropdown-item
+                      %button.btn.btn-link.js-data-value{ type: 'button' }
+                        {{title}}
               #js-dropdown-label.filtered-search-input-dropdown-menu.dropdown-menu
                 %ul{ data: { dropdown: true } }
                   %li.filter-dropdown-item{ data: { value: 'None' } }
@@ -190,11 +193,12 @@
                     %li.filter-dropdown-item
                       %button.btn.btn-link.js-data-value.monospace
                         {{title}}
-              #js-dropdown-environment.filtered-search-input-dropdown-menu.dropdown-menu
-                %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
-                  %li.filter-dropdown-item
-                    %button.btn.btn-link.js-data-value{ type: 'button' }
-                      {{title}}
+              - unless disable_environments
+                #js-dropdown-environment.filtered-search-input-dropdown-menu.dropdown-menu
+                  %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                    %li.filter-dropdown-item
+                      %button.btn.btn-link.js-data-value{ type: 'button' }
+                        {{title}}
 
               = render_if_exists 'shared/issuable/filter_weight', type: type
 

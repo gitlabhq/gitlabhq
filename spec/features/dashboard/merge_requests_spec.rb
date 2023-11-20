@@ -41,6 +41,18 @@ RSpec.describe 'Dashboard Merge Requests', :js, feature_category: :code_review_w
     expect(page).not_to have_selector('#js-dropdown-target-branch', visible: false)
   end
 
+  it 'disables releases filter' do
+    visit merge_requests_dashboard_path
+
+    expect(page).not_to have_selector('#js-dropdown-release', visible: false)
+  end
+
+  it 'disables environments filter' do
+    visit merge_requests_dashboard_path
+
+    expect(page).not_to have_selector('#js-dropdown-environment', visible: false)
+  end
+
   context 'new merge request dropdown' do
     let(:project_with_disabled_merge_requests) { create(:project, :merge_requests_disabled) }
 

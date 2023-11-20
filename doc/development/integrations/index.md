@@ -353,6 +353,5 @@ You can refer to these issues for examples of adding new integrations:
 
 - [Datadog](https://gitlab.com/gitlab-org/gitlab/-/issues/270123): Metrics collector, similar to the Prometheus integration.
 - [EWM/RTC](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36662): External issue tracker.
-- [Shimo](https://gitlab.com/gitlab-org/gitlab/-/issues/343386): External wiki, similar to the Confluence and External Wiki integrations.
 - [Webex Teams](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31543): Chat notifications.
 - [ZenTao](https://gitlab.com/gitlab-org/gitlab/-/issues/338178): External issue tracker with custom issue views, similar to the Jira integration.

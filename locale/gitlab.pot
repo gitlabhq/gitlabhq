@@ -3174,6 +3174,9 @@ msgstr ""
 msgid "Admin Area / Dashboard"
 msgstr ""
 
+msgid "Admin Mode"
+msgstr ""
+
 msgid "Admin Note"
 msgstr ""
 
@@ -3181,9 +3184,6 @@ msgid "Admin Notifications"
 msgstr ""
 
 msgid "Admin message"
-msgstr ""
-
-msgid "Admin mode"
 msgstr ""
 
 msgid "Admin mode already enabled"
@@ -3640,6 +3640,9 @@ msgid "AdminSettings|Package registry metadata to sync"
 msgstr ""
 
 msgid "AdminSettings|Pause Elasticsearch indexing"
+msgstr ""
+
+msgid "AdminSettings|Pre-receive secret detection"
 msgstr ""
 
 msgid "AdminSettings|Prevent non-administrators from using the selected visibility levels for groups, projects and snippets."
@@ -12868,6 +12871,9 @@ msgstr ""
 msgid "Configure repository storage."
 msgstr ""
 
+msgid "Configure secret detection behavior for all projects in your GitLab instance"
+msgstr ""
+
 msgid "Configure settings for Advanced Search with Elasticsearch."
 msgstr ""
 
@@ -18301,6 +18307,9 @@ msgstr ""
 msgid "Enable"
 msgstr ""
 
+msgid "Enable Admin Mode"
+msgstr ""
+
 msgid "Enable Akismet"
 msgstr ""
 
@@ -18350,9 +18359,6 @@ msgid "Enable What's new: Current tier only"
 msgstr ""
 
 msgid "Enable access to the performance bar for non-administrators in a given group."
-msgstr ""
-
-msgid "Enable admin mode"
 msgstr ""
 
 msgid "Enable and disable Service Desk. Some additional configuration might be required. %{link_start}Learn more%{link_end}."
@@ -18416,6 +18422,9 @@ msgid "Enable or disable keyboard shortcuts in your %{linkStart}user preferences
 msgstr ""
 
 msgid "Enable or disable version check and Service Ping."
+msgstr ""
+
+msgid "Enable pre-receive secret detection"
 msgstr ""
 
 msgid "Enable rate limiting for requests to the specified paths"
@@ -30568,6 +30577,9 @@ msgid "Min Value"
 msgstr ""
 
 msgid "Minimal Access"
+msgstr ""
+
+msgid "Minimize the risk of secrets from being committed to any repository in this GitLab instance."
 msgstr ""
 
 msgid "Minimum capacity to be available before we schedule more mirrors preemptively."
@@ -45003,27 +45015,6 @@ msgstr ""
 msgid "ShellOperations|Maximum number of Git operations per minute"
 msgstr ""
 
-msgid "Shimo|Go to Shimo Workspace"
-msgstr ""
-
-msgid "Shimo|Link to a Shimo Workspace from the sidebar."
-msgstr ""
-
-msgid "Shimo|Shimo"
-msgstr ""
-
-msgid "Shimo|Shimo Workspace"
-msgstr ""
-
-msgid "Shimo|Shimo Workspace URL"
-msgstr ""
-
-msgid "Shimo|Shimo Workspace integration is enabled"
-msgstr ""
-
-msgid "Shimo|You've enabled the Shimo Workspace integration. You can view your wiki directly in Shimo."
-msgstr ""
-
 msgid "Short name"
 msgstr ""
 
@@ -52832,22 +52823,32 @@ msgstr ""
 msgid "ValueStreamAnalytics|%{stageCount}+ items"
 msgstr ""
 
-msgid "ValueStreamAnalytics|%{value}M"
-msgstr ""
+msgid "ValueStreamAnalytics|%{value} day"
+msgid_plural "ValueStreamAnalytics|%{value} days"
+msgstr[0] ""
+msgstr[1] ""
 
-msgid "ValueStreamAnalytics|%{value}d"
-msgstr ""
+msgid "ValueStreamAnalytics|%{value} hour"
+msgid_plural "ValueStreamAnalytics|%{value} hours"
+msgstr[0] ""
+msgstr[1] ""
 
-msgid "ValueStreamAnalytics|%{value}h"
-msgstr ""
+msgid "ValueStreamAnalytics|%{value} minute"
+msgid_plural "ValueStreamAnalytics|%{value} minutes"
+msgstr[0] ""
+msgstr[1] ""
 
-msgid "ValueStreamAnalytics|%{value}m"
-msgstr ""
+msgid "ValueStreamAnalytics|%{value} month"
+msgid_plural "ValueStreamAnalytics|%{value} months"
+msgstr[0] ""
+msgstr[1] ""
 
-msgid "ValueStreamAnalytics|%{value}w"
-msgstr ""
+msgid "ValueStreamAnalytics|%{value} week"
+msgid_plural "ValueStreamAnalytics|%{value} weeks"
+msgstr[0] ""
+msgstr[1] ""
 
-msgid "ValueStreamAnalytics|&lt;1m"
+msgid "ValueStreamAnalytics|&lt;1 minute"
 msgstr ""
 
 msgid "ValueStreamAnalytics|Average number of deployments to production per day."
@@ -56571,6 +56572,9 @@ msgstr ""
 msgid "cannot be changed since member is associated with a custom role"
 msgstr ""
 
+msgid "cannot be changed since the provider is associated with a custom role"
+msgstr ""
+
 msgid "cannot be changed to %{new_type} when linked to a parent %{parent_type}."
 msgstr ""
 
@@ -57965,6 +57969,9 @@ msgstr ""
 msgid "must belong to same project of the work item."
 msgstr ""
 
+msgid "must belong to the same namespace as the custom role's namespace"
+msgstr ""
+
 msgid "must contain only a discord user ID."
 msgstr ""
 
@@ -58242,6 +58249,9 @@ msgid "repository:"
 msgstr ""
 
 msgid "role's base access level does not match the access level of the membership"
+msgstr ""
+
+msgid "role's base access level does not match the default membership role"
 msgstr ""
 
 msgid "rule"

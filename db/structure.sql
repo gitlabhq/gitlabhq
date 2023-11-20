@@ -22942,7 +22942,8 @@ CREATE TABLE saml_providers (
     enforced_group_managed_accounts boolean DEFAULT false NOT NULL,
     prohibited_outer_forks boolean DEFAULT true NOT NULL,
     default_membership_role smallint DEFAULT 10 NOT NULL,
-    git_check_enforced boolean DEFAULT false NOT NULL
+    git_check_enforced boolean DEFAULT false NOT NULL,
+    member_role_id bigint
 );
 
 CREATE SEQUENCE saml_providers_id_seq
@@ -34337,6 +34338,8 @@ CREATE UNIQUE INDEX index_saml_group_links_on_group_id_and_saml_group_name ON sa
 
 CREATE INDEX index_saml_providers_on_group_id ON saml_providers USING btree (group_id);
 
+CREATE INDEX index_saml_providers_on_member_role_id ON saml_providers USING btree (member_role_id);
+
 CREATE UNIQUE INDEX index_saved_replies_on_name_text_pattern_ops ON saved_replies USING btree (user_id, name text_pattern_ops);
 
 CREATE INDEX index_sbom_component_versions_on_component_id ON sbom_component_versions USING btree (component_id);
@@ -37254,6 +37257,9 @@ ALTER TABLE ONLY namespaces
 
 ALTER TABLE ONLY project_topics
     ADD CONSTRAINT fk_34af9ab07a FOREIGN KEY (topic_id) REFERENCES topics(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY saml_providers
+    ADD CONSTRAINT fk_351dde3a84 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY in_product_marketing_emails
     ADD CONSTRAINT fk_35c9101b63 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

@@ -168,7 +168,7 @@ checkbox next to **Two-factor authentication** (2FA) is selected.
 The default setting for **Two-factor grace period** is 48 hours. This should be adjusted
 to a much lower value, such as 8 hours.
 
-Ensure the checkbox next to **Enable admin mode** is selected so that **Admin Mode** is
+Ensure the checkbox next to **Enable Admin Mode** is selected so that **Admin Mode** is
 active. This requires users with Admin access to have to use additional
 authentication in order to perform administrative tasks, enforcing additional 2FA by the user.
 

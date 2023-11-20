@@ -437,10 +437,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        namespace :integrations do
-          resource :shimo, only: [:show]
-        end
-
         get :planning_hierarchy
 
         resources :badges, only: [] do

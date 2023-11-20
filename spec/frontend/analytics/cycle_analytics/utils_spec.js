@@ -45,13 +45,13 @@ describe('Value stream analytics utils', () => {
   describe('medianTimeToParsedSeconds', () => {
     it.each`
       value      | result
-      ${1036800} | ${'1w'}
-      ${259200}  | ${'3d'}
-      ${172800}  | ${'2d'}
-      ${86400}   | ${'1d'}
-      ${1000}    | ${'16m'}
-      ${61}      | ${'1m'}
-      ${59}      | ${'<1m'}
+      ${1036800} | ${'1 week'}
+      ${259200}  | ${'3 days'}
+      ${172800}  | ${'2 days'}
+      ${86400}   | ${'1 day'}
+      ${1000}    | ${'16 minutes'}
+      ${61}      | ${'1 minute'}
+      ${59}      | ${'<1 minute'}
       ${0}       | ${'-'}
     `('will correctly parse $value seconds into $result', ({ value, result }) => {
       expect(medianTimeToParsedSeconds(value)).toBe(result);

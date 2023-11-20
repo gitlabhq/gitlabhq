@@ -820,7 +820,6 @@ ProjectSetting:
 - allow_merge_on_skipped_pipeline
 - only_allow_merge_if_all_status_checks_passed
 - has_confluence
-- has_shimo
 - has_vulnerabilities
 ProtectedEnvironment:
 - id

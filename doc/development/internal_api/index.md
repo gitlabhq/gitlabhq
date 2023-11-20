@@ -1649,9 +1649,9 @@ curl --verbose --request PATCH "https://gitlab.example.com/api/scim/v2/applicati
 
 Returns an empty response with a `204` status code if successful.
 
-### Remove a single SCIM provisioned user
+### Block a single SCIM provisioned user
 
-The user is placed in an `ldap_blocked` status and signed out. This means
+The user is placed in a `blocked` state and signed out. This means
 the user cannot sign in or push or pull code.
 
 ```plaintext

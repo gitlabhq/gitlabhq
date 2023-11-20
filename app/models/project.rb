@@ -232,7 +232,6 @@ class Project < ApplicationRecord
   has_one :pumble_integration, class_name: 'Integrations::Pumble'
   has_one :pushover_integration, class_name: 'Integrations::Pushover'
   has_one :redmine_integration, class_name: 'Integrations::Redmine'
-  has_one :shimo_integration, class_name: 'Integrations::Shimo'
   has_one :slack_integration, class_name: 'Integrations::Slack'
   has_one :slack_slash_commands_integration, class_name: 'Integrations::SlackSlashCommands'
   has_one :squash_tm_integration, class_name: 'Integrations::SquashTm'
@@ -541,7 +540,6 @@ class Project < ApplicationRecord
     delegate :allow_merge_on_skipped_pipeline, :allow_merge_on_skipped_pipeline?, :allow_merge_on_skipped_pipeline=
     delegate :allow_merge_without_pipeline, :allow_merge_without_pipeline?, :allow_merge_without_pipeline=
     delegate :has_confluence?
-    delegate :has_shimo?
     delegate :show_diff_preview_in_email, :show_diff_preview_in_email=, :show_diff_preview_in_email?
     delegate :runner_registration_enabled, :runner_registration_enabled=, :runner_registration_enabled?
     delegate :emails_enabled, :emails_enabled=, :emails_enabled?
@@ -1734,7 +1732,7 @@ class Project < ApplicationRecord
   def disabled_integrations
     return [] if Rails.env.development?
 
-    names = %w[shimo zentao]
+    names = %w[zentao]
 
     # The Slack Slash Commands integration is only available for customers who cannot use the GitLab for Slack app.
     # The GitLab for Slack app integration is only available when enabled through settings.

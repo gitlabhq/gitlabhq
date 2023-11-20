@@ -658,18 +658,18 @@ export const goToFile = ({ state, commit, dispatch, getters }, { path }) => {
     const { fileHash } = state.treeEntries[path];
 
     commit(types.SET_CURRENT_DIFF_FILE, fileHash);
-    document.location.hash = fileHash;
+
+    const newUrl = new URL(window.location);
+    newUrl.hash = fileHash;
+    historyPushState(newUrl, { skipScrolling: true });
+    scrollToElement('.diff-files-holder', { duration: 0 });
 
     if (!getters.isTreePathLoaded(path)) {
-      dispatch('fetchFileByFile')
-        .then(() => {
-          dispatch('scrollToFile', { path });
-        })
-        .catch(() => {
-          createAlert({
-            message: LOAD_SINGLE_DIFF_FAILED,
-          });
+      dispatch('fetchFileByFile').catch(() => {
+        createAlert({
+          message: LOAD_SINGLE_DIFF_FAILED,
         });
+      });
     }
   }
 };

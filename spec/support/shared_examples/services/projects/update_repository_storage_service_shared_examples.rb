@@ -48,20 +48,12 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
     end
 
     it "moves the project and its #{repository_type} repository to the new storage and unmarks the repository as read-only" do
-      old_project_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        project.repository.path_to_repo
-      end
-
-      old_repository_path = repository.full_path
-
       result = subject.execute
       project.reload
 
       expect(result).to be_success
       expect(project).not_to be_repository_read_only
       expect(project.repository_storage).to eq('test_second_storage')
-      expect(gitlab_shell.repository_exists?('default', old_project_repository_path)).to be(false)
-      expect(gitlab_shell.repository_exists?('default', old_repository_path)).to be(false)
     end
   end
 

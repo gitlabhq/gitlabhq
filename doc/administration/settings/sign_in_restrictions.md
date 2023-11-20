@@ -80,7 +80,8 @@ To enable Admin Mode through the UI:
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Sign-in restrictions**.
-1. In the **Admin Mode** section, select the **Require additional authentication for administrative tasks** checkbox.
+1. Select **Enable Admin Mode**.
+1. Select **Save changes**.
 
 ### Turn on Admin Mode for your session
 

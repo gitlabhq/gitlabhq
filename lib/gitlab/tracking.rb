@@ -6,8 +6,14 @@
 module Gitlab
   module Tracking
     class << self
+      delegate :flush, to: :tracker
+
       def enabled?
         tracker.enabled?
+      end
+
+      def micro_verification_enabled?
+        Gitlab::Utils.to_boolean(ENV['VERIFY_TRACKING'], default: false)
       end
 
       def event(category, action, label: nil, property: nil, value: nil, context: [], project: nil, user: nil, namespace: nil, **extra) # rubocop:disable Metrics/ParameterLists
@@ -66,7 +72,7 @@ module Gitlab
       end
 
       def snowplow_micro_enabled?
-        Rails.env.development? && Gitlab.config.snowplow_micro.enabled
+        (Rails.env.development? || micro_verification_enabled?) && Gitlab.config.snowplow_micro.enabled
       rescue GitlabSettings::MissingSetting
         false
       end

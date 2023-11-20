@@ -3,9 +3,6 @@
 module Users
   class InProductMarketingEmail < ApplicationRecord
     include BulkInsertSafe
-    include IgnorableColumns
-
-    ignore_column :campaign, remove_with: '16.7', remove_after: '2023-11-15'
 
     belongs_to :user
 

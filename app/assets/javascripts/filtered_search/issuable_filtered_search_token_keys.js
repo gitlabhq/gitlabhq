@@ -17,66 +17,75 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchTokenKeys from './filtered_search_token_keys';
 
-export const tokenKeys = [
-  {
-    formattedKey: TOKEN_TITLE_AUTHOR,
-    key: TOKEN_TYPE_AUTHOR,
-    type: 'string',
-    param: 'username',
-    symbol: '@',
-    icon: 'pencil',
-    tag: '@author',
-  },
-  {
-    formattedKey: TOKEN_TITLE_ASSIGNEE,
-    key: TOKEN_TYPE_ASSIGNEE,
-    type: 'string',
-    param: 'username',
-    symbol: '@',
-    icon: 'user',
-    tag: '@assignee',
-  },
-  {
-    formattedKey: TOKEN_TITLE_MILESTONE,
-    key: TOKEN_TYPE_MILESTONE,
-    type: 'string',
-    param: 'title',
-    symbol: '%',
-    icon: 'clock',
-    tag: '%milestone',
-  },
-  {
-    formattedKey: TOKEN_TITLE_RELEASE,
-    key: TOKEN_TYPE_RELEASE,
-    type: 'string',
-    param: 'tag',
-    symbol: '',
-    icon: 'rocket',
-    tag: __('tag name'),
-  },
-  {
-    formattedKey: TOKEN_TITLE_LABEL,
-    key: TOKEN_TYPE_LABEL,
-    type: 'array',
-    param: 'name[]',
-    symbol: '~',
-    icon: 'labels',
-    tag: '~label',
-  },
-];
+export const createTokenKeys = ({ disableReleaseFilter = false } = {}) => {
+  const tokenKeys = [
+    {
+      formattedKey: TOKEN_TITLE_AUTHOR,
+      key: TOKEN_TYPE_AUTHOR,
+      type: 'string',
+      param: 'username',
+      symbol: '@',
+      icon: 'pencil',
+      tag: '@author',
+    },
+    {
+      formattedKey: TOKEN_TITLE_ASSIGNEE,
+      key: TOKEN_TYPE_ASSIGNEE,
+      type: 'string',
+      param: 'username',
+      symbol: '@',
+      icon: 'user',
+      tag: '@assignee',
+    },
+    {
+      formattedKey: TOKEN_TITLE_MILESTONE,
+      key: TOKEN_TYPE_MILESTONE,
+      type: 'string',
+      param: 'title',
+      symbol: '%',
+      icon: 'clock',
+      tag: '%milestone',
+    },
+    {
+      formattedKey: TOKEN_TITLE_LABEL,
+      key: TOKEN_TYPE_LABEL,
+      type: 'array',
+      param: 'name[]',
+      symbol: '~',
+      icon: 'labels',
+      tag: '~label',
+    },
+  ];
 
-if (gon.current_user_id) {
-  // Appending tokenkeys only logged-in
-  tokenKeys.push({
-    formattedKey: TOKEN_TITLE_MY_REACTION,
-    key: TOKEN_TYPE_MY_REACTION,
-    type: 'string',
-    param: 'emoji',
-    symbol: '',
-    icon: 'thumb-up',
-    tag: 'emoji',
-  });
-}
+  if (!disableReleaseFilter) {
+    tokenKeys.push({
+      formattedKey: TOKEN_TITLE_RELEASE,
+      key: TOKEN_TYPE_RELEASE,
+      type: 'string',
+      param: 'tag',
+      symbol: '',
+      icon: 'rocket',
+      tag: __('tag name'),
+    });
+  }
+
+  if (gon.current_user_id) {
+    // Appending tokenkeys only logged-in
+    tokenKeys.push({
+      formattedKey: TOKEN_TITLE_MY_REACTION,
+      key: TOKEN_TYPE_MY_REACTION,
+      type: 'string',
+      param: 'emoji',
+      symbol: '',
+      icon: 'thumb-up',
+      tag: 'emoji',
+    });
+  }
+
+  return tokenKeys;
+};
+
+export const tokenKeys = createTokenKeys();
 
 export const alternativeTokenKeys = [
   {
@@ -186,10 +195,7 @@ export const conditions = flattenDeep(
   }),
 );
 
-const IssuableFilteredSearchTokenKeys = new FilteredSearchTokenKeys(
-  tokenKeys,
-  alternativeTokenKeys,
-  conditions,
-);
+export const createFilteredSearchTokenKeys = (config = {}) =>
+  new FilteredSearchTokenKeys(createTokenKeys(config), alternativeTokenKeys, conditions);
 
-export default IssuableFilteredSearchTokenKeys;
+export default createFilteredSearchTokenKeys();

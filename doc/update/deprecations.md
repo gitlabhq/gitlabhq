@@ -1328,6 +1328,21 @@ To prepare for GitLab 15.8 and later, you should:
 
 <div class="deprecation breaking-change" data-milestone="16.7">
 
+### Shimo integration
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.7</span>
+- Removal in GitLab <span class="milestone">16.7</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/377824).
+</div>
+
+The [Shimo Workspace integration](https://docs.gitlab.com/ee/user/project/integrations/shimo.html) has been deprecated
+and will be moved to the JiHu GitLab codebase.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="16.7">
+
 ### `user_email_lookup_limit` API field
 
 <div class="deprecation-notes">
@@ -2632,21 +2647,6 @@ In GitLab 15.8 and later, [security report scanner integrations](https://docs.gi
 In GitLab 16.0 and later, the feature will be removed. Security reports that use schema version 14.x.x will cause an error in the pipeline's **Security** tab.
 
 For more information, refer to [security report validation](https://docs.gitlab.com/ee/user/application_security/#security-report-validation).
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
-### Shimo integration
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.7</span>
-- Removal in GitLab <span class="milestone">16.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/377824).
-</div>
-
-The [Shimo Workspace integration](https://docs.gitlab.com/ee/user/project/integrations/shimo.html) has been deprecated
-and will be moved to the JiHu GitLab codebase.
 
 </div>
 

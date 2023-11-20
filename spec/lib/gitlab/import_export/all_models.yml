@@ -570,7 +570,6 @@ project:
 - google_play_integration
 - pipelines_email_integration
 - mattermost_slash_commands_integration
-- shimo_integration
 - slack_slash_commands_integration
 - harbor_integration
 - irker_integration

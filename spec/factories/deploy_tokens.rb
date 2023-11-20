@@ -22,7 +22,7 @@ FactoryBot.define do
     end
 
     trait :expired do
-      expires_at { Date.today - 1.month }
+      expires_at { Date.current - 1.month }
     end
 
     trait :group do

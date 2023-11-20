@@ -403,7 +403,7 @@ Audit event types belong to the following product categories.
 | [`user_access_locked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124169) | Event triggered when user access to the instance is locked| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.2](https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/244) |
 | [`user_access_unlocked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124973) | Event triggered when user access to the instance is unlocked| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.2](https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/244) |
 | [`user_disable_two_factor`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89598) | Audit event triggered when user disables two factor authentication| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/238177) |
-| [`user_enable_admin_mode`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104754) | Event triggered on enabling admin mode| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/362101) |
+| [`user_enable_admin_mode`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104754) | Event triggered on enabling Admin Mode| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/362101) |
 
 ### Team planning
 

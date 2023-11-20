@@ -1,6 +1,6 @@
 import { last } from 'lodash';
 import recentSearchesStorageKeys from 'ee_else_ce/filtered_search/recent_searches_storage_keys';
-import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
+import { createFilteredSearchTokenKeys } from '~/filtered_search/issuable_filtered_search_token_keys';
 import { createAlert } from '~/alert';
 import {
   STATUS_ALL,
@@ -40,7 +40,7 @@ export default class FilteredSearchManager {
     isGroupAncestor = true,
     isGroupDecendent = false,
     useDefaultState = false,
-    filteredSearchTokenKeys = IssuableFilteredSearchTokenKeys,
+    filteredSearchTokenKeys = createFilteredSearchTokenKeys(),
     stateFiltersSelector = '.issues-state-filters',
     placeholder = __('Search or filter results…'),
     anchor = null,

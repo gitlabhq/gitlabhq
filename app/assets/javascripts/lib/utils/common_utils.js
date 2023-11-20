@@ -176,25 +176,13 @@ export const contentTop = () => {
     () => getOuterHeight('.js-diff-files-changed'),
     ({ desktop }) => {
       const diffsTabIsActive = window.mrTabs?.currentAction === 'diffs';
-      let size;
-
-      if (desktop && diffsTabIsActive) {
-        size = getOuterHeight(
-          '.diffs .diff-file .file-title-flex-parent:not([style="display:none"])',
-        );
-      }
-
-      return size;
+      const isDiscussionScroll =
+        desktop && diffsTabIsActive && window.location.hash.startsWith('#note');
+      return isDiscussionScroll
+        ? getOuterHeight('.diffs .diff-file .file-title-flex-parent:not([style="display:none"])')
+        : 0;
     },
-    ({ desktop }) => {
-      let size;
-
-      if (desktop) {
-        size = getOuterHeight('.mr-version-controls');
-      }
-
-      return size;
-    },
+    ({ desktop }) => (desktop ? getOuterHeight('.mr-version-controls') : 0),
   ];
 
   return heightCalculators.reduce((totalHeight, calculator) => {
@@ -385,8 +373,8 @@ export const buildUrlWithCurrentLocation = (param) => {
  *
  * @param {String} param
  */
-export const historyPushState = (newUrl) => {
-  window.history.pushState({}, document.title, newUrl);
+export const historyPushState = (newUrl, state = {}) => {
+  window.history.pushState(state, document.title, newUrl);
 };
 
 /**

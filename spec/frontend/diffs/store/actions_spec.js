@@ -1327,8 +1327,13 @@ describe('DiffsStoreActions', () => {
           await waitForPromises();
 
           expect(dispatch).toHaveBeenCalledWith('fetchFileByFile');
-          expect(dispatch).toHaveBeenCalledWith('scrollToFile', file);
-          expect(dispatch).toHaveBeenCalledTimes(2);
+          expect(commonUtils.historyPushState).toHaveBeenCalledWith(new URL(`${TEST_HOST}/#test`), {
+            skipScrolling: true,
+          });
+          expect(commonUtils.scrollToElement).toHaveBeenCalledWith('.diff-files-holder', {
+            duration: 0,
+          });
+          expect(dispatch).toHaveBeenCalledTimes(1);
         });
 
         it('shows an alert when there was an error fetching the file', async () => {

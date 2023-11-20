@@ -1,4 +1,6 @@
-import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
+import IssuableFilteredSearchTokenKeys, {
+  createFilteredSearchTokenKeys,
+} from '~/filtered_search/issuable_filtered_search_token_keys';
 
 describe('Issues Filtered Search Token Keys', () => {
   describe('get', () => {
@@ -164,6 +166,24 @@ describe('Issues Filtered Search Token Keys', () => {
       IssuableFilteredSearchTokenKeys.removeTokensForKeys('bogus');
 
       expect(IssuableFilteredSearchTokenKeys.get()).toEqual(initTokenKeys);
+    });
+  });
+});
+
+describe('createFilteredSearchTokenKeys', () => {
+  describe.each(['Release'])('when $filter is disabled', (filter) => {
+    let tokens;
+
+    beforeEach(() => {
+      tokens = createFilteredSearchTokenKeys({
+        [`disable${filter}Filter`]: true,
+      });
+    });
+
+    it('excludes the filter', () => {
+      expect(tokens.tokenKeys).not.toContainEqual(
+        expect.objectContaining({ tag: filter.toLowerCase() }),
+      );
     });
   });
 });

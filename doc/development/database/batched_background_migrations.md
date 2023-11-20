@@ -654,6 +654,30 @@ index 4ae3622479f0800c0553959e132143ec9051898e..d556ec7f55adae9d46a56665ce02de78
 
 Create a Draft merge request with your changes and trigger the manual `db:gitlabcom-database-testing` job.
 
+### Establish dependencies
+
+In some instances, migrations depended on the completion of previously enqueued BBMs. If the BBMs are
+still running, the dependent migration fails. For example: introducing an unique index on a large table can depend on
+the previously enqueued BBM to handle any duplicate records.
+
+The following process has been configured to make dependencies more evident while writing a migration.
+
+- Version of the migration that queued the BBM is stored in _batched_background_migrations_ table and in BBM dictionary file.
+- `DEPENDENT_BATCHED_BACKGROUND_MIGRATIONS` constant is added (commented by default) in each migration file.
+  To establish the dependency, add `queued_migration_version` of the dependent BBMs. If not, remove
+  the commented line.
+- `Migration::UnfinishedDependencies` cop complains if the dependent BBMs are not yet finished. It determines
+  whether they got finished by looking up the `finalized_by` key in the
+  [BBM dictionary](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/generators/batched_background_migration/templates/batched_background_migration_dictionary.template).
+
+#### Notes
+
+- `BackgroundMigration::DictionaryFile` cop ensures the presence of `finalize_after` and `introduced_by_url` keys in the
+  BBM dictionary.
+  - `finalize_after`: Captures the (approximate) date after which the BBM is expected to be finalized.
+  - `introduced_by_url`: After the `finalize_after` date, an issue is created using the labels and author from `introduced_by_url`.
+    - As of writing (2023-08-11), issue [#424886](https://gitlab.com/gitlab-org/gitlab/-/issues/424886) is still open.
+
 ## Managing
 
 NOTE:
@@ -992,6 +1016,7 @@ background migration.
          :routes,
          :id,
          job_interval: DELAY_INTERVAL,
+         queued_migration_version: '20231113120650',
          batch_size: BATCH_SIZE,
          sub_batch_size: SUB_BATCH_SIZE
        )
@@ -1001,6 +1026,19 @@ background migration.
        delete_batched_background_migration(MIGRATION, :routes, :id, [])
      end
    end
+   ```
+
+   ```yaml
+    # db/docs/batched_background_migrations/backfill_route_namespace_id.yml
+    ---
+    migration_job_name: BackfillRouteNamespaceId
+    description: Copies source_id values from routes to namespace_id
+    feature_category: source_code_management
+    introduced_by_url: "https://mr_url"
+    milestone: 16.6
+    queued_migration_version: 20231113120650
+    finalize_after: "2023-11-15"
+    finalized_by: # version of the migration that ensured this bbm
    ```
 
    NOTE:
@@ -1015,8 +1053,8 @@ background migration.
      - Continues using the data as before.
      - Ensures that both existing and new data are migrated.
 
-1. Add a new post-deployment migration
-   that checks that the batched background migration is completed. For example:
+1. Add a new post-deployment migration that checks that the batched background migration is complete. Also update
+   `finalized_by` attribute in BBM dictionary with the version of this migration.
 
    ```ruby
    class FinalizeBackfillRouteNamespaceId < Gitlab::Database::Migration[2.1]
@@ -1039,6 +1077,19 @@ background migration.
        # no-op
      end
    end
+   ```
+
+   ```yaml
+    # db/docs/batched_background_migrations/backfill_route_namespace_id.yml
+    ---
+    migration_job_name: BackfillRouteNamespaceId
+    description: Copies source_id values from routes to namespace_id
+    feature_category: source_code_management
+    introduced_by_url: "https://mr_url"
+    milestone: 16.6
+    queued_migration_version: 20231113120650
+    finalize_after: "2023-11-15"
+    finalized_by: 20231115120912
    ```
 
    NOTE:

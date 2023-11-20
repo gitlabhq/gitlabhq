@@ -30377,7 +30377,6 @@ State of a Sentry error.
 | <a id="servicetypepumble_service"></a>`PUMBLE_SERVICE` | PumbleService type. |
 | <a id="servicetypepushover_service"></a>`PUSHOVER_SERVICE` | PushoverService type. |
 | <a id="servicetyperedmine_service"></a>`REDMINE_SERVICE` | RedmineService type. |
-| <a id="servicetypeshimo_service"></a>`SHIMO_SERVICE` | ShimoService type. |
 | <a id="servicetypeslack_service"></a>`SLACK_SERVICE` | SlackService type. |
 | <a id="servicetypeslack_slash_commands_service"></a>`SLACK_SLASH_COMMANDS_SERVICE` | SlackSlashCommandsService type. |
 | <a id="servicetypesquash_tm_service"></a>`SQUASH_TM_SERVICE` | SquashTmService type. |

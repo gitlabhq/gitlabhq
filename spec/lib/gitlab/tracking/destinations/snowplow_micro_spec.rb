@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Tracking::Destinations::SnowplowMicro do
+RSpec.describe Gitlab::Tracking::Destinations::SnowplowMicro, feature_category: :application_instrumentation do
   include StubENV
 
   let(:snowplow_micro_settings) do
@@ -17,6 +17,8 @@ RSpec.describe Gitlab::Tracking::Destinations::SnowplowMicro do
   before do
     allow(Rails.env).to receive(:development?).and_return(true)
   end
+
+  it { is_expected.to delegate_method(:flush).to(:tracker) }
 
   describe '#hostname' do
     context 'when snowplow_micro config is set' do
