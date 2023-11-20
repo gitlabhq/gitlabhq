@@ -38,9 +38,12 @@ Example response:
 > - Requirement to generate a JWT before calling this endpoint was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127863) in GitLab 16.3.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available.
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `code_suggestions_completion_api`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
+
+NOTE:
+This endpoint rate-limits each user to 60 requests per 1-minute window.
 
 Use the AI abstraction layer to generate code completions.
 

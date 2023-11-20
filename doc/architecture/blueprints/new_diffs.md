@@ -66,6 +66,10 @@ You might want to consider including the pros and cons of the proposed solution 
 compared with the pros and cons of alternatives.
 -->
 
+### Accessibility
+
+New diffs should be displayed in a way that is compliant with [Web Content Accessibility Guidelines 2.1](https://www.w3.org/TR/WCAG21/) level AA for web-based content and [Authoring Tool Accessibility Guidelines 2.0](https://www.w3.org/TR/ATAG20/) level AA for user interface.
+
 ## Design and implementation details
 
 ### Workspace & Artifacts
@@ -244,6 +248,62 @@ Diagrams authored in GitLab flavored markdown are preferred. In cases where
 that is not feasible, images should be placed under `images/` in the same
 directory as the `index.md` for the proposal.
 -->
+
+### HTML structure
+
+The HTML structure of a diff should have support for assistive technology.
+For this reason, a table could be a preferred solution as it allows to indicate
+logical relationship between the presented data and is easier to navigate for
+screen reader users with keyboard. Labeled columns will make sure that information
+such as line numbers can be associated with the edited piece of code.
+
+Possible structure could include:
+
+```html
+<table>
+  <caption class="gl-sr-only">Changes for file index.js. 10 lines changed: 5 deleted, 5 added.</caption>
+  <tr hidden>
+    <th>Original line number: </th>
+    <th>Diff line number: </th>
+    <th>Line change:</th>
+  </tr>
+  <tr>
+    <td>1234</td>
+    <td></td>
+    <td>.tree-time-ago ,</td>
+  </tr>
+  […]
+</table>
+```
+
+See [WAI tutorial on tables](https://www.w3.org/WAI/tutorials/tables) for
+more implementation guidelines.
+
+Each file table should include a short summary of changes that will read out:
+
+- total number of lines changed,
+- number of added lines,
+- number of removed lines.
+
+The summary of the table content can be placed either within `<caption>` element, or before the table within an element referred as `aria-describedby`.
+See <abbr>WAI</abbr> (Web Accessibility Initiative) for more information on both approaches:
+
+- [Nesting summary inside the <caption> element](https://www.w3.org/WAI/tutorials/tables/caption-summary/#nesting-summary-inside-the-caption-element)
+- [Using aria-describedby to provide a table summary](https://www.w3.org/WAI/tutorials/tables/caption-summary/#using-aria-describedby-to-provide-a-table-summary)
+
+However, if such a structure will compromise other functional aspects of displaying a diff,
+more generic elements together with ARIA support can be used.
+
+### Visual indicators
+
+It is important that each visual indicator should have a screen reader text
+denoting the meaning of that indicator. When needed, use `gl-sr-only` or `gl-sr-only-focusable`
+class to make the element accessible by screen readers, but not by sighted users.
+
+Some of the visual indicators that require alternatives for assistive technology are:
+
+- `+` or red highlighting to be read as `added`
+- `-` or green highlighting to be read as `removed`
 
 ## Alternative Solutions
 

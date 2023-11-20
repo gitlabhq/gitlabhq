@@ -14,4 +14,3 @@ Automate with GitLab and integrate with external applications.
 - [GraphQL API](graphql/index.md)
 - [OAuth 2.0 identity provider API](oauth2.md)
 - [Editor and IDE extensions](../editor_extensions/index.md)
-- [Code Suggestions](../user/project/repository/code_suggestions/index.md)

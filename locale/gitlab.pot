@@ -55567,6 +55567,9 @@ msgstr ""
 msgid "You don't have any recent searches"
 msgstr ""
 
+msgid "You don't have permission to add email participants."
+msgstr ""
+
 msgid "You don't have permission to approve this deployment. Contact the project or group owner for help."
 msgstr ""
 

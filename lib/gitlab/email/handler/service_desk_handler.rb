@@ -230,6 +230,9 @@ module Gitlab
         def add_email_participants
           return if reply_email? && !Feature.enabled?(:issue_email_participants, @issue.project)
 
+          # Migrate this to ::IssueEmailParticipants::CreateService once the
+          # feature flag issue_email_participants has been enabled globally
+          # or removed: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137147#note_1652104416
           @issue.issue_email_participants.create(email: from_address)
 
           add_external_participants_from_cc
@@ -239,11 +242,11 @@ module Gitlab
           return if project.service_desk_setting.nil?
           return unless project.service_desk_setting.add_external_participants_from_cc?
 
-          cc_addresses.each do |email|
-            next if service_desk_addresses.include?(email)
-
-            @issue.issue_email_participants.create!(email: email)
-          end
+          ::IssueEmailParticipants::CreateService.new(
+            target: @issue,
+            current_user: Users::Internal.support_bot,
+            emails: cc_addresses.excluding(service_desk_addresses)
+          ).execute
         end
 
         def service_desk_addresses

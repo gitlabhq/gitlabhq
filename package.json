@@ -253,7 +253,7 @@
     "chalk": "^2.4.1",
     "commander": "^2.20.3",
     "custom-jquery-matchers": "^2.1.0",
-    "eslint": "8.53.0",
+    "eslint": "8.54.0",
     "eslint-import-resolver-jest": "3.0.2",
     "eslint-import-resolver-webpack": "0.13.8",
     "eslint-plugin-import": "^2.29.0",

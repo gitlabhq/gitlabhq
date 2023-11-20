@@ -232,6 +232,10 @@ However, you can use a terminal to install dependencies and compile and debug co
 
 For more information about configuring a workspace that supports interactive web terminals, see [remote development](../remote_development/index.md).
 
+## Related topics
+
+- [GitLab Duo Chat in the Web IDE](../../gitlab_duo_chat.md#web-ide)
+
 ## Troubleshooting
 
 When working with the Web IDE, you might encounter the following issues.
@@ -244,7 +248,3 @@ When you type in the Web IDE, you might get a four-character offset. To resolve 
 - Modify your `"editor.font"` setting.
 
 For more information, see [VS Code issue 80170](https://github.com/microsoft/vscode/issues/80170).
-
-## Related topics
-
-- [Use GitLab Duo Chat in the Web IDE](../../gitlab_duo_chat.md#web-ide).

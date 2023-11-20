@@ -97,7 +97,7 @@ token in the `--registration-token` argument:
 
 | Token type | Behavior |
 | ---------- | -------- |
-| [Registration token](../../../security/token_overview.md#runner-authentication-tokens) | Leverages the `POST /api/v4/runners` REST endpoint to create a new runner, creating a new entry in `config.toml`. |
+| [Registration token](../../../security/token_overview.md#runner-authentication-tokens) | Leverages the `POST /api/v4/runners` REST endpoint to create a new runner, creating a new entry in `config.toml` and a `system_id` value in a sidecar file if missing (`.runner_system_id`). |
 | [Runner authentication token](../../../security/token_overview.md#runner-authentication-tokens) | Leverages the `POST /api/v4/runners/verify` REST endpoint to ensure the validity of the authentication token. Creates an entry in `config.toml` file and a `system_id` value in a sidecar file if missing (`.runner_system_id`). |
 
 ### Transition period
@@ -329,9 +329,7 @@ enum column created in the `ci_runners` table.
 ### Runner creation through API
 
 Automated runner creation is possible through a new GraphQL mutation and the existing
-[`POST /runners` REST API endpoint](../../../api/runners.md#register-a-new-runner).
-The difference in the REST API endpoint is that it is modified to accept a request from an
-authorized user with a scope (instance, a group, or a project) instead of the registration token.
+[`POST /user/runners` REST API endpoint](../../../api/users.md#create-a-runner).
 These endpoints are only available to users that are
 [allowed](../../../user/permissions.md#gitlab-cicd-permissions) to create runners at the specified
 scope.

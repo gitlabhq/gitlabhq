@@ -24,7 +24,7 @@ and improve your code review process.
 - Few comments and approvers may indicate a lack of available team members.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a video explanation, see [Code review analytics: Faster code review](https://www.youtube.com/watch?v=OkLaWhYkASM).
+For a video explanation, see [Code review analytics: Faster code review](https://www.youtube.com/watch?v=849o0XD991M).
 
 ## View code review analytics
 

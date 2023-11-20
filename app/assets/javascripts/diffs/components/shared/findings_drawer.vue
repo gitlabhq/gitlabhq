@@ -4,6 +4,7 @@ import { __, s__ } from '~/locale';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getSeverity } from '~/ci/reports/utils';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
+import { SAST_FINDING_DISMISSED } from '../../constants';
 import DrawerItem from './findings_drawer_item.vue';
 
 export const i18n = {
@@ -45,6 +46,9 @@ export default {
     isCodeQuality() {
       return this.drawer.scale === this.$options.codeQuality;
     },
+    findingsStatus() {
+      return this.drawer.state === SAST_FINDING_DISMISSED ? 'muted' : 'warning';
+    },
   },
   DRAWER_Z_INDEX,
   methods: {
@@ -82,7 +86,9 @@ export default {
 
         <drawer-item v-if="drawer.state" :description="$options.i18n.status">
           <template #value>
-            <gl-badge variant="warning" class="text-capitalize">{{ drawer.state }}</gl-badge>
+            <gl-badge :variant="findingsStatus" class="text-capitalize">{{
+              drawer.state
+            }}</gl-badge>
           </template>
         </drawer-item>
 

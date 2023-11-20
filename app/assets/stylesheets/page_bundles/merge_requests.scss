@@ -1056,7 +1056,7 @@ $tabs-holder-z-index: 250;
 }
 
 .merge-request-sticky-header {
-  z-index: 204;
+  z-index: $top-bar-z-index;
   height: $mr-sticky-header-height;
 }
 

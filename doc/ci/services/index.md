@@ -436,10 +436,9 @@ See [Mask a CI/CD Variable](../variables/index.md#mask-a-cicd-variable)
 
 ## Debug a job locally
 
-The following commands are run without root privileges. You should be
-able to run Docker with your user account.
+The following commands are run without root privileges. You should be able to run Docker with your user account.
 
-First start with creating a file named `build_script`:
+First start by creating a file named `build_script`:
 
 ```shell
 cat <<EOF > build_script
@@ -449,40 +448,36 @@ make runner-bin-host
 EOF
 ```
 
-Here we use as an example the GitLab Runner repository which contains a
-Makefile, so running `make` executes the commands defined in the Makefile.
-Instead of `make`, you could run the command which is specific to your project.
+Here we use as an example the GitLab Runner repository which contains a Makefile, so running `make` executes the target
+defined in the Makefile. Instead of `make runner-bin-host`, you could run the command which is specific to your project.
 
-Then create some service containers:
+Then create a service container:
 
 ```shell
 docker run -d --name service-redis redis:latest
 ```
 
-The previous commands create two service containers. The service container named `service-mysql` uses the latest MySQL image. The one named `service-postgres` uses the latest PostgreSQL image. Both service containers run in the background (`-d`).
+The previous command creates a service container named `service-redis` using the latest Redis image. The service
+container runs in the background (`-d`).
 
-Finally, create a build container by executing the `build_script` file we
-created earlier:
+Finally, create a build container by executing the `build_script` file we created earlier:
 
 ```shell
 docker run --name build -i --link=service-redis:redis golang:latest /bin/bash < build_script
 ```
 
-The above command creates a container named `build` that's spawned from
-the `ruby:2.6` image and has two services linked to it. The `build_script` is
-piped using `stdin` to the bash interpreter which in turn executes the
+The above command creates a container named `build` that is spawned from the `golang:latest` image and has one service
+linked to it. The `build_script` is piped using `stdin` to the bash interpreter which in turn executes the
 `build_script` in the `build` container.
 
-When you finish testing and no longer need the containers, you can remove them
-with:
+When you finish testing and no longer need the containers, you can remove them with:
 
 ```shell
-docker rm -f -v build service-mysql service-postgres
+docker rm -f -v build service-redis
 ```
 
-This forcefully (`-f`) removes the `build` container, the two service
-containers, and all volumes (`-v`) that were created with the container
-creation.
+This forcefully (`-f`) removes the `build` container, the service container, and all volumes (`-v`) that were created
+with the container creation.
 
 ## Security when using services containers
 

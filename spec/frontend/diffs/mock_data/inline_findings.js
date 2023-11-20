@@ -45,36 +45,43 @@ export const multipleFindingsArrSastScale = [
     line: 2,
     scale: 'sast',
     text: 'mocked low Issue',
+    state: 'detected',
   },
   {
     severity: 'medium',
     description: 'mocked medium Issue',
     line: 3,
     scale: 'sast',
+    text: 'mocked medium Issue',
+    state: 'dismissed',
   },
   {
     severity: 'info',
     description: 'mocked info Issue',
     line: 3,
     scale: 'sast',
+    state: 'detected',
   },
   {
     severity: 'high',
     description: 'mocked high Issue',
     line: 3,
     scale: 'sast',
+    state: 'dismissed',
   },
   {
     severity: 'critical',
     description: 'mocked critical Issue',
     line: 3,
     scale: 'sast',
+    state: 'detected',
   },
   {
     severity: 'unknown',
     description: 'mocked unknown Issue',
     line: 3,
     scale: 'sast',
+    state: 'dismissed',
   },
 ];
 
@@ -114,6 +121,9 @@ export const diffCodeQuality = {
 
 export const singularCodeQualityFinding = [multipleFindingsArrCodeQualityScale[0]];
 export const singularSastFinding = [multipleFindingsArrSastScale[0]];
+export const singularSastFindingDetected = [multipleFindingsArrSastScale[0]];
+export const singularSastFindingDismissed = [multipleFindingsArrSastScale[1]];
+
 export const twoSastFindings = multipleFindingsArrSastScale.slice(0, 2);
 export const fiveCodeQualityFindings = multipleFindingsArrCodeQualityScale.slice(0, 5);
 export const threeCodeQualityFindings = multipleFindingsArrCodeQualityScale.slice(0, 3);

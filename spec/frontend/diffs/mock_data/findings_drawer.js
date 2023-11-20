@@ -1,6 +1,6 @@
-export const mockFinding = {
+export const mockFindingDismissed = {
   title: 'mockedtitle',
-  state: 'detected',
+  state: 'dismissed',
   scale: 'sast',
   line: 7,
   description: 'fakedesc',
@@ -20,6 +20,11 @@ export const mockFinding = {
       url: 'https://semgrep.dev/r/gitlab.eslint.detect-disable-mustache-escape',
     },
   ],
+};
+
+export const mockFindingDetected = {
+  ...mockFindingDismissed,
+  state: 'detected',
 };
 
 export const mockProject = {

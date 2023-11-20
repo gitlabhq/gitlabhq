@@ -40,6 +40,10 @@ module QA
             element :project_creation_level_dropdown
           end
 
+          view 'ee/app/views/groups/settings/_experimental_settings.haml' do
+            element 'use-experimental-features-checkbox'
+          end
+
           view 'app/views/groups/settings/_transfer.html.haml' do
             element 'transfer-group-content'
           end
@@ -60,6 +64,12 @@ module QA
           def set_lfs_enabled
             expand_content(:permission_lfs_2fa_content)
             check_element(:lfs_checkbox, true)
+            click_element(:save_permissions_changes_button)
+          end
+
+          def set_experimental_features_enabled
+            expand_content(:permission_lfs_2fa_content)
+            check_element('use-experimental-features-checkbox', true)
             click_element(:save_permissions_changes_button)
           end
 
