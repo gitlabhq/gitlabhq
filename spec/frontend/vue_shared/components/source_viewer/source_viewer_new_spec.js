@@ -1,11 +1,15 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { setHTMLFixture } from 'helpers/fixtures';
 import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer_new.vue';
 import Chunk from '~/vue_shared/components/source_viewer/components/chunk_new.vue';
-import { EVENT_ACTION, EVENT_LABEL_VIEWER } from '~/vue_shared/components/source_viewer/constants';
+import {
+  EVENT_ACTION,
+  EVENT_LABEL_VIEWER,
+  CODEOWNERS_FILE_NAME,
+} from '~/vue_shared/components/source_viewer/constants';
 import Tracking from '~/tracking';
 import LineHighlighter from '~/blob/line_highlighter';
 import addBlobLinksTracking from '~/blob/blob_links_tracking';
@@ -13,6 +17,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import blameDataQuery from '~/vue_shared/components/source_viewer/queries/blame_data.query.graphql';
 import Blame from '~/vue_shared/components/source_viewer/components/blame_info.vue';
 import * as utils from '~/vue_shared/components/source_viewer/utils';
+import CodeownersValidation from 'ee_component/blob/components/codeowners_validation.vue';
 
 import {
   BLOB_DATA_MOCK,
@@ -43,16 +48,17 @@ describe('Source Viewer component', () => {
   const blameInfo =
     BLAME_DATA_QUERY_RESPONSE_MOCK.data.project.repository.blobs.nodes[0].blame.groups;
 
-  const createComponent = ({ showBlame = true } = {}) => {
+  const createComponent = ({ showBlame = true, blob = {} } = {}) => {
     fakeApollo = createMockApollo([[blameDataQuery, blameDataQueryHandlerSuccess]]);
 
     wrapper = shallowMountExtended(SourceViewer, {
       apolloProvider: fakeApollo,
       mocks: { $route: { hash } },
       propsData: {
-        blob: BLOB_DATA_MOCK,
+        blob: { ...blob, ...BLOB_DATA_MOCK },
         chunks: CHUNKS_MOCK,
         projectPath: 'test',
+        currentRef: 'main',
         showBlame,
       },
     });
@@ -154,6 +160,22 @@ describe('Source Viewer component', () => {
   describe('hash highlighting', () => {
     it('calls highlightHash with expected parameter', () => {
       expect(lineHighlighter.highlightHash).toHaveBeenCalledWith(hash);
+    });
+  });
+
+  describe('Codeowners validation', () => {
+    const findCodeownersValidation = () => wrapper.findComponent(CodeownersValidation);
+
+    it('does not render codeowners validation when file is not CODEOWNERS', async () => {
+      await createComponent();
+      await nextTick();
+      expect(findCodeownersValidation().exists()).toBe(false);
+    });
+
+    it('renders codeowners validation when file is CODEOWNERS', async () => {
+      await createComponent({ blob: { name: CODEOWNERS_FILE_NAME } });
+      await nextTick();
+      expect(findCodeownersValidation().exists()).toBe(true);
     });
   });
 });

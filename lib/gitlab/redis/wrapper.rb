@@ -19,7 +19,7 @@ module Gitlab
       InvalidPathError = Class.new(StandardError)
 
       class << self
-        delegate :params, :url, :store, :encrypted_secrets, :redis_client_params, to: :new
+        delegate :params, :url, :store, :encrypted_secrets, to: :new
 
         def with
           pool.with { |redis| yield redis }
@@ -94,27 +94,6 @@ module Gitlab
 
       def params
         redis_store_options
-      end
-
-      # redis_client_params modifies redis_store_options to be compatible with redis-client
-      # TODO: when redis-rb is updated to v5, there is no need to support 2 types of config format
-      def redis_client_params
-        options = redis_store_options
-        options[:custom] = { instrumentation_class: options[:instrumentation_class] }
-
-        # TODO: add support for cluster when upgrading to redis-rb v5.y.z we do not need cluster support
-        # as Sidekiq workload should not and does not run in a Redis Cluster
-        # support to be added in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134862
-        if options[:sentinels]
-          # name is required in RedisClient::SentinelConfig
-          # https://github.com/redis-rb/redis-client/blob/1ab081c1d0e47df5d55e011c9390c70b2eef6731/lib/redis_client/sentinel_config.rb#L17
-          options[:name] = options[:host]
-          options.except(:scheme, :instrumentation_class, :host, :port)
-        else
-          # remove disallowed keys as seen in
-          # https://github.com/redis-rb/redis-client/blob/1ab081c1d0e47df5d55e011c9390c70b2eef6731/lib/redis_client/config.rb#L21
-          options.except(:scheme, :instrumentation_class)
-        end
       end
 
       def url

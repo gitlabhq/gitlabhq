@@ -58,11 +58,6 @@ export default {
       default: true,
     },
   },
-  data() {
-    return {
-      isFocused: false,
-    };
-  },
   computed: {
     labels() {
       return this.metadataWidgets[WIDGET_TYPE_LABELS]?.labels?.nodes || [];
@@ -117,7 +112,7 @@ export default {
       return false;
     },
     showRemove() {
-      return this.canUpdate && this.isFocused;
+      return this.canUpdate;
     },
     displayLabels() {
       return this.showLabels && this.labels.length;
@@ -135,10 +130,6 @@ export default {
   <div
     class="item-body work-item-link-child gl-relative gl-display-flex gl-flex-grow-1 gl-overflow-break-word gl-min-w-0 gl-pl-3 gl-pr-2 gl-py-2 gl-mx-n2 gl-rounded-base gl-gap-3"
     data-testid="links-child"
-    @mouseover="isFocused = true"
-    @mouseleave="isFocused = false"
-    @focusin="isFocused = true"
-    @focusout="isFocused = false"
   >
     <div class="item-contents gl-display-flex gl-flex-grow-1 gl-flex-wrap gl-min-w-0">
       <div
@@ -203,12 +194,14 @@ export default {
     </div>
     <div v-if="canUpdate">
       <gl-button
+        v-gl-tooltip
         :class="{ 'gl-visibility-visible': showRemove }"
         class="gl-visibility-hidden"
         category="tertiary"
         size="small"
         icon="close"
         :aria-label="$options.i18n.remove"
+        :title="$options.i18n.remove"
         data-testid="remove-work-item-link"
         @click="$emit('removeChild', childItem)"
       />

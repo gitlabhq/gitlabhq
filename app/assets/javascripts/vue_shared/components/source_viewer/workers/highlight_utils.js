@@ -1,13 +1,35 @@
 import hljs from 'highlight.js/lib/core';
-import json from 'highlight.js/lib/languages/json';
+import languageLoader from '~/content_editor/services/highlight_js_language_loader';
 import { registerPlugins } from '../plugins/index';
 import { LINES_PER_CHUNK, NEWLINE, ROUGE_TO_HLJS_LANGUAGE_MAP } from '../constants';
 
-const initHighlightJs = (fileType, content, language) => {
-  // The Highlight Worker is currently scoped to JSON files.
-  // See the following issue for more: https://gitlab.com/gitlab-org/gitlab/-/issues/415753
-  hljs.registerLanguage(language, json);
+const loadLanguage = async (language) => {
+  const languageDefinition = await languageLoader[language]();
+  hljs.registerLanguage(language, languageDefinition.default);
+};
+
+const loadSubLanguages = async (languageDefinition) => {
+  // Some files can contain sub-languages (i.e., Svelte); this ensures that sub-languages are also loaded
+  if (!languageDefinition?.contains) return;
+
+  // generate list of languages to load
+  const languages = new Set(
+    languageDefinition.contains
+      .filter((component) => Boolean(component.subLanguage))
+      .map((component) => component.subLanguage),
+  );
+
+  if (languageDefinition.subLanguage) {
+    languages.add(languageDefinition.subLanguage);
+  }
+
+  await Promise.all([...languages].map(loadLanguage));
+};
+
+const initHighlightJs = async (fileType, content, language) => {
   registerPlugins(hljs, fileType, content, true);
+  await loadLanguage(language);
+  await loadSubLanguages(hljs.getLanguage(language));
 };
 
 const splitByLineBreaks = (content = '') => content.split(/\r?\n/);
@@ -35,12 +57,12 @@ const splitIntoChunks = (language, rawContent, highlightedContent) => {
   return result;
 };
 
-const highlight = (fileType, rawContent, lang) => {
+const highlight = async (fileType, rawContent, lang) => {
   const language = ROUGE_TO_HLJS_LANGUAGE_MAP[lang.toLowerCase()];
   let result;
 
   if (language) {
-    initHighlightJs(fileType, rawContent, language);
+    await initHighlightJs(fileType, rawContent, language);
     const highlightedContent = hljs.highlight(rawContent, { language }).value;
     result = splitIntoChunks(language, rawContent, highlightedContent);
   }

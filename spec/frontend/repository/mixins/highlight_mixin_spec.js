@@ -1,7 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 import { splitIntoChunks } from '~/vue_shared/components/source_viewer/workers/highlight_utils';
 import highlightMixin from '~/repository/mixins/highlight_mixin';
 import LineHighlighter from '~/blob/line_highlighter';
+import waitForPromises from 'helpers/wait_for_promises';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { TEXT_FILE_TYPE } from '~/repository/constants';
 import { LINES_PER_CHUNK } from '~/vue_shared/components/source_viewer/constants';
 
@@ -11,6 +15,7 @@ jest.mock('~/vue_shared/components/source_viewer/workers/highlight_utils', () =>
   splitIntoChunks: jest.fn().mockResolvedValue([]),
 }));
 
+const mockAxios = new MockAdapter(axios);
 const workerMock = { postMessage: jest.fn() };
 const onErrorMock = jest.fn();
 
@@ -21,7 +26,10 @@ describe('HighlightMixin', () => {
   const rawTextBlob = contentArray.join('\n');
   const languageMock = 'json';
 
-  const createComponent = ({ fileType = TEXT_FILE_TYPE, language = languageMock } = {}) => {
+  const createComponent = (
+    { fileType = TEXT_FILE_TYPE, language = languageMock, externalStorageUrl, rawPath } = {},
+    isUsingLfs = false,
+  ) => {
     const simpleViewer = { fileType };
 
     const dummyComponent = {
@@ -32,7 +40,10 @@ describe('HighlightMixin', () => {
       },
       template: '<div>{{chunks[0]?.highlightedContent}}</div>',
       created() {
-        this.initHighlightWorker({ rawTextBlob, simpleViewer, language, fileType });
+        this.initHighlightWorker(
+          { rawTextBlob, simpleViewer, language, fileType, externalStorageUrl, rawPath },
+          isUsingLfs,
+        );
       },
       methods: { onError: onErrorMock },
     };
@@ -44,13 +55,6 @@ describe('HighlightMixin', () => {
 
   describe('initHighlightWorker', () => {
     const firstSeventyLines = contentArray.slice(0, LINES_PER_CHUNK).join('\n');
-
-    it('does not instruct worker if file is not a JSON file', () => {
-      workerMock.postMessage.mockClear();
-      createComponent({ language: 'javascript' });
-
-      expect(workerMock.postMessage).not.toHaveBeenCalled();
-    });
 
     it('generates a chunk for the first 70 lines of raw text', () => {
       expect(splitIntoChunks).toHaveBeenCalledWith(languageMock, firstSeventyLines);
@@ -85,6 +89,34 @@ describe('HighlightMixin', () => {
 
     it('highlights hash', () => {
       expect(lineHighlighter.highlightHash).toHaveBeenCalledWith(hash);
+    });
+  });
+
+  describe('LFS blobs', () => {
+    const rawPath = '/org/project/-/raw/file.xml';
+    const externalStorageUrl = 'http://127.0.0.1:9000/lfs-objects/91/12/1341234';
+    const mockParams = { content: rawTextBlob, language: languageMock, fileType: TEXT_FILE_TYPE };
+
+    afterEach(() => mockAxios.reset());
+
+    it('Uses externalStorageUrl to fetch content if present', async () => {
+      mockAxios.onGet(externalStorageUrl).replyOnce(HTTP_STATUS_OK, rawTextBlob);
+      createComponent({ rawPath, externalStorageUrl }, true);
+      await waitForPromises();
+
+      expect(mockAxios.history.get).toHaveLength(1);
+      expect(mockAxios.history.get[0].url).toBe(externalStorageUrl);
+      expect(workerMock.postMessage).toHaveBeenCalledWith(mockParams);
+    });
+
+    it('Falls back to rawPath to fetch content', async () => {
+      mockAxios.onGet(rawPath).replyOnce(HTTP_STATUS_OK, rawTextBlob);
+      createComponent({ rawPath }, true);
+      await waitForPromises();
+
+      expect(mockAxios.history.get).toHaveLength(1);
+      expect(mockAxios.history.get[0].url).toBe(rawPath);
+      expect(workerMock.postMessage).toHaveBeenCalledWith(mockParams);
     });
   });
 });

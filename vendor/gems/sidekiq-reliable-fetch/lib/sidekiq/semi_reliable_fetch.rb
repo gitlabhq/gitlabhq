@@ -7,7 +7,7 @@ module Sidekiq
     # for semi-reliable fetch.
     DEFAULT_SEMI_RELIABLE_FETCH_TIMEOUT = 2 # seconds
 
-    def initialize(capsule)
+    def initialize(options)
       super
 
       @queues = @queues.uniq
@@ -16,7 +16,7 @@ module Sidekiq
     private
 
     def retrieve_unit_of_work
-      work = brpop_with_sidekiq
+      work = Sidekiq.redis { |conn| conn.brpop(*queues_cmd, timeout: semi_reliable_fetch_timeout) }
       return unless work
 
       queue, job = work
@@ -27,17 +27,6 @@ module Sidekiq
       end
 
       unit_of_work
-    end
-
-    def brpop_with_sidekiq
-      Sidekiq.redis do |conn|
-        conn.blocking_call(
-          conn.read_timeout + semi_reliable_fetch_timeout,
-          "brpop",
-          *queues_cmd,
-          semi_reliable_fetch_timeout
-        )
-      end
     end
 
     def queues_cmd

@@ -37,18 +37,6 @@ The Bitbucket Cloud importer works only with [Bitbucket.org](https://bitbucket.o
 Server (aka Stash). If you are trying to import projects from Bitbucket Server, use
 [the Bitbucket Server importer](bitbucket_server.md).
 
-## Prerequisites
-
-> Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
-
-- [Bitbucket Cloud integration](../../../integration/bitbucket.md) must be enabled. If that integration is not enabled, ask your GitLab administrator
-  to enable it. The Bitbucket Cloud integration is enabled by default on GitLab.com.
-- [Bitbucket Cloud import source](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources) must be enabled. If not enabled, ask your
-  GitLab administrator to enable it. The Bitbucket Cloud import source is enabled by default on GitLab.com.
-- At least the Maintainer role on the destination group to import to.
-
-## How it works
-
 When issues/pull requests are being imported, the Bitbucket importer uses the Bitbucket nickname of
 the author/assignee and tries to find the same Bitbucket identity in GitLab. If they don't match or
 the user is not found in the GitLab database, the project creator (most of the times the current
@@ -59,7 +47,19 @@ The importer creates any new namespaces (groups) if they don't exist or in
 the case the namespace is taken, the repository is imported under the user's
 namespace that started the import process.
 
-## Requirements for user-mapped contributions
+## Prerequisites
+
+> Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+
+- [Bitbucket Cloud integration](../../../integration/bitbucket.md) must be enabled. If that integration is not enabled, ask your GitLab administrator
+  to enable it. The Bitbucket Cloud integration is enabled by default on GitLab.com.
+- [Bitbucket Cloud import source](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources) must be enabled. If not enabled, ask your
+  GitLab administrator to enable it. The Bitbucket Cloud import source is enabled by default on GitLab.com.
+- At least the Maintainer role on the destination group to import to.
+- Pull requests in Bitbucket must have the same source and destination project and not be from a fork of a project.
+  Otherwise, the pull requests are imported as empty merge requests.
+
+### Requirements for user-mapped contributions
 
 For user contributions to be mapped, each user must complete the following before the project import:
 

@@ -79,7 +79,7 @@ export default {
         const urlHash = getLocationHash(); // If there is a code line hash in the URL we render with the simple viewer
         const useSimpleViewer = usePlain || urlHash?.startsWith('L') || !this.hasRichViewer;
 
-        this.initHighlightWorker(this.blobInfo);
+        this.initHighlightWorker(this.blobInfo, this.isUsingLfs);
         this.switchViewer(useSimpleViewer ? SIMPLE_BLOB_VIEWER : RICH_BLOB_VIEWER); // By default, if present, use the rich viewer to render
       },
       error() {

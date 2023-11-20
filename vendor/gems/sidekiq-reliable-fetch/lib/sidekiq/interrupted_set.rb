@@ -45,7 +45,7 @@ module Sidekiq
     end
 
     def self.options
-      Sidekiq.default_configuration
+      Sidekiq.respond_to?(:[]) ? Sidekiq : Sidekiq.options
     end
   end
 end

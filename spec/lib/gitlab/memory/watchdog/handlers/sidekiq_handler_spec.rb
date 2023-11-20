@@ -12,7 +12,7 @@ RSpec.describe Gitlab::Memory::Watchdog::Handlers::SidekiqHandler, feature_categ
 
   before do
     allow(Gitlab::Metrics::System).to receive(:monotonic_time)
-      .and_return(0, 1, shutdown_timeout_seconds, 0, 1, Sidekiq.default_configuration[:timeout] + 2)
+      .and_return(0, 1, shutdown_timeout_seconds, 0, 1, Sidekiq[:timeout] + 2)
     allow(Process).to receive(:kill)
     allow(::Sidekiq).to receive(:logger).and_return(logger)
     allow(logger).to receive(:warn)
@@ -81,7 +81,7 @@ RSpec.describe Gitlab::Memory::Watchdog::Handlers::SidekiqHandler, feature_categ
       let(:signal_params) do
         [
           [:TSTP, pid, 'stop fetching new jobs', shutdown_timeout_seconds],
-          [:TERM, pid, 'gracefully shut down', Sidekiq.default_configuration[:timeout] + 2]
+          [:TERM, pid, 'gracefully shut down', Sidekiq[:timeout] + 2]
         ]
       end
 
@@ -95,7 +95,7 @@ RSpec.describe Gitlab::Memory::Watchdog::Handlers::SidekiqHandler, feature_categ
       let(:signal_params) do
         [
           [:TSTP, pid, 'stop fetching new jobs', shutdown_timeout_seconds],
-          [:TERM, pid, 'gracefully shut down', Sidekiq.default_configuration[:timeout] + 2],
+          [:TERM, pid, 'gracefully shut down', Sidekiq[:timeout] + 2],
           [:KILL, kill_pid, 'hard shut down', nil]
         ]
       end

@@ -90,8 +90,13 @@ export default defineConfig({
     }),
   ],
   define: {
-    IS_EE: IS_EE ? 'window.gon && window.gon.ee' : JSON.stringify(false),
-    IS_JH: IS_JH ? 'window.gon && window.gon.jh' : JSON.stringify(false),
+    // window can be undefined in a Web Worker
+    IS_EE: IS_EE
+      ? 'typeof window !== "undefined" && window.gon && window.gon.ee'
+      : JSON.stringify(false),
+    IS_JH: IS_JH
+      ? 'typeof window !== "undefined" && window.gon && window.gon.jh'
+      : JSON.stringify(false),
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     'process.env.SOURCEGRAPH_PUBLIC_PATH': JSON.stringify(SOURCEGRAPH_PUBLIC_PATH),
     'process.env.GITLAB_WEB_IDE_PUBLIC_PATH': JSON.stringify(GITLAB_WEB_IDE_PUBLIC_PATH),

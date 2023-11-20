@@ -9,7 +9,7 @@ SimpleCov.start
 REDIS_URL = ENV['REDIS_URL'] || 'redis://localhost:6379/10'
 
 Sidekiq.configure_client do |config|
-  config.redis = { url: REDIS_URL, read_timeout: 5 }
+  config.redis = { url: REDIS_URL }
 end
 
 Sidekiq.logger.level = Logger::ERROR

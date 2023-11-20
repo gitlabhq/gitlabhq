@@ -22,7 +22,7 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
       let(:migrator) { described_class.new(mappings) }
 
       let(:set_after) do
-        Sidekiq.redis { |c| c.call("ZRANGE", set_name, 0, -1, "WITHSCORES") }
+        Sidekiq.redis { |c| c.zrange(set_name, 0, -1, with_scores: true) }
           .map { |item, score| [Gitlab::Json.load(item), score] }
       end
 
@@ -226,9 +226,8 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
     let(:logger) { nil }
 
     def list_queues
-      queues = []
-      Sidekiq.redis do |conn|
-        conn.scan("MATCH", "queue:*") { |key| queues << key }
+      queues = Sidekiq.redis do |conn|
+        conn.scan_each(match: "queue:*").to_a
       end
       queues.uniq.map { |queue| queue.split(':', 2).last }
     end

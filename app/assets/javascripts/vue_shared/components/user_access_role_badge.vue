@@ -12,11 +12,18 @@ export default {
   components: {
     GlBadge,
   },
+  props: {
+    size: {
+      type: String,
+      required: false,
+      default: 'md',
+    },
+  },
 };
 </script>
 
 <template>
-  <gl-badge class="gl-bg-transparent! gl-inset-border-1-gray-100!">
+  <gl-badge :size="size" class="gl-bg-transparent! gl-inset-border-1-gray-100!">
     <slot></slot>
   </gl-badge>
 </template>

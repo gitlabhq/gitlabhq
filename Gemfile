@@ -247,8 +247,8 @@ gem 'state_machines-activerecord', '~> 0.8.0' # rubocop:todo Gemfile/MissingFeat
 gem 'acts-as-taggable-on', '~> 10.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Background jobs
-gem 'sidekiq', '~> 7.1.6' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'sidekiq-cron', '~> 1.9.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'sidekiq', '~> 6.5.10' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'sidekiq-cron', '~> 1.8.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'gitlab-sidekiq-fetcher', path: 'vendor/gems/sidekiq-reliable-fetch', require: 'sidekiq-reliable-fetch' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Cron Parser
@@ -383,7 +383,7 @@ gem 'snowplow-tracker', '~> 0.8.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Metrics
 gem 'webrick', '~> 1.8.1', require: false # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'prometheus-client-mmap', '~> 0.28', '>= 0.28.1', require: 'prometheus/client' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'prometheus-client-mmap', '~> 1.0', require: 'prometheus/client' # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem 'warning', '~> 1.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 

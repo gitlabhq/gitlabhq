@@ -1309,6 +1309,18 @@ postgresql['trust_auth_cidr_addresses'] = %w(123.123.123.123/32 <other_cidrs>)
 
 [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
+### PgBouncer errors `Error running command: GitlabCtl::Errors::ExecutionError` and `ERROR: database gitlabhq_production is not paused`
+
+In versions of GitLab prior to 16.5.0, the automatic failover of PgBouncer does not
+happen after a Patroni switchover. GitLab failed to detect a paused database, then
+attempted to `RESUME` a not-paused database:
+
+```plaintext
+INFO -- : Running: gitlab-ctl pgb-notify --pg-database gitlabhq_production --newhost database7.example.com --user pgbouncer --hostuser gitlab-consul
+ERROR -- : STDERR: Error running command: GitlabCtl::Errors::ExecutionError
+ERROR -- : STDERR: ERROR: ERROR:  database gitlabhq_production is not paused
+```
+
 ### Reinitialize a replica
 
 If a replica cannot start or rejoin the cluster, or when it lags behind and cannot catch up, it might be necessary to reinitialize the replica:

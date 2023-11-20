@@ -93,6 +93,8 @@ RSpec.shared_context 'structured_logger' do
   end
 
   before do
+    allow(Sidekiq).to receive(:logger).and_return(logger)
+
     allow(subject).to receive(:current_time).and_return(timestamp.to_f)
 
     allow(Process).to receive(:clock_gettime).with(Process::CLOCK_REALTIME, :float_second)
@@ -101,7 +103,7 @@ RSpec.shared_context 'structured_logger' do
                         .and_return(clock_thread_cputime_start, clock_thread_cputime_end)
   end
 
-  subject { described_class.new(logger) }
+  subject { described_class.new }
 
   def call_subject(job, queue)
     # This structured logger strongly depends on execution of `InstrumentationLogger`

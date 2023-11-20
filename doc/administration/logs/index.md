@@ -985,8 +985,15 @@ For example:
 
 ## `geo.log` **(PREMIUM SELF)**
 
-Geo stores structured log messages in a `geo.log` file. For Linux package
-installations, this file is at `/var/log/gitlab/gitlab-rails/geo.log`.
+Geo stores structured log messages in a `geo.log` file. For Linux package installations,
+this file is at `/var/log/gitlab/gitlab-rails/geo.log`.
+
+For Helm chart installations, it's stored in the Sidekiq pod, at `/var/log/gitlab/geo.log`.
+It can be read by either directly accessing the file, or by using `kubectl` to fetch the Sidekiq logs, and subsequently filtering the results by `"subcomponent"=="geo"`. The example below uses `jq` to grab only Geo logs:
+
+```shell
+kubectl logs -l app=sidekiq --max-log-requests=50 | jq 'select(."subcomponent"=="geo")'
+```
 
 This file contains information about when Geo attempts to sync repositories
 and files. Each line in the file contains a separate JSON entry that can be

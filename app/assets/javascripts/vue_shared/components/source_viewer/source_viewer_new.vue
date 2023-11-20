@@ -5,7 +5,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import Tracking from '~/tracking';
 import addBlobLinksTracking from '~/blob/blob_links_tracking';
 import LineHighlighter from '~/blob/line_highlighter';
-import { EVENT_ACTION, EVENT_LABEL_VIEWER } from './constants';
+import { EVENT_ACTION, EVENT_LABEL_VIEWER, CODEOWNERS_FILE_NAME } from './constants';
 import Chunk from './components/chunk_new.vue';
 import Blame from './components/blame_info.vue';
 import { calculateBlameOffset, shouldRender, toggleBlameClasses } from './utils';
@@ -21,6 +21,7 @@ export default {
   components: {
     Chunk,
     Blame,
+    CodeownersValidation: () => import('ee_component/blob/components/codeowners_validation.vue'),
   },
   directives: {
     SafeHtml,
@@ -45,6 +46,10 @@ export default {
       type: String,
       required: true,
     },
+    currentRef: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -65,6 +70,9 @@ export default {
 
         return result;
       }, []);
+    },
+    isCodeownersFile() {
+      return this.blob.name === CODEOWNERS_FILE_NAME;
     },
   },
   watch: {
@@ -136,11 +144,18 @@ export default {
     <blame v-if="showBlame && blameInfo.length" :blame-info="blameInfo" />
 
     <div
-      class="file-content code js-syntax-highlight blob-content gl-display-flex gl-flex-direction-column gl-overflow-auto gl-w-full"
+      class="file-content code js-syntax-highlight blob-content gl-display-flex gl-flex-direction-column gl-overflow-auto gl-w-full blob-viewer"
       :class="$options.userColorScheme"
       data-type="simple"
       :data-path="blob.path"
     >
+      <codeowners-validation
+        v-if="isCodeownersFile"
+        class="gl-text-black-normal"
+        :current-ref="currentRef"
+        :project-path="projectPath"
+        :file-path="blob.path"
+      />
       <chunk
         v-for="(chunk, index) in chunks"
         :key="index"

@@ -94,7 +94,7 @@ module Gitlab
           #
           # These threads execute Sidekiq client middleware when jobs
           # are enqueued and those can access DB / Redis.
-          threads += Sidekiq.default_configuration[:concurrency] + 2
+          threads += Sidekiq[:concurrency] + 2
         end
 
         if puma?

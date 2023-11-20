@@ -146,39 +146,39 @@ export default {
       />
     </template>
     <template #body>
-      <div v-if="!isShownAddForm && children.length === 0" data-testid="tree-empty">
-        <div class="gl-new-card-content">
+      <div class="gl-new-card-content">
+        <div v-if="!isShownAddForm && children.length === 0" data-testid="tree-empty">
           <p class="gl-new-card-empty">
             {{ $options.WORK_ITEMS_TREE_TEXT_MAP[workItemType].empty }}
           </p>
         </div>
+        <work-item-links-form
+          v-if="isShownAddForm"
+          ref="wiLinksForm"
+          data-testid="add-tree-form"
+          :full-path="fullPath"
+          :issuable-gid="workItemId"
+          :work-item-iid="workItemIid"
+          :form-type="formType"
+          :parent-work-item-type="parentWorkItemType"
+          :children-type="childType"
+          :children-ids="childrenIds"
+          :parent-confidential="confidential"
+          @cancel="hideAddForm"
+          @addChild="$emit('addChild')"
+        />
+        <work-item-children-wrapper
+          :children="children"
+          :can-update="canUpdate"
+          :full-path="fullPath"
+          :work-item-id="workItemId"
+          :work-item-iid="workItemIid"
+          :work-item-type="workItemType"
+          :show-labels="showLabels"
+          @error="error = $event"
+          @show-modal="showModal"
+        />
       </div>
-      <work-item-links-form
-        v-if="isShownAddForm"
-        ref="wiLinksForm"
-        data-testid="add-tree-form"
-        :full-path="fullPath"
-        :issuable-gid="workItemId"
-        :work-item-iid="workItemIid"
-        :form-type="formType"
-        :parent-work-item-type="parentWorkItemType"
-        :children-type="childType"
-        :children-ids="childrenIds"
-        :parent-confidential="confidential"
-        @cancel="hideAddForm"
-        @addChild="$emit('addChild')"
-      />
-      <work-item-children-wrapper
-        :children="children"
-        :can-update="canUpdate"
-        :full-path="fullPath"
-        :work-item-id="workItemId"
-        :work-item-iid="workItemIid"
-        :work-item-type="workItemType"
-        :show-labels="showLabels"
-        @error="error = $event"
-        @show-modal="showModal"
-      />
     </template>
   </widget-wrapper>
 </template>
