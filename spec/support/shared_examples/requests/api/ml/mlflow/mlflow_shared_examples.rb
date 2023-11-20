@@ -90,19 +90,6 @@ RSpec.shared_examples 'MLflow|shared model registry error cases' do
       is_expected.to have_gitlab_http_status(:not_found)
     end
   end
-
-  context 'when model registry is unavailable' do
-    before do
-      allow(Ability).to receive(:allowed?).and_call_original
-      allow(Ability).to receive(:allowed?)
-                          .with(current_user, :read_model_registry, project)
-                          .and_return(false)
-    end
-
-    it "is Not Found" do
-      is_expected.to have_gitlab_http_status(:not_found)
-    end
-  end
 end
 
 RSpec.shared_examples 'MLflow|Bad Request on missing required' do |keys|

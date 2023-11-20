@@ -16,6 +16,10 @@ module API
           not_found! unless can?(current_user, :read_model_registry, user_project)
         end
 
+        def check_api_model_registry_write!
+          unauthorized! unless can?(current_user, :write_model_registry, user_project)
+        end
+
         def resource_not_found!
           render_structured_api_error!({ error_code: 'RESOURCE_DOES_NOT_EXIST' }, 404)
         end
@@ -26,6 +30,10 @@ module API
 
         def invalid_parameter!(message = nil)
           render_structured_api_error!({ error_code: 'INVALID_PARAMETER_VALUE', message: message }, 400)
+        end
+
+        def update_failed!
+          render_structured_api_error!({ error_code: 'UPDATE_FAILED' }, 400)
         end
 
         def experiment_repository

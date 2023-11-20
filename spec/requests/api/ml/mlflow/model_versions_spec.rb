@@ -83,4 +83,55 @@ RSpec.describe API::Ml::Mlflow::ModelVersions, feature_category: :mlops do
       it_behaves_like 'MLflow|Requires read_api scope'
     end
   end
+
+  describe 'UPDATE /projects/:id/ml/mlflow/api/2.0/mlflow/model-versions/update' do
+    let(:params) { { name: name, version: version, description: 'description-text' } }
+    let(:request) { patch api(route), params: params, headers: headers }
+
+    let(:route) do
+      "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/model-versions/update"
+    end
+
+    it 'returns the model version', :aggregate_failures do
+      is_expected.to have_gitlab_http_status(:ok)
+      expect(json_response['model_version']).not_to be_nil
+      expect(json_response['model_version']['name']).to eq(name)
+      expect(json_response['model_version']['version']).to eq(version)
+    end
+
+    describe 'Error States' do
+      context 'when has access' do
+        context 'and model name in incorrect' do
+          let(:params) { { name: 'invalid-name', version: version, description: 'description-text' } }
+
+          it 'throws error 400' do
+            is_expected.to have_gitlab_http_status(:bad_request)
+          end
+        end
+
+        context 'and version in incorrect' do
+          let(:params) { { name: name, version: 'invalid-version', description: 'description-text' } }
+
+          it 'throws error 400' do
+            is_expected.to have_gitlab_http_status(:bad_request)
+          end
+        end
+
+        context 'when user lacks write_model_registry rights' do
+          before do
+            allow(Ability).to receive(:allowed?).and_call_original
+            allow(Ability).to receive(:allowed?)
+                                .with(current_user, :write_model_registry, project)
+                                .and_return(false)
+          end
+
+          it "is Not Found" do
+            is_expected.to have_gitlab_http_status(:unauthorized)
+          end
+        end
+      end
+
+      it_behaves_like 'MLflow|shared model registry error cases'
+    end
+  end
 end

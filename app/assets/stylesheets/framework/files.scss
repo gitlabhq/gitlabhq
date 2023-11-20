@@ -603,6 +603,6 @@ span.idiff {
     right: 0;
     top: -$gradient-size;
     height: $gradient-size;
-    background: linear-gradient(to top, $white, transparentize($white, 1));
+    background: linear-gradient(to top, $white, transparent);
   }
 }

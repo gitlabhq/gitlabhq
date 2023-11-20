@@ -8,6 +8,8 @@ module BulkImports
 
     validates :batch_number, presence: true, uniqueness: { scope: :tracker_id }
 
+    scope :by_last_updated, -> { order(updated_at: :desc) }
+
     state_machine :status, initial: :created do
       state :created, value: 0
       state :started, value: 1

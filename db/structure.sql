@@ -13573,7 +13573,8 @@ CREATE TABLE catalog_resource_versions (
     release_id bigint NOT NULL,
     catalog_resource_id bigint NOT NULL,
     project_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL
+    created_at timestamp with time zone NOT NULL,
+    released_at timestamp with time zone DEFAULT '1970-01-01 00:00:00+00'::timestamp with time zone NOT NULL
 );
 
 CREATE SEQUENCE catalog_resource_versions_id_seq
@@ -23371,7 +23372,6 @@ CREATE TABLE service_access_tokens (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    category smallint DEFAULT 0 NOT NULL,
     encrypted_token bytea NOT NULL,
     encrypted_token_iv bytea NOT NULL,
     expires_at timestamp with time zone NOT NULL
@@ -31849,11 +31849,11 @@ CREATE INDEX index_catalog_resource_components_on_project_id ON catalog_resource
 
 CREATE INDEX index_catalog_resource_components_on_version_id ON catalog_resource_components USING btree (version_id);
 
-CREATE INDEX index_catalog_resource_versions_on_catalog_resource_id ON catalog_resource_versions USING btree (catalog_resource_id);
-
 CREATE INDEX index_catalog_resource_versions_on_project_id ON catalog_resource_versions USING btree (project_id);
 
 CREATE UNIQUE INDEX index_catalog_resource_versions_on_release_id ON catalog_resource_versions USING btree (release_id);
+
+CREATE INDEX index_catalog_resource_versions_on_resource_id_and_released_at ON catalog_resource_versions USING btree (catalog_resource_id, released_at);
 
 CREATE UNIQUE INDEX index_catalog_resources_on_project_id ON catalog_resources USING btree (project_id);
 

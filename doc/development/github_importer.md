@@ -297,6 +297,54 @@ The code for this resides in:
 - `lib/gitlab/github_import/user_finder.rb`
 - `lib/gitlab/github_import/caching.rb`
 
+## Increasing Sidekiq interrupts
+
+When a Sidekiq process shut downs, it waits for a period of time for running
+jobs to finish before it then interrupts them. An interrupt terminates
+the job and requeues it again. Our
+[vendored `sidekiq-reliable-fetcher` gem](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/gems/sidekiq-reliable-fetch/README.md)
+puts a limit of `3` interrupts before a job is no longer requeued and is
+permanently terminated. Jobs that have been interrupted log a
+`json.interrupted_count` in Kibana.
+
+This limit offers protection from jobs that can never be completed in
+the time between Sidekiq restarts.
+
+For large imports, our GitHub [stage](#stages) workers (namespaced in
+`Stage::`) take many hours to finish. By default, the import is at risk
+of failing because of `sidekiq-reliable-fetcher` permanently stopping these
+workers before they can complete.
+
+Stage workers that pick up from where they left off when restarted can
+increase the interrupt limit of `sidekiq-reliable-fetcher` to `20` by
+calling `.resumes_work_when_interrupted!`:
+
+```ruby
+module Gitlab
+  module GithubImport
+    module Stage
+      class MyWorker
+        resumes_work_when_interrupted!
+
+        # ...
+      end
+    end
+  end
+end
+```
+
+Stage workers that do not fully resume their work when restarted should
+not call this method. For example, a worker that skips already imported
+objects, but starts its loop from the beginning each time.
+
+Examples of stage workers that do resume work fully are ones that
+execute services that:
+
+- [Continue paging](https://gitlab.com/gitlab-org/gitlab/-/blob/487521cc/lib/gitlab/github_import/parallel_scheduling.rb#L114-117)
+  an endpoint from where it left off.
+- [Continue their loop](https://gitlab.com/gitlab-org/gitlab/-/blob/487521cc26c1e2bdba4fc67c14478d2b2a5f2bfa/lib/gitlab/github_import/importer/attachments/issues_importer.rb#L27)
+  from where it left off.
+
 ## Mapping labels and milestones
 
 To reduce pressure on the database we do not query it when setting labels and

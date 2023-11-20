@@ -27,7 +27,7 @@ gl-emoji {
 
 .emoji-picker-category-header {
   @include gl-sticky;
-  background-color: $white-transparent;
+  background: linear-gradient(to bottom, $white 50%, transparent 100%);
 }
 
 .emoji-picker-emoji {

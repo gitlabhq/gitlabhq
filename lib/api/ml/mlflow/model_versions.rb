@@ -25,6 +25,28 @@ module API
             response = { model_version: model_version }
             present response, with: Entities::Ml::Mlflow::ModelVersions::Responses::Get
           end
+
+          desc 'Updates a Model Version.' do
+            success Entities::Ml::Mlflow::ModelVersions::Responses::Update
+            detail 'https://mlflow.org/docs/2.6.0/rest-api.html#update-modelversion'
+          end
+          params do
+            # These params are actually required, however it is listed as optional here
+            # we can send a custom error response required by MLFlow
+            optional :name, type: String, desc: 'Model version name'
+            optional :version, type: String, desc: 'Model version number'
+            optional :description, type: String, desc: 'Model version description'
+          end
+          patch 'update', urgency: :low do
+            check_api_model_registry_write!
+            invalid_parameter! unless params[:name] && params[:version] && params[:description]
+            result = ::Ml::ModelVersions::UpdateModelVersionService.new(
+              user_project, params[:name], params[:version], params[:description]
+            ).execute
+            update_failed! unless result.success?
+            response = { model_version: result.payload }
+            present response, with: Entities::Ml::Mlflow::ModelVersions::Responses::Update
+          end
         end
       end
     end

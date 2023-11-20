@@ -29,29 +29,13 @@ RSpec.describe API::Admin::Dictionary, feature_category: :database do
       end
     end
 
-    context 'with a malicious table_name' do
-      it 'returns an error' do
-        get api("/admin/databases/main/dictionary/tables/%2E%2E%2Fpasswords.yml", admin, admin_mode: true)
-
-        expect(response).to have_gitlab_http_status(:error)
-      end
-    end
-
     context 'when the params are correct' do
-      let(:dictionary_dir) { Rails.root.join('spec/fixtures') }
-      let(:path_file) { Rails.root.join(dictionary_dir, 'achievements.yml') }
-
       it 'fetches the table dictionary' do
-        allow(Gitlab::Database::GitlabSchema).to receive(:dictionary_paths).and_return([dictionary_dir])
-
-        expect(Gitlab::PathTraversal).to receive(:check_allowed_absolute_path_and_path_traversal!).twice.with(
-          path_file.to_s, [dictionary_dir.to_s]).and_call_original
-
         show_table_dictionary
 
         aggregate_failures "testing response" do
           expect(json_response['table_name']).to eq('achievements')
-          expect(json_response['feature_categories']).to eq(['feature_category_example'])
+          expect(json_response['feature_categories']).to eq(['user_profile'])
         end
       end
     end

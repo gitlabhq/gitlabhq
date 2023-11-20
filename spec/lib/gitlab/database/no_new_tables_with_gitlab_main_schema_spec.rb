@@ -50,16 +50,16 @@ RSpec.describe 'new tables with gitlab_main schema', feature_category: :cell do
   end
 
   def tables_having_gitlab_main_schema(starting_from_milestone:)
-    selected_data = gitlab_main_schema_tables.select do |database_dictionary|
-      database_dictionary.milestone.to_f >= starting_from_milestone
+    selected_data = gitlab_main_schema_tables.select do |entry|
+      entry.milestone.to_f >= starting_from_milestone
     end
 
     selected_data.map(&:table_name)
   end
 
   def gitlab_main_schema_tables
-    ::Gitlab::Database::GitlabSchema.build_dictionary('').select do |database_dictionary|
-      database_dictionary.schema?('gitlab_main')
+    ::Gitlab::Database::Dictionary.entries.select do |entry|
+      entry.schema?('gitlab_main')
     end
   end
 end
