@@ -10,9 +10,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136744) in GitLab 16.7. Feature flag `remote_development_feature_flag` removed.
 
-WARNING:
-This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice. To leave feedback, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/410031).
-
 In this tutorial, you'll learn how to create a custom workspace image that supports arbitrary user IDs.
 You can then use this custom image with any [workspace](index.md) you create in GitLab.
 

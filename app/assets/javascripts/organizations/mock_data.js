@@ -309,3 +309,24 @@ export const updateOrganizationResponse = {
   },
   errors: [],
 };
+
+export const pageInfo = {
+  endCursor: 'eyJpZCI6IjEwNTMifQ',
+  hasNextPage: true,
+  hasPreviousPage: true,
+  startCursor: 'eyJpZCI6IjEwNzIifQ',
+};
+
+export const pageInfoOnePage = {
+  endCursor: 'eyJpZCI6IjEwNTMifQ',
+  hasNextPage: false,
+  hasPreviousPage: false,
+  startCursor: 'eyJpZCI6IjEwNzIifQ',
+};
+
+export const pageInfoEmpty = {
+  endCursor: null,
+  hasNextPage: false,
+  hasPreviousPage: false,
+  startCursor: null,
+};

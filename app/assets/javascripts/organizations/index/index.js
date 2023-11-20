@@ -2,7 +2,6 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import resolvers from '../shared/graphql/resolvers';
 import OrganizationsIndexApp from './components/app.vue';
 
 export const initOrganizationsIndex = () => {
@@ -11,7 +10,7 @@ export const initOrganizationsIndex = () => {
   if (!el) return false;
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(resolvers),
+    defaultClient: createDefaultClient(),
   });
 
   const { newOrganizationUrl, organizationsEmptyStateSvgPath } = convertObjectPropsToCamelCase(

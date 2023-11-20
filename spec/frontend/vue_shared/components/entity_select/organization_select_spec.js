@@ -11,7 +11,7 @@ import {
   FETCH_ORGANIZATION_ERROR,
 } from '~/vue_shared/components/entity_select/constants';
 import resolvers from '~/organizations/shared/graphql/resolvers';
-import organizationsQuery from '~/organizations/index/graphql/organizations.query.graphql';
+import organizationsClientQuery from '~/organizations/index/graphql/organizations_client.query.graphql';
 import { organizations as organizationsMock } from '~/organizations/mock_data';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -51,7 +51,7 @@ describe('OrganizationSelect', () => {
     mockApollo = createMockApollo(
       handlers || [
         [
-          organizationsQuery,
+          organizationsClientQuery,
           jest.fn().mockResolvedValueOnce({
             data: { currentUser: { id: 1, organizations: { nodes: organizationsMock } } },
           }),
@@ -154,7 +154,7 @@ describe('OrganizationSelect', () => {
 
   it('shows an error when fetching organizations fails', async () => {
     createComponent({
-      handlers: [[organizationsQuery, jest.fn().mockRejectedValueOnce(new Error())]],
+      handlers: [[organizationsClientQuery, jest.fn().mockRejectedValueOnce(new Error())]],
     });
     await nextTick();
     jest.runAllTimers();

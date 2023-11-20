@@ -40,7 +40,9 @@ RSpec.describe 'Global Catalog', :js, feature_category: :pipeline_composition do
 
     it 'shows CI Catalog title and description', :aggregate_failures do
       expect(page).to have_content('CI/CD Catalog')
-      expect(page).to have_content('Discover CI configuration resources for a seamless CI/CD experience.')
+      expect(page).to have_content(
+        'Discover CI/CD components that can improve your pipeline with additional functionality'
+      )
     end
 
     it 'renders CI Catalog resources list' do

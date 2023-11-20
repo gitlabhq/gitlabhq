@@ -1,7 +1,7 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import getCurrentUserOrganizationsQuery from '~/organizations/index/graphql/organizations.query.graphql';
+import getCurrentUserOrganizationsClientQuery from '~/organizations/index/graphql/organizations_client.query.graphql';
 import getOrganizationQuery from '~/organizations/shared/graphql/queries/organization.query.graphql';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_ORGANIZATION } from '~/graphql_shared/constants';
@@ -74,7 +74,7 @@ export default {
             },
           },
         } = await this.$apollo.query({
-          query: getCurrentUserOrganizationsQuery,
+          query: getCurrentUserOrganizationsClientQuery,
           // TODO: implement search support - https://gitlab.com/gitlab-org/gitlab/-/issues/429999.
         });
 

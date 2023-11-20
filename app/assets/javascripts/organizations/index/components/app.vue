@@ -2,6 +2,7 @@
 import { GlButton } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
+import { DEFAULT_PER_PAGE } from '~/api';
 import organizationsQuery from '../graphql/organizations.query.graphql';
 import OrganizationsView from './organizations_view.vue';
 
@@ -21,14 +22,23 @@ export default {
   inject: ['newOrganizationUrl'],
   data() {
     return {
-      organizations: [],
+      organizations: {},
+      pagination: {
+        first: DEFAULT_PER_PAGE,
+        after: null,
+        last: null,
+        before: null,
+      },
     };
   },
   apollo: {
     organizations: {
       query: organizationsQuery,
+      variables() {
+        return this.pagination;
+      },
       update(data) {
-        return data.currentUser.organizations.nodes;
+        return data.currentUser.organizations;
       },
       error(error) {
         createAlert({ message: this.$options.i18n.errorMessage, error, captureError: true });
@@ -37,10 +47,28 @@ export default {
   },
   computed: {
     showHeader() {
-      return this.loading || this.organizations.length;
+      return this.loading || this.organizations.nodes?.length;
     },
     loading() {
       return this.$apollo.queries.organizations.loading;
+    },
+  },
+  methods: {
+    onNext(endCursor) {
+      this.pagination = {
+        first: DEFAULT_PER_PAGE,
+        after: endCursor,
+        last: null,
+        before: null,
+      };
+    },
+    onPrev(startCursor) {
+      this.pagination = {
+        first: null,
+        after: null,
+        last: DEFAULT_PER_PAGE,
+        before: startCursor,
+      };
     },
   },
 };
@@ -56,6 +84,11 @@ export default {
         }}</gl-button>
       </div>
     </div>
-    <organizations-view :organizations="organizations" :loading="loading" />
+    <organizations-view
+      :organizations="organizations"
+      :loading="loading"
+      @next="onNext"
+      @prev="onPrev"
+    />
   </section>
 </template>

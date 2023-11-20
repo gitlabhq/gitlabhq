@@ -46,6 +46,11 @@ module Organizations
       Gitlab::UrlBuilder.build(self, only_path: only_path)
     end
 
+    # TODO - update to return real description when https://gitlab.com/gitlab-org/gitlab/-/issues/422078 is complete.
+    def description
+      nil
+    end
+
     private
 
     def check_if_default_organization

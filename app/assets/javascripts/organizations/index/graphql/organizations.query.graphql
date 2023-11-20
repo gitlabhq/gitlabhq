@@ -1,13 +1,19 @@
-query getCurrentUserOrganizations {
+query getCurrentUserOrganizations($first: Int, $last: Int, $before: String, $after: String) {
   currentUser {
     id
-    organizations @client {
+    organizations(first: $first, last: $last, before: $before, after: $after) {
       nodes {
         id
         name
         descriptionHtml
         avatarUrl
         webUrl
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
       }
     }
   }

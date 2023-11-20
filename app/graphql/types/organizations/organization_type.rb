@@ -7,6 +7,20 @@ module Types
 
       authorize :read_organization
 
+      field :avatar_url,
+        type: GraphQL::Types::String,
+        null: true,
+        description:
+          'Avatar URL of the organization. `null` until ' \
+          '[#422418](https://gitlab.com/gitlab-org/gitlab/-/issues/422418) is complete.',
+        alpha: { milestone: '16.7' }
+      field :description,
+        GraphQL::Types::String,
+        null: true,
+        description:
+          'Description of the organization. `null` until ' \
+          '[#422078](https://gitlab.com/gitlab-org/gitlab/-/issues/422078) is complete.',
+        alpha: { milestone: '16.7' }
       field :groups,
         Types::GroupType.connection_type,
         null: false,
@@ -37,6 +51,15 @@ module Types
         null: false,
         description: 'Web URL of the organization.',
         alpha: { milestone: '16.6' }
+
+      # Returns empty string until https://gitlab.com/gitlab-org/gitlab/-/issues/422078 is complete.
+      markdown_field :description_html,
+        null: true
+
+      # TODO - update to return real avatar url when https://gitlab.com/gitlab-org/gitlab/-/issues/422418 is complete.
+      def avatar_url
+        nil
+      end
     end
   end
 end

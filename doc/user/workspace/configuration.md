@@ -10,10 +10,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136744) in GitLab 16.7. Feature flag `remote_development_feature_flag` removed.
 
-WARNING:
-This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
-To leave feedback, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/410031).
-
 You can use [workspaces](index.md) to create and manage isolated development environments for your GitLab projects.
 Each workspace includes its own set of dependencies, libraries, and tools,
 which you can customize to meet the specific needs of each project.

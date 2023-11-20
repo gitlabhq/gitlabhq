@@ -42,7 +42,7 @@ describe('CatalogHeader', () => {
       it('renders the default values', () => {
         expect(findTitle().text()).toBe('CI/CD Catalog');
         expect(findDescription().text()).toBe(
-          'Discover CI configuration resources for a seamless CI/CD experience.',
+          'Discover CI/CD components that can improve your pipeline with additional functionality.',
         );
       });
     });

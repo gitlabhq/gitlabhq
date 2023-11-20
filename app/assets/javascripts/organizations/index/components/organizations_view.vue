@@ -20,14 +20,19 @@ export default {
   inject: ['newOrganizationUrl', 'organizationsEmptyStateSvgPath'],
   props: {
     organizations: {
-      type: Array,
+      type: Object,
       required: false,
-      default: () => [],
+      default: () => {},
     },
     loading: {
       type: Boolean,
       required: false,
       default: false,
+    },
+  },
+  computed: {
+    nodes() {
+      return this.organizations.nodes || [];
     },
   },
 };
@@ -36,9 +41,11 @@ export default {
 <template>
   <gl-loading-icon v-if="loading" class="gl-mt-5" size="md" />
   <organizations-list
-    v-else-if="organizations.length"
+    v-else-if="nodes.length"
     :organizations="organizations"
     class="gl-border-t"
+    @prev="$emit('prev', $event)"
+    @next="$emit('next', $event)"
   />
   <gl-empty-state
     v-else

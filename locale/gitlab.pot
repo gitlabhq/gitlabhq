@@ -10322,7 +10322,7 @@ msgstr ""
 msgid "CiCatalog|Create a pipeline component repository and make reusing pipeline configurations faster and easier."
 msgstr ""
 
-msgid "CiCatalog|Discover CI configuration resources for a seamless CI/CD experience."
+msgid "CiCatalog|Discover CI/CD components that can improve your pipeline with additional functionality."
 msgstr ""
 
 msgid "CiCatalog|Edit your search and try again. Or %{linkStart}learn to create a component repository%{linkEnd}."
