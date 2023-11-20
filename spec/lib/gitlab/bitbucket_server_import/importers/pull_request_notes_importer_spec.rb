@@ -25,11 +25,25 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
   let(:merge_event) do
     instance_double(
       BitbucketServer::Representation::Activity,
+      id: 3,
       comment?: false,
       merge_event?: true,
+      approved_event?: false,
       committer_email: pull_request_author.email,
       merge_timestamp: now,
       merge_commit: '12345678'
+    )
+  end
+
+  let(:approved_event) do
+    instance_double(
+      BitbucketServer::Representation::Activity,
+      id: 4,
+      comment?: false,
+      merge_event?: false,
+      approved_event?: true,
+      approver: pull_request_author.username,
+      created_at: now
     )
   end
 
@@ -48,6 +62,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
   let(:pr_comment) do
     instance_double(
       BitbucketServer::Representation::Activity,
+      id: 5,
       comment?: true,
       inline_comment?: false,
       merge_event?: false,
@@ -209,6 +224,46 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
           expect(merge_request.metrics.merged_by).to eq(pull_request_author)
           expect(merge_request.metrics.merged_at).to eq(merge_event.merge_timestamp)
           expect(merge_request.merge_commit_sha).to eq(merge_event.merge_commit)
+        end
+      end
+
+      context 'when PR has an approved event' do
+        before do
+          allow_next(BitbucketServer::Client).to receive(:activities).and_return([approved_event])
+        end
+
+        it 'creates the approval, reviewer and approval note' do
+          expect { importer.execute }
+            .to change { merge_request.approvals.count }.from(0).to(1)
+            .and change { merge_request.notes.count }.from(0).to(1)
+            .and change { merge_request.reviewers.count }.from(0).to(1)
+
+          approval = merge_request.approvals.first
+
+          expect(approval.user).to eq(pull_request_author)
+          expect(approval.created_at).to eq(now)
+
+          note = merge_request.notes.first
+
+          expect(note.note).to eq('approved this merge request')
+          expect(note.author).to eq(pull_request_author)
+          expect(note.system).to be_truthy
+          expect(note.created_at).to eq(now)
+
+          reviewer = merge_request.reviewers.first
+
+          expect(reviewer.id).to eq(pull_request_author.id)
+        end
+
+        context 'if the reviewer already existed' do
+          before do
+            merge_request.reviewers = [pull_request_author]
+            merge_request.save!
+          end
+
+          it 'does not create the reviewer record' do
+            expect { importer.execute }.not_to change { merge_request.reviewers.count }
+          end
         end
       end
     end

@@ -3,6 +3,10 @@
 module BitbucketServer
   module Representation
     class Activity < Representation::Base
+      def id
+        raw['id']
+      end
+
       def comment?
         action == 'COMMENTED'
       end
@@ -43,6 +47,14 @@ module BitbucketServer
 
       def merge_commit
         commit['id']
+      end
+
+      def approved_event?
+        action == 'APPROVED'
+      end
+
+      def approver
+        raw.dig('user', 'slug')
       end
 
       def created_at

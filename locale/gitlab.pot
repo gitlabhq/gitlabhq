@@ -9451,6 +9451,9 @@ msgstr ""
 msgid "Can not delete primary training"
 msgstr ""
 
+msgid "Can only be present for group level value streams"
+msgstr ""
+
 msgid "Can't apply as the source branch was deleted."
 msgstr ""
 

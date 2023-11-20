@@ -69,6 +69,52 @@ module Gitlab
         rows = reviewers.map { |reviewer_id| { merge_request_id: merge_request.id, user_id: reviewer_id } }
         MergeRequestReviewer.insert_all(rows)
       end
+
+      def create_approval!(project_id, merge_request_id, user_id, submitted_at)
+        approval_attributes = {
+          merge_request_id: merge_request_id,
+          user_id: user_id,
+          created_at: submitted_at,
+          updated_at: submitted_at
+        }
+
+        result = ::Approval.insert(
+          approval_attributes,
+          returning: [:id],
+          unique_by: [:user_id, :merge_request_id]
+        )
+
+        add_approval_system_note!(project_id, merge_request_id, user_id, submitted_at) if result.rows.present?
+      end
+
+      def add_approval_system_note!(project_id, merge_request_id, user_id, submitted_at)
+        attributes = {
+          importing: true,
+          noteable_id: merge_request_id,
+          noteable_type: 'MergeRequest',
+          project_id: project_id,
+          author_id: user_id,
+          note: 'approved this merge request',
+          system: true,
+          system_note_metadata: SystemNoteMetadata.new(action: 'approved'),
+          created_at: submitted_at,
+          updated_at: submitted_at
+        }
+
+        Note.create!(attributes)
+      end
+
+      def create_reviewer!(merge_request_id, user_id, submitted_at)
+        ::MergeRequestReviewer.create!(
+          merge_request_id: merge_request_id,
+          user_id: user_id,
+          state: ::MergeRequestReviewer.states['reviewed'],
+          created_at: submitted_at
+        )
+      rescue ActiveRecord::RecordNotUnique
+        # multiple reviews from single person could make a SQL concurrency issue here
+        nil
+      end
     end
   end
 end

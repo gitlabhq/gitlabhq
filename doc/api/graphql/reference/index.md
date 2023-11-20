@@ -7800,6 +7800,8 @@ Input type: `ValueStreamCreateInput`
 | <a id="mutationvaluestreamcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationvaluestreamcreatename"></a>`name` | [`String!`](#string) | Value stream name. |
 | <a id="mutationvaluestreamcreatenamespacepath"></a>`namespacePath` | [`ID!`](#id) | Full path of the namespace(project or group) the value stream is created in. |
+| <a id="mutationvaluestreamcreatesetting"></a>`setting` | [`ValueStreamSettingInput`](#valuestreamsettinginput) | Value stream configuration. |
+| <a id="mutationvaluestreamcreatestages"></a>`stages` | [`[ValueStreamStageInput!]`](#valuestreamstageinput) | Value stream custom stages. |
 
 #### Fields
 
@@ -7850,7 +7852,9 @@ Input type: `ValueStreamUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationvaluestreamupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationvaluestreamupdateid"></a>`id` | [`AnalyticsCycleAnalyticsValueStreamID!`](#analyticscycleanalyticsvaluestreamid) | Global ID of the value stream to update. |
-| <a id="mutationvaluestreamupdatename"></a>`name` | [`String!`](#string) | Value stream name. |
+| <a id="mutationvaluestreamupdatename"></a>`name` | [`String`](#string) | Value stream name. |
+| <a id="mutationvaluestreamupdatesetting"></a>`setting` | [`ValueStreamSettingInput`](#valuestreamsettinginput) | Value stream configuration. |
+| <a id="mutationvaluestreamupdatestages"></a>`stages` | [`[ValueStreamStageInput!]`](#valuestreamstageinput) | Value stream custom stages. |
 
 #### Fields
 
@@ -30636,6 +30640,37 @@ Possible identifier types for a measurement.
 | <a id="valuestreamdashboardmetricpipelines"></a>`PIPELINES` | Pipeline count. |
 | <a id="valuestreamdashboardmetricprojects"></a>`PROJECTS` | Project count. |
 
+### `ValueStreamStageEvent`
+
+Stage event identifiers.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="valuestreamstageeventcode_stage_start"></a>`CODE_STAGE_START` | Code stage start event. |
+| <a id="valuestreamstageeventissue_closed"></a>`ISSUE_CLOSED` | Issue closed event. |
+| <a id="valuestreamstageeventissue_created"></a>`ISSUE_CREATED` | Issue created event. |
+| <a id="valuestreamstageeventissue_deployed_to_production"></a>`ISSUE_DEPLOYED_TO_PRODUCTION` | Issue deployed to production event. |
+| <a id="valuestreamstageeventissue_first_added_to_board"></a>`ISSUE_FIRST_ADDED_TO_BOARD` | Issue first added to board event. |
+| <a id="valuestreamstageeventissue_first_assigned_at"></a>`ISSUE_FIRST_ASSIGNED_AT` | Issue first assigned at event. |
+| <a id="valuestreamstageeventissue_first_associated_with_milestone"></a>`ISSUE_FIRST_ASSOCIATED_WITH_MILESTONE` | Issue first associated with milestone event. |
+| <a id="valuestreamstageeventissue_first_mentioned_in_commit"></a>`ISSUE_FIRST_MENTIONED_IN_COMMIT` | Issue first mentioned in commit event. |
+| <a id="valuestreamstageeventissue_label_added"></a>`ISSUE_LABEL_ADDED` | Issue label added event. |
+| <a id="valuestreamstageeventissue_label_removed"></a>`ISSUE_LABEL_REMOVED` | Issue label removed event. |
+| <a id="valuestreamstageeventissue_last_edited"></a>`ISSUE_LAST_EDITED` | Issue last edited event. |
+| <a id="valuestreamstageeventissue_stage_end"></a>`ISSUE_STAGE_END` | Issue stage end event. |
+| <a id="valuestreamstageeventmerge_request_closed"></a>`MERGE_REQUEST_CLOSED` | Merge request closed event. |
+| <a id="valuestreamstageeventmerge_request_created"></a>`MERGE_REQUEST_CREATED` | Merge request created event. |
+| <a id="valuestreamstageeventmerge_request_first_assigned_at"></a>`MERGE_REQUEST_FIRST_ASSIGNED_AT` | Merge request first assigned at event. |
+| <a id="valuestreamstageeventmerge_request_first_commit_at"></a>`MERGE_REQUEST_FIRST_COMMIT_AT` | Merge request first commit at event. |
+| <a id="valuestreamstageeventmerge_request_first_deployed_to_production"></a>`MERGE_REQUEST_FIRST_DEPLOYED_TO_PRODUCTION` | Merge request first deployed to production event. |
+| <a id="valuestreamstageeventmerge_request_label_added"></a>`MERGE_REQUEST_LABEL_ADDED` | Merge request label added event. |
+| <a id="valuestreamstageeventmerge_request_label_removed"></a>`MERGE_REQUEST_LABEL_REMOVED` | Merge request label removed event. |
+| <a id="valuestreamstageeventmerge_request_last_build_finished"></a>`MERGE_REQUEST_LAST_BUILD_FINISHED` | Merge request last build finished event. |
+| <a id="valuestreamstageeventmerge_request_last_build_started"></a>`MERGE_REQUEST_LAST_BUILD_STARTED` | Merge request last build started event. |
+| <a id="valuestreamstageeventmerge_request_last_edited"></a>`MERGE_REQUEST_LAST_EDITED` | Merge request last edited event. |
+| <a id="valuestreamstageeventmerge_request_merged"></a>`MERGE_REQUEST_MERGED` | Merge request merged event. |
+| <a id="valuestreamstageeventplan_stage_start"></a>`PLAN_STAGE_START` | Plan stage start event. |
+
 ### `VerificationStateEnum`
 
 | Value | Description |
@@ -33275,6 +33310,32 @@ A time-frame defined as a closed inclusive range of two dates.
 | <a id="updatediffimagepositioninputwidth"></a>`width` | [`Int`](#int) | Total width of the image. |
 | <a id="updatediffimagepositioninputx"></a>`x` | [`Int`](#int) | X position of the note. |
 | <a id="updatediffimagepositioninputy"></a>`y` | [`Int`](#int) | Y position of the note. |
+
+### `ValueStreamSettingInput`
+
+Attributes for value stream setting.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreamsettinginputprojectidsfilter"></a>`projectIdsFilter` | [`[ProjectID!]`](#projectid) | Projects' global IDs used to filter value stream data. |
+
+### `ValueStreamStageInput`
+
+Attributes for value stream stage.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreamstageinputcustom"></a>`custom` | [`Boolean`](#boolean) | Whether the stage is customized. If false, it assigns a built-in default stage by name. |
+| <a id="valuestreamstageinputendeventidentifier"></a>`endEventIdentifier` | [`ValueStreamStageEvent`](#valuestreamstageevent) | End event identifier. |
+| <a id="valuestreamstageinputendeventlabelid"></a>`endEventLabelId` | [`LabelID`](#labelid) | Label ID associated with the end event identifier. |
+| <a id="valuestreamstageinputhidden"></a>`hidden` | [`Boolean`](#boolean) | Whether the stage is hidden. |
+| <a id="valuestreamstageinputname"></a>`name` | [`String!`](#string) | Name of the stage. |
+| <a id="valuestreamstageinputstarteventidentifier"></a>`startEventIdentifier` | [`ValueStreamStageEvent`](#valuestreamstageevent) | Start event identifier. |
+| <a id="valuestreamstageinputstarteventlabelid"></a>`startEventLabelId` | [`LabelID`](#labelid) | Label ID associated with the start event identifier. |
 
 ### `VulnerabilityIdentifierInput`
 

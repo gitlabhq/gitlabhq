@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Import your project from Bitbucket Server **(FREE ALL)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20164) in GitLab 11.2.
+> Support for pull request approval imports [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135256) in GitLab 16.7.
 
 NOTE:
 This process is different than [importing from Bitbucket Cloud](bitbucket.md).
@@ -17,6 +17,7 @@ From Bitbucket Server, you can import:
 - Git repository data
 - Pull requests
 - Pull request comments
+- Pull request approvals
 
 When importing, repository public access is retained. If a repository is private in Bitbucket, it's
 created as private in GitLab as well.
@@ -56,7 +57,6 @@ To import your Bitbucket repositories:
 
 The following items aren't imported:
 
-- Pull request approvals
 - Attachments in Markdown
 - Task lists
 - Emoji reactions

@@ -4,6 +4,7 @@ module Gitlab
   module BitbucketServerImport
     module Importers
       class PullRequestNotesImporter
+        include ::Gitlab::Import::MergeRequestHelpers
         include Loggable
 
         def initialize(project, hash)
@@ -35,6 +36,9 @@ module Gitlab
 
             import_inline_comments(inline_comments.map(&:comment), merge_request)
             import_standalone_pr_comments(pr_comments.map(&:comment), merge_request)
+
+            approved_events = other_activities.select(&:approved_event?)
+            approved_events.each { |event| import_approved_event(merge_request, event) }
           end
 
           log_info(import_stage: 'import_pull_request_notes', message: 'finished', iid: object[:iid])
@@ -59,6 +63,31 @@ module Gitlab
           log_info(import_stage: 'import_merge_event', message: 'finished', iid: merge_request.iid)
         end
         # rubocop: enable CodeReuse/ActiveRecord
+
+        def import_approved_event(merge_request, approved_event)
+          log_info(
+            import_stage: 'import_approved_event',
+            message: 'starting',
+            iid: merge_request.iid,
+            event_id: approved_event.id
+          )
+
+          user_id = user_finder.find_user_id(by: :username, value: approved_event.approver)
+
+          return unless user_id
+
+          submitted_at = approved_event.created_at || merge_request.updated_at
+
+          create_approval!(project.id, merge_request.id, user_id, submitted_at)
+          create_reviewer!(merge_request.id, user_id, submitted_at)
+
+          log_info(
+            import_stage: 'import_approved_event',
+            message: 'finished',
+            iid: merge_request.iid,
+            event_id: approved_event.id
+          )
+        end
 
         def import_inline_comments(inline_comments, merge_request)
           log_info(import_stage: 'import_inline_comments', message: 'starting', iid: merge_request.iid)

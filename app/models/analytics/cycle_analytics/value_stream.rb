@@ -42,6 +42,10 @@ module Analytics
         namespace.project
       end
 
+      def at_group_level?
+        project.nil?
+      end
+
       private
 
       def max_value_streams_count
