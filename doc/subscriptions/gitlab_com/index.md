@@ -270,14 +270,13 @@ For a demo, see [Linking GitLab Subscription to the Namespace](https://youtu.be/
 ### Transfer restrictions
 
 Changing the linked namespace is not supported for all subscription types.
-Transfer restrictions depend on the services associated with the subscription,
-and on any subscriptions associated with the target namespace.
 
 You cannot transfer:
 
 - A subscription with compute minutes.
 - An expired or trial subscription.
-- A subscription to a namespace with any purchased services, like additional storage.
+- A subscription to a namespace which already has a Premium or Ultimate plan.
+- A subscription from a namespace with multiple subscriptions.
 
 ## Upgrade your GitLab SaaS subscription tier
 

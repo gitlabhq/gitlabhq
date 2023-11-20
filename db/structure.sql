@@ -556,15 +556,6 @@ BEGIN
 END;
 $$;
 
-CREATE FUNCTION trigger_1bd97da9c1a4() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."auto_canceled_by_id_convert_to_bigint" := NEW."auto_canceled_by_id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION trigger_b2d852e1e2cb() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -14311,7 +14302,6 @@ CREATE TABLE ci_pipelines (
     duration integer,
     user_id integer,
     lock_version integer DEFAULT 0,
-    auto_canceled_by_id_convert_to_bigint integer,
     pipeline_schedule_id integer,
     source integer,
     config_source integer,
@@ -32102,8 +32092,6 @@ CREATE INDEX index_ci_pipelines_for_ondemand_dast_scans ON ci_pipelines USING bt
 
 CREATE INDEX index_ci_pipelines_on_auto_canceled_by_id ON ci_pipelines USING btree (auto_canceled_by_id);
 
-CREATE INDEX index_ci_pipelines_on_auto_canceled_by_id_bigint ON ci_pipelines USING btree (auto_canceled_by_id_convert_to_bigint);
-
 CREATE INDEX index_ci_pipelines_on_ci_ref_id_and_more ON ci_pipelines USING btree (ci_ref_id, id DESC, source, status) WHERE (ci_ref_id IS NOT NULL);
 
 CREATE INDEX index_ci_pipelines_on_external_pull_request_id ON ci_pipelines USING btree (external_pull_request_id) WHERE (external_pull_request_id IS NOT NULL);
@@ -36976,8 +36964,6 @@ CREATE TRIGGER trigger_07bc3c48f407 BEFORE INSERT OR UPDATE ON ci_stages FOR EAC
 
 CREATE TRIGGER trigger_10ee1357e825 BEFORE INSERT OR UPDATE ON p_ci_builds FOR EACH ROW EXECUTE FUNCTION trigger_10ee1357e825();
 
-CREATE TRIGGER trigger_1bd97da9c1a4 BEFORE INSERT OR UPDATE ON ci_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_1bd97da9c1a4();
-
 CREATE TRIGGER trigger_b2d852e1e2cb BEFORE INSERT OR UPDATE ON ci_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_b2d852e1e2cb();
 
 CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
@@ -37461,9 +37447,6 @@ ALTER TABLE ONLY ci_pipeline_chat_data
 
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_6661f4f0e8 FOREIGN KEY (resource_group_id) REFERENCES ci_resource_groups(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY ci_pipelines
-    ADD CONSTRAINT fk_67e4288f3a FOREIGN KEY (auto_canceled_by_id_convert_to_bigint) REFERENCES ci_pipelines(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_6a5165a692 FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;

@@ -217,7 +217,7 @@ To enable global group memberships lock:
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
-1. Ensure the **Lock memberships to SAML synchronization** checkbox is selected.
+1. Ensure that **Lock memberships to SAML Group Links synchronization** is selected.
 
 ## Automatic member removal
 

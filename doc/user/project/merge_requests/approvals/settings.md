@@ -29,7 +29,7 @@ These settings limit who can approve merge requests:
   Prevents users who add commits to a merge request from also approving it.
 - [**Prevent editing approval rules in merge requests**](#prevent-editing-approval-rules-in-merge-requests):
   Prevents users from overriding project level approval rules on merge requests.
-- [**Require user password to approve**](#require-user-password-to-approve):
+- [**Require user password to approve**](#require-user-re-authentication-to-approve):
   Force potential approvers to first authenticate with a password.
 - Code Owner approval removals: Define what happens to existing approvals when
   commits are added to the merge request.
@@ -104,10 +104,15 @@ on merge requests, you can disable this setting:
 
 This change affects all open merge requests.
 
-## Require user password to approve
+When this field is changed, it can affect all open merge requests depending on the setting:
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5981) in GitLab 12.0.
-> - Moved to GitLab Premium in 13.9.
+- If users could edit approval rules previously, and you disable this behavior,
+  all open merge requests are updated to enforce the approval rules.
+- If users could **not** edit approval rules previously, and you enable approval rule
+  editing, open merge requests remain unchanged. This preserves any changes already
+  made to approval rules in those merge requests.
+
+## Require user re-authentication to approve
 
 You can force potential approvers to first authenticate with a password. This
 permission enables an electronic signature for approvals, such as the one defined by

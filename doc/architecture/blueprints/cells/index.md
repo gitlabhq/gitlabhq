@@ -85,9 +85,8 @@ In some cases, a table with an ambiguous usage has to be broken down.
 For example: `uploads` are used to store user avatars, as well as uploaded attachments for comments.
 It would be expected that `uploads` is split into `uploads` (describing Group/Project-level attachments) and `global_uploads` (describing, for example, user avatars).
 
-Except for the initial 2-3 quarters this work is highly parallel.
 It is expected that **group::tenant scale** will help other teams to fix their feature set to work with Cells.
-The first 2-3 quarters are required to define a general split of data and build the required tooling.
+The first 2-3 quarters are required to define a general split of data, and build the required tooling and development guidelines.
 
 1. **Instance-wide settings are shared across cluster.**
 
@@ -140,6 +139,28 @@ The first 2-3 quarters are required to define a general split of data and build 
 1. **User is part of Organization and can only see information from the Organization.**
 
     The purpose is to have many Organizations per Cell, but never have a single Organization spanning across many Cells. This is required to ensure that information shown within an Organization is isolated, and does not require fetching information from other Cells.
+
+#### Dependencies
+
+We have identified the following dependencies between the essential workflows.
+
+```mermaid
+flowchart TD
+    A[Create Organization] --> B[Create Group]
+    B --> C[Create Project]
+    L --> D[Create Issue]
+    E --> F[Push to Git repo]
+    E --> G[Create Merge Request]
+    E --> H[Create CI Pipeline]
+    G --> J[Merge when Pipeline Succeeds]
+    H --> J
+    J --> K[Issue gets closed by the reference in MR description]
+    D --> K
+    A --> L[Manage members]
+    B --> L
+    C --> L
+    L --> E[Create file in project]
+```
 
 ### 3. Additional workflows
 
@@ -268,49 +289,47 @@ Expectations:
 The delivered iterations will focus on solving particular steps of a given key work stream.
 It is expected that initial iterations will be rather slow, because they require substantially more changes to prepare the codebase for data split.
 
-One iteration describes one quarter's worth of work.
+### [Iteration 1](https://gitlab.com/groups/gitlab-org/-/epics/9667) (FY24Q1)
 
-1. [Iteration 1](https://gitlab.com/groups/gitlab-org/-/epics/9667) - FY24Q1 - Complete
+- Data access layer: Initial Admin Area settings are shared across cluster.
+- Essential workflows: Allow to share cluster-wide data with database-level data access layer.
 
-    - Data access layer: Initial Admin Area settings are shared across cluster.
-    - Essential workflows: Allow to share cluster-wide data with database-level data access layer
+### [Iteration 2](https://gitlab.com/groups/gitlab-org/-/epics/9813) (FY24Q2-FY24Q3)
 
-1. [Iteration 2](https://gitlab.com/groups/gitlab-org/-/epics/9813) - Expected delivery: 16.2 FY24Q2, Actual delivery: 16.4 FY24Q3 - Complete
+- Essential workflows: User accounts are shared across cluster.
+- Essential workflows: User can create Group.
 
-    - Essential workflows: User accounts are shared across cluster.
-    - Essential workflows: User can create Group.
+### [Iteration 3](https://gitlab.com/groups/gitlab-org/-/epics/10997) (FY24Q4-FY25Q1)
 
-1. [Iteration 3](https://gitlab.com/groups/gitlab-org/-/epics/10997) - Expected delivery: 16.7 FY24Q4 - In Progress
+- Essential workflows: User can create Project.
+- Routing: Technology.
+- Routing: Cell discovery.
 
-    - Essential workflows: User can create Project.
-    - Routing: Technology.
-    - Routing: Cell discovery.
+### [Iteration 4](https://gitlab.com/groups/gitlab-org/-/epics/10998) (FY25Q1-FY25Q2)
 
-1. [Iteration 4](https://gitlab.com/groups/gitlab-org/-/epics/10998) - Expected delivery: 16.10 FY25Q1 - Planned
+- Essential workflows: User can create Organization on Cell 2.
 
-    - Essential workflows: User can create Organization on Cell 2.
-    - Data access layer: Cluster-unique identifiers.
-    - Data access layer: Evaluate the efficiency of database-level access vs. API-oriented access layer.
-    - Data access layer: Data access layer.
-    - Routing: User can use single domain to interact with many Cells.
-    - Cell deployment: Extend GitLab Dedicated to support GCP.
+### Iteration 5..N - starting FY25Q3
 
-1. Iteration 5..N - starting FY25Q1
-
-    - Essential workflows: User can push to Git repository.
-    - Essential workflows: User can run CI pipeline.
-    - Essential workflows: Instance-wide settings are shared across cluster.
-    - Essential workflows: User can change profile avatar that is shared in cluster.
-    - Essential workflows: User can create issue.
-    - Essential workflows: User can create merge request, and merge it after it is green.
-    - Essential workflows: User can manage Group and Project members.
-    - Essential workflows: User can manage instance-wide runners.
-    - Essential workflows: User is part of Organization and can only see information from the Organization.
-    - Routing: Router endpoints classification.
-    - Routing: GraphQL and other ambiguous endpoints.
-    - Data access layer: Allow to share cluster-wide data with database-level data access layer.
-    - Data access layer: Cluster-wide deletions.
-    - Data access layer: Database migrations.
+- Data access layer: Cluster-unique identifiers.
+- Data access layer: Evaluate the efficiency of database-level access vs. API-oriented access layer.
+- Data access layer: Data access layer.
+- Routing: User can use single domain to interact with many Cells.
+- Cell deployment: Extend GitLab Dedicated to support GCP.
+- Essential workflows: User can push to Git repository.
+- Essential workflows: User can run CI pipeline.
+- Essential workflows: Instance-wide settings are shared across cluster.
+- Essential workflows: User can change profile avatar that is shared in cluster.
+- Essential workflows: User can create issue.
+- Essential workflows: User can create merge request, and merge it after it is green.
+- Essential workflows: User can manage Group and Project members.
+- Essential workflows: User can manage instance-wide runners.
+- Essential workflows: User is part of Organization and can only see information from the Organization.
+- Routing: Router endpoints classification.
+- Routing: GraphQL and other ambiguous endpoints.
+- Data access layer: Allow to share cluster-wide data with database-level data access layer.
+- Data access layer: Cluster-wide deletions.
+- Data access layer: Database migrations.
 
 ## Technical proposals
 

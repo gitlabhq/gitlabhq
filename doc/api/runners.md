@@ -6,6 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Runners API **(FREE ALL)**
 
+This page describes endpoints for runners registered to an instance. To create a runner linked to the current user, see [Create a runner](users.md#create-a-runner).
+
 [Pagination](rest/index.md#pagination) is available on the following API endpoints (they return 20 items by default):
 
 ```plaintext

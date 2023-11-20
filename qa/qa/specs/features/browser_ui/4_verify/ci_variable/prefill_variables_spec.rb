@@ -40,6 +40,7 @@ module QA
       before do
         Flow::Login.sign_in
         project.visit!
+        Support::Waiter.wait_until(message: 'Wait for pipeline creation') { project.pipelines.length == 1 }
 
         # Navigate to Run Pipeline page
         Page::Project::Menu.perform(&:go_to_pipelines)

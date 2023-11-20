@@ -208,8 +208,12 @@ A top-level group Owner can [set up verified domains to bypass confirmation emai
 
 ### Get users' email addresses through the API
 
-A top-level group Owner can use the [group and project members API](../../api/members.md)
-to access users' information, including email addresses.
+A top-level group Owner can use the [group and project members API](../../api/members.md) to access
+users' information. For users provisioned by the group with [SCIM](../group/saml_sso/scim_setup.md),
+this information includes users' email addresses.
+
+In GitLab 16.7 and later, a top-level group Owner can use this API to access all enterprise users' email addresses.
+For more information, see [issue 391453](https://gitlab.com/gitlab-org/gitlab/-/issues/391453).
 
 ## Troubleshooting
 
