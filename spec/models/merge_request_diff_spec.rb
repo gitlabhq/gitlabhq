@@ -172,6 +172,30 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     end
   end
 
+  describe '#ensure_project_id' do
+    let_it_be(:merge_request) { create(:merge_request, :without_diffs) }
+
+    let(:diff) { build(:merge_request_diff, merge_request: merge_request, project_id: project_id) }
+
+    subject { diff.save! }
+
+    context 'when project_id is null' do
+      let(:project_id) { nil }
+
+      it do
+        expect { subject }.to change(diff, :project_id).from(nil).to(merge_request.target_project_id)
+      end
+    end
+
+    context 'when project_id is already set' do
+      let(:project_id) { create(:project, :stubbed_repository).id }
+
+      it do
+        expect { subject }.not_to change(diff, :project_id)
+      end
+    end
+  end
+
   describe '#update_external_diff_store' do
     let_it_be(:merge_request) { create(:merge_request) }
 

@@ -873,12 +873,58 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           create(:container_repository, project: project, name: :image)
         end
 
-        it 'does not allow to rename the project' do
-          expect { update_project path: 'renamed_path' }
-            .not_to change { project.reload.path }
+        let(:message) { 'UpdateProject|Cannot rename project because it contains container registry tags!' }
 
-          expect(controller).to set_flash[:alert].to(s_('UpdateProject|Cannot rename project because it contains container registry tags!'))
-          expect(response).to have_gitlab_http_status(:ok)
+        shared_examples 'not allowing the rename of the project' do
+          it 'does not allow to rename the project' do
+            expect { update_project path: 'renamed_path' }
+              .not_to change { project.reload.path }
+
+            expect(controller).to set_flash[:alert].to(s_(message))
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
+        context 'when feature renaming_project_with_tags is disabled' do
+          before do
+            stub_feature_flags(renaming_project_with_tags: false)
+          end
+
+          it_behaves_like 'not allowing the rename of the project'
+        end
+
+        context 'when Gitlab API is not supported' do
+          before do
+            allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
+          end
+
+          it_behaves_like 'not allowing the rename of the project'
+        end
+
+        context 'when Gitlab API is supported' do
+          before do
+            allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
+          end
+
+          it 'allows the rename of the project' do
+            allow(ContainerRegistry::GitlabApiClient).to receive(:rename_base_repository_path).and_return(:accepted, :ok)
+
+            expect { update_project path: 'renamed_path' }
+                .to change { project.reload.path }
+
+            expect(project.path).to eq('renamed_path')
+            expect(response).to have_gitlab_http_status(:found)
+          end
+
+          context 'when rename base repository dry run in the registry fails' do
+            let(:message) { 'UpdateProject|UpdateProject|Cannot rename project, the container registry path rename validation failed: Bad Request' }
+
+            before do
+              allow(ContainerRegistry::GitlabApiClient).to receive(:rename_base_repository_path).and_return(:bad_request)
+            end
+
+            it_behaves_like 'not allowing the rename of the project'
+          end
         end
       end
 

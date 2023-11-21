@@ -25531,7 +25531,7 @@ Returns [`Blame`](#blame).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="repositoryblobblamefromline"></a>`fromLine` | [`Int`](#int) | Range starting from the line. Cannot be less than 1 or greater than `to_line`. |
-| <a id="repositoryblobblametoline"></a>`toLine` | [`Int`](#int) | Range ending on the line. Cannot be less than 1 or less than `to_line`. |
+| <a id="repositoryblobblametoline"></a>`toLine` | [`Int`](#int) | Range ending on the line. Cannot be smaller than `from_line` or greater than `from_line` + 100. |
 
 ### `RepositoryCodeownerError`
 

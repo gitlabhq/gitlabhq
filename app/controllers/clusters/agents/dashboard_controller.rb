@@ -12,9 +12,7 @@ module Clusters
 
       feature_category :deployment_management
 
-      def show
-        head :ok
-      end
+      def show; end
 
       private
 

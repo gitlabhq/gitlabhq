@@ -109,7 +109,7 @@ InitializerConnections.raise_if_new_database_connection do
 
       scope module: 'clusters' do
         scope module: 'agents' do
-          get '/kubernetes/:agent_id', to: 'dashboard#show', as: 'kubernetes_dashboard'
+          get '/kubernetes/:agent_id(/*vueroute)', to: 'dashboard#show', as: 'kubernetes_dashboard'
         end
       end
 

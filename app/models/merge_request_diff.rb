@@ -190,6 +190,8 @@ class MergeRequestDiff < ApplicationRecord
 
   mount_uploader :external_diff, ExternalDiffUploader
 
+  before_save :ensure_project_id
+
   # All diff information is collected from repository after object is created.
   # It allows you to override variables like head_commit_sha before getting diff.
   after_create :save_git_content, unless: :importing?
@@ -825,6 +827,10 @@ class MergeRequestDiff < ApplicationRecord
       commits_count: merge_request_diff_commits.size,
       files_count: [FILES_COUNT_SENTINEL, merge_request_diff_files.size].min
     )
+  end
+
+  def ensure_project_id
+    self.project_id ||= merge_request.target_project_id
   end
 
   def repository

@@ -26,6 +26,7 @@ RSpec.describe Projects::AfterRenameService, feature_category: :groups_and_proje
     let(:hash) { Digest::SHA2.hexdigest(project.id.to_s) }
     let(:hashed_prefix) { File.join('@hashed', hash[0..1], hash[2..3]) }
     let(:hashed_path) { File.join(hashed_prefix, hash) }
+    let(:message) { "Repository #{full_path_before_rename} could not be renamed to #{full_path_after_rename}" }
 
     before do
       # Project#gitlab_shell returns a new instance of Gitlab::Shell on every
@@ -33,6 +34,15 @@ RSpec.describe Projects::AfterRenameService, feature_category: :groups_and_proje
       allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
 
       stub_application_setting(hashed_storage_enabled: true)
+    end
+
+    shared_examples 'logging and raising a RenameFailedError' do
+      it 'logs raises a RenameFailedError' do
+        expect_any_instance_of(described_class).to receive(:log_error).with(message)
+
+        expect { service_execute }
+          .to raise_error(described_class::RenameFailedError)
+      end
     end
 
     it 'renames a repository' do
@@ -47,8 +57,21 @@ RSpec.describe Projects::AfterRenameService, feature_category: :groups_and_proje
       service_execute
     end
 
+    context 'when renaming or migrating fails' do
+      before do
+        allow_any_instance_of(::Projects::HashedStorage::MigrationService)
+          .to receive(:execute).and_return(false)
+      end
+
+      it_behaves_like 'logging and raising a RenameFailedError'
+    end
+
     context 'container registry with images' do
       let(:container_repository) { create(:container_repository) }
+      let(:message) do
+        "Project #{full_path_before_rename} cannot be renamed because images are " \
+          "present in its container registry"
+      end
 
       before do
         stub_container_registry_config(enabled: true)
@@ -56,9 +79,44 @@ RSpec.describe Projects::AfterRenameService, feature_category: :groups_and_proje
         project.container_repositories << container_repository
       end
 
-      it 'raises a RenameFailedError' do
-        expect { service_execute }
-          .to raise_error(described_class::RenameFailedError)
+      context 'when feature renaming_project_with_tags is disabled' do
+        before do
+          stub_feature_flags(renaming_project_with_tags: false)
+        end
+
+        it_behaves_like 'logging and raising a RenameFailedError'
+      end
+
+      context 'when Gitlab API is not supported' do
+        before do
+          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
+        end
+
+        it_behaves_like 'logging and raising a RenameFailedError'
+      end
+
+      context 'when Gitlab API Client is supported' do
+        before do
+          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
+        end
+
+        it 'renames the base repository in the registry' do
+          expect(ContainerRegistry::GitlabApiClient).to receive(:rename_base_repository_path)
+            .with(full_path_before_rename, name: path_after_rename).and_return(:ok)
+
+          service_execute
+        end
+
+        context 'when the base repository rename in the registry fails' do
+          before do
+            allow(ContainerRegistry::GitlabApiClient)
+              .to receive(:rename_base_repository_path).and_return(:bad_request)
+          end
+
+          let(:message) { 'Renaming the base repository in the registry failed with error bad_request.' }
+
+          it_behaves_like 'logging and raising a RenameFailedError'
+        end
       end
     end
 

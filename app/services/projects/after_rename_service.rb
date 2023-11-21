@@ -38,7 +38,7 @@ module Projects
     end
 
     def execute
-      first_ensure_no_registry_tags_are_present
+      rename_base_repository_in_registry!
       expire_caches_before_rename
       rename_or_migrate_repository!
       send_move_instructions
@@ -49,11 +49,25 @@ module Projects
       publish_event
     end
 
-    def first_ensure_no_registry_tags_are_present
+    def rename_base_repository_in_registry!
       return unless project.has_container_registry_tags?
 
-      raise RenameFailedError, "Project #{full_path_before} cannot be renamed because images are " \
-          "present in its container registry"
+      ensure_registry_tags_can_be_handled
+
+      result = ContainerRegistry::GitlabApiClient.rename_base_repository_path(
+        full_path_before, name: project_path)
+
+      return if result == :ok
+
+      rename_failed!("Renaming the base repository in the registry failed with error #{result}.")
+    end
+
+    def ensure_registry_tags_can_be_handled
+      return if Feature.enabled?(:renaming_project_with_tags, project) &&
+        ContainerRegistry::GitlabApiClient.supports_gitlab_api?
+
+      rename_failed!("Project #{full_path_before} cannot be renamed because images are " \
+      "present in its container registry")
     end
 
     def expire_caches_before_rename
@@ -66,7 +80,9 @@ module Projects
           .new(project, full_path_before)
           .execute
 
-      rename_failed! unless success
+      return if success
+
+      rename_failed!("Repository #{full_path_before} could not be renamed to #{full_path_after}")
     end
 
     def send_move_instructions
@@ -117,9 +133,7 @@ module Projects
       project.namespace.full_path
     end
 
-    def rename_failed!
-      error = "Repository #{full_path_before} could not be renamed to #{full_path_after}"
-
+    def rename_failed!(error)
       log_error(error)
 
       raise RenameFailedError, error

@@ -80,6 +80,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     members: %w[source_id created_by_id],
     merge_requests: %w[last_edited_by_id state_id],
     merge_requests_compliance_violations: %w[target_project_id],
+    merge_request_diffs: %w[project_id],
     merge_request_diff_commits: %w[commit_author_id committer_id],
     namespaces: %w[owner_id parent_id],
     notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id confirmed_by_id discussion_id namespace_id],

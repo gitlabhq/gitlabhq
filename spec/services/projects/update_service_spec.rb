@@ -415,17 +415,100 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
     end
 
     context 'when updating a project that contains container images' do
+      let(:new_name) { 'renamed' }
+
       before do
         stub_container_registry_config(enabled: true)
         stub_container_registry_tags(repository: /image/, tags: %w[rc1])
         create(:container_repository, project: project, name: :image)
       end
 
-      it 'does not allow to rename the project' do
-        result = update_project(project, admin, path: 'renamed')
+      shared_examples 'renaming the project fails with message' do |error_message|
+        it 'does not allow to rename the project' do
+          result = update_project(project, admin, path: new_name)
 
-        expect(result).to include(status: :error)
-        expect(result[:message]).to match(/contains container registry tags/)
+          expect(result).to include(status: :error)
+          expect(result[:message]).to match(error_message)
+        end
+      end
+
+      context 'when feature renaming_project_with_tags is disabled' do
+        before do
+          stub_feature_flags(renaming_project_with_tags: false)
+        end
+
+        it_behaves_like 'renaming the project fails with message', /contains container registry tags/
+      end
+
+      context "when the GitlabAPI is not supported" do
+        before do
+          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
+        end
+
+        it_behaves_like 'renaming the project fails with message', /contains container registry tags/
+      end
+
+      context 'when Gitlab API is supported' do
+        before do
+          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
+        end
+
+        it 'executes a dry run of the project rename' do
+          stub_rename_base_repository_in_registry(dry_run: true)
+
+          update_project(project, admin, path: new_name)
+
+          expect_rename_of_base_repository_in_registry(dry_run: true)
+        end
+
+        context 'when the dry run fails' do
+          before do
+            stub_rename_base_repository_in_registry(dry_run: true, result: :bad_request)
+          end
+
+          it_behaves_like 'renaming the project fails with message', /container registry path rename validation failed/
+
+          it 'logs the error' do
+            expect_any_instance_of(described_class).to receive(:log_error).with("Dry run failed for renaming project with tags: #{project.full_path}, error: bad_request")
+
+            update_project(project, admin, path: new_name)
+          end
+        end
+
+        context 'when the dry run succeeds' do
+          before do
+            stub_rename_base_repository_in_registry(dry_run: true, result: :accepted)
+          end
+
+          it 'continues with the project rename' do
+            stub_rename_base_repository_in_registry(dry_run: false, result: :ok)
+            old_project_full_path = project.full_path
+
+            update_project(project, admin, path: new_name)
+
+            expect_rename_of_base_repository_in_registry(dry_run: true, path: old_project_full_path)
+            expect_rename_of_base_repository_in_registry(dry_run: false, path: old_project_full_path)
+          end
+        end
+
+        def stub_rename_base_repository_in_registry(dry_run:, result: nil)
+          options = { name: new_name }
+          options[:dry_run] = true if dry_run
+
+          allow(ContainerRegistry::GitlabApiClient)
+            .to receive(:rename_base_repository_path)
+            .with(project.full_path, options)
+            .and_return(result)
+        end
+
+        def expect_rename_of_base_repository_in_registry(dry_run:, path: nil)
+          options = { name: new_name }
+          options[:dry_run] = true if dry_run
+
+          expect(ContainerRegistry::GitlabApiClient)
+            .to have_received(:rename_base_repository_path)
+            .with(path || project.full_path, options)
+        end
       end
 
       it 'allows to update other settings' do

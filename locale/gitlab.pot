@@ -27752,6 +27752,18 @@ msgstr ""
 msgid "Kubernetes deployment not found"
 msgstr ""
 
+msgid "KubernetesDashboard|Agent %{name} ID #%{id}"
+msgstr ""
+
+msgid "KubernetesDashboard|Agents"
+msgstr ""
+
+msgid "KubernetesDashboard|Dashboard"
+msgstr ""
+
+msgid "KubernetesDashboard|Pods"
+msgstr ""
+
 msgid "LDAP"
 msgstr ""
 
@@ -42092,7 +42104,7 @@ msgstr ""
 msgid "Saving project."
 msgstr ""
 
-msgid "ScanExecutionPolicy|%{boldStart}Run%{boldEnd} %{typeSelector} %{tooltip}"
+msgid "ScanExecutionPolicy|%{boldStart}Run%{boldEnd} %{typeSelector} %{filePath} %{tooltip}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|%{hostname}'s timezone"
@@ -42155,6 +42167,9 @@ msgstr ""
 msgid "ScanExecutionPolicy|Kubernetes agent's timezone"
 msgstr ""
 
+msgid "ScanExecutionPolicy|Link existing CI file"
+msgstr ""
+
 msgid "ScanExecutionPolicy|Linked existing CI file"
 msgstr ""
 
@@ -42201,6 +42216,9 @@ msgid "ScanExecutionPolicy|Select site profile"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Select timezone"
+msgstr ""
+
+msgid "ScanExecutionPolicy|The file path can't be empty"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Triggers:"
@@ -51651,6 +51669,9 @@ msgstr ""
 msgid "UpdateProject|Cannot rename project because it contains container registry tags!"
 msgstr ""
 
+msgid "UpdateProject|Cannot rename project, the container registry path rename validation failed: %{error}"
+msgstr ""
+
 msgid "UpdateProject|Could not set the default branch"
 msgstr ""
 
@@ -57185,6 +57206,9 @@ msgid "file"
 msgid_plural "files"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "file path group"
+msgstr ""
 
 msgid "finding is not found or is already attached to a vulnerability"
 msgstr ""

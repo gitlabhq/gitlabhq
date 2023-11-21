@@ -64,13 +64,16 @@ module Auth
     def self.push_pull_nested_repositories_access_token(name)
       name = name.chomp('/')
 
-      access_token({
-        name => %w[pull push],
-        "#{name}/*" => %w[pull]
-      })
+      access_token(
+        {
+          name => %w[pull push],
+          "#{name}/*" => %w[pull]
+        },
+        override_project_path: name
+      )
     end
 
-    def self.access_token(names_and_actions, type = 'repository')
+    def self.access_token(names_and_actions, type = 'repository', override_project_path: nil)
       registry = Gitlab.config.registry
       token = JSONWebToken::RSAToken.new(registry.key)
       token.issuer = registry.issuer
@@ -82,7 +85,7 @@ module Auth
           type: type,
           name: name,
           actions: actions,
-          meta: access_metadata(path: name)
+          meta: access_metadata(path: name, override_project_path: override_project_path)
         }.compact
       end
 
@@ -93,7 +96,9 @@ module Auth
       Time.current + Gitlab::CurrentSettings.container_registry_token_expire_delay.minutes
     end
 
-    def self.access_metadata(project: nil, path: nil)
+    def self.access_metadata(project: nil, path: nil, override_project_path: nil)
+      return { project_path: override_project_path.downcase } if override_project_path
+
       # If the project is not given, try to infer it from the provided path
       if project.nil?
         return if path.nil? # If no path is given, return early

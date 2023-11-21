@@ -2076,7 +2076,7 @@ stop_review_app:
 
 #### `environment:auto_stop_in`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20956) in GitLab 12.8.
+> CI/CD variable support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365140) in GitLab 15.4.
 
 The `auto_stop_in` keyword specifies the lifetime of the environment. When an environment expires, GitLab
 automatically stops it.
@@ -2090,6 +2090,8 @@ these are all equivalent:
 - `7 days`
 - `one week`
 - `never`
+
+CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 **Example of `environment:auto_stop_in`**:
 

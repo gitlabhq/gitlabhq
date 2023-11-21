@@ -61,11 +61,8 @@ module Projects
         raise_validation_error(s_('UpdateProject|New visibility level not allowed!'))
       end
 
-      if renaming_project_with_container_registry_tags?
-        raise_validation_error(s_('UpdateProject|Cannot rename project because it contains container registry tags!'))
-      end
-
       validate_default_branch_change
+      validate_renaming_project_with_tags
     end
 
     def validate_default_branch_change
@@ -90,6 +87,28 @@ module Projects
       else
         raise_validation_error(s_("UpdateProject|Could not set the default branch"))
       end
+    end
+
+    def validate_renaming_project_with_tags
+      return unless renaming_project_with_container_registry_tags?
+
+      unless Feature.enabled?(:renaming_project_with_tags, project) &&
+          ContainerRegistry::GitlabApiClient.supports_gitlab_api?
+        raise ValidationError, s_('UpdateProject|Cannot rename project because it contains container registry tags!')
+      end
+
+      dry_run = ContainerRegistry::GitlabApiClient.rename_base_repository_path(
+        project.full_path, name: params[:path], dry_run: true)
+
+      return if dry_run == :accepted
+
+      log_error("Dry run failed for renaming project with tags: #{project.full_path}, error: #{dry_run}")
+      raise_validation_error(
+        format(
+          s_("UpdateProject|Cannot rename project, the container registry path rename validation failed: %{error}"),
+          error: dry_run.to_s.titleize
+        )
+      )
     end
 
     def ambiguous_head_documentation_link
