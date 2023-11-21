@@ -3141,7 +3141,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       it 'passes through default branch' do
-        expect(project.repository).to receive(:create_repository).with('pineapple')
+        expect(project.repository).to receive(:create_repository).with('pineapple', object_format: nil)
 
         expect(project.create_repository(default_branch: 'pineapple')).to eq(true)
       end
@@ -3153,6 +3153,13 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         expect(project.repository).not_to receive(:create_repository)
 
         project.create_repository
+      end
+    end
+
+    context 'using a SHA256 repository' do
+      it 'creates the repository' do
+        expect(project.repository).to receive(:create_repository).with(nil, object_format: Repository::FORMAT_SHA256)
+        expect(project.create_repository(object_format: Repository::FORMAT_SHA256)).to eq(true)
       end
     end
   end

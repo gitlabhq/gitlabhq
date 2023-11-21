@@ -315,6 +315,20 @@ In 16.3, the names of these settings were changed to clarify their meanings: the
 
 </div>
 
+<div class="deprecation " data-milestone="17.0">
+
+### Deprecate GraphQL fields related to the temporary storage increase
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.7</span>
+- Removal in GitLab <span class="milestone">17.0</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/385720).
+</div>
+
+The GraphQL fields, `isTemporaryStorageIncreaseEnabled` and `temporaryStorageIncreaseEndsOn`, have been deprecated. These GraphQL fields are related to the temporary storage increase project. The project has been cancelled and the fields were not used.
+
+</div>
+
 <div class="deprecation breaking-change" data-milestone="17.0">
 
 ### Deprecate Windows CMD in GitLab Runner

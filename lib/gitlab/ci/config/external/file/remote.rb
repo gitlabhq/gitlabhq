@@ -14,9 +14,20 @@ module Gitlab
               super
             end
 
-            def content
-              strong_memoize(:content) { fetch_remote_content }
+            def preload_content
+              fetch_async_content
             end
+
+            def content
+              fetch_with_error_handling do
+                if fetch_async_content
+                  fetch_async_content.value
+                else
+                  fetch_sync_content
+                end
+              end
+            end
+            strong_memoize_attr :content
 
             def metadata
               super.merge(
@@ -42,11 +53,23 @@ module Gitlab
 
             private
 
-            def fetch_remote_content
+            def fetch_async_content
+              return if ::Feature.disabled?(:ci_parallel_remote_includes, context.project)
+
+              # It starts fetching the remote content in a separate thread and returns a promise immediately.
+              Gitlab::HTTP.get(location, async: true).execute
+            end
+            strong_memoize_attr :fetch_async_content
+
+            def fetch_sync_content
+              context.logger.instrument(:config_file_fetch_remote_content) do
+                Gitlab::HTTP.get(location)
+              end
+            end
+
+            def fetch_with_error_handling
               begin
-                response = context.logger.instrument(:config_file_fetch_remote_content) do
-                  Gitlab::HTTP.get(location)
-                end
+                response = yield
               rescue SocketError
                 errors.push("Remote file `#{masked_location}` could not be fetched because of a socket error!")
               rescue Timeout::Error

@@ -75,7 +75,9 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
 
     context 'with a timeout' do
       before do
-        allow(Gitlab::HTTP).to receive(:get).and_raise(Timeout::Error)
+        allow_next_instance_of(HTTParty::Request) do |instance|
+          allow(instance).to receive(:perform).and_raise(Timeout::Error)
+        end
       end
 
       it { is_expected.to be_falsy }
@@ -94,24 +96,33 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
     end
   end
 
-  describe "#content" do
+  # When the FF ci_parallel_remote_includes is removed,
+  # convert this `shared_context` to `describe` and remove `rubocop:disable`.
+  shared_context "#content" do # rubocop:disable RSpec/ContextWording -- This is temporary until the FF is removed.
+    subject(:content) do
+      remote_file.preload_content
+      remote_file.content
+    end
+
     context 'with a valid remote file' do
       before do
         stub_full_request(location).to_return(body: remote_file_content)
       end
 
       it 'returns the content of the file' do
-        expect(remote_file.content).to eql(remote_file_content)
+        expect(content).to eql(remote_file_content)
       end
     end
 
     context 'with a timeout' do
       before do
-        allow(Gitlab::HTTP).to receive(:get).and_raise(Timeout::Error)
+        allow_next_instance_of(HTTParty::Request) do |instance|
+          allow(instance).to receive(:perform).and_raise(Timeout::Error)
+        end
       end
 
       it 'is falsy' do
-        expect(remote_file.content).to be_falsy
+        expect(content).to be_falsy
       end
     end
 
@@ -123,7 +134,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
       end
 
       it 'is nil' do
-        expect(remote_file.content).to be_nil
+        expect(content).to be_nil
       end
     end
 
@@ -131,9 +142,19 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
       let(:location) { 'http://localhost:8080' }
 
       it 'is nil' do
-        expect(remote_file.content).to be_nil
+        expect(content).to be_nil
       end
     end
+  end
+
+  it_behaves_like "#content"
+
+  context 'when the FF ci_parallel_remote_includes is disabled' do
+    before do
+      stub_feature_flags(ci_parallel_remote_includes: false)
+    end
+
+    it_behaves_like "#content"
   end
 
   describe "#error_message" do
@@ -234,13 +255,18 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
   end
 
   describe '#to_hash' do
+    subject(:to_hash) do
+      remote_file.preload_content
+      remote_file.to_hash
+    end
+
     before do
       stub_full_request(location).to_return(body: remote_file_content)
     end
 
     context 'with a valid remote file' do
       it 'returns the content as a hash' do
-        expect(remote_file.to_hash).to eql(
+        expect(to_hash).to eql(
           before_script: ["apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs",
                           "ruby -v",
                           "which ruby",
@@ -260,7 +286,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
       end
 
       it 'returns the content as a hash' do
-        expect(remote_file.to_hash).to eql(
+        expect(to_hash).to eql(
           include: [
             { local: 'another-file.yml',
               rules: [{ exists: ['Dockerfile'] }] }
@@ -293,7 +319,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
 
       it 'returns the content as a hash' do
         expect(remote_file).to be_valid
-        expect(remote_file.to_hash).to eql(
+        expect(to_hash).to eql(
           include: [
             { local: 'some-file.yml',
               rules: [{ exists: ['Dockerfile'] }] }

@@ -18500,7 +18500,7 @@ GPG signature for a signed commit.
 | <a id="groupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. |
 | <a id="groupgooglecloudloggingconfigurations"></a>`googleCloudLoggingConfigurations` | [`GoogleCloudLoggingConfigurationTypeConnection`](#googlecloudloggingconfigurationtypeconnection) | Google Cloud logging configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
 | <a id="groupid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
-| <a id="groupistemporarystorageincreaseenabled"></a>`isTemporaryStorageIncreaseEnabled` | [`Boolean!`](#boolean) | Status of the temporary storage increase. |
+| <a id="groupistemporarystorageincreaseenabled"></a>`isTemporaryStorageIncreaseEnabled` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.7. Feature removal, will be completely removed in 17.0. |
 | <a id="grouplfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="groupmentionsdisabled"></a>`mentionsDisabled` | [`Boolean`](#boolean) | Indicates if a group is disabled from getting mentioned. |
 | <a id="groupname"></a>`name` | [`String!`](#string) | Name of the namespace. |
@@ -18519,7 +18519,7 @@ GPG signature for a signed commit.
 | <a id="groupstats"></a>`stats` | [`GroupStats`](#groupstats) | Group statistics. |
 | <a id="groupstoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | The storage limit (in bytes) included with the root namespace plan. This limit only applies to namespaces under namespace limit enforcement. |
 | <a id="groupsubgroupcreationlevel"></a>`subgroupCreationLevel` | [`String`](#string) | Permission level required to create subgroups within the group. |
-| <a id="grouptemporarystorageincreaseendson"></a>`temporaryStorageIncreaseEndsOn` | [`Time`](#time) | Date until the temporary storage increase is active. |
+| <a id="grouptemporarystorageincreaseendson"></a>`temporaryStorageIncreaseEndsOn` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 16.7. Feature removal, will be completely removed in 17.0. |
 | <a id="grouptimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in 15.3. This feature is an Experiment. It can be changed or removed at any time. Timelog categories for the namespace. |
 | <a id="grouptotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
 | <a id="grouptotalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. This only applies to namespaces under Project limit enforcement. |
@@ -22133,7 +22133,7 @@ Version of a machine learning model.
 | <a id="namespacefullname"></a>`fullName` | [`String!`](#string) | Full name of the namespace. |
 | <a id="namespacefullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. |
 | <a id="namespaceid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
-| <a id="namespaceistemporarystorageincreaseenabled"></a>`isTemporaryStorageIncreaseEnabled` | [`Boolean!`](#boolean) | Status of the temporary storage increase. |
+| <a id="namespaceistemporarystorageincreaseenabled"></a>`isTemporaryStorageIncreaseEnabled` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.7. Feature removal, will be completely removed in 17.0. |
 | <a id="namespacelfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="namespacename"></a>`name` | [`String!`](#string) | Name of the namespace. |
 | <a id="namespacepackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
@@ -22143,7 +22143,7 @@ Version of a machine learning model.
 | <a id="namespacerootstoragestatistics"></a>`rootStorageStatistics` | [`RootStorageStatistics`](#rootstoragestatistics) | Aggregated storage statistics of the namespace. Only available for root namespaces. |
 | <a id="namespacesharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
 | <a id="namespacestoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | The storage limit (in bytes) included with the root namespace plan. This limit only applies to namespaces under namespace limit enforcement. |
-| <a id="namespacetemporarystorageincreaseendson"></a>`temporaryStorageIncreaseEndsOn` | [`Time`](#time) | Date until the temporary storage increase is active. |
+| <a id="namespacetemporarystorageincreaseendson"></a>`temporaryStorageIncreaseEndsOn` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 16.7. Feature removal, will be completely removed in 17.0. |
 | <a id="namespacetimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in 15.3. This feature is an Experiment. It can be changed or removed at any time. Timelog categories for the namespace. |
 | <a id="namespacetotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
 | <a id="namespacetotalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. This only applies to namespaces under Project limit enforcement. |

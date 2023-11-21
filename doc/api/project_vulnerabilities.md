@@ -11,6 +11,7 @@ type: reference, api
 > - `last_edited_at` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
 > - `start_date` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
 > - `updated_by_id` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
+> - `last_edited_by_id` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
 
 WARNING:
 This API is in the process of being deprecated and considered unstable.
@@ -82,7 +83,6 @@ Example response:
             "vulnerability_id": 103
         },
         "id": 103,
-        "last_edited_by_id": null,
         "project": {
             "created_at": "2020-04-07T13:54:25.634Z",
             "description": "",
@@ -167,7 +167,6 @@ Example response:
         "vulnerability_id": 103
     },
     "id": 103,
-    "last_edited_by_id": null,
     "project": {
         "created_at": "2020-04-07T13:54:25.634Z",
         "description": "",

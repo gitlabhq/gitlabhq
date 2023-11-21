@@ -46,21 +46,6 @@ namespace :gitlab do
     task setup: :gitlab_environment do
       setup_gitlab_shell
     end
-
-    desc "GitLab | Shell | Build missing projects"
-    task build_missing_projects: :gitlab_environment do
-      Project.find_each(batch_size: 1000) do |project|
-        path_to_repo = project.repository.path_to_repo
-        if File.exist?(path_to_repo)
-          print '-'
-        elsif Gitlab::Shell.new.create_repository(project.repository_storage,
-                                              project.disk_path)
-          print '.'
-        else
-          print 'F'
-        end
-      end
-    end
   end
 
   def setup_gitlab_shell

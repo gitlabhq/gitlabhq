@@ -15074,6 +15074,9 @@ msgstr ""
 msgid "DORA4Metrics|All labels"
 msgstr ""
 
+msgid "DORA4Metrics|All topics"
+msgstr ""
+
 msgid "DORA4Metrics|Average (last %{days}d)"
 msgstr ""
 
@@ -38317,6 +38320,9 @@ msgstr ""
 msgid "ProjectsNew|Create new project"
 msgstr ""
 
+msgid "ProjectsNew|Default hashing algorithm is SHA-1."
+msgstr ""
+
 msgid "ProjectsNew|Description format"
 msgstr ""
 
@@ -38378,6 +38384,9 @@ msgid "ProjectsNew|Run CI/CD for external repository"
 msgstr ""
 
 msgid "ProjectsNew|Unable to suggest a path. Please refresh and try again."
+msgstr ""
+
+msgid "ProjectsNew|Use SHA-256 as the repository hashing algorithm"
 msgstr ""
 
 msgid "ProjectsNew|Visibility Level"

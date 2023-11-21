@@ -55,8 +55,8 @@ A user is not counted as a billable user if:
   the user is included in the number of [maximum users](#maximum-users).
 - They are [pending approval](../../administration/moderate_users.md#users-pending-approval).
 - They have only the [Minimal Access role](../../user/permissions.md#users-with-minimal-access) on self-managed Ultimate subscriptions or any GitLab.com subscriptions.
-- They have the [Guest or Minimal Access roles on an Ultimate subscription](#free-guest-users).
-- They have project or group memberships on an Ultimate subscription.
+- They have only the [Guest or Minimal Access roles on an Ultimate subscription](#free-guest-users).
+- They do not have project or group memberships on an Ultimate subscription.
 - The account is a GitLab-created service account:
   - [Ghost User](../../user/profile/account/delete_account.md#associated-records).
   - Bots such as:

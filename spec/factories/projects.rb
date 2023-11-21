@@ -235,10 +235,11 @@ FactoryBot.define do
     trait :custom_repo do
       transient do
         files { {} }
+        object_format { Repository::FORMAT_SHA1 }
       end
 
       after :create do |project, evaluator|
-        raise "Failed to create repository!" unless project.repository.exists? || project.create_repository
+        raise "Failed to create repository!" unless project.repository.exists? || project.create_repository(object_format: evaluator.object_format)
 
         evaluator.files.each do |filename, content|
           project.repository.create_file(
@@ -375,8 +376,12 @@ FactoryBot.define do
     end
 
     trait :empty_repo do
-      after(:create) do |project|
-        raise "Failed to create repository!" unless project.create_repository
+      transient do
+        object_format { Repository::FORMAT_SHA1 }
+      end
+
+      after(:create) do |project, evaluator|
+        raise "Failed to create repository!" unless project.create_repository(object_format: evaluator.object_format)
       end
     end
 

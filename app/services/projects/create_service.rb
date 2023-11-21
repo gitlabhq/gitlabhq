@@ -13,6 +13,7 @@ module Projects
       @skip_wiki = @params.delete(:skip_wiki)
       @initialize_with_sast = Gitlab::Utils.to_boolean(@params.delete(:initialize_with_sast))
       @initialize_with_readme = Gitlab::Utils.to_boolean(@params.delete(:initialize_with_readme))
+      @use_sha256_repository = Gitlab::Utils.to_boolean(@params.delete(:use_sha256_repository)) && Feature.enabled?(:support_sha256_repositories, user)
       @import_data = @params.delete(:import_data)
       @relations_block = @params.delete(:relations_block)
       @default_branch = @params.delete(:default_branch)
@@ -212,6 +213,10 @@ module Projects
       ::Security::CiConfiguration::SastCreateService.new(@project, current_user, { initialize_with_sast: true }, commit_on_default: true).execute
     end
 
+    def repository_object_format
+      @use_sha256_repository ? Repository::FORMAT_SHA256 : Repository::FORMAT_SHA1
+    end
+
     def readme_content
       readme_attrs = {
         default_branch: default_branch
@@ -242,7 +247,7 @@ module Projects
 
             next if @project.import?
 
-            unless @project.create_repository(default_branch: default_branch)
+            unless @project.create_repository(default_branch: default_branch, object_format: repository_object_format)
               raise 'Failed to create repository'
             end
           end

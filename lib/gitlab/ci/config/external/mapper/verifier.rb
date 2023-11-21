@@ -25,7 +25,7 @@ module Gitlab
                 file.preload_context if file.valid?
               end
 
-              # We do not combine the loops because we need to load the context of all files via `BatchLoader`.
+              # We do not combine the loops because we need to preload the context of all files via `BatchLoader`.
               files.each do |file| # rubocop:disable Style/CombinableLoops
                 verify_execution_time!
 
@@ -33,7 +33,8 @@ module Gitlab
                 file.preload_content if file.valid?
               end
 
-              # We do not combine the loops because we need to load the content of all files via `BatchLoader`.
+              # We do not combine the loops because we need to preload the content of all files via `BatchLoader`
+              # or `Concurrent::Promise`.
               files.each do |file| # rubocop:disable Style/CombinableLoops
                 verify_execution_time!
 

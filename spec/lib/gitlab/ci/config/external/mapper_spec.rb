@@ -85,7 +85,13 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline
             an_instance_of(Gitlab::Ci::Config::External::File::Remote))
         end
 
-        it_behaves_like 'logging config file fetch', 'config_file_fetch_remote_content_duration_s', 1
+        context 'when the FF ci_parallel_remote_includes is disabled' do
+          before do
+            stub_feature_flags(ci_parallel_remote_includes: false)
+          end
+
+          it_behaves_like 'logging config file fetch', 'config_file_fetch_remote_content_duration_s', 1
+        end
       end
 
       context 'when the key is a remote file hash' do

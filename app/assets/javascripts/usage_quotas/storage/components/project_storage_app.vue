@@ -4,6 +4,7 @@ import { sprintf } from '~/locale';
 import { updateRepositorySize } from '~/api/projects_api';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import SectionedPercentageBar from '~/usage_quotas/components/sectioned_percentage_bar.vue';
+import getProjectStorageStatistics from 'ee_else_ce/usage_quotas/storage/queries/project_storage.query.graphql';
 import {
   ERROR_MESSAGE,
   LEARN_MORE_LABEL,
@@ -18,7 +19,6 @@ import {
   usageQuotasHelpPaths,
   storageTypeHelpPaths,
 } from '../constants';
-import getProjectStorageStatistics from '../queries/project_storage.query.graphql';
 import { getStorageTypesFromProjectStatistics, descendingStorageUsageSort } from '../utils';
 import ProjectStorageDetail from './project_storage_detail.vue';
 

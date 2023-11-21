@@ -182,6 +182,7 @@ Include in the MR description:
   - To produce a query plan with enough data, you can use the IDs of:
     - The `gitlab-org` namespace (`namespace_id = 9970`), for queries involving a group.
     - The `gitlab-org/gitlab-foss` (`project_id = 13083`) or the `gitlab-org/gitlab` (`project_id = 278964`) projects, for queries involving a project.
+      - For queries involving memebrship of projects, `project_namespace_id` of these projects may be required to create a query plan. These are `15846663` (for `gitlab-org/gitlab`) and `15846626` (for `gitlab-org/gitlab-foss`)
     - The `gitlab-qa` user (`user_id = 1614863`), for queries involving a user.
       - Optionally, you can also use your own `user_id`, or the `user_id` of a user with a long history within the project or group being used to generate the query plan.
   - That means that no query plan should return 0 records or less records than the provided limit (if a limit is included). If a query is used in batching, a proper example batch with adequate included results should be identified and provided.

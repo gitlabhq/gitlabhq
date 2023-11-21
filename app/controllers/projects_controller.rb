@@ -512,6 +512,7 @@ class ProjectsController < Projects::ApplicationController
       :merge_method,
       :initialize_with_sast,
       :initialize_with_readme,
+      :use_sha256_repository,
       :ci_separated_caches,
       :suggestion_commit_message,
       :packages_enabled,

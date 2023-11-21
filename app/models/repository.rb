@@ -28,6 +28,9 @@ class Repository
     #{REF_PIPELINES}
   ].freeze
 
+  FORMAT_SHA1 = 'sha1'
+  FORMAT_SHA256 = 'sha256'
+
   include Gitlab::RepositoryCacheAdapter
 
   attr_accessor :full_path, :shard, :disk_path, :container, :repo_type

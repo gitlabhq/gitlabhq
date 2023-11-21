@@ -1944,11 +1944,11 @@ class Project < ApplicationRecord
     cleanup if replicate_object_pool_on_move_ff_enabled?
   end
 
-  def create_repository(force: false, default_branch: nil)
+  def create_repository(force: false, default_branch: nil, object_format: nil)
     # Forked import is handled asynchronously
     return if forked? && !force
 
-    repository.create_repository(default_branch)
+    repository.create_repository(default_branch, object_format: object_format)
     repository.after_create
 
     true

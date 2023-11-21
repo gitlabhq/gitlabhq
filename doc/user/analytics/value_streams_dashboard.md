@@ -71,6 +71,21 @@ For example, if a project has a high score for Deployment Frequency (Velocity), 
 
 These scoring are based on Google's classifications in the [DORA 2022 Accelerate State of DevOps Report](https://cloud.google.com/blog/products/devops-sre/dora-2022-accelerate-state-of-devops-report-now-out).
 
+### Filter by project topics
+
+When used in combination with a [YAML configuration](#using-yaml-configuration), you can filter the projects shown based on their assigned [topics](../project/working_with_projects.md#organizing-projects-with-topics).
+
+```yaml
+panels:
+  - data:
+      namespace: group/my-custom-group
+      filter_project_topics:
+        - JavaScript
+        - Vue.js
+```
+
+If multiple topics are provided, all topics will need to match for the project to be included in the results.
+
 ## Enable or disable overview background aggregation **(ULTIMATE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120610) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `modify_value_stream_dashboard_settings`. Disabled by default.

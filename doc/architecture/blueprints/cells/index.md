@@ -337,7 +337,7 @@ The Cells architecture has long lasting implications to data processing, locatio
 This section links all different technical proposals that are being evaluated.
 
 - [Stateless Router That Uses a Cache to Pick Cell and Is Redirected When Wrong Cell Is Reached](proposal-stateless-router-with-buffering-requests.md)
-- [Stateless Router That Uses a Cache to Pick Cell and pre-flight `/api/v4/cells/learn`](proposal-stateless-router-with-routes-learning.md)
+- [Stateless Router That Uses a Cache to Pick Cell and pre-flight `/api/v4/internal/cells/learn`](proposal-stateless-router-with-routes-learning.md)
 
 ## Impacted features
 
