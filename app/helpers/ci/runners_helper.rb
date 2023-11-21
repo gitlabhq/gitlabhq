@@ -31,7 +31,7 @@ module Ci
         span_class = 'gl-text-orange-500'
       end
 
-      content_tag(:span, class: span_class, title: title, data: { toggle: 'tooltip', container: 'body', testid: 'runner_status_icon', qa_selector: "runner_status_#{status}_content" }) do
+      content_tag(:span, class: span_class, title: title, data: { toggle: 'tooltip', container: 'body', testid: 'runner-status-icon', qa_status: status }) do
         sprite_icon(icon, size: size, css_class: icon_class)
       end
     end

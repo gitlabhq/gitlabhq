@@ -13,7 +13,7 @@
     %br
     = _("And this registration token:")
     %br
-    %code#registration_token{ data: {testid: 'registration_token' } }= registration_token
+    %code#registration_token= registration_token
     = deprecated_clipboard_button(target: '#registration_token', title: _("Copy token"))
 
 .gl-mt-3.gl-mb-3

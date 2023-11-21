@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import DetailRow from '~/ml/experiment_tracking/routes/candidates/show/components/candidate_detail_row.vue';
+import DetailRow from '~/ml/model_registry/components/candidate_detail_row.vue';
 
 describe('CandidateDetailRow', () => {
   const ROW_LABEL_CELL = 0;

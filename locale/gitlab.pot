@@ -28822,12 +28822,6 @@ msgstr ""
 msgid "MD5"
 msgstr ""
 
-msgid "MLExperimentTracking|CI Info"
-msgstr ""
-
-msgid "MLExperimentTracking|Delete candidate?"
-msgstr ""
-
 msgid "MLExperimentTracking|Delete experiment?"
 msgstr ""
 
@@ -30696,9 +30690,6 @@ msgstr ""
 msgid "MlExperimentTracking|CI Job"
 msgstr ""
 
-msgid "MlExperimentTracking|Candidate not linked to a CI build"
-msgstr ""
-
 msgid "MlExperimentTracking|Candidate removed"
 msgstr ""
 
@@ -30712,6 +30703,9 @@ msgid "MlExperimentTracking|Created at"
 msgstr ""
 
 msgid "MlExperimentTracking|Delete candidate"
+msgstr ""
+
+msgid "MlExperimentTracking|Delete candidate?"
 msgstr ""
 
 msgid "MlExperimentTracking|Delete experiment"
@@ -30744,34 +30738,16 @@ msgstr ""
 msgid "MlExperimentTracking|Get started with model experiments!"
 msgstr ""
 
-msgid "MlExperimentTracking|ID"
-msgstr ""
-
-msgid "MlExperimentTracking|Info"
-msgstr ""
-
 msgid "MlExperimentTracking|Logged candidates for experiment"
 msgstr ""
 
-msgid "MlExperimentTracking|MLflow run ID"
-msgstr ""
-
 msgid "MlExperimentTracking|Machine learning experiment tracking"
-msgstr ""
-
-msgid "MlExperimentTracking|Metadata"
-msgstr ""
-
-msgid "MlExperimentTracking|Metrics"
 msgstr ""
 
 msgid "MlExperimentTracking|Model candidate details"
 msgstr ""
 
 msgid "MlExperimentTracking|Model experiments"
-msgstr ""
-
-msgid "MlExperimentTracking|Model performance"
 msgstr ""
 
 msgid "MlExperimentTracking|Model removed"
@@ -30789,25 +30765,7 @@ msgstr ""
 msgid "MlExperimentTracking|No candidates logged for the query. Create new candidates using the MLflow client."
 msgstr ""
 
-msgid "MlExperimentTracking|No logged metadata"
-msgstr ""
-
-msgid "MlExperimentTracking|No logged metrics"
-msgstr ""
-
-msgid "MlExperimentTracking|No logged parameters"
-msgstr ""
-
 msgid "MlExperimentTracking|No name"
-msgstr ""
-
-msgid "MlExperimentTracking|Parameters"
-msgstr ""
-
-msgid "MlExperimentTracking|Status"
-msgstr ""
-
-msgid "MlExperimentTracking|Triggered by"
 msgstr ""
 
 msgid "MlModelRegistry|%d model"
@@ -30820,13 +30778,49 @@ msgid_plural "MlModelRegistry|%d versions"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "MlModelRegistry|Artifacts"
+msgstr ""
+
+msgid "MlModelRegistry|CI Info"
+msgstr ""
+
+msgid "MlModelRegistry|Candidate not linked to a CI build"
+msgstr ""
+
 msgid "MlModelRegistry|Details"
+msgstr ""
+
+msgid "MlModelRegistry|Experiment"
+msgstr ""
+
+msgid "MlModelRegistry|ID"
+msgstr ""
+
+msgid "MlModelRegistry|Info"
 msgstr ""
 
 msgid "MlModelRegistry|Latest version"
 msgstr ""
 
+msgid "MlModelRegistry|MLflow run ID"
+msgstr ""
+
+msgid "MlModelRegistry|Metadata"
+msgstr ""
+
+msgid "MlModelRegistry|Model performance"
+msgstr ""
+
 msgid "MlModelRegistry|Model registry"
+msgstr ""
+
+msgid "MlModelRegistry|No logged metadata"
+msgstr ""
+
+msgid "MlModelRegistry|No logged metrics"
+msgstr ""
+
+msgid "MlModelRegistry|No logged parameters"
 msgstr ""
 
 msgid "MlModelRegistry|No models registered in this project"
@@ -30835,7 +30829,16 @@ msgstr ""
 msgid "MlModelRegistry|No registered versions"
 msgstr ""
 
+msgid "MlModelRegistry|Parameters"
+msgstr ""
+
+msgid "MlModelRegistry|Status"
+msgstr ""
+
 msgid "MlModelRegistry|This model has no versions"
+msgstr ""
+
+msgid "MlModelRegistry|Triggered by"
 msgstr ""
 
 msgid "MlModelRegistry|Version candidates"

@@ -27,10 +27,6 @@ module ProfilesHelper
     params[:controller] == 'users'
   end
 
-  def availability_values
-    Types::AvailabilityEnum.enum
-  end
-
   def middle_dot_divider_classes(stacking, breakpoint)
     ['gl-mb-3'].tap do |classes|
       if stacking

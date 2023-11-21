@@ -571,7 +571,7 @@ export default {
               :disabled="!canChangeVisibilityLevel"
               name="project[visibility_level]"
               class="form-control select-control"
-              data-qa-selector="project_visibility_dropdown"
+              data-testid="project-visibility-dropdown"
             >
               <option
                 :value="$options.VISIBILITY_LEVEL_PRIVATE_INTEGER"
@@ -1060,13 +1060,7 @@ export default {
       data-testid="project-features-save-button"
       @confirm="$emit('confirm')"
     />
-    <gl-button
-      v-else
-      type="submit"
-      variant="confirm"
-      data-testid="project-features-save-button"
-      data-qa-selector="visibility_features_permissions_save_button"
-    >
+    <gl-button v-else type="submit" variant="confirm" data-testid="project-features-save-button">
       {{ $options.i18n.confirmButtonText }}
     </gl-button>
   </div>

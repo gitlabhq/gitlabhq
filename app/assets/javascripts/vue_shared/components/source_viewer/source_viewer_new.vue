@@ -148,6 +148,7 @@ export default {
       :class="$options.userColorScheme"
       data-type="simple"
       :data-path="blob.path"
+      data-testid="blob-viewer-file-content"
     >
       <codeowners-validation
         v-if="isCodeownersFile"

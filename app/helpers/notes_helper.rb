@@ -21,15 +21,6 @@ module NotesHelper
     Notes::QuickActionsService.supported?(note)
   end
 
-  def noteable_json(noteable)
-    {
-      id: noteable.id,
-      class: noteable.class.name,
-      resources: noteable.class.table_name,
-      project_id: noteable.project.id
-    }.to_json
-  end
-
   def diff_view_data
     return {} unless @new_diff_note_attrs
 
@@ -85,10 +76,6 @@ module NotesHelper
     ) do
       # render empty textarea
     end
-  end
-
-  def note_max_access_for_user(note)
-    note.project.team.max_member_access(note.author_id)
   end
 
   def note_human_max_access(note)

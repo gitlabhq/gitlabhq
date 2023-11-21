@@ -171,14 +171,6 @@ module TabHelper
     current_controller?(c) && current_action?(a)
   end
 
-  def branches_tab_class
-    if current_controller?(:protected_branches) ||
-        current_controller?(:branches) ||
-        current_page?(project_repository_path(@project))
-      'active'
-    end
-  end
-
   private
 
   def route_matches_paths?(paths)

@@ -3,10 +3,6 @@
 module PackagesHelper
   include ::API::Helpers::RelatedResourcesHelpers
 
-  def package_sort_path(options = {})
-    "#{request.path}?#{options.to_param}"
-  end
-
   def nuget_package_registry_url(project_id)
     expose_url(api_v4_projects_packages_nuget_index_path(id: project_id, format: '.json'))
   end
