@@ -8,6 +8,7 @@ module Gitlab
 
     class << self
       include Gitlab::Tracking::Helpers
+      include Gitlab::Utils::StrongMemoize
 
       def track_event(event_name, send_snowplow_event: true, **kwargs)
         raise UnknownEventError, "Unknown event: #{event_name}" unless EventDefinitions.known_event?(event_name)
@@ -23,6 +24,10 @@ module Gitlab
         increase_weekly_total_counter(event_name)
         update_unique_counter(event_name, kwargs)
         trigger_snowplow_event(event_name, kwargs) if send_snowplow_event
+
+        if Feature.enabled?(:internal_events_for_product_analytics)
+          send_application_instrumentation_event(event_name, kwargs)
+        end
       rescue StandardError => e
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, event_name: event_name, kwargs: kwargs)
         nil
@@ -93,6 +98,25 @@ module Gitlab
         Gitlab::ErrorTracking
           .track_and_raise_for_dev_exception(error, snowplow_category: category, snowplow_action: event_name)
       end
+
+      def send_application_instrumentation_event(event_name, kwargs)
+        return if gitlab_sdk_client.nil?
+
+        user = kwargs[:user]
+
+        gitlab_sdk_client.identify(user&.id)
+        gitlab_sdk_client.track(event_name)
+      end
+
+      def gitlab_sdk_client
+        app_id = ENV['GITLAB_ANALYTICS_ID']
+        host = ENV['GITLAB_ANALYTICS_URL']
+
+        return unless app_id.present? && host.present?
+
+        GitlabSDK::Client.new(app_id: app_id, host: host)
+      end
+      strong_memoize_attr :gitlab_sdk_client
     end
   end
 end

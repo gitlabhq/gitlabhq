@@ -11,7 +11,7 @@ If there is no relevant deprecation issue, hit pause and:
 
 Deprecation announcements can and should be created and merged into Docs at any time, to optimize user awareness and planning. We encourage confirmed deprecations to be merged as soon as the required reviews are complete, even if weeks ahead of the target milestone's release post. For the announcement to be included in a specific release post and that release's documentation packages, this MR must be reviewed/merged per the due dates below:
 
-**By the 10th**: Assign this MR to these team members as Reviewer and for Approval (optional unless noted as required):
+**10 days (Monday) before the Release Date**: Assign this MR to these team members as Reviewer and for Approval (optional unless noted as required):
 
 - Product Marketing: `@PMM`
 - Product Designer(s): `@ProductDesigners`
@@ -19,9 +19,9 @@ Deprecation announcements can and should be created and merged into Docs at any 
 - Engineering Manager: `@EM` - Required
 - Technical writer: `@TW` - Required
 
-**By 11:59 AM PDT 15th**: EM/PM assigns this MR to the TW reviewer for final review and merge: `@EM/PM`
+**By 11:59 AM PDT 8 days (Wednesday) before the Release Date**: EM/PM assigns this MR to the TW reviewer for final review and merge: `@EM/PM`
 
-**By 11:59 PM PDT 17th**: TW Reviewer updates Docs by merging this MR to `master`: `@TW`
+**By 11:59 PM PDT 6 days (Friday) before the Release Date**: TW Reviewer updates Docs by merging this MR to `master`: `@TW`
 
 ---
 

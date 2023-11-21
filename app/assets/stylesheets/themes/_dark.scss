@@ -1,15 +1,4 @@
-$gray-10: #1f1e24;
-$gray-50: #333238;
-$gray-100: #434248;
-$gray-200: #535158;
-$gray-300: #626168;
-$gray-400: #737278;
-$gray-500: #89888d;
-$gray-600: #a4a3a8;
-$gray-700: #bfbfc3;
-$gray-800: #dcdcde;
-$gray-900: #ececef;
-$gray-950: #fbfafd;
+@import '@gitlab/ui/dist/tokens/scss/tokens.dark';
 
 $gray-lightest: lighten($gray-10, 1);
 $gray-light: lighten($gray-10, 2);
@@ -25,99 +14,13 @@ $gray-darkest: $gray-700;
 $t-gray-a-16: rgba($gray-10, 0.16);
 $t-gray-a-24: rgba($gray-10, 0.24);
 
-$black: #fff;
 $black-normal: $gray-900;
-$white: $gray-50;
 $white-normal: $gray-50;
 $white-dark: $gray-100;
-
-$green-50: #0a4020;
-$green-100: #0d532a;
-$green-200: #24663b;
-$green-300: #217645;
-$green-400: #108548;
-$green-500: #2da160;
-$green-600: #52b87a;
-$green-700: #91d4a8;
-$green-800: #c3e6cd;
-$green-900: #ecf4ee;
-$green-950: #f1fdf6;
-
-$blue-50: #033464;
-$blue-100: #064787;
-$blue-200: #0b5cad;
-$blue-300: #1068bf;
-$blue-400: #1f75cb;
-$blue-500: #428fdc;
-$blue-600: #63a6e9;
-$blue-700: #9dc7f1;
-$blue-800: #cbe2f9;
-$blue-900: #e9f3fc;
-$blue-950: #f2f9ff;
-
-$orange-50: #5c2900;
-$orange-100: #703800;
-$orange-200: #8f4700;
-$orange-300: #9e5400;
-$orange-400: #ab6100;
-$orange-500: #c17d10;
-$orange-600: #d99530;
-$orange-700: #e9be74;
-$orange-800: #f5d9a8;
-$orange-900: #fdf1dd;
-$orange-950: #fff4e1;
-
-$red-50: #660e00;
-$red-100: #8d1300;
-$red-200: #ae1800;
-$red-300: #c91c00;
-$red-400: #dd2b0e;
-$red-500: #ec5941;
-$red-600: #f57f6c;
-$red-700: #fcb5aa;
-$red-800: #fdd4cd;
-$red-900: #fcf1ef;
-$red-950: #fff4f3;
-
-$indigo-50: #1a1a40;
-$indigo-100: #292961;
-$indigo-200: #393982;
-$indigo-300: #4b4ba3;
-$indigo-400: #5b5bbd;
-$indigo-500: #6666c4;
-$indigo-600: #7c7ccc;
-$indigo-700: #a6a6de;
-$indigo-800: #d1d1f0;
-$indigo-900: #ebebfa;
-$indigo-950: #f7f7ff;
-
-$purple-50: #232150;
-$purple-100: #2f2a6b;
-$purple-200: #453894;
-$purple-300: #5943b6;
-$purple-400: #694cc0;
-$purple-500: #7b58cf;
-$purple-600: #9475db;
-$purple-700: #ac93e6;
-$purple-800: #cbbbf2;
-$purple-900: #e1d8f9;
-$purple-950: #f4f0ff;
 
 $theme-indigo-50: #1a1a40;
 
 $border-color: #4f4f4f;
-
-$data-viz-blue-50: #2a2b59;
-$data-viz-blue-100: #303470;
-$data-viz-blue-200: #374291;
-$data-viz-blue-300: #3f51ae;
-$data-viz-blue-400: #4e65cd;
-$data-viz-blue-500: #617ae2;
-$data-viz-blue-600: #7992f5;
-$data-viz-blue-700: #97acff;
-$data-viz-blue-800: #b7c6ff;
-$data-viz-blue-900: #d2dcff;
-$data-viz-blue-950: #e9ebff;
 
 $border-white-normal: $border-color;
 

@@ -582,7 +582,7 @@ See https://gitlab.com/gitlab-org/gitlab/issues/36857 for more details.
 
 // used in the Markdown rendering of labels
 .scoped-label-tooltip-title {
-  color: var(--indigo-300, $indigo-300);
+  color: var(--theme-indigo-300, $theme-indigo-300);
 }
 
 .gl-label-scoped {

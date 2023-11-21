@@ -3,10 +3,10 @@
 :root {
   &.ui-indigo {
     @include gitlab-theme(
-      $indigo-200,
-      $indigo-500,
-      $indigo-700,
-      $indigo-900,
+      $theme-indigo-200,
+      $theme-indigo-500,
+      $theme-indigo-700,
+      $theme-indigo-900,
       $white
     );
 

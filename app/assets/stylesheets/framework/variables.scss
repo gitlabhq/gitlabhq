@@ -1,3 +1,5 @@
+@import '@gitlab/ui/dist/tokens/scss/tokens';
+
 /*
  * Layout
  */
@@ -91,79 +93,6 @@ $darken-border-dashed-factor: 25% !default;
 $purple: #6d49cb !default;
 $purple-light: #ede8fb !default;
 
-$green-50: #ecf4ee !default;
-$green-100: #c3e6cd !default;
-$green-200: #91d4a8 !default;
-$green-300: #52b87a !default;
-$green-400: #2da160 !default;
-$green-500: #108548 !default;
-$green-600: #217645 !default;
-$green-700: #24663b !default;
-$green-800: #0d532a !default;
-$green-900: #0a4020 !default;
-$green-950: #072b15 !default;
-
-$blue-50: #e9f3fc !default;
-$blue-100: #cbe2f9 !default;
-$blue-200: #9dc7f1 !default;
-$blue-300: #63a6e9 !default;
-$blue-400: #428fdc !default;
-$blue-500: #1f75cb !default;
-$blue-600: #1068bf !default;
-$blue-700: #0b5cad !default;
-$blue-800: #064787 !default;
-$blue-900: #033464 !default;
-$blue-950: #002850 !default;
-
-$orange-50: #fdf1dd !default;
-$orange-100: #f5d9a8 !default;
-$orange-200: #e9be74 !default;
-$orange-300: #d99530 !default;
-$orange-400: #c17d10 !default;
-$orange-500: #ab6100 !default;
-$orange-600: #9e5400 !default;
-$orange-700: #8f4700 !default;
-$orange-800: #703800 !default;
-$orange-900: #5c2900 !default;
-$orange-950: #421f00 !default;
-
-$red-50: #fcf1ef !default;
-$red-100: #fdd4cd !default;
-$red-200: #fcb5aa !default;
-$red-300: #f57f6c !default;
-$red-400: #ec5941 !default;
-$red-500: #dd2b0e !default;
-$red-600: #c91c00 !default;
-$red-700: #ae1800 !default;
-$red-800: #8d1300 !default;
-$red-900: #660e00 !default;
-$red-950: #4d0a00 !default;
-
-$purple-50: #f4f0ff !default;
-$purple-100: #e1d8f9 !default;
-$purple-200: #cbbbf2 !default;
-$purple-300: #ac93e6 !default;
-$purple-400: #9475db !default;
-$purple-500: #7b58cf !default;
-$purple-600: #694cc0 !default;
-$purple-700: #5943b6 !default;
-$purple-800: #453894 !default;
-$purple-900: #2f2a6b !default;
-$purple-950: #232150 !default;
-
-$gray-10: #fbfafd !default;
-$gray-50: #ececef !default;
-$gray-100: #dcdcde !default;
-$gray-200: #bfbfc3 !default;
-$gray-300: #a4a3a8 !default;
-$gray-400: #89888d !default;
-$gray-500: #737278 !default;
-$gray-600: #626168 !default;
-$gray-700: #535158 !default;
-$gray-800: #434248 !default;
-$gray-900: #333238 !default;
-$gray-950: #1f1e24 !default;
-
 $gray-lightest: lighten($gray-10, 1) !default;
 $gray-light: $gray-10 !default;
 $gray-lighter: lighten($gray-50, 4) !default;
@@ -179,196 +108,14 @@ $t-gray-a-08: rgba($gray-950, 0.08) !default;
 $t-gray-a-16: rgba($gray-950, 0.16) !default;
 $t-gray-a-24: rgba($gray-950, 0.24) !default;
 
-$white: #fff !default;
 $white-normal: $gray-50 !default;
 $white-dark: darken($gray-50, 2) !default;
 
-$black: #000 !default;
 $black-transparent: $t-gray-a-24 !default;
 $almost-black: $gray-950 !default;
 
-$greens: (
-  '50': $green-50,
-  '100': $green-100,
-  '200': $green-200,
-  '300': $green-300,
-  '400': $green-400,
-  '500': $green-500,
-  '600': $green-600,
-  '700': $green-700,
-  '800': $green-800,
-  '900': $green-900,
-  '950': $green-950
-);
-
-$blues: (
-  '50': $blue-50,
-  '100': $blue-100,
-  '200': $blue-200,
-  '300': $blue-300,
-  '400': $blue-400,
-  '500': $blue-500,
-  '600': $blue-600,
-  '700': $blue-700,
-  '800': $blue-800,
-  '900': $blue-900,
-  '950': $blue-950
-);
-
-$oranges: (
-  '50': $orange-50,
-  '100': $orange-100,
-  '200': $orange-200,
-  '300': $orange-300,
-  '400': $orange-400,
-  '500': $orange-500,
-  '600': $orange-600,
-  '700': $orange-700,
-  '800': $orange-800,
-  '900': $orange-900,
-  '950': $orange-950
-);
-
-$reds: (
-  '50': $red-50,
-  '100': $red-100,
-  '200': $red-200,
-  '300': $red-300,
-  '400': $red-400,
-  '500': $red-500,
-  '600': $red-600,
-  '700': $red-700,
-  '800': $red-800,
-  '900': $red-900,
-  '950': $red-950
-);
-
-$purples: (
-  '50': $purple-50,
-  '100': $purple-100,
-  '200': $purple-200,
-  '300': $purple-300,
-  '400': $purple-400,
-  '500': $purple-500,
-  '600': $purple-600,
-  '700': $purple-700,
-  '800': $purple-800,
-  '900': $purple-900,
-  '950': $purple-950
-);
-
-$grays: (
-  '10': $gray-10,
-  '50': $gray-50,
-  '100': $gray-100,
-  '200': $gray-200,
-  '300': $gray-300,
-  '400': $gray-400,
-  '500': $gray-500,
-  '600': $gray-600,
-  '700': $gray-700,
-  '800': $gray-800,
-  '900': $gray-900,
-  '950': $gray-950
-);
-
-$color-ranges: (
-  'primary': $blues,
-  'secondary': $grays,
-  'success': $greens,
-  'warning': $oranges,
-  'danger': $reds
-);
-
-// GitLab themes
-
-$indigo-50: #f1f1ff;
-$indigo-100: #dbdbf8;
-$indigo-200: #c7c7f2;
-$indigo-300: #a2a2e6;
-$indigo-400: #8181d7;
-$indigo-500: #6666c4;
-$indigo-600: #5252b5;
-$indigo-700: #41419f;
-$indigo-800: #303083;
-$indigo-900: #222261;
-$indigo-950: #14143d;
 // To do this variant right for darkmode, we need to create a variable for it.
-$indigo-900-alpha-008: rgba($indigo-900, 0.08);
-
-$theme-blue-50: #cdd8e3;
-$theme-blue-100: #b9cadc;
-$theme-blue-200: #a6bdd5;
-$theme-blue-300: #81a5c9;
-$theme-blue-400: #628eb9;
-$theme-blue-500: #4977a5;
-$theme-blue-600: #346596;
-$theme-blue-700: #235180;
-$theme-blue-800: #153c63;
-$theme-blue-900: #0b2640;
-$theme-blue-950: #04101c;
-
-$theme-light-blue-50: #dde6ee;
-$theme-light-blue-100: #c1d4e6;
-$theme-light-blue-200: #a0bedc;
-$theme-light-blue-300: #74a3d3;
-$theme-light-blue-400: #4f8bc7;
-$theme-light-blue-500: #3476b9;
-$theme-light-blue-600: #2268ae;
-$theme-light-blue-700: #145aa1;
-$theme-light-blue-800: #0e4d8d;
-$theme-light-blue-900: #0c4277;
-$theme-light-blue-950: #0a3764;
-
-$theme-green-50: #dde9de;
-$theme-green-100: #b1d6b5;
-$theme-green-200: #8cc497;
-$theme-green-300: #69af7d;
-$theme-green-400: #499767;
-$theme-green-500: #308258;
-$theme-green-600: #25744c;
-$theme-green-700: #1b653f;
-$theme-green-800: #155635;
-$theme-green-900: #0e4328;
-$theme-green-950: #052e19;
-
-$theme-red-50: #f4e9e7;
-$theme-red-100: #ecd3d0;
-$theme-red-200: #e3bab5;
-$theme-red-300: #d59086;
-$theme-red-400: #c66e60;
-$theme-red-500: #ad4a3b;
-$theme-red-600: #a13322;
-$theme-red-700: #8f2110;
-$theme-red-800: #761405;
-$theme-red-900: #580d02;
-$theme-red-950: #380700;
-
-$theme-light-red-50: #faf2f1;
-$theme-light-red-100: #f6d9d5;
-$theme-light-red-200: #ebada2;
-$theme-light-red-300: #e07f6f;
-$theme-light-red-400: #d36250;
-$theme-light-red-500: #c24b38;
-$theme-light-red-600: #b53a26;
-$theme-light-red-700: #a02e1c;
-$theme-light-red-800: #8b2212;
-$theme-light-red-900: #751709;
-$theme-light-red-950: #5c1105;
-
-// Data visualization color palette
-
-$data-viz-blue-50: #e9ebff !default;
-$data-viz-blue-100: #d2dcff !default;
-$data-viz-blue-200: #b7c6ff !default;
-$data-viz-blue-300: #97acff !default;
-$data-viz-blue-400: #7992f5 !default;
-$data-viz-blue-500: #617ae2 !default;
-$data-viz-blue-600: #4e65cd !default;
-$data-viz-blue-700: #3f51ae !default;
-$data-viz-blue-800: #374291 !default;
-$data-viz-blue-900: #303470 !default;
-$data-viz-blue-950: #2a2b59 !default;
+$indigo-900-alpha-008: rgba($theme-indigo-900, 0.08);
 
 $border-white-light: darken($white, $darken-border-factor) !default;
 $border-white-normal: darken($white-normal, $darken-border-factor) !default;
@@ -834,7 +581,7 @@ $linked-project-column-margin: 60px;
 Performance Bar
 */
 $perf-bar-production: $gray-950;
-$perf-bar-staging: $indigo-950;
+$perf-bar-staging: $theme-indigo-950;
 $perf-bar-development: $red-900;
 $perf-bar-bucket-bg: $black;
 $perf-bar-bucket-box-shadow-from: rgba($white, 0.2);

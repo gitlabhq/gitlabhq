@@ -703,6 +703,10 @@ GEM
       oauth2 (>= 1.4.4, < 3)
     gitlab-markup (1.9.0)
     gitlab-net-dns (0.9.2)
+    gitlab-sdk (0.2.3)
+      activesupport (>= 5.2.0)
+      rake (~> 13.0)
+      snowplow-tracker (~> 0.8.0)
     gitlab-styles (11.0.0)
       rubocop (~> 1.57.1)
       rubocop-graphql (~> 0.18)
@@ -1880,6 +1884,7 @@ DEPENDENCIES
   gitlab-rspec!
   gitlab-safe_request_store!
   gitlab-schema-validation!
+  gitlab-sdk
   gitlab-secret_detection!
   gitlab-sidekiq-fetcher!
   gitlab-styles (~> 11.0.0)

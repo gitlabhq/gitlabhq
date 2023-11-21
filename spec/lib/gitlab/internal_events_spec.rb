@@ -267,4 +267,64 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to have_received(:track_event)
     end
   end
+
+  describe 'Product Analytics tracking' do
+    let(:app_id) { 'foobar' }
+    let(:url) { 'http://localhost:4000' }
+
+    before do
+      described_class.clear_memoization(:gitlab_sdk_client)
+
+      stub_env('GITLAB_ANALYTICS_ID', app_id)
+      stub_env('GITLAB_ANALYTICS_URL', url)
+    end
+
+    subject(:track_event) { described_class.track_event(event_name, user: user) }
+
+    shared_examples 'does not send a Product Analytics event' do
+      it 'does not call the Product Analytics Ruby SDK' do
+        expect(GitlabSDK::Client).not_to receive(:new)
+
+        track_event
+      end
+    end
+
+    context 'when internal_events_for_product_analytics FF is enabled' do
+      before do
+        stub_feature_flags(internal_events_for_product_analytics: true)
+      end
+
+      it 'calls Product Analytics Ruby SDK', :aggregate_failures do
+        expect_next_instance_of(GitlabSDK::Client) do |sdk_client|
+          expect(sdk_client).to receive(:identify).with(user.id)
+          expect(sdk_client).to receive(:track).with(event_name)
+        end
+
+        track_event
+      end
+
+      context 'when GITLAB_ANALYTICS_ID is nil' do
+        let(:app_id) { nil }
+
+        it_behaves_like 'does not send a Product Analytics event'
+      end
+
+      context 'when GITLAB_ANALYTICS_URL is nil' do
+        let(:url) { nil }
+
+        it_behaves_like 'does not send a Product Analytics event'
+      end
+    end
+
+    context 'when internal_events_for_product_analytics FF is disabled' do
+      let(:app_id) { 'foobar' }
+      let(:url) { 'http://localhost:4000' }
+
+      before do
+        stub_feature_flags(internal_events_for_product_analytics: false)
+      end
+
+      it_behaves_like 'does not send a Product Analytics event'
+    end
+  end
 end

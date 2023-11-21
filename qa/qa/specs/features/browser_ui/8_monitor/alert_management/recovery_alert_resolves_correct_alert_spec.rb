@@ -39,7 +39,7 @@ module QA
       end
 
       context(
-        'when using Prometheus integration',
+        'when using Prometheus integration', :reliable,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/393590'
       ) do
         include_context 'sends and resolves test alerts'

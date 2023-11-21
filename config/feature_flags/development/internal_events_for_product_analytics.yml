@@ -1,0 +1,8 @@
+---
+name: internal_events_for_product_analytics
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136154
+rollout_issue_url: 
+milestone: '16.7'
+type: development
+group: group::analytics instrumentation
+default_enabled: false
