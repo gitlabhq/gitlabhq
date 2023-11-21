@@ -3,7 +3,6 @@ import { GlToast } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import createDefaultClient from '~/lib/graphql';
-import { initStatusTriggers } from '../header';
 import { JS_TOGGLE_EXPAND_CLASS } from './constants';
 import createStore from './components/global_search/store';
 import {
@@ -153,5 +152,3 @@ export const initSuperSidebarToggle = () => {
     },
   });
 };
-
-requestIdleCallback(initStatusTriggers);

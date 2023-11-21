@@ -1,10 +1,8 @@
 // TODO: Remove this with the removal of the old navigation.
 // See https://gitlab.com/groups/gitlab-org/-/epics/11875.
 
-import Vue from 'vue';
 import { highCountTrim } from '~/lib/utils/text_utility';
 import Tracking from '~/tracking';
-import Translate from '~/vue_shared/translate';
 
 /**
  * Updates todo counter when todos are toggled.
@@ -29,76 +27,6 @@ export default function initTodoToggle() {
   });
 }
 
-export function initStatusTriggers() {
-  const setStatusModalTriggerEl = document.querySelector('.js-set-status-modal-trigger');
-
-  if (setStatusModalTriggerEl) {
-    setStatusModalTriggerEl.addEventListener('click', () => {
-      const topNavbar = document.querySelector('.navbar-gitlab');
-      const buttonWithinTopNav = topNavbar && topNavbar.contains(setStatusModalTriggerEl);
-      Tracking.event(undefined, 'click_button', {
-        label: 'user_edit_status',
-        property: buttonWithinTopNav ? 'navigation_top' : 'nav_user_menu',
-      });
-
-      import(
-        /* webpackChunkName: 'statusModalBundle' */ './set_status_modal/set_status_modal_wrapper.vue'
-      )
-        .then(({ default: SetStatusModalWrapper }) => {
-          const setStatusModalWrapperEl = document.querySelector('.js-set-status-modal-wrapper');
-          const statusModalElement = document.createElement('div');
-          setStatusModalWrapperEl.appendChild(statusModalElement);
-
-          Vue.use(Translate);
-
-          // eslint-disable-next-line no-new
-          new Vue({
-            el: statusModalElement,
-            data() {
-              const {
-                currentEmoji,
-                defaultEmoji,
-                currentMessage,
-                currentAvailability,
-                currentClearStatusAfter,
-              } = setStatusModalWrapperEl.dataset;
-
-              return {
-                currentEmoji,
-                defaultEmoji,
-                currentMessage,
-                currentAvailability,
-                currentClearStatusAfter,
-              };
-            },
-            render(createElement) {
-              const {
-                currentEmoji,
-                defaultEmoji,
-                currentMessage,
-                currentAvailability,
-                currentClearStatusAfter,
-              } = this;
-
-              return createElement(SetStatusModalWrapper, {
-                props: {
-                  currentEmoji,
-                  defaultEmoji,
-                  currentMessage,
-                  currentAvailability,
-                  currentClearStatusAfter,
-                },
-              });
-            },
-          });
-        })
-        .catch(() => {});
-    });
-
-    setStatusModalTriggerEl.classList.add('ready');
-  }
-}
-
 function trackShowUserDropdownLink(trackEvent, elToTrack, el) {
   const { trackLabel, trackProperty } = elToTrack.dataset;
 
@@ -119,7 +47,4 @@ export function initNavUserDropdownTracking() {
   }
 }
 
-if (!gon?.use_new_navigation) {
-  requestIdleCallback(initStatusTriggers);
-}
 requestIdleCallback(initNavUserDropdownTracking);

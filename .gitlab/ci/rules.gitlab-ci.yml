@@ -1390,6 +1390,26 @@
       changes: *frontend-build-patterns
       allow_failure: true
 
+.frontend:rules:jest-snapshot:
+  rules:
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-fork-merge-request
+      when: never
+    - <<: *if-merge-request-labels-run-all-jest
+      when: manual
+      allow_failure: true
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
+      when: manual
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *frontend-dependency-patterns
+      when: manual
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: [".gitlab/ci/rules.gitlab-ci.yml", ".gitlab/ci/frontend.gitlab-ci.yml"]
+      allow_failure: true
+
 ################
 # Memory rules #
 ################

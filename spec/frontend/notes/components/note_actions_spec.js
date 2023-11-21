@@ -1,5 +1,5 @@
 import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { stubComponent } from 'helpers/stub_component';
@@ -43,11 +43,10 @@ describe('noteActions', () => {
     store.state.isPromoteCommentToTimelineEventInProgress = isPromotionInProgress;
   };
 
-  const mountNoteActions = (propsData, computed) => {
-    return mount(noteActions, {
+  const mountNoteActions = (propsData) => {
+    return shallowMount(noteActions, {
       store,
       propsData,
-      computed,
       stubs: {
         GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
           methods: {
@@ -190,15 +189,14 @@ describe('noteActions', () => {
     };
 
     beforeEach(() => {
-      wrapper = mountNoteActions(props, {
-        targetType: () => 'issue',
-      });
+      wrapper = mountNoteActions(props);
       store.state.noteableData = {
         current_user: {
           can_set_issue_metadata: true,
         },
       };
       store.state.userData = userDataMock;
+      store.state.noteableData.targetType = 'issue';
     });
 
     afterEach(() => {

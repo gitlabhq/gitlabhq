@@ -13,7 +13,11 @@ SUGGEST_COMMENT
 def check_yaml(saas_feature)
   mr_group_label = helper.group_label
 
-  message_for_missing_group!(saas_feature: saas_feature, mr_group_label: mr_group_label) if saas_feature.group.nil?
+  if saas_feature.group.nil?
+    message_for_missing_group!(saas_feature: saas_feature, mr_group_label: mr_group_label)
+  else
+    message_for_group!(saas_feature: saas_feature, mr_group_label: mr_group_label)
+  end
 rescue Psych::Exception
   # YAML could not be parsed, fail the build.
   fail "#{helper.html_link(saas_feature.path)} isn't valid YAML! #{SEE_DOC.capitalize}"

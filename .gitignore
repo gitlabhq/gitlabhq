@@ -107,6 +107,9 @@ tags.lock
 tags.temp
 .stylelintcache
 .solargraph.yml
+jest-snapshot-test-match.json
+jest-test-report.json
+jest-snapshot-test-report.json
 
 # Vite Ruby
 /public/vite*

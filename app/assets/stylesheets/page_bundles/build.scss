@@ -166,3 +166,51 @@
     margin-bottom: 0;
   }
 }
+
+.job-log {
+  font-family: $monospace-font;
+  padding: $gl-padding-8 $input-horizontal-padding;
+  margin: 0 0 $gl-padding-8;
+  font-size: 13px;
+  word-break: break-all;
+  word-wrap: break-word;
+  color: color-yiq($builds-log-bg);
+  border-radius: 0 0 $border-radius-default $border-radius-default;
+  min-height: 42px;
+  background-color: $builds-log-bg;
+}
+
+.log-line {
+  padding: 1px $gl-padding-8 1px $job-log-line-padding;
+  min-height: $gl-line-height-20;
+}
+
+.line-number {
+  color: $gray-500;
+  padding: 0 $gl-padding-8;
+  min-width: $job-line-number-width;
+  margin-left: -$job-line-number-margin;
+  padding-right: 1em;
+  user-select: none;
+
+  &:hover,
+  &:active,
+  &:visited {
+    text-decoration: underline;
+    color: $gray-500;
+  }
+}
+
+.collapsible-line {
+  &:hover {
+    background-color: rgba($white, 0.2);
+  }
+
+  .arrow {
+    margin-left: -$job-arrow-margin;
+  }
+}
+
+.loader-animation {
+  @include build-loader-animation;
+}

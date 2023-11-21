@@ -194,7 +194,7 @@ export default {
     />
     <ul
       aria-labelledby="super-sidebar-context-header"
-      class="gl-p-0 gl-list-style-none"
+      class="gl-p-0 gl-mb-0 gl-list-style-none"
       data-testid="non-static-items-section"
     >
       <template v-for="item in nonStaticItems">

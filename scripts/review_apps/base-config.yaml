@@ -161,6 +161,7 @@ gitlab-runner:
       memory: 150Mi
   nodeSelector:
     preemptible: "true"
+  terminationGracePeriodSeconds: 60 # Wait for 1min before killing gitlab-runner
   podAnnotations:
     <<: *safe-to-evict
 

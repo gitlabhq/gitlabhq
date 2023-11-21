@@ -171,12 +171,19 @@ module Projects
           project.import_url,
           schemes: Project::VALID_IMPORT_PROTOCOLS,
           ports: Project::VALID_IMPORT_PORTS,
+          allow_localhost: allow_local_requests?,
+          allow_local_network: allow_local_requests?,
           dns_rebind_protection: dns_rebind_protection?)
         .then do |(import_url, resolved_host)|
           next '' if resolved_host.nil? || !import_url.scheme.in?(%w[http https])
 
           import_url.hostname.to_s
         end
+    end
+
+    def allow_local_requests?
+      Rails.env.development? && # There is no known usecase for this in non-development environments
+        Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
     end
 
     def dns_rebind_protection?

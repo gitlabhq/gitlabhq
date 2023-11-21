@@ -1495,11 +1495,43 @@ Logging helps track events for debugging. Logging also allows the application to
 - An audit trail for log edits must be available.
 - To avoid data loss, logs must be saved on different storage.
 
-### Who to contact if you have questions
+## URL Spoofing
+
+We want to protect our users from bad actors who might try to use GitLab
+features to redirect other users to malicious sites.
+
+Many features in GitLab allow users to post links to external websites. It is
+important that the destination of any user-specified link is made very clear
+to the user.
+
+### `external_redirect_path`
+
+When presenting links provided by users, if the actual URL is hidden, use the `external_redirect_path`
+helper method to redirect the user to a warning page first. For example:
+
+```ruby
+# Bad :(
+# This URL comes from User-Land and may not be safe...
+# We need the user to *see* where they are going.
+link_to foo_social_url(@user), title: "Foo Social" do
+  sprite_icon('question-o')
+end
+
+# Good :)
+# The external_redirect "leaving GitLab" page will show the URL to the user
+# before they leave.
+link_to external_redirect_path(url: foo_social_url(@user)), title: "Foo" do
+  sprite_icon('question-o')
+end
+```
+
+Also see this [real-life usage](https://gitlab.com/gitlab-org/gitlab/-/blob/bdba5446903ff634fb12ba695b2de99b6d6881b5/app/helpers/application_helper.rb#L378) as an example.
+
+## Who to contact if you have questions
 
 For general guidance, contact the [Application Security](https://about.gitlab.com/handbook/security/security-engineering/application-security/) team.
 
-### Related topics
+## Related topics
 
 - [Log system in GitLab](../administration/logs/index.md)
 - [Audit event development guidelines](../development/audit_event_guide/index.md))

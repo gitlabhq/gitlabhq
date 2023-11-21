@@ -20,6 +20,7 @@ import HelpCenter from './help_center.vue';
 import SidebarMenu from './sidebar_menu.vue';
 import SidebarPeekBehavior from './sidebar_peek_behavior.vue';
 import SidebarHoverPeekBehavior from './sidebar_hover_peek_behavior.vue';
+import ScrollScrim from './scroll_scrim.vue';
 
 export default {
   components: {
@@ -30,6 +31,7 @@ export default {
     SidebarPeekBehavior,
     SidebarHoverPeekBehavior,
     SidebarPortalTarget,
+    ScrollScrim,
     TrialStatusWidget: () =>
       import('ee_component/contextual_sidebar/components/trial_status_widget.vue'),
     TrialStatusPopover: () =>
@@ -202,7 +204,7 @@ export default {
       <div
         class="contextual-nav gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden"
       >
-        <div class="gl-flex-grow-1 gl-overflow-auto" data-testid="nav-container">
+        <scroll-scrim class="gl-flex-grow-1" data-testid="nav-container">
           <div
             id="super-sidebar-context-header"
             class="gl-px-5 gl-pt-3 gl-pb-2 gl-m-0 gl-reset-line-height gl-font-weight-bold gl-font-sm super-sidebar-context-header"
@@ -218,8 +220,8 @@ export default {
             :update-pins-url="sidebarData.update_pins_url"
           />
           <sidebar-portal-target />
-        </div>
-        <div class="gl-p-3">
+        </scroll-scrim>
+        <div class="gl-p-2">
           <help-center ref="helpCenter" :sidebar-data="sidebarData" />
           <gl-button
             v-if="sidebarData.is_admin"

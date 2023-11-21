@@ -17,7 +17,7 @@ module Gitlab
               #   inputs:
               #     foo:
               # ```
-              spec.nil? || (spec.is_a?(Hash) && [nil, type_name].include?(spec[:type]))
+              spec.nil? || super || (spec.is_a?(Hash) && !spec.key?(:type))
             end
 
             def self.type_name

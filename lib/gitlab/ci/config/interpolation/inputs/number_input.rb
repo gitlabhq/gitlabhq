@@ -8,10 +8,6 @@ module Gitlab
           class NumberInput < BaseInput
             extend ::Gitlab::Utils::Override
 
-            def self.matches?(spec)
-              spec.is_a?(Hash) && spec[:type] == type_name
-            end
-
             def self.type_name
               'number'
             end

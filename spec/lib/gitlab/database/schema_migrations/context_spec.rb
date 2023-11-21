@@ -25,12 +25,15 @@ RSpec.describe Gitlab::Database::SchemaMigrations::Context do
 
     context 'multiple databases', :reestablished_active_record_base do
       before do
-        connection_class.establish_connection(
+        db_config =
           ActiveRecord::Base
             .connection_pool
             .db_config
             .configuration_hash
             .merge(configuration_overrides)
+
+        connection_class.establish_connection(
+          ActiveRecord::DatabaseConfigurations::HashConfig.new(Rails.env, 'main', db_config)
         )
       end
 

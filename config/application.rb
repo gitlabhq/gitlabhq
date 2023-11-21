@@ -613,8 +613,8 @@ module Gitlab
     # https://github.com/rails/rails/blob/fdf840f69a2e33d78a9d40b91d9b7fddb76711e9/activerecord/lib/active_record/railtie.rb#L308
     initializer :clear_active_connections_again, after: :set_routes_reloader_hook do
       # rubocop:disable Database/MultipleDatabases
-      ActiveRecord::Base.clear_active_connections!
-      ActiveRecord::Base.flush_idle_connections!
+      ActiveRecord::Base.connection_handler.clear_active_connections!(ActiveRecord::Base.current_role)
+      ActiveRecord::Base.connection_handler.flush_idle_connections!(ActiveRecord::Base.current_role)
       # rubocop:enable Database/MultipleDatabases
     end
 

@@ -352,13 +352,53 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
       end
     end
 
+    context 'when import is a local request' do
+      before do
+        project.import_url = "http://127.0.0.1/group/project"
+      end
+
+      context 'when local network requests are enabled' do
+        before do
+          stub_application_setting(allow_local_requests_from_web_hooks_and_services: true)
+        end
+
+        it 'returns an error' do
+          expect(project.repository).not_to receive(:import_repository)
+          expect(subject.execute).to include(
+            status: :error,
+            message: end_with('Requests to localhost are not allowed')
+          )
+        end
+
+        context 'when environment is development' do
+          before do
+            stub_rails_env('development')
+          end
+
+          it 'imports successfully' do
+            expect(project.repository)
+              .to receive(:import_repository)
+              .and_return(true)
+            expect(subject.execute[:status]).to eq(:success)
+          end
+        end
+      end
+    end
+
     context 'when DNS rebind protection is disabled' do
       before do
         allow(Gitlab::CurrentSettings).to receive(:dns_rebinding_protection_enabled?).and_return(false)
         project.import_url = "https://example.com/group/project"
 
         allow(Gitlab::UrlBlocker).to receive(:validate!)
-          .with(project.import_url, ports: Project::VALID_IMPORT_PORTS, schemes: Project::VALID_IMPORT_PROTOCOLS, dns_rebind_protection: false)
+          .with(
+            project.import_url,
+            ports: Project::VALID_IMPORT_PORTS,
+            schemes: Project::VALID_IMPORT_PROTOCOLS,
+            allow_local_network: false,
+            allow_localhost: false,
+            dns_rebind_protection: false
+          )
           .and_return([Addressable::URI.parse("https://example.com/group/project"), nil])
       end
 
@@ -386,7 +426,14 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
           project.import_url = "https://example.com/group/project"
 
           allow(Gitlab::UrlBlocker).to receive(:validate!)
-            .with(project.import_url, ports: Project::VALID_IMPORT_PORTS, schemes: Project::VALID_IMPORT_PROTOCOLS, dns_rebind_protection: true)
+            .with(
+              project.import_url,
+              ports: Project::VALID_IMPORT_PORTS,
+              schemes: Project::VALID_IMPORT_PROTOCOLS,
+              allow_local_network: false,
+              allow_localhost: false,
+              dns_rebind_protection: true
+            )
             .and_return([Addressable::URI.parse("https://172.16.123.1/group/project"), 'example.com'])
         end
 
@@ -407,7 +454,14 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
             project.import_url = 'https://gitlab.com/gitlab-org/gitlab-development-kit'
 
             allow(Gitlab::UrlBlocker).to receive(:validate!)
-             .with(project.import_url, ports: Project::VALID_IMPORT_PORTS, schemes: Project::VALID_IMPORT_PROTOCOLS, dns_rebind_protection: true)
+              .with(
+                project.import_url,
+                ports: Project::VALID_IMPORT_PORTS,
+                schemes: Project::VALID_IMPORT_PROTOCOLS,
+                allow_local_network: false,
+                allow_localhost: false,
+                dns_rebind_protection: true
+              )
              .and_return([Addressable::URI.parse('https://[2606:4700:90:0:f22e:fbec:5bed:a9b9]/gitlab-org/gitlab-development-kit'), 'gitlab.com'])
           end
 
@@ -430,7 +484,14 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
           project.import_url = "http://example.com/group/project"
 
           allow(Gitlab::UrlBlocker).to receive(:validate!)
-            .with(project.import_url, ports: Project::VALID_IMPORT_PORTS, schemes: Project::VALID_IMPORT_PROTOCOLS, dns_rebind_protection: true)
+            .with(
+              project.import_url,
+              ports: Project::VALID_IMPORT_PORTS,
+              schemes: Project::VALID_IMPORT_PROTOCOLS,
+              allow_local_network: false,
+              allow_localhost: false,
+              dns_rebind_protection: true
+            )
             .and_return([Addressable::URI.parse("http://172.16.123.1/group/project"), 'example.com'])
         end
 
@@ -452,7 +513,14 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
           project.import_url = "git://example.com/group/project.git"
 
           allow(Gitlab::UrlBlocker).to receive(:validate!)
-            .with(project.import_url, ports: Project::VALID_IMPORT_PORTS, schemes: Project::VALID_IMPORT_PROTOCOLS, dns_rebind_protection: true)
+            .with(
+              project.import_url,
+              ports: Project::VALID_IMPORT_PORTS,
+              schemes: Project::VALID_IMPORT_PROTOCOLS,
+              allow_local_network: false,
+              allow_localhost: false,
+              dns_rebind_protection: true
+            )
             .and_return([Addressable::URI.parse("git://172.16.123.1/group/project"), 'example.com'])
         end
 

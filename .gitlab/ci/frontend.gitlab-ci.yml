@@ -306,6 +306,42 @@ jest-integration:
     - run_timed_command "yarn jest:integration --ci"
   needs: ["rspec-all frontend_fixture", "graphql-schema-dump"]
 
+jest-snapshot-vue3:
+  extends:
+    - .jest-base
+    - .frontend:rules:jest-snapshot
+  needs: ["rspec-all frontend_fixture"]
+  variables:
+    VUE_VERSION: 3
+    JEST_REPORT: jest-test-report.json
+    SNAPSHOT_TEST_REPORT: jest-snapshot-test-report.json
+  script:
+    - |
+      yarn jest:snapshots --ci --json --outputFile="${JEST_REPORT}" || echo 'Proceed to parsing test report...'
+      echo $(ruby -rjson -e 'puts JSON.generate(JSON.parse(File.read(ENV["JEST_REPORT"])).dig("snapshot"))') > "${SNAPSHOT_TEST_REPORT}"
+
+      echo " ============= snapshot test report start =============="
+      cat "${SNAPSHOT_TEST_REPORT}"
+      echo " ============= snapshot test report end ================"
+
+      snapshot_test_failed=$(ruby -rjson -e 'puts JSON.parse(File.read(ENV["SNAPSHOT_TEST_REPORT"])).dig("failure")')
+      if [[ "${snapshot_test_failed}" == "true" ]]
+      then
+        echo "You have failed snapshot tests! Exiting 1..."
+        exit 1
+      else
+        echo 'All snapshot tests passed! Exiting 0...'
+        exit 0
+      fi
+
+  artifacts:
+    name: snapshot_tests
+    expire_in: 31d
+    when: always
+    paths:
+      - jest-snapshot-test-match.json
+      - jest-snapshot-test-report.json
+
 coverage-frontend:
   extends:
     - .default-retry

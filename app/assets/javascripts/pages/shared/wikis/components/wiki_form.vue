@@ -187,6 +187,11 @@ export default {
       return typeof this.drawioUrl === 'string' && this.drawioUrl.length > 0;
     },
   },
+  watch: {
+    title() {
+      this.updateCommitMessage();
+    },
+  },
   mounted() {
     if (!this.commitMessage) this.updateCommitMessage();
 
@@ -321,7 +326,6 @@ export default {
             :required="true"
             :autofocus="!pageInfo.persisted"
             :placeholder="$options.i18n.title.placeholder"
-            @input="updateCommitMessage"
           />
         </gl-form-group>
       </div>
@@ -361,8 +365,8 @@ export default {
             :drawio-enabled="drawioEnabled"
             @contentEditor="notifyContentEditorActive"
             @markdownField="notifyContentEditorInactive"
-            @keydown.ctrl.enter="submitFormShortcut"
-            @keydown.meta.enter="submitFormShortcut"
+            @keydown.ctrl.enter="submitFormWithShortcut"
+            @keydown.meta.enter="submitFormWithShortcut"
           />
           <div class="form-text gl-text-gray-600">
             <gl-sprintf

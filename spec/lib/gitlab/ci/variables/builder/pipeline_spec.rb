@@ -113,6 +113,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :secr
                 merge_request.source_branch
               ).to_s,
               'CI_MERGE_REQUEST_TITLE' => merge_request.title,
+              'CI_MERGE_REQUEST_DESCRIPTION' => merge_request.description,
               'CI_MERGE_REQUEST_ASSIGNEES' => merge_request.assignee_username_list,
               'CI_MERGE_REQUEST_MILESTONE' => milestone.title,
               'CI_MERGE_REQUEST_LABELS' => labels.map(&:title).sort.join(','),
@@ -214,6 +215,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :secr
               'CI_MERGE_REQUEST_SOURCE_BRANCH_NAME' => merge_request.source_branch.to_s,
               'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA' => merge_request.source_branch_sha,
               'CI_MERGE_REQUEST_TITLE' => merge_request.title,
+              'CI_MERGE_REQUEST_DESCRIPTION' => merge_request.description,
               'CI_MERGE_REQUEST_ASSIGNEES' => merge_request.assignee_username_list,
               'CI_MERGE_REQUEST_MILESTONE' => milestone.title,
               'CI_MERGE_REQUEST_LABELS' => labels.map(&:title).sort.join(','),

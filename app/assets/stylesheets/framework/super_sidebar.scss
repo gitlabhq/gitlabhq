@@ -404,3 +404,57 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
     }
   }
 }
+
+
+// Styles for the ScrollScrim component.
+// Should eventually be moved to gitlab-ui.
+// See https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1869
+
+$scroll-scrim-height: 2.25rem;
+
+.gl-scroll-scrim {
+  .top-scrim-wrapper,
+  .bottom-scrim-wrapper {
+    height: $scroll-scrim-height;
+    opacity: 0;
+    position: sticky;
+    z-index: 1;
+    display: block;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+    transition: opacity 0.1s;
+  }
+
+  .top-scrim-wrapper {
+    top: 0;
+    margin-bottom: -$scroll-scrim-height;
+
+    .top-scrim {
+      background: linear-gradient(180deg, var(--sidebar-background, $gray-10) 0%, $transparent-rgba 100%);
+    }
+  }
+
+  .bottom-scrim-wrapper {
+    bottom: 0;
+    margin-top: -$scroll-scrim-height;
+
+    .bottom-scrim {
+      background: linear-gradient(180deg, $transparent-rgba 0%, var(--sidebar-background, $gray-10));
+    }
+  }
+
+  .top-scrim,
+  .bottom-scrim {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+
+  &.top-scrim-visible .top-scrim-wrapper,
+  &.bottom-scrim-visible .bottom-scrim-wrapper {
+    opacity: 1;
+  }
+}

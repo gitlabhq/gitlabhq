@@ -198,11 +198,7 @@ export default class Shortcuts {
   }
 
   static focusSearch(e) {
-    if (gon.use_new_navigation) {
-      document.querySelector('#super-sidebar-search')?.click();
-    } else {
-      document.querySelector('#search')?.focus();
-    }
+    document.querySelector('#super-sidebar-search')?.click();
 
     if (e.preventDefault) {
       e.preventDefault();

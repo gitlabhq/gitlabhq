@@ -5,11 +5,13 @@ import {
   GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
   GlButton,
+  GlModalDirective,
 } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, __, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import PersistentUserCallout from '~/persistent_user_callout';
+import { SET_STATUS_MODAL_ID } from '~/set_status_modal/constants';
 import { USER_MENU_TRACKING_DEFAULTS, DROPDOWN_Y_OFFSET, IMPERSONATING_OFFSET } from '../constants';
 import UserMenuProfileItem from './user_menu_profile_item.vue';
 
@@ -18,6 +20,7 @@ const DROPDOWN_X_OFFSET_BASE = -211;
 const DROPDOWN_X_OFFSET_IMPERSONATING = DROPDOWN_X_OFFSET_BASE + IMPERSONATING_OFFSET;
 
 export default {
+  SET_STATUS_MODAL_ID,
   i18n: {
     setStatus: s__('SetStatusModal|Set status'),
     editStatus: s__('SetStatusModal|Edit status'),
@@ -36,9 +39,14 @@ export default {
     GlDisclosureDropdownItem,
     GlButton,
     UserMenuProfileItem,
+    SetStatusModal: () =>
+      import(
+        /* webpackChunkName: 'statusModalBundle' */ '~/set_status_modal/set_status_modal_wrapper.vue'
+      ),
   },
   directives: {
     SafeHtml,
+    GlModal: GlModalDirective,
   },
   mixins: [Tracking.mixin()],
   inject: ['isImpersonating'],
@@ -47,6 +55,11 @@ export default {
       required: true,
       type: Object,
     },
+  },
+  data() {
+    return {
+      setStatusModalReady: false,
+    };
   },
   computed: {
     toggleText() {
@@ -61,7 +74,8 @@ export default {
       return {
         text: statusLabel,
         extraAttrs: {
-          class: 'js-set-status-modal-trigger',
+          ...USER_MENU_TRACKING_DEFAULTS,
+          'data-track-label': 'user_edit_status',
         },
       };
     },
@@ -140,24 +154,22 @@ export default {
       };
     },
     statusModalData() {
-      const defaultData = {
-        'data-current-emoji': '',
-        'data-current-message': '',
-        'data-default-emoji': 'speech_balloon',
-      };
+      if (!this.data?.status?.can_update) {
+        return null;
+      }
 
       const { busy, customized } = this.data.status;
 
       if (!busy && !customized) {
-        return defaultData;
+        return {};
       }
+      const { emoji, message, availability, clear_after: clearAfter } = this.data.status;
 
       return {
-        ...defaultData,
-        'data-current-emoji': this.data.status.emoji,
-        'data-current-message': this.data.status.message,
-        'data-current-availability': this.data.status.availability,
-        'data-current-clear-status-after': this.data.status.clear_after,
+        'current-emoji': emoji || '',
+        'current-message': message || '',
+        'current-availability': availability || '',
+        'current-clear-status-after': clearAfter || '',
       };
     },
     buyPipelineMinutesCalloutData() {
@@ -248,7 +260,8 @@ export default {
 
       <gl-disclosure-dropdown-group bordered>
         <gl-disclosure-dropdown-item
-          v-if="data.status.can_update"
+          v-if="setStatusModalReady && statusModalData"
+          v-gl-modal="$options.SET_STATUS_MODAL_ID"
           :item="statusItem"
           data-testid="status-item"
           @action="closeDropdown"
@@ -304,11 +317,11 @@ export default {
         @action="trackSignOut"
       />
     </gl-disclosure-dropdown>
-
-    <div
-      v-if="data.status.can_update"
-      class="js-set-status-modal-wrapper"
+    <set-status-modal
+      v-if="statusModalData"
+      default-emoji="speech_balloon"
       v-bind="statusModalData"
-    ></div>
+      @mounted="setStatusModalReady = true"
+    />
   </div>
 </template>

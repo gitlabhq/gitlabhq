@@ -12,3 +12,5 @@ export const AVAILABILITY_STATUS = {
   BUSY: 'busy',
   NOT_SET: 'not_set',
 };
+
+export const SET_STATUS_MODAL_ID = 'set-user-status-modal';

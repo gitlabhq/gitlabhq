@@ -302,8 +302,8 @@ describe('SuperSidebar component', () => {
       createWrapper();
     });
 
-    it('allows overflow', () => {
-      expect(findNavContainer().classes()).toContain('gl-overflow-auto');
+    it('allows overflow with scroll scrim', () => {
+      expect(findNavContainer().element.tagName).toContain('SCROLL-SCRIM');
     });
   });
 

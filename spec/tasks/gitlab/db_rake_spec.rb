@@ -550,7 +550,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
     with_them do
       it 'outputs changed message for automation after operations happen' do
-        allow(ActiveRecord::Base.connection.schema_migration).to receive(:table_exists?).and_return(schema_migration_table_exists)
+        allow(ActiveRecord::Base.connection).to receive_message_chain(:schema_migration, :table_exists?).and_return(schema_migration_table_exists)
         allow_any_instance_of(ActiveRecord::MigrationContext).to receive(:needs_migration?).and_return(needs_migrations)
         expect { run_rake_task('gitlab:db:unattended') }.to output(/^#{rake_output}$/).to_stdout
       end

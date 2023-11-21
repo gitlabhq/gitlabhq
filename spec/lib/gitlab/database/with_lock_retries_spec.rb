@@ -244,9 +244,9 @@ RSpec.describe Gitlab::Database::WithLockRetries, feature_category: :database do
 
     it 'executes `SET LOCAL lock_timeout` using the configured timeout value in milliseconds' do
       expect(connection).to receive(:execute).with("RESET idle_in_transaction_session_timeout; RESET lock_timeout").and_call_original
-      expect(connection).to receive(:execute).with("SAVEPOINT active_record_1", "TRANSACTION").and_call_original
+      expect(connection).to receive(:create_savepoint).with('active_record_1')
       expect(connection).to receive(:execute).with("SET LOCAL lock_timeout TO '15ms'").and_call_original
-      expect(connection).to receive(:execute).with("RELEASE SAVEPOINT active_record_1", "TRANSACTION").and_call_original
+      expect(connection).to receive(:release_savepoint).with('active_record_1')
 
       subject.run {}
     end

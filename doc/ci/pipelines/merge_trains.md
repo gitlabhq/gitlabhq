@@ -162,13 +162,15 @@ When you remove a merge request from a merge train:
 ## Skip the merge train and merge immediately
 
 If you have a high-priority merge request, like a critical patch that must
-be merged urgently, select **Merge Immediately**.
+be merged urgently, you can select **Merge Immediately**.
 
 When you merge a merge request immediately:
 
-- The current merge train is recreated.
-- All pipelines restart.
-- Redundant pipelines [are cancelled](#automatic-pipeline-cancellation).
+- The commits from the merge request are merged, ignoring the status of the merge train.
+- The merge train pipelines for all other merge requests on the train [are cancelled](#automatic-pipeline-cancellation).
+- A new merge train starts and all the merge requests from the original merge train are added to this new merge train,
+  with a new merge train pipeline for each. These new merge train pipelines now contain
+  the commits added by the merge request that was merged immediately.
 
 WARNING:
 Merging immediately can use a lot of CI/CD resources. Use this option

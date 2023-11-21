@@ -25,6 +25,7 @@ module Trigger
 
   class Base
     # Can be overridden
+    STABLE_BRANCH_REGEX = /^[\d-]+-stable(-ee|-jh)?$/
     def self.access_token
       ENV['PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE']
     end
@@ -113,18 +114,30 @@ module Trigger
     end
 
     def stable_branch?
-      ENV['CI_COMMIT_REF_NAME'] =~ /^[\d-]+-stable(-ee|-jh)?$/
+      ENV['CI_COMMIT_REF_NAME'] =~ STABLE_BRANCH_REGEX
+    end
+
+    def mr_target_stable_branch?
+      ENV['CI_MERGE_REQUEST_TARGET_BRANCH_NAME'] =~ STABLE_BRANCH_REGEX
     end
 
     def fallback_ref
-      if trigger_stable_branch_if_detected? && stable_branch?
-        if ENV['CI_PROJECT_NAMESPACE'] == 'gitlab-cn'
-          ENV['CI_COMMIT_REF_NAME'].delete_suffix('-jh')
-        elsif ENV['CI_PROJECT_NAMESPACE'] == 'gitlab-org'
-          ENV['CI_COMMIT_REF_NAME'].delete_suffix('-ee')
-        end
+      return primary_ref unless trigger_stable_branch_if_detected?
+
+      if stable_branch?
+        normalize_stable_branch_name(ENV['CI_COMMIT_REF_NAME'])
+      elsif mr_target_stable_branch?
+        normalize_stable_branch_name(ENV['CI_MERGE_REQUEST_TARGET_BRANCH_NAME'])
       else
         primary_ref
+      end
+    end
+
+    def normalize_stable_branch_name(branch_name)
+      if ENV['CI_PROJECT_NAMESPACE'] == 'gitlab-cn'
+        branch_name.delete_suffix('-jh')
+      elsif ENV['CI_PROJECT_NAMESPACE'] == 'gitlab-org'
+        branch_name.delete_suffix('-ee')
       end
     end
 

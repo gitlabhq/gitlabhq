@@ -1,7 +1,6 @@
 import { GlSprintf, GlLink } from '@gitlab/ui';
-import { createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import { createAlert } from '~/alert';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -24,9 +23,8 @@ import {
   mockJobRetryMutationData,
 } from '../mock_data';
 
-const localVue = createLocalVue();
 jest.mock('~/alert');
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
@@ -62,7 +60,6 @@ describe('Manual Variables Form', () => {
     ]);
 
     const options = {
-      localVue,
       apolloProvider: mockApollo,
     };
 

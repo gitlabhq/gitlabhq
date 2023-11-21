@@ -64,7 +64,6 @@ export default {
   },
   computed: {
     getDrawerHeaderHeight() {
-      if (!this.showActionsDrawer || gon.use_new_navigation) return '0';
       return getContentWrapperHeight();
     },
     isFormValid() {

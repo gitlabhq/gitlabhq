@@ -18,6 +18,7 @@
     "jest:integration": "jest --config jest.config.integration.js",
     "jest:scripts": "jest --config jest.config.scripts.js",
     "jest:quarantine": "grep -r 'quarantine:' spec/frontend ee/spec/frontend",
+    "jest:snapshots": "jest --config jest.config.snapshots.js",
     "lint:eslint": "node scripts/frontend/eslint.js",
     "lint:eslint:fix": "node scripts/frontend/eslint.js --fix",
     "lint:eslint:all": "node scripts/frontend/eslint.js .",

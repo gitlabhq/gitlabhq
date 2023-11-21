@@ -106,7 +106,6 @@ describe('Shortcuts', () => {
     let event;
 
     beforeEach(() => {
-      window.gon.use_new_navigation = true;
       event = new KeyboardEvent('keydown', { cancelable: true });
       Shortcuts.focusSearch(event);
     });
