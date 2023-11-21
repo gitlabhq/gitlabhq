@@ -15,6 +15,7 @@ RSpec.shared_examples 'validate dictionary' do |objects, directory_path, require
         milestone
         gitlab_schema
         schema_inconsistencies
+        sharding_key
       ]
     end
 

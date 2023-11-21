@@ -268,26 +268,27 @@ More details about the permissions for some project-level features follow.
 
 | Action                                                                                                                    | Non-member | Guest   | Reporter | Developer | Maintainer | Owner |
 |---------------------------------------------------------------------------------------------------------------------------|------------|---------|----------|-----------|------------|-------|
-| See that artifacts exist                                                                                                  | ✓ (3)    | ✓ (3) | ✓        | ✓         | ✓          | ✓     |
-| View a list of jobs                                                                                                       | ✓ (1)    | ✓ (2) | ✓        | ✓         | ✓          | ✓     |
-| View and download artifacts                                                                                               | ✓ (1)    | ✓ (2) | ✓        | ✓         | ✓          | ✓     |
-| View [environments](../ci/environments/index.md)                                                                          | ✓ (3)    | ✓ (3) | ✓        | ✓         | ✓          | ✓     |
-| View job logs and job details page                                                                                        | ✓ (1)    | ✓ (2) | ✓        | ✓         | ✓          | ✓     |
-| View pipelines and pipeline details pages                                                                                 | ✓ (1)    | ✓ (2) | ✓        | ✓         | ✓          | ✓     |
-| View pipelines tab in MR                                                                                                  | ✓ (3)    | ✓ (3) | ✓        | ✓         | ✓          | ✓     |
-| [View vulnerabilities in a pipeline](application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline) |       | ✓ (2) | ✓        | ✓         | ✓          | ✓     |
+| See that artifacts exist                                                                                                  | ✓ (3)      | ✓ (3)   | ✓        | ✓         | ✓          | ✓     |
+| View a list of jobs                                                                                                       | ✓ (1)      | ✓ (2)   | ✓        | ✓         | ✓          | ✓     |
+| View and download artifacts                                                                                               | ✓ (1)      | ✓ (2)   | ✓        | ✓         | ✓          | ✓     |
+| View [environments](../ci/environments/index.md)                                                                          | ✓ (3)      | ✓ (3)   | ✓        | ✓         | ✓          | ✓     |
+| View job logs and job details page                                                                                        | ✓ (1)      | ✓ (2)   | ✓        | ✓         | ✓          | ✓     |
+| View pipelines and pipeline details pages                                                                                 | ✓ (1)      | ✓ (2)   | ✓        | ✓         | ✓          | ✓     |
+| View pipelines tab in MR                                                                                                  | ✓ (3)      | ✓ (3)   | ✓        | ✓         | ✓          | ✓     |
+| [View vulnerabilities in a pipeline](application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline) |       | ✓ (2)   | ✓        | ✓         | ✓          | ✓     |
 | View and download project-level [Secure Files](../api/secure_files.md)                                                    |            |         |          | ✓         | ✓          | ✓     |
-| Cancel and retry jobs                                                                                                     |            |         |          | ✓         | ✓          | ✓     |
+| Retry jobs                                                                                                                |            |         |          | ✓         | ✓          | ✓     |
+| Cancel jobs                                                                                                               |            |         |          | ✓ (7)     | ✓  (7)     | ✓ (7) |
 | Create new [environments](../ci/environments/index.md)                                                                    |            |         |          | ✓         | ✓          | ✓     |
-| Delete job logs or job artifacts                                                                                          |            |         |          | ✓ (4)   | ✓          | ✓     |
+| Delete job logs or job artifacts                                                                                          |            |         |          | ✓ (4)     | ✓          | ✓     |
 | Run CI/CD pipeline                                                                                                        |            |         |          | ✓         | ✓          | ✓     |
-| Run CI/CD pipeline for a protected branch                                                                                 |            |         |          | ✓ (5)   | ✓ (5)    | ✓     |
+| Run CI/CD pipeline for a protected branch                                                                                 |            |         |          | ✓ (5)     | ✓ (5)      | ✓     |
 | Stop [environments](../ci/environments/index.md)                                                                          |            |         |          | ✓         | ✓          | ✓     |
-| Run deployment job for a protected environment                                                                            |            |         |  ✓ (5)   | ✓ (6)   | ✓ (6)    | ✓     |
+| Run deployment job for a protected environment                                                                            |            |         |  ✓ (5)   | ✓ (6)     | ✓ (6)      | ✓     |
 | View a job with [debug logging](../ci/variables/index.md#enable-debug-logging)                                            |            |         |          | ✓         | ✓          | ✓     |
 | Use pipeline editor                                                                                                       |            |         |          | ✓         | ✓          | ✓     |
 | Run [interactive web terminals](../ci/interactive_web_terminal/index.md)                                                  |            |         |          | ✓         | ✓          | ✓     |
-| Add project runners to project                                                                                           |            |         |          |           | ✓          | ✓     |
+| Add project runners to project                                                                                            |            |         |          |           | ✓          | ✓     |
 | Clear runner caches manually                                                                                              |            |         |          |           | ✓          | ✓     |
 | Enable shared runners in project                                                                                          |            |         |          |           | ✓          | ✓     |
 | Manage CI/CD settings                                                                                                     |            |         |          |           | ✓          | ✓     |
@@ -308,6 +309,7 @@ More details about the permissions for some project-level features follow.
      run for a non-protected branch.
 5. If the user is [allowed to merge or push to the protected branch](../ci/pipelines/index.md#pipeline-security-on-protected-branches).
 6. If the user if [part of a group with at least the Reporter role](../ci/environments/protected_environments.md#deployment-only-access-to-protected-environments)
+7. Cancellation permissions can be [customized via the pipeline settings](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs)
 
 <!-- markdownlint-enable MD029 -->
 

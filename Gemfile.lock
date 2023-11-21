@@ -290,7 +290,7 @@ GEM
     aws-sdk-cloudformation (1.41.0)
       aws-sdk-core (~> 3, >= 3.99.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-core (3.186.0)
+    aws-sdk-core (3.187.0)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.651.0)
       aws-sigv4 (~> 1.5)
@@ -298,7 +298,7 @@ GEM
     aws-sdk-kms (1.64.0)
       aws-sdk-core (~> 3, >= 3.165.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-s3 (1.136.0)
+    aws-sdk-s3 (1.137.0)
       aws-sdk-core (~> 3, >= 3.181.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.6)
@@ -1794,8 +1794,8 @@ DEPENDENCIES
   autoprefixer-rails (= 10.2.5.1)
   awesome_print
   aws-sdk-cloudformation (~> 1)
-  aws-sdk-core (~> 3.186.0)
-  aws-sdk-s3 (~> 1.136.0)
+  aws-sdk-core (~> 3.187.0)
+  aws-sdk-s3 (~> 1.137.0)
   axe-core-rspec
   babosa (~> 2.0)
   base32 (~> 0.3.0)

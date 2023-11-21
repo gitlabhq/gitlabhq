@@ -26565,6 +26565,11 @@ msgstr ""
 msgid "IssuesAnalytics|Last 12 months (%{chartDateRange})"
 msgstr ""
 
+msgid "IssuesAnalytics|Last month (%{dateRange})"
+msgid_plural "IssuesAnalytics|Last %{monthsCount} months (%{dateRange})"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "IssuesAnalytics|Opened"
 msgstr ""
 
@@ -26574,10 +26579,8 @@ msgstr ""
 msgid "IssuesAnalytics|Sorry, your filter produced no results"
 msgstr ""
 
-msgid "IssuesAnalytics|This month (%{dateRange})"
-msgid_plural "IssuesAnalytics|Last %{monthsCount} months (%{dateRange})"
-msgstr[0] ""
-msgstr[1] ""
+msgid "IssuesAnalytics|This month (%{currentMonthYear})"
+msgstr ""
 
 msgid "IssuesAnalytics|To widen your search, change or remove filters in the filter bar above."
 msgstr ""

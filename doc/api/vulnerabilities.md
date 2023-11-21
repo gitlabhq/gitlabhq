@@ -9,6 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10242) in GitLab 12.6.
 > - `last_edited_at` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
 > - `start_date` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
+> - `updated_by_id` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
 
 NOTE:
 The former Vulnerabilities API was renamed to Vulnerability Findings API
@@ -62,7 +63,6 @@ Example response:
     "full_name": "gitlab-examples / security / security-reports"
   },
   "author_id": 1,
-  "updated_by_id": null,
   "last_edited_by_id": null,
   "closed_by_id": null,
   "due_date": null,
@@ -110,7 +110,6 @@ Example response:
     "full_name": "gitlab-examples / security / security-reports"
   },
   "author_id": 1,
-  "updated_by_id": null,
   "last_edited_by_id": null,
   "closed_by_id": null,
   "due_date": null,
@@ -158,7 +157,6 @@ Example response:
     "full_name": "gitlab-examples / security / security-reports"
   },
   "author_id": 1,
-  "updated_by_id": null,
   "last_edited_by_id": null,
   "closed_by_id": null,
   "due_date": null,
@@ -206,7 +204,6 @@ Example response:
     "full_name": "gitlab-examples / security / security-reports"
   },
   "author_id": 1,
-  "updated_by_id": null,
   "last_edited_by_id": null,
   "closed_by_id": null,
   "due_date": null,
@@ -254,7 +251,6 @@ Example response:
     "full_name": "gitlab-examples / security / security-reports"
   },
   "author_id": 1,
-  "updated_by_id": null,
   "last_edited_by_id": null,
   "closed_by_id": null,
   "due_date": null,

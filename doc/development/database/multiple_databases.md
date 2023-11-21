@@ -64,6 +64,86 @@ After a schema has been assigned, the merge request pipeline might fail due to o
 - [Cross-database transactions](#fixing-cross-database-transactions)
 - [Cross-database foreign keys](#foreign-keys-that-cross-databases)
 
+### Defining a sharding key for all cell-local tables
+
+All tables with the following `gitlab_schema` are considered "cell-local":
+
+- `gitlab_main_cell`
+- `gitlab_ci`
+
+All newly created cell-local tables are required to have a `sharding_key`
+defined in the corresponding `db/docs/` file for that table.
+
+The purpose of the sharding key is documented in the
+[Organization isolation blueprint](../../architecture/blueprints/organization/isolation.md),
+but in short this column is used to provide a standard way of determining which
+Organization owns a particular row in the database. The column will be used in
+the future to enforce constraints on data not cross Organization boundaries. It
+will also be used in the future to provide a uniform way to migrate data
+between Cells.
+
+The actual name of the foreign key can be anything but it must reference a row
+in `projects` or `groups`. The following are examples of valid sharding keys:
+
+- The table entries belong to a project only:
+
+   ```yaml
+   sharding_key:
+     project_id: projects
+   ```
+
+- The table entries belong to a project and the foreign key is `target_project_id`:
+
+   ```yaml
+   sharding_key:
+     target_project_id: projects
+   ```
+
+- The table entries belong to a namespace/group only:
+
+   ```yaml
+   sharding_key:
+     namespace_id: namespaces
+   ```
+
+- The table entries belong to a namespace/group only and the foreign key is `group_id`:
+
+   ```yaml
+   sharding_key:
+     group_id: namespaces
+   ```
+
+- The table entries belong to a namespace or a project:
+
+   ```yaml
+   sharding_key:
+     project_id: projects
+     namespace_id: namespaces
+   ```
+
+#### The sharding key must be immutable
+
+The choice of a `sharding_key` should always be immutable. Therefore, if your feature
+requires a user experience which allows data to be moved between projects or
+groups/namespaces, then you may need to redesign the move feature to create new rows. An
+example of this can be seen in the
+[move an issue feature](../../user/project/issues/managing_issues.md#move-an-issue).
+This feature does not actually change the `project_id` column for an existing
+`issues` row but instead creates a new `issues` row and creates a link in the
+database from the original `issues` row. If there is a particularly challenging
+existing feature that needs to allow moving data you will need to reach out to
+the Tenant Scale team early on to discuss options for how to manage the
+sharding key.
+
+#### Using the same sharding key for projects and namespaces
+
+Developers may also choose to use `namespace_id` only for tables that can
+belong to a project where the feature used by the table is being developed
+following the
+[Consolidating Groups and Projects blueprint](../../architecture/blueprints/consolidating_groups_and_projects/index.md).
+In that case the `namespace_id` would need to be the ID of the
+`ProjectNamespace` and not the group that the namespace belongs to.
+
 ### The impact of `gitlab_schema`
 
 The usage of `gitlab_schema` has a significant impact on the application.

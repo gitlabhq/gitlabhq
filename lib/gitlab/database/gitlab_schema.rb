@@ -88,6 +88,10 @@ module Gitlab
         # rubocop:enable Gitlab/DocUrl
       end
 
+      def self.cell_local?(schema)
+        Gitlab::Database.all_gitlab_schemas[schema.to_s].cell_local
+      end
+
       def self.cross_joins_allowed?(table_schemas, all_tables)
         return true unless table_schemas.many?
 

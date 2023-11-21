@@ -67,7 +67,7 @@ RSpec.describe 'getting Alert Management Integrations', feature_category: :incid
               'name' => 'Prometheus',
               'active' => prometheus_integration.manual_configuration?,
               'token' => project_alerting_setting.token,
-              'url' => "http://localhost/#{project.full_path}/prometheus/alerts/notify.json",
+              'url' => "http://#{Gitlab.config.gitlab.host}/#{project.full_path}/prometheus/alerts/notify.json",
               'apiUrl' => prometheus_integration.api_url
             )
           ]

@@ -269,8 +269,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pip
         context_sha: sha,
         type: :local,
         location: 'lib/gitlab/ci/templates/existent-file.yml',
-        blob: "http://localhost/#{project.full_path}/-/blob/#{sha}/lib/gitlab/ci/templates/existent-file.yml",
-        raw: "http://localhost/#{project.full_path}/-/raw/#{sha}/lib/gitlab/ci/templates/existent-file.yml",
+        blob: "http://#{Gitlab.config.gitlab.host}/#{project.full_path}/-/blob/#{sha}/lib/gitlab/ci/templates/existent-file.yml",
+        raw: "http://#{Gitlab.config.gitlab.host}/#{project.full_path}/-/raw/#{sha}/lib/gitlab/ci/templates/existent-file.yml",
         extra: {}
       )
     }

@@ -50,7 +50,7 @@ available. This feature is not ready for production use.
 Enhanced issue analytics display the additional metric "Issues closed", which represents the total number of resolved issues in your project over a selected period.
 You can use this metric to improve the overall turn-around time and value delivered to your customers.
 
-![Issues opened and closed per month](img/issues_closed_analytics_v16_4.png)
+![Issues opened and closed per month](img/enhanced_issue_analytics_v16_7.png)
 
 ## Drill into the information
 

@@ -57,6 +57,10 @@ module Gitlab
           data['gitlab_schema']
         end
 
+        def sharding_key
+          data['sharding_key']
+        end
+
         def schema?(schema_name)
           gitlab_schema == schema_name.to_s
         end

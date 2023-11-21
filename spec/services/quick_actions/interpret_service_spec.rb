@@ -2384,6 +2384,18 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           end
         end
       end
+
+      it 'is part of the available commands' do
+        expect(service.available_commands(issuable)).to include(a_hash_including(name: :invite_email))
+      end
+
+      context 'with non-persisted issue' do
+        let(:issuable) { build(:issue) }
+
+        it 'is not part of the available commands' do
+          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :invite_email))
+        end
+      end
     end
 
     context 'severity command' do

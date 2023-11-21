@@ -12,7 +12,7 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category:
     describe '.for_namespace_ids' do
       it 'returns only requested namespaces' do
         stats = create_list(:namespace_root_storage_statistics, 3)
-        namespace_ids = stats[0..1].map { |s| s.namespace_id }
+        namespace_ids = stats[0..1].map(&:namespace_id)
 
         requested_stats = described_class.for_namespace_ids(namespace_ids).pluck(:namespace_id)
 

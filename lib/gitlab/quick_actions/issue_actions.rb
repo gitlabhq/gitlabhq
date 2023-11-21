@@ -226,7 +226,8 @@ module Gitlab
         params 'email1@example.com email2@example.com (up to 6 emails)'
         types Issue
         condition do
-          Feature.enabled?(:issue_email_participants, parent) &&
+          quick_action_target.persisted? &&
+            Feature.enabled?(:issue_email_participants, parent) &&
             current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target)
         end
         command :invite_email do |emails = ""|

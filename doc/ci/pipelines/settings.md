@@ -103,6 +103,24 @@ To avoid this scenario:
 
 For more information, see [Deployment safety](../environments/deployment_safety.md#prevent-outdated-deployment-jobs).
 
+## Restrict roles that can cancel pipelines or jobs **(PREMIUM ALL)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/410634) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `restrict_pipeline_cancellation_by_role`. Disabled by default.
+
+You can customize which roles have permission to cancel pipelines or jobs.
+
+By default, users with at least the Developer role can cancel pipelines or jobs.
+You can restrict cancellation permission to only users with at least the Maintainer role,
+or completely prevent cancellation of any pipelines or jobs.
+
+To change the permissions to cancel pipelines or jobs:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+1. Select an option from **Minimum role required to cancel a pipeline or job**.
+1. Select **Save changes**.
+
 ## Specify a custom CI/CD configuration file
 
 > Support for external `.gitlab-ci.yml` locations [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14376) in GitLab 12.6.

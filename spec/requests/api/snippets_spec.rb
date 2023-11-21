@@ -115,8 +115,8 @@ RSpec.describe API::Snippets, :aggregate_failures, factory_default: :keep, featu
           public_snippet.id,
           public_snippet_other.id)
         expect(json_response.map { |snippet| snippet['web_url'] }).to contain_exactly(
-          "http://localhost/-/snippets/#{public_snippet.id}",
-          "http://localhost/-/snippets/#{public_snippet_other.id}")
+          "http://#{Gitlab.config.gitlab.host}/-/snippets/#{public_snippet.id}",
+          "http://#{Gitlab.config.gitlab.host}/-/snippets/#{public_snippet_other.id}")
         expect(json_response[0]['files'].first).to eq snippet_blob_file(public_snippet_other.blobs.first)
         expect(json_response[1]['files'].first).to eq snippet_blob_file(public_snippet.blobs.first)
       end

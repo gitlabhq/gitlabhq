@@ -8,7 +8,7 @@ module SnippetHelpers
   def snippet_blob_file(blob)
     {
       "path" => blob.path,
-      "raw_url" => gitlab_raw_snippet_blob_url(blob.container, blob.path, host: 'localhost')
+      "raw_url" => gitlab_raw_snippet_blob_url(blob.container, blob.path, host: Gitlab.config.gitlab.host)
     }
   end
 end
