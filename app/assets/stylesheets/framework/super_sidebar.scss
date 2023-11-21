@@ -1,5 +1,5 @@
-@mixin active-toggle {
-  background-color: $gray-50 !important;
+@mixin active-toggle($background-color: var(--super-sidebar-user-bar-button-hover-bg)) {
+  background-color: $background-color !important;
   mix-blend-mode: multiply;
 
   .gl-dark & {
@@ -12,7 +12,7 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
 
 @mixin notification-dot($color, $size, $top, $left) {
   background-color: $color;
-  border: 2px solid $gray-10; // Same as the sidebar's background color.
+  border: 2px solid var(--super-sidebar-bg);
   position: absolute;
   height: $size;
   width: $size;
@@ -29,13 +29,25 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
 }
 
 .super-sidebar {
+  --super-sidebar-bg: var(--gray-10, #{$gray-10});
+  --super-sidebar-primary: var(--blue-500, #{$blue-500});
+  --super-sidebar-notification-dot: var(--blue-500, #{$blue-500});
+  --super-sidebar-user-bar-bg: #{$t-gray-a-04};
+  --super-sidebar-user-bar-button-bg: var(--gray-10, #{$gray-10});
+  --super-sidebar-user-bar-button-hover-bg: var(--gray-50, #{$gray-50});
+  --super-sidebar-user-bar-button-color: var(--gray-900, #{$gray-900});
+  --super-sidebar-user-bar-button-hover-color: var(--gray-900, #{$gray-900});
+  // Separate values provided to use `---gray-600` in dark  mode
+  --super-sidebar-user-bar-button-icon-color: var(--gray-600, #{$gray-500});
+  --super-sidebar-user-bar-button-icon-hover-color:  var(--gray-700, #{$gray-700});
+
   display: flex;
   flex-direction: column;
   position: fixed;
   top: $calc-application-bars-height;
   bottom: $calc-application-footer-height;
   left: 0;
-  background-color: var(--gray-10, $gray-10);
+  background-color: var(--super-sidebar-bg);
   border-right: 1px solid $t-gray-a-08;
   transform: translate3d(0, 0, 0);
   width: $super-sidebar-width;
@@ -55,7 +67,7 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
   }
 
   .user-bar {
-    background-color: $t-gray-a-04;
+    background-color: var(--super-sidebar-user-bar-bg);
 
     .user-bar-item {
       @include gl-rounded-base;
@@ -76,39 +88,77 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
         @include active-toggle;
       }
     }
+
+    .brand-logo {
+      &:hover,
+      &:focus {
+        background-color: var(--super-sidebar-user-bar-button-hover-bg);
+        mix-blend-mode: multiply;
+
+        .gl-dark & {
+          mix-blend-mode: screen;
+        }
+      }
+    }
+
+    .btn-default-tertiary,
+    .counter {
+      color: var(--super-sidebar-user-bar-button-color);
+
+      .gl-icon {
+        color: var(--super-sidebar-user-bar-button-icon-color) !important;
+      }
+
+      &:hover,
+      &:focus {
+        background-color: var(--super-sidebar-user-bar-button-hover-bg) !important;
+        color: var(--super-sidebar-user-bar-button-hover-color);
+      }
+    }
+
+    .counter {
+      background-color: var(--super-sidebar-user-bar-button-bg);
+
+      &:hover,
+      &:focus,
+      &[aria-expanded='true'] {
+        background-color: var(--super-sidebar-user-bar-button-hover-bg);
+        border-color: transparent;
+        mix-blend-mode: multiply;
+
+        .gl-icon {
+          color: var(--super-sidebar-user-bar-button-icon-hover-color);
+        }
+
+        .gl-dark & {
+          mix-blend-mode: screen;
+        }
+      }
+
+      &:hover,
+      &[aria-expanded='true'] {
+        box-shadow: none;
+      }
+    }
   }
 
-  .counter .gl-icon,
   .item-icon {
-    color: var(--gray-600, $gray-500);
-  }
-
-  .counter:hover,
-  .counter:focus,
-  .counter[aria-expanded='true'] {
-    background-color: $gray-50;
-    border-color: transparent;
-    mix-blend-mode: multiply;
+    color: $gray-500;
 
     .gl-dark & {
-      mix-blend-mode: screen;
-    }
-
-    .gl-icon {
-      color: var(--gray-700, $gray-700);
+      color: $gray-600;
     }
   }
 
-  .counter:hover,
-  .counter[aria-expanded='true'] {
-    box-shadow: none;
+  .active-indicator {
+    background-color: var(--super-sidebar-primary);
   }
 
   .btn-with-notification {
     position: relative;
 
     .notification-dot-info {
-      @include notification-dot($blue-500, 9px, 5px, 22px);
+      @include notification-dot(var(--super-sidebar-notification-dot), 9px, 5px, 22px);
     }
 
     .notification-dot-warning {
@@ -118,7 +168,7 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
     &:hover,
     &:focus {
       .notification {
-        border-color: $gray-50; // Same as the button's hover background color.
+        background-color: var(--super-sidebar-user-bar-button-hover-bg);
       }
     }
   }
@@ -135,6 +185,10 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
     [aria-expanded='true'] {
       @include active-toggle;
     }
+  }
+
+  .super-sidebar-help-center-toggle[aria-expanded='true'] {
+    @include active-toggle($gray-50);
   }
 
   #trial-status-sidebar-widget:hover {

@@ -2688,7 +2688,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/bulk_imports/projects/pipelines/service_desk_setting_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/projects/pipelines/snippets_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/projects/pipelines/snippets_repository_pipeline_spec.rb'
-    - 'spec/lib/bulk_imports/projects/stage_spec.rb'
     - 'spec/lib/bulk_imports/retry_pipeline_error_spec.rb'
     - 'spec/lib/bulk_imports/users_mapper_spec.rb'
     - 'spec/lib/constraints/admin_constrainer_spec.rb'

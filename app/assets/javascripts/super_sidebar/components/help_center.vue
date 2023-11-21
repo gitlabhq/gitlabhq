@@ -215,7 +215,11 @@ export default {
     @hidden="trackDropdownToggle(false)"
   >
     <template #toggle>
-      <gl-button category="tertiary" icon="question-o" class="btn-with-notification">
+      <gl-button
+        category="tertiary"
+        icon="question-o"
+        class="super-sidebar-help-center-toggle btn-with-notification"
+      >
         <span
           v-if="showWhatsNewNotification"
           data-testid="notification-dot"

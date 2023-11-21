@@ -229,7 +229,7 @@ export default {
     >
       <div
         :class="[isActive ? 'gl-opacity-10' : 'gl-opacity-0']"
-        class="active-indicator gl-bg-blue-500 gl-absolute gl-left-2 gl-top-2 gl-bottom-2 gl-transition-slow"
+        class="active-indicator gl-absolute gl-left-2 gl-top-2 gl-bottom-2 gl-transition-slow"
         aria-hidden="true"
         :style="activeIndicatorStyle"
         data-testid="active-indicator"

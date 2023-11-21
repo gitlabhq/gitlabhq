@@ -254,7 +254,10 @@ export default {
 </script>
 
 <template>
-  <div class="md-header gl-border-b gl-border-gray-100 gl-px-3">
+  <div
+    class="md-header gl-bg-white gl-border-b gl-border-gray-100 gl-rounded-lg gl-rounded-bottom-left-none gl-rounded-bottom-right-none gl-px-3"
+    :class="{ 'md-header-preview': previewMarkdown }"
+  >
     <div class="gl-display-flex gl-align-items-center gl-flex-wrap">
       <div
         data-testid="md-header-toolbar"

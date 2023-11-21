@@ -6,11 +6,6 @@ module Ci
       include Ci::Partitionable
       include Ci::NamespacedModelName
       include SafelyChangeColumnDefault
-      include IgnorableColumns
-
-      ignore_columns [
-        :pipeline_id_convert_to_bigint, :source_pipeline_id_convert_to_bigint
-      ], remove_with: '16.6', remove_after: '2023-10-22'
 
       columns_changing_default :partition_id, :source_partition_id
 

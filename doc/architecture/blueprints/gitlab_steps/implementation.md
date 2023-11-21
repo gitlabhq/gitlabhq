@@ -26,79 +26,68 @@ trace will include sub-traces for each sub-step.
 
 ```protobuf
 message Step {
-    string name = 1; 
-    Reference ref = 2;
-    repeated EnvironmentVariable env = 3;
-    repeated Input inputs = 4;
-    message Reference {
-        string uri = 1;
-        string version = 2;
-        string hash = 3;
-        Definition def = 4;
-    }
+    string name = 1;
+    string step = 2;
+    map<string,string> env = 3;
+    map<string,google.protobuf.Value> inputs = 4;
 }
+
 message Definition {
-    Spec spec = 1;
-    enum Type {
-        type_unknown = 0;
-        type_steps = 1;
-        type_exec = 2;
-    }
-    Type type = 2;
-    oneof type_oneof {
-        DefinitionExec exec = 3;
-        DefinitionSteps steps = 4;
-    }
+    DefinitionType type = 1;
+    Exec exec = 2;
+    repeated Step steps = 3;
     message Exec {
         repeated string command = 1;
         string work_dir = 2;
     }
-    message Steps {
-        repeated Step children = 1;
-    }
+}
+
+enum DefinitionType {
+    definition_type_unspecified = 0;
+    exec = 1;
+    steps = 2;
 }
 
 message Spec {
-    repeated Input inputs = 1;
-    message Input {
-        string key = 1;
-        string default_value = 2;
+    Content spec = 1;
+    message Content {
+        map<string,Input> inputs = 1;
+        message Input {
+            InputType type = 1;
+            google.protobuf.Value default = 2;
+        }
     }
 }
 
-message EnvironmentVariable {
-    string key = 1;
-    string value = 2;
-    bool masked = 3;
-    bool raw = 4;
-}
-
-message Input {
-    string key = 1;
-    string value = 2;
-    bool masked = 3;
-    bool raw = 4;
-}
-
-message Output {
-    string key = 1;
-    string value = 2;
-    bool masked = 3;
+enum InputType {
+    spec_type_unspecified = 0;
+    string = 1;
+    number = 2;
+    bool = 3;
+    struct = 4;
+    list = 5;
 }
 
 message StepResult {
     Step step = 1;
+    Spec spec = 2;
+    Definition def = 3;
     enum Status {
-        unknown_result = 0;
-        success = 1;
-        failure = 2;
-        running = 3;
+        unspecified = 0;
+        running = 1;
+        success = 2;
+        failure = 3;
     }
-    Result result = 2;
-    repeated Output outputs = 3;
-    repeated EnvironmentVariable exports = 4;
-    int32 exit_code = 5;
-    repeated StepResult children_step_results = 6;
+    Status status = 4;
+    map<string,Output> outputs = 5;
+    message Output {
+        string key = 1;
+        string value = 2;
+        bool masked = 3;
+    }
+    map<string,string> exports = 6;
+    int32 exit_code = 7;
+    repeated StepResult children_step_results = 8;
 }
 ```
 

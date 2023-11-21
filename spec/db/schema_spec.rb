@@ -52,6 +52,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     ci_sources_pipelines: %w[partition_id source_partition_id source_job_id],
     ci_stages: %w[partition_id],
     ci_trigger_requests: %w[commit_id],
+    ci_job_artifact_states: %w[partition_id],
     cluster_providers_aws: %w[security_group_id vpc_id access_key_id],
     cluster_providers_gcp: %w[gcp_project_id operation_id],
     compliance_management_frameworks: %w[group_id],
@@ -355,11 +356,11 @@ RSpec.describe 'Database schema', feature_category: :database do
 
     context 'for CI partitioned table' do
       # Check that each partitionable model with more than 1 column has the partition_id column at the trailing
-      # position. Using PARTITIONABLE_MODELS instead of iterating tables since when partitioning existing tables,
+      # position. Using .partitionable_models instead of iterating tables since when partitioning existing tables,
       # the routing table only gets created after the PK has already been created, which would be too late for a check.
 
       skip_tables = %w[]
-      partitionable_models = Ci::Partitionable::Testing::PARTITIONABLE_MODELS
+      partitionable_models = Ci::Partitionable::Testing.partitionable_models
       (partitionable_models - skip_tables).each do |klass|
         model = klass.safe_constantize
         table_name = model.table_name

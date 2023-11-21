@@ -29,6 +29,10 @@ class Group < Namespace
     'Group'
   end
 
+  def self.supported_keyset_orderings
+    { name: [:asc] }
+  end
+
   has_many :all_group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
   has_many :group_members, -> { where(requested_at: nil).where.not(members: { access_level: Gitlab::Access::MINIMAL_ACCESS }) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   has_many :namespace_members, -> { where(requested_at: nil).where.not(members: { access_level: Gitlab::Access::MINIMAL_ACCESS }).unscope(where: %i[source_id source_type]) },

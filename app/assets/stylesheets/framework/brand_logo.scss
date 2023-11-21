@@ -1,6 +1,3 @@
-$brand-logo-light-background: #e0dfe5;
-$brand-logo-dark-background: #53515b;
-
 .brand-logo {
   display: inline-block;
   @include gl-rounded-base;
@@ -15,15 +12,5 @@ $brand-logo-dark-background: #53515b;
   &:focus,
   &:active {
     @include gl-focus;
-  }
-
-  &:hover,
-  &:focus,
-  &:active {
-    background-color: $brand-logo-light-background;
-
-    .gl-dark & {
-      background-color: $brand-logo-dark-background;
-    }
   }
 }

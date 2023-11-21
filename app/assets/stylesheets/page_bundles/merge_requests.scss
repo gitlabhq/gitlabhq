@@ -1126,6 +1126,10 @@ $tabs-holder-z-index: 250;
 
   .submit-review-dropdown {
     margin-left: $grid-size;
+
+    .md-header {
+      top: -$gl-spacing-scale-2;
+    }
   }
 }
 
@@ -1213,4 +1217,8 @@ $tabs-holder-z-index: 250;
     @include gl-rounded-top-left-none;
     @include gl-rounded-top-right-none;
   }
+}
+
+.merge-request-overview .md-header {
+  top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height});
 }

@@ -273,61 +273,32 @@
   $theme-color,
   $theme-color-darkest,
 ) {
-  --sidebar-background: #{mix(white, $theme-color-lightest, 50%)};
-  --transparent-white-16: rgba(255, 255, 255, 0.16);
-  --transparent-white-24: rgba(255, 255, 255, 0.24);
-
   .super-sidebar {
-    background-color: var(--sidebar-background);
-  }
+    --super-sidebar-bg: #{mix(white, $theme-color-lightest, 50%)};
+    --super-sidebar-user-bar-bg: #{$theme-color};
+    --super-sidebar-user-bar-button-bg: rgba(255, 255, 255, 0.16);
+    --super-sidebar-user-bar-button-hover-bg: rgba(255, 255, 255, 0.24);
+    --super-sidebar-user-bar-button-color: #{$theme-color-lightest};
+    --super-sidebar-user-bar-button-hover-color: #{$white};
+    --super-sidebar-user-bar-button-icon-color: #{$theme-color-light};
+    --super-sidebar-user-bar-button-icon-hover-color: #{$theme-color-light};
+    --super-sidebar-primary: #{$theme-color};
+    --super-sidebar-notification-dot: #{$theme-color-darkest};
 
-  .super-sidebar .user-bar {
-    background-color: $theme-color;
-
-    .counter {
-      background-color: var(--transparent-white-16) !important;
-    }
-
-    .brand-logo,
-    .btn-default-tertiary,
-    .counter {
-      color: $theme-color-lightest;
-      mix-blend-mode: normal;
-
-      &:hover,
-      &:focus {
-        background-color: var(--transparent-white-24) !important;
-        color: $white;
-      }
-
-      .gl-icon {
-        color: $theme-color-light;
+    .user-bar {
+      .brand-logo,
+      .btn-default-tertiary,
+      .counter {
+        mix-blend-mode: normal;
       }
     }
-  }
 
-  .super-sidebar hr {
-    mix-blend-mode: multiply;
-  }
-
-  .btn-with-notification {
-    &:hover,
-    &:focus {
+    hr {
       mix-blend-mode: multiply;
     }
 
-    .notification-dot-info {
-      background-color: $theme-color-darkest;
-      border-color: $theme-color-lightest;
-
+    .super-sidebar-context-header {
+      color: var(--super-sidebar-primary);
     }
-  }
-
-  .active-indicator {
-    background-color: $theme-color;
-  }
-
-  .super-sidebar-context-header {
-    color: $theme-color;
   }
 }

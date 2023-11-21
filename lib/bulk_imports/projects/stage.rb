@@ -135,7 +135,7 @@ module BulkImports
             stage: 5
           },
           references: {
-            pipeline: BulkImports::Projects::Pipelines::ReferencesPipeline,
+            pipeline: references_pipeline,
             stage: 5
           },
           finisher: {
@@ -143,6 +143,14 @@ module BulkImports
             stage: 6
           }
         }
+      end
+
+      def references_pipeline
+        if Feature.enabled?(:bulk_import_async_references_pipeline)
+          BulkImports::Projects::Pipelines::ReferencesPipeline
+        else
+          BulkImports::Projects::Pipelines::LegacyReferencesPipeline
+        end
       end
     end
   end

@@ -21593,12 +21593,6 @@ msgstr ""
 msgid "Geo|Resync all"
 msgstr ""
 
-msgid "Geo|Resync all %{projects_count} projects"
-msgstr ""
-
-msgid "Geo|Resync project"
-msgstr ""
-
 msgid "Geo|Retry count"
 msgstr ""
 
@@ -21720,9 +21714,6 @@ msgid "Geo|This GitLab instance is subscribed to the %{insufficient_license} tie
 msgstr ""
 
 msgid "Geo|This will %{action} %{replicableType}. It may take some time to complete. Are you sure you want to continue?"
-msgstr ""
-
-msgid "Geo|This will resync all projects. It may take some time to complete. Are you sure you want to continue?"
 msgstr ""
 
 msgid "Geo|This will reverify all projects. It may take some time to complete. Are you sure you want to continue?"

@@ -22,6 +22,8 @@ import PinnedLinks from './pinned_links.vue';
 import StickyHeader from './sticky_header.vue';
 import TitleComponent from './title.vue';
 
+const STICKY_HEADER_VISIBLE_CLASS = 'issuable-sticky-header-visible';
+
 export default {
   components: {
     HeaderActions,
@@ -322,6 +324,7 @@ export default {
     eventHub.$off('close.form', this.closeForm);
     eventHub.$off('open.form', this.openForm);
     window.removeEventListener('beforeunload', this.handleBeforeUnloadEvent);
+    this.hideStickyHeader();
   },
   methods: {
     handleBeforeUnloadEvent(e) {
@@ -472,6 +475,8 @@ export default {
 
     hideStickyHeader() {
       this.isStickyHeaderShowing = false;
+
+      document.body.classList?.remove(STICKY_HEADER_VISIBLE_CLASS);
     },
 
     showStickyHeader() {
@@ -479,6 +484,8 @@ export default {
       if (this.$refs.title.$el.offsetTop < window.pageYOffset) {
         this.isStickyHeaderShowing = true;
       }
+
+      document.body.classList?.add(STICKY_HEADER_VISIBLE_CLASS);
     },
 
     handleSaveDescription(description) {

@@ -905,7 +905,6 @@ Style/IfUnlessModifier:
     - 'lib/sidebars/projects/menus/settings_menu.rb'
     - 'lib/system_check/app/systemd_unit_files_or_init_script_up_to_date_check.rb'
     - 'lib/system_check/init_helpers.rb'
-    - 'lib/tasks/cleanup.rake'
     - 'lib/tasks/eslint.rake'
     - 'lib/tasks/gitlab/assets.rake'
     - 'lib/tasks/gitlab/cleanup.rake'

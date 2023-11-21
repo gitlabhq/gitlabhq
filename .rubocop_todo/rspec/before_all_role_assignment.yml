@@ -1098,6 +1098,7 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/lib/bulk_imports/projects/pipelines/ci_pipelines_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/projects/pipelines/commit_notes_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/projects/pipelines/issues_pipeline_spec.rb'
+    - 'spec/lib/bulk_imports/projects/pipelines/legacy_references_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/projects/pipelines/merge_requests_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/projects/pipelines/pipeline_schedules_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/projects/pipelines/project_pipeline_spec.rb'

@@ -3257,7 +3257,6 @@ Style/InlineDisableAnnotation:
     - 'spec/support/helpers/stub_snowplow.rb'
     - 'spec/support/helpers/wait_for_requests.rb'
     - 'spec/support/matchers/event_store.rb'
-    - 'spec/support/rspec_order.rb'
     - 'spec/support/shared_contexts/controllers/ambiguous_ref_controller_shared_context.rb'
     - 'spec/support/shared_contexts/disable_user_tracking.rb'
     - 'spec/support/shared_contexts/policies/project_policy_table_shared_context.rb'

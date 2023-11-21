@@ -45,6 +45,10 @@ class AuditEvent < ApplicationRecord
   # https://gitlab.com/groups/gitlab-org/-/epics/2765
   after_validation :parallel_persist
 
+  def self.supported_keyset_orderings
+    { id: [:desc] }
+  end
+
   def self.order_by(method)
     case method.to_s
     when 'created_asc'

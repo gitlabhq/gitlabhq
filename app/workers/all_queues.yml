@@ -2649,6 +2649,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: bulk_imports_transform_references
+  :worker_name: BulkImports::TransformReferencesWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: chat_notification
   :worker_name: ChatNotificationWorker
   :feature_category: :integrations

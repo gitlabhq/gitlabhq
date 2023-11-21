@@ -25,7 +25,7 @@ module PartitioningTesting
   end
 end
 
-Ci::Partitionable::Testing::PARTITIONABLE_MODELS.each do |klass|
+Ci::Partitionable::Testing.partitionable_models.each do |klass|
   next if klass == 'Ci::Pipeline'
 
   model = klass.safe_constantize

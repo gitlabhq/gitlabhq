@@ -102,6 +102,12 @@ RSpec.describe ::MergeRequests::Mergeability::DetailedMergeStatusService, featur
         end
       end
 
+      context 'when the pipeline is pending' do
+        let(:ci_status) { :pending }
+
+        it { expect(detailed_merge_status).to eq(:ci_still_running) }
+      end
+
       context 'when the pipeline is not running' do
         let(:ci_status) { :failed }
 

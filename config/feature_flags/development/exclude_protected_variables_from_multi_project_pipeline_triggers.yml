@@ -5,4 +5,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/431266
 milestone: '16.6'
 type: development
 group: group::pipeline security
-default_enabled: true
+default_enabled: false

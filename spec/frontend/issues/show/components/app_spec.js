@@ -94,6 +94,10 @@ describe('Issuable output', () => {
     axiosMock.onPut().reply(HTTP_STATUS_OK, putRequest);
   });
 
+  afterEach(() => {
+    document.body.classList?.remove('issuable-sticky-header-visible');
+  });
+
   describe('update', () => {
     beforeEach(async () => {
       await createComponent();
@@ -334,6 +338,29 @@ describe('Issuable output', () => {
         });
       },
     );
+
+    describe('document body class', () => {
+      beforeEach(async () => {
+        await createComponent({ props: { canUpdate: false } });
+      });
+
+      it('adds the css class to the document body', () => {
+        wrapper.findComponent(StickyHeader).vm.$emit('show');
+        expect(document.body.classList?.contains('issuable-sticky-header-visible')).toBe(true);
+      });
+
+      it('removes the css class from the document body', () => {
+        wrapper.findComponent(StickyHeader).vm.$emit('show');
+        wrapper.findComponent(StickyHeader).vm.$emit('hide');
+        expect(document.body.classList?.contains('issuable-sticky-header-visible')).toBe(false);
+      });
+
+      it('removes the css class from the document body when unmounting', () => {
+        wrapper.findComponent(StickyHeader).vm.$emit('show');
+        wrapper.vm.$destroy();
+        expect(document.body.classList?.contains('issuable-sticky-header-visible')).toBe(false);
+      });
+    });
   });
 
   describe('Composable description component', () => {

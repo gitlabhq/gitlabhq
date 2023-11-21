@@ -419,6 +419,7 @@ export default {
       <div
         :id="`diff-content-${file.file_hash}`"
         :class="hasBodyClasses.contentByHash"
+        class="diff-content"
         data-testid="content-area"
       >
         <gl-alert

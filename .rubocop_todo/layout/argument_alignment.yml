@@ -595,7 +595,6 @@ Layout/ArgumentAlignment:
     - 'ee/app/graphql/ee/types/ci/runner_countable_connection_type.rb'
     - 'ee/app/graphql/ee/types/deployment_type.rb'
     - 'ee/app/graphql/ee/types/environment_type.rb'
-    - 'ee/app/graphql/ee/types/group_type.rb'
     - 'ee/app/graphql/ee/types/issues/negated_issue_filter_input_type.rb'
     - 'ee/app/graphql/ee/types/namespace_type.rb'
     - 'ee/app/graphql/ee/types/permission_types/deployment.rb'

@@ -217,6 +217,10 @@ module Ci
            job_variables_attributes resource_group scheduling_type
            ci_stage partition_id id_tokens].freeze
       end
+
+      def supported_keyset_orderings
+        { id: [:desc] }
+      end
     end
 
     state_machine :status do

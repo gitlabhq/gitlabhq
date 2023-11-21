@@ -69,6 +69,16 @@ If a feature is moved to another subscription tier, use `moved`:
 > - [Moved](<link-to-issue>) from GitLab Premium to GitLab Free in 12.0.
 ```
 
+#### Changing the feature status
+
+If the feature status changes, use `changed`:
+
+```markdown
+> - [Introduced](<link-to-issue>) as an [Experiment](../../policy/experiment-beta-support.md) in GitLab 15.7.
+> - [Changed](<link-to-issue>) to Beta in GitLab 16.0.
+> - [Changed](<link-to-issue>) to Generally Available in GitLab 16.3.
+```
+
 #### Features introduced behind feature flags
 
 When features are introduced behind feature flags, you must add details about the feature flag to the documentation.

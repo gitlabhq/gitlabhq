@@ -3,19 +3,38 @@
 require 'spec_helper'
 
 RSpec.describe Pages::LookupPath, feature_category: :pages do
-  let(:project) { create(:project, :pages_private, pages_https_only: true) }
   let(:trim_prefix) { nil }
-  let(:domain) { nil }
+  let(:path_prefix) { nil }
+  let(:file_store) { ::ObjectStorage::Store::REMOTE }
+  let(:group) { build(:group, path: 'mygroup') }
+  let(:deployment) do
+    build(
+      :pages_deployment,
+      id: 1,
+      project: project,
+      path_prefix: path_prefix,
+      file_store: file_store)
+  end
 
-  subject(:lookup_path) { described_class.new(project, trim_prefix: trim_prefix, domain: domain) }
+  let(:project) do
+    build(
+      :project,
+      :pages_private,
+      group: group,
+      path: 'myproject',
+      pages_https_only: true)
+  end
+
+  subject(:lookup_path) { described_class.new(deployment: deployment, trim_prefix: trim_prefix) }
 
   before do
     stub_pages_setting(
+      enabled: true,
       access_control: true,
       external_https: ["1.1.1.1:443"],
       url: 'http://example.com',
-      protocol: 'http'
-    )
+      protocol: 'http')
+
     stub_pages_object_storage(::Pages::DeploymentUploader)
   end
 
@@ -32,7 +51,11 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
   end
 
   describe '#https_only' do
+    subject(:lookup_path) { described_class.new(deployment: deployment, domain: domain) }
+
     context 'when no domain provided' do
+      let(:domain) { nil }
+
       it 'delegates to Project#pages_https_only?' do
         expect(lookup_path.https_only).to eq(true)
       end
@@ -48,66 +71,55 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
   end
 
   describe '#source' do
-    let(:source) { lookup_path.source }
-
-    it 'returns nil' do
-      expect(source).to eq(nil)
+    it 'uses deployment from object storage', :freeze_time do
+      expect(lookup_path.source).to eq(
+        type: 'zip',
+        path: deployment.file.url(expire_at: 1.day.from_now),
+        global_id: "gid://gitlab/PagesDeployment/#{deployment.id}",
+        sha256: deployment.file_sha256,
+        file_size: deployment.size,
+        file_count: deployment.file_count
+      )
     end
 
-    context 'when there is pages deployment' do
-      let!(:deployment) { create(:pages_deployment, project: project) }
+    it 'does not recreate source hash' do
+      expect(deployment.file).to receive(:url_or_file_path).once
 
-      it 'uses deployment from object storage' do
-        freeze_time do
-          expect(source).to eq(
-            type: 'zip',
-            path: deployment.file.url(expire_at: 1.day.from_now),
-            global_id: "gid://gitlab/PagesDeployment/#{deployment.id}",
-            sha256: deployment.file_sha256,
-            file_size: deployment.size,
-            file_count: deployment.file_count
-          )
-        end
-      end
+      2.times { lookup_path.source }
+    end
 
-      context 'when deployment is in the local storage' do
-        before do
-          deployment.file.migrate!(::ObjectStorage::Store::LOCAL)
-        end
+    context 'when deployment is in the local storage' do
+      let(:file_store) { ::ObjectStorage::Store::LOCAL }
 
-        it 'uses file protocol' do
-          freeze_time do
-            expect(source).to eq(
-              type: 'zip',
-              path: "file://#{deployment.file.path}",
-              global_id: "gid://gitlab/PagesDeployment/#{deployment.id}",
-              sha256: deployment.file_sha256,
-              file_size: deployment.size,
-              file_count: deployment.file_count
-            )
-          end
-        end
+      it 'uses file protocol', :freeze_time do
+        expect(lookup_path.source).to eq(
+          type: 'zip',
+          path: "file://#{deployment.file.path}",
+          global_id: "gid://gitlab/PagesDeployment/#{deployment.id}",
+          sha256: deployment.file_sha256,
+          file_size: deployment.size,
+          file_count: deployment.file_count
+        )
       end
     end
   end
 
   describe '#prefix' do
-    let(:trim_prefix) { 'mygroup' }
+    using RSpec::Parameterized::TableSyntax
 
-    context 'when pages group root projects' do
-      let(:project) { instance_double(Project, full_path: "namespace/namespace.example.com") }
-
-      it 'returns "/"' do
-        expect(lookup_path.prefix).to eq('/')
-      end
+    where(:full_path, :trim_prefix, :path_prefix, :result) do
+      'mygroup/myproject' | nil | nil | '/'
+      'mygroup/myproject' | 'mygroup' | nil | '/myproject/'
+      'mygroup/myproject' | nil | 'PREFIX' | '/PREFIX/'
+      'mygroup/myproject' | 'mygroup' | 'PREFIX' | '/myproject/PREFIX/'
     end
 
-    context 'when pages in the given prefix' do
-      let(:project) { instance_double(Project, full_path: 'mygroup/myproject') }
-
-      it 'returns the project full path with the provided prefix removed' do
-        expect(lookup_path.prefix).to eq('/myproject/')
+    with_them do
+      before do
+        allow(project).to receive(:full_path).and_return(full_path)
       end
+
+      it { expect(lookup_path.prefix).to eq(result) }
     end
   end
 
@@ -129,26 +141,12 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
 
         expect(lookup_path.unique_host).to eq('unique-domain.example.com')
       end
-
-      context 'when there is domain provided' do
-        let(:domain) { instance_double(PagesDomain) }
-
-        it 'returns nil' do
-          expect(lookup_path.unique_host).to eq(nil)
-        end
-      end
     end
   end
 
   describe '#root_directory' do
-    context 'when there is no deployment' do
-      it 'returns nil' do
-        expect(lookup_path.root_directory).to be_nil
-      end
-    end
-
     context 'when there is a deployment' do
-      let!(:deployment) { create(:pages_deployment, project: project, root_directory: 'foo') }
+      let(:deployment) { build_stubbed(:pages_deployment, project: project, root_directory: 'foo') }
 
       it 'returns the deployment\'s root_directory' do
         expect(lookup_path.root_directory).to eq('foo')

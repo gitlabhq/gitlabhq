@@ -147,6 +147,8 @@
   - 1
 - - bulk_imports_relation_export
   - 1
+- - bulk_imports_transform_references
+  - 1
 - - chaos
   - 2
 - - chat_notification

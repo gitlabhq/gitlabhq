@@ -32,8 +32,6 @@ To use merged results pipelines:
   [run jobs in merge request pipelines](merge_request_pipelines.md#prerequisites).
 - Your repository must be a GitLab repository, not an
   [external repository](../ci_cd_for_external_repos/index.md).
-- You must not be using [fast forward merges](../../user/project/merge_requests/methods/index.md).
-  [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/26996) to change this behavior.
 
 ## Enable merged results pipelines
 

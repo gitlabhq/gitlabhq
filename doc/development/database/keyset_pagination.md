@@ -87,6 +87,55 @@ Because keyset pagination does not support page numbers, we are restricted to go
 - Last page
 - First page
 
+#### Usage in REST API with `paginate_with_strategies`
+
+For the REST API, the `paginate_with_strategies` helper can be used on a relation in order to use either keyset pagination or offset pagination.
+
+```ruby
+  desc 'Get the things related to a project' do
+    detail 'This feature was introduced in GitLab 16.1'
+    success code: 200, model: ::API::Entities::Thing
+    failure [
+      { code: 401, message: 'Unauthorized' },
+      { code: 403, message: 'Forbidden' },
+      { code: 404, message: 'Not Found' }
+    ]
+  end
+  params do
+    use :pagination
+    requires :project_id, type: Integer, desc: 'The ID of the project'
+    optional :cursor, type: String, desc: 'Cursor for obtaining the next set of records'
+    optional :order_by, type: String, values: %w[id name], default: 'id',
+      desc: 'Attribute to sort by'
+    optional :sort, type: String, values: %w[asc desc], default: 'desc', desc: 'Order of sorting'
+  end
+  route_setting :authentication
+  get ':project_id/things' do
+    project = Project.find_by_id(params[:project_id])
+
+    not_found! if project.blank?
+
+    things = project.things
+
+    present paginate_with_strategies(things), with: ::API::Entities::Thing
+  end
+```
+
+In order for keyset pagination to be used, the following conditions must be met:
+
+1. `params[:keyset]` must return `'keyset'`
+1. `params[:order_by]` and `params[:sort]` must both appear in the object returned by the
+   `supported_keyset_orderings` class method on the model. In the following example, `Thing`
+   supports keyset pagination when ordering by ID in either ascending or descending order.
+
+   ```ruby
+   class Thing < ApplicationRecord
+     def self.supported_keyset_orderings
+      { id: [:asc, :desc] }
+     end
+   end
+   ```
+
 #### Usage in Rails with HAML views
 
 Consider the following controller action, where we list the projects ordered by name:

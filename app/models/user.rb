@@ -603,6 +603,16 @@ class User < MainClusterwide::ApplicationRecord
       .trusted_with_spam)
   end
 
+  def self.supported_keyset_orderings
+    {
+      id: [:asc, :desc],
+      name: [:asc, :desc],
+      username: [:asc, :desc],
+      created_at: [:asc, :desc],
+      updated_at: [:asc, :desc]
+    }
+  end
+
   strip_attributes! :name
 
   def preferred_language

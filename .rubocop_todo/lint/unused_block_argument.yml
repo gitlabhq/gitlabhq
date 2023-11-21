@@ -235,7 +235,6 @@ Lint/UnusedBlockArgument:
     - 'lib/google_api/cloud_platform/client.rb'
     - 'lib/peek/views/gitaly.rb'
     - 'lib/security/ci_configuration/sast_build_action.rb'
-    - 'lib/tasks/cleanup.rake'
     - 'lib/tasks/contracts/merge_requests.rake'
     - 'lib/tasks/contracts/pipeline_schedules.rake'
     - 'lib/tasks/contracts/pipelines.rake'

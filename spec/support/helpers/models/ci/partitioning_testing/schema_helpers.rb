@@ -27,7 +27,7 @@ module Ci
       end
 
       def each_partitionable_table
-        ::Ci::Partitionable::Testing::PARTITIONABLE_MODELS.each do |klass|
+        ::Ci::Partitionable::Testing.partitionable_models.each do |klass|
           model = klass.safe_constantize
           table_name = model.table_name.delete_prefix('p_')
 

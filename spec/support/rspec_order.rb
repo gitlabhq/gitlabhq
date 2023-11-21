@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'yaml'
+require 'rspec/core/formatters/base_formatter'
 
 module Support
   module RspecOrder
@@ -28,7 +29,7 @@ module Support
     end
 
     def potential_order_dependent?(path)
-      @todo ||= YAML.load_file(TODO_YAML).to_set # rubocop:disable Gitlab/PredicateMemoization
+      @todo ||= YAML.load_file(TODO_YAML).to_set # rubocop:disable Gitlab/PredicateMemoization -- @todo is never `nil` or `false`.
 
       @todo.include?(path)
     end
@@ -38,23 +39,31 @@ module Support
     #
     # Previously, we've modified metadata[:description] directly but that led
     # to bugs. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96137
-    module DocumentationFormatterPatch
+    class RSpecFormatter < RSpec::Core::Formatters::BaseFormatter
+      RSpec::Core::Formatters.register self, :example_group_started
+
       # See https://github.com/rspec/rspec-core/blob/v3.11.0/lib/rspec/core/formatters/documentation_formatter.rb#L24-L29
       def example_group_started(notification)
-        super
-
         order = notification.group.metadata[:order]
-        return unless order
 
-        output.puts "#{current_indentation}# order #{order}"
+        output.puts "  # order #{order}" if order
+      end
+
+      # Print order information only with `--format documentation`.
+      def self.add_formatter_to(config)
+        documentation_formatter = config.formatters
+          .find { |formatter| formatter.is_a?(RSpec::Core::Formatters::DocumentationFormatter) }
+        return unless documentation_formatter
+
+        config.add_formatter self, documentation_formatter.output
       end
     end
   end
 end
 
-RSpec::Core::Formatters::DocumentationFormatter.prepend Support::RspecOrder::DocumentationFormatterPatch
-
 RSpec.configure do |config|
+  Support::RspecOrder::RSpecFormatter.add_formatter_to(config)
+
   # Useful to find order-dependent specs.
   config.register_ordering(:reverse, &:reverse)
 
