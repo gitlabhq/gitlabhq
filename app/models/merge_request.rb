@@ -2172,15 +2172,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def current_patch_id_sha
-    return merge_request_diff.patch_id_sha if merge_request_diff.patch_id_sha.present?
-
-    base_sha = diff_refs&.base_sha
-    head_sha = diff_refs&.head_sha
-
-    return unless base_sha && head_sha
-    return if base_sha == head_sha
-
-    project.repository.get_patch_id(base_sha, head_sha)
+    merge_request_diff.get_patch_id_sha
   end
 
   private

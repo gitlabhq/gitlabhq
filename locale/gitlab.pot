@@ -42593,6 +42593,9 @@ msgstr ""
 msgid "Search files"
 msgstr ""
 
+msgid "Search filters"
+msgstr ""
+
 msgid "Search for Namespace"
 msgstr ""
 

@@ -5,7 +5,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubTransition } from 'helpers/stub_transition';
-import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
+import { getTimeago, localeDateFormat } from '~/lib/utils/datetime_utility';
 import { __, s__, sprintf } from '~/locale';
 import EnvironmentItem from '~/environments/components/new_environment_item.vue';
 import EnvironmentActions from '~/environments/components/environment_actions.vue';
@@ -253,7 +253,9 @@ describe('~/environments/components/new_environment_item.vue', () => {
       });
 
       it('shows when the environment auto stops', () => {
-        const autoStop = wrapper.findByTitle(formatDate(environment.autoStopAt));
+        const autoStop = wrapper.findByTitle(
+          localeDateFormat.asDateTimeFull.format(environment.autoStopAt),
+        );
 
         expect(autoStop.text()).toBe('in 1 minute');
       });

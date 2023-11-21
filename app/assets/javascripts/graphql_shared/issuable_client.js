@@ -146,7 +146,7 @@ export const config = {
             },
             IssueConnection: {
               merge(existing = { nodes: [] }, incoming, { args }) {
-                if (!args.after) {
+                if (!args?.after) {
                   return incoming;
                 }
                 return {

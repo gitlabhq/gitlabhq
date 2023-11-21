@@ -325,6 +325,7 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/banzai/render_context_spec.rb'
     - 'spec/lib/banzai/renderer_spec.rb'
     - 'spec/lib/bitbucket/connection_spec.rb'
+    - 'spec/lib/bitbucket/exponential_backoff_spec.rb'
     - 'spec/lib/bitbucket/paginator_spec.rb'
     - 'spec/lib/bitbucket_server/paginator_spec.rb'
     - 'spec/lib/bulk_imports/clients/http_spec.rb'

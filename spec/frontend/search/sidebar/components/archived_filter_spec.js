@@ -33,7 +33,7 @@ describe('ArchivedFilter', () => {
 
   const findCheckboxFilter = () => wrapper.findComponent(GlFormCheckboxGroup);
   const findCheckboxFilterLabel = () => wrapper.findByTestId('label');
-  const findH5 = () => wrapper.findComponent('h5');
+  const findTitle = () => wrapper.findByTestId('archived-filter-title');
 
   describe('old sidebar', () => {
     beforeEach(() => {
@@ -45,8 +45,8 @@ describe('ArchivedFilter', () => {
     });
 
     it('renders the divider', () => {
-      expect(findH5().exists()).toBe(true);
-      expect(findH5().text()).toBe(archivedFilterData.headerLabel);
+      expect(findTitle().exists()).toBe(true);
+      expect(findTitle().text()).toBe(archivedFilterData.headerLabel);
     });
 
     it('wraps the label element with a tooltip', () => {
@@ -66,8 +66,8 @@ describe('ArchivedFilter', () => {
     });
 
     it("doesn't render the divider", () => {
-      expect(findH5().exists()).toBe(true);
-      expect(findH5().text()).toBe(archivedFilterData.headerLabel);
+      expect(findTitle().exists()).toBe(true);
+      expect(findTitle().text()).toBe(archivedFilterData.headerLabel);
     });
 
     it('wraps the label element with a tooltip', () => {

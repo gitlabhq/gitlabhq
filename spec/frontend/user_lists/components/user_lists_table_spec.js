@@ -5,6 +5,7 @@ import { nextTick } from 'vue';
 import { timeagoLanguageCode } from '~/lib/utils/datetime/timeago_utility';
 import UserListsTable from '~/user_lists/components/user_lists_table.vue';
 import { userList } from 'jest/feature_flags/mock_data';
+import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 
 jest.mock('timeago.js', () => ({
   format: jest.fn().mockReturnValue('2 weeks ago'),
@@ -33,7 +34,7 @@ describe('User Lists Table', () => {
 
   it('should set the title for a tooltip on the created stamp', () => {
     expect(wrapper.find('[data-testid="ffUserListTimestamp"]').attributes('title')).toBe(
-      'Feb 4, 2020 8:13am UTC',
+      localeDateFormat.asDateTimeFull.format(userList.created_at),
     );
   });
 

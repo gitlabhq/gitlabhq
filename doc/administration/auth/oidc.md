@@ -12,7 +12,7 @@ as an OmniAuth provider.
 
 To enable the OpenID Connect OmniAuth provider, you must register your application
 with an OpenID Connect provider.
-The OpenID Connect provides you with a client's details and secret for you to use.
+The OpenID Connect provider provides you with a client's details and secret for you to use.
 
 1. On your GitLab server, open the configuration file.
 

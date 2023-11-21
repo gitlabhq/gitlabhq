@@ -48,7 +48,7 @@ module Types
                      required: true,
                      description: 'Global ID of the container repository.'
           end
-    field :current_user, Types::UserType,
+    field :current_user, Types::CurrentUserType,
           null: true,
           description: "Get information about current user."
     field :design_management, Types::DesignManagementType,

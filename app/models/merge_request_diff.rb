@@ -237,6 +237,17 @@ class MergeRequestDiff < ApplicationRecord
     )
   end
 
+  def get_patch_id_sha
+    return patch_id_sha if patch_id_sha.present?
+
+    set_patch_id_sha
+
+    return unless patch_id_sha.present?
+
+    save
+    patch_id_sha
+  end
+
   def set_as_latest_diff
     # Don't set merge_head diff as latest so it won't get considered as the
     # MergeRequest#merge_request_diff.

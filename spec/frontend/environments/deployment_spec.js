@@ -4,7 +4,7 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { useFakeDate } from 'helpers/fake_date';
 import { stubTransition } from 'helpers/stub_transition';
-import { formatDate } from '~/lib/utils/datetime_utility';
+import { localeDateFormat } from '~/lib/utils/datetime_utility';
 import { __, s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Deployment from '~/environments/components/deployment.vue';
@@ -158,7 +158,9 @@ describe('~/environments/components/deployment.vue', () => {
     describe('is present', () => {
       it('shows the timestamp the deployment was deployed at', () => {
         wrapper = createWrapper();
-        const date = wrapper.findByTitle(formatDate(deployment.createdAt));
+        const date = wrapper.findByTitle(
+          localeDateFormat.asDateTimeFull.format(deployment.createdAt),
+        );
 
         expect(date.text()).toBe('1 day ago');
       });
@@ -166,7 +168,9 @@ describe('~/environments/components/deployment.vue', () => {
     describe('is not present', () => {
       it('does not show the timestamp', () => {
         wrapper = createWrapper({ propsData: { deployment: { ...deployment, createdAt: null } } });
-        const date = wrapper.findByTitle(formatDate(deployment.createdAt));
+        const date = wrapper.findByTitle(
+          localeDateFormat.asDateTimeFull.format(deployment.createdAt),
+        );
 
         expect(date.exists()).toBe(false);
       });

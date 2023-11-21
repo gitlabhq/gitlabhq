@@ -1911,6 +1911,9 @@ GET /groups/:id/push_rule
 {
   "id": 2,
   "created_at": "2020-08-17T19:09:19.580Z",
+  "commit_committer_check": true,
+  "commit_committer_name_check": true,
+  "reject_unsigned_commits": false,
   "commit_message_regex": "[a-zA-Z]",
   "commit_message_negative_regex": "[x+]",
   "branch_name_regex": "[a-z]",
@@ -1920,19 +1923,6 @@ GET /groups/:id/push_rule
   "author_email_regex": "^[A-Za-z0-9.]+@gitlab.com$",
   "file_name_regex": "(exe)$",
   "max_file_size": 100
-}
-```
-
-Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
-the `commit_committer_check` and `reject_unsigned_commits` parameters:
-
-```json
-{
-  "id": 2,
-  "created_at": "2020-08-17T19:09:19.580Z",
-  "commit_committer_check": true,
-  "reject_unsigned_commits": false,
-  ...
 }
 ```
 
@@ -1952,6 +1942,7 @@ POST /groups/:id/push_rule
 | `deny_delete_tag`                             | boolean        | no       | Deny deleting a tag |
 | `member_check`                                | boolean        | no       | Allows only GitLab users to author commits |
 | `prevent_secrets`                             | boolean        | no       | [Files that are likely to contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml) are rejected |
+| `commit_committer_name_check`                 | boolean        | no       | Users can only push commits to this repository if the commit author name is consistent with their GitLab account name |
 | `commit_message_regex`                        | string         | no       | All commit messages must match the regular expression provided in this attribute, for example, `Fixed \d+\..*` |
 | `commit_message_negative_regex`               | string         | no       | Commit messages matching the regular expression provided in this attribute aren't allowed, for example, `ssh\:\/\/` |
 | `branch_name_regex`                           | string         | no       | All branch names must match the regular expression provided in this attribute, for example, `(feature|hotfix)\/*` |
@@ -1971,6 +1962,7 @@ Response:
 {
     "id": 19,
     "created_at": "2020-08-31T15:53:00.073Z",
+    "commit_committer_name_check": false,
     "commit_message_regex": "[a-zA-Z]",
     "commit_message_negative_regex": "[x+]",
     "branch_name_regex": null,
@@ -1999,6 +1991,7 @@ PUT /groups/:id/push_rule
 | `deny_delete_tag`                             | boolean        | no       | Deny deleting a tag |
 | `member_check`                                | boolean        | no       | Restricts commits to be authored by existing GitLab users only |
 | `prevent_secrets`                             | boolean        | no       | [Files that are likely to contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml) are rejected |
+| `commit_committer_name_check`                 | boolean        | no       | Users can only push commits to this repository if the commit author name is consistent with their GitLab account name |
 | `commit_message_regex`                        | string         | no       | All commit messages must match the regular expression provided in this attribute, for example, `Fixed \d+\..*` |
 | `commit_message_negative_regex`               | string         | no       | Commit messages matching the regular expression provided in this attribute aren't allowed, for example, `ssh\:\/\/` |
 | `branch_name_regex`                           | string         | no       | All branch names must match the regular expression provided in this attribute, for example, `(feature|hotfix)\/*` |
@@ -2018,6 +2011,7 @@ Response:
 {
     "id": 19,
     "created_at": "2020-08-31T15:53:00.073Z",
+    "commit_committer_name_check": false,
     "commit_message_regex": "[a-zA-Z]",
     "commit_message_negative_regex": "[x+]",
     "branch_name_regex": null,

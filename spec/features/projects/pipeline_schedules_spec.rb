@@ -111,7 +111,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
           page.within('[data-testid="pipeline-schedule-table-row"]') do
             expect(page).to have_content('pipeline schedule')
             expect(find('[data-testid="next-run-cell"] time')['title'])
-              .to include(pipeline_schedule.real_next_run.strftime('%b %-d, %Y'))
+              .to include(pipeline_schedule.real_next_run.strftime('%B %-d, %Y'))
             expect(page).to have_link('master')
             expect(find("[data-testid='last-pipeline-status'] a")['href']).to include(pipeline.id.to_s)
           end

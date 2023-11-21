@@ -6021,47 +6021,11 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     subject(:current_patch_id_sha) { merge_request.current_patch_id_sha }
 
     before do
-      allow(merge_request).to receive(:merge_request_diff).and_return(merge_request_diff)
+      allow(merge_request).to receive(:latest_merge_request_diff).and_return(merge_request_diff)
       allow(merge_request_diff).to receive(:patch_id_sha).and_return(patch_id)
     end
 
     it { is_expected.to eq(patch_id) }
-
-    context 'when related merge_request_diff does not have a patch_id_sha' do
-      let(:diff_refs) { instance_double(Gitlab::Diff::DiffRefs, base_sha: base_sha, head_sha: head_sha) }
-      let(:base_sha) { 'abc123' }
-      let(:head_sha) { 'def456' }
-
-      before do
-        allow(merge_request_diff).to receive(:patch_id_sha).and_return(nil)
-        allow(merge_request).to receive(:diff_refs).and_return(diff_refs)
-
-        allow(merge_request.project.repository)
-          .to receive(:get_patch_id)
-          .with(diff_refs.base_sha, diff_refs.head_sha)
-          .and_return(patch_id)
-      end
-
-      it { is_expected.to eq(patch_id) }
-
-      context 'when base_sha is nil' do
-        let(:base_sha) { nil }
-
-        it { is_expected.to be_nil }
-      end
-
-      context 'when head_sha is nil' do
-        let(:head_sha) { nil }
-
-        it { is_expected.to be_nil }
-      end
-
-      context 'when base_sha and head_sha match' do
-        let(:head_sha) { base_sha }
-
-        it { is_expected.to be_nil }
-      end
-    end
   end
 
   describe '#all_mergeability_checks_results' do

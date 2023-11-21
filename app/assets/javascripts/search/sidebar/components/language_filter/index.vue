@@ -75,9 +75,9 @@ export default {
 
 <template>
   <div v-if="hasBuckets" class="language-filter-checkbox">
-    <h5 class="gl-mt-0 gl-mb-5 gl-font-sm">
+    <div class="gl-mb-2 gl-font-weight-bold gl-font-sm">
       {{ $options.languageFilterData.header }}
-    </h5>
+    </div>
     <div
       v-if="!aggregations.error"
       class="gl-overflow-x-hidden gl-overflow-y-auto"

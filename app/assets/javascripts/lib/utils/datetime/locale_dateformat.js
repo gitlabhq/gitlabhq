@@ -3,25 +3,36 @@ import { createDateTimeFormat } from '~/locale';
 /**
  * Format a Date with the help of {@link DateTimeFormat.asDateTime}
  *
- * Note: In case you can use localDateFormat.asDateTime directly, please do that.
+ * Note: In case you can use localeDateFormat.asDateTime directly, please do that.
  *
  * @example
- * localDateFormat[DATE_WITH_TIME_FORMAT].format(date) // returns 'Jul 6, 2020, 2:43 PM'
- * localDateFormat[DATE_WITH_TIME_FORMAT].formatRange(date, date) // returns 'Jul 6, 2020, 2:45PM – 8:43 PM'
+ * localeDateFormat[DATE_WITH_TIME_FORMAT].format(date) // returns 'Jul 6, 2020, 2:43 PM'
+ * localeDateFormat[DATE_WITH_TIME_FORMAT].formatRange(date, date) // returns 'Jul 6, 2020, 2:45PM – 8:43 PM'
  */
 export const DATE_WITH_TIME_FORMAT = 'asDateTime';
+
+/**
+ * Format a Date with the help of {@link DateTimeFormat.asDateTimeFull}
+ *
+ * Note: In case you can use localeDateFormat.asDateTimeFull directly, please do that.
+ *
+ * @example
+ * localeDateFormat[DATE_TIME_FULL_FORMAT].format(date) // returns 'July 6, 2020 at 2:43:12 PM GMT'
+ */
+export const DATE_TIME_FULL_FORMAT = 'asDateTimeFull';
+
 /**
  * Format a Date with the help of {@link DateTimeFormat.asDate}
  *
- * Note: In case you can use localDateFormat.asDate directly, please do that.
+ * Note: In case you can use localeDateFormat.asDate directly, please do that.
  *
  * @example
- * localDateFormat[DATE_ONLY_FORMAT].format(date) // returns 'Jul 05, 2023'
- * localDateFormat[DATE_ONLY_FORMAT].formatRange(date, date) // returns 'Jul 05 - Jul 07, 2023'
+ * localeDateFormat[DATE_ONLY_FORMAT].format(date) // returns 'Jul 05, 2023'
+ * localeDateFormat[DATE_ONLY_FORMAT].formatRange(date, date) // returns 'Jul 05 - Jul 07, 2023'
  */
 export const DATE_ONLY_FORMAT = 'asDate';
 export const DEFAULT_DATE_TIME_FORMAT = DATE_WITH_TIME_FORMAT;
-export const DATE_TIME_FORMATS = [DATE_WITH_TIME_FORMAT, DATE_ONLY_FORMAT];
+export const DATE_TIME_FORMATS = [DATE_WITH_TIME_FORMAT, DATE_TIME_FULL_FORMAT, DATE_ONLY_FORMAT];
 
 /**
  * The DateTimeFormat utilities support formatting a number of types,
@@ -54,7 +65,7 @@ class DateTimeFormat {
    * @example
    * // en-US: returns something like Jul 6, 2020, 2:43 PM
    * // en-GB: returns something like 6 Jul 2020, 14:43
-   * localDateFormat.asDateTime.format(date)
+   * localeDateFormat.asDateTime.format(date)
    *
    * @returns {DateTimeFormatter}
    */
@@ -68,6 +79,32 @@ class DateTimeFormat {
       })
     );
   }
+  /**
+   * Locale aware formatter to a complete date time.
+   *
+   * This is needed if you need to convey a full timestamp including timezone and seconds.
+   *
+   * This is mainly used in tooltips. Use {@link DateTimeFormat.asDateTime}
+   * if you don't need to show all the information.
+   *
+   *
+   * @example
+   * // en-US: returns something like July 6, 2020 at 2:43:12 PM GMT
+   * // en-GB: returns something like 6 July 2020 at 14:43:12 GMT
+   * localeDateFormat.asDateTimeFull.format(date)
+   *
+   * @returns {DateTimeFormatter}
+   */
+  get asDateTimeFull() {
+    return (
+      this.#formatters[DATE_TIME_FULL_FORMAT] ||
+      this.#createFormatter(DATE_TIME_FULL_FORMAT, {
+        dateStyle: 'long',
+        timeStyle: 'long',
+        hourCycle: DateTimeFormat.#hourCycle,
+      })
+    );
+  }
 
   /**
    * Locale aware formatter to display a only the date.
@@ -77,12 +114,12 @@ class DateTimeFormat {
    * @example
    * // en-US: returns something like Jul 6, 2020
    * // en-GB: returns something like 6 Jul 2020
-   * localDateFormat.asDate.format(date)
+   * localeDateFormat.asDate.format(date)
    *
    * @example
    * // en-US: returns something like Jul 6 – 7, 2020
    * // en-GB: returns something like 6-7 Jul 2020
-   * localDateFormat.asDate.formatRange(date, date2)
+   * localeDateFormat.asDate.formatRange(date, date2)
    *
    * @returns {DateTimeFormatter}
    */
@@ -177,6 +214,7 @@ class DateTimeFormat {
  *
  * DateTime (showing both date and times):
  * - {@link DateTimeFormat.asDateTime localeDateFormat.asDateTime} - the default format for date times
+ * - {@link DateTimeFormat.asDateTimeFull localeDateFormat.asDateTimeFull} - full format, including timezone and seconds
  *
  * Date (showing date only):
  * - {@link DateTimeFormat.asDate localeDateFormat.asDate} - the default format for a date

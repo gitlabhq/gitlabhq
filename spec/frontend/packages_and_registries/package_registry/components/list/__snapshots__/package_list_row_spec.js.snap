@@ -82,7 +82,7 @@ exports[`packages_list_row renders 1`] = `
             Published
             <time
               datetime="2020-05-17T14:23:32Z"
-              title="May 17, 2020 2:23pm UTC"
+              title="May 17, 2020 at 2:23:32 PM GMT"
             >
               1 month ago
             </time>

@@ -57,9 +57,9 @@ export default {
 
 <template>
   <div>
-    <h5 class="gl-mt-0 gl-mb-5 gl-font-sm">
+    <div class="gl-mb-2 gl-font-weight-bold gl-font-sm">
       {{ filterData.header }}
-    </h5>
+    </div>
     <gl-form-radio-group v-model="selectedFilter">
       <gl-form-radio v-for="f in filtersArray" :key="f.value" :value="f.value">
         {{ radioLabel(f) }}

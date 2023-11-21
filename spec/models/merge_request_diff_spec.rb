@@ -761,6 +761,63 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       end
     end
 
+    describe '#get_patch_id_sha' do
+      let(:mr_diff) { create(:merge_request).merge_request_diff }
+
+      context 'when the patch_id exists on the model' do
+        it 'returns the patch_id' do
+          expect(mr_diff.patch_id_sha).not_to be_nil
+          expect(mr_diff.get_patch_id_sha).to eq(mr_diff.patch_id_sha)
+        end
+      end
+
+      context 'when the patch_id does not exist on the model' do
+        it 'retrieves the patch id, saves the model, and returns it' do
+          expect(mr_diff.patch_id_sha).not_to be_nil
+
+          patch_id = mr_diff.patch_id_sha
+          mr_diff.update!(patch_id_sha: nil)
+
+          expect(mr_diff.get_patch_id_sha).to eq(patch_id)
+          expect(mr_diff.reload.patch_id_sha).to eq(patch_id)
+        end
+
+        context 'when base_sha is nil' do
+          before do
+            mr_diff.update!(patch_id_sha: nil)
+            allow(mr_diff).to receive(:base_commit_sha).and_return(nil)
+          end
+
+          it 'returns nil' do
+            expect(mr_diff.reload.get_patch_id_sha).to be_nil
+          end
+        end
+
+        context 'when head_sha is nil' do
+          before do
+            mr_diff.update!(patch_id_sha: nil)
+            allow(mr_diff).to receive(:head_commit_sha).and_return(nil)
+          end
+
+          it 'returns nil' do
+            expect(mr_diff.reload.get_patch_id_sha).to be_nil
+          end
+        end
+
+        context 'when base_sha and head_sha dont match' do
+          before do
+            mr_diff.update!(patch_id_sha: nil)
+            allow(mr_diff).to receive(:head_commit_sha).and_return('123123')
+            allow(mr_diff).to receive(:base_commit_sha).and_return('43121')
+          end
+
+          it 'returns nil' do
+            expect(mr_diff.reload.get_patch_id_sha).to be_nil
+          end
+        end
+      end
+    end
+
     describe '#save_diffs' do
       it 'saves collected state' do
         mr_diff = create(:merge_request).merge_request_diff

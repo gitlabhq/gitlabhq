@@ -8,6 +8,7 @@ import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import MRWidgetPipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
 import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import { SUCCESS } from '~/vue_merge_request_widget/constants';
+import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import mockData from '../mock_data';
 
 describe('MRWidgetPipeline', () => {
@@ -93,7 +94,7 @@ describe('MRWidgetPipeline', () => {
 
     it('should render pipeline finished timestamp', () => {
       expect(findPipelineFinishedAt().attributes()).toMatchObject({
-        title: 'Apr 7, 2017 2:00pm UTC',
+        title: localeDateFormat.asDateTimeFull.format(mockData.pipeline.details.finished_at),
         datetime: mockData.pipeline.details.finished_at,
       });
     });

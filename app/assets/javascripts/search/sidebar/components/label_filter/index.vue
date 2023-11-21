@@ -179,10 +179,10 @@ export default {
 
 <template>
   <div class="gl-pb-0 gl-md-pt-0 label-filter gl-relative">
-    <h5 class="gl-my-0 gl-font-sm" data-testid="label-filter-title">
+    <div class="gl-mb-2 gl-font-weight-bold gl-font-sm" data-testid="label-filter-title">
       {{ $options.labelFilterData.header }}
-    </h5>
-    <div class="gl-my-5">
+    </div>
+    <div>
       <gl-label
         v-for="label in unappliedNewLabels"
         :key="label.key"

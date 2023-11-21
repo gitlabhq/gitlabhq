@@ -5,7 +5,7 @@ require 'gitlab'
 require 'json'
 
 class Reporter
-  IDENTIFIABLE_NOTE_TAG = 'gitlab-org/ai-powered/ai-framework:duo-chat-qa-evaluation-'
+  IDENTIFIABLE_NOTE_TAG = 'gitlab-org/ai-powered/ai-framework:duo-chat-qa-evaluation'
 
   GRADE_TO_EMOJI_MAPPING = {
     correct: ":white_check_mark:",
@@ -25,7 +25,7 @@ class Reporter
       .merge_request_notes(ci_project_id, merge_request_iid)
       .auto_paginate
       .select do |note|
-        note.body.include? note_identifier_tag
+        note.body.include? IDENTIFIABLE_NOTE_TAG
       end
 
     note = report_notes.max_by { |note| Time.parse(note.created_at) }
@@ -47,15 +47,11 @@ class Reporter
   private
 
   def report_filename
-    "#{ENV['DUO_RSPEC']}.md"
+    ENV['QA_EVAL_REPORT_FILENAME']
   end
 
   def artifact_path
     File.join(ENV['CI_PROJECT_DIR'], report_filename)
-  end
-
-  def note_identifier_tag
-    "#{IDENTIFIABLE_NOTE_TAG}#{ENV['DUO_RSPEC']}"
   end
 
   def com_gitlab_client
@@ -67,7 +63,7 @@ class Reporter
 
   def report_note
     report = <<~MARKDOWN
-    <!-- #{note_identifier_tag} -->
+    <!-- #{IDENTIFIABLE_NOTE_TAG} -->
 
     ## GitLab Duo Chat QA evaluation
 
@@ -105,7 +101,7 @@ class Reporter
 
     if report.length > 1000000
       return <<~MARKDOWN
-      <!-- #{note_identifier_tag} -->
+      <!-- #{IDENTIFIABLE_NOTE_TAG} -->
 
       ## GitLab Duo Chat QA evaluation
 
@@ -125,7 +121,7 @@ class Reporter
 
   def report_data
     @report_data ||= Dir[File.join(ENV['CI_PROJECT_DIR'], "tmp/duo_chat/qa*.json")]
-      .map { |file| JSON.parse(File.read(file)) }
+      .flat_map { |file| JSON.parse(File.read(file)) }
   end
 
   def eval_content

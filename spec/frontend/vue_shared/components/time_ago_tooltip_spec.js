@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import { GlTruncate } from '@gitlab/ui';
 
 import timezoneMock from 'timezone-mock';
-import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
+import { getTimeago } from '~/lib/utils/datetime_utility';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { DATE_ONLY_FORMAT } from '~/lib/utils/datetime/locale_dateformat';
 
@@ -33,7 +33,7 @@ describe('Time ago with tooltip component', () => {
   it('should render timeago with a bootstrap tooltip', () => {
     buildVm();
 
-    expect(vm.attributes('title')).toEqual(formatDate(timestamp));
+    expect(vm.attributes('title')).toEqual('May 8, 2017 at 2:57:39 PM GMT');
     expect(vm.text()).toEqual(timeAgoTimestamp);
   });
 

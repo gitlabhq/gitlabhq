@@ -150,6 +150,7 @@
   "User": [
     "AddOnUser",
     "AutocompletedUser",
+    "CurrentUser",
     "MergeRequestAssignee",
     "MergeRequestAuthor",
     "MergeRequestParticipant",
