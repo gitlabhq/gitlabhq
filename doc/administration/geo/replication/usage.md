@@ -41,5 +41,5 @@ Go modules can be pulled from secondary sites, with a number of limitations:
 - Git configuration (using `insteadOf`) is needed to fetch data from the Geo secondary site.
 - For private projects, authentication details need to be specified in `~/.netrc`.
 
-Read more in the
-[working with projects `go get` documentation](../../../user/project/working_with_projects.md#fetch-go-modules-from-geo-secondary-sites).
+For more information, see
+[Using a project as a Go package](../../../user/project/use_project_as_go_package.md#fetch-go-modules-from-geo-secondary-sites).

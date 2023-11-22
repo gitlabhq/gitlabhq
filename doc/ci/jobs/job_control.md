@@ -1080,6 +1080,14 @@ produce an `invalid expression syntax` error.
 Pattern matching is case-sensitive by default. Use the `i` flag modifier to make a
 pattern case-insensitive. For example: `/pattern/i`.
 
+NOTE:
+When using the `=~` character, make sure the right side of the comparison always contains
+a valid regular expression. If the right side of the comparison is not a valid regular expression
+enclosed with `/` characters, the expression evaluates in an unexpected way. In that case,
+the comparison checks if the left side is a substring of the right side. For example,
+`"23" =~ "1234"` evaluates to true, which is the opposite of `"23" =~ /1234/`, which evaluates to false.
+You should not configure your pipeline to rely on this behavior.
+
 #### Store the regex pattern in a variable
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35438) in GitLab 15.0 [with a flag](../../administration/feature_flags.md) named `ci_fix_rules_if_comparison_with_regexp_variable`, disabled by default.

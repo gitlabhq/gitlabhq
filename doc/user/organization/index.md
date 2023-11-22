@@ -30,19 +30,8 @@ everything you do as a GitLab administrator, including:
 - Defining and applying settings to all of your groups, subgroups, and projects.
 - Aggregating data from all your groups, subgroups, and projects.
 
-Our goal is to reach feature parity between SaaS and self-managed installations, with all
-[Admin Area settings](../../administration/settings/index.md) moving to either:
-
-- Groups. Available in the Organization, and subgroups.
-- Hardware Controls. For functionality that does not apply to groups, Hardware Controls are only
-  applicable to self-managed installations. There is one Hardware Controls section per installation.
-
 For more information about the state of organization development,
 see [epic 9265](https://gitlab.com/groups/gitlab-org/-/epics/9265).
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a video introduction to the new hierarchy concept for groups and projects for epics, see
-[Consolidating groups and projects update (August 2021)](https://www.youtube.com/watch?v=fE74lsG_8yM).
 
 ## View organizations
 
@@ -78,3 +67,4 @@ To view the organizations you have access to:
 ## Related topics
 
 - [Organization developer documentation](../../development/organization/index.md)
+- [Organization blueprint](../../architecture/blueprints/organization/index.md)

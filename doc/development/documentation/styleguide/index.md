@@ -754,8 +754,20 @@ Instead, follow the [API topic template](../restful_api_styleguide.md#api-topic-
 
 ### Footnotes
 
-To indicate a footnote, use the HTML tag `<sup>` with a number.
-Put the tag at the end of the sentence or term. For example:
+Use footnotes below tables when it's not suitable to include the content in the table
+itself. For example, use footnotes when you need to:
+
+- Provide the same reference information on several table cells.
+- Include content that would disrupt the table's layout.
+
+#### Footnote format
+
+For each footnote, use the HTML superscript tag `<sup>`.
+Put the tag at the end of the sentence or term.
+
+When you add a footnote, do not re-sort the existing tags in the table.
+
+For example:
 
 ```markdown
 | App name | Description                    |

@@ -337,7 +337,7 @@ details. This second request should succeed, and result in a `200 OK` log entry.
 If a `401` log entry lacks a corresponding `200` log entry, the Git client is likely using either:
 
 - An incorrect password.
-- An expired or revoked token.an incorrect
+- An expired or revoked token.
 
 If not rectified, you could encounter
 [`403` (Forbidden) errors](#403-error-when-performing-git-operations-over-http)
