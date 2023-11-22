@@ -12,7 +12,7 @@ module Mutations
                description: copy_field_description(Types::SavedReplyType, :id)
 
       def resolve(id:)
-        saved_reply = authorized_find!(id)
+        saved_reply = authorized_find!(id: id)
         result = ::Users::SavedReplies::DestroyService.new(saved_reply: saved_reply).execute
         present_result(result)
       end

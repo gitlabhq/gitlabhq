@@ -59,10 +59,6 @@ module Mutations
         message = format(_('You are not allowed to change the Work Item type to %{name}.'), name: work_item_type.name)
         raise_resource_not_available_error! message
       end
-
-      def find_object(id:)
-        GitlabSchema.find_by_gid(id)
-      end
     end
   end
 end

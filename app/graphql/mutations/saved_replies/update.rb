@@ -20,7 +20,7 @@ module Mutations
                description: copy_field_description(Types::SavedReplyType, :content)
 
       def resolve(id:, name:, content:)
-        saved_reply = authorized_find!(id)
+        saved_reply = authorized_find!(id: id)
         result = ::Users::SavedReplies::UpdateService.new(saved_reply: saved_reply, name: name, content: content).execute
         present_result(result)
       end

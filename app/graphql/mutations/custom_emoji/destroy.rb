@@ -29,12 +29,6 @@ module Mutations
           custom_emoji: custom_emoji
         }
       end
-
-      private
-
-      def find_object(id:)
-        GitlabSchema.object_from_id(id, expected_type: ::CustomEmoji)
-      end
     end
   end
 end

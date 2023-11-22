@@ -19,10 +19,6 @@ module Mutations
 
         private
 
-        def find_object(id:)
-          GitlabSchema.object_from_id(id, expected_type: ::Board)
-        end
-
         def create_list(board, params)
           create_list_service =
             ::Boards::Lists::CreateService.new(board.resource_parent, current_user, params)

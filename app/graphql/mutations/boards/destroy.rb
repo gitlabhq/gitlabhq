@@ -26,12 +26,6 @@ module Mutations
           errors: response.errors
         }
       end
-
-      private
-
-      def find_object(id:)
-        GitlabSchema.object_from_id(id, expected_type: ::Board)
-      end
     end
   end
 end

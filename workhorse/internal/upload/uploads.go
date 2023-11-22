@@ -8,6 +8,7 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"net/textproto"
 
 	"github.com/golang-jwt/jwt/v5"
 
@@ -64,11 +65,17 @@ func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Hand
 				fail.WithBody("Failed to process image"))
 		default:
 			if errors.Is(err, context.DeadlineExceeded) {
-				fail.Request(w, r, err, fail.WithStatus(http.StatusGatewayTimeout),
-					fail.WithBody("deadline exceeded"))
-			} else {
-				fail.Request(w, r, fmt.Errorf("handleFileUploads: extract files from multipart: %v", err))
+				fail.Request(w, r, err, fail.WithStatus(http.StatusGatewayTimeout), fail.WithBody("deadline exceeded"))
+				return
 			}
+
+			var protocolErr textproto.ProtocolError
+			if errors.As(err, &protocolErr) {
+				fail.Request(w, r, err, fail.WithStatus(http.StatusBadRequest))
+				return
+			}
+
+			fail.Request(w, r, fmt.Errorf("handleFileUploads: extract files from multipart: %v", err))
 		}
 		return
 	}

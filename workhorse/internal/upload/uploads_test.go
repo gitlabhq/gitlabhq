@@ -357,6 +357,28 @@ func TestBadMultipartHeader(t *testing.T) {
 	require.Equal(t, 400, response.Code)
 }
 
+func TestMalformedMimeHeader(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	h := make(textproto.MIMEHeader)
+	h.Set("Invalid Header Line\r\nContent-Type", "text/plain\r\n\r\n")
+
+	buffer := &bytes.Buffer{}
+	writer := multipart.NewWriter(buffer)
+	file, err := writer.CreatePart(h)
+	require.NoError(t, err)
+	fmt.Fprint(file, "test")
+	writer.Close()
+
+	httpRequest, err := http.NewRequest("POST", "/example", buffer)
+	require.NoError(t, err)
+	httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
+
+	response := httptest.NewRecorder()
+	testInterceptMultipartFiles(t, response, httpRequest, nilHandler, &SavedFileTracker{Request: httpRequest})
+	require.Equal(t, 400, response.Code)
+}
+
 func TestContentDispositionRewrite(t *testing.T) {
 	testhelper.ConfigureSecret()
 
