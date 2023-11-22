@@ -15,7 +15,6 @@ import { isScopedLabel } from '~/lib/utils/common_utils';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { sprintf, __, n__ } from '~/locale';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
-import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import IssuableBlockedIcon from '~/vue_shared/components/issuable_blocked_icon/issuable_blocked_icon.vue';
@@ -32,7 +31,6 @@ export default {
     GlLoadingIcon,
     GlIcon,
     UserAvatarLink,
-    TooltipOnTruncate,
     IssueDueDate,
     IssueTimeEstimate,
     IssueCardWeight: () => import('ee_component/boards/components/issue_card_weight.vue'),
@@ -154,6 +152,9 @@ export default {
     itemReferencePath() {
       const { referencePath } = this.item;
       return referencePath.split(this.itemPrefix)[0];
+    },
+    directNamespaceReference() {
+      return this.itemReferencePath.split('/').slice(-1)[0];
     },
     orderedLabels() {
       return sortBy(this.item.labels.filter(this.isNonListLabel), 'title');
@@ -308,13 +309,15 @@ export default {
             :work-item-type="item.type"
             show-tooltip-on-hover
           />
-          <tooltip-on-truncate
+          <span
             v-if="showReferencePath"
+            v-gl-tooltip
             :title="itemReferencePath"
-            placement="bottom"
-            class="board-item-path gl-text-truncate gl-font-weight-bold"
-            >{{ itemReferencePath }}</tooltip-on-truncate
+            data-placement="bottom"
+            class="board-item-path gl-text-truncate gl-font-weight-bold gl-cursor-help"
           >
+            {{ directNamespaceReference }}
+          </span>
           {{ itemId }}
         </span>
         <span class="board-info-items gl-mt-3 gl-display-inline-block">

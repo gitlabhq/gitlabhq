@@ -21968,7 +21968,8 @@ CREATE TABLE project_repositories (
     id bigint NOT NULL,
     shard_id integer NOT NULL,
     disk_path character varying NOT NULL,
-    project_id integer NOT NULL
+    project_id integer NOT NULL,
+    object_format smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE project_repositories_id_seq

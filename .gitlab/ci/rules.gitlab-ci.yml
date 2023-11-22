@@ -2842,6 +2842,8 @@
       changes: *code-backstage-patterns
     - <<: *if-default-refs
       changes: *workhorse-patterns
+    - <<: *if-default-branch-refs
+      changes: *setup-test-env-patterns
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-frontend-and-feature-flag
     - <<: *if-merge-request

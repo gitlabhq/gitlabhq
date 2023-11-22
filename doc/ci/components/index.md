@@ -473,3 +473,17 @@ can be converted to a CI/CD component:
      or making it [more efficient](../pipelines/pipeline_efficiency.md).
 1. Leverage the `.gitlab-ci.yml` in the components repository to [test changes to the component](index.md#test-the-component).
 1. Tag and [release the component](index.md#release-a-component).
+
+## Troubleshooting
+
+### `content not found` message
+
+You might receive an error message similar to the following when using the `~latest`
+version qualifier to reference a component hosted by a [catalog resource](catalog.md#add-a-components-repository-to-the-catalog):
+
+```plaintext
+This GitLab CI configuration is invalid: component 'gitlab.com/my-namespace/my-project/my-component@~latest' - content not found`
+```
+
+The `~latest` behavior [was updated](https://gitlab.com/gitlab-org/gitlab/-/issues/429707)
+in GitLab 16.7. It now refers to the latest published version of the catalog resource. To resolve this issue, [create a new release](#release-a-component).

@@ -15,12 +15,17 @@ if you add a large number of images or tags:
 You should delete unnecessary images and tags and set up a [cleanup policy](#cleanup-policy)
 to automatically manage your container registry usage.
 
-## Check Container Registry storage use **(FREE SAAS)**
+## View container registry usage **(FREE SAAS)**
 
-The Usage Quotas page (**Settings > Usage Quotas > Storage**) displays storage usage for Packages.
-Measuring usage is only possible on the new version of the GitLab Container Registry backed by a
-metadata database, which is [available on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/5523) since GitLab 15.7.
-For information on the planned availability for self-managed instances, see [epic 5521](https://gitlab.com/groups/gitlab-org/-/epics/5521).
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5523) in GitLab 15.7
+
+To view the storage usage for the container registry:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Usage Quotas**.
+
+You cannot view Container Registry usage for self-managed instances, but this is
+proposed in [epic 5521](https://gitlab.com/groups/gitlab-org/-/epics/5521).
 
 ## How container registry usage is calculated
 

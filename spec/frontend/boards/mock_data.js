@@ -275,6 +275,7 @@ export const labels = [
 ];
 
 export const mockIssueFullPath = 'gitlab-org/test-subgroup/gitlab-test';
+export const mockIssueDirectNamespace = 'gitlab-test';
 export const mockEpicFullPath = 'gitlab-org/test-subgroup';
 
 export const rawIssue = {

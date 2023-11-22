@@ -16,7 +16,7 @@ import eventHub from '~/boards/eventhub';
 import defaultStore from '~/boards/stores';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { updateHistory } from '~/lib/utils/url_utility';
-import { mockLabelList, mockIssue, mockIssueFullPath } from './mock_data';
+import { mockLabelList, mockIssue, mockIssueFullPath, mockIssueDirectNamespace } from './mock_data';
 
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/boards/eventhub');
@@ -162,11 +162,13 @@ describe('Board card component', () => {
     createStore();
     createWrapper({ isGroupBoard: false });
 
-    expect(wrapper.find('.board-card-number').text()).not.toContain(mockIssueFullPath);
+    expect(wrapper.find('.board-card-number').text()).not.toContain(mockIssueDirectNamespace);
+    expect(wrapper.find('.board-item-path').exists()).toBe(false);
   });
 
-  it('renders item reference path', () => {
-    expect(wrapper.find('.board-card-number').text()).toContain(mockIssueFullPath);
+  it('renders item direct namespace path with full reference path in a tooltip', () => {
+    expect(wrapper.find('.board-item-path').text()).toBe(mockIssueDirectNamespace);
+    expect(wrapper.find('.board-item-path').attributes('title')).toBe(mockIssueFullPath);
   });
 
   describe('blocked', () => {

@@ -37,7 +37,7 @@ Apply the following two feature flags to any AI feature work:
 - A general flag (`ai_global_switch`) that applies to all AI features.
 - A flag specific to that feature. The feature flag name [must be different](../feature_flags/index.md#feature-flags-for-licensed-features) than the licensed feature name.
 
-See the [feature flag tracker](https://gitlab.com/gitlab-org/gitlab/-/issues/405161) for the list of all feature flags and how to use them.
+See the [feature flag tracker epic](https://gitlab.com/groups/gitlab-org/-/epics/10524) for the list of all feature flags and how to use them.
 
 ## Implement a new AI action
 
@@ -61,19 +61,16 @@ Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for 
 
 1. Ensure you have followed [the process to obtain an EE license](https://about.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses) for your local instance
 1. Simulate the GDK to [simulate SaaS](../ee_features.md#simulate-a-saas-instance) and ensure the group you want to test has an Ultimate license
-1. Enable `Experimental features`:
+1. Enable `Experiment & Beta features`
    1. Go to the group with the Ultimate license
    1. **Group Settings** > **General** -> **Permissions and group features**
-   1. Enable **Experiment features**
+   1. Enable **Experiment & Beta features**
 1. Enable the specific feature flag for the feature you want to test
 1. Set the required access token. To receive an access token:
    1. For Vertex, follow the [instructions below](#configure-gcp-vertex-access).
    1. For all other providers, like Anthropic, create an access request where `@m_gill`, `@wayne`, and `@timzallmann` are the tech stack owners.
 
 ### Set up the embedding database
-
-NOTE:
-Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for help automating the following section.
 
 For features that use the embedding database, additional setup is needed.
 
