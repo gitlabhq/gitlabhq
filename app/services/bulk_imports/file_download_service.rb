@@ -16,6 +16,7 @@ module BulkImports
     ServiceError = Class.new(StandardError)
 
     DEFAULT_ALLOWED_CONTENT_TYPES = %w[application/gzip application/octet-stream].freeze
+    LAST_CHUNK_CONTEXT_CHAR_LIMIT = 200
 
     def initialize(
       configuration:,
@@ -47,7 +48,8 @@ module BulkImports
 
     private
 
-    attr_reader :configuration, :relative_url, :tmpdir, :file_size_limit, :allowed_content_types, :response_headers
+    attr_reader :configuration, :relative_url, :tmpdir, :file_size_limit, :allowed_content_types,
+      :response_headers, :last_chunk_context, :response_code
 
     def download_file
       File.open(filepath, 'wb') do |file|
@@ -56,7 +58,9 @@ module BulkImports
         http_client.stream(relative_url) do |chunk|
           next if bytes_downloaded == 0 && [301, 302, 303, 307, 308].include?(chunk.code)
 
+          @response_code = chunk.code
           @response_headers ||= Gitlab::HTTP::Response::Headers.new(chunk.http_response.to_hash)
+          @last_chunk_context = chunk.to_s.truncate(LAST_CHUNK_CONTEXT_CHAR_LIMIT)
 
           unless @remote_content_validated
             validate_content_type
@@ -69,21 +73,25 @@ module BulkImports
 
           validate_size!(bytes_downloaded)
 
-          if chunk.code == 200
-            file.write(chunk)
-          else
-            raise(ServiceError, "File download error #{chunk.code}")
-          end
+          raise(ServiceError, "File download error #{chunk.code}") unless chunk.code == 200
+
+          file.write(chunk)
         end
       end
     rescue StandardError => e
-      File.delete(filepath) if File.exist?(filepath)
+      FileUtils.rm_f(filepath)
 
       raise e
     end
 
     def raise_error(message)
-      logger.warn(message: message, response_headers: response_headers)
+      logger.warn(
+        message: message,
+        response_code: response_code,
+        response_headers: response_headers,
+        importer: 'gitlab_migration',
+        last_chunk_context: last_chunk_context
+      )
 
       raise ServiceError, message
     end

@@ -7395,9 +7395,6 @@ msgstr ""
 msgid "Badges|Add new badge"
 msgstr ""
 
-msgid "Badges|Adding the badge failed, please check the entered URLs and try again."
-msgstr ""
-
 msgid "Badges|Badge image URL"
 msgstr ""
 
@@ -7410,9 +7407,6 @@ msgstr ""
 msgid "Badges|Delete badge?"
 msgstr ""
 
-msgid "Badges|Deleting the badge failed, please try again."
-msgstr ""
-
 msgid "Badges|Edit badge"
 msgstr ""
 
@@ -7422,7 +7416,16 @@ msgstr ""
 msgid "Badges|Example: %{exampleUrl}"
 msgstr ""
 
+msgid "Badges|Failed to add new badge. Check the URLs, then try again."
+msgstr ""
+
+msgid "Badges|Failed to delete the badge. Try again."
+msgstr ""
+
 msgid "Badges|Group Badge"
+msgstr ""
+
+msgid "Badges|If you delete this badge, you %{strongStart}cannot%{strongEnd} restore it."
 msgstr ""
 
 msgid "Badges|Link"
@@ -7458,13 +7461,10 @@ msgstr ""
 msgid "Badges|The badge was deleted."
 msgstr ""
 
-msgid "Badges|This group has no badges, start by creating a new one above."
+msgid "Badges|This group has no badges. Add an existing badge or create one."
 msgstr ""
 
-msgid "Badges|This project has no badges, start by creating a new one above."
-msgstr ""
-
-msgid "Badges|You are going to delete this badge. Deleted badges %{strongStart}cannot%{strongEnd} be restored."
+msgid "Badges|This project has no badges. Start by adding a new badge."
 msgstr ""
 
 msgid "Badges|Your badges"
@@ -30793,6 +30793,9 @@ msgstr ""
 msgid "MlModelRegistry|Experiment"
 msgstr ""
 
+msgid "MlModelRegistry|Failed to load model versions"
+msgstr ""
+
 msgid "MlModelRegistry|ID"
 msgstr ""
 
@@ -37591,6 +37594,9 @@ msgstr ""
 msgid "ProjectSettings|A default branch cannot be chosen for an empty project."
 msgstr ""
 
+msgid "ProjectSettings|Add badges to display information about this project."
+msgstr ""
+
 msgid "ProjectSettings|Additional options"
 msgstr ""
 
@@ -37676,9 +37682,6 @@ msgid "ProjectSettings|Cube API URL"
 msgstr ""
 
 msgid "ProjectSettings|Custom dashboard projects"
-msgstr ""
-
-msgid "ProjectSettings|Customize this project's badges."
 msgstr ""
 
 msgid "ProjectSettings|Data sources"

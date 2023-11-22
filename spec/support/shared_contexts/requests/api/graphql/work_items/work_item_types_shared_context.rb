@@ -15,7 +15,9 @@ RSpec.shared_context 'with work item types request context' do
     GRAPHQL
   end
 
-  let(:widget_attributes) do
+  # This is necessary so we can overwrite attributes in EE
+  let(:widget_attributes) { base_widget_attributes }
+  let(:base_widget_attributes) do
     {
       assignees: {
         'canInviteMembers' => false

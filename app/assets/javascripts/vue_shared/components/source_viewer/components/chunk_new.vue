@@ -66,6 +66,10 @@ export default {
       const page = getPageParamValue(this.number);
       return getPageSearchString(this.blamePath, page);
     },
+    codeStyling() {
+      const defaultGutterWidth = 96;
+      return { marginLeft: `${this.$refs.lineNumbers?.offsetWidth || defaultGutterWidth}px` };
+    },
   },
   methods: {
     handleChunkAppear() {
@@ -80,7 +84,7 @@ export default {
 </script>
 <template>
   <div class="gl-display-flex">
-    <div v-if="shouldHighlight" class="gl-display-flex gl-flex-direction-column">
+    <div v-if="shouldHighlight" class="gl-display-flex gl-flex-direction-column gl-absolute">
       <div
         v-for="(n, index) in totalLines"
         :key="index"
@@ -102,14 +106,14 @@ export default {
       </div>
     </div>
 
-    <div v-else class="line-numbers gl-p-0! gl-mr-3 gl-text-transparent">
+    <div v-else ref="lineNumbers" class="line-numbers gl-p-0! gl-mr-3 gl-text-transparent">
       <!-- Placeholder for line numbers while content is not highlighted -->
     </div>
 
     <gl-intersection-observer class="gl-w-full" @appear="handleChunkAppear">
       <pre
         class="gl-m-0 gl-p-0! gl-w-full gl-overflow-visible! gl-border-none! code highlight gl-line-height-0"
-      ><code v-if="shouldHighlight" v-safe-html="highlightedContent" data-testid="content"></code><code v-else v-once class="line gl-white-space-pre-wrap! gl-ml-1" data-testid="content" v-text="rawContent"></code></pre>
+      ><code v-if="shouldHighlight" v-safe-html="highlightedContent" :style="codeStyling" data-testid="content"></code><code v-else v-once class="line gl-white-space-pre-wrap! gl-ml-1" data-testid="content" v-text="rawContent"></code></pre>
     </gl-intersection-observer>
   </div>
 </template>

@@ -173,9 +173,10 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
     end
 
     it 'shows information about blocked pipeline' do
+      click_button 'Expand merge checks'
+
       expect(page).to have_content("Merge blocked")
-      expect(page).to have_content(
-        "pipeline must succeed. It's waiting for a manual action to continue.")
+      expect(page).to have_content("Pipeline must succeed.")
       expect(page).to have_css('[data-testid="status_manual_borderless-icon"]')
     end
   end
@@ -399,7 +400,9 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_requests
 
-      expect(page).to have_content('Merge blocked: fast-forward merge is not possible. To merge this request, first rebase locally.')
+      click_button 'Expand merge checks'
+
+      expect(page).to have_content('Merge request must be rebased, because a fast-forward merge is not possible.')
     end
   end
 

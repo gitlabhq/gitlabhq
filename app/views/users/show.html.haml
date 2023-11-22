@@ -95,7 +95,7 @@
                   = render 'middle_dot_divider', breakpoint: 'sm' do
                     = link_to discord_url(@user), class: 'gl-hover-text-decoration-none', title: "Discord", target: '_blank', rel: 'noopener noreferrer nofollow' do
                       = sprite_icon('discord', css_class: 'discord-icon')
-                - if Feature.enabled?(:mastodon_social_ui, @user) && @user.mastodon.present?
+                - if @user.mastodon.present?
                   = render 'middle_dot_divider', breakpoint: 'sm' do
                     = link_to mastodon_url(@user), class: 'gl-hover-text-decoration-none', title: "Mastodon", target: '_blank', rel: 'noopener noreferrer nofollow' do
                       = sprite_icon('mastodon', css_class: 'mastodon-icon')

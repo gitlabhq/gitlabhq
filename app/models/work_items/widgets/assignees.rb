@@ -20,3 +20,5 @@ module WorkItems
     end
   end
 end
+
+WorkItems::Widgets::Assignees.prepend_mod

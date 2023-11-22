@@ -54,6 +54,7 @@ import getStateQuery from './queries/get_state.query.graphql';
 import getStateSubscription from './queries/get_state.subscription.graphql';
 import ReportWidgetContainer from './components/report_widget_container.vue';
 import MrWidgetReadyToMerge from './components/states/new_ready_to_merge.vue';
+import MergeChecks from './components/merge_checks.vue';
 
 export default {
   // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/25
@@ -94,6 +95,7 @@ export default {
     MergeChecksFailed: () => import('./components/states/merge_checks_failed.vue'),
     ReadyToMerge: ReadyToMergeState,
     ReportWidgetContainer,
+    MergeChecks,
   },
   apollo: {
     state: {
@@ -247,6 +249,25 @@ export default {
     },
     hasExtensions() {
       return registeredExtensions.extensions.length;
+    },
+    mergeBlockedComponentEnabled() {
+      return (
+        window.gon?.features?.mergeBlockedComponent &&
+        !(
+          [
+            'checking',
+            'preparing',
+            'nothingToMerge',
+            'archived',
+            'missingBranch',
+            'merged',
+            'closed',
+            'merging',
+            'autoMergeEnabled',
+            'shaMismatch',
+          ].includes(this.mr.state) || ['MERGING', 'AUTO_MERGE'].includes(this.mr.machineValue)
+        )
+      );
     },
   },
   watch: {
@@ -556,7 +577,8 @@ export default {
       </div>
 
       <div class="mr-widget-section" data-testid="mr-widget-content">
-        <component :is="componentName" :mr="mr" :service="service" />
+        <merge-checks v-if="mergeBlockedComponentEnabled" :mr="mr" :service="service" />
+        <component :is="componentName" v-else :mr="mr" :service="service" />
         <ready-to-merge
           v-if="mr.commitsCount"
           v-show="shouldShowMergeDetails"

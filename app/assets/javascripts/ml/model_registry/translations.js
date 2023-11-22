@@ -32,3 +32,6 @@ export const CI_SECTION_LABEL = s__('MlModelRegistry|CI Info');
 export const JOB_LABEL = __('Job');
 export const CI_USER_LABEL = s__('MlModelRegistry|Triggered by');
 export const CI_MR_LABEL = __('Merge request');
+export const FAILED_TO_LOAD_MODEL_VERSIONS_MESSAGE = s__(
+  'MlModelRegistry|Failed to load model versions',
+);

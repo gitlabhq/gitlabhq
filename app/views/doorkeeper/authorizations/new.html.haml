@@ -51,5 +51,5 @@
           = hidden_field_tag :code_challenge_method, @pre_auth.code_challenge_method
           = render Pajamas::ButtonComponent.new(type: :submit,
             variant: :danger,
-            button_options: { id: 'commit-changes', class: 'gl-ml-3', qa_selector: 'authorization_button'}) do
+            button_options: { id: 'commit-changes', class: 'gl-ml-3', testid: 'authorization-button'}) do
             = _("Authorize")

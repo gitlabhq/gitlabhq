@@ -2,11 +2,13 @@
 import { GlTab, GlTabs, GlBadge } from '@gitlab/ui';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
+import ModelVersionList from '~/ml/model_registry/components/model_version_list.vue';
 import * as i18n from '../translations';
 
 export default {
   name: 'ShowMlModelApp',
   components: {
+    ModelVersionList,
     TitleArea,
     GlTabs,
     GlTab,
@@ -59,6 +61,8 @@ export default {
           {{ $options.i18n.MODEL_OTHER_VERSIONS_TAB_LABEL }}
           <gl-badge size="sm" class="gl-tab-counter-badge">{{ versionCount }}</gl-badge>
         </template>
+
+        <model-version-list :model-id="model.id" />
       </gl-tab>
       <gl-tab>
         <template #title>

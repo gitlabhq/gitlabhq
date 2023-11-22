@@ -22,7 +22,10 @@ RSpec.describe 'Merge request > User sees merge button depending on unresolved t
     context 'with unresolved threads' do
       it 'does not allow to merge' do
         expect(page).not_to have_button('Merge', exact: true)
-        expect(page).to have_content('all threads must be resolved')
+
+        click_button 'Expand merge checks'
+
+        expect(page).to have_content('Unresolved discussions must be resolved')
       end
     end
 

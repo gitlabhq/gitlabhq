@@ -2913,6 +2913,7 @@ GET /projects/:id/push_rule
   "file_name_regex": "",
   "max_file_size": 5,
   "commit_committer_check": false,
+  "commit_committer_name_check": false,
   "reject_unsigned_commits": false
 }
 ```
@@ -2931,6 +2932,7 @@ POST /projects/:id/push_rule
 | `author_email_regex`                    | string         | No | All commit author emails must match this, for example `@my-company.com$`. |
 | `branch_name_regex`                     | string         | No | All branch names must match this, for example `(feature|hotfix)\/*`. |
 | `commit_committer_check`                | boolean        | No | Users can only push commits to this repository if the committer email is one of their own verified emails. |
+| `commit_committer_name_check`           | boolean        | No | Users can only push commits to this repository if the commit author name is consistent with their GitLab account name. |
 | `commit_message_negative_regex`         | string         | No | No commit message is allowed to match this, for example `ssh\:\/\/`. |
 | `commit_message_regex`                  | string         | No | All commit messages must match this, for example `Fixed \d+\..*`. |
 | `deny_delete_tag`                       | boolean        | No | Deny deleting a tag. |
@@ -2954,6 +2956,7 @@ PUT /projects/:id/push_rule
 | `author_email_regex`                    | string         | No | All commit author emails must match this, for example `@my-company.com$`. |
 | `branch_name_regex`                     | string         | No | All branch names must match this, for example `(feature|hotfix)\/*`. |
 | `commit_committer_check`                | boolean        | No | Users can only push commits to this repository if the committer email is one of their own verified emails. |
+| `commit_committer_name_check`           | boolean        | No | Users can only push commits to this repository if the commit author name is consistent with their GitLab account name. |
 | `commit_message_negative_regex`         | string         | No | No commit message is allowed to match this, for example `ssh\:\/\/`. |
 | `commit_message_regex`                  | string         | No | All commit messages must match this, for example `Fixed \d+\..*`. |
 | `deny_delete_tag`                       | boolean        | No | Deny deleting a tag. |

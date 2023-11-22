@@ -4,7 +4,6 @@ Lint/NonAtomicFileOperation:
   Exclude:
     - 'app/models/merge_request_diff.rb'
     - 'app/services/bulk_imports/file_decompression_service.rb'
-    - 'app/services/bulk_imports/file_download_service.rb'
     - 'app/services/projects/import_export/parallel_export_service.rb'
     - 'app/services/projects/import_export/relation_export_service.rb'
     - 'app/services/projects/lfs_pointers/lfs_download_service.rb'

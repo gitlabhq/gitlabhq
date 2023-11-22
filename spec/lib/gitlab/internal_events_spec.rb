@@ -7,6 +7,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   include SnowplowHelpers
 
   before do
+    allow(Gitlab::AppJsonLogger).to receive(:warn)
     allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
     allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
     allow(redis).to receive(:incr)
@@ -138,7 +139,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       let(:user) { 'a_string' }
 
       it_behaves_like 'an event that logs an error' do
-        let(:event_kwargs) { { user: user, project: project } }
+        let(:event_kwargs) { { user: user, project: project.id } }
       end
     end
 
@@ -146,7 +147,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       let(:project) { 42 }
 
       it_behaves_like 'an event that logs an error' do
-        let(:event_kwargs) { { user: user, project: project } }
+        let(:event_kwargs) { { user: user.id, project: project } }
       end
     end
 
@@ -154,7 +155,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       let(:namespace) { false }
 
       it_behaves_like 'an event that logs an error' do
-        let(:event_kwargs) { { user: user, namespace: namespace } }
+        let(:event_kwargs) { { user: user.id, namespace: namespace } }
       end
     end
   end
@@ -189,12 +190,12 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     expect { described_class.track_event('unknown_event') }.not_to raise_error
   end
 
-  it 'logs error on missing property', :aggregate_failures do
+  it 'logs warning on missing property', :aggregate_failures do
     expect { described_class.track_event(event_name, merge_request_id: 1) }.not_to raise_error
 
     expect_redis_tracking
-    expect(Gitlab::ErrorTracking).to have_received(:track_and_raise_for_dev_exception)
-      .with(described_class::InvalidPropertyError, event_name: event_name, kwargs: { merge_request_id: 1 })
+    expect(Gitlab::AppJsonLogger).to have_received(:warn)
+      .with(message: /should be triggered with a named parameter/)
   end
 
   context 'when unique property is missing' do
@@ -234,8 +235,8 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       it 'logs error' do
         expect { described_class.track_event(event_name, merge_request_id: 1) }.not_to raise_error
 
-        expect(Gitlab::ErrorTracking).to have_received(:track_and_raise_for_dev_exception)
-          .with(described_class::InvalidPropertyError, event_name: event_name, kwargs: { merge_request_id: 1 })
+        expect(Gitlab::AppJsonLogger).to have_received(:warn)
+          .with(message: /should be triggered with a named parameter/)
       end
     end
 

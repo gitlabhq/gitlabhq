@@ -25,7 +25,7 @@ export default {
     addButton: s__('Badges|Add badge'),
     addFormTitle: s__('Badges|Add new badge'),
     deleteModalText: s__(
-      'Badges|You are going to delete this badge. Deleted badges %{strongStart}cannot%{strongEnd} be restored.',
+      'Badges|If you delete this badge, you %{strongStart}cannot%{strongEnd} restore it.',
     ),
   },
   data() {
@@ -74,7 +74,7 @@ export default {
         })
         .catch((error) => {
           createAlert({
-            message: s__('Badges|Deleting the badge failed, please try again.'),
+            message: s__('Badges|Failed to delete the badge. Try again.'),
           });
           throw error;
         });

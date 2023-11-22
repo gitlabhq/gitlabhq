@@ -146,7 +146,6 @@ Style/GuardClause:
     - 'app/presenters/merge_request_presenter.rb'
     - 'app/presenters/project_presenter.rb'
     - 'app/services/boards/issues/list_service.rb'
-    - 'app/services/bulk_imports/file_download_service.rb'
     - 'app/services/ci/create_web_ide_terminal_service.rb'
     - 'app/services/ci/daily_build_group_report_result_service.rb'
     - 'app/services/ci/job_artifacts/destroy_batch_service.rb'

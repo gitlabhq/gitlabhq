@@ -22,9 +22,10 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
       }
     end
 
-    let(:chunk_size) { 100 }
     let(:chunk_code) { 200 }
-    let(:chunk_double) { double('chunk', size: chunk_size, code: chunk_code, http_response: double(to_hash: headers)) }
+    let(:chunk_double) do
+      double('chunk', size: 100, code: chunk_code, http_response: double(to_hash: headers), to_s: 'some chunk context')
+    end
 
     subject(:service) do
       described_class.new(
@@ -92,7 +93,10 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
       it 'logs and raises an error' do
         expect(import_logger).to receive(:warn).once.with(
           message: 'Invalid content type',
-          response_headers: headers
+          response_code: chunk_code,
+          response_headers: headers,
+          importer: 'gitlab_migration',
+          last_chunk_context: 'some chunk context'
         )
 
         expect { subject.execute }.to raise_error(described_class::ServiceError, 'Invalid content type')

@@ -32,6 +32,9 @@ RSpec.describe 'Merge request > User resolves Draft', :js, feature_category: :co
   context 'when there is active pipeline for merge request' do
     before do
       create(:ci_build, pipeline: pipeline)
+
+      stub_feature_flags(merge_blocked_component: false)
+
       sign_in(user)
       visit project_merge_request_path(project, merge_request)
       wait_for_requests

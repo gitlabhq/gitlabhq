@@ -46,6 +46,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_frontend_feature_flag(:mr_request_changes, current_user)
+    push_frontend_feature_flag(:merge_blocked_component, current_user)
   end
 
   before_action only: [:edit] do

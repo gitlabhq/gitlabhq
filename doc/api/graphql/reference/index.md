@@ -28187,9 +28187,9 @@ Represents an assignees widget.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemwidgetassigneesallowsmultipleassignees"></a>`allowsMultipleAssignees` | [`Boolean`](#boolean) | Indicates whether multiple assignees are allowed. |
+| <a id="workitemwidgetassigneesallowsmultipleassignees"></a>`allowsMultipleAssignees` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 16.7. Field moved to workItemType widget definition interface. Use: [`workitemWidgetDefinitionAssignees.allowsMultipleAssignees`](#workitemwidgetdefinitionassigneesallowsmultipleassignees). |
 | <a id="workitemwidgetassigneesassignees"></a>`assignees` | [`UserCoreConnection`](#usercoreconnection) | Assignees of the work item. (see [Connections](#connections)) |
-| <a id="workitemwidgetassigneescaninvitemembers"></a>`canInviteMembers` | [`Boolean!`](#boolean) | Indicates whether the current user can invite members to the work item's project. |
+| <a id="workitemwidgetassigneescaninvitemembers"></a>`canInviteMembers` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.7. Field moved to workItemType widget definition interface. Use: [`workitemWidgetDefinitionAssignees.canInviteMembers`](#workitemwidgetdefinitionassigneescaninvitemembers). |
 | <a id="workitemwidgetassigneestype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetAwardEmoji`
@@ -28241,6 +28241,7 @@ Represents an assignees widget definition.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="workitemwidgetdefinitionassigneesallowsmultipleassignees"></a>`allowsMultipleAssignees` | [`Boolean!`](#boolean) | Indicates whether multiple assignees are allowed. |
 | <a id="workitemwidgetdefinitionassigneescaninvitemembers"></a>`canInviteMembers` | [`Boolean!`](#boolean) | Indicates whether the current user can invite members to the work item's parent. |
 | <a id="workitemwidgetdefinitionassigneestype"></a>`type` | [`WorkItemWidgetType!`](#workitemwidgettype) | Widget type. |
 

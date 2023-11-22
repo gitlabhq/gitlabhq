@@ -201,7 +201,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'ee/app/services/audit_events/streaming/headers/create_service.rb'
     - 'ee/app/services/audit_events/streaming/headers/destroy_service.rb'
     - 'ee/app/services/audit_events/streaming/headers/update_service.rb'
-    - 'ee/app/services/compliance_management/projects/create_ci_config_service.rb'
     - 'ee/app/services/ee/audit_events/build_service.rb'
     - 'ee/app/services/ee/ci/process_build_service.rb'
     - 'ee/app/services/ee/groups/autocomplete_service.rb'

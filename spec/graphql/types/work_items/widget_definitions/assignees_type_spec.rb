@@ -6,6 +6,8 @@ RSpec.describe Types::WorkItems::WidgetDefinitions::AssigneesType, feature_categ
   it 'exposes the expected fields' do
     expected_fields = %i[type can_invite_members]
 
-    expect(described_class).to have_graphql_fields(*expected_fields)
+    expected_fields.each do |field|
+      expect(described_class).to have_graphql_field(field)
+    end
   end
 end

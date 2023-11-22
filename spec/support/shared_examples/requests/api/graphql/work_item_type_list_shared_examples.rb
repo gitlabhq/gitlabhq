@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'graphql work item type list request spec' do
-  include_context 'with work item types request context'
+RSpec.shared_examples 'graphql work item type list request spec' do |context_name = nil|
+  include_context context_name || 'with work item types request context'
 
   context 'when user has access to the group' do
     it_behaves_like 'a working graphql query that returns data' do

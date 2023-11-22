@@ -353,11 +353,11 @@ By default, Gzip fast compression is applied during backup of:
 - [PostgreSQL database](#postgresql-databases) dumps.
 - [blobs](#blobs), for example uploads, job artifacts, external merge request diffs.
 
-The default command is `gzip -c -1`. You can override this command with `COMPRESS_CMD`.
+The default command is `gzip -c -1`. You can override this command with `COMPRESS_CMD`. Similarly, you can override the decompression command with `DECOMPRESS_CMD`.
 
 Caveats:
 
-- The compression command is used in a pipeline, so your custom command must output to stdout.
+- The compression command is used in a pipeline, so your custom command must output to `stdout`.
 - If you specify a command that is not packaged with GitLab, then you must install it yourself.
 - The resultant filenames will still end in `.gz`.
 - The default decompression command, used during restore, is `gzip -cd`. Therefore if you override the compression command to use a format that cannot be decompressed by `gzip -cd`, you must override the decompression command during restore.
@@ -396,18 +396,44 @@ And on restore:
 gitlab-backup restore DECOMPRESS_CMD=tee
 ```
 
-##### Replace Gzip
+##### Parallel compression with `pigz`
 
-This is an example of how to use a compression tool which you installed manually:
+WARNING:
+While we support using `COMPRESS_CMD` and `DECOMPRESS_CMD` to override the default Gzip compression library, we currently only test the default Gzip library with default options on a routine basis. You are responsible for testing and validating the viability of your backups. We strongly recommend this as best practice in general for backups, whether overriding the compression command or not. If you encounter issues with another compression library, you should revert back to the default. Troubleshooting and fixing errors with alternative libraries are a lower priority for GitLab.
+
+NOTE:
+`pigz` is not included in the GitLab Linux package. You must install it yourself.
+
+An example of compressing backups with `pigz` using 4 processes:
 
 ```shell
-gitlab-backup create COMPRESS_CMD="foo --bar --baz"
+sudo gitlab-backup create COMPRESS_CMD="pigz --compress --stdout --fast --processes=4"
 ```
 
-Similarly, on restore:
+Because `pigz` compresses to the `gzip` format, it is not required to use `pigz` to decompress backups which were compressed by `pigz`. However, it can still have a performance benefit over `gzip`. An example of decompressing backups with `pigz`:
 
 ```shell
-gitlab-backup restore DECOMPRESS_CMD="foo --quz"
+sudo gitlab-backup restore DECOMPRESS_CMD="pigz --decompress --stdout"
+```
+
+##### Parallel compression with `zstd`
+
+WARNING:
+While we support using `COMPRESS_CMD` and `DECOMPRESS_CMD` to override the default Gzip compression library, we currently only test the default Gzip library with default options on a routine basis. You are responsible for testing and validating the viability of your backups. We strongly recommend this as best practice in general for backups, whether overriding the compression command or not. If you encounter issues with another compression library, you should revert back to the default. Troubleshooting and fixing errors with alternative libraries are a lower priority for GitLab.
+
+NOTE:
+`zstd` is not included in the GitLab Linux package. You must install it yourself.
+
+An example of compressing backups with `zstd` using 4 threads:
+
+```shell
+sudo gitlab-backup create COMPRESS_CMD="zstd --compress --stdout --fast --threads=4"
+```
+
+An example of decompressing backups with `zstd`:
+
+```shell
+sudo gitlab-backup restore DECOMPRESS_CMD="zstd --decompress --stdout"
 ```
 
 #### Confirm archive can be transferred

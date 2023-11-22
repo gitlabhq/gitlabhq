@@ -72,7 +72,7 @@ export default {
         attributes: {
           variant: 'danger',
           disabled: !this.isValid,
-          'data-qa-selector': 'confirm_danger_modal_button',
+          'data-testid': 'confirm-danger-modal-button',
         },
       };
     },
@@ -133,8 +133,7 @@ export default {
         id="confirm_name_input"
         v-model="confirmationPhrase"
         class="form-control"
-        data-qa-selector="confirm_danger_field"
-        data-testid="confirm-danger-input"
+        data-testid="confirm-danger-field"
         type="text"
       />
     </gl-form-group>

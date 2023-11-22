@@ -224,6 +224,7 @@ end
 
     Network --> Socket --> API --> unk
 ```
+
 <!--
 This section should contain enough information that the specifics of your
 change are understandable. This may include API specs (though not always
@@ -249,7 +250,7 @@ that is not feasible, images should be placed under `images/` in the same
 directory as the `index.md` for the proposal.
 -->
 
-### HTML structure
+#### HTML structure
 
 The HTML structure of a diff should have support for assistive technology.
 For this reason, a table could be a preferred solution as it allows to indicate
@@ -294,7 +295,7 @@ See <abbr>WAI</abbr> (Web Accessibility Initiative) for more information on both
 However, if such a structure will compromise other functional aspects of displaying a diff,
 more generic elements together with ARIA support can be used.
 
-### Visual indicators
+#### Visual indicators
 
 It is important that each visual indicator should have a screen reader text
 denoting the meaning of that indicator. When needed, use `gl-sr-only` or `gl-sr-only-focusable`

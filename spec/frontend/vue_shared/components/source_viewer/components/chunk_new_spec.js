@@ -62,6 +62,7 @@ describe('Chunk component', () => {
 
       it('renders highlighted content', () => {
         expect(findContent().text()).toBe(CHUNK_2.highlightedContent);
+        expect(findContent().attributes('style')).toBe('margin-left: 96px;');
       });
     });
   });

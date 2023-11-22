@@ -14,7 +14,7 @@ module ProductAnalyticsTracking
     end
 
     def track_internal_event(*controller_actions, name:, conditions: nil)
-      custom_conditions = [:trackable_html_request?, :authenticated?, *conditions]
+      custom_conditions = [:trackable_html_request?, *conditions]
 
       after_action only: controller_actions, if: custom_conditions do
         Gitlab::InternalEvents.track_event(
@@ -69,9 +69,5 @@ module ProductAnalyticsTracking
     uuid = SecureRandom.uuid
     cookies[:visitor_id] = { value: uuid, expires: 24.months }
     uuid
-  end
-
-  def authenticated?
-    current_user.present?
   end
 end

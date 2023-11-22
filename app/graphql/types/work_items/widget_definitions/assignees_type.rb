@@ -28,3 +28,5 @@ module Types
     end
   end
 end
+
+Types::WorkItems::WidgetDefinitions::AssigneesType.prepend_mod

@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-require "gettext_i18n_rails/tasks"
-
 namespace :gettext do
+  desc 'Compile po files to json, for usage in the frontend'
   task :compile do
     # See: https://gitlab.com/gitlab-org/gitlab-foss/issues/33014#note_31218998
     FileUtils.touch(pot_file_path)
@@ -71,6 +70,7 @@ namespace :gettext do
     end
   end
 
+  desc 'Check whether gitlab.pot needs updates, used during CI'
   task updated_check: [:regenerate] do
     pot_diff = `git diff -- #{pot_file_path} | grep -E '^(\\+|-)msgid'`.strip
 

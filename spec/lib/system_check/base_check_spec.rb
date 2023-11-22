@@ -13,7 +13,7 @@ RSpec.describe SystemCheck::BaseCheck do
     it 'responds to Gitlab::TaskHelpers methods' do
       expect(subject).to respond_to :ask_to_continue, :os_name, :prompt, :run_and_match, :run_command,
         :run_command!, :uid_for, :gid_for, :gitlab_user, :gitlab_user?, :warn_user_is_not_gitlab,
-        :repository_storage_paths_args, :user_home, :checkout_or_clone_version, :clone_repo, :checkout_version
+        :user_home, :checkout_or_clone_version, :clone_repo, :checkout_version
     end
   end
 end

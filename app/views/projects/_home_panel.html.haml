@@ -15,7 +15,7 @@
           - if @project.catalog_resource
             = render partial: 'shared/ci_catalog_badge', locals: { href: project_ci_catalog_resource_path(@project, @project.catalog_resource), css_class: 'gl-mx-2' }
           - if @project.group
-            = render_if_exists 'shared/tier_badge', source: @project, source_type: 'Project'
+            = render_if_exists 'shared/tier_badge', source: @project, namespace_to_track: @project.namespace
         .home-panel-metadata.gl-font-sm.gl-text-secondary.gl-font-base.gl-font-weight-normal.gl-line-height-normal{ data: { testid: 'project-id-content' }, itemprop: 'identifier' }
           - if can?(current_user, :read_project, @project)
             %span.gl-display-inline-block.gl-vertical-align-middle

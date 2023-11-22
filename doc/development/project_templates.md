@@ -40,7 +40,7 @@ To make the project template available when creating a new project, the vendorin
 
 1. Run the `bundle_repo` script. Make sure to pass the correct arguments, or the script may damage the folder structure.
 1. Add exported project (`$name.tar.gz`) to `gitlab/vendor/project_templates` and remove the resulting build folders `tar-base` and `project`.
-1. Run `bin/rake gettext:regenerate` in the `gitlab` project and commit new `.pot` file.
+1. Run `tooling/bin/gettext_extractor locale/gitlab.pot` in the `gitlab` project and commit new `.pot` file.
 1. Add a changelog entry in the commit message (for example, `Changelog: added`).
    For more information, see [Changelog entries](changelog.md).
 1. Add an icon to [`gitlab-svgs`](https://gitlab.com/gitlab-org/gitlab-svgs), as shown in

@@ -30,7 +30,7 @@ namespace :gitlab do
         File.open("config.yml", "w+") { |f| f.puts config.to_yaml }
 
         [
-          %w[bin/install] + repository_storage_paths_args,
+          %w[bin/install],
           %w[make build]
         ].each do |cmd|
           unless Kernel.system(*cmd)

@@ -29,7 +29,11 @@ module Gitlab
           send_application_instrumentation_event(event_name, kwargs)
         end
       rescue StandardError => e
-        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, event_name: event_name, kwargs: kwargs)
+        extra = {}
+        kwargs.each_key do |k|
+          extra[k] = kwargs[k].is_a?(::ApplicationRecord) ? kwargs[k].try(:id) : kwargs[k]
+        end
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, event_name: event_name, kwargs: extra)
         nil
       end
 
@@ -62,7 +66,9 @@ module Gitlab
         unique_method = :id
 
         unless kwargs.has_key?(unique_property)
-          raise InvalidPropertyError, "#{event_name} should be triggered with a named parameter '#{unique_property}'."
+          message = "#{event_name} should be triggered with a named parameter '#{unique_property}'."
+          Gitlab::AppJsonLogger.warn(message: message)
+          return
         end
 
         unique_value = kwargs[unique_property].public_send(unique_method) # rubocop:disable GitlabSecurity/PublicSend

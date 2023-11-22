@@ -1,6 +1,7 @@
 import { GlBadge, GlTab } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { ShowMlModel } from '~/ml/model_registry/apps';
+import ModelVersionList from '~/ml/model_registry/components/model_version_list.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import { NO_VERSIONS_LABEL } from '~/ml/model_registry/translations';
@@ -8,12 +9,13 @@ import { MODEL, makeModel } from '../mock_data';
 
 let wrapper;
 const createWrapper = (model = MODEL) => {
-  wrapper = shallowMount(ShowMlModel, { propsData: { model } });
+  wrapper = shallowMount(ShowMlModel, { propsData: { model }, stubs: { GlTab } });
 };
 
 const findDetailTab = () => wrapper.findAllComponents(GlTab).at(0);
 const findVersionsTab = () => wrapper.findAllComponents(GlTab).at(1);
 const findVersionsCountBadge = () => findVersionsTab().findComponent(GlBadge);
+const findModelVersionList = () => findVersionsTab().findComponent(ModelVersionList);
 const findCandidateTab = () => wrapper.findAllComponents(GlTab).at(2);
 const findCandidatesCountBadge = () => findCandidateTab().findComponent(GlBadge);
 const findTitleArea = () => wrapper.findComponent(TitleArea);
@@ -65,6 +67,10 @@ describe('ShowMlModel', () => {
 
     it('shows the number of versions in the tab', () => {
       expect(findVersionsCountBadge().text()).toBe(MODEL.versionCount.toString());
+    });
+
+    it('shows a list of model versions', () => {
+      expect(findModelVersionList().props('modelId')).toBe(MODEL.id);
     });
   });
 

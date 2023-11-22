@@ -25,7 +25,7 @@ module QA
               element 'invite-group-button'
             end
 
-            base.view 'app/assets/javascripts/invite_members/constants.js' do
+            base.view 'app/assets/javascripts/invite_members/components/invite_members_trigger.vue' do
               element 'invite-members-button'
             end
           end

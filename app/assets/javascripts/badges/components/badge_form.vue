@@ -183,9 +183,7 @@ export default {
         })
         .catch((error) => {
           createAlert({
-            message: s__(
-              'Badges|Adding the badge failed, please check the entered URLs and try again.',
-            ),
+            message: s__('Badges|Failed to add new badge. Check the URLs, then try again.'),
           });
           throw error;
         });

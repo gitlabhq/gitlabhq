@@ -66,7 +66,7 @@ export default {
 
 <template>
   <div>
-    <div class="gl-relative gl-pb-0 gl-px-0" data-qa-selector="terms_content">
+    <div class="gl-relative gl-pb-0 gl-px-0" data-testid="terms-content">
       <div
         class="terms-fade gl-absolute gl-left-5 gl-right-5 gl-bottom-0 gl-h-11 gl-pointer-events-none"
       ></div>
@@ -97,7 +97,7 @@ export default {
           type="submit"
           variant="confirm"
           :disabled="acceptDisabled"
-          data-qa-selector="accept_terms_button"
+          data-testid="accept-terms-button"
           >{{ $options.i18n.accept }}</gl-button
         >
         <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />

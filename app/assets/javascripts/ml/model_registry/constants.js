@@ -11,3 +11,5 @@ export const BASE_SORT_FIELDS = Object.freeze([
     label: s__('MlExperimentTracking|Created at'),
   },
 ]);
+
+export const GRAPHQL_PAGE_SIZE = 30;

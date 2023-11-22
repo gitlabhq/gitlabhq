@@ -30,7 +30,8 @@ export default class MergeRequestStore {
 
     this.stateMachine = machine(STATE_MACHINE.definition);
     this.machineValue = this.stateMachine.value;
-    this.mergeDetailsCollapsed = window.innerWidth < 768;
+    this.mergeDetailsCollapsed =
+      !window.gon?.features?.mergeBlockedComponent && window.innerWidth < 768;
     this.mergeError = data.mergeError;
     this.multipleApprovalRulesAvailable = data.multiple_approval_rules_available || false;
     this.id = data.id;
@@ -196,7 +197,9 @@ export default class MergeRequestStore {
     }
 
     this.commitsCount = mergeRequest.commitCount;
-    this.branchMissing = !mergeRequest.sourceBranchExists || !mergeRequest.targetBranchExists;
+    this.branchMissing =
+      mergeRequest.detailedMergeStatus !== 'NOT_OPEN' &&
+      (!mergeRequest.sourceBranchExists || !mergeRequest.targetBranchExists);
     this.hasConflicts = mergeRequest.conflicts;
     this.hasMergeableDiscussionsState = mergeRequest.mergeableDiscussionsState === false;
     this.mergeError = mergeRequest.mergeError;
@@ -418,6 +421,10 @@ export default class MergeRequestStore {
   }
 
   toggleMergeDetails(val = !this.mergeDetailsCollapsed) {
+    if (window.gon?.features?.mergeBlockedComponent) {
+      return;
+    }
+
     this.mergeDetailsCollapsed = val;
   }
 }

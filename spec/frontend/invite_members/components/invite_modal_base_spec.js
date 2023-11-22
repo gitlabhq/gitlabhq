@@ -95,7 +95,6 @@ describe('InviteModalBase', () => {
       const actionButton = findActionButton();
 
       expect(actionButton.text()).toBe(INVITE_BUTTON_TEXT);
-      expect(actionButton.attributes('data-testid')).toBe('invite-modal-submit');
 
       expect(actionButton.props()).toMatchObject({
         variant: 'confirm',

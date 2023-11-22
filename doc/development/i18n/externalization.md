@@ -27,23 +27,27 @@ After you have the GitLab project ready, you can start working on the translatio
 
 The following tools are used:
 
-- [`gettext_i18n_rails`](https://github.com/grosser/gettext_i18n_rails):
-  this gem allows us to translate content from models, views, and controllers. It also gives us
-  access to the following Rake tasks:
+- Custom written tools to aid day-to-day development work with translations:
 
+  - `tooling/bin/gettext_extractor locale/gitlab.pot`: scan all source files for [new content to translate](#updating-the-po-files-with-the-new-content)
+  - `rake gettext:compile`: reads the contents of the PO files and generates JS files which
+    contain all the available translations for the Frontend.
+  - `rake gettext:lint`: [validate PO files](#validating-po-files)
+
+- [`gettext_i18n_rails`](https://github.com/grosser/gettext_i18n_rails):
+  this gem allows us to translate content from models, views, and controllers.
+  It uses [`fast_gettext`](https://github.com/grosser/fast_gettext) under the hood.
+
+  It also provides access to the following Rake tasks, which are rarely needed in day-to-day:
+
+  - `rake gettext:add_language[language]`: [adding a new language](#adding-a-new-language)
   - `rake gettext:find`: parses almost all the files from the Rails application looking for content
     marked for translation. It then updates the PO files with this content.
   - `rake gettext:pack`: processes the PO files and generates the binary MO files that the
     application uses.
 
-- [`gettext_i18n_rails_js`](https://github.com/webhippie/gettext_i18n_rails_js):
-  this gem makes the translations available in JavaScript. It provides the following Rake task:
-
-  - `rake gettext:compile`: reads the contents of the PO files and generates JS files which
-    contain all the available translations.
-
-- PO editor: there are multiple applications that can help us work with PO files. A good option is
-  [Poedit](https://poedit.net/download),
+- PO editor: there are multiple applications that can help us work with PO files.
+  A good option is [Poedit](https://poedit.net/download),
   which is available for macOS, GNU/Linux, and Windows.
 
 ## Preparing a page for translation
@@ -844,7 +848,7 @@ When in doubt, try to follow the best practices described in this [Mozilla Devel
 
 ### Always pass string literals to the translation helpers
 
-The `bin/rake gettext:regenerate` script parses the codebase and extracts all the strings from the
+The `tooling/bin/gettext_extractor locale/gitlab.pot` script parses the codebase and extracts all the strings from the
 [translation helpers](#preparing-a-page-for-translation) ready to be translated.
 
 The script cannot resolve the strings if they are passed as variables or function calls. Therefore,
@@ -870,7 +874,7 @@ Now that the new content is marked for translation, run this command to update t
 `locale/gitlab.pot` files:
 
 ```shell
-bin/rake gettext:regenerate
+tooling/bin/gettext_extractor locale/gitlab.pot
 ```
 
 This command updates the `locale/gitlab.pot` file with the newly externalized strings and removes

@@ -660,11 +660,6 @@ GEM
       text (>= 1.3.0)
     gettext_i18n_rails (1.11.0)
       fast_gettext (>= 0.9.0)
-    gettext_i18n_rails_js (2.0.0)
-      gettext (>= 3.0.2)
-      gettext_i18n_rails (>= 0.7.1)
-      po_to_json (>= 2.0.0)
-      rails (>= 3.2.0)
     git (1.18.0)
       addressable (~> 2.8)
       rchardet (~> 1.8)
@@ -1236,8 +1231,6 @@ GEM
       google-protobuf (>= 3.22.3)
     plist (3.7.0)
     png_quantizator (0.2.1)
-    po_to_json (2.0.0)
-      json (>= 1.6.0)
     premailer (1.16.0)
       addressable
       css_parser (>= 1.6.0)
@@ -1868,7 +1861,6 @@ DEPENDENCIES
   fuubar (~> 2.2.0)
   gettext (~> 3.3)
   gettext_i18n_rails (~> 1.11.0)
-  gettext_i18n_rails_js (~> 2.0.0)
   gitaly (~> 16.5.0.pre.rc1)
   gitlab-backup-cli!
   gitlab-chronic (~> 0.10.5)

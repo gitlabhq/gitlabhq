@@ -26,6 +26,7 @@ module Projects
         paginator.records.map(&:present).map do |m|
           {
             name: m.name,
+            path: m.path,
             version: m.latest_version_name,
             version_count: m.version_count,
             version_package_path: m.latest_package_path,

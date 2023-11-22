@@ -21,7 +21,7 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
       include ProductAnalyticsTracking
 
       skip_before_action :authenticate_user!, only: [:index]
-      track_internal_event :index, :show, name: 'g_compliance_dashboard', conditions: [:custom_condition?]
+      track_internal_event :index, :show, name: 'an_event', conditions: [:custom_condition?]
 
       def index
         render html: 'index'
@@ -47,7 +47,7 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
     end
 
     def expect_internal_tracking(tracked_user: user)
-      expect(Gitlab::InternalEvents).to receive(:track_event).with('g_compliance_dashboard',
+      expect(Gitlab::InternalEvents).to receive(:track_event).with(event_name,
         user: tracked_user,
         project: project,
         namespace: project.namespace).once
@@ -55,6 +55,10 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
 
     def expect_no_internal_tracking
       expect(Gitlab::InternalEvents).not_to receive(:track_event)
+    end
+
+    before do
+      allow(Gitlab::InternalEvents::EventDefinitions).to receive(:known_event?).with('an_event').and_return(true)
     end
 
     context 'when user is logged in' do
@@ -96,8 +100,22 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
     end
 
     context 'when user is not logged in' do
-      it 'does not track the event' do
-        expect_no_internal_tracking
+      let(:user) { nil }
+
+      it 'tracks internal event' do
+        expect_internal_tracking
+
+        get :index
+      end
+
+      it 'tracks total Redis counters' do
+        expect(Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric).to receive(:redis_key).twice # total and 7d
+
+        get :index
+      end
+
+      it 'does not update unique counter' do
+        expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
 
         get :index
       end
@@ -107,7 +125,6 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
   describe '.track_event' do
     before do
       allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
-      stub_const("#{described_class}::MIGRATED_EVENTS", ['an_event'])
     end
 
     controller(ApplicationController) do

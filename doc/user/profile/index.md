@@ -132,7 +132,8 @@ to match your username.
 
 ## Add external accounts to your user profile page
 
-> Mastodon user account [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132892) in 16.6 [with a flag](../feature_flags.md) named `mastodon_social_ui`. Disabled by default. This feature is in [Beta](../../policy/experiment-beta-support.md#beta).
+> - Mastodon user account [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132892) in GitLab 16.6 [with a flag](../feature_flags.md) named `mastodon_social_ui`. Disabled by default.
+> - Mastodon user account [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/428163) in GitLab 16.7. Feature flag `mastodon_social_ui` removed.
 
 You can add links to certain other external accounts you might have, like Skype and Twitter.
 They can help other users connect with you on other platforms.

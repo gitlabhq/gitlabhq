@@ -19,7 +19,7 @@ describe('Confirm Danger Modal', () => {
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findConfirmationPhrase = () => wrapper.findByTestId('confirm-danger-phrase');
-  const findConfirmationInput = () => wrapper.findByTestId('confirm-danger-input');
+  const findConfirmationInput = () => wrapper.findByTestId('confirm-danger-field');
   const findDefaultWarning = () => wrapper.findByTestId('confirm-danger-warning');
   const findAdditionalMessage = () => wrapper.findByTestId('confirm-danger-message');
   const findPrimaryAction = () => findModal().props('actionPrimary');
