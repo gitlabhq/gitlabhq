@@ -6,8 +6,10 @@ import {
   WatchApi,
   EVENT_DATA,
 } from '@gitlab/cluster-client';
+import produce from 'immer';
 import { humanizeClusterErrors } from '../../helpers/k8s_integration_helper';
 import k8sPodsQuery from '../queries/k8s_pods.query.graphql';
+import k8sWorkloadsQuery from '../queries/k8s_workloads.query.graphql';
 
 const mapWorkloadItems = (items, kind) => {
   return items.map((item) => {
@@ -88,6 +90,44 @@ const watchPods = ({ configuration, namespace, client }) => {
     });
 };
 
+const watchWorkloadItems = ({ kind, apiVersion, configuration, namespace, client }) => {
+  const itemKind = kind.toLowerCase().replace('list', 's');
+
+  const path = namespace
+    ? `/apis/${apiVersion}/namespaces/${namespace}/${itemKind}`
+    : `/apis/${apiVersion}/${itemKind}`;
+  const config = new Configuration(configuration);
+  const watcherApi = new WatchApi(config);
+
+  watcherApi
+    .subscribeToStream(path, { watch: true })
+    .then((watcher) => {
+      let result = [];
+
+      watcher.on(EVENT_DATA, (data) => {
+        result = mapWorkloadItems(data, kind);
+
+        const sourceData = client.readQuery({
+          query: k8sWorkloadsQuery,
+          variables: { configuration, namespace },
+        });
+
+        const updatedData = produce(sourceData, (draft) => {
+          draft.k8sWorkloads[kind] = result;
+        });
+
+        client.writeQuery({
+          query: k8sWorkloadsQuery,
+          variables: { configuration, namespace },
+          data: updatedData,
+        });
+      });
+    })
+    .catch((err) => {
+      handleClusterError(err);
+    });
+};
+
 export default {
   k8sPods(_, { configuration, namespace }, { client }) {
     const config = new Configuration(configuration);
@@ -143,7 +183,7 @@ export default {
         }
       });
   },
-  k8sWorkloads(_, { configuration, namespace }) {
+  k8sWorkloads(_, { configuration, namespace }, { client }) {
     const appsV1api = new AppsV1Api(new Configuration(configuration));
     const batchV1api = new BatchV1Api(new Configuration(configuration));
 
@@ -189,10 +229,12 @@ export default {
       }
       for (const promiseResult of results) {
         if (promiseResult.status === 'fulfilled' && promiseResult?.value) {
-          const { kind, items } = promiseResult.value;
+          const { kind, items, apiVersion } = promiseResult.value;
 
           if (items?.length > 0) {
             summaryList[kind] = mapWorkloadItems(items, kind);
+
+            watchWorkloadItems({ kind, apiVersion, configuration, namespace, client });
           }
         }
       }

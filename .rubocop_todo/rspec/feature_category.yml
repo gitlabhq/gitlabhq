@@ -4281,8 +4281,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/system_check/base_check_spec.rb'
     - 'spec/lib/system_check/incoming_email/imap_authentication_check_spec.rb'
     - 'spec/lib/system_check/incoming_email_check_spec.rb'
-    - 'spec/lib/system_check/orphans/namespace_check_spec.rb'
-    - 'spec/lib/system_check/orphans/repository_check_spec.rb'
     - 'spec/lib/system_check/sidekiq_check_spec.rb'
     - 'spec/lib/system_check/simple_executor_spec.rb'
     - 'spec/lib/system_check_spec.rb'

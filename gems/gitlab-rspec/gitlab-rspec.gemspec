@@ -18,6 +18,7 @@ Gem::Specification.new do |spec|
   spec.files = Dir["lib/**/*.rb"]
   spec.require_paths = ["lib"]
 
+  spec.add_runtime_dependency "activerecord", ">= 6.1", "< 8"
   spec.add_runtime_dependency "activesupport", ">= 6.1", "< 8"
   spec.add_runtime_dependency "rspec", "~> 3.0"
 

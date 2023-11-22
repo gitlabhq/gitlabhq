@@ -285,6 +285,10 @@ module QA
         end
       end
 
+      def all_branches
+        get(request_url(api_repository_branches_path))
+      end
+
       def has_tags?(tags)
         tags.all? do |tag|
           response = get(request_url("#{api_repository_tags_path}/#{tag}"))

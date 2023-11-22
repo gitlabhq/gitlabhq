@@ -13,6 +13,10 @@ module QA
           project.initialize_with_readme = true
         end
 
+        # Debugging what branches are present
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/431474
+        QA::Runtime::Logger.info("project.all_branches.body #{project.all_branches.body}")
+
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = project
           push.new_branch = false

@@ -44,6 +44,7 @@ PATH
   remote: gems/gitlab-rspec
   specs:
     gitlab-rspec (0.1.0)
+      activerecord (>= 6.1, < 8)
       activesupport (>= 6.1, < 8)
       rspec (~> 3.0)
 
@@ -290,7 +291,7 @@ GEM
     aws-sdk-cloudformation (1.41.0)
       aws-sdk-core (~> 3, >= 3.99.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-core (3.187.0)
+    aws-sdk-core (3.187.1)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.651.0)
       aws-sigv4 (~> 1.5)
@@ -1791,7 +1792,7 @@ DEPENDENCIES
   autoprefixer-rails (= 10.2.5.1)
   awesome_print
   aws-sdk-cloudformation (~> 1)
-  aws-sdk-core (~> 3.187.0)
+  aws-sdk-core (~> 3.187.1)
   aws-sdk-s3 (~> 1.137.0)
   axe-core-rspec
   babosa (~> 2.0)

@@ -77,6 +77,16 @@ describe('InviteGroupsModal', () => {
   const clickInviteButton = emitClickFromModal('invite-modal-submit');
   const clickCancelButton = emitClickFromModal('invite-modal-cancel');
 
+  describe('passes correct props to InviteModalBase', () => {
+    it('set accessLevel', () => {
+      createInviteGroupToProjectWrapper();
+
+      expect(findBase().props('accessLevels')).toMatchObject({
+        validRoles: propsData.accessLevels,
+      });
+    });
+  });
+
   describe('displaying the correct introText and form group description', () => {
     describe('when inviting to a project', () => {
       it('includes the correct type, and formatted intro text', () => {

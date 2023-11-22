@@ -23,7 +23,7 @@ You can use advanced search in:
 - Merge requests
 - Milestones
 - Users
-- Epics (in groups only)
+- Epics
 - Code
 - Comments
 - Commits

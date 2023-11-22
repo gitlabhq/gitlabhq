@@ -2,6 +2,7 @@ PATH
   remote: ../gitlab-rspec
   specs:
     gitlab-rspec (0.1.0)
+      activerecord (>= 6.1, < 8)
       activesupport (>= 6.1, < 8)
       rspec (~> 3.0)
 
@@ -42,6 +43,11 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
+    activemodel (7.0.7)
+      activesupport (= 7.0.7)
+    activerecord (7.0.7)
+      activemodel (= 7.0.7)
+      activesupport (= 7.0.7)
     activesupport (7.0.7)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
@@ -76,11 +82,9 @@ GEM
       nokogiri (>= 1.12.0)
     method_source (1.0.0)
     mini_mime (1.1.2)
-    mini_portile2 (2.8.4)
     minitest (5.18.1)
     multi_xml (0.6.0)
     nokogiri (1.15.4)
-      mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     parallel (1.23.0)
     parser (3.2.2.3)

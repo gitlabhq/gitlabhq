@@ -662,7 +662,7 @@ describe('DiffFileHeader component', () => {
       },
     );
 
-    it('removes the property that forces a file to be shown when the file review is toggled', () => {
+    it('removes the property that forces a file to be shown when the file review is toggled', async () => {
       createComponent({
         props: {
           diffFile: {
@@ -681,7 +681,7 @@ describe('DiffFileHeader component', () => {
 
       findReviewFileCheckbox().vm.$emit('change', true);
 
-      testAction(
+      await testAction(
         setFileForcedOpen,
         { filePath: diffFile.file_path, forced: false },
         {},
@@ -691,7 +691,7 @@ describe('DiffFileHeader component', () => {
 
       findReviewFileCheckbox().vm.$emit('change', false);
 
-      testAction(
+      await testAction(
         setFileForcedOpen,
         { filePath: diffFile.file_path, forced: false },
         {},

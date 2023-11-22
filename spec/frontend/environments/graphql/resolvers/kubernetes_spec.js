@@ -4,6 +4,7 @@ import axios from '~/lib/utils/axios_utils';
 import { resolvers } from '~/environments/graphql/resolvers';
 import { CLUSTER_AGENT_ERROR_MESSAGES } from '~/environments/constants';
 import k8sPodsQuery from '~/environments/graphql/queries/k8s_pods.query.graphql';
+import k8sWorkloadsQuery from '~/environments/graphql/queries/k8s_workloads.query.graphql';
 import { k8sPodsMock, k8sServicesMock, k8sNamespacesMock } from '../mock_data';
 
 describe('~/frontend/environments/graphql/resolvers', () => {
@@ -209,6 +210,10 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     });
   });
   describe('k8sWorkloads', () => {
+    const client = {
+      readQuery: jest.fn(() => ({ k8sWorkloads: {} })),
+      writeQuery: jest.fn(),
+    };
     const emptyImplementation = jest.fn().mockImplementation(() => {
       return Promise.resolve({
         data: {
@@ -250,48 +255,137 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       { method: 'listBatchV1CronJobForAllNamespaces', api: BatchV1Api, spy: mockAllCronJob },
     ];
 
-    beforeEach(() => {
-      [...namespacedMocks, ...allMocks].forEach((workloadMock) => {
+    describe('when k8sWatchApi feature is disabled', () => {
+      beforeEach(() => {
+        [...namespacedMocks, ...allMocks].forEach((workloadMock) => {
+          jest
+            .spyOn(workloadMock.api.prototype, workloadMock.method)
+            .mockImplementation(workloadMock.spy);
+        });
+      });
+
+      it('should request namespaced workload types from the cluster_client library if namespace is specified', async () => {
+        await mockResolvers.Query.k8sWorkloads(null, { configuration, namespace }, { client });
+
+        namespacedMocks.forEach((workloadMock) => {
+          expect(workloadMock.spy).toHaveBeenCalledWith({ namespace });
+        });
+      });
+
+      it('should request all workload types from the cluster_client library if namespace is not specified', async () => {
+        await mockResolvers.Query.k8sWorkloads(null, { configuration, namespace: '' }, { client });
+
+        allMocks.forEach((workloadMock) => {
+          expect(workloadMock.spy).toHaveBeenCalled();
+        });
+      });
+      it('should pass fulfilled calls data if one of the API calls fail', async () => {
         jest
-          .spyOn(workloadMock.api.prototype, workloadMock.method)
-          .mockImplementation(workloadMock.spy);
-      });
-    });
-
-    it('should request namespaced workload types from the cluster_client library if namespace is specified', async () => {
-      await mockResolvers.Query.k8sWorkloads(null, { configuration, namespace });
-
-      namespacedMocks.forEach((workloadMock) => {
-        expect(workloadMock.spy).toHaveBeenCalledWith({ namespace });
-      });
-    });
-
-    it('should request all workload types from the cluster_client library if namespace is not specified', async () => {
-      await mockResolvers.Query.k8sWorkloads(null, { configuration, namespace: '' });
-
-      allMocks.forEach((workloadMock) => {
-        expect(workloadMock.spy).toHaveBeenCalled();
-      });
-    });
-    it('should pass fulfilled calls data if one of the API calls fail', async () => {
-      jest
-        .spyOn(AppsV1Api.prototype, 'listAppsV1DeploymentForAllNamespaces')
-        .mockRejectedValue(new Error('API error'));
-
-      await expect(
-        mockResolvers.Query.k8sWorkloads(null, { configuration }),
-      ).resolves.toBeDefined();
-    });
-    it('should throw an error if all the API calls fail', async () => {
-      [...allMocks].forEach((workloadMock) => {
-        jest
-          .spyOn(workloadMock.api.prototype, workloadMock.method)
+          .spyOn(AppsV1Api.prototype, 'listAppsV1DeploymentForAllNamespaces')
           .mockRejectedValue(new Error('API error'));
+
+        await expect(
+          mockResolvers.Query.k8sWorkloads(null, { configuration }, { client }),
+        ).resolves.toBeDefined();
+      });
+      it('should throw an error if all the API calls fail', async () => {
+        [...allMocks].forEach((workloadMock) => {
+          jest
+            .spyOn(workloadMock.api.prototype, workloadMock.method)
+            .mockRejectedValue(new Error('API error'));
+        });
+
+        await expect(
+          mockResolvers.Query.k8sWorkloads(null, { configuration }, { client }),
+        ).rejects.toThrow('API error');
+      });
+    });
+    describe('when k8sWatchApi feature is enabled', () => {
+      const mockDeployment = jest.fn().mockImplementation(() => {
+        return Promise.resolve({
+          kind: 'DeploymentList',
+          apiVersion: 'apps/v1',
+          items: [
+            {
+              status: {
+                conditions: [],
+              },
+            },
+          ],
+        });
+      });
+      const mockWatcher = WatchApi.prototype;
+      const mockDeploymentsListWatcherFn = jest.fn().mockImplementation(() => {
+        return Promise.resolve(mockWatcher);
       });
 
-      await expect(mockResolvers.Query.k8sWorkloads(null, { configuration })).rejects.toThrow(
-        'API error',
-      );
+      const mockOnDataFn = jest.fn().mockImplementation((eventName, callback) => {
+        if (eventName === 'data') {
+          callback([]);
+        }
+      });
+
+      describe('when the deployments data is present', () => {
+        beforeEach(() => {
+          gon.features = { k8sWatchApi: true };
+
+          jest
+            .spyOn(AppsV1Api.prototype, 'listAppsV1NamespacedDeployment')
+            .mockImplementation(mockDeployment);
+          jest
+            .spyOn(AppsV1Api.prototype, 'listAppsV1DeploymentForAllNamespaces')
+            .mockImplementation(mockDeployment);
+          jest
+            .spyOn(mockWatcher, 'subscribeToStream')
+            .mockImplementation(mockDeploymentsListWatcherFn);
+          jest.spyOn(mockWatcher, 'on').mockImplementation(mockOnDataFn);
+        });
+
+        it('should request namespaced deployments from the cluster_client library if namespace is specified', async () => {
+          await mockResolvers.Query.k8sWorkloads(null, { configuration, namespace }, { client });
+
+          expect(mockDeploymentsListWatcherFn).toHaveBeenCalledWith(
+            `/apis/apps/v1/namespaces/${namespace}/deployments`,
+            {
+              watch: true,
+            },
+          );
+        });
+        it('should request all deployments from the cluster_client library if namespace is not specified', async () => {
+          await mockResolvers.Query.k8sWorkloads(
+            null,
+            { configuration, namespace: '' },
+            { client },
+          );
+
+          expect(mockDeploymentsListWatcherFn).toHaveBeenCalledWith(`/apis/apps/v1/deployments`, {
+            watch: true,
+          });
+        });
+        it('should update cache with the new data when received from the library', async () => {
+          await mockResolvers.Query.k8sWorkloads(null, { configuration, namespace }, { client });
+
+          expect(client.writeQuery).toHaveBeenCalledWith({
+            query: k8sWorkloadsQuery,
+            variables: { configuration, namespace },
+            data: { k8sWorkloads: { DeploymentList: [] } },
+          });
+        });
+      });
+
+      it('should not watch deployments from the cluster_client library when the deployments data is not present', async () => {
+        jest.spyOn(AppsV1Api.prototype, 'listAppsV1NamespacedDeployment').mockImplementation(
+          jest.fn().mockImplementation(() => {
+            return Promise.resolve({
+              items: [],
+            });
+          }),
+        );
+
+        await mockResolvers.Query.k8sWorkloads(null, { configuration, namespace }, { client });
+
+        expect(mockDeploymentsListWatcherFn).not.toHaveBeenCalled();
+      });
     });
   });
   describe('k8sNamespaces', () => {

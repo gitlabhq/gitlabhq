@@ -59,7 +59,7 @@ This should relieve the major pain points of the existing two strategies:
 
 Snapshots rely on cloud platforms to be able to take physical snapshots of the
 disks that Gitaly and Praefect use to store data. While never officially
-recommended this strategy tends to be used once creating or restoring backups
+recommended, this strategy tends to be used once creating or restoring backups
 using `backup.rake` takes too long.
 
 Gitaly and Git use lock files and fsync in order to prevent repository

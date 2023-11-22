@@ -38,7 +38,7 @@ describe('axios_utils', () => {
     it('waits for requests on a specific URL', () => {
       const handler = jest.fn();
       axios.get('/ok').finally(handler);
-      axios.waitFor('/err').finally(() => {
+      axios.waitFor('/err').catch(() => {
         throw new Error('waitFor on /err should not be called');
       });
       return axios.waitFor('/ok');

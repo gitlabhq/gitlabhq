@@ -36,6 +36,7 @@ export default (function initInviteMembersModal() {
               isProject: parseBoolean(el.dataset.isProject),
               accessLevels: JSON.parse(el.dataset.accessLevels),
               defaultAccessLevel: parseInt(el.dataset.defaultAccessLevel, 10),
+              defaultMemberRoleId: parseInt(el.dataset.defaultMemberRoleId, 10) || null,
               usersFilter: el.dataset.usersFilter,
               filterId: parseInt(el.dataset.filterId, 10),
               usersLimitDataset: convertObjectPropsToCamelCase(

@@ -736,7 +736,7 @@ describe('Api', () => {
       it('rejects the Promise', () => {
         mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
-        Api.issueTemplates(namespace, project, templateType, () => {
+        return Api.issueTemplates(namespace, project, templateType, () => {
           expect(mock.history.get).toHaveLength(1);
         });
       });

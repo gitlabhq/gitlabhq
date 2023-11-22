@@ -106,6 +106,9 @@ export default {
     inviteDisabled() {
       return Object.keys(this.groupToBeSharedWith).length === 0;
     },
+    staticRoles() {
+      return { validRoles: this.accessLevels };
+    },
   },
   mounted() {
     if (this.reloadPageOnSubmit) {
@@ -182,7 +185,7 @@ export default {
     :modal-id="modalId"
     :modal-title="$options.labels.title"
     :name="name"
-    :access-levels="accessLevels"
+    :access-levels="staticRoles"
     :default-access-level="defaultAccessLevel"
     :help-link="helpLink"
     v-bind="$attrs"
@@ -194,6 +197,7 @@ export default {
     :invalid-feedback-message="invalidFeedbackMessage"
     :is-loading="isLoading"
     :full-path="fullPath"
+    is-group-invite
     @reset="resetFields"
     @submit="sendInvite"
   >

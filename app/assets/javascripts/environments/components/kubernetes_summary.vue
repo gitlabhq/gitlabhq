@@ -159,6 +159,7 @@ export default {
     completed: 'success',
     failed: 'danger',
     suspended: 'neutral',
+    pending: 'info',
   },
   icons: {
     Active: { icon: 'status_success', class: 'gl-text-green-500' },

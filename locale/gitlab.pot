@@ -23336,6 +23336,9 @@ msgstr ""
 msgid "GroupSettings|Members cannot invite groups outside of %{group} and its subgroups"
 msgstr ""
 
+msgid "GroupSettings|Namespace setting"
+msgstr ""
+
 msgid "GroupSettings|Organizations and contacts can be created and associated with issues."
 msgstr ""
 
@@ -26748,6 +26751,9 @@ msgid "Iterations|Error loading iteration cadences."
 msgstr ""
 
 msgid "Iterations|Incomplete issues will be added to the next iteration at %{strongStart}midnight, %{timezone}%{strongEnd}."
+msgstr ""
+
+msgid "Iterations|Iteration cadence"
 msgstr ""
 
 msgid "Iterations|Iteration cadences"

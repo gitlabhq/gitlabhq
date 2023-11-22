@@ -85,6 +85,11 @@ export default {
       type: Number,
       required: true,
     },
+    defaultMemberRoleId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
     helpLink: {
       type: String,
       required: true,
@@ -181,6 +186,9 @@ export default {
     showUserLimitNotification() {
       return !isEmpty(this.usersLimitDataset.alertVariant);
     },
+    staticRoles() {
+      return { validRoles: this.accessLevels };
+    },
     limitVariant() {
       return this.usersLimitDataset.alertVariant;
     },
@@ -267,7 +275,7 @@ export default {
       this.shouldShowEmptyInvitesAlert = true;
       this.$refs.alerts.focus();
     },
-    getInvitePayload({ accessLevel, expiresAt }) {
+    getInvitePayload({ accessLevel, expiresAt, memberRoleId }) {
       const [usersToInviteByEmail, usersToAddById] = this.partitionNewUsersToInvite();
 
       const email = usersToInviteByEmail !== '' ? { email: usersToInviteByEmail } : {};
@@ -277,12 +285,13 @@ export default {
         format: 'json',
         expires_at: expiresAt,
         access_level: accessLevel,
+        member_role_id: memberRoleId,
         invite_source: this.source,
         ...email,
         ...userId,
       };
     },
-    async sendInvite({ accessLevel, expiresAt }) {
+    async sendInvite({ accessLevel, expiresAt, memberRoleId }) {
       this.isLoading = true;
       this.clearValidation();
 
@@ -296,7 +305,7 @@ export default {
         : Api.inviteGroupMembers.bind(Api);
 
       try {
-        const payload = this.getInvitePayload({ accessLevel, expiresAt });
+        const payload = this.getInvitePayload({ accessLevel, expiresAt, memberRoleId });
         const response = await apiAddByInvite(this.id, payload);
 
         const { error, message } = responseFromSuccess(response);
@@ -377,14 +386,16 @@ export default {
     :modal-id="modalId"
     :modal-title="modalTitle"
     :name="name"
-    :access-levels="accessLevels"
+    :access-levels="staticRoles"
     :default-access-level="defaultAccessLevel"
+    :default-member-role-id="defaultMemberRoleId"
     :help-link="helpLink"
     :label-intro-text="labelIntroText"
     :label-search-field="labelSearchField"
     :form-group-description="formGroupDescription"
     :invalid-feedback-message="invalidFeedbackMessage"
     :is-loading="isLoading"
+    :is-project="isProject"
     :new-users-to-invite="newUsersToInvite"
     :root-group-id="rootId"
     :users-limit-dataset="usersLimitDataset"

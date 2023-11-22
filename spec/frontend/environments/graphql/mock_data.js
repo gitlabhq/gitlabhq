@@ -886,6 +886,11 @@ const failedDeployment = {
     ],
   },
 };
+const pendingDeployment = {
+  status: {
+    conditions: [],
+  },
+};
 const readyDaemonSet = {
   status: { numberReady: 1, desiredNumberScheduled: 1, numberMisscheduled: 0 },
 };
@@ -904,7 +909,7 @@ const suspendedCronJob = { spec: { suspend: 1 }, status: { active: 0, lastSchedu
 const failedCronJob = { spec: { suspend: 0 }, status: { active: 2, lastScheduleTime: '' } };
 
 export const k8sWorkloadsMock = {
-  DeploymentList: [readyDeployment, failedDeployment],
+  DeploymentList: [readyDeployment, failedDeployment, pendingDeployment],
   DaemonSetList: [readyDaemonSet, failedDaemonSet, failedDaemonSet],
   StatefulSetList: [readySet, readySet, failedSet],
   ReplicaSetList: [readySet, failedSet],

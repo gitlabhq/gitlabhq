@@ -1,5 +1,5 @@
 import { differenceInSeconds } from '~/lib/utils/datetime_utility';
-import { CLUSTER_AGENT_ERROR_MESSAGES } from '../constants';
+import { CLUSTER_AGENT_ERROR_MESSAGES, STATUS_TRUE, STATUS_FALSE } from '../constants';
 
 export function generateServicePortsString(ports) {
   if (!ports?.length) return '';
@@ -39,19 +39,21 @@ export function getServiceAge(creationTimestamp) {
 export function getDeploymentsStatuses(items) {
   const failed = [];
   const ready = [];
+  const pending = [];
 
   items.forEach((item) => {
     const [available, progressing] = item.status?.conditions ?? [];
-    // eslint-disable-next-line @gitlab/require-i18n-strings
-    if (available.status === 'True') {
+    if (available?.status === STATUS_TRUE) {
       ready.push(item);
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-    } else if (available.status !== 'True' && progressing.status !== 'True') {
+    } else if (available?.status === STATUS_FALSE && progressing?.status !== STATUS_TRUE) {
       failed.push(item);
+    } else {
+      pending.push(item);
     }
   });
 
   return {
+    ...(pending.length && { pending }),
     ...(failed.length && { failed }),
     ...(ready.length && { ready }),
   };

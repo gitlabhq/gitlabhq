@@ -111,7 +111,7 @@ export function createResolvers({ endpoints }) {
       },
     },
     Mutation: {
-      async updateImportStatus(
+      updateImportStatus(
         _,
         { id, status: newStatus, hasFailures = false },
         { client, getCacheKey },

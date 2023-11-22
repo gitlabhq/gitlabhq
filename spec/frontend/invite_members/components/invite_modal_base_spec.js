@@ -7,6 +7,7 @@ import {
   GlModal,
   GlIcon,
 } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { stubComponent } from 'helpers/stub_component';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import {
@@ -45,6 +46,7 @@ describe('InviteModalBase', () => {
     wrapper = mountFn(InviteModalBase, {
       propsData: {
         ...propsData,
+        accessLevels: { validRoles: propsData.accessLevels },
         ...props,
       },
       stubs: {
@@ -58,8 +60,8 @@ describe('InviteModalBase', () => {
     });
   };
 
-  const findListbox = () => extendedWrapper(wrapper.findComponent(GlCollapsibleListbox));
-  const findListboxOptions = () => findListbox().findAllByRole('option');
+  const findCollapsibleListbox = () => extendedWrapper(wrapper.findComponent(GlCollapsibleListbox));
+  const findCollapsibleListboxOptions = () => findCollapsibleListbox().findAllByRole('option');
   const findDatepicker = () => wrapper.findComponent(GlDatepicker);
   const findLink = () => wrapper.findComponent(GlLink);
   const findIcon = () => wrapper.findComponent(GlIcon);
@@ -106,18 +108,47 @@ describe('InviteModalBase', () => {
     describe('rendering the access levels dropdown', () => {
       beforeEach(() => {
         createComponent({
+          props: { isLoadingRoles: true },
           mountFn: mountExtended,
         });
       });
 
+      it('passes `isLoadingRoles` prop to the dropdown', () => {
+        expect(findCollapsibleListbox().props('loading')).toBe(true);
+      });
+
       it('sets the default dropdown text to the default access level name', () => {
-        expect(findListbox().exists()).toBe(true);
-        const option = findListbox().find('[aria-selected]');
+        expect(findCollapsibleListbox().exists()).toBe(true);
+        const option = findCollapsibleListbox().find('[aria-selected]');
+        expect(option.text()).toBe('Reporter');
+      });
+
+      it('updates the selection base on changes in the dropdown', async () => {
+        wrapper.setProps({ accessLevels: { validRoles: [] } });
+        expect(findCollapsibleListbox().props('selected')).not.toHaveLength(0);
+        await nextTick();
+
+        expect(findCollapsibleListboxOptions()).toHaveLength(0);
+        expect(findCollapsibleListbox().props('selected')).toHaveLength(0);
+      });
+
+      it('reset the dropdown to the default option', async () => {
+        const developerOption = findCollapsibleListboxOptions().at(2);
+        await developerOption.trigger('click');
+
+        let option;
+        option = findCollapsibleListbox().find('[aria-selected]');
+        expect(option.text()).toBe('Developer');
+
+        // Reset the dropdown by clicking cancel button
+        await findCancelButton().trigger('click');
+
+        option = findCollapsibleListbox().find('[aria-selected]');
         expect(option.text()).toBe('Reporter');
       });
 
       it('renders dropdown items for each accessLevel', () => {
-        expect(findListboxOptions()).toHaveLength(5);
+        expect(findCollapsibleListboxOptions()).toHaveLength(5);
       });
     });
 
@@ -215,7 +246,7 @@ describe('InviteModalBase', () => {
       it('renders correct blocks', () => {
         expect(findIcon().exists()).toBe(false);
         expect(findDisabledInput().exists()).toBe(false);
-        expect(findListbox().exists()).toBe(true);
+        expect(findCollapsibleListbox().exists()).toBe(true);
         expect(findDatepicker().exists()).toBe(true);
         expect(wrapper.findComponent(GlModal).text()).toMatch(textRegex);
       });

@@ -21,7 +21,6 @@ export default {
     GlTable,
     PaginationBar,
   },
-  STATISTIC_ITEMS,
 
   i18n: {
     fetchErrorMessage: s__('Import|An error occurred while fetching import details.'),

@@ -97,10 +97,11 @@ describe('ide/lib/mirror', () => {
         connection = mirror.connect(TEST_PATH);
       });
 
-      it('waits before creating web socket', () => {
-        // ignore error when test suite terminates
-        connection.catch(() => {});
+      afterEach(() => {
+        mirror.disconnect();
+      });
 
+      it('waits before creating web socket', () => {
         return waitForConnection(SERVICE_DELAY - 10).then(() => {
           expect(global.WebSocket).not.toHaveBeenCalled();
         });

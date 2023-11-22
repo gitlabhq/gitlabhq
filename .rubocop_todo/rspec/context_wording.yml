@@ -2009,8 +2009,6 @@ RSpec/ContextWording:
     - 'spec/lib/system_check/app/authorized_keys_permission_check_spec.rb'
     - 'spec/lib/system_check/base_check_spec.rb'
     - 'spec/lib/system_check/incoming_email/imap_authentication_check_spec.rb'
-    - 'spec/lib/system_check/orphans/namespace_check_spec.rb'
-    - 'spec/lib/system_check/orphans/repository_check_spec.rb'
     - 'spec/lib/uploaded_file_spec.rb'
     - 'spec/lib/version_check_spec.rb'
     - 'spec/mailers/devise_mailer_spec.rb'

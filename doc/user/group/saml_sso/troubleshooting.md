@@ -290,7 +290,7 @@ If a subset of users are receiving a `404` after signing in to the IdP, first ve
     Example request:
 
     ```plaintext
-    curl --request PATCH "https://gitlab.example.com/api/scim/v2/groups/test_group/Users/f0b1d561c-21ff-4092-beab-8154b17f82f2" --header "Authorization: Bearer <SCIM_TOKEN>" --data '{ "Operations": [{"op":"Replace","path":"active","value":"true"}] }'
+    curl --request PATCH "https://gitlab.example.com/api/scim/v2/groups/test_group/Users/f0b1d561c-21ff-4092-beab-8154b17f82f2" --header "Authorization: Bearer <SCIM_TOKEN>" --header "Content-Type: application/scim+json" --data '{ "Operations": [{"op":"Replace","path":"active","value":"true"}] }'
     ```
 
 ### 500 error after login **(FREE SELF)**

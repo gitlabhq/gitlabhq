@@ -12,6 +12,7 @@ import {
 import Tracking from '~/tracking';
 import { sprintf } from '~/locale';
 import ContentTransition from '~/vue_shared/components/content_transition.vue';
+import { initialSelectedRole, roleDropdownItems } from 'ee_else_ce/members/utils';
 import {
   ACCESS_LEVEL,
   ACCESS_EXPIRE_DATE,
@@ -68,6 +69,11 @@ export default {
       type: Number,
       required: true,
     },
+    defaultMemberRoleId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
     helpLink: {
       type: String,
       required: true,
@@ -91,6 +97,11 @@ export default {
       default: false,
     },
     isLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isLoadingRoles: {
       type: Boolean,
       required: false,
       default: false,
@@ -134,14 +145,14 @@ export default {
   data() {
     // Be sure to check out reset!
     return {
-      selectedAccessLevel: this.defaultAccessLevel,
+      selectedAccessLevel: null,
       selectedDate: undefined,
       minDate: new Date(),
     };
   },
   computed: {
-    accessLevelsOptions() {
-      return Object.entries(this.accessLevels).map(([text, value]) => ({ text, value }));
+    accessLevelOptions() {
+      return roleDropdownItems(this.accessLevels);
     },
     introText() {
       return sprintf(this.labelIntroText, { name: this.name });
@@ -188,11 +199,17 @@ export default {
       };
     },
   },
+  watch: {
+    accessLevelOptions: {
+      immediate: true,
+      handler: 'resetSelectedAccessLevel',
+    },
+  },
   methods: {
     onReset() {
       // This component isn't necessarily disposed,
       // so we might need to reset it's state.
-      this.selectedAccessLevel = this.defaultAccessLevel;
+      this.resetSelectedAccessLevel();
       this.selectedDate = undefined;
 
       this.$emit('reset');
@@ -216,13 +233,26 @@ export default {
       // We never want to hide when submitting
       e.preventDefault();
 
+      const { accessLevel, memberRoleId } = this.accessLevelOptions.flatten.find(
+        (item) => item.value === this.selectedAccessLevel,
+      );
       this.$emit('submit', {
-        accessLevel: this.selectedAccessLevel,
+        accessLevel,
+        memberRoleId,
         expiresAt: this.selectedDate,
       });
     },
     onClose() {
       this.$emit('close');
+    },
+    resetSelectedAccessLevel() {
+      const accessLevel = {
+        integerValue: this.defaultAccessLevel,
+        memberRoleId: this.defaultMemberRoleId,
+      };
+      this.selectedAccessLevel = initialSelectedRole(this.accessLevelOptions.flatten, {
+        accessLevel,
+      });
     },
   },
   HEADER_CLOSE_LABEL,
@@ -298,7 +328,8 @@ export default {
             :id="dropdownId"
             v-model="selectedAccessLevel"
             data-testid="access-level-dropdown"
-            :items="accessLevelsOptions"
+            :items="accessLevelOptions.formatted"
+            :loading="isLoadingRoles"
             block
           />
         </gl-form-group>
