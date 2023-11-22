@@ -55026,6 +55026,9 @@ msgstr ""
 msgid "Workspaces|Could not retrieve cluster agents for this project"
 msgstr ""
 
+msgid "Workspaces|Create a new workspace"
+msgstr ""
+
 msgid "Workspaces|Create workspace"
 msgstr ""
 
