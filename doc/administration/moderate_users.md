@@ -68,6 +68,13 @@ Approving a user:
 ## Block and unblock users
 
 GitLab administrators can block and unblock users.
+You should block a user when you don't want them to access the instance, but you want to retain their data.
+
+A blocked user:
+
+- Cannot sign in or access any repositories. The blocked user's data remains in those repositories.
+- Cannot use slash commands. For more information, see [slash commands](../user/project/integrations/gitlab_slack_application.md#slash-commands).
+- Does not occupy a seat. For more information, see [billable users](../subscriptions/self_managed/index.md#billable-users).
 
 ### Block a user
 
@@ -75,11 +82,7 @@ Prerequisites:
 
 - You must be an administrator for the instance.
 
-You can block a user's access to the instance. When you block a user, they receive an email notification that their account has been blocked. After this email, they no longer receive notifications. A blocked user:
-
-- Cannot sign in or access any repositories, but all of their data remains in those repositories.
-- Cannot use slash commands. For more information, see [slash commands](../user/project/integrations/gitlab_slack_application.md#slash-commands).
-- Does not occupy a seat. For more information, see [billable users](../subscriptions/self_managed/index.md#billable-users).
+You can block a user's access to the instance.
 
 To block a user:
 
@@ -87,6 +90,8 @@ To block a user:
 1. Select **Admin Area**.
 1. Select **Overview > Users**.
 1. For the user you want to block, select the vertical ellipsis (**{ellipsis_v}**), then **Block**.
+
+The user receives an email notification that their account has been blocked. After this email, they no longer receive notifications.
 
 To report abuse from other users, see [report abuse](../user/report_abuse.md). For more information on abuse reports in the Admin area, see [resolving abuse reports](../administration/review_abuse_reports.md#resolving-abuse-reports).
 
@@ -120,22 +125,27 @@ the LDAP identity first needs to be deleted:
 ## Activate and deactivate users
 
 GitLab administrators can deactivate and activate users.
+You should deactivate a user if they have no recent activity, and you don't want them to occupy a seat on the instance.
+
+A deactivated user:
+
+- Can sign in to GitLab.
+  - If a deactivated user signs in, they are automatically activated.
+- Cannot access repositories or the API.
+- Cannot use slash commands. For more information, see [slash commands](../user/project/integrations/gitlab_slack_application.md#slash-commands).
+- Does not occupy a seat. For more information, see [billable users](../subscriptions/self_managed/index.md#billable-users).
+
+When you deactivate a user, their projects, groups, and history remain.
 
 ### Deactivate a user
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
 
-You can temporarily deactivate a user who has no recent activity.
+Prerequisites:
 
-The user you deactivate must be dormant. When you deactivate a user, their projects, group, and history remain. A deactivated user:
+- The user has had no activity in the last 90 days.
 
-- Cannot access repositories or the API.
-- Cannot use slash commands. For more information, see [slash commands](../user/project/integrations/gitlab_slack_application.md#slash-commands).
-- Does not occupy a seat. For more information, see [billable users](../subscriptions/self_managed/index.md#billable-users).
-
-Deactivation is similar to blocking, but there are a few important differences. Deactivating a user does not prohibit the user from signing into the GitLab UI. A deactivated user can become active again by signing in.
-
-To deactivate a user from the Admin Area:
+To deactivate a user:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
@@ -143,7 +153,8 @@ To deactivate a user from the Admin Area:
 1. For the user you want to deactivate, select the vertical ellipsis (**{ellipsis_v}**) and then **Deactivate**.
 1. On the dialog, select **Deactivate**.
 
-Email notifications stop after deactivation. GitLab sends email notifications to users when their account has been deactivated. For more information about this feature, see [user deactivation emails](../administration/settings/email.md#user-deactivation-emails).
+The user receives an email notification that their account has been deactivated. After this email, they no longer receive notifications.
+For more information, see [user deactivation emails](../administration/settings/email.md#user-deactivation-emails).
 
 To deactivate users with the GitLab API, see [deactivate user](../api/users.md#deactivate-user). For information about permanent user restrictions, see [block and unblock users](#block-and-unblock-users).
 
@@ -233,7 +244,13 @@ Users can also be activated using the [GitLab API](../api/users.md#activate-user
 > - Hiding comments of banned users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112973) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `hidden_notes`. Disabled by default.
 > - Hiding projects of banned users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121488) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `hide_projects_of_banned_users`. Disabled by default.
 
-GitLab administrators can ban and unban users. Banned users are blocked, and their projects, issues, merge requests, and comments are hidden.
+GitLab administrators can ban and unban users.
+You should ban a user when you want to block them and hide their activity from the instance.
+
+A banned user:
+
+- Is blocked from the instance. The banned user's projects, issues, merge requests, and comments are hidden.
+- Does not occupy a [seat](../subscriptions/self_managed/index.md#billable-users).
 
 ### Ban a user
 
@@ -245,8 +262,6 @@ Users can be banned using the Admin Area. To do this:
 1. Select **Admin Area**.
 1. Select **Overview > Users**.
 1. For the user you want to ban, select the vertical ellipsis (**{ellipsis_v}**), then **Ban user**.
-
-The banned user does not consume a [seat](../subscriptions/self_managed/index.md#billable-users).
 
 ### Unban a user
 

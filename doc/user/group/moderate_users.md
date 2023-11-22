@@ -11,6 +11,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This is the group-level documentation. For self-managed instances, see the [administration documentation](../../administration/moderate_users.md).
 
 A group Owner can moderate user access by banning and unbanning users.
+You should ban a user when you want to block them from the group.
+
+A banned user:
+
+- Cannot access the group or any of repositories.
+- Cannot use [slash commands](../project/integrations/gitlab_slack_application.md#slash-commands).
+- Does not occupy a [seat](../free_user_limit.md).
 
 ## Unban a user
 
