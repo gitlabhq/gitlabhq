@@ -254,7 +254,7 @@ describe('LabelsSelect Actions', () => {
 
   describe('updateLabelsSetState', () => {
     it('updates labels `set` state to match `selectedLabels`', () => {
-      testAction(
+      return testAction(
         actions.updateLabelsSetState,
         {},
         state,

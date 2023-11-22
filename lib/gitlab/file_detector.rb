@@ -22,6 +22,7 @@ module Gitlab
       # Configuration files
       gitignore: '.gitignore',
       gitlab_ci: ::Ci::Pipeline::DEFAULT_CONFIG_PATH,
+      jenkinsfile: 'jenkinsfile',
       route_map: '.gitlab/route-map.yml',
 
       # Dependency files

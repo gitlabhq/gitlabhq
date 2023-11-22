@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'gitlab/rspec/next_instance_of'
 
 require_relative '../../support/stub_settings_source'
 require_relative '../../../sidekiq_cluster/cli'
-require_relative '../../support/helpers/next_instance_of'
 
 RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_settings_source: true do # rubocop:disable RSpec/FilePath
   include NextInstanceOf

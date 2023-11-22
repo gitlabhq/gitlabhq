@@ -5,8 +5,6 @@ import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import groupsAutocompleteQuery from '~/graphql_shared/queries/groups_autocomplete.query.graphql';
 import Api from '~/api';
-import UserItem from './user_item.vue';
-import GroupItem from './group_item.vue';
 import { CONFIG } from './constants';
 
 const I18N = {
@@ -25,10 +23,6 @@ export default {
     GlCollapsibleListbox,
   },
   props: {
-    title: {
-      type: String,
-      required: true,
-    },
     type: {
       type: String,
       required: true,
@@ -61,12 +55,6 @@ export default {
     config() {
       return CONFIG[this.type];
     },
-    isUserVariant() {
-      return this.type === 'users';
-    },
-    component() {
-      return this.isUserVariant ? UserItem : GroupItem;
-    },
     namespaceDropdownText() {
       return parseBoolean(this.isProjectNamespace)
         ? this.$options.i18n.projectGroups
@@ -77,12 +65,14 @@ export default {
     async handleSearchInput(search) {
       this.$refs.results.open();
 
+      const searchMethod = {
+        users: this.fetchUsersBySearchTerm,
+        groups: this.fetchGroupsBySearchTerm,
+        deployKeys: this.fetchDeployKeysBySearchTerm,
+      };
+
       try {
-        if (this.isUserVariant) {
-          this.items = await this.fetchUsersBySearchTerm(search);
-        } else {
-          this.items = await this.fetchGroupsBySearchTerm(search);
-        }
+        this.items = await searchMethod[this.type](search);
       } catch (e) {
         createAlert({
           message: this.$options.i18n.apiErrorMessage,
@@ -114,6 +104,10 @@ export default {
           })),
         );
     },
+    fetchDeployKeysBySearchTerm() {
+      // TODO - implement API request (follow-up)
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/432494
+    },
     getItemByKey(key) {
       return this.items.find((item) => item[this.config.filterKey] === key);
     },
@@ -139,7 +133,7 @@ export default {
   <gl-card header-class="gl-new-card-header gl-border-none" body-class="gl-card-footer">
     <template #header
       ><strong data-testid="list-selector-title"
-        >{{ title }}
+        >{{ config.title }}
         <span class="gl-text-gray-700 gl-ml-3"
           ><gl-icon :name="config.icon" /> {{ selectedItems.length }}</span
         ></strong
@@ -166,7 +160,7 @@ export default {
         </template>
 
         <template #list-item="{ item }">
-          <component :is="component" :data="item" @select="handleSelectItem" />
+          <component :is="config.component" :data="item" @select="handleSelectItem" />
         </template>
       </gl-collapsible-listbox>
 
@@ -180,7 +174,7 @@ export default {
     </div>
 
     <component
-      :is="component"
+      :is="config.component"
       v-for="(item, index) of selectedItems"
       :key="index"
       :class="{ 'gl-border-t': index > 0 }"

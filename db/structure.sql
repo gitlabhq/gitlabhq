@@ -12323,6 +12323,7 @@ CREATE TABLE approval_group_rules (
     security_orchestration_policy_configuration_id bigint,
     scan_result_policy_id bigint,
     name text NOT NULL,
+    applies_to_all_protected_branches boolean DEFAULT false NOT NULL,
     CONSTRAINT check_25d42add43 CHECK ((char_length(name) <= 255))
 );
 
@@ -34787,8 +34788,6 @@ CREATE INDEX index_users_on_created_at ON users USING btree (created_at);
 CREATE UNIQUE INDEX index_users_on_email ON users USING btree (email);
 
 CREATE INDEX index_users_on_email_domain_and_id ON users USING btree (lower(split_part((email)::text, '@'::text, 2)), id);
-
-CREATE INDEX index_users_on_email_trigram ON users USING gin (email gin_trgm_ops);
 
 CREATE INDEX index_users_on_feed_token ON users USING btree (feed_token);
 

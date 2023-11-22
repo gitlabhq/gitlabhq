@@ -93,7 +93,7 @@ describe('Release edit/new actions', () => {
 
     describe('loadDraftRelease', () => {
       it(`with no saved release, it commits ${types.INITIALIZE_EMPTY_RELEASE}`, () => {
-        testAction({
+        return testAction({
           action: actions.loadDraftRelease,
           state,
           expectedMutations: [{ type: types.INITIALIZE_EMPTY_RELEASE }],
@@ -203,7 +203,7 @@ describe('Release edit/new actions', () => {
 
     describe('saveRelease', () => {
       it(`commits ${types.REQUEST_SAVE_RELEASE} and then dispatched "createRelease"`, () => {
-        testAction({
+        return testAction({
           action: actions.saveRelease,
           state,
           expectedMutations: [{ type: types.REQUEST_SAVE_RELEASE }],
@@ -218,7 +218,7 @@ describe('Release edit/new actions', () => {
 
     describe('initializeRelease', () => {
       it('dispatches "fetchRelease"', () => {
-        testAction({
+        return testAction({
           action: actions.initializeRelease,
           state,
           expectedActions: [{ type: 'fetchRelease' }],
@@ -228,7 +228,7 @@ describe('Release edit/new actions', () => {
 
     describe('saveRelease', () => {
       it(`commits ${types.REQUEST_SAVE_RELEASE} and then dispatched "updateRelease"`, () => {
-        testAction({
+        return testAction({
           action: actions.saveRelease,
           state,
           expectedMutations: [{ type: types.REQUEST_SAVE_RELEASE }],

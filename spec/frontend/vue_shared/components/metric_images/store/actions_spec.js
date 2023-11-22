@@ -43,7 +43,7 @@ describe('Metrics tab store actions', () => {
     it('should call success action when fetching metric images', () => {
       service.getMetricImages.mockImplementation(() => Promise.resolve(fileList));
 
-      testAction(actions.fetchImages, null, state, [
+      return testAction(actions.fetchImages, null, state, [
         { type: types.REQUEST_METRIC_IMAGES },
         {
           type: types.RECEIVE_METRIC_IMAGES_SUCCESS,
@@ -80,7 +80,7 @@ describe('Metrics tab store actions', () => {
     it('should call success action when uploading an image', () => {
       service.uploadMetricImage.mockImplementation(() => Promise.resolve(fileList[0]));
 
-      testAction(actions.uploadImage, payload, state, [
+      return testAction(actions.uploadImage, payload, state, [
         { type: types.REQUEST_METRIC_UPLOAD },
         {
           type: types.RECEIVE_METRIC_UPLOAD_SUCCESS,
@@ -112,7 +112,7 @@ describe('Metrics tab store actions', () => {
     it('should call success action when updating an image', () => {
       service.updateMetricImage.mockImplementation(() => Promise.resolve());
 
-      testAction(actions.updateImage, payload, state, [
+      return testAction(actions.updateImage, payload, state, [
         { type: types.REQUEST_METRIC_UPLOAD },
         {
           type: types.RECEIVE_METRIC_UPDATE_SUCCESS,
@@ -140,7 +140,7 @@ describe('Metrics tab store actions', () => {
     it('should call success action when deleting an image', () => {
       service.deleteMetricImage.mockImplementation(() => Promise.resolve());
 
-      testAction(actions.deleteImage, payload, state, [
+      return testAction(actions.deleteImage, payload, state, [
         {
           type: types.RECEIVE_METRIC_DELETE_SUCCESS,
           payload,
@@ -151,7 +151,7 @@ describe('Metrics tab store actions', () => {
 
   describe('initial data', () => {
     it('should set the initial data correctly', () => {
-      testAction(actions.setInitialData, initialData, state, [
+      return testAction(actions.setInitialData, initialData, state, [
         { type: types.SET_INITIAL_DATA, payload: initialData },
       ]);
     });

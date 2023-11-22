@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
+	"time"
 
 	"gitlab.com/gitlab-org/labkit/log"
 
@@ -13,8 +15,12 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
 )
 
+const dialTimeout = 10 * time.Second
+const responseHeaderTimeout = 10 * time.Second
+
+var httpTransport = transport.NewRestrictedTransport(transport.WithDialTimeout(dialTimeout), transport.WithResponseHeaderTimeout(responseHeaderTimeout))
 var httpClient = &http.Client{
-	Transport: transport.NewRestrictedTransport(),
+	Transport: httpTransport,
 }
 
 type Injector struct {
@@ -70,7 +76,13 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 
 	dependencyResponse, err := p.fetchUrl(r.Context(), params)
 	if err != nil {
-		fail.Request(w, r, err)
+		status := http.StatusBadGateway
+
+		if os.IsTimeout(err) {
+			status = http.StatusGatewayTimeout
+		}
+
+		fail.Request(w, r, err, fail.WithStatus(status))
 		return
 	}
 	defer dependencyResponse.Body.Close()

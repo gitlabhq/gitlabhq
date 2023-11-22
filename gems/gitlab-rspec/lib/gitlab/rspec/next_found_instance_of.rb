@@ -5,35 +5,40 @@ module NextFoundInstanceOf
   HELPER_METHOD_PATTERN = /(?:allow|expect)_next_found_(?<number>\d+)_instances_of/
 
   def method_missing(method_name, ...)
-    return super unless match_data = method_name.match(HELPER_METHOD_PATTERN)
+    match_data = method_name.match(HELPER_METHOD_PATTERN)
+    return super unless match_data
 
     helper_method = method_name.to_s.sub("_#{match_data[:number]}", '')
 
-    public_send(helper_method, *args, match_data[:number].to_i, &block)
+    public_send(helper_method, *args, match_data[:number].to_i, &block) # rubocop:disable GitlabSecurity/PublicSend -- it is safe
+  end
+
+  def respond_to_missing?(method_name, ...)
+    match_data = method_name.match(HELPER_METHOD_PATTERN)
+    return super unless match_data
+
+    helper_method = method_name.to_s.sub("_#{match_data[:number]}", '')
+    helper_method.respond_to_missing?(helper_method, *args, &block)
   end
 
   def expect_next_found_instance_of(klass, &block)
     expect_next_found_instances_of(klass, nil, &block)
   end
 
-  def expect_next_found_instances_of(klass, number)
+  def expect_next_found_instances_of(klass, number, &block)
     check_if_active_record!(klass)
 
-    stub_allocate(expect(klass), klass, number) do |expectation|
-      yield(expectation)
-    end
+    stub_allocate(expect(klass), klass, number, &block)
   end
 
   def allow_next_found_instance_of(klass, &block)
     allow_next_found_instances_of(klass, nil, &block)
   end
 
-  def allow_next_found_instances_of(klass, number)
+  def allow_next_found_instances_of(klass, number, &block)
     check_if_active_record!(klass)
 
-    stub_allocate(allow(klass), klass, number) do |allowance|
-      yield(allowance)
-    end
+    stub_allocate(allow(klass), klass, number, &block)
   end
 
   private
@@ -42,7 +47,7 @@ module NextFoundInstanceOf
     raise ArgumentError, ERROR_MESSAGE unless klass < ActiveRecord::Base
   end
 
-  def stub_allocate(target, klass, number)
+  def stub_allocate(target, klass, number, &_block)
     stub = receive(:allocate)
     stub.exactly(number).times if number
 

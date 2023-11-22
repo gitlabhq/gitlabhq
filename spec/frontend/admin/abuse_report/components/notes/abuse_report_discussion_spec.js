@@ -4,6 +4,7 @@ import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import AbuseReportDiscussion from '~/admin/abuse_report/components/notes/abuse_report_discussion.vue';
 import AbuseReportNote from '~/admin/abuse_report/components/notes/abuse_report_note.vue';
+import AbuseReportAddNote from '~/admin/abuse_report/components/notes/abuse_report_add_note.vue';
 
 import {
   mockAbuseReport,
@@ -19,6 +20,7 @@ describe('Abuse Report Discussion', () => {
   const findAbuseReportNotes = () => wrapper.findAllComponents(AbuseReportNote);
   const findTimelineEntryItem = () => wrapper.findComponent(TimelineEntryItem);
   const findToggleRepliesWidget = () => wrapper.findComponent(ToggleRepliesWidget);
+  const findAbuseReportAddNote = () => wrapper.findComponent(AbuseReportAddNote);
 
   const createComponent = ({
     discussion = mockDiscussionWithNoReplies,
@@ -50,8 +52,12 @@ describe('Abuse Report Discussion', () => {
       expect(findTimelineEntryItem().exists()).toBe(false);
     });
 
-    it('should not show the the toggle replies widget wrapper when no replies', () => {
+    it('should not show the toggle replies widget wrapper when there are no replies', () => {
       expect(findToggleRepliesWidget().exists()).toBe(false);
+    });
+
+    it('should not show the comment form there are no replies', () => {
+      expect(findAbuseReportAddNote().exists()).toBe(false);
     });
   });
 
@@ -74,6 +80,16 @@ describe('Abuse Report Discussion', () => {
       findToggleRepliesWidget().vm.$emit('toggle');
       await nextTick();
       expect(findAbuseReportNotes()).toHaveLength(1);
+    });
+
+    it('should show the comment form', () => {
+      expect(findAbuseReportAddNote().exists()).toBe(true);
+
+      expect(findAbuseReportAddNote().props()).toMatchObject({
+        abuseReportId: mockAbuseReportId,
+        discussionId: mockDiscussionWithReplies[0].discussion.id,
+        isNewDiscussion: false,
+      });
     });
   });
 });

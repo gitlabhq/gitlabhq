@@ -1585,6 +1585,29 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
+  describe "#jenkinsfile?" do
+    let_it_be(:project) { create(:project, :repository) }
+
+    it 'returns valid file' do
+      files = [TestBlob.new('file'), TestBlob.new('Jenkinsfile'), TestBlob.new('copying')]
+      expect(repository.tree).to receive(:blobs).and_return(files)
+
+      expect(repository.jenkinsfile?).to be(true)
+    end
+
+    it 'is case-insensitive' do
+      files = [TestBlob.new('file'), TestBlob.new('JENKINSFILE'), TestBlob.new('copying')]
+      expect(repository.tree).to receive(:blobs).and_return(files)
+
+      expect(repository.jenkinsfile?).to be(true)
+    end
+
+    it 'returns false if does not exists' do
+      expect(repository.tree).to receive(:blobs).and_return([])
+      expect(repository.jenkinsfile?).to be(false)
+    end
+  end
+
   describe '#ambiguous_ref?' do
     subject { repository.ambiguous_ref?(ref) }
 

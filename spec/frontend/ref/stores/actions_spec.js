@@ -28,7 +28,7 @@ describe('Ref selector Vuex store actions', () => {
 
   describe('setEnabledRefTypes', () => {
     it(`commits ${types.SET_ENABLED_REF_TYPES} with the enabled ref types`, () => {
-      testAction(actions.setProjectId, ALL_REF_TYPES, state, [
+      return testAction(actions.setProjectId, ALL_REF_TYPES, state, [
         { type: types.SET_PROJECT_ID, payload: ALL_REF_TYPES },
       ]);
     });
@@ -37,7 +37,7 @@ describe('Ref selector Vuex store actions', () => {
   describe('setProjectId', () => {
     it(`commits ${types.SET_PROJECT_ID} with the new project ID`, () => {
       const projectId = '4';
-      testAction(actions.setProjectId, projectId, state, [
+      return testAction(actions.setProjectId, projectId, state, [
         { type: types.SET_PROJECT_ID, payload: projectId },
       ]);
     });
@@ -46,7 +46,7 @@ describe('Ref selector Vuex store actions', () => {
   describe('setSelectedRef', () => {
     it(`commits ${types.SET_SELECTED_REF} with the new selected ref name`, () => {
       const selectedRef = 'v1.2.3';
-      testAction(actions.setSelectedRef, selectedRef, state, [
+      return testAction(actions.setSelectedRef, selectedRef, state, [
         { type: types.SET_SELECTED_REF, payload: selectedRef },
       ]);
     });
@@ -55,14 +55,16 @@ describe('Ref selector Vuex store actions', () => {
   describe('setParams', () => {
     it(`commits ${types.SET_PARAMS} with the provided params`, () => {
       const params = { sort: 'updated_asc' };
-      testAction(actions.setParams, params, state, [{ type: types.SET_PARAMS, payload: params }]);
+      return testAction(actions.setParams, params, state, [
+        { type: types.SET_PARAMS, payload: params },
+      ]);
     });
   });
 
   describe('search', () => {
     it(`commits ${types.SET_QUERY} with the new search query`, () => {
       const query = 'hello';
-      testAction(actions.search, query, state, [{ type: types.SET_QUERY, payload: query }]);
+      return testAction(actions.search, query, state, [{ type: types.SET_QUERY, payload: query }]);
     });
 
     it.each`
@@ -73,7 +75,7 @@ describe('Ref selector Vuex store actions', () => {
     `(`dispatches fetch actions for enabled ref types`, ({ enabledRefTypes, expectedActions }) => {
       const query = 'hello';
       state.enabledRefTypes = enabledRefTypes;
-      testAction(
+      return testAction(
         actions.search,
         query,
         state,

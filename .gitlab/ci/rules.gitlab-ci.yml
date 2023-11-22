@@ -1443,6 +1443,16 @@
 ############
 # QA rules #
 ############
+.qa:rules:update-gem-cache:
+  rules:
+    - <<: *if-default-refs
+      changes:
+        - qa/Gemfile.lock
+    - <<: *if-schedule-maintenance
+    - <<: *if-security-schedule
+    - <<: *if-foss-schedule
+    - <<: *if-merge-request-labels-update-caches
+
 .qa:rules:code-merge-request-manual:
   rules:
     - <<: *if-merge-request
@@ -1593,11 +1603,6 @@
       changes: *ci-qa-patterns
       allow_failure: true
     - <<: *if-merge-request
-      changes:
-        - qa/Gemfile.lock  # qa/Gemfile.lock is a part of *qa-patterns, so this rule must be placed before the one with *qa-patterns changes
-      variables:
-        UPDATE_QA_CACHE: "true"
-    - <<: *if-merge-request
       changes: *qa-patterns
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
@@ -1636,11 +1641,6 @@
       when: manual
     - <<: *if-merge-request
       changes: *nodejs-patterns
-    - <<: *if-merge-request
-      changes:
-        - qa/Gemfile.lock  # qa/Gemfile.lock is a part of *qa-patterns, so this rule must be placed before the one with *qa-patterns changes
-      variables:
-        UPDATE_QA_CACHE: "true"
     - <<: *if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
       changes: *code-patterns
     - <<: *if-merge-request
@@ -1657,7 +1657,6 @@
     CREATE_TEST_FAILURE_ISSUES: "true"
     PROCESS_TEST_RESULTS: "true"
     KNAPSACK_GENERATE_REPORT: "true"
-    UPDATE_QA_CACHE: "true"
     QA_SAVE_TEST_METRICS: "true"
     QA_EXPORT_TEST_METRICS: "false"  # on main runs, metrics are exported to separate bucket via rake task for better consistency
 

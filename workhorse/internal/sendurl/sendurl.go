@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -11,6 +12,7 @@ import (
 
 	"gitlab.com/gitlab-org/labkit/mask"
 
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
@@ -20,11 +22,15 @@ import (
 type entry struct{ senddata.Prefix }
 
 type entryParams struct {
-	URL            string
-	AllowRedirects bool
-	Body           string
-	Header         http.Header
-	Method         string
+	URL                   string
+	AllowRedirects        bool
+	DialTimeout           config.TomlDuration
+	ResponseHeaderTimeout config.TomlDuration
+	ErrorResponseStatus   int
+	TimeoutResponseStatus int
+	Body                  string
+	Header                http.Header
+	Method                string
 }
 
 var SendURL = &entry{"send-url:"}
@@ -48,10 +54,8 @@ var preserveHeaderKeys = map[string]bool{
 	"Pragma":        true, // Support for HTTP 1.0 proxies
 }
 
-var httpTransport = transport.NewRestrictedTransport()
-
-var httpClient = &http.Client{
-	Transport: httpTransport,
+var httpClientNoRedirect = func(req *http.Request, via []*http.Request) error {
+	return http.ErrUseLastResponse
 }
 
 var (
@@ -126,14 +130,19 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 
 	// execute new request
 	var resp *http.Response
-	if params.AllowRedirects {
-		resp, err = httpClient.Do(newReq)
-	} else {
-		resp, err = httpTransport.RoundTrip(newReq)
-	}
+	resp, err = newClient(params).Do(newReq)
+
 	if err != nil {
+		status := http.StatusInternalServerError
+
+		if params.TimeoutResponseStatus != 0 && os.IsTimeout(err) {
+			status = params.TimeoutResponseStatus
+		} else if params.ErrorResponseStatus != 0 {
+			status = params.ErrorResponseStatus
+		}
+
 		sendURLRequestsRequestFailed.Inc()
-		fail.Request(w, r, fmt.Errorf("SendURL: Do request: %v", err))
+		fail.Request(w, r, fmt.Errorf("SendURL: Do request: %v", err), fail.WithStatus(status))
 		return
 	}
 
@@ -159,4 +168,25 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 	}
 
 	sendURLRequestsSucceeded.Inc()
+}
+
+func newClient(params entryParams) *http.Client {
+	var options []transport.Option
+
+	if params.DialTimeout.Duration != 0 {
+		options = append(options, transport.WithDialTimeout(params.DialTimeout.Duration))
+	}
+	if params.ResponseHeaderTimeout.Duration != 0 {
+		options = append(options, transport.WithResponseHeaderTimeout(params.ResponseHeaderTimeout.Duration))
+	}
+
+	client := &http.Client{
+		Transport: transport.NewRestrictedTransport(options...),
+	}
+
+	if !params.AllowRedirects {
+		client.CheckRedirect = httpClientNoRedirect
+	}
+
+	return client
 }

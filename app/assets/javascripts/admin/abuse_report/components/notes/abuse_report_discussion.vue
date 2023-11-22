@@ -4,6 +4,7 @@ import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item
 import DiscussionNotesRepliesWrapper from '~/notes/components/discussion_notes_replies_wrapper.vue';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import AbuseReportNote from './abuse_report_note.vue';
+import AbuseReportAddNote from './abuse_report_add_note.vue';
 
 export default {
   name: 'AbuseReportDiscussion',
@@ -12,6 +13,7 @@ export default {
     DiscussionNotesRepliesWrapper,
     ToggleRepliesWidget,
     AbuseReportNote,
+    AbuseReportAddNote,
   },
   props: {
     abuseReportId: {
@@ -92,6 +94,11 @@ export default {
                         :abuse-report-id="abuseReportId"
                       />
                     </template>
+                    <abuse-report-add-note
+                      :discussion-id="discussionId"
+                      :is-new-discussion="false"
+                      :abuse-report-id="abuseReportId"
+                    />
                   </template>
                 </discussion-notes-replies-wrapper>
               </ul>

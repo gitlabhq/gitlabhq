@@ -157,7 +157,15 @@ module Gitlab
         ]
       end
 
-      def send_url(url, allow_redirects: false, method: 'GET', body: nil, headers: nil)
+      # response_statuses can be set for 'error' and 'timeout'. They are optional.
+      # Their values must be a symbol accepted by Rack::Utils::SYMBOL_TO_STATUS_CODE.
+      # Example: response_statuses : { error: :internal_server_error, timeout: :bad_request }
+      # timeouts can be given for the opening the connection and reading the response headers.
+      # Their values must be given in seconds.
+      # Example: timeouts: { open: 5, read: 5 }
+      def send_url(
+        url, allow_redirects: false, method: 'GET', body: nil, headers: nil, timeouts: {}, response_statuses: {}
+      )
         params = {
           'URL' => url,
           'AllowRedirects' => allow_redirects,
@@ -166,9 +174,24 @@ module Gitlab
           'Method' => method
         }.compact
 
+        if timeouts.present?
+          params['DialTimeout'] = "#{timeouts[:open]}s" if timeouts[:open]
+          params['ResponseHeaderTimeout'] = "#{timeouts[:read]}s" if timeouts[:read]
+        end
+
+        if response_statuses.present?
+          if response_statuses[:error]
+            params['ErrorResponseStatus'] = Rack::Utils::SYMBOL_TO_STATUS_CODE[response_statuses[:error]]
+          end
+
+          if response_statuses[:timeout]
+            params['TimeoutResponseStatus'] = Rack::Utils::SYMBOL_TO_STATUS_CODE[response_statuses[:timeout]]
+          end
+        end
+
         [
           SEND_DATA_HEADER,
-          "send-url:#{encode(params)}"
+          "send-url:#{encode(params.compact)}"
         ]
       end
 

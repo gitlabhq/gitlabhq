@@ -30,19 +30,6 @@ download-fast-quarantine-report:
     - .download-fast-quarantine-report
     - .rules:download-fast-quarantine-report
 
-cache-gems:
-  extends:
-    - .qa-install
-    - .ruby-image
-    - .rules:update-cache
-  stage: .pre
-  tags:
-    - e2e
-  script:
-    - echo "Populated qa cache"
-  cache:
-    policy: pull-push
-
 # ==========================================
 # Test stage
 # ==========================================

@@ -119,11 +119,7 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
   end
 
   shared_examples 'authorize action with permission' do
-    context 'with a valid user' do
-      before do
-        group.add_guest(user)
-      end
-
+    shared_examples 'sends Workhorse instructions' do
       it 'sends Workhorse local file instructions', :aggregate_failures do
         subject
 
@@ -143,6 +139,28 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
         expect(json_response['RemoteObject']).not_to be_nil
         expect(json_response['MaximumSize']).to eq(maximum_size)
       end
+    end
+
+    before do
+      group.add_guest(user)
+    end
+
+    context 'with a valid user' do
+      it_behaves_like 'sends Workhorse instructions'
+    end
+
+    context 'with a valid group access token' do
+      let_it_be(:user) { create(:user, :project_bot) }
+      let_it_be_with_reload(:token) { create(:personal_access_token, user: user) }
+
+      it_behaves_like 'sends Workhorse instructions'
+    end
+
+    context 'with a deploy token' do
+      let_it_be(:user) { create(:deploy_token, :dependency_proxy_scopes, :group) }
+      let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+
+      it_behaves_like 'sends Workhorse instructions'
     end
   end
 

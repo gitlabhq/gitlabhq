@@ -340,3 +340,52 @@ export const mockNotesByIdResponse = {
     },
   },
 };
+
+export const createAbuseReportNoteResponse = {
+  data: {
+    createNote: {
+      note: {
+        id: 'gid://gitlab/Note/6',
+        discussion: {
+          id: 'gid://gitlab/Discussion/90ca230051611e6e1676c50ba7178e0baeabd98d',
+          notes: {
+            nodes: [
+              {
+                id: 'gid://gitlab/Note/6',
+                body: 'Another comment',
+                bodyHtml: '<p data-sourcepos="1:1-1:15" dir="auto">Another comment</p>',
+                createdAt: '2023-11-02T02:45:46Z',
+                lastEditedAt: '2023-11-02T02:45:46Z',
+                url: 'http://127.0.0.1:3000/admin/abuse_reports/20#note_6',
+                resolved: false,
+                author: {
+                  id: 'gid://gitlab/User/1',
+                  avatarUrl:
+                    'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+                  name: 'Administrator',
+                  username: 'root',
+                  webUrl: 'http://127.0.0.1:3000/root',
+                },
+                lastEditedBy: null,
+                userPermissions: {
+                  adminNote: true,
+                },
+                discussion: {
+                  id: 'gid://gitlab/Discussion/90ca230051611e6e1676c50ba7178e0baeabd98d',
+                  notes: {
+                    nodes: [
+                      {
+                        id: 'gid://gitlab/Note/6',
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      errors: [],
+    },
+  },
+};

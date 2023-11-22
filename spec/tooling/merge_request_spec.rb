@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'webmock/rspec'
+require 'gitlab/rspec/next_instance_of'
 
 require_relative '../../tooling/merge_request'
-require_relative '../support/helpers/next_instance_of'
 
 RSpec.describe Tooling::MergeRequest do
   let(:project_path) { 'gitlab-org/gitlab' }

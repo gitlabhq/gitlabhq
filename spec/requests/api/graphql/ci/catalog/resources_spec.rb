@@ -29,8 +29,11 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
     )
   end
 
-  let_it_be(:resource1) { create(:ci_catalog_resource, project: project1, latest_released_at: '2023-01-01T00:00:00Z') }
-  let_it_be(:public_resource) { create(:ci_catalog_resource, project: public_project) }
+  let_it_be(:resource1) do
+    create(:ci_catalog_resource, :published, project: project1, latest_released_at: '2023-01-01T00:00:00Z')
+  end
+
+  let_it_be(:public_resource) { create(:ci_catalog_resource, :published, project: public_project) }
 
   let(:query) do
     <<~GQL
@@ -61,7 +64,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
         run_with_clean_state(query, context: ctx)
       end
 
-      create(:ci_catalog_resource, project: project2)
+      create(:ci_catalog_resource, :published, project: project2)
 
       expect do
         run_with_clean_state(query, context: ctx)
@@ -119,7 +122,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
     end
 
     it 'limits the request to 1 resource at a time' do
-      create(:ci_catalog_resource, project: project2)
+      create(:ci_catalog_resource, :published, project: project2)
 
       post_query
 
@@ -327,8 +330,8 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
       end
 
       it 'returns catalog resources with the expected data' do
-        resource2 = create(:ci_catalog_resource, project: project2)
-        _resource_in_another_namespace = create(:ci_catalog_resource)
+        resource2 = create(:ci_catalog_resource, :published, project: project2)
+        _resource_in_another_namespace = create(:ci_catalog_resource, :published)
 
         post_query
 

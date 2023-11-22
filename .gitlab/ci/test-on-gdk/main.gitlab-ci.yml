@@ -124,17 +124,6 @@ download-knapsack-report:
     - .download-knapsack-report
     - .rules:download-knapsack
 
-cache-gems:
-  extends:
-    - .ruby-image
-    - .qa-cache-push
-    - .rules:update-cache
-  stage: .pre
-  tags:
-    - e2e
-  script:
-    - cd qa && bundle install
-
 # Take the existing GDK docker image and reconfigure it with Postgres load
 # balancing. Adding 5s lag to 1 of the replicas to validate robustness of
 # the load balancer.

@@ -142,7 +142,7 @@ describe('Vuex members actions', () => {
 
     describe('showRemoveGroupLinkModal', () => {
       it(`commits ${types.SHOW_REMOVE_GROUP_LINK_MODAL} mutation`, () => {
-        testAction(showRemoveGroupLinkModal, group, state, [
+        return testAction(showRemoveGroupLinkModal, group, state, [
           {
             type: types.SHOW_REMOVE_GROUP_LINK_MODAL,
             payload: group,
@@ -153,7 +153,7 @@ describe('Vuex members actions', () => {
 
     describe('hideRemoveGroupLinkModal', () => {
       it(`commits ${types.HIDE_REMOVE_GROUP_LINK_MODAL} mutation`, () => {
-        testAction(hideRemoveGroupLinkModal, group, state, [
+        return testAction(hideRemoveGroupLinkModal, group, state, [
           {
             type: types.HIDE_REMOVE_GROUP_LINK_MODAL,
           },
@@ -170,7 +170,7 @@ describe('Vuex members actions', () => {
 
     describe('showRemoveMemberModal', () => {
       it(`commits ${types.SHOW_REMOVE_MEMBER_MODAL} mutation`, () => {
-        testAction(showRemoveMemberModal, modalData, state, [
+        return testAction(showRemoveMemberModal, modalData, state, [
           {
             type: types.SHOW_REMOVE_MEMBER_MODAL,
             payload: modalData,
@@ -181,7 +181,7 @@ describe('Vuex members actions', () => {
 
     describe('hideRemoveMemberModal', () => {
       it(`commits ${types.HIDE_REMOVE_MEMBER_MODAL} mutation`, () => {
-        testAction(hideRemoveMemberModal, undefined, state, [
+        return testAction(hideRemoveMemberModal, undefined, state, [
           {
             type: types.HIDE_REMOVE_MEMBER_MODAL,
           },

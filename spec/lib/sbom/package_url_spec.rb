@@ -26,7 +26,7 @@
 require 'fast_spec_helper'
 require 'rspec-parameterized'
 
-require_relative '../../support/helpers/next_instance_of'
+require 'gitlab/rspec/next_instance_of'
 require_relative '../../support/shared_contexts/lib/sbom/package_url_shared_contexts'
 
 RSpec.describe Sbom::PackageUrl, feature_category: :dependency_management do

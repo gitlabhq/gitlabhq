@@ -8,7 +8,7 @@ describe('~/ide/stores/modules/editor/actions', () => {
     it('commits with payload', () => {
       const payload = {};
 
-      testAction(actions.updateFileEditor, payload, {}, [
+      return testAction(actions.updateFileEditor, payload, {}, [
         { type: types.UPDATE_FILE_EDITOR, payload },
       ]);
     });
@@ -18,7 +18,7 @@ describe('~/ide/stores/modules/editor/actions', () => {
     it('commits with payload', () => {
       const payload = 'path/to/file.txt';
 
-      testAction(actions.removeFileEditor, payload, {}, [
+      return testAction(actions.removeFileEditor, payload, {}, [
         { type: types.REMOVE_FILE_EDITOR, payload },
       ]);
     });
@@ -28,7 +28,7 @@ describe('~/ide/stores/modules/editor/actions', () => {
     it('commits with payload', () => {
       const payload = createTriggerRenamePayload('test', 'test123');
 
-      testAction(actions.renameFileEditor, payload, {}, [
+      return testAction(actions.renameFileEditor, payload, {}, [
         { type: types.RENAME_FILE_EDITOR, payload },
       ]);
     });

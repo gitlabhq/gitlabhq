@@ -10,11 +10,13 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload"
 )
 
@@ -124,6 +126,7 @@ func TestSuccessfullRequest(t *testing.T) {
 		w.Header().Set("Overridden-Header", overriddenHeader)
 		w.Write(content)
 	}))
+	defer originResourceServer.Close()
 
 	uploadHandler := &fakeUploadHandler{
 		handler: func(w http.ResponseWriter, r *http.Request) {
@@ -161,6 +164,7 @@ func TestValidUploadConfiguration(t *testing.T) {
 		w.Header().Set("Content-Type", contentType)
 		w.Write(content)
 	}))
+	defer originResourceServer.Close()
 
 	testCases := []struct {
 		desc           string
@@ -281,6 +285,34 @@ func TestInvalidUploadConfiguration(t *testing.T) {
 	}
 }
 
+func TestTimeoutConfiguration(t *testing.T) {
+	originResourceServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(20 * time.Millisecond)
+	}))
+	defer originResourceServer.Close()
+
+	injector := NewInjector()
+
+	var oldHttpClient = httpClient
+	httpClient = &http.Client{
+		Transport: transport.NewRestrictedTransport(transport.WithResponseHeaderTimeout(10 * time.Millisecond)),
+	}
+
+	t.Cleanup(func() {
+		httpClient = oldHttpClient
+	})
+
+	sendData := map[string]string{
+		"Url": originResourceServer.URL + "/file",
+	}
+
+	sendDataJsonString, err := json.Marshal(sendData)
+	require.NoError(t, err)
+
+	response := makeRequest(injector, string(sendDataJsonString))
+	require.Equal(t, http.StatusGatewayTimeout, response.Result().StatusCode)
+}
+
 func mergeMap(from map[string]interface{}, into map[string]interface{}) map[string]interface{} {
 	for k, v := range from {
 		into[k] = v
@@ -298,8 +330,8 @@ func TestIncorrectSendData(t *testing.T) {
 func TestIncorrectSendDataUrl(t *testing.T) {
 	response := makeRequest(NewInjector(), `{"Token": "token", "Url": "url"}`)
 
-	require.Equal(t, 500, response.Code)
-	require.Equal(t, "Internal Server Error\n", response.Body.String())
+	require.Equal(t, http.StatusBadGateway, response.Code)
+	require.Equal(t, "Bad Gateway\n", response.Body.String())
 }
 
 func TestFailedOriginServer(t *testing.T) {

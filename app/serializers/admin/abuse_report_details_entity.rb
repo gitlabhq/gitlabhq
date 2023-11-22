@@ -76,5 +76,9 @@ module Admin
     expose :report do |report|
       ReportedContentEntity.represent(report)
     end
+
+    expose :upload_note_attachment_path do |report|
+      upload_path('abuse_report', id: report.id)
+    end
   end
 end

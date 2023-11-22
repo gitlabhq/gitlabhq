@@ -30,6 +30,7 @@ export const initAbuseReportApp = () => {
       allowScopedLabels: false,
       updatePath: abuseReport.report.updatePath,
       listPath: abuseReportsListPath,
+      uploadNoteAttachmentPath: abuseReport.uploadNoteAttachmentPath,
       labelsManagePath: '',
       allowLabelCreate: true,
     },

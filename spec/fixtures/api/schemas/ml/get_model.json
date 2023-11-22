@@ -22,10 +22,10 @@
           "type": "integer"
         },
         "creation_timestamp": {
-          "type": "string"
+          "type": "integer"
         },
         "last_updated_timestamp": {
-          "type": "string"
+          "type": "integer"
         },
         "tags": {
           "type": "array",

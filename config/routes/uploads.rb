@@ -9,7 +9,7 @@ scope path: :uploads do
   # show uploads for models, snippets (notes) available for now
   get '-/system/:model/:id/:secret/:filename',
     to: 'uploads#show',
-    constraints: { model: /personal_snippet|user/, id: /\d+/, filename: %r{[^/]+} }
+    constraints: { model: /personal_snippet|user|abuse_report/, id: /\d+/, filename: %r{[^/]+} }
 
   # show temporary uploads
   get '-/system/temp/:secret/:filename',
@@ -25,12 +25,12 @@ scope path: :uploads do
   # create uploads for models, snippets (notes) available for now
   post ':model',
     to: 'uploads#create',
-    constraints: { model: /personal_snippet|user/, id: /\d+/ },
+    constraints: { model: /personal_snippet|user|abuse_report/, id: /\d+/ },
     as: 'upload'
 
   post ':model/authorize',
     to: 'uploads#authorize',
-    constraints: { model: /personal_snippet|user/ }
+    constraints: { model: /personal_snippet|user|abuse_report/ }
 
   # Alert Metric Images
   get "-/system/:model/:mounted_as/:id/:filename",
@@ -38,11 +38,11 @@ scope path: :uploads do
     constraints: { model: /alert_management_metric_image/, mounted_as: /file/, filename: %r{[^/]+} },
     as: 'alert_metric_image_upload'
 
-  # Abuse Reports Images
+  # screenshots uploaded by users when reporting abuse
   get "-/system/:model/:mounted_as/:id/:filename",
     to: "uploads#show",
     constraints: { model: /abuse_report/, mounted_as: /screenshot/, filename: %r{[^/]+} },
-    as: 'abuse_report_upload'
+    as: 'abuse_report_screenshot'
 end
 
 # Redirect old note attachments path to new uploads path.

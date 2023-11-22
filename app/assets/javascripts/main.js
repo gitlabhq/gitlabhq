@@ -15,7 +15,6 @@ import * as tooltips from '~/tooltips';
 import { initPrefetchLinks } from '~/lib/utils/navigation_utility';
 import { logHelloDeferred } from 'jh_else_ce/lib/logger/hello_deferred';
 import initAlertHandler from './alert_handler';
-import initTodoToggle from './header';
 import initLayoutNav from './layout_nav';
 import { handleLocationHash, addSelectOnFocusBehaviour } from './lib/utils/common_utils';
 import { localTimeAgo } from './lib/utils/datetime/timeago_utility';
@@ -86,7 +85,6 @@ function deferredInitialisation() {
 
   if (!gon.use_new_navigation) {
     initTopNav();
-    initTodoToggle();
   }
   initBreadcrumbs();
   initPrefetchLinks('.js-prefetch-document');

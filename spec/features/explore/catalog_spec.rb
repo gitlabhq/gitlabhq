@@ -29,7 +29,7 @@ RSpec.describe 'Global Catalog', :js, feature_category: :pipeline_composition do
 
     let_it_be(:ci_catalog_resources) do
       ci_resource_projects.map do |current_project|
-        create(:ci_catalog_resource, project: current_project)
+        create(:ci_catalog_resource, :published, project: current_project)
       end
     end
 
@@ -118,7 +118,7 @@ RSpec.describe 'Global Catalog', :js, feature_category: :pipeline_composition do
     end
 
     context 'when the resource is published' do
-      let_it_be(:new_ci_resource) { create(:ci_catalog_resource, project: project, state: :published) }
+      let_it_be(:new_ci_resource) { create(:ci_catalog_resource, :published, project: project) }
 
       it 'navigates to the details page' do
         expect(page).to have_content('Go to the project')

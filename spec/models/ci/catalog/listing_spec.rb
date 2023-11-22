@@ -4,13 +4,14 @@ require 'spec_helper'
 
 RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
   let_it_be(:namespace) { create(:group) }
-  let_it_be(:project_x)        { create(:project, namespace: namespace, name: 'X Project') }
-  let_it_be(:project_a)        { create(:project, :public, namespace: namespace, name: 'A Project') }
-  let_it_be(:project_noaccess) { create(:project, namespace: namespace, name: 'C Project') }
-  let_it_be(:project_ext)      { create(:project, :public, name: 'TestProject') }
+  let_it_be(:project_x) { create(:project, namespace: namespace, name: 'X Project') }
+  let_it_be(:public_project_a) { create(:project, :public, namespace: namespace, name: 'A Project') }
+  let_it_be(:inaccessable_project) { create(:project, namespace: namespace, name: 'C Project') }
+  let_it_be(:public_project_ext) { create(:project, :public, name: 'TestProject') }
+  let_it_be(:public_project) { create(:project, :public) }
   let_it_be(:user) { create(:user) }
 
-  let_it_be(:project_b) do
+  let_it_be(:private_project) do
     create(:project, namespace: namespace, name: 'B Project', description: 'Rspec test framework')
   end
 
@@ -18,50 +19,50 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
 
   before_all do
     project_x.add_reporter(user)
-    project_b.add_reporter(user)
-    project_a.add_reporter(user)
-    project_ext.add_reporter(user)
+    private_project.add_reporter(user)
+    public_project_a.add_reporter(user)
+    public_project_ext.add_reporter(user)
   end
 
   describe '#resources' do
     subject(:resources) { list.resources(**params) }
 
-    context 'when user is anonymous' do
-      let(:user) { nil }
-      let(:params) { {} }
+    context 'when fetching all resources' do
+      let_it_be(:resource_1) { create(:ci_catalog_resource, :published, project: public_project_a) }
+      let_it_be(:resource_2) { create(:ci_catalog_resource, :published, project: public_project_ext) }
+      let_it_be(:resource_3) { create(:ci_catalog_resource, :published, project: private_project) }
+      let_it_be(:unpublished_resource) { create(:ci_catalog_resource, project: public_project) }
 
-      let!(:resource_1) { create(:ci_catalog_resource, project: project_a) }
-      let!(:resource_2) { create(:ci_catalog_resource, project: project_ext) }
-      let!(:resource_3) { create(:ci_catalog_resource, project: project_b) }
+      context 'when user is anonymous' do
+        let(:user) { nil }
+        let(:params) { {} }
 
-      it 'returns only resources for public projects' do
-        is_expected.to contain_exactly(resource_1, resource_2)
-      end
+        it 'returns only published resources for public projects' do
+          is_expected.to contain_exactly(resource_1, resource_2)
+          is_expected.not_to include(unpublished_resource)
+        end
 
-      context 'when sorting is provided' do
-        let(:params) { { sort: :name_desc } }
+        context 'when sorting is provided' do
+          let(:params) { { sort: :name_desc } }
 
-        it 'returns only resources for public projects sorted by name DESC' do
-          is_expected.to contain_exactly(resource_2, resource_1)
+          it 'returns only resources for public projects sorted by name DESC' do
+            is_expected.to contain_exactly(resource_2, resource_1)
+          end
         end
       end
-    end
 
-    context 'when search params are provided' do
-      let(:params) { { search: 'test' } }
+      context 'when search params are provided' do
+        let(:params) { { search: 'test' } }
 
-      let!(:resource_1) { create(:ci_catalog_resource, project: project_a) }
-      let!(:resource_2) { create(:ci_catalog_resource, project: project_ext) }
-      let!(:resource_3) { create(:ci_catalog_resource, project: project_b) }
+        it 'returns the resources that match the search params' do
+          is_expected.to contain_exactly(resource_2, resource_3)
+        end
 
-      it 'returns the resources that match the search params' do
-        is_expected.to contain_exactly(resource_2, resource_3)
-      end
+        context 'when search term is too small' do
+          let(:params) { { search: 'te' } }
 
-      context 'when search term is too small' do
-        let(:params) { { search: 'te' } }
-
-        it { is_expected.to be_empty }
+          it { is_expected.to be_empty }
+        end
       end
     end
 
@@ -69,7 +70,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
       let(:params) { { namespace: namespace } }
 
       context 'when namespace is not a root namespace' do
-        let(:namespace) { create(:group, :nested) }
+        let_it_be(:namespace) { create(:group, :nested) }
 
         it 'raises an exception' do
           expect { resources }.to raise_error(ArgumentError, 'Namespace is not a root namespace')
@@ -78,6 +79,8 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
 
       context 'when the user has access to all projects in the namespace' do
         context 'when the namespace has no catalog resources' do
+          let_it_be(:namespace) { create(:group) }
+
           it { is_expected.to be_empty }
         end
 
@@ -87,19 +90,22 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
           let_it_be(:tomorrow) { today + 1.day }
 
           let_it_be(:resource_1) do
-            create(:ci_catalog_resource, project: project_x, latest_released_at: yesterday, created_at: today)
+            create(:ci_catalog_resource, :published, project: project_x, latest_released_at: yesterday,
+              created_at: today)
           end
 
           let_it_be(:resource_2) do
-            create(:ci_catalog_resource, project: project_b, latest_released_at: today, created_at: yesterday)
+            create(:ci_catalog_resource, :published, project: private_project, latest_released_at: today,
+              created_at: yesterday)
           end
 
           let_it_be(:resource_3) do
-            create(:ci_catalog_resource, project: project_a, latest_released_at: nil, created_at: tomorrow)
+            create(:ci_catalog_resource, :published, project: public_project_a, latest_released_at: nil,
+              created_at: tomorrow)
           end
 
           let_it_be(:other_namespace_resource) do
-            create(:ci_catalog_resource, project: project_ext, latest_released_at: tomorrow)
+            create(:ci_catalog_resource, :published, project: public_project_ext, latest_released_at: tomorrow)
           end
 
           it 'contains only catalog resources for projects in that namespace' do
@@ -161,8 +167,12 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
       end
 
       context 'when the user only has access to some projects in the namespace' do
-        let!(:accessible_resource) { create(:ci_catalog_resource, project: project_x) }
-        let!(:inaccessible_resource) { create(:ci_catalog_resource, project: project_noaccess) }
+        let_it_be(:accessible_resource) { create(:ci_catalog_resource, :published, project: project_x) }
+        let_it_be(:inaccessible_resource) { create(:ci_catalog_resource, :published, project: inaccessable_project) }
+
+        before do
+          project_x.add_reporter(user)
+        end
 
         it 'only returns catalog resources for projects the user has access to' do
           is_expected.to contain_exactly(accessible_resource)
@@ -170,10 +180,11 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
       end
 
       context 'when the user does not have access to the namespace' do
-        let!(:project) { create(:project) }
-        let!(:resource) { create(:ci_catalog_resource, project: project) }
-
-        let(:namespace) { project.namespace }
+        let_it_be(:inaccessable_namespace) { create(:group) }
+        let_it_be(:inaccessable_project) { create(:project) }
+        let_it_be(:inaccessable_catalog_resource) do
+          create(:ci_catalog_resource, :published, project: inaccessable_project)
+        end
 
         it { is_expected.to be_empty }
       end
@@ -184,7 +195,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
     subject { list.find_resource(id: id) }
 
     context 'when the resource is published and visible to the user' do
-      let_it_be(:accessible_resource) { create(:ci_catalog_resource, project: project_a, state: :published) }
+      let_it_be(:accessible_resource) { create(:ci_catalog_resource, :published, project: public_project_a) }
 
       let(:id) { accessible_resource.id }
 
@@ -202,7 +213,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
     end
 
     context 'when the resource is not published' do
-      let_it_be(:draft_resource) { create(:ci_catalog_resource, project: project_a, state: :draft) }
+      let_it_be(:draft_resource) { create(:ci_catalog_resource, project: private_project, state: :draft) }
 
       let(:id) { draft_resource.id }
 
@@ -212,7 +223,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
     end
 
     context "when the current user cannot read code on the resource's project" do
-      let_it_be(:inaccessible_resource) { create(:ci_catalog_resource, project: project_noaccess, state: :published) }
+      let_it_be(:inaccessible_resource) { create(:ci_catalog_resource, :published, project: inaccessable_project) }
 
       let(:id) { inaccessible_resource.id }
 

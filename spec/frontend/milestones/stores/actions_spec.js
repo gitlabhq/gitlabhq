@@ -28,7 +28,7 @@ describe('Milestone combobox Vuex store actions', () => {
   describe('setProjectId', () => {
     it(`commits ${types.SET_PROJECT_ID} with the new project ID`, () => {
       const projectId = '4';
-      testAction(actions.setProjectId, projectId, state, [
+      return testAction(actions.setProjectId, projectId, state, [
         { type: types.SET_PROJECT_ID, payload: projectId },
       ]);
     });
@@ -37,7 +37,7 @@ describe('Milestone combobox Vuex store actions', () => {
   describe('setGroupId', () => {
     it(`commits ${types.SET_GROUP_ID} with the new group ID`, () => {
       const groupId = '123';
-      testAction(actions.setGroupId, groupId, state, [
+      return testAction(actions.setGroupId, groupId, state, [
         { type: types.SET_GROUP_ID, payload: groupId },
       ]);
     });
@@ -46,16 +46,19 @@ describe('Milestone combobox Vuex store actions', () => {
   describe('setGroupMilestonesAvailable', () => {
     it(`commits ${types.SET_GROUP_MILESTONES_AVAILABLE} with the boolean indicating if group milestones are available (Premium)`, () => {
       state.groupMilestonesAvailable = true;
-      testAction(actions.setGroupMilestonesAvailable, state.groupMilestonesAvailable, state, [
-        { type: types.SET_GROUP_MILESTONES_AVAILABLE, payload: state.groupMilestonesAvailable },
-      ]);
+      return testAction(
+        actions.setGroupMilestonesAvailable,
+        state.groupMilestonesAvailable,
+        state,
+        [{ type: types.SET_GROUP_MILESTONES_AVAILABLE, payload: state.groupMilestonesAvailable }],
+      );
     });
   });
 
   describe('setSelectedMilestones', () => {
     it(`commits ${types.SET_SELECTED_MILESTONES} with the new selected milestones name`, () => {
       const selectedMilestones = ['v1.2.3'];
-      testAction(actions.setSelectedMilestones, selectedMilestones, state, [
+      return testAction(actions.setSelectedMilestones, selectedMilestones, state, [
         { type: types.SET_SELECTED_MILESTONES, payload: selectedMilestones },
       ]);
     });
@@ -63,7 +66,7 @@ describe('Milestone combobox Vuex store actions', () => {
 
   describe('clearSelectedMilestones', () => {
     it(`commits ${types.CLEAR_SELECTED_MILESTONES} with the new selected milestones name`, () => {
-      testAction(actions.clearSelectedMilestones, null, state, [
+      return testAction(actions.clearSelectedMilestones, null, state, [
         { type: types.CLEAR_SELECTED_MILESTONES },
       ]);
     });
@@ -72,14 +75,14 @@ describe('Milestone combobox Vuex store actions', () => {
   describe('toggleMilestones', () => {
     const selectedMilestone = 'v1.2.3';
     it(`commits ${types.ADD_SELECTED_MILESTONE} with the new selected milestone name`, () => {
-      testAction(actions.toggleMilestones, selectedMilestone, state, [
+      return testAction(actions.toggleMilestones, selectedMilestone, state, [
         { type: types.ADD_SELECTED_MILESTONE, payload: selectedMilestone },
       ]);
     });
 
     it(`commits ${types.REMOVE_SELECTED_MILESTONE} with the new selected milestone name`, () => {
       state.selectedMilestones = [selectedMilestone];
-      testAction(actions.toggleMilestones, selectedMilestone, state, [
+      return testAction(actions.toggleMilestones, selectedMilestone, state, [
         { type: types.REMOVE_SELECTED_MILESTONE, payload: selectedMilestone },
       ]);
     });
@@ -93,7 +96,7 @@ describe('Milestone combobox Vuex store actions', () => {
         };
 
         const searchQuery = 'v1.0';
-        testAction(
+        return testAction(
           actions.search,
           searchQuery,
           { ...state, ...getters },
@@ -106,7 +109,7 @@ describe('Milestone combobox Vuex store actions', () => {
     describe('when project does not have license to add group milestones', () => {
       it(`commits ${types.SET_SEARCH_QUERY} with the new search query to search for project milestones`, () => {
         const searchQuery = 'v1.0';
-        testAction(
+        return testAction(
           actions.search,
           searchQuery,
           state,
@@ -192,7 +195,7 @@ describe('Milestone combobox Vuex store actions', () => {
           groupMilestonesEnabled: () => true,
         };
 
-        testAction(
+        return testAction(
           actions.fetchMilestones,
           undefined,
           { ...state, ...getters },
@@ -204,7 +207,7 @@ describe('Milestone combobox Vuex store actions', () => {
 
     describe('when project does not have license to add group milestones', () => {
       it(`dispatchs fetchProjectMilestones`, () => {
-        testAction(
+        return testAction(
           actions.fetchMilestones,
           undefined,
           state,

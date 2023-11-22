@@ -4,11 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :dependency_proxy do
   let_it_be(:user) { create(:user) }
+  let_it_be(:params) { {} }
 
-  let(:service) { described_class.new(nil, user) }
+  let(:service) { described_class.new(nil, user, params) }
 
   before do
-    stub_config(dependency_proxy: { enabled: true })
+    stub_config(dependency_proxy: { enabled: true }, registry: { enabled: true })
   end
 
   describe '#execute' do
@@ -21,9 +22,13 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :de
       end
     end
 
-    shared_examples 'returning a token' do
-      it 'returns a token' do
-        expect(subject[:token]).not_to be_nil
+    shared_examples 'returning a token with an encoded field' do |field|
+      it 'returns a token with encoded field' do
+        token = subject[:token]
+        expect(token).not_to be_nil
+
+        decoded_token = decode(token)
+        expect(decoded_token[field]).not_to be_nil
       end
     end
 
@@ -41,14 +46,31 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :de
       it_behaves_like 'returning', status: 403, message: 'access forbidden'
     end
 
-    context 'with a deploy token as user' do
-      let_it_be(:user) { create(:deploy_token, :group, :dependency_proxy_scopes) }
+    context 'with a deploy token' do
+      let_it_be(:deploy_token) { create(:deploy_token, :group, :dependency_proxy_scopes) }
+      let_it_be(:params) { { deploy_token: deploy_token } }
 
-      it_behaves_like 'returning a token'
+      it_behaves_like 'returning a token with an encoded field', 'deploy_token'
     end
 
-    context 'with a user' do
-      it_behaves_like 'returning a token'
+    context 'with a human user' do
+      it_behaves_like 'returning a token with an encoded field', 'user_id'
+    end
+
+    context 'all other user types' do
+      User::USER_TYPES.except(:human, :project_bot).each_value do |user_type|
+        context "with user_type #{user_type}" do
+          before do
+            user.update!(user_type: user_type)
+          end
+
+          it_behaves_like 'returning a token with an encoded field', 'user_id'
+        end
+      end
+    end
+
+    def decode(token)
+      DependencyProxy::AuthTokenService.new(token).execute
     end
   end
 end

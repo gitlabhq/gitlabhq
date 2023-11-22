@@ -480,6 +480,14 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
 
   describe '.send_url' do
     let(:url) { 'http://example.com' }
+    let(:expected_params) do
+      {
+        'URL' => url,
+        'AllowRedirects' => false,
+        'Body' => '',
+        'Method' => 'GET'
+      }
+    end
 
     it 'sets the header correctly' do
       key, command, params = decode_workhorse_header(
@@ -488,18 +496,21 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
 
       expect(key).to eq("Gitlab-Workhorse-Send-Data")
       expect(command).to eq("send-url")
-      expect(params).to eq({
-        'URL' => url,
-        'AllowRedirects' => false,
-        'Body' => '',
-        'Method' => 'GET'
-      }.deep_stringify_keys)
+      expect(params).to eq(expected_params)
     end
 
     context 'when body, headers and method are specified' do
       let(:body) { 'body' }
       let(:headers) { { Authorization: ['Bearer token'] } }
       let(:method) { 'POST' }
+
+      let(:expected_params) do
+        super().merge(
+          'Body' => body,
+          'Header' => headers,
+          'Method' => method
+        ).deep_stringify_keys
+      end
 
       it 'sets the header correctly' do
         key, command, params = decode_workhorse_header(
@@ -508,13 +519,33 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
 
         expect(key).to eq("Gitlab-Workhorse-Send-Data")
         expect(command).to eq("send-url")
-        expect(params).to eq({
-          'URL' => url,
-          'AllowRedirects' => false,
-          'Body' => body,
-          'Header' => headers,
-          'Method' => method
-        }.deep_stringify_keys)
+        expect(params).to eq(expected_params)
+      end
+    end
+
+    context 'when timeouts are set' do
+      let(:timeouts) { { open: '5', read: '5' } }
+      let(:expected_params) { super().merge('DialTimeout' => '5s', 'ResponseHeaderTimeout' => '5s') }
+
+      it 'sets the header correctly' do
+        key, command, params = decode_workhorse_header(described_class.send_url(url, timeouts: timeouts))
+
+        expect(key).to eq("Gitlab-Workhorse-Send-Data")
+        expect(command).to eq("send-url")
+        expect(params).to eq(expected_params)
+      end
+    end
+
+    context 'when an response statuses are set' do
+      let(:response_statuses) { { error: :service_unavailable, timeout: :bad_request } }
+      let(:expected_params) { super().merge('ErrorResponseStatus' => 503, 'TimeoutResponseStatus' => 400) }
+
+      it 'sets the header correctly' do
+        key, command, params = decode_workhorse_header(described_class.send_url(url, response_statuses: response_statuses))
+
+        expect(key).to eq("Gitlab-Workhorse-Send-Data")
+        expect(command).to eq("send-url")
+        expect(params).to eq(expected_params)
       end
     end
   end

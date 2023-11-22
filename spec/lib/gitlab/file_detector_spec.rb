@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::FileDetector do
+RSpec.describe Gitlab::FileDetector, feature_category: :global_search do
   describe '.types_in_paths' do
     it 'returns the file types for the given paths' do
       expect(described_class.types_in_paths(%w[README.md CHANGELOG VERSION VERSION]))
@@ -115,6 +115,10 @@ RSpec.describe Gitlab::FileDetector do
       openapi_bad_types.each do |type_name|
         expect(described_class.type_of(type_name)).to be_nil
       end
+    end
+
+    it 'returns the type of a Jenkins config file' do
+      expect(described_class.type_of('jenkinsfile')).to eq(:jenkinsfile)
     end
   end
 end

@@ -110,6 +110,7 @@ describe('Pipelines', () => {
           suggestedCiTemplates: [],
           ciRunnerSettingsPath: defaultProps.ciRunnerSettingsPath,
           anyRunnersAvailable: true,
+          showJenkinsCiPrompt: false,
         },
         propsData: {
           ...defaultProps,

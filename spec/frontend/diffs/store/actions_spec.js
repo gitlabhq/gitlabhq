@@ -631,7 +631,7 @@ describe('DiffsStoreActions', () => {
 
   describe('prefetchFileNeighbors', () => {
     it('dispatches two requests to prefetch the next/previous files', () => {
-      testAction(
+      return testAction(
         diffActions.prefetchFileNeighbors,
         {},
         {

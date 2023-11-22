@@ -124,7 +124,7 @@ class AbuseReport < ApplicationRecord
     return screenshot.url unless screenshot.upload
 
     asset_host = ActionController::Base.asset_host || Gitlab.config.gitlab.base_url
-    local_path = Gitlab::Routing.url_helpers.abuse_report_upload_path(
+    local_path = Gitlab::Routing.url_helpers.abuse_report_screenshot_path(
       filename: screenshot.filename,
       id: screenshot.upload.model_id,
       model: 'abuse_report',

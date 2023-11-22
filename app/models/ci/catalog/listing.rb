@@ -44,7 +44,8 @@ module Ci
       attr_reader :current_user
 
       def all_resources
-        Ci::Catalog::Resource.joins(:project).includes(:project)
+        Ci::Catalog::Resource.published
+          .joins(:project).includes(:project)
           .merge(Project.public_or_visible_to_user(current_user))
       end
 

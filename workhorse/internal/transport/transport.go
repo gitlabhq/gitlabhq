@@ -1,6 +1,7 @@
 package transport
 
 import (
+	"net"
 	"net/http"
 	"time"
 
@@ -38,6 +39,20 @@ type Option func(*http.Transport)
 func WithDisabledCompression() Option {
 	return func(t *http.Transport) {
 		t.DisableCompression = true
+	}
+}
+
+func WithDialTimeout(timeout time.Duration) Option {
+	return func(t *http.Transport) {
+		t.DialContext = (&net.Dialer{
+			Timeout: timeout,
+		}).DialContext
+	}
+}
+
+func WithResponseHeaderTimeout(timeout time.Duration) Option {
+	return func(t *http.Transport) {
+		t.ResponseHeaderTimeout = timeout
 	}
 }
 

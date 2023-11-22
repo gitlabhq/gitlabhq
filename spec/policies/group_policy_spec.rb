@@ -1110,85 +1110,148 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       it { is_expected.to be_allowed(:admin_dependency_proxy) }
     end
 
-    context 'feature disabled' do
-      let(:current_user) { owner }
-
+    shared_examples 'disallows all dependency proxy access' do
       it { is_expected.to be_disallowed(:read_dependency_proxy) }
       it { is_expected.to be_disallowed(:admin_dependency_proxy) }
     end
 
+    shared_examples 'allows dependency proxy read access but not admin' do
+      it { is_expected.to be_allowed(:read_dependency_proxy) }
+      it { is_expected.to be_disallowed(:admin_dependency_proxy) }
+    end
+
+    context 'feature disabled' do
+      let(:current_user) { owner }
+
+      before do
+        stub_config(dependency_proxy: { enabled: false })
+      end
+
+      it_behaves_like 'disallows all dependency proxy access'
+    end
+
     context 'feature enabled' do
       before do
-        stub_config(dependency_proxy: { enabled: true })
+        stub_config(dependency_proxy: { enabled: true }, registry: { enabled: true })
       end
 
-      context 'reporter' do
-        let(:current_user) { reporter }
+      context 'human user' do
+        context 'reporter' do
+          let(:current_user) { reporter }
 
-        it { is_expected.to be_allowed(:read_dependency_proxy) }
-        it { is_expected.to be_disallowed(:admin_dependency_proxy) }
+          it_behaves_like 'allows dependency proxy read access but not admin'
+        end
+
+        context 'developer' do
+          let(:current_user) { developer }
+
+          it_behaves_like 'allows dependency proxy read access but not admin'
+        end
+
+        context 'maintainer' do
+          let(:current_user) { maintainer }
+
+          it_behaves_like 'allows dependency proxy read access but not admin'
+          it_behaves_like 'disabling admin_package feature flag'
+        end
+
+        context 'owner' do
+          let(:current_user) { owner }
+
+          it { is_expected.to be_allowed(:read_dependency_proxy) }
+          it { is_expected.to be_allowed(:admin_dependency_proxy) }
+
+          it_behaves_like 'disabling admin_package feature flag'
+        end
       end
 
-      context 'developer' do
-        let(:current_user) { developer }
+      context 'deploy token user' do
+        let!(:group_deploy_token) do
+          create(:group_deploy_token, group: group, deploy_token: deploy_token)
+        end
 
-        it { is_expected.to be_allowed(:read_dependency_proxy) }
-        it { is_expected.to be_disallowed(:admin_dependency_proxy) }
+        subject { described_class.new(deploy_token, group) }
+
+        context 'with insufficient scopes' do
+          let_it_be(:deploy_token) { create(:deploy_token, :group) }
+
+          it_behaves_like 'disallows all dependency proxy access'
+        end
+
+        context 'with sufficient scopes' do
+          let_it_be(:deploy_token) { create(:deploy_token, :group, :dependency_proxy_scopes) }
+
+          it_behaves_like 'allows dependency proxy read access but not admin'
+        end
       end
 
-      context 'maintainer' do
-        let(:current_user) { maintainer }
+      context 'group access token user' do
+        let_it_be(:bot_user) { create(:user, :project_bot) }
+        let_it_be(:token) { create(:personal_access_token, user: bot_user, scopes: [Gitlab::Auth::READ_API_SCOPE]) }
 
-        it { is_expected.to be_allowed(:read_dependency_proxy) }
-        it { is_expected.to be_disallowed(:admin_dependency_proxy) }
+        subject { described_class.new(bot_user, group) }
 
-        it_behaves_like 'disabling admin_package feature flag'
+        context 'not a member of the group' do
+          it_behaves_like 'disallows all dependency proxy access'
+        end
+
+        context 'a member of the group' do
+          before do
+            group.add_guest(bot_user)
+          end
+
+          it_behaves_like 'allows dependency proxy read access but not admin'
+        end
       end
 
-      context 'owner' do
-        let(:current_user) { owner }
+      context 'all other user types' do
+        User::USER_TYPES.except(:human, :project_bot).each_value do |user_type|
+          context "with user_type #{user_type}" do
+            before do
+              current_user.update!(user_type: user_type)
+            end
 
-        it { is_expected.to be_allowed(:read_dependency_proxy) }
-        it { is_expected.to be_allowed(:admin_dependency_proxy) }
+            context 'when the user has sufficient access' do
+              let(:current_user) { guest }
 
-        it_behaves_like 'disabling admin_package feature flag'
+              it_behaves_like 'allows dependency proxy read access but not admin'
+            end
+
+            context 'when the user does not have sufficient access' do
+              let(:current_user) { non_group_member }
+
+              it_behaves_like 'disallows all dependency proxy access'
+            end
+          end
+        end
       end
     end
   end
 
-  context 'deploy token access' do
-    let!(:group_deploy_token) do
-      create(:group_deploy_token, group: group, deploy_token: deploy_token)
-    end
-
-    subject { described_class.new(deploy_token, group) }
-
-    context 'a deploy token with read_package_registry scope' do
-      let(:deploy_token) { create(:deploy_token, :group, read_package_registry: true) }
-
-      it { is_expected.to be_allowed(:read_package) }
-      it { is_expected.to be_allowed(:read_group) }
-      it { is_expected.to be_disallowed(:create_package) }
-    end
-
-    context 'a deploy token with write_package_registry scope' do
-      let(:deploy_token) { create(:deploy_token, :group, write_package_registry: true) }
-
-      it { is_expected.to be_allowed(:create_package) }
-      it { is_expected.to be_allowed(:read_package) }
-      it { is_expected.to be_allowed(:read_group) }
-      it { is_expected.to be_disallowed(:destroy_package) }
-    end
-
-    context 'a deploy token with dependency proxy scopes' do
-      let_it_be(:deploy_token) { create(:deploy_token, :group, :dependency_proxy_scopes) }
-
-      before do
-        stub_config(dependency_proxy: { enabled: true })
+  context 'package registry' do
+    context 'deploy token user' do
+      let!(:group_deploy_token) do
+        create(:group_deploy_token, group: group, deploy_token: deploy_token)
       end
 
-      it { is_expected.to be_allowed(:read_dependency_proxy) }
-      it { is_expected.to be_disallowed(:admin_dependency_proxy) }
+      subject { described_class.new(deploy_token, group) }
+
+      context 'with read_package_registry scope' do
+        let(:deploy_token) { create(:deploy_token, :group, read_package_registry: true) }
+
+        it { is_expected.to be_allowed(:read_package) }
+        it { is_expected.to be_allowed(:read_group) }
+        it { is_expected.to be_disallowed(:create_package) }
+      end
+
+      context 'with write_package_registry scope' do
+        let(:deploy_token) { create(:deploy_token, :group, write_package_registry: true) }
+
+        it { is_expected.to be_allowed(:create_package) }
+        it { is_expected.to be_allowed(:read_package) }
+        it { is_expected.to be_allowed(:read_group) }
+        it { is_expected.to be_disallowed(:destroy_package) }
+      end
     end
   end
 

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
-RSpec.describe Gitlab::Metrics::System do
+RSpec.describe Gitlab::Utils::System do
   context 'when /proc files exist' do
     # Modified column 22 to be 1000 (starttime ticks)
     let(:proc_stat) do
@@ -12,7 +12,8 @@ RSpec.describe Gitlab::Metrics::System do
     end
 
     # Fixtures pulled from:
-    # Linux carbon 5.3.0-7648-generic #41~1586789791~19.10~9593806-Ubuntu SMP Mon Apr 13 17:50:40 UTC  x86_64 x86_64 x86_64 GNU/Linux
+    # Linux carbon 5.3.0-7648-generic #41~1586789791~19.10~9593806-Ubuntu SMP
+    # Mon Apr 13 17:50:40 UTC  x86_64 x86_64 x86_64 GNU/Linux
     let(:proc_status) do
       # most rows omitted for brevity
       <<~SNIP
@@ -318,7 +319,7 @@ RSpec.describe Gitlab::Metrics::System do
       stub_const("Process::CLOCK_THREAD_CPUTIME_ID", 16)
 
       expect(Process).to receive(:clock_gettime)
-        .with(16, kind_of(Symbol)) { 0.111222333 }
+        .with(16, kind_of(Symbol)).and_return(0.111222333)
 
       expect(described_class.thread_cpu_time).to eq(0.111222333)
     end

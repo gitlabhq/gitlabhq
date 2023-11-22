@@ -679,6 +679,10 @@ class Repository
   end
   cache_method :gitlab_ci_yml
 
+  def jenkinsfile?
+    file_on_head(:jenkinsfile).present?
+  end
+
   def xcode_project?
     file_on_head(:xcode_config, :tree).present?
   end

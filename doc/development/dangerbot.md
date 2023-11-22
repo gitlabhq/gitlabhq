@@ -34,6 +34,8 @@ from the start of the merge request.
 
 - It's not obvious Danger updates the old comment, thus you need to
   pay attention to it if it is updated or not.
+- When Danger tokens are rotated, it creates confusion/clutter (as old comments
+  can't be updated).
 
 ## Run Danger locally
 
@@ -179,11 +181,15 @@ at GitLab so far:
 
 ## Limitations
 
-Danger is run but its output is not added to a merge request comment if working
-on a fork. This happens because the secret variable from the canonical project
-is not shared to forks.
+If working on a personal fork, Danger is run but it's output is not added to a
+merge request comment and labels are not applied.
+This happens because the secret variable from the canonical project is not shared
+to forks.
 
-### Configuring Danger for forks
+The best and recommended approach is to work from the [community forks](https://gitlab.com/gitlab-community/meta),
+where Danger is already configured.
+
+### Configuring Danger for personal forks
 
 Contributors can configure Danger for their forks with the following steps:
 

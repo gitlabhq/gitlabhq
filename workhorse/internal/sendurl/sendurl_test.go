@@ -3,12 +3,10 @@ package sendurl
 import (
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"strconv"
 	"testing"
 	"time"
 
@@ -20,13 +18,26 @@ import (
 const testData = `123456789012345678901234567890`
 const testDataEtag = `W/"myetag"`
 
-func testEntryServer(t *testing.T, requestURL string, httpHeaders http.Header, allowRedirects bool) *httptest.ResponseRecorder {
+type option struct {
+	Key   string
+	Value interface{}
+}
+
+func testEntryServer(t *testing.T, requestURL string, httpHeaders http.Header, allowRedirects bool, options ...option) *httptest.ResponseRecorder {
 	requestHandler := func(w http.ResponseWriter, r *http.Request) {
 		require.Equal(t, "GET", r.Method)
 
-		url := r.URL.String() + "/file"
-		jsonParams := fmt.Sprintf(`{"URL":%q,"AllowRedirects":%s}`,
-			url, strconv.FormatBool(allowRedirects))
+		sendData := map[string]interface{}{
+			"URL":            r.URL.String() + "/file",
+			"AllowRedirects": allowRedirects,
+		}
+
+		for _, o := range options {
+			sendData[o.Key] = o.Value
+		}
+
+		jsonParams, err := json.Marshal(sendData)
+		require.NoError(t, err)
 		data := base64.URLEncoding.EncodeToString([]byte(jsonParams))
 
 		// The server returns a Content-Disposition
@@ -60,6 +71,9 @@ func testEntryServer(t *testing.T, requestURL string, httpHeaders http.Header, a
 		require.Equal(t, "GET", r.Method)
 		http.Redirect(w, r, r.URL.String()+"/download", http.StatusTemporaryRedirect)
 	}
+	timeoutFile := func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(20 * time.Millisecond)
+	}
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/get/request", requestHandler)
@@ -68,6 +82,8 @@ func testEntryServer(t *testing.T, requestURL string, httpHeaders http.Header, a
 	mux.HandleFunc("/get/redirect/file", redirectFile)
 	mux.HandleFunc("/get/redirect/file/download", serveFile)
 	mux.HandleFunc("/get/file-not-existing", requestHandler)
+	mux.HandleFunc("/get/timeout", requestHandler)
+	mux.HandleFunc("/get/timeout/file", timeoutFile)
 
 	server := httptest.NewServer(mux)
 	defer server.Close()
@@ -199,13 +215,19 @@ func TestDownloadingNonExistingRemoteFileWithSendURL(t *testing.T) {
 
 func TestPostRequest(t *testing.T) {
 	body := "any string"
-	header := map[string][]string{"Authorization": []string{"Bearer token"}}
+	header := map[string][]string{"Authorization": {"Bearer token"}}
 	postRequestHandler := func(w http.ResponseWriter, r *http.Request) {
 		require.Equal(t, "POST", r.Method)
 
 		url := r.URL.String() + "/external/url"
 
-		jsonParams, err := json.Marshal(entryParams{URL: url, Body: body, Header: header, Method: "POST"})
+		sendData := map[string]interface{}{
+			"URL":    url,
+			"Body":   body,
+			"Header": header,
+			"Method": "POST",
+		}
+		jsonParams, err := json.Marshal(sendData)
 		require.NoError(t, err)
 
 		data := base64.URLEncoding.EncodeToString([]byte(jsonParams))
@@ -241,4 +263,32 @@ func TestPostRequest(t *testing.T) {
 	result, err := io.ReadAll(response.Body)
 	require.NoError(t, err)
 	require.Equal(t, testData, string(result))
+}
+
+func TestTimeout(t *testing.T) {
+	response := testEntryServer(t, "/get/timeout", nil, false, option{Key: "ResponseHeaderTimeout", Value: "10ms"})
+	require.Equal(t, http.StatusInternalServerError, response.Code)
+}
+
+func TestTimeoutWithCustomStatusCode(t *testing.T) {
+	response := testEntryServer(t, "/get/timeout", nil, false, option{Key: "ResponseHeaderTimeout", Value: "10ms"}, option{Key: "TimeoutResponseStatus", Value: http.StatusTeapot})
+	require.Equal(t, http.StatusTeapot, response.Code)
+}
+
+func TestErrorWithCustomStatusCode(t *testing.T) {
+	sendData := map[string]interface{}{
+		"URL":                 "url",
+		"ErrorResponseStatus": http.StatusTeapot,
+	}
+
+	jsonParams, err := json.Marshal(sendData)
+	require.NoError(t, err)
+	data := base64.URLEncoding.EncodeToString([]byte(jsonParams))
+
+	response := httptest.NewRecorder()
+	request := httptest.NewRequest("GET", "/target", nil)
+
+	SendURL.Inject(response, request, data)
+
+	require.Equal(t, http.StatusTeapot, response.Code)
 }
