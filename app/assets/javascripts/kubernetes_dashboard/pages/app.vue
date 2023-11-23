@@ -8,5 +8,6 @@ export default {
 <template>
   <div class="gl-mt-5">
     <page-title> {{ $route.meta.title }} </page-title>
+    <router-view />
   </div>
 </template>

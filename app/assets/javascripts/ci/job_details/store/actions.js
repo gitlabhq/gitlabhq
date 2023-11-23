@@ -15,10 +15,11 @@ import { __ } from '~/locale';
 import { reportToSentry } from '~/ci/utils';
 import * as types from './mutation_types';
 
-export const init = ({ dispatch }, { endpoint, pagePath }) => {
+export const init = ({ dispatch }, { endpoint, pagePath, testReportSummaryUrl }) => {
   dispatch('setJobLogOptions', {
     endpoint,
     pagePath,
+    testReportSummaryUrl,
   });
 
   return dispatch('fetchJob');
@@ -170,6 +171,7 @@ export const fetchJobLog = ({ dispatch, state }) =>
 
       if (data.complete) {
         dispatch('stopPollingJobLog');
+        dispatch('requestTestSummary');
       } else if (!state.jobLogTimeout) {
         dispatch('startPollingJobLog');
       }
@@ -272,4 +274,24 @@ export const triggerManualJob = ({ state }, variables) => {
         message: __('An error occurred while triggering the job.'),
       }),
     );
+};
+
+export const requestTestSummary = ({ state, commit, dispatch }) => {
+  if (!state.testSummaryComplete) {
+    axios
+      .get(state.testReportSummaryUrl)
+      .then(({ data }) => {
+        dispatch('receiveTestSummarySuccess', data);
+      })
+      .catch((e) => {
+        reportToSentry('job_test_summary_report', e);
+      })
+      .finally(() => {
+        commit(types.RECEIVE_TEST_SUMMARY_COMPLETE);
+      });
+  }
+};
+
+export const receiveTestSummarySuccess = ({ commit }, data) => {
+  commit(types.RECEIVE_TEST_SUMMARY_SUCCESS, data);
 };

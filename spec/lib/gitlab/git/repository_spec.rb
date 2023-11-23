@@ -2778,6 +2778,31 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
   end
 
+  describe '#object_format' do
+    subject { repository.object_format }
+
+    context 'for SHA1 repository' do
+      it { is_expected.to eq :OBJECT_FORMAT_SHA1 }
+    end
+
+    context 'for SHA256 repository' do
+      let(:project) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
+      let(:repository) { project.repository.raw }
+
+      it { is_expected.to eq :OBJECT_FORMAT_SHA256 }
+    end
+
+    context 'for removed repository' do
+      let(:repository) { mutable_repository }
+
+      before do
+        repository.remove
+      end
+
+      it { expect { subject }.to raise_error(Gitlab::Git::Repository::NoRepository) }
+    end
+  end
+
   describe '#get_file_attributes' do
     let(:rev) { 'master' }
     let(:paths) { ['file.txt'] }

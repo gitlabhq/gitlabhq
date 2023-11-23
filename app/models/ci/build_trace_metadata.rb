@@ -3,9 +3,6 @@
 module Ci
   class BuildTraceMetadata < Ci::ApplicationRecord
     include Ci::Partitionable
-    include SafelyChangeColumnDefault
-
-    columns_changing_default :partition_id
 
     MAX_ATTEMPTS = 5
     self.table_name = 'ci_build_trace_metadata'

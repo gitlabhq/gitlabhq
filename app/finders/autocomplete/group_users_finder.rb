@@ -12,8 +12,9 @@ module Autocomplete
   class GroupUsersFinder
     include Gitlab::Utils::StrongMemoize
 
-    def initialize(group:)
+    def initialize(group:, members_relation: false)
       @group = group
+      @members_relation = members_relation # If true, it will return Member relation instead
     end
 
     def execute
@@ -21,6 +22,8 @@ module Autocomplete
         .with(group_hierarchy_cte.to_arel) # rubocop:disable CodeReuse/ActiveRecord
         .with(descendant_projects_cte.to_arel) # rubocop:disable CodeReuse/ActiveRecord
         .from_union(member_relations, remove_duplicates: false)
+
+      return members if @members_relation
 
       User
         .id_in(members.select(:user_id))
@@ -31,11 +34,11 @@ module Autocomplete
 
     def member_relations
       [
-        members_from_group_hierarchy.select(:user_id),
-        members_from_hierarchy_group_shares.select(:user_id),
-        members_from_descendant_projects.select(:user_id),
-        members_from_descendant_project_shares.select(:user_id)
-      ]
+        members_from_group_hierarchy,
+        members_from_hierarchy_group_shares,
+        members_from_descendant_projects,
+        members_from_descendant_project_shares
+      ].map { |relation| relation.select(:id, :user_id) }
     end
 
     def members_from_group_hierarchy

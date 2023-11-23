@@ -14,9 +14,6 @@ import { STORAGE_KEY } from '~/whats_new/utils/notification';
 import Tracking from '~/tracking';
 import { DROPDOWN_Y_OFFSET, HELP_MENU_TRACKING_DEFAULTS, helpCenterState } from '../constants';
 
-// Left offset required for the dropdown to be aligned with the super sidebar
-const DROPDOWN_X_OFFSET = -4;
-
 export default {
   components: {
     GlBadge,
@@ -204,7 +201,7 @@ export default {
       });
     },
   },
-  dropdownOffset: { mainAxis: DROPDOWN_Y_OFFSET, crossAxis: DROPDOWN_X_OFFSET },
+  dropdownOffset: { mainAxis: DROPDOWN_Y_OFFSET },
 };
 </script>
 

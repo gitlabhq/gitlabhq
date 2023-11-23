@@ -3,9 +3,6 @@
 module Ci
   class BuildReportResult < Ci::ApplicationRecord
     include Ci::Partitionable
-    include SafelyChangeColumnDefault
-
-    columns_changing_default :partition_id
 
     self.primary_key = :build_id
 

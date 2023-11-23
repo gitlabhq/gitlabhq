@@ -347,10 +347,10 @@ gem 'gitlab-license', '~> 2.3' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'rack-attack', '~> 6.7.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Sentry integration
-gem 'sentry-raven', '~> 3.1' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'sentry-ruby', '~> 5.8.0' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'sentry-rails', '~> 5.8.0' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'sentry-sidekiq', '~> 5.8.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'sentry-raven', '~> 3.1', feature_category: :error_tracking
+gem 'sentry-ruby', '~> 5.10.0', feature_category: :error_tracking
+gem 'sentry-rails', '~> 5.10.0', feature_category: :error_tracking
+gem 'sentry-sidekiq', '~> 5.10.0', feature_category: :error_tracking
 
 # PostgreSQL query parsing
 #

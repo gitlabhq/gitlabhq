@@ -21,7 +21,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
     file_worker_queues = Gitlab::SidekiqConfig.worker_queues.to_set
 
     worker_queues = Gitlab::SidekiqConfig.workers.map(&:generated_queue_name).to_set
-    worker_queues << ActionMailer::MailDeliveryJob.new.queue_name
+    worker_queues << ActionMailer::MailDeliveryJob.new('Notify').queue_name
     worker_queues << 'default'
 
     missing_from_file = worker_queues - file_worker_queues

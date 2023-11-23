@@ -1,4 +1,4 @@
-- action = current_action?(:edit) || current_action?(:update) ? 'edit' : 'create'
+- action = current_action?(:edit, :update) ? 'edit' : 'create'
 - file_name = params[:id].split("/").last ||= ""
 - is_markdown = Gitlab::MarkupHelper.gitlab_markdown?(file_name)
 
@@ -6,12 +6,17 @@
   .js-file-title.file-title.gl-display-flex.gl-align-items-center.gl-rounded-top-base{ data: { current_action: action } }
     .editor-ref.block-truncated.has-tooltip{ title: ref }
       = sprite_icon('branch', size: 12)
-      = ref
-    - if current_action?(:edit) || current_action?(:update)
+      - if current_action?(:edit, :update)
+        %span#editor_ref
+          = ref
+      - if current_action?(:new, :create)
+        %span#editor_path
+          = params[:id]
+    - if current_action?(:edit, :update)
       - input_options = { id: 'file_path', name: 'file_path', value: (params[:file_path] || @path), class: 'new-file-path js-file-path-name-input' }
       = render 'filepath_form', input_options: input_options
 
-    - if current_action?(:new) || current_action?(:create)
+    - if current_action?(:new, :create)
       - input_options = { id: 'file_name', name: 'file_name', value: params[:file_name] || (should_suggest_gitlab_ci_yml? ? '.gitlab-ci.yml' : ''), required: true, placeholder: "Filename", testid: 'file-name-field', class: 'new-file-name js-file-path-name-input' }
       = render 'filepath_form', input_options: input_options
       - if should_suggest_gitlab_ci_yml?

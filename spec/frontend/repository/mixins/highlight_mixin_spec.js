@@ -7,7 +7,12 @@ import LineHighlighter from '~/blob/line_highlighter';
 import waitForPromises from 'helpers/wait_for_promises';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { TEXT_FILE_TYPE } from '~/repository/constants';
-import { LINES_PER_CHUNK } from '~/vue_shared/components/source_viewer/constants';
+import {
+  LINES_PER_CHUNK,
+  EVENT_ACTION,
+  EVENT_LABEL_FALLBACK,
+} from '~/vue_shared/components/source_viewer/constants';
+import Tracking from '~/tracking';
 
 const lineHighlighter = new LineHighlighter();
 jest.mock('~/blob/line_highlighter', () => jest.fn().mockReturnValue({ highlightHash: jest.fn() }));
@@ -75,6 +80,23 @@ describe('HighlightMixin', () => {
         language: languageMock,
         fileType: TEXT_FILE_TYPE,
       });
+    });
+  });
+
+  describe('auto-detects if a language cannot be loaded', () => {
+    const unknownLanguage = 'some_unknown_language';
+    beforeEach(() => {
+      jest.spyOn(Tracking, 'event');
+      createComponent({ language: unknownLanguage });
+    });
+
+    it('emits a tracking event for the fallback', () => {
+      const eventData = { label: EVENT_LABEL_FALLBACK, property: unknownLanguage };
+      expect(Tracking.event).toHaveBeenCalledWith(undefined, EVENT_ACTION, eventData);
+    });
+
+    it('calls the onError method', () => {
+      expect(onErrorMock).toHaveBeenCalled();
     });
   });
 

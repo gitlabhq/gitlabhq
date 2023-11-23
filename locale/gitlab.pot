@@ -738,6 +738,9 @@ msgstr ""
 msgid "%{extra} more downstream pipelines"
 msgstr ""
 
+msgid "%{failures} of %{total} failed"
+msgstr ""
+
 msgid "%{filePath} deleted"
 msgstr ""
 
@@ -1283,6 +1286,9 @@ msgid "%{totalMemory} (%{freeSpacePercentage}%{percentSymbol} free)"
 msgstr ""
 
 msgid "%{total_warnings} warning(s) found:"
+msgstr ""
+
+msgid "%{total}"
 msgstr ""
 
 msgid "%{total} remaining issue weight"
@@ -18964,9 +18970,6 @@ msgstr ""
 msgid "Environment|External IP"
 msgstr ""
 
-msgid "Environment|Failed"
-msgstr ""
-
 msgid "Environment|Forbidden to access the cluster agent from this environment."
 msgstr ""
 
@@ -18977,9 +18980,6 @@ msgid "Environment|Jobs"
 msgstr ""
 
 msgid "Environment|Kubernetes overview"
-msgstr ""
-
-msgid "Environment|Pending"
 msgstr ""
 
 msgid "Environment|Pods"
@@ -18997,9 +18997,6 @@ msgstr ""
 msgid "Environment|ReplicaSets"
 msgstr ""
 
-msgid "Environment|Running"
-msgstr ""
-
 msgid "Environment|Services"
 msgstr ""
 
@@ -19007,9 +19004,6 @@ msgid "Environment|Stalled"
 msgstr ""
 
 msgid "Environment|StatefulSets"
-msgstr ""
-
-msgid "Environment|Succeeded"
 msgstr ""
 
 msgid "Environment|Summary"
@@ -27776,7 +27770,19 @@ msgstr ""
 msgid "KubernetesDashboard|Dashboard"
 msgstr ""
 
+msgid "KubernetesDashboard|Failed"
+msgstr ""
+
+msgid "KubernetesDashboard|Pending"
+msgstr ""
+
 msgid "KubernetesDashboard|Pods"
+msgstr ""
+
+msgid "KubernetesDashboard|Running"
+msgstr ""
+
+msgid "KubernetesDashboard|Succeeded"
 msgstr ""
 
 msgid "LDAP"
@@ -48032,6 +48038,9 @@ msgstr ""
 msgid "Test settings"
 msgstr ""
 
+msgid "Test summary"
+msgstr ""
+
 msgid "TestCases|Move test case"
 msgstr ""
 
@@ -51022,16 +51031,16 @@ msgstr ""
 msgid "Trials|Day %{daysUsed}/%{duration}"
 msgstr ""
 
+msgid "Trials|Don't lose out on additional GitLab features"
+msgstr ""
+
 msgid "Trials|Looking to do more with GitLab?"
 msgstr ""
 
 msgid "Trials|Trials benefits"
 msgstr ""
 
-msgid "Trials|Upgrade your plan for more security features"
-msgstr ""
-
-msgid "Trials|With GitLab Ultimate you can detect and address vulnerabilities in your application."
+msgid "Trials|Upgrade to regain access to powerful features like advanced team management for code, security, and reporting."
 msgstr ""
 
 msgid "Trials|With GitLab Ultimate, you'll have access to:"

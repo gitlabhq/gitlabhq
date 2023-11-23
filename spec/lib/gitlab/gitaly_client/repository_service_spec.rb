@@ -513,6 +513,16 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
     end
   end
 
+  describe '#object_format' do
+    it 'sends a object_format message' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:object_format)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+
+      client.object_format
+    end
+  end
+
   describe '#get_file_attributes' do
     let(:rev) { 'master' }
     let(:paths) { ['file.txt'] }

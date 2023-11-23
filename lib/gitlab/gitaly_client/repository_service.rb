@@ -363,6 +363,12 @@ module Gitlab
         gitaly_client_call(@repository.storage, :repository_service, :get_file_attributes, request, timeout: GitalyClient.fast_timeout)
       end
 
+      def object_format
+        request = Gitaly::ObjectFormatRequest.new(repository: @gitaly_repo)
+
+        gitaly_client_call(@storage, :repository_service, :object_format, request, timeout: GitalyClient.fast_timeout)
+      end
+
       private
 
       def search_results_from_response(gitaly_response, options = {})

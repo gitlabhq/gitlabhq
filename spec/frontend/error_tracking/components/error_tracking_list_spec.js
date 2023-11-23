@@ -43,6 +43,8 @@ describe('ErrorTrackingList', () => {
     userCanEnableErrorTracking = true,
     showIntegratedTrackingDisabledAlert = false,
     integratedErrorTrackingEnabled = false,
+    listPath = '/error_tracking',
+
     stubs = {},
   } = {}) {
     wrapper = extendedWrapper(
@@ -50,7 +52,7 @@ describe('ErrorTrackingList', () => {
         store,
         propsData: {
           indexPath: '/path',
-          listPath: '/error_tracking',
+          listPath,
           projectPath: 'project/test',
           enableErrorTrackingLink: '/link',
           userCanEnableErrorTracking,
@@ -144,13 +146,27 @@ describe('ErrorTrackingList', () => {
       expect(findErrorListRows().length).toEqual(store.state.list.errors.length);
     });
 
-    it('each error in a list should have a link to the error page', () => {
-      const errorTitle = wrapper.findAll('tbody tr a');
+    describe.each([
+      ['/test-project/-/error_tracking'],
+      ['/test-project/-/error_tracking/'], // handles leading '/' https://gitlab.com/gitlab-org/gitlab/-/issues/430211
+    ])('details link', (url) => {
+      beforeEach(() => {
+        mountComponent({
+          listPath: url,
+          stubs: {
+            GlTable: false,
+            GlLink: false,
+          },
+        });
+      });
+      it('each error in a list should have a link to the error page', () => {
+        const errorTitle = wrapper.findAll('tbody tr a');
 
-      errorTitle.wrappers.forEach((_, index) => {
-        expect(errorTitle.at(index).attributes('href')).toEqual(
-          expect.stringMatching(/error_tracking\/\d+\/details$/),
-        );
+        errorTitle.wrappers.forEach((_, index) => {
+          expect(errorTitle.at(index).attributes('href')).toEqual(
+            `/test-project/-/error_tracking/${errorsList[index].id}/details`,
+          );
+        });
       });
     });
 

@@ -89,62 +89,6 @@ To create necessary user and database objects:
     GRANT gitlab_app TO gitlab;
     ```
 
-1. Connect to the `gitlab_clickhouse_main_production` database (or just switch it in the ClickHouse Cloud UI).
-
-1. To create the required database objects, execute:
-
-    ```sql
-    CREATE TABLE ci_finished_builds
-    (
-        id UInt64 DEFAULT 0,
-        project_id UInt64 DEFAULT 0,
-        pipeline_id UInt64 DEFAULT 0,
-        status LowCardinality(String) DEFAULT '',
-        created_at DateTime64(6, 'UTC') DEFAULT now(),
-        queued_at DateTime64(6, 'UTC') DEFAULT now(),
-        finished_at DateTime64(6, 'UTC') DEFAULT now(),
-        started_at DateTime64(6, 'UTC') DEFAULT now(),
-        runner_id UInt64 DEFAULT 0,
-        runner_manager_system_xid String DEFAULT '',
-        runner_run_untagged Boolean DEFAULT FALSE,
-        runner_type UInt8 DEFAULT 0,
-        runner_manager_version LowCardinality(String) DEFAULT '',
-        runner_manager_revision LowCardinality(String) DEFAULT '',
-        runner_manager_platform LowCardinality(String) DEFAULT '',
-        runner_manager_architecture LowCardinality(String) DEFAULT '',
-        duration Int64 MATERIALIZED age('ms', started_at, finished_at),
-        queueing_duration Int64 MATERIALIZED age('ms', queued_at, started_at)
-    )
-    ENGINE = ReplacingMergeTree
-    ORDER BY (status, runner_type, project_id, finished_at, id)
-    PARTITION BY toYear(finished_at);
-
-    CREATE TABLE ci_finished_builds_aggregated_queueing_delay_percentiles
-    (
-        status LowCardinality(String) DEFAULT '',
-        runner_type UInt8 DEFAULT 0,
-        started_at_bucket DateTime64(6, 'UTC') DEFAULT now(),
-
-        count_builds AggregateFunction(count),
-        queueing_duration_quantile AggregateFunction(quantile, Int64)
-    )
-    ENGINE = AggregatingMergeTree()
-    ORDER BY (started_at_bucket, status, runner_type);
-
-    CREATE MATERIALIZED VIEW ci_finished_builds_aggregated_queueing_delay_percentiles_mv
-    TO ci_finished_builds_aggregated_queueing_delay_percentiles
-    AS
-    SELECT
-        status,
-        runner_type,
-        toStartOfInterval(started_at, INTERVAL 5 minute) AS started_at_bucket,
-
-        countState(*) as count_builds,
-        quantileState(queueing_duration) AS queueing_duration_quantile
-    FROM ci_finished_builds
-    GROUP BY status, runner_type, started_at_bucket;
-    ```
-
 ### Configure the GitLab connection to ClickHouse
 
 ::Tabs
@@ -215,6 +159,14 @@ To verify that your connection is set up successfully:
     ```
 
    If successful, the command returns `[{"1"=>1}]`
+
+### Run ClickHouse migrations
+
+To create the required database objects execute:
+
+```shell
+sudo gitlab-rake gitlab:clickhouse:migrate
+```
 
 ### Enable feature flags
 

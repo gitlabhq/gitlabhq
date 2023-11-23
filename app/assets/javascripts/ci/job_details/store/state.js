@@ -1,9 +1,12 @@
 export default () => ({
   jobEndpoint: null,
   jobLogEndpoint: null,
+  testReportSummaryUrl: null,
 
   // sidebar
   isSidebarOpen: true,
+  testSummary: {},
+  testSummaryComplete: false,
 
   isLoading: false,
   hasError: false,

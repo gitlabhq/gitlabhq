@@ -6,9 +6,7 @@ module Ci
     include Ci::HasVariable
     include Ci::RawVariable
     include IgnorableColumns
-    include SafelyChangeColumnDefault
 
-    columns_changing_default :partition_id
     ignore_column :pipeline_id_convert_to_bigint, remove_with: '16.5', remove_after: '2023-10-22'
 
     belongs_to :pipeline

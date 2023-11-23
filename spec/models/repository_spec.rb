@@ -3974,6 +3974,28 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
+  describe '#object_format' do
+    subject { repository.object_format }
+
+    context 'for SHA1 repository' do
+      it { is_expected.to eq('sha1') }
+    end
+
+    context 'for SHA256 repository' do
+      let(:project) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
+
+      it { is_expected.to eq('sha256') }
+    end
+
+    context 'for missing repository' do
+      before do
+        allow(repository).to receive(:exists?).and_return(false)
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#get_file_attributes' do
     let(:project) do
       create(:project, :custom_repo, files: {

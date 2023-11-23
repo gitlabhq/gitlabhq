@@ -53,6 +53,14 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :gr
       expect(find('.monaco-editor')).to have_content('*.rbca')
     end
 
+    it 'shows ref instead of full path when editing a file' do
+      click_link('.gitignore')
+      edit_in_single_file_editor
+
+      expect(page).not_to have_selector('#editor_path')
+      expect(page).to have_selector('#editor_ref')
+    end
+
     it 'does not show the edit link if a file is binary' do
       binary_file = File.join(project.repository.root_ref, 'files/images/logo-black.png')
       visit(project_blob_path(project, binary_file))

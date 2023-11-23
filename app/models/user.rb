@@ -1814,6 +1814,8 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   def owns_runner?(runner)
+    runner = runner.__getobj__ if runner.is_a?(Ci::RunnerPresenter)
+
     ci_owned_runners.include?(runner)
   end
 

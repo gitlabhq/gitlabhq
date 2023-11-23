@@ -5,6 +5,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import testReports from 'test_fixtures/pipelines/test_report.json';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { getParameterValues } from '~/lib/utils/url_utility';
 import EmptyState from '~/ci/pipeline_details/test_reports/empty_state.vue';
 import TestReports from '~/ci/pipeline_details/test_reports/test_reports.vue';
 import TestSummary from '~/ci/pipeline_details/test_reports/test_summary.vue';
@@ -12,6 +13,11 @@ import TestSummaryTable from '~/ci/pipeline_details/test_reports/test_summary_ta
 import * as getters from '~/ci/pipeline_details/stores/test_reports/getters';
 
 Vue.use(Vuex);
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  getParameterValues: jest.fn().mockReturnValue([]),
+}));
 
 describe('Test reports app', () => {
   let wrapper;
@@ -97,6 +103,22 @@ describe('Test reports app', () => {
 
     it('shows tests details', () => {
       expect(testsDetail().exists()).toBe(true);
+    });
+  });
+
+  describe('when a job name is provided as a query parameter', () => {
+    beforeEach(() => {
+      getParameterValues.mockReturnValue(['javascript']);
+      createComponent();
+    });
+
+    it('shows tests details', () => {
+      expect(testsDetail().exists()).toBe(true);
+    });
+
+    it('should call setSelectedSuiteIndex and fetchTestSuite', () => {
+      expect(actionSpies.setSelectedSuiteIndex).toHaveBeenCalled();
+      expect(actionSpies.fetchTestSuite).toHaveBeenCalled();
     });
   });
 

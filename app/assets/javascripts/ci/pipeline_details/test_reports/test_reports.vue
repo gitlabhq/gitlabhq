@@ -2,6 +2,7 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
+import { getParameterValues } from '~/lib/utils/url_utility';
 import EmptyState from './empty_state.vue';
 import TestSuiteTable from './test_suite_table.vue';
 import TestSummary from './test_summary.vue';
@@ -19,7 +20,7 @@ export default {
   inject: ['blobPath', 'summaryEndpoint', 'suiteEndpoint'],
   computed: {
     ...mapState('testReports', ['isLoading', 'selectedSuiteIndex', 'testReports']),
-    ...mapGetters('testReports', ['getSelectedSuite']),
+    ...mapGetters('testReports', ['getSelectedSuite', 'getTestSuites']),
     showSuite() {
       return this.selectedSuiteIndex !== null;
     },
@@ -28,8 +29,16 @@ export default {
       return testSuites.length > 0;
     },
   },
-  created() {
-    this.fetchSummary();
+  async created() {
+    await this.fetchSummary();
+    const jobName = getParameterValues('job_name')[0] || '';
+    if (jobName.length > 0) {
+      // get the index from the job name
+      const indexToSelect = this.getTestSuites.findIndex((test) => test.name === jobName);
+
+      this.setSelectedSuiteIndex(indexToSelect);
+      this.fetchTestSuite(indexToSelect);
+    }
   },
   methods: {
     ...mapActions('testReports', [

@@ -17,9 +17,6 @@ module Ci
     include UpdatedAtFilterable
     include EachBatch
     include FastDestroyAll::Helpers
-    include SafelyChangeColumnDefault
-
-    columns_changing_default :partition_id
 
     include IgnorableColumns
     ignore_column :id_convert_to_bigint, remove_with: '16.3', remove_after: '2023-08-22'

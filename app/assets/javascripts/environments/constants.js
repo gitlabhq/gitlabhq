@@ -155,11 +155,6 @@ export const SYNC_STATUS_BADGES = {
 export const STATUS_TRUE = 'True';
 export const STATUS_FALSE = 'False';
 
-export const PHASE_RUNNING = 'Running';
-export const PHASE_PENDING = 'Pending';
-export const PHASE_SUCCEEDED = 'Succeeded';
-export const PHASE_FAILED = 'Failed';
-
 const ERROR_UNAUTHORIZED = 'unauthorized';
 const ERROR_FORBIDDEN = 'forbidden';
 const ERROR_NOT_FOUND = 'not found';

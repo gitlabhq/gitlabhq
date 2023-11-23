@@ -11,7 +11,7 @@ RSpec.shared_examples 'job is dropped with failure reason' do |failure_reason|
 
   context 'when job has data integrity problem' do
     it 'drops the job and logs the reason' do
-      job.update_columns(yaml_variables: '[{"key" => "value"}]')
+      allow(::Gitlab::Ci::Build::Status::Reason).to receive(:fabricate).and_raise(StandardError.new)
 
       expect(Gitlab::ErrorTracking)
         .to receive(:track_exception)

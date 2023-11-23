@@ -33,7 +33,7 @@ workhorse:test go:
   extends: .workhorse:test
   parallel:
     matrix:
-      - GO_VERSION: ["1.19", "1.20", "1.21"]
+      - GO_VERSION: ["1.20", "1.21"]
         REDIS_VERSION: ["7.0", "6.2"]
   script:
     - make -C workhorse test-coverage

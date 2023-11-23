@@ -768,6 +768,27 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="queryrunnersupgradestatus"></a>`upgradeStatus` | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | Filter by upgrade status. |
 | <a id="queryrunnersversionprefix"></a>`versionPrefix` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
 
+### `Query.selfManagedAddOnEligibleUsers`
+
+Users within the self-managed instance who are eligible for add-ons.
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`AddOnUserConnection`](#addonuserconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryselfmanagedaddoneligibleusersaddontype"></a>`addOnType` | [`GitlabSubscriptionsAddOnType!`](#gitlabsubscriptionsaddontype) | Type of add on to filter the eligible users by. |
+| <a id="queryselfmanagedaddoneligibleuserssearch"></a>`search` | [`String`](#string) | Search the user list. |
+
 ### `Query.snippets`
 
 Find Snippets visible to the current user.

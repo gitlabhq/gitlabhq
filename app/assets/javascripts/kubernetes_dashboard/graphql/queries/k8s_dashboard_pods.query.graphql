@@ -1,0 +1,7 @@
+query getK8sDashboardPods($configuration: LocalConfiguration) {
+  k8sPods(configuration: $configuration) @client {
+    status {
+      phase
+    }
+  }
+}

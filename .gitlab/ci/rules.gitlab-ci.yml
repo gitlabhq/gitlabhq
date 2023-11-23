@@ -1445,7 +1445,7 @@
 ############
 .qa:rules:update-gem-cache:
   rules:
-    - <<: *if-default-refs
+    - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\//'
       changes:
         - qa/Gemfile.lock
     - <<: *if-schedule-maintenance

@@ -1627,3 +1627,53 @@ export const mockJobLog = [
     lineNumber: 23,
   },
 ];
+
+export const testSummaryData = {
+  total: {
+    time: 0.001,
+    count: 1,
+    success: 1,
+    failed: 0,
+    skipped: 0,
+    error: 0,
+    suite_error: null,
+  },
+  test_suites: [
+    {
+      name: 'javascript',
+      total_time: 0.001,
+      total_count: 1,
+      success_count: 1,
+      failed_count: 0,
+      skipped_count: 0,
+      error_count: 0,
+      build_ids: [3633],
+      suite_error: null,
+    },
+  ],
+};
+
+export const testSummaryDataWithFailures = {
+  total: {
+    time: 0.001,
+    count: 2,
+    success: 1,
+    failed: 1,
+    skipped: 0,
+    error: 0,
+    suite_error: null,
+  },
+  test_suites: [
+    {
+      name: 'javascript',
+      total_time: 0.001,
+      total_count: 2,
+      success_count: 1,
+      failed_count: 1,
+      skipped_count: 0,
+      error_count: 0,
+      build_ids: [3633],
+      suite_error: null,
+    },
+  ],
+};

@@ -10,9 +10,6 @@ module Ci
   # of the running builds there is worth the additional pressure.
   class RunningBuild < Ci::ApplicationRecord
     include Ci::Partitionable
-    include SafelyChangeColumnDefault
-
-    columns_changing_default :partition_id
 
     partitionable scope: :build
 

@@ -9,17 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 You can use the Web Editor to make changes to a single file directly from the
 GitLab UI. To make changes to multiple files, see [Web IDE](../web_ide/index.md).
 
-In the Web Editor, you can:
-
-- [Create a file](#create-a-file).
-- [Edit a file](#edit-a-file).
-- [Upload a file](#upload-a-file).
-- [Create a directory](#create-a-directory).
-- [Create a branch](#create-a-branch).
-- [Create a tag](#create-a-tag).
-
-Your [primary email address is used by default](../../../user/profile/index.md#change-the-email-displayed-on-your-commits)
-for any change you commit through the Web Editor.
+Your [primary email address](../../../user/profile/index.md#change-the-email-displayed-on-your-commits)
+is used by default for any change you commit through the Web Editor.
 
 ## Create a file
 
@@ -60,10 +51,7 @@ To edit a text file in the Web Editor:
 1. Go to your file.
 1. In the upper right, select **Edit > Edit single file**.
 
-### Keyboard shortcuts
-
-When you [edit a file](#edit-a-file) in the Web Editor, you can use the same keyboard shortcuts for the Web IDE.
-See the [available shortcuts](../../shortcuts.md#web-ide).
+Here you can use the same [keyboard shortcuts](../../shortcuts.md#web-ide) for the Web IDE.
 
 ### Preview Markdown
 
@@ -84,8 +72,6 @@ To close the preview panel, do one of the following:
 - From the context menu, select **Hide Live Preview**.
 
 ### Link to specific lines
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56159) in GitLab 13.11.
 
 To link to single or multiple lines in the Web Editor, add hash
 information to the filename segment of the URL. For example:

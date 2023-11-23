@@ -25,6 +25,7 @@ import {
   hideSidebar,
   showSidebar,
   toggleSidebar,
+  receiveTestSummarySuccess,
 } from '~/ci/job_details/store/actions';
 import * as types from '~/ci/job_details/store/mutation_types';
 import state from '~/ci/job_details/store/state';
@@ -236,6 +237,9 @@ describe('Job State actions', () => {
             },
             {
               type: 'stopPollingJobLog',
+            },
+            {
+              type: 'requestTestSummary',
             },
           ],
         );
@@ -512,6 +516,18 @@ describe('Job State actions', () => {
         null,
         mockedState,
         [{ type: types.RECEIVE_JOBS_FOR_STAGE_ERROR }],
+        [],
+      );
+    });
+  });
+
+  describe('requestTestSummarySuccess', () => {
+    it('should commit RECEIVE_TEST_SUMMARY_SUCCESS mutation', () => {
+      return testAction(
+        receiveTestSummarySuccess,
+        { total: {}, test_suites: [] },
+        mockedState,
+        [{ type: types.RECEIVE_TEST_SUMMARY_SUCCESS, payload: { total: {}, test_suites: [] } }],
         [],
       );
     });

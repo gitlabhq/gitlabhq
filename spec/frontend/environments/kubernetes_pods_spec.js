@@ -2,10 +2,10 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon } from '@gitlab/ui';
-import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import KubernetesPods from '~/environments/components/kubernetes_pods.vue';
+import WorkloadStats from '~/kubernetes_dashboard/components/workload_stats.vue';
 import { mockKasTunnelUrl } from './mock_data';
 import { k8sPodsMock } from './graphql/mock_data';
 
@@ -23,8 +23,7 @@ describe('~/environments/components/kubernetes_pods.vue', () => {
   };
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findAllStats = () => wrapper.findAllComponents(GlSingleStat);
-  const findSingleStat = (at) => findAllStats().at(at);
+  const findWorkloadStats = () => wrapper.findComponent(WorkloadStats);
 
   const createApolloProvider = () => {
     const mockResolvers = {
@@ -67,31 +66,29 @@ describe('~/environments/components/kubernetes_pods.vue', () => {
   });
 
   describe('when gets pods data', () => {
-    it('renders stats', async () => {
+    it('renders workload stats with the correct data', async () => {
       createWrapper();
       await waitForPromises();
 
-      expect(findAllStats()).toHaveLength(4);
+      expect(findWorkloadStats().props('stats')).toEqual([
+        {
+          value: 2,
+          title: 'Running',
+        },
+        {
+          value: 1,
+          title: 'Pending',
+        },
+        {
+          value: 1,
+          title: 'Succeeded',
+        },
+        {
+          value: 2,
+          title: 'Failed',
+        },
+      ]);
     });
-
-    it.each`
-      count | title                                | index
-      ${2}  | ${KubernetesPods.i18n.runningPods}   | ${0}
-      ${1}  | ${KubernetesPods.i18n.pendingPods}   | ${1}
-      ${1}  | ${KubernetesPods.i18n.succeededPods} | ${2}
-      ${2}  | ${KubernetesPods.i18n.failedPods}    | ${3}
-    `(
-      'renders stat with title "$title" and count "$count" at index $index',
-      async ({ count, title, index }) => {
-        createWrapper();
-        await waitForPromises();
-
-        expect(findSingleStat(index).props()).toMatchObject({
-          value: count,
-          title,
-        });
-      },
-    );
 
     it('emits a failed event when there are failed pods', async () => {
       createWrapper();
@@ -119,7 +116,7 @@ describe('~/environments/components/kubernetes_pods.vue', () => {
     });
 
     it("doesn't show pods stats", () => {
-      expect(findAllStats()).toHaveLength(0);
+      expect(findWorkloadStats().exists()).toBe(false);
     });
 
     it('emits an error message', () => {

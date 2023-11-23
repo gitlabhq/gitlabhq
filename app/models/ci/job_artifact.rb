@@ -13,9 +13,6 @@ module Ci
     include FileStoreMounter
     include EachBatch
     include Gitlab::Utils::StrongMemoize
-    include SafelyChangeColumnDefault
-
-    columns_changing_default :partition_id
 
     enum accessibility: { public: 0, private: 1 }, _suffix: true
 

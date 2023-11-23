@@ -6,6 +6,7 @@ export default {
   [types.SET_JOB_LOG_OPTIONS](state, options = {}) {
     state.jobLogEndpoint = options.pagePath;
     state.jobEndpoint = options.endpoint;
+    state.testReportSummaryUrl = options.testReportSummaryUrl;
   },
 
   [types.HIDE_SIDEBAR](state) {
@@ -126,5 +127,11 @@ export default {
   [types.RECEIVE_JOBS_FOR_STAGE_ERROR](state) {
     state.isLoadingJobs = false;
     state.jobs = [];
+  },
+  [types.RECEIVE_TEST_SUMMARY_SUCCESS](state, testSummary) {
+    state.testSummary = testSummary;
+  },
+  [types.RECEIVE_TEST_SUMMARY_COMPLETE](state) {
+    state.testSummaryComplete = true;
   },
 };

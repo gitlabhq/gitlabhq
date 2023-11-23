@@ -84,7 +84,6 @@ Only the last 50 messages are retained in the chat history. The chat history exp
 To delete all previous conversations:
 
 1. In the text box, type `/clean` and select **Send**.
-1. Refresh the page.
 
 ## Use GitLab Duo Chat in the Web IDE and VS Code **(ULTIMATE SAAS EXPERIMENT)**
 
@@ -139,7 +138,6 @@ To disable GitLab Duo Chat in the Web IDE and VS Code:
 Your feedback is important to us as we continually enhance your GitLab Duo Chat experience:
 
 - **Enhance Your Experience**: Leaving feedback helps us customize the Chat for your needs and improve its performance for everyone.
-- **Privacy Assurance**: Rest assured, we don't collect your prompts. Your privacy is respected, and your interactions remain private.
 
 To give feedback about a specific response, use the feedback buttons in the response message.
 Or, you can add a comment in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/430124).

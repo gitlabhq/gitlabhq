@@ -3,6 +3,7 @@ import {
   EVENT_ACTION,
   EVENT_LABEL_FALLBACK,
   LINES_PER_CHUNK,
+  ROUGE_TO_HLJS_LANGUAGE_MAP,
 } from '~/vue_shared/components/source_viewer/constants';
 import { splitIntoChunks } from '~/vue_shared/components/source_viewer/workers/highlight_utils';
 import LineHighlighter from '~/blob/line_highlighter';
@@ -29,8 +30,9 @@ export default {
       this.track(EVENT_ACTION, { label, property: language });
     },
     isUnsupportedLanguage(language) {
+      const mappedLanguage = ROUGE_TO_HLJS_LANGUAGE_MAP[language];
       const supportedLanguages = Object.keys(languageLoader);
-      const isUnsupportedLanguage = !supportedLanguages.includes(language);
+      const isUnsupportedLanguage = !supportedLanguages.includes(mappedLanguage);
 
       return LEGACY_FALLBACKS.includes(language) || isUnsupportedLanguage;
     },

@@ -395,7 +395,6 @@ Example response:
 [
     {
         "id": 2,
-        "ip_address": "127.0.0.1",
         "status": "running",
         "stage": "test",
         "name": "test",
@@ -406,6 +405,7 @@ Example response:
         "started_at": "2017-11-16T08:51:29.000Z",
         "finished_at": "2017-11-16T08:53:29.000Z",
         "duration": 120,
+        "queued_duration": 2,
         "user": {
             "id": 1,
             "name": "John Doe2",

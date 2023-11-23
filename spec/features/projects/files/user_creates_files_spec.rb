@@ -65,6 +65,11 @@ RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :
         expect(page).to have_selector('.file-editor')
       end
 
+      it 'shows full path instead of ref when creating a file' do
+        expect(page).to have_selector('#editor_path')
+        expect(page).not_to have_selector('#editor_ref')
+      end
+
       def submit_new_file(options)
         file_name = find('#file_name')
         file_name.set options[:file_name] || 'README.md'

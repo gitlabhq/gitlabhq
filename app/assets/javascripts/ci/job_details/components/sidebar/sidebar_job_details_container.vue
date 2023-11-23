@@ -4,6 +4,7 @@ import { mapState } from 'vuex';
 import { GlBadge } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import DetailRow from './sidebar_detail_row.vue';
@@ -15,8 +16,9 @@ export default {
     GlBadge,
   },
   mixins: [timeagoMixin],
+  inject: ['pipelineTestReportUrl'],
   computed: {
-    ...mapState(['job']),
+    ...mapState(['job', 'testSummary']),
     coverage() {
       return `${this.job.coverage}%`;
     },
@@ -74,6 +76,32 @@ export default {
     runnerAdminPath() {
       return this.job?.runner?.admin_path || '';
     },
+    hasTestSummaryDetails() {
+      return Object.keys(this.testSummary).length > 0;
+    },
+    testSummaryDescription() {
+      let message;
+
+      if (this.testSummary?.total?.failed > 0) {
+        message = sprintf(__('%{failures} of %{total} failed'), {
+          failures: this.testSummary?.total?.failed,
+          total: this.testSummary?.total.count,
+        });
+      } else {
+        message = sprintf(__('%{total}'), {
+          total: this.testSummary?.total.count,
+        });
+      }
+
+      return message;
+    },
+    testReportUrlWithJobName() {
+      const urlParams = {
+        job_name: this.job.name,
+      };
+
+      return mergeUrlParams(urlParams, this.pipelineTestReportUrl);
+    },
   },
   i18n: {
     COVERAGE: __('Coverage'),
@@ -82,6 +110,7 @@ export default {
     QUEUED: __('Queued'),
     RUNNER: __('Runner'),
     TAGS: __('Tags'),
+    TEST_SUMMARY: __('Test summary'),
     TIMEOUT: __('Timeout'),
   },
   TIMEOUT_HELP_URL: helpPagePath('/ci/pipelines/settings.md', {
@@ -115,6 +144,13 @@ export default {
       :path="runnerAdminPath"
     />
     <detail-row v-if="job.coverage" :value="coverage" :title="$options.i18n.COVERAGE" />
+    <detail-row
+      v-if="hasTestSummaryDetails"
+      :value="testSummaryDescription"
+      :title="$options.i18n.TEST_SUMMARY"
+      :path="testReportUrlWithJobName"
+      data-testid="test-summary"
+    />
 
     <p v-if="hasTags" class="build-detail-row" data-testid="job-tags">
       <span class="font-weight-bold">{{ $options.i18n.TAGS }}:</span>

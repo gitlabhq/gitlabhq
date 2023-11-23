@@ -7,6 +7,10 @@ import {
   EVENT_DATA,
 } from '@gitlab/cluster-client';
 import produce from 'immer';
+import {
+  getK8sPods,
+  handleClusterError,
+} from '~/kubernetes_dashboard/graphql/helpers/resolver_helpers';
 import { humanizeClusterErrors } from '../../helpers/k8s_integration_helper';
 import k8sPodsQuery from '../queries/k8s_pods.query.graphql';
 import k8sWorkloadsQuery from '../queries/k8s_workloads.query.graphql';
@@ -54,42 +58,6 @@ const mapWorkloadItems = (items, kind) => {
   });
 };
 
-const handleClusterError = async (err) => {
-  if (!err.response) {
-    throw err;
-  }
-
-  const errorData = await err.response.json();
-  throw errorData;
-};
-
-const watchPods = ({ configuration, namespace, client }) => {
-  const path = namespace ? `/api/v1/namespaces/${namespace}/pods` : '/api/v1/pods';
-  const config = new Configuration(configuration);
-  const watcherApi = new WatchApi(config);
-
-  watcherApi
-    .subscribeToStream(path, { watch: true })
-    .then((watcher) => {
-      let result = [];
-
-      watcher.on(EVENT_DATA, (data) => {
-        result = data.map((item) => {
-          return { status: { phase: item.status.phase } };
-        });
-
-        client.writeQuery({
-          query: k8sPodsQuery,
-          variables: { configuration, namespace },
-          data: { k8sPods: result },
-        });
-      });
-    })
-    .catch((err) => {
-      handleClusterError(err);
-    });
-};
-
 const watchWorkloadItems = ({ kind, apiVersion, configuration, namespace, client }) => {
   const itemKind = kind.toLowerCase().replace('list', 's');
 
@@ -130,28 +98,9 @@ const watchWorkloadItems = ({ kind, apiVersion, configuration, namespace, client
 
 export default {
   k8sPods(_, { configuration, namespace }, { client }) {
-    const config = new Configuration(configuration);
-
-    const coreV1Api = new CoreV1Api(config);
-    const podsApi = namespace
-      ? coreV1Api.listCoreV1NamespacedPod({ namespace })
-      : coreV1Api.listCoreV1PodForAllNamespaces();
-
-    return podsApi
-      .then((res) => {
-        if (gon.features?.k8sWatchApi) {
-          watchPods({ configuration, namespace, client });
-        }
-
-        return res?.items || [];
-      })
-      .catch(async (err) => {
-        try {
-          await handleClusterError(err);
-        } catch (error) {
-          throw new Error(error.message);
-        }
-      });
+    const query = k8sPodsQuery;
+    const enableWatch = gon.features?.k8sWatchApi;
+    return getK8sPods({ client, query, configuration, namespace, enableWatch });
   },
   k8sServices(_, { configuration, namespace }) {
     const coreV1Api = new CoreV1Api(new Configuration(configuration));

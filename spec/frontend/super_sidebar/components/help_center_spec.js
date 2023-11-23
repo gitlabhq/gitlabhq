@@ -94,7 +94,6 @@ describe('HelpCenter component', () => {
 
     it('passes custom offset to the dropdown', () => {
       expect(findDropdown().props('dropdownOffset')).toEqual({
-        crossAxis: -4,
         mainAxis: 4,
       });
     });

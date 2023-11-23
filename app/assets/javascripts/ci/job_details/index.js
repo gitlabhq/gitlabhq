@@ -30,11 +30,13 @@ export const initJobDetails = () => {
     projectPath,
     retryOutdatedJobDocsUrl,
     aiRootCauseAnalysisAvailable,
+    testReportSummaryUrl,
+    pipelineTestReportUrl,
   } = el.dataset;
 
   // init store to start fetching log
   const store = createStore();
-  store.dispatch('init', { endpoint, pagePath });
+  store.dispatch('init', { endpoint, pagePath, testReportSummaryUrl });
 
   return new Vue({
     el,
@@ -44,6 +46,7 @@ export const initJobDetails = () => {
       projectPath,
       retryOutdatedJobDocsUrl,
       aiRootCauseAnalysisAvailable: parseBoolean(aiRootCauseAnalysisAvailable),
+      pipelineTestReportUrl,
     },
     render(h) {
       return h(JobApp, {

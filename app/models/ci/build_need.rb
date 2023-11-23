@@ -4,12 +4,9 @@ module Ci
   class BuildNeed < Ci::ApplicationRecord
     include Ci::Partitionable
     include IgnorableColumns
-    include SafelyChangeColumnDefault
     include BulkInsertSafe
 
     MAX_JOB_NAME_LENGTH = 255
-
-    columns_changing_default :partition_id
 
     belongs_to :build,
       ->(need) { in_partition(need) },

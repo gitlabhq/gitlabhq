@@ -1217,6 +1217,12 @@ module Gitlab
         end
       end
 
+      def object_format
+        wrapped_gitaly_errors do
+          gitaly_repository_client.object_format.format
+        end
+      end
+
       private
 
       def repository_info_size_megabytes
