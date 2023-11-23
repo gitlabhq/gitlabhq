@@ -3,7 +3,7 @@
 module Projects
   class UnlinkForkService < BaseService
     # Close existing MRs coming from the project and remove it from the fork network
-    def execute
+    def execute(refresh_statistics: true)
       fork_network = @project.fork_network
       forked_from = @project.forked_from_project
 
@@ -45,6 +45,10 @@ module Projects
         end
       end
       # rubocop: enable Cop/InBatches
+
+      if Feature.enabled?(:refresh_statistics_on_unlink_fork, @project.namespace) && refresh_statistics
+        ProjectCacheWorker.perform_async(project.id, [], [:repository_size])
+      end
 
       # When the project getting out of the network is a node with parent
       # and children, both the parent and the node needs a cache refresh.

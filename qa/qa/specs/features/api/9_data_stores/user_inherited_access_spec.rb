@@ -65,7 +65,7 @@ module QA
         end
 
         it(
-          'is allowed to commit to sub-group project via the API',
+          'is allowed to commit to sub-group project via the API', :reliable,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363349'
         ) do
           # Retry is needed due to delays with project authorization updates

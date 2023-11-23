@@ -454,6 +454,12 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       expect { destroy_project(forked_project, user) }
         .not_to raise_error
     end
+
+    it 'does not update project statistics for the deleted project' do
+      expect(ProjectCacheWorker).not_to receive(:perform_async)
+
+      destroy_project(forked_project, user)
+    end
   end
 
   context 'as the root of a fork network' do
