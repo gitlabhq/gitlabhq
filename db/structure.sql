@@ -23027,6 +23027,8 @@ CREATE TABLE sbom_occurrences (
     input_file_path text,
     licenses jsonb DEFAULT '[]'::jsonb,
     vulnerabilities jsonb DEFAULT '[]'::jsonb,
+    highest_severity smallint,
+    vulnerability_count integer DEFAULT 0 NOT NULL,
     CONSTRAINT check_3f2d2c7ffc CHECK ((char_length(package_manager) <= 255)),
     CONSTRAINT check_9b29021fa8 CHECK ((char_length(component_name) <= 255)),
     CONSTRAINT check_bd1367d4c1 CHECK ((char_length(input_file_path) <= 255))
@@ -23040,6 +23042,23 @@ CREATE SEQUENCE sbom_occurrences_id_seq
     CACHE 1;
 
 ALTER SEQUENCE sbom_occurrences_id_seq OWNED BY sbom_occurrences.id;
+
+CREATE TABLE sbom_occurrences_vulnerabilities (
+    id bigint NOT NULL,
+    sbom_occurrence_id bigint NOT NULL,
+    vulnerability_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE sbom_occurrences_vulnerabilities_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE sbom_occurrences_vulnerabilities_id_seq OWNED BY sbom_occurrences_vulnerabilities.id;
 
 CREATE TABLE sbom_sources (
     id bigint NOT NULL,
@@ -27062,6 +27081,8 @@ ALTER TABLE ONLY sbom_components ALTER COLUMN id SET DEFAULT nextval('sbom_compo
 
 ALTER TABLE ONLY sbom_occurrences ALTER COLUMN id SET DEFAULT nextval('sbom_occurrences_id_seq'::regclass);
 
+ALTER TABLE ONLY sbom_occurrences_vulnerabilities ALTER COLUMN id SET DEFAULT nextval('sbom_occurrences_vulnerabilities_id_seq'::regclass);
+
 ALTER TABLE ONLY sbom_sources ALTER COLUMN id SET DEFAULT nextval('sbom_sources_id_seq'::regclass);
 
 ALTER TABLE ONLY scan_result_policies ALTER COLUMN id SET DEFAULT nextval('scan_result_policies_id_seq'::regclass);
@@ -29596,6 +29617,9 @@ ALTER TABLE ONLY sbom_components
 ALTER TABLE ONLY sbom_occurrences
     ADD CONSTRAINT sbom_occurrences_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY sbom_occurrences_vulnerabilities
+    ADD CONSTRAINT sbom_occurrences_vulnerabilities_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY sbom_sources
     ADD CONSTRAINT sbom_sources_pkey PRIMARY KEY (id);
 
@@ -31277,6 +31301,8 @@ CREATE UNIQUE INDEX i_pm_package_version_licenses_join_ids ON pm_package_version
 CREATE UNIQUE INDEX i_pm_package_versions_on_package_id_and_version ON pm_package_versions USING btree (pm_package_id, version);
 
 CREATE UNIQUE INDEX i_pm_packages_purl_type_and_name ON pm_packages USING btree (purl_type, name);
+
+CREATE UNIQUE INDEX i_sbom_occurrences_vulnerabilities_on_occ_id_and_vuln_id ON sbom_occurrences_vulnerabilities USING btree (sbom_occurrence_id, vulnerability_id);
 
 CREATE INDEX idx_abuse_reports_user_id_status_and_category ON abuse_reports USING btree (user_id, status, category);
 
@@ -34368,6 +34394,8 @@ CREATE INDEX index_sbom_occurrences_on_source_id ON sbom_occurrences USING btree
 
 CREATE UNIQUE INDEX index_sbom_occurrences_on_uuid ON sbom_occurrences USING btree (uuid);
 
+CREATE INDEX index_sbom_occurrences_vulnerabilities_on_vulnerability_id ON sbom_occurrences_vulnerabilities USING btree (vulnerability_id);
+
 CREATE UNIQUE INDEX index_sbom_sources_on_source_type_and_source ON sbom_sources USING btree (source_type, source);
 
 CREATE UNIQUE INDEX index_scan_result_policies_on_position_in_configuration ON scan_result_policies USING btree (security_orchestration_policy_configuration_id, project_id, orchestration_policy_idx, rule_idx);
@@ -37053,6 +37081,9 @@ ALTER TABLE ONLY issues
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_06067f5644 FOREIGN KEY (latest_merge_request_diff_id) REFERENCES merge_request_diffs(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY sbom_occurrences_vulnerabilities
+    ADD CONSTRAINT fk_07b81e3a81 FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY abuse_report_user_mentions
     ADD CONSTRAINT fk_088018ecd8 FOREIGN KEY (abuse_report_id) REFERENCES abuse_reports(id) ON DELETE CASCADE;
 
@@ -37883,6 +37914,9 @@ ALTER TABLE ONLY ci_stages
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_c63cbf6c25 FOREIGN KEY (closed_by_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY sbom_occurrences_vulnerabilities
+    ADD CONSTRAINT fk_c677cb859e FOREIGN KEY (sbom_occurrence_id) REFERENCES sbom_occurrences(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_c78fbacd64 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

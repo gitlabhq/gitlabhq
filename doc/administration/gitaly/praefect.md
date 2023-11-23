@@ -725,7 +725,7 @@ Updates to example must be made at:
 Praefect supports TLS encryption. To communicate with a Praefect instance that listens
 for secure connections, you must:
 
-- Ensure Gitaly is [configured for TLS](configure_gitaly.md#enable-tls-support) and use a `tls://` URL scheme in the `gitaly_address`
+- Ensure Gitaly is [configured for TLS](tls_support.md) and use a `tls://` URL scheme in the `gitaly_address`
   of the corresponding storage entry in the GitLab configuration.
 - Bring your own certificates because this isn't provided automatically. The certificate
   corresponding to each Praefect server must be installed on that Praefect server.
@@ -739,7 +739,7 @@ Note the following:
 - The certificate must specify the address you use to access the Praefect server. You must add the hostname or IP
   address as a Subject Alternative Name to the certificate.
 - When running Praefect sub-commands such as `dial-nodes` and `list-untracked-repositories` from the command line with
-  [Gitaly TLS enabled](configure_gitaly.md#enable-tls-support), you must set the `SSL_CERT_DIR` or `SSL_CERT_FILE`
+  [Gitaly TLS enabled](tls_support.md), you must set the `SSL_CERT_DIR` or `SSL_CERT_FILE`
   environment variable so that the Gitaly certificate is trusted. For example:
 
    ```shell

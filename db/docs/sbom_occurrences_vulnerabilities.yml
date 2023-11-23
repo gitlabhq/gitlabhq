@@ -1,0 +1,4 @@
+table_name: sbom_occurrences_vulnerabilities
+feature_categories:
+  - dependency_management
+gitlab_schema: gitlab_main

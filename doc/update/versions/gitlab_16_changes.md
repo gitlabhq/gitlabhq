@@ -87,7 +87,7 @@ Specific information applies to installations using Geo:
 
   For more information, see [issue 429617](https://gitlab.com/gitlab-org/gitlab/-/issues/429617).
 
-- [Object storage verification](https://about.gitlab.com/releases/2023/09/22/gitlab-16-4-released/#geo-verifies-object-storage) was added in GitLab 16.4. Due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429242) some Geo installations are reporting high memory usage which can lead to the GitLab application on the primary becoming unresponsive. 
+- [Object storage verification](https://about.gitlab.com/releases/2023/09/22/gitlab-16-4-released/#geo-verifies-object-storage) was added in GitLab 16.4. Due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429242) some Geo installations are reporting high memory usage which can lead to the GitLab application on the primary becoming unresponsive.
 
   Your installation may be impacted if you have configured it to use [object storage](../../administration/object_storage.md) and have enabled [GitLab-managed object storage replication](../../administration/geo/replication/object_storage.md#enabling-gitlab-managed-object-storage-replication)
 
@@ -99,7 +99,7 @@ Specific information applies to installations using Geo:
   ```
 
   **Affected releases**:
- 
+
   | Affected minor releases | Affected patch releases | Fixed in |
   | ------ | ------ | ------ |
   | 16.4   | All    | None   |
@@ -148,7 +148,7 @@ Specific information applies to installations using Geo:
 
   To find out if a push rule belongs to a project, group, or instance, run this script
   in the [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session):
-  
+
   ```ruby
   # replace `delete_branch_regex` with a name of the field used in constraint
   long_rules = PushRule.where("length(delete_branch_regex) > 511")
@@ -205,7 +205,7 @@ Specific information applies to installations using Geo:
 
   For more information, see [issue 429617](https://gitlab.com/gitlab-org/gitlab/-/issues/429617).
 
-- [Object storage verification](https://about.gitlab.com/releases/2023/09/22/gitlab-16-4-released/#geo-verifies-object-storage) was added in GitLab 16.4. Due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429242) some Geo installations are reporting high memory usage which can lead to the GitLab application on the primary becoming unresponsive. 
+- [Object storage verification](https://about.gitlab.com/releases/2023/09/22/gitlab-16-4-released/#geo-verifies-object-storage) was added in GitLab 16.4. Due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429242) some Geo installations are reporting high memory usage which can lead to the GitLab application on the primary becoming unresponsive.
 
   Your installation may be impacted if you have configured it to use [object storage](../../administration/object_storage.md) and have enabled [GitLab-managed object storage replication](../../administration/geo/replication/object_storage.md#enabling-gitlab-managed-object-storage-replication)
 
@@ -217,7 +217,7 @@ Specific information applies to installations using Geo:
   ```
 
   **Affected releases**:
- 
+
   | Affected minor releases | Affected patch releases | Fixed in |
   | ------ | ------ | ------ |
   | 16.4   | All    | None   |
@@ -242,7 +242,7 @@ Specific information applies to installations using Geo:
   introduced a hard limit of 8192 bits for RSA keys. In the context of Go applications at GitLab, RSA keys can be configured for:
 
   - [Container registry](../../administration/packages/container_registry.md)
-  - [Gitaly](../../administration/gitaly/configure_gitaly.md#enable-tls-support)
+  - [Gitaly](../../administration/gitaly/tls_support.md)
   - [GitLab Pages](../../user/project/pages/custom_domains_ssl_tls_certification/index.md#manual-addition-of-ssltls-certificates)
   - [Workhorse](../../development/workhorse/configuration.md#tls-support)
 
@@ -500,7 +500,7 @@ by this issue.
   [throw errors on startup](../../install/docker.md#threaderror-cant-create-thread-operation-not-permitted).
 - Starting with 16.0, GitLab self-managed installations now have two database connections by default, instead of one. This change doubles the number of PostgreSQL connections. It makes self-managed versions of GitLab behave similarly to GitLab.com, and is a step toward enabling a separate database for CI features for self-managed versions of GitLab. Before upgrading to 16.0, determine if you need to [increase max connections for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
   - This change applies to installation methods with Linux packages (Omnibus), GitLab Helm chart, GitLab Operator, GitLab Docker images, and self-compiled installations.
-- Container registry using Azure storage might be empty with zero tags. You can fix this by following the [breaking change instructions](../deprecations.md#azure-storage-driver-defaults-to-the-correct-root-prefix). 
+- Container registry using Azure storage might be empty with zero tags. You can fix this by following the [breaking change instructions](../deprecations.md#azure-storage-driver-defaults-to-the-correct-root-prefix).
 
 ### Linux package installations
 

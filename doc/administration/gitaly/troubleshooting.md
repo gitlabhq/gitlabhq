@@ -89,7 +89,7 @@ Check whether `Verify return code` field indicates a
 [known Linux package installation configuration problem](https://docs.gitlab.com/omnibus/settings/ssl/index.html).
 
 If `openssl` succeeds but `gitlab-rake gitlab:gitaly:check` fails,
-check [certificate requirements](configure_gitaly.md#certificate-requirements) for Gitaly.
+check [certificate requirements](tls_support.md#certificate-requirements) for Gitaly.
 
 ### Server side gRPC logs
 
@@ -389,7 +389,7 @@ One way to resolve this is to make sure the entry is correct for the GitLab inte
 
 ### Changes (diffs) don't load for new merge requests when using Gitaly TLS
 
-After enabling [Gitaly with TLS](configure_gitaly.md#enable-tls-support), changes (diffs) for new merge requests are not generated
+After enabling [Gitaly with TLS](tls_support.md), changes (diffs) for new merge requests are not generated
 and you see the following message in GitLab:
 
 ```plaintext

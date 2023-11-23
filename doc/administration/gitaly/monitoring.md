@@ -181,7 +181,7 @@ gitaly_streamcache_index_entries{dir="/var/opt/gitlab/git-data/repositories/+git
 The following are some queries for monitoring Gitaly:
 
 - Use the following Prometheus query to observe the
-  [type of connections](configure_gitaly.md#enable-tls-support) Gitaly is serving a production
+  [type of connections](tls_support.md) Gitaly is serving a production
   environment:
 
   ```prometheus
@@ -189,7 +189,7 @@ The following are some queries for monitoring Gitaly:
   ```
 
 - Use the following Prometheus query to monitor the
-  [authentication behavior](configure_gitaly.md#observe-type-of-gitaly-connections) of your GitLab
+  [authentication behavior](tls_support.md#observe-type-of-gitaly-connections) of your GitLab
   installation:
 
   ```prometheus

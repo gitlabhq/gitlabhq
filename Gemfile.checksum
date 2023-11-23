@@ -541,7 +541,7 @@
 {"name":"rspec-parameterized","version":"1.0.0","platform":"ruby","checksum":"9c07b043c72afbd23dd9a1dd48c06f46bc2fb1a6d875c6703e254932ba28b386"},
 {"name":"rspec-parameterized-core","version":"1.0.0","platform":"ruby","checksum":"287b494985e79821160af63aba4f91db8dbfa9a21cb200db34ba38f40e16ccc1"},
 {"name":"rspec-parameterized-table_syntax","version":"1.0.0","platform":"ruby","checksum":"d7df951eff9c5dd367ca7d5f9ae4853bb7ab7941f9d5b35bba361d112704988c"},
-{"name":"rspec-rails","version":"6.0.3","platform":"ruby","checksum":"6d1812cfaf18dba5a08d7e30c85149b24a220fae064853a96e451376be6fd820"},
+{"name":"rspec-rails","version":"6.1.0","platform":"ruby","checksum":"be86f73de238d40aad02e6acfc0f6d06edbd5cba4e310086e5516aae045ef5b6"},
 {"name":"rspec-retry","version":"0.6.2","platform":"ruby","checksum":"6101ba23a38809811ae3484acde4ab481c54d846ac66d5037ccb40131a60d858"},
 {"name":"rspec-support","version":"3.12.0","platform":"ruby","checksum":"dd4d44b247ff679b95b5607ac5641d197a5f9b1d33f916123cb98fc5f917c58b"},
 {"name":"rspec_junit_formatter","version":"0.6.0","platform":"ruby","checksum":"40dde674e6ae4e6cc0ff560da25497677e34fefd2338cc467a8972f602b62b15"},
