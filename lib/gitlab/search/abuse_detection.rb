@@ -8,7 +8,7 @@ module Gitlab
 
       MAX_PIPE_SYNTAX_FILTERS = 5
       ABUSIVE_TERM_SIZE = 100
-      ALLOWED_CHARS_REGEX = %r{\A[[:alnum:]_\-\/\.!]+\z}
+      ALLOWED_CHARS_REGEX = %r{\A[[:alnum:]_\-\+\/\.!]+\z}
 
       ALLOWED_SCOPES = %w[
         blobs

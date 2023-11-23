@@ -30,6 +30,7 @@ RSpec.describe Gitlab::Search::AbuseDetection, feature_category: :global_search 
       feature/it_works
       really_important!
       测试
+      main+testing
     ]
 
     refs.each do |ref|
