@@ -96,10 +96,6 @@ describe('Issuable output', () => {
 
   afterEach(() => {
     document.body.classList?.remove('issuable-sticky-header-visible');
-
-    // Consume any pending requests
-    jest.advanceTimersToNextTimer();
-    return waitForPromises();
   });
 
   describe('update', () => {

@@ -58,7 +58,6 @@ describe('common_utils', () => {
 
     afterEach(() => {
       window.history.pushState({}, null, '');
-      jest.runAllTimers();
     });
 
     function expectGetElementIdToHaveBeenCalledWith(elementId) {

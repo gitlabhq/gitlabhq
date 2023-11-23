@@ -23,7 +23,7 @@ RSpec.describe Pajamas::BannerComponent, type: :component do
     end
 
     it 'renders its title' do
-      expect(page).to have_css "h1[class='gl-banner-title']", text: title
+      expect(page).to have_css "h2[class='gl-banner-title']", text: title
     end
 
     it 'renders a close button' do
@@ -65,7 +65,7 @@ RSpec.describe Pajamas::BannerComponent, type: :component do
     describe 'embedded' do
       context 'by default (false)' do
         it 'keeps the banner\'s borders' do
-          expect(page).not_to have_css ".gl-banner.gl-border-none"
+          expect(page).not_to have_css ".gl-banner.gl-border-none\\!"
         end
       end
 
@@ -73,7 +73,7 @@ RSpec.describe Pajamas::BannerComponent, type: :component do
         let(:options) { { embedded: true } }
 
         it 'removes the banner\'s borders' do
-          expect(page).to have_css ".gl-banner.gl-border-none"
+          expect(page).to have_css ".gl-banner.gl-border-none\\!"
         end
       end
     end
@@ -82,6 +82,7 @@ RSpec.describe Pajamas::BannerComponent, type: :component do
       context 'by default (promotion)' do
         it 'does not apply introduction class' do
           expect(page).not_to have_css ".gl-banner-introduction"
+          expect(page).to have_css ".gl-banner.gl-bg-gray-10\\!"
         end
       end
 

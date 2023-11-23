@@ -300,12 +300,9 @@ describe('content_editor/extensions/attachment', () => {
         it('emits an alert event that includes an error message', () => {
           tiptapEditor.commands.uploadAttachment({ file: attachmentFile });
 
-          return new Promise((resolve) => {
-            eventHub.$on('alert', ({ message, variant }) => {
-              expect(variant).toBe(VARIANT_DANGER);
-              expect(message).toBe('An error occurred while uploading the file. Please try again.');
-              resolve();
-            });
+          eventHub.$on('alert', ({ message, variant }) => {
+            expect(variant).toBe(VARIANT_DANGER);
+            expect(message).toBe('An error occurred while uploading the file. Please try again.');
           });
         });
       });

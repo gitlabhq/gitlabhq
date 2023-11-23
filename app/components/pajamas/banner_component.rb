@@ -36,8 +36,9 @@ module Pajamas
 
     def banner_class
       classes = []
-      classes.push('gl-border-none') if @embedded
+      classes.push('gl-bg-gray-10!') unless introduction?
       classes.push('gl-banner-introduction') if introduction?
+      classes.push('gl-border-none!') if @embedded
       classes.join(' ')
     end
 

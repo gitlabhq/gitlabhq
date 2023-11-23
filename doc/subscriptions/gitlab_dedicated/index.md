@@ -120,7 +120,6 @@ The following GitLab application features are not available:
 
 - LDAP, Smartcard, or Kerberos authentication
 - Multiple login providers
-- Advanced search
 - GitLab Pages
 - FortiAuthenticator, or FortiToken 2FA
 - Reply-by email
