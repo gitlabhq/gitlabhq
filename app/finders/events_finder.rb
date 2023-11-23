@@ -61,7 +61,6 @@ class EventsFinder
   def by_current_user_access(events)
     events.merge(Project.public_or_visible_to_user(current_user))
       .joins(:project)
-      .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417462")
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

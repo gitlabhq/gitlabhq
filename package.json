@@ -191,7 +191,7 @@
     "remark-rehype": "^10.1.0",
     "scrollparent": "^2.0.1",
     "semver": "^7.3.4",
-    "sentrybrowser": "npm:@sentry/browser@7.81.0",
+    "sentrybrowser": "npm:@sentry/browser@7.81.1",
     "sentrybrowser5": "npm:@sentry/browser@5.30.0",
     "sortablejs": "^1.10.2",
     "string-hash": "1.1.3",

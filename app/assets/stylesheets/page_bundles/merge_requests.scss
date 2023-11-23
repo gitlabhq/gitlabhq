@@ -552,7 +552,7 @@ $tabs-holder-z-index: 250;
 
   .mr-widget-section:not(:first-child) > div,
   .mr-widget-section:not(:first-child) > section,
-  .mr-widget-section .mr-widget-section > div {
+  .mr-widget-section .mr-widget-section > div:not(:first-child) {
     border-top: solid 1px var(--border-color, $border-color);
   }
 

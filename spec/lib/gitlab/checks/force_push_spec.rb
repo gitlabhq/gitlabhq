@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Checks::ForcePush do
+RSpec.describe Gitlab::Checks::ForcePush, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
 
   describe '.force_push?' do

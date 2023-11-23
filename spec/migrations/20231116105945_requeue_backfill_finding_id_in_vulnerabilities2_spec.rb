@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillFindingIdInVulnerabilities, feature_category: :vulnerability_management do
+RSpec.describe RequeueBackfillFindingIdInVulnerabilities2, feature_category: :vulnerability_management do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

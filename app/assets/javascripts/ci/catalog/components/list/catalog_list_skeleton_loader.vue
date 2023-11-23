@@ -37,21 +37,19 @@ export default {
     >
       <!-- Catalog project avatar -->
       <rect x="0" y="0" width="48" height="48" rx="4" ry="4" />
-      <!-- namespace path -->
-      <rect x="60" y="4" width="400" height="16" rx="2" ry="2" />
+      <!-- resource path -->
+      <rect x="60" y="0" width="200" height="10" rx="2" ry="2" />
+      <!-- resource name -->
+      <rect x="60" y="14" width="400" height="16" rx="2" ry="2" />
       <!-- Project description -->
-      <rect x="60" y="30" width="500" height="12" rx="2" ry="2" />
+      <rect x="60" y="34" width="500" height="12" rx="2" ry="2" />
 
       <!-- Release date line -->
       <rect :x="coordinates.releaseDateX" y="30" width="200" height="12" rx="2" ry="2" />
 
       <!-- Favorites -->
-      <rect :x="coordinates.statsX" y="4" width="16" height="16" rx="2" ry="2" />
-      <rect :x="coordinates.statsX + 18" y="7" width="18" height="10" rx="2" ry="2" />
-
-      <!-- Forks -->
       <rect :x="coordinates.statsX + 50" y="4" width="16" height="16" rx="2" ry="2" />
-      <rect :x="coordinates.statsX + 68" y="7" width="18" height="10" rx="2" ry="2" />
+      <rect :x="coordinates.statsX + 70" y="7" width="18" height="10" rx="2" ry="2" />
     </gl-skeleton-loader>
   </div>
 </template>

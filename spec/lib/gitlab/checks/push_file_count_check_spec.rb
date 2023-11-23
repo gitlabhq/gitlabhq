@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Checks::PushFileCountCheck do
+RSpec.describe Gitlab::Checks::PushFileCountCheck, feature_category: :source_code_management do
   let(:snippet) { create(:personal_snippet, :repository) }
   let(:changes) { { oldrev: oldrev, newrev: newrev, ref: ref } }
   let(:timeout) { Gitlab::GitAccess::INTERNAL_TIMEOUT }

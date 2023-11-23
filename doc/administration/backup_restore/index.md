@@ -168,6 +168,12 @@ To prepare the new server:
    sudo gitlab-ctl status
    ```
 
+1. Stop Redis on the **new server** before transferring the Redis database backup:
+
+   ```shell
+   sudo gitlab-ctl stop redis
+   ```
+
 1. Transfer the Redis database and GitLab backups to the new server:
 
    ```shell
@@ -184,6 +190,12 @@ To prepare the new server:
    sudo chown gitlab-redis:gitlab-redis /var/opt/gitlab/redis/dump.rdb
    sudo chown git:root /var/opt/gitlab/backups
    sudo chown git:git /var/opt/gitlab/backups/your-backup.tar
+   ```
+
+1. Start Redis:
+
+   ```shell
+   sudo gitlab-ctl start redis
    ```
 
 1. [Restore the GitLab backup](#restore-gitlab).

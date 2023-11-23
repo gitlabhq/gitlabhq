@@ -17,7 +17,10 @@ module Ci
     partitionable scope: :build
 
     belongs_to :project
-    belongs_to :build, class_name: 'Ci::Build'
+    belongs_to :build, # rubocop: disable Rails/InverseOf -- this relation is not present on build
+      ->(running_build) { in_partition(running_build) },
+      class_name: 'Ci::Build',
+      partition_foreign_key: :partition_id
     belongs_to :runner, class_name: 'Ci::Runner'
 
     enum runner_type: ::Ci::Runner.runner_types

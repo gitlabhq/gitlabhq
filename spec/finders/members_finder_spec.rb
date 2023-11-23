@@ -161,6 +161,27 @@ RSpec.describe MembersFinder, feature_category: :groups_and_projects do
       expect(result).to eq([member3, member2, member1])
     end
 
+    it 'avoids N+1 database queries on accessing user records' do
+      project.add_maintainer(user2)
+
+      # warm up
+      # We need this warm up because there is 1 query being fired in one of the policies,
+      # and policy results are cached. Without a warm up, the control_count will be X queries
+      # but the test phase will only fire X-1 queries, due the fact that the
+      # result of the policy is already available in the cache.
+      described_class.new(project, user2).execute.map(&:user)
+
+      control_count = ActiveRecord::QueryRecorder.new do
+        described_class.new(project, user2).execute.map(&:user)
+      end
+
+      create_list(:project_member, 3, project: project)
+
+      expect do
+        described_class.new(project, user2).execute.map(&:user)
+      end.to issue_same_number_of_queries_as(control_count)
+    end
+
     context 'with :shared_into_ancestors' do
       let_it_be(:invited_group) do
         create(:group).tap do |invited_group|

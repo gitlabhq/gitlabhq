@@ -3,6 +3,7 @@ import { GlAvatar, GlBadge, GlIcon, GlLink, GlSprintf, GlTooltipDirective } from
 import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
+import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { CI_RESOURCE_DETAILS_PAGE_NAME } from '../../router/constants';
 
 export default {
@@ -45,6 +46,9 @@ export default {
     starCount() {
       return this.resource?.starCount || 0;
     },
+    starIcon() {
+      return this.starCount > 0 ? 'star' : 'star-o';
+    },
     hasReleasedVersion() {
       return Boolean(this.latestVersion?.releasedAt);
     },
@@ -57,11 +61,11 @@ export default {
     releasedAt() {
       return getTimeago().format(this.latestVersion?.releasedAt);
     },
-    resourcePath() {
-      return `${this.resource.rootNamespace?.name} / ${this.resource.rootNamespace?.fullPath} / `;
-    },
     tagName() {
       return this.latestVersion?.tagName || this.$options.i18n.unreleased;
+    },
+    webPath() {
+      return cleanLeadingSeparator(this.resource?.webPath);
     },
   },
   methods: {
@@ -98,20 +102,21 @@ export default {
       @click="navigateToDetailsPage"
     />
     <div class="gl-display-flex gl-flex-direction-column gl-flex-grow-1">
-      <div class="gl-display-flex gl-flex-wrap gl-gap-2 gl-mb-2">
+      <span class="gl-font-sm gl-mb-1">{{ webPath }}</span>
+      <div class="gl-display-flex gl-flex-wrap gl-gap-2 gl-mb-1">
         <gl-link
           class="gl-text-gray-900! gl-mr-1"
           :href="detailsPageHref"
           data-testid="ci-resource-link"
           @click="navigateToDetailsPage"
         >
-          {{ resourcePath }} <b> {{ resource.name }}</b>
+          <b> {{ resource.name }}</b>
         </gl-link>
         <div class="gl-display-flex gl-flex-grow-1 gl-md-justify-content-space-between">
-          <gl-badge size="sm">{{ tagName }}</gl-badge>
+          <gl-badge size="sm" class="gl-h-5 gl-align-self-center">{{ tagName }}</gl-badge>
           <span class="gl-display-flex gl-align-items-center gl-ml-5">
             <span class="gl--flex-center" data-testid="stats-favorites">
-              <gl-icon name="star" :size="14" class="gl-mr-1" />
+              <gl-icon :name="starIcon" :size="14" class="gl-mr-2" />
               <span class="gl-mr-3">{{ starCount }}</span>
             </span>
           </span>

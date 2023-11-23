@@ -31358,8 +31358,6 @@ CREATE INDEX idx_issues_on_project_work_item_type_closed_at_where_closed ON issu
 
 CREATE INDEX idx_issues_on_state_id ON issues USING btree (state_id);
 
-CREATE INDEX idx_jira_connect_subscriptions_on_installation_id ON jira_connect_subscriptions USING btree (jira_connect_installation_id);
-
 CREATE UNIQUE INDEX idx_jira_connect_subscriptions_on_installation_id_namespace_id ON jira_connect_subscriptions USING btree (jira_connect_installation_id, namespace_id);
 
 CREATE INDEX idx_keys_expires_at_and_before_expiry_notification_undelivered ON keys USING btree (date(timezone('UTC'::text, expires_at)), before_expiry_notification_delivered_at) WHERE (before_expiry_notification_delivered_at IS NULL);
@@ -35023,8 +35021,6 @@ CREATE INDEX index_web_hook_logs_part_on_web_hook_id ON ONLY web_hook_logs USING
 CREATE INDEX index_web_hooks_on_group_id ON web_hooks USING btree (group_id) WHERE ((type)::text = 'GroupHook'::text);
 
 CREATE INDEX index_web_hooks_on_integration_id ON web_hooks USING btree (integration_id);
-
-CREATE INDEX index_web_hooks_on_project_id ON web_hooks USING btree (project_id);
 
 CREATE INDEX index_web_hooks_on_project_id_recent_failures ON web_hooks USING btree (project_id, recent_failures);
 

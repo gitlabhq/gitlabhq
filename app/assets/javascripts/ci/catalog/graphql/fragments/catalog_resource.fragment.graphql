@@ -15,10 +15,5 @@ fragment CatalogResourceFields on CiCatalogResource {
       webUrl
     }
   }
-  rootNamespace {
-    id
-    fullPath
-    name
-  }
   webPath
 }

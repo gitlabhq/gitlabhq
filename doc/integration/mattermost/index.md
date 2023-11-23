@@ -80,6 +80,27 @@ where `mattermost-nginx.crt` is the SSL certificate and `mattermost-nginx.key` i
 
 Once the configuration is set, run `sudo gitlab-ctl reconfigure` to apply the changes.
 
+## Running GitLab Mattermost with an external PostgreSQL service
+
+By default, Mattermost uses the Linux package bundled PostgreSQL service. If you want to use Mattermost with an external PostgreSQL service, it requires its own specific configuration. An existing [external PostgreSQL connection configuration used by GitLab](../../administration/postgresql/external.md) is not automatically inherited for Mattermost.
+
+1. Edit `/etc/gitlab/gitlab.rb` and specify the following configuration:
+
+   ```ruby
+   mattermost['sql_driver_name'] = 'postgres'
+   mattermost['sql_data_source'] = "user=gitlab_mattermost host=<hostname-of-postgresql-service> port=5432 sslmode=required dbname=<mattermost_production> password=<user-password>"
+   ```
+
+1. Create a PostgreSQL user matching the `user` value, and `password` value that you have defined in `mattermost['sql_data_source']`.
+1. Create a PostgreSQL database matching the `dbname` value that was used.
+1. Ensure that the `user` has permissions to the database that was created with `dbname`.
+
+1. Reconfigure GitLab and restart Mattermost to apply the changes:
+
+   ```shell
+   sudo gitlab-ctl reconfigure && sudo gitlab-ctl restart mattermost
+   ```
+
 ## Running GitLab Mattermost on its own server
 
 If you want to run GitLab and GitLab Mattermost on two separate servers the GitLab services are still set up on your GitLab Mattermost server, but they do not accept user requests or

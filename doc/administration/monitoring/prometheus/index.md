@@ -42,10 +42,14 @@ monitoring target for Prometheus, unless individually disabled.
 To disable Prometheus and all of its exporters, as well as any added in the future:
 
 1. Edit `/etc/gitlab/gitlab.rb`
-1. Add or find and uncomment the following line, making sure it's set to `false`:
+1. Add or find and uncomment the following lines, making sure they are set to `false`:
 
    ```ruby
    prometheus_monitoring['enable'] = false
+   sidekiq['metrics_enabled'] = false
+
+   # Already set to `false` by default, but you can explicitly disable it to be sure
+   puma['exporter_enabled'] = false
    ```
 
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to

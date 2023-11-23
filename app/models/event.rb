@@ -113,8 +113,8 @@ class Event < ApplicationRecord
   scope :with_associations, -> do
     # We're using preload for "push_event_payload" as otherwise the association
     # is not always available (depending on the query being built).
-    includes(:author, :project, project: [:project_feature, :import_data, :namespace])
-      .preload(:target, :push_event_payload)
+    includes(:project, project: [:project_feature, :import_data, :namespace])
+      .preload(:author, :target, :push_event_payload)
   end
 
   scope :for_milestone_id, ->(milestone_id) { where(target_type: "Milestone", target_id: milestone_id) }

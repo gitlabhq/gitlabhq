@@ -9,7 +9,11 @@ module Ci
 
     self.primary_key = :build_id
 
-    belongs_to :build, class_name: "Ci::Build", inverse_of: :report_results
+    belongs_to :build,
+      ->(report_result) { in_partition(report_result) },
+      class_name: 'Ci::Build',
+      partition_foreign_key: :partition_id,
+      inverse_of: :report_results
     belongs_to :project, class_name: "Project", inverse_of: :build_report_results
 
     partitionable scope: :build

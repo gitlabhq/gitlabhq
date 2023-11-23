@@ -13,7 +13,7 @@ module Ci
 
       belongs_to :project, class_name: "::Project"
       belongs_to :pipeline, class_name: "Ci::Pipeline", inverse_of: :source_pipeline
-      belongs_to :build, class_name: "Ci::Build", foreign_key: :source_job_id, inverse_of: :sourced_pipelines
+      belongs_to :build, class_name: 'Ci::Build', foreign_key: :source_job_id, inverse_of: :sourced_pipelines
 
       belongs_to :source_project, class_name: "::Project", foreign_key: :source_project_id
       belongs_to :source_job, class_name: "CommitStatus", foreign_key: :source_job_id

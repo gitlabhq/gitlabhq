@@ -31,6 +31,10 @@ module Ml
     scope :by_name, ->(name) { where("ml_models.name LIKE ?", "%#{sanitize_sql_like(name)}%") } # rubocop:disable GitlabSecurity/SqlInjection
     scope :by_project, ->(project) { where(project_id: project.id) }
 
+    def all_packages
+      Packages::MlModel::Package.where(project: project, id: versions.select(:package_id))
+    end
+
     def valid_default_experiment?
       return unless default_experiment
 

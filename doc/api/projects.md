@@ -1743,6 +1743,7 @@ Supported attributes:
 | `packages_enabled`                                          | boolean        | No | Enable or disable packages repository feature. |
 | `pages_access_level`                                        | string         | No | One of `disabled`, `private`, `enabled`, or `public`. |
 | `path`                                                      | string         | No | Custom repository name for the project. By default generated based on name. |
+| `prevent_merge_without_jira_issue` **(PREMIUM ALL)**        | boolean        | No | Set whether merge requests require an associated issue from Jira.
 | `printing_merge_request_link_enabled`                       | boolean        | No | Show link to create/view merge request when pushing from the command line. |
 | `public_builds`                                             | boolean        | No | If `true`, jobs can be viewed by non-project members. |
 | `releases_access_level`                                     | string         | No | One of `disabled`, `private`, or `enabled`. |

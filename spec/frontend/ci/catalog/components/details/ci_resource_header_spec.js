@@ -45,9 +45,9 @@ describe('CiResourceHeader', () => {
       expect(wrapper.html()).toContain(resource.description);
     });
 
-    it('renders the namespace and project path', () => {
-      expect(wrapper.html()).toContain(resource.rootNamespace.fullPath);
-      expect(wrapper.html()).toContain(resource.rootNamespace.name);
+    it('renders the project path and name', () => {
+      expect(wrapper.html()).toContain(resource.webPath);
+      expect(wrapper.html()).toContain(resource.name);
     });
 
     it('renders the avatar', () => {

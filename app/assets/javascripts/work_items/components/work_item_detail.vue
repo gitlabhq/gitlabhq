@@ -3,12 +3,10 @@ import { isEmpty } from 'lodash';
 import {
   GlAlert,
   GlSkeletonLoader,
-  GlLoadingIcon,
   GlIcon,
   GlButton,
   GlTooltipDirective,
   GlEmptyState,
-  GlIntersectionObserver,
 } from '@gitlab/ui';
 import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg?raw';
 import { s__ } from '~/locale';
@@ -17,7 +15,6 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
-import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import {
   i18n,
@@ -52,6 +49,7 @@ import WorkItemDetailModal from './work_item_detail_modal.vue';
 import WorkItemAwardEmoji from './work_item_award_emoji.vue';
 import WorkItemRelationships from './work_item_relationships/work_item_relationships.vue';
 import WorkItemTypeIcon from './work_item_type_icon.vue';
+import WorkItemStickyHeader from './work_item_sticky_header.vue';
 
 export default {
   i18n,
@@ -62,7 +60,6 @@ export default {
   components: {
     GlAlert,
     GlButton,
-    GlLoadingIcon,
     GlSkeletonLoader,
     GlIcon,
     GlEmptyState,
@@ -78,9 +75,8 @@ export default {
     WorkItemNotes,
     WorkItemDetailModal,
     AbuseCategorySelector,
-    GlIntersectionObserver,
-    ConfidentialityBadge,
     WorkItemRelationships,
+    WorkItemStickyHeader,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['fullPath', 'isGroup', 'reportAbusePath'],
@@ -235,7 +231,7 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_CURRENT_USER_TODOS);
     },
     showWorkItemCurrentUserTodos() {
-      return this.$options.isLoggedIn && this.workItemCurrentUserTodos;
+      return Boolean(this.$options.isLoggedIn && this.workItemCurrentUserTodos);
     },
     currentUserTodos() {
       return this.workItemCurrentUserTodos?.currentUserTodos?.nodes;
@@ -537,62 +533,25 @@ export default {
             :update-in-progress="updateInProgress"
           />
         </div>
-        <gl-intersection-observer
+        <work-item-sticky-header
           v-if="showIntersectionObserver"
-          @appear="hideStickyHeader"
-          @disappear="showStickyHeader"
-        >
-          <transition name="issuable-header-slide">
-            <div
-              v-if="isStickyHeaderShowing"
-              class="issue-sticky-header gl-fixed gl-bg-white gl-border-b gl-z-index-3 gl-py-2"
-              data-testid="work-item-sticky-header"
-            >
-              <div
-                class="gl-align-items-center gl-mx-auto gl-px-5 gl-display-flex gl-max-w-container-xl"
-              >
-                <span class="gl-text-truncate gl-font-weight-bold gl-pr-3 gl-mr-auto">
-                  {{ workItem.title }}
-                </span>
-                <gl-loading-icon v-if="updateInProgress" class="gl-mr-3" />
-                <confidentiality-badge
-                  v-if="workItem.confidential"
-                  class="gl-mr-3"
-                  :issuable-type="workItemType"
-                  :workspace-type="$options.WORKSPACE_PROJECT"
-                />
-                <work-item-todos
-                  v-if="showWorkItemCurrentUserTodos"
-                  :work-item-id="workItem.id"
-                  :work-item-iid="workItemIid"
-                  :work-item-fullpath="projectFullPath"
-                  :current-user-todos="currentUserTodos"
-                  @error="updateError = $event"
-                />
-                <work-item-actions
-                  :full-path="fullPath"
-                  :work-item-id="workItem.id"
-                  :subscribed-to-notifications="workItemNotificationsSubscribed"
-                  :work-item-type="workItemType"
-                  :work-item-type-id="workItemTypeId"
-                  :can-delete="canDelete"
-                  :can-update="canUpdate"
-                  :is-confidential="workItem.confidential"
-                  :is-parent-confidential="parentWorkItemConfidentiality"
-                  :work-item-reference="workItem.reference"
-                  :work-item-create-note-email="workItem.createNoteEmail"
-                  :is-modal="isModal"
-                  @deleteWorkItem="
-                    $emit('deleteWorkItem', { workItemType, workItemId: workItem.id })
-                  "
-                  @toggleWorkItemConfidentiality="toggleConfidentiality"
-                  @error="updateError = $event"
-                  @promotedToObjective="$emit('promotedToObjective', workItemIid)"
-                />
-              </div>
-            </div>
-          </transition>
-        </gl-intersection-observer>
+          :current-user-todos="currentUserTodos"
+          :show-work-item-current-user-todos="showWorkItemCurrentUserTodos"
+          :parent-work-item-confidentiality="parentWorkItemConfidentiality"
+          :update-in-progress="updateInProgress"
+          :full-path="fullPath"
+          :is-modal="isModal"
+          :work-item="workItem"
+          :is-sticky-header-showing="isStickyHeaderShowing"
+          :work-item-parent-id="workItemParentId"
+          :work-item-notifications-subscribed="workItemNotificationsSubscribed"
+          @hideStickyHeader="hideStickyHeader"
+          @showStickyHeader="showStickyHeader"
+          @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
+          @toggleWorkItemConfidentiality="toggleConfidentiality"
+          @error="updateError = $event"
+          @promotedToObjective="$emit('promotedToObjective', workItemIid)"
+        />
         <div
           data-testid="work-item-overview"
           :class="{ 'work-item-overview': workItemsMvc2Enabled }"

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Checks::SingleChangeAccess do
+RSpec.describe Gitlab::Checks::SingleChangeAccess, feature_category: :source_code_management do
   describe '#validate!' do
     include_context 'change access checks context'
 

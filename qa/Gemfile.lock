@@ -227,7 +227,7 @@ GEM
     oj (3.13.23)
     os (1.1.4)
     parallel (1.23.0)
-    parallel_tests (4.2.1)
+    parallel_tests (4.3.0)
       parallel
     parser (3.2.2.1)
       ast (~> 2.4.1)
@@ -373,7 +373,7 @@ DEPENDENCIES
   nokogiri (~> 1.15, >= 1.15.4)
   octokit (~> 8.0.0)
   parallel (~> 1.23)
-  parallel_tests (~> 4.2, >= 4.2.1)
+  parallel_tests (~> 4.3)
   pry-byebug (~> 3.10.1)
   rainbow (~> 3.1.1)
   rake (~> 13, >= 13.1.0)
@@ -391,4 +391,4 @@ DEPENDENCIES
   zeitwerk (~> 2.6, >= 2.6.8)
 
 BUNDLED WITH
-   2.4.21
+   2.4.22

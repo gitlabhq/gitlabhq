@@ -1,10 +1,4 @@
-import {
-  GlAlert,
-  GlSkeletonLoader,
-  GlButton,
-  GlEmptyState,
-  GlIntersectionObserver,
-} from '@gitlab/ui';
+import { GlAlert, GlSkeletonLoader, GlButton, GlEmptyState } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -23,6 +17,7 @@ import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree
 import WorkItemRelationships from '~/work_items/components/work_item_relationships/work_item_relationships.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
+import WorkItemStickyHeader from '~/work_items/components/work_item_sticky_header.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import WorkItemTodos from '~/work_items/components/work_item_todos.vue';
 import { i18n } from '~/work_items/constants';
@@ -84,11 +79,9 @@ describe('WorkItemDetail component', () => {
   const findModal = () => wrapper.findComponent(WorkItemDetailModal);
   const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
   const findWorkItemTodos = () => wrapper.findComponent(WorkItemTodos);
-  const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
-  const findStickyHeader = () => wrapper.findByTestId('work-item-sticky-header');
+  const findStickyHeader = () => wrapper.findComponent(WorkItemStickyHeader);
   const findWorkItemTwoColumnViewContainer = () => wrapper.findByTestId('work-item-overview');
   const findRightSidebar = () => wrapper.findByTestId('work-item-overview-right-sidebar');
-  const triggerPageScroll = () => findIntersectionObserver().vm.$emit('disappear');
 
   const createComponent = ({
     isGroup = false,
@@ -769,8 +762,7 @@ describe('WorkItemDetail component', () => {
         expect(findWorkItemTwoColumnViewContainer().classes()).not.toContain('work-item-overview');
       });
 
-      it('does not have sticky header', () => {
-        expect(findIntersectionObserver().exists()).toBe(false);
+      it('does not have sticky header component', () => {
         expect(findStickyHeader().exists()).toBe(false);
       });
 
@@ -789,18 +781,7 @@ describe('WorkItemDetail component', () => {
         expect(findWorkItemTwoColumnViewContainer().classes()).toContain('work-item-overview');
       });
 
-      it('does not show sticky header by default', () => {
-        expect(findStickyHeader().exists()).toBe(false);
-      });
-
-      it('has the sticky header when the page is scrolled', async () => {
-        expect(findIntersectionObserver().exists()).toBe(true);
-
-        global.pageYOffset = 100;
-        triggerPageScroll();
-
-        await nextTick();
-
+      it('renders the work item sticky header component', () => {
         expect(findStickyHeader().exists()).toBe(true);
       });
 

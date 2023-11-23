@@ -25,7 +25,7 @@ module Gitlab
 
       date_interval = "INTERVAL '#{@contributor_time_instance.utc_offset} seconds'"
 
-      if Feature.enabled?(:contributions_calendar_refactoring)
+      if Feature.enabled?(:contributions_calendar_refactoring, contributor)
         return contributions_between(start_time, end_time).count_by_dates(date_interval)
       end
 
@@ -60,7 +60,7 @@ module Gitlab
 
       date_in_time_zone = date.in_time_zone(@contributor_time_instance.time_zone)
 
-      if Feature.enabled?(:contributions_calendar_refactoring)
+      if Feature.enabled?(:contributions_calendar_refactoring, contributor)
         return contributions_between(date_in_time_zone.beginning_of_day, date_in_time_zone.end_of_day).with_associations
       end
 

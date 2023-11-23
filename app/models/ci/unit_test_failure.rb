@@ -12,7 +12,11 @@ module Ci
     validates :unit_test, :build, :failed_at, presence: true
 
     belongs_to :unit_test, class_name: "Ci::UnitTest", foreign_key: :unit_test_id
-    belongs_to :build, class_name: "Ci::Build", foreign_key: :build_id
+    belongs_to :build,
+      ->(unit_test_failure) { in_partition(unit_test_failure) },
+      class_name: 'Ci::Build',
+      foreign_key: :build_id,
+      partition_foreign_key: :partition_id
 
     partitionable scope: :build
 

@@ -128,4 +128,27 @@ RSpec.describe Ml::Model, feature_category: :mlops do
       it { is_expected.to be(nil) }
     end
   end
+
+  describe '#all_packages' do
+    it 'returns an empty array when no model versions exist' do
+      expect(existing_model.all_packages).to eq([])
+    end
+
+    it 'returns one package when a single model version exists' do
+      version = create(:ml_model_versions, :with_package, model: existing_model)
+
+      all_packages = existing_model.all_packages
+      expect(all_packages.length).to be(1)
+      expect(all_packages.first).to eq(version.package)
+    end
+
+    it 'returns multiple packages when multiple model versions exist' do
+      version1 = create(:ml_model_versions, :with_package, model: existing_model)
+      version2 = create(:ml_model_versions, :with_package, model: existing_model)
+
+      all_packages = existing_model.all_packages
+      expect(all_packages.length).to be(2)
+      expect(all_packages).to match_array([version1.package, version2.package])
+    end
+  end
 end

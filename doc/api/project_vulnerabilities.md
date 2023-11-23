@@ -12,6 +12,7 @@ type: reference, api
 > - `start_date` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
 > - `updated_by_id` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
 > - `last_edited_by_id` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
+> - `due_date` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
 
 WARNING:
 This API is in the process of being deprecated and considered unstable.
@@ -63,7 +64,6 @@ Example response:
         "description": null,
         "dismissed_at": null,
         "dismissed_by_id": null,
-        "due_date": null,
         "finding": {
             "confidence": "medium",
             "created_at": "2020-04-07T14:01:04.630Z",
@@ -147,7 +147,6 @@ Example response:
     "description": null,
     "dismissed_at": null,
     "dismissed_by_id": null,
-    "due_date": null,
     "finding": {
         "confidence": "medium",
         "created_at": "2020-04-07T14:01:04.630Z",

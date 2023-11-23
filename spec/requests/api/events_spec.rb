@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe API::Events, feature_category: :user_profile do
-  let(:user) { create(:user) }
-  let(:non_member) { create(:user) }
-  let(:private_project) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
-  let(:closed_issue) { create(:closed_issue, project: private_project, author: user) }
-  let!(:closed_issue_event) { create(:event, :closed, project: private_project, author: user, target: closed_issue, created_at: Date.new(2016, 12, 30)) }
-  let(:closed_issue2) { create(:closed_issue, project: private_project, author: non_member) }
-  let!(:closed_issue_event2) { create(:event, :closed, project: private_project, author: non_member, target: closed_issue2, created_at: Date.new(2016, 12, 30)) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:non_member) { create(:user) }
+  let_it_be(:private_project) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
+  let_it_be(:closed_issue) { create(:closed_issue, project: private_project, author: user) }
+  let_it_be(:closed_issue_event) { create(:event, :closed, project: private_project, author: user, target: closed_issue, created_at: Date.new(2016, 12, 30)) }
+  let_it_be(:closed_issue2) { create(:closed_issue, project: private_project, author: non_member) }
+  let_it_be(:closed_issue_event2) { create(:event, :closed, project: private_project, author: non_member, target: closed_issue2, created_at: Date.new(2016, 12, 30)) }
 
   describe 'GET /events' do
     context 'when unauthenticated' do
