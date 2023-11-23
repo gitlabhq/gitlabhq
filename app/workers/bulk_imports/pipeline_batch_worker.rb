@@ -9,7 +9,7 @@ module BulkImports
 
     data_consistency :always # rubocop:disable SidekiqLoadBalancing/WorkerDataConsistency
     feature_category :importers
-    sidekiq_options dead: false, retry: 3
+    sidekiq_options dead: false, retry: 6
     worker_has_external_dependencies!
     worker_resource_boundary :memory
     idempotent!

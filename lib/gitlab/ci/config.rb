@@ -19,13 +19,14 @@ module Gitlab
         Config::Yaml::Tags::TagError
       ].freeze
 
-      attr_reader :root, :context, :source_ref_path, :source, :logger
+      attr_reader :root, :context, :source_ref_path, :source, :logger, :inject_edge_stages
 
       # rubocop: disable Metrics/ParameterLists
-      def initialize(config, project: nil, pipeline: nil, sha: nil, user: nil, parent_pipeline: nil, source: nil, pipeline_config: nil, logger: nil)
+      def initialize(config, project: nil, pipeline: nil, sha: nil, user: nil, parent_pipeline: nil, source: nil, pipeline_config: nil, logger: nil, inject_edge_stages: true)
         @logger = logger || ::Gitlab::Ci::Pipeline::Logger.new(project: project)
         @source_ref_path = pipeline&.source_ref_path
         @project = project
+        @inject_edge_stages = inject_edge_stages
 
         @context = self.logger.instrument(:config_build_context, once: true) do
           pipeline ||= ::Ci::Pipeline.new(project: project, sha: sha, user: user, source: source)
@@ -144,6 +145,8 @@ module Gitlab
         initial_config = logger.instrument(:config_tags_resolve, once: true) do
           Config::Yaml::Tags::Resolver.new(initial_config).to_hash
         end
+
+        return initial_config unless inject_edge_stages
 
         logger.instrument(:config_stages_inject, once: true) do
           Config::EdgeStagesInjector.new(initial_config).to_hash

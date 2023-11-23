@@ -77,19 +77,17 @@ secret redaction at this level of the stack as well as in GitLab-rails.
 
 #### Protocol
 
-We're choosing to use a simple JSON API for the AI-gateway
-service. This allows us to re-use a lot of what is already in place in
-the current model-gateway. It also allows us to make the endpoints
-version agnostic. We could have an API that expects only a rudimentary
-envelope that can contain dynamic information. We should make sure
-that we make these APIs compatible with multiple versions of GitLab,
-or other clients that use the gateway through GitLab. **This means
-that all client versions talk to the same API endpoint, the AI-gateway
-needs to support this, but we don't need to support different
-endpoints per version**.
+The communication between the AI-Gateway service and its clients (including the GitLab Rails application) shall use a JSON-based API.
 
-We also considered gRPC as a the protocol for communication between
-GitLab instances, they differ on these items:
+The AI-Gateway API shall expose single-purpose endpoints responsible for providing access to different AI features. [A later section](#single-purpose-endpoints) of this document provides detailed guidelines for building specific endpoints.
+
+The AI Gateway communication protocol shall only expect a rudimentary envelope that wraps all feature-specific dynamic information. The proposed architecture of the protocol allows the API endpoints to be version agnostic, and the AI-Gateway APIs compatible with multiple versions of GitLab(or other clients that use the gateway through GitLab).
+
+ **This means
+that all clients regardless of their versions use the same set of AI-Gateway API feature endpoints. The AI-gateway feature endpoints have to support different client versions, instead of creating multiple feature endpoints per different supported client versions**.
+
+We also considered gRPC as a protocol for communication between
+GitLab instances, JSON API, and gRPC differ on these items:
 
 | gRPC                                                                                                                                                                    | REST + JSON                                                                                       |
 |-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
@@ -138,37 +136,80 @@ one of the prompt payloads is no longer supported by the AI
 gateway. It allows us to potentially avoid breaking features in older
 GitLab installations as the AI landscape changes.
 
-#### Cross version compatibility
+### The AI-Gateway API protocol
 
-When building single purpose endpoints, we should be mindful that
-these endpoints will be used by different GitLab instances indirectly
-by external clients. To achieve this, we have a very simple envelope
-to provide information. It has to have a series of `prompt_components`
-that contain information the AI-gateway can use to build prompts and
-query the model of it selects.
+It is important to build each single-purpose endpoint, in a version-agnostic way so it can be used by different GitLab instances (and indirectly by external clients). To achieve this goal:
 
-Each prompt component contains 3 elements:
+**The AI-Gateway protocol shall rely on a simple JSON envelope wrapping all feature-specific information.** The AI-Gateway protocol can be seen as a transport layer protocol from [the OSI model](https://en.wikipedia.org/wiki/OSI_model) (eg: TCP, UDP) which defines how to transport information between nodes, without being aware of what information is being transported.
 
-- `type`: This is the kind of information that is being presented in
-  `payload`. The AI-gateway should ignore any types it does not know
-  about.
-- `payload`: The actual information that can be used by the AI-gateway
-  to build the payload that is going to go out to AI providers. The
-  payload will be different depending on the type, and the version of
-  the client providing the payload. This means that the AI-gateway
-  needs to consider all fields optional.
-- `metadata`: Information about the client that built this part of the
-  prompt. This may, or may not be used by GitLab for
-  telemetry. Nothing inside this field should be required.
+The AI-Gateway protocol does not specify which information received by single-purpose endpoint should be processed and in which way. Providing endpoint with the freedom to decide if they will use data coming from each protocol envelope or ignore it.
 
-The only component in there that is likely to change often is the
+The AI-Gateway protocol defines each request in the following way:
+
+1. Each single-purpose endpoint shall accept requests containing a single JSON object with a single key: `prompt_components`.
+1. The `prompt_components` key shall contain an array of JSON envelopes that are built according to the following rules:
+
+Each JSON envelope contains 3 elements:
+
+1. `type`: A string identifier specifying a type of information that is being presented in the envelopes
+  `payload`. The AI-gateway single-purpose endpoint may ignore any types it does not know about.
+1. `payload`: The actual information that can be used by the AI-Gateway single-purpose endpoint to send requests to 3rd party AI services providers. The data inside the `payload` element can differ depending on the `type`, and the version of
+  the client providing the `payload`. This means that the AI-Gateway
+ single-purpose endpoint must consider the structure and the type of data present inside the `payload` optional, and gracefully handle missing or malformed information.
+1. `metadata`: This field contains information about a client that built this `prompt_components` envelope. Information from the `metadata` field may, or may not be used by GitLab for
+  telemetry. The same as with the `payload` all fields inside the `metadata` shall be considered optional.
+
+The only envelope field that is expected to likely change often is the
 `payload` one. There we need to make sure that all fields are
-optional, and avoid renaming, removing or repurposing fields.
+optional and avoid renaming, removing, or repurposing fields.
 
-When this is needed, we need to build support for the old versions of
-a field in the gateway, and keep them around for at least 2 major
-versions of GitLab. For example, we could consider adding 2 versions
-of a prompt to the `prompt_components` payload:
+To document and validate the content of `payload` we can specify their
+format using [JSON-schema](https://json-schema.org/).
+
+An example request according to the AI-Gateway component looks as follows:
+
+```json
+{
+  "prompt_components": [
+    {
+      "type": "prompt",
+      "metadata": {
+        "source": "GitLab EE",
+        "version": "16.7.0-pre",
+      },
+      "payload": {
+        "content": "...",
+        "params": {
+          "temperature": 0.2,
+          "maxOutputTokens": 1024
+        },
+        "model": "code-gecko",
+        "provider": "vertex-ai"
+      }
+    },
+    {
+      "type": "editor_content",
+      "metadata": {
+        "source": "vscode",
+        "version": "1.1.1"
+      },
+       "payload": {
+        "filename": "application.rb",
+        "before_cursor": "require 'active_record/railtie'",
+        "after_cursor": "\nrequire 'action_controller/railtie'",
+        "open_files": [
+          {
+            "filename": "app/controllers/application_controller.rb",
+            "content": "class ApplicationController < ActionController::Base..."
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
+Another example use case includes 2 versions of a prompt passed in the `prompt_components` payload. Where each version is tailored for different 3rd party AI model provider:
 
 ```json
 {
@@ -177,7 +218,7 @@ of a prompt to the `prompt_components` payload:
       "type": "prompt",
       "metadata": {
         "source": "GitLab EE",
-        "version": "16.3",
+        "version": "16.7.0-pre",
       },
       "payload": {
         "content": "You can fetch information about a resource called an issue...",
@@ -193,7 +234,7 @@ of a prompt to the `prompt_components` payload:
       "type": "prompt",
       "metadata": {
         "source": "GitLab EE",
-        "version": "16.3",
+        "version": "16.7.0-pre",
       },
       "payload": {
         "content": "System: You can fetch information about a resource called an issue...\n\nHuman:",
@@ -209,11 +250,13 @@ of a prompt to the `prompt_components` payload:
 }
 ```
 
-Allowing the API to direct the prompt to either provider, based on
-what is in the payload.
+#### Cross-version compatibility
 
-To document and validate the content of `payload` we can specify their
-format using [JSON-schema](https://json-schema.org/).
+**When renaming, removing, or repurposing fields inside `payload` is needed, a single-purpose endpoint that uses the affected envelope type must build support for the old versions of
+a field in the gateway, and keep them around for at least 2 major
+versions of GitLab.**
+
+A good practise that might help support backwards compatibility is to provide building blocks for the prompt inside the `prompt_components` rather then a complete prompt. By moving responsibility of compiling prompt out of building blocks on the AI-Gateway, one can achive more flexibility in terms of prompt adjustments in the future.
 
 #### Example feature: Code Suggestions
 
@@ -230,7 +273,7 @@ POST /internal/code-suggestions/completions
       "type": "prompt",
       "metadata": {
         "source": "GitLab EE",
-        "version": "16.3",
+        "version": "16.7.0-pre",
       },
       "payload": {
         "content": "...",

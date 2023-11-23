@@ -3649,12 +3649,8 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
   describe '.pick_storage_shard', :request_store do
     before do
-      storages = {
-        'default' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/repositories'),
-        'picked' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/repositories')
-      }
+      stub_storage_settings('picked' => {})
 
-      allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
       stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
       Gitlab::CurrentSettings.current_application_settings
 

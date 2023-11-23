@@ -791,7 +791,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
       let(:opts) { { repository_storage: 'test_second_storage' } }
 
       before do
-        stub_storage_settings('test_second_storage' => { 'path' => 'tmp/tests/extra_storage' })
+        stub_storage_settings('test_second_storage' => {})
       end
 
       shared_examples 'the transfer was not scheduled' do

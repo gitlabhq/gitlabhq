@@ -77,23 +77,6 @@ When you create a user, you choose an access level: **Regular**, **Auditor**, or
 
 Capitalize these words when you refer to the UI. Otherwise use lowercase.
 
-## active voice
-
-Use active voice instead of passive.
-
-Use:
-
-- The contributor writes the documentation.
-
-Instead of:
-
-- The documentation is written by contributors.
-
-NOTE:
-If you can add the phrase "by zombies" to the phrase,
-the construction is passive. For example, `The button is selected by zombies`
-is passive. `Zombies select the button` is active.
-
 ## Admin Area
 
 Use title case for **Admin Area**.

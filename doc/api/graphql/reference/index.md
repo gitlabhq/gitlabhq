@@ -19007,6 +19007,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupclusteragentshasremotedevelopmentagentconfig"></a>`hasRemoteDevelopmentAgentConfig` | [`Boolean`](#boolean) | Returns only cluster agents which have an associated remote development agent config. |
+| <a id="groupclusteragentshasremotedevelopmentenabled"></a>`hasRemoteDevelopmentEnabled` | [`Boolean`](#boolean) | Returns only cluster agents which have been enabled with the remote development feature. |
 | <a id="groupclusteragentshasvulnerabilities"></a>`hasVulnerabilities` | [`Boolean`](#boolean) | Returns only cluster agents which have vulnerabilities. |
 
 ##### `Group.codeCoverageActivities`
@@ -20315,6 +20316,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="instancesecuritydashboardclusteragentshasremotedevelopmentagentconfig"></a>`hasRemoteDevelopmentAgentConfig` | [`Boolean`](#boolean) | Returns only cluster agents which have an associated remote development agent config. |
+| <a id="instancesecuritydashboardclusteragentshasremotedevelopmentenabled"></a>`hasRemoteDevelopmentEnabled` | [`Boolean`](#boolean) | Returns only cluster agents which have been enabled with the remote development feature. |
 | <a id="instancesecuritydashboardclusteragentshasvulnerabilities"></a>`hasVulnerabilities` | [`Boolean`](#boolean) | Returns only cluster agents which have vulnerabilities. |
 
 ##### `InstanceSecurityDashboard.projects`
@@ -23892,6 +23894,7 @@ Returns [`ClusterAgent`](#clusteragent).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectclusteragenthasremotedevelopmentagentconfig"></a>`hasRemoteDevelopmentAgentConfig` | [`Boolean`](#boolean) | Returns only cluster agents which have an associated remote development agent config. |
+| <a id="projectclusteragenthasremotedevelopmentenabled"></a>`hasRemoteDevelopmentEnabled` | [`Boolean`](#boolean) | Returns only cluster agents which have been enabled with the remote development feature. |
 | <a id="projectclusteragenthasvulnerabilities"></a>`hasVulnerabilities` | [`Boolean`](#boolean) | Returns only cluster agents which have vulnerabilities. |
 | <a id="projectclusteragentname"></a>`name` | [`String!`](#string) | Name of the cluster agent. |
 
@@ -23910,6 +23913,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectclusteragentshasremotedevelopmentagentconfig"></a>`hasRemoteDevelopmentAgentConfig` | [`Boolean`](#boolean) | Returns only cluster agents which have an associated remote development agent config. |
+| <a id="projectclusteragentshasremotedevelopmentenabled"></a>`hasRemoteDevelopmentEnabled` | [`Boolean`](#boolean) | Returns only cluster agents which have been enabled with the remote development feature. |
 | <a id="projectclusteragentshasvulnerabilities"></a>`hasVulnerabilities` | [`Boolean`](#boolean) | Returns only cluster agents which have vulnerabilities. |
 
 ##### `Project.commitReferences`
@@ -30929,6 +30933,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumci_deprecation_warning_for_types_keyword"></a>`CI_DEPRECATION_WARNING_FOR_TYPES_KEYWORD` | Callout feature name for ci_deprecation_warning_for_types_keyword. |
 | <a id="usercalloutfeaturenameenumcloud_licensing_subscription_activation_banner"></a>`CLOUD_LICENSING_SUBSCRIPTION_ACTIVATION_BANNER` | Callout feature name for cloud_licensing_subscription_activation_banner. |
 | <a id="usercalloutfeaturenameenumcluster_security_warning"></a>`CLUSTER_SECURITY_WARNING` | Callout feature name for cluster_security_warning. |
+| <a id="usercalloutfeaturenameenumduo_chat_callout"></a>`DUO_CHAT_CALLOUT` | Callout feature name for duo_chat_callout. |
 | <a id="usercalloutfeaturenameenumeoa_bronze_plan_banner"></a>`EOA_BRONZE_PLAN_BANNER` | Callout feature name for eoa_bronze_plan_banner. |
 | <a id="usercalloutfeaturenameenumfeature_flags_new_version"></a>`FEATURE_FLAGS_NEW_VERSION` | Callout feature name for feature_flags_new_version. |
 | <a id="usercalloutfeaturenameenumgcp_signup_offer"></a>`GCP_SIGNUP_OFFER` | Callout feature name for gcp_signup_offer. |

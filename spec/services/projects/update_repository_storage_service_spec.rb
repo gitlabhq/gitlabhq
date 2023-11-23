@@ -13,12 +13,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
     before do
       allow(Time).to receive(:now).and_return(time)
 
-      stub_storage_settings(
-        'test_second_storage' => {
-          'gitaly_address' => Gitlab.config.repositories.storages.default.gitaly_address,
-          'path' => TestEnv::SECOND_STORAGE_PATH
-        }
-      )
+      stub_storage_settings('test_second_storage' => {})
     end
 
     context 'without wiki and design repository' do

@@ -6946,12 +6946,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let(:repository_storage) { shard_to.name }
 
     before do
-      stub_storage_settings(
-        'test_second_storage' => {
-          'gitaly_address' => Gitlab.config.repositories.storages.default.gitaly_address,
-          'path' => TestEnv::SECOND_STORAGE_PATH
-        }
-      )
+      stub_storage_settings('test_second_storage' => {})
 
       project.update!(pool_repository: project_pool, repository_storage: repository_storage)
     end

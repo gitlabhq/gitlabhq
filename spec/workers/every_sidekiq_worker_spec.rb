@@ -141,9 +141,9 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'BulkImportWorker' => 3,
         'BulkImports::ExportRequestWorker' => 5,
         'BulkImports::EntityWorker' => 3,
-        'BulkImports::PipelineWorker' => 3,
-        'BulkImports::PipelineBatchWorker' => 3,
-        'BulkImports::FinishProjectImportWorker' => 5,
+        'BulkImports::PipelineWorker' => 6,
+        'BulkImports::PipelineBatchWorker' => 6,
+        'BulkImports::FinishProjectImportWorker' => 3,
         'BulkImports::TransformReferencesWorker' => 3,
         'Chaos::CpuSpinWorker' => 3,
         'Chaos::DbSpinWorker' => 3,
@@ -484,8 +484,8 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'ComplianceManagement::MergeRequests::ComplianceViolationsWorker' => 3,
         'Zoekt::IndexerWorker' => 2,
         'Issuable::RelatedLinksCreateWorker' => 3,
-        'BulkImports::RelationBatchExportWorker' => 3,
-        'BulkImports::RelationExportWorker' => 3
+        'BulkImports::RelationBatchExportWorker' => 6,
+        'BulkImports::RelationExportWorker' => 6
       }.merge(extra_retry_exceptions)
     end
 

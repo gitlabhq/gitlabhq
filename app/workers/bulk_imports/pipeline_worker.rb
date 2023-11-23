@@ -11,7 +11,7 @@ module BulkImports
 
     data_consistency :always
     feature_category :importers
-    sidekiq_options dead: false, retry: 3
+    sidekiq_options dead: false, retry: 6
     worker_has_external_dependencies!
     deduplicate :until_executing
     worker_resource_boundary :memory

@@ -441,21 +441,13 @@ Configure Gitaly clients in one of two ways:
          default:
            gitaly_address: tcp://gitaly1.internal:8075
            gitaly_token: AUTH_TOKEN_1
-           path: /some/local/path
          storage1:
            gitaly_address: tcp://gitaly1.internal:8075
            gitaly_token: AUTH_TOKEN_1
-           path: /some/local/path
          storage2:
            gitaly_address: tcp://gitaly2.internal:8075
            gitaly_token: AUTH_TOKEN_2
-           path: /some/local/path
    ```
-
-   NOTE:
-   `/some/local/path` should be set to a local folder that exists, however no data is stored in
-   this folder. This requirement is scheduled to be removed when
-   [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/1282) is resolved.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 1. Run `sudo -u git -H bundle exec rake gitlab:gitaly:check RAILS_ENV=production` to confirm the
@@ -694,19 +686,11 @@ Configure Gitaly with TLS in one of two ways:
        storages:
          default:
            gitaly_address: tls://gitaly1.internal:9999
-           path: /some/local/path
          storage1:
            gitaly_address: tls://gitaly1.internal:9999
-           path: /some/local/path
          storage2:
            gitaly_address: tls://gitaly2.internal:9999
-           path: /some/local/path
    ```
-
-   NOTE:
-   `/some/local/path` should be set to a local folder that exists, however no data is stored
-   in this folder. This requirement is scheduled to be removed when
-   [Gitaly issue #1282](https://gitlab.com/gitlab-org/gitaly/-/issues/1282) is resolved.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 1. On the Gitaly servers, create or edit `/etc/default/gitlab` and add:

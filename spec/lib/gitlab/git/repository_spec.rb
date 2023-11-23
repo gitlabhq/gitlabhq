@@ -2670,10 +2670,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     subject { new_repository.replicate(repository) }
 
     before do
-      stub_storage_settings('test_second_storage' => {
-        'gitaly_address' => Gitlab.config.repositories.storages.default.gitaly_address,
-        'path' => TestEnv::SECOND_STORAGE_PATH
-      })
+      stub_storage_settings('test_second_storage' => {})
     end
 
     after do

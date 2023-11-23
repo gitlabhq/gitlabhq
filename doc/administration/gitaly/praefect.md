@@ -843,13 +843,7 @@ For self-compiled installations:
        storages:
          default:
            gitaly_address: tls://PRAEFECT_LOADBALANCER_HOST:3305
-           path: /some/local/path
    ```
-
-   NOTE:
-   `/some/local/path` should be set to a local folder that exists, however no
-   data is stored in this folder. This requirement is scheduled to be removed when
-   [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/1282) is resolved.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 1. Copy all Praefect server certificates, or their certificate authority, to the system
@@ -980,13 +974,7 @@ with Praefect service discovery address, such as `praefect.service.consul`.
        storages:
          default:
            gitaly_address: dns:PRAEFECT_SERVICE_DISCOVERY_ADDRESS:2305
-           path: /some/local/path
    ```
-
-   NOTE:
-   `/some/local/path` should be set to a local folder that exists, however no
-   data is stored in this folder. [Issue 375254](https://gitlab.com/gitlab-org/gitlab/-/issues/375254)
-   proposes to remove this requirement.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 

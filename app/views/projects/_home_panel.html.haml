@@ -48,7 +48,7 @@
       .home-panel-description.text-break
         .home-panel-description-markdown.read-more-container{ itemprop: 'description' }
           = markdown_field(@project, :description)
-        %button.btn.gl-button.btn-blank.btn-link.js-read-more-trigger.d-lg-none{ type: "button" }
+        = render Pajamas::ButtonComponent.new(category: :tertiary, variant: :link, button_options: { class: 'js-read-more-trigger gl-lg-display-none' }) do
           = _("Read more")
 
     = render_if_exists "projects/home_mirror"

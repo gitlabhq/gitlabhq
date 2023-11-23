@@ -1190,13 +1190,8 @@ production: &base
 
   ## Repositories settings
   repositories:
-    # Paths where repositories can be stored. Give the canonicalized absolute pathname.
-    # IMPORTANT: None of the path components may be symlink, because
-    # gitlab-shell invokes Dir.pwd inside the repository path and that results
-    # real path not the symlink.
     storages: # You must have at least a `default` storage path.
       default:
-        path: /home/git/repositories/
         gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port). TLS connections are also supported using the system certificate pool (eg: tls://host:port).
         # gitaly_token: 'special token' # Optional: override global gitaly.token for this storage.
 

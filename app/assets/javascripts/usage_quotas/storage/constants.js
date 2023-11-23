@@ -31,6 +31,9 @@ export const PROJECT_TABLE_LABEL_STORAGE_TYPE = s__('UsageQuota|Storage type');
 export const PROJECT_TABLE_LABEL_USAGE = s__('UsageQuota|Usage');
 
 export const usageQuotasHelpPaths = {
+  repositorySizeLimit: helpPagePath('administration/settings/account_and_limit_settings', {
+    anchor: 'repository-size-limit',
+  }),
   usageQuotas: helpPagePath('user/usage_quotas'),
   usageQuotasProjectStorageLimit: helpPagePath('user/usage_quotas', {
     anchor: 'project-storage-limit',

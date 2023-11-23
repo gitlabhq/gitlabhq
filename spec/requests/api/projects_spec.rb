@@ -4465,7 +4465,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         end
 
         it 'returns 200 when repository storage has changed' do
-          stub_storage_settings('test_second_storage' => { 'path' => TestEnv::SECOND_STORAGE_PATH })
+          stub_storage_settings('test_second_storage' => {})
 
           expect do
             Sidekiq::Testing.fake! do

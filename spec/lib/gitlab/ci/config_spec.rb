@@ -43,6 +43,34 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
         expect(config.to_hash).to eq hash
       end
 
+      context 'when yml has stages' do
+        let(:yml) do
+          <<-EOS
+            image: image:1.0
+            stages:
+              - custom_stage
+            rspec:
+              script:
+                - gem install rspec
+                - rspec
+          EOS
+        end
+
+        specify do
+          expect(config.to_hash[:stages]).to eq(['.pre', 'custom_stage', '.post'])
+        end
+
+        context 'with inject_edge_stages option disabled' do
+          let(:config) do
+            described_class.new(yml, project: nil, pipeline: nil, sha: nil, user: nil, inject_edge_stages: false)
+          end
+
+          specify do
+            expect(config.to_hash[:stages]).to contain_exactly('custom_stage')
+          end
+        end
+      end
+
       describe '#valid?' do
         it 'is valid' do
           expect(config).to be_valid

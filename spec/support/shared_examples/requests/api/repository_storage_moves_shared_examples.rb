@@ -90,7 +90,7 @@ RSpec.shared_examples 'repository_storage_moves API' do |container_type|
     end
 
     before do
-      stub_storage_settings('test_second_storage' => { 'path' => 'tmp/tests/extra_storage' })
+      stub_storage_settings('test_second_storage' => {})
     end
 
     it 'schedules a container repository storage move' do
@@ -203,7 +203,7 @@ RSpec.shared_examples 'repository_storage_moves API' do |container_type|
     end
 
     before do
-      stub_storage_settings('test_second_storage' => { 'path' => 'tmp/tests/extra_storage' })
+      stub_storage_settings('test_second_storage' => {})
     end
 
     it 'schedules the worker' do

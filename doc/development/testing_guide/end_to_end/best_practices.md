@@ -128,7 +128,7 @@ end
 1. Every `describe`, `context`, and `it` blocks should have a short description attached
 1. Keep descriptions as concise as possible.
     1. Long descriptions or multiple conditionals could be a sign it should be split up (additional `context` blocks).
-    1. The [Documentation Style Guide](../../documentation/styleguide/index.md) gives recommendations on how to write concisely and with [active voice](../../documentation/styleguide/word_list.md#active-voice).
+    1. The [Documentation Style Guide](../../documentation/styleguide/index.md) gives recommendations on how to write concisely and with [active voice](../../documentation/styleguide/index.md#active-voice).
 1. The outermost `Rspec.describe` block should be [the DevOps stage name](https://about.gitlab.com/handbook/product/categories/#devops-stages)
 1. Inside the `Rspec.describe` block is a `describe` block with the name of the feature being tested
 1. Optional `context` blocks define what the conditions being tested are

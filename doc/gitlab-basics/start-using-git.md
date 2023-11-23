@@ -140,6 +140,7 @@ You can also
 
 Clone with HTTPS when you want to authenticate each time you perform an operation
 between your computer and GitLab.
+[OAuth credential helpers](../user/profile/account/two_factor_authentication.md#oauth-credential-helpers) can decrease the number of times you must manually authenticate, making HTTPS a seamless experience.
 
 1. On the left sidebar, select **Search or go to** and find the project you want to clone.
 1. On the right-hand side of the page, select **Clone**, then copy the URL for **Clone with HTTPS**.
