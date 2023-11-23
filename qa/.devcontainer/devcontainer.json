@@ -1,0 +1,40 @@
+// this configuration starts docker container with qa code attached to docker test network
+// this assumes omnibus instance has been started beforehand using `gitlab-qa` gem
+{
+  "name": "gitlab-qa",
+  "privileged": true,
+  "build": {
+    "dockerfile": "../Dockerfile",
+    "context": "../../",
+    "target": "dev"
+  },
+  "runArgs": [
+    "--net=test"
+  ],
+  "mounts": [
+    {
+      "type": "bind",
+      "source": "/var/run/docker.sock",
+      "target": "/var/run/docker.sock"
+    }
+  ],
+  "containerEnv": {
+    "CHROME_DISABLE_DEV_SHM": "true",
+    "GITLAB_QA_ADMIN_ACCESS_TOKEN": "ypCa3Dzb23o5nvsixwPA",
+    "QA_GITLAB_URL": "${localEnv:QA_GITLAB_URL}",
+    "QA_SMOCKER_HOST": "smocker"
+  },
+  "onCreateCommand": "echo \"export QA_GITLAB_URL=${QA_GITLAB_URL:-http://$(docker ps | grep -m 1 'gitlab' | awk '{ print $NF }').test}\" >> /root/.bashrc",
+  "updateContentCommand": "cp .solargraph.yml.example .solargraph.yml",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "castwide.solargraph"
+      ],
+      "settings": {
+        "solargraph.diagnostics": true,
+        "solargraph.formatting": true
+      }
+    }
+  }
+}

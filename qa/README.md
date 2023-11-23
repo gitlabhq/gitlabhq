@@ -104,10 +104,21 @@ bundle exec rspec <path/to/spec.rb>
 ```
 
 Note:
+
 - If you want to run tests requiring SSH against GDK, you will need to [modify your GDK setup](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/run_qa_against_gdk.md).
 - If this is your first time running GDK, you can use the password pre-set for `root`. [See supported GitLab environment variables](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables). If you have changed your `root` password, export the password as `GITLAB_INITIAL_ROOT_PASSWORD`.
 - By default the tests will run in a headless browser. If you'd like to watch the test execution, you can export `WEBDRIVER_HEADLESS=false`.
 - Tests that are tagged `:orchestrated` require special setup (e.g., custom GitLab configuration, or additional services such as LDAP). All [orchestrated tests can be run via `gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md). There are also [setup instructions](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/running_tests_that_require_special_setup.html) for running some of those tests against GDK or another local GitLab instance.
+
+#### Remote development
+
+For [VSCode](https://code.visualstudio.com/) user, [.devcontainer](.devcontainer/devcontainer.json) defines configuration to develop E2E tests inside a Docker container which by default is attached to the same network as environments started by [`gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa) gem. For more information on how to use `dev containers`, see [tutorial](https://code.visualstudio.com/docs/devcontainers/tutorial).
+
+This is useful when developing E2E tests that require GitLab instance with specific omnibus configuration. Typical workflow example:
+
+- Start `GitLab` omnibus instance with specific configuration without running tests, for example: `gitlab-qa Test::Integration::Import EE --no-tests`. For available configurations, see [docs](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md)
+- Start dev container from `VSCode` environment
+- Develop and run tests from within the container which will automatically execute against started GitLab instance
 
 #### Generic command for a typical GDK installation
 
