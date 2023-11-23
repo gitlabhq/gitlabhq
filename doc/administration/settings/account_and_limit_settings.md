@@ -294,6 +294,21 @@ When this ability is disabled, GitLab administrators can still use the
 [Admin Area](../../administration/admin_area.md#administering-users) or the
 [API](../../api/users.md#user-modification) to update usernames.
 
+## Prevent users from creating organizations **(EXPERIMENT)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423302) in GitLab 16.7 [with a flag](../feature_flags.md) named `ui_for_organizations`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags.md) named `ui_for_organizations`. On GitLab.com, this feature is not available. This feature is not ready for production use.
+
+By default, users can create organizations. GitLab administrators can prevent users from creating organizations.
+
+1. On the left sidebar, select **Search or go to**.
+1. Select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **Account and limit**.
+1. Clear the **Allow users to create organizations** checkbox.
+
 ## Prevent new users from creating top-level groups
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367754) in GitLab 15.5.

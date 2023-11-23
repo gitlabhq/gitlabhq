@@ -179,6 +179,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       *::ApplicationSettingsHelper.visible_attributes,
       *::ApplicationSettingsHelper.external_authorization_service_attributes,
       *ApplicationSetting.kroki_formats_attributes.keys.map { |key| "kroki_formats_#{key}".to_sym },
+      :can_create_organization,
       :lets_encrypt_notification_email,
       :lets_encrypt_terms_of_service_accepted,
       :domain_denylist_file,

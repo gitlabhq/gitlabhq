@@ -258,6 +258,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
 
       it_behaves_like 'updates boolean attribute', :user_defaults_to_private_profile
       it_behaves_like 'updates boolean attribute', :can_create_group
+      it_behaves_like 'updates boolean attribute', :can_create_organization
       it_behaves_like 'updates boolean attribute', :admin_mode
       it_behaves_like 'updates boolean attribute', :require_admin_approval_after_user_signup
       it_behaves_like 'updates boolean attribute', :remember_me_enabled

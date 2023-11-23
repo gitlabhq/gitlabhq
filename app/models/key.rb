@@ -21,6 +21,7 @@ class Key < ApplicationRecord
 
   validates :key,
     presence: true,
+    ssh_key: true,
     length: { maximum: 5000 },
     format: { with: /\A(#{Gitlab::SSHPublicKey.supported_algorithms.join('|')})/ }
 
@@ -28,7 +29,6 @@ class Key < ApplicationRecord
     uniqueness: true,
     presence: { message: 'cannot be generated' }
 
-  validate :key_meets_restrictions
   validate :expiration, on: :create
   validate :banned_key, if: :key_changed?
 
@@ -154,16 +154,6 @@ class Key < ApplicationRecord
     self.fingerprint_sha256 = public_key.fingerprint_sha256.gsub("SHA256:", "")
   end
 
-  def key_meets_restrictions
-    restriction = Gitlab::CurrentSettings.key_restriction_for(public_key.type)
-
-    if restriction == ApplicationSetting::FORBIDDEN_KEY_VALUE
-      errors.add(:key, forbidden_key_type_message)
-    elsif public_key.bits < restriction
-      errors.add(:key, "must be at least #{restriction} bits")
-    end
-  end
-
   def banned_key
     return unless public_key.banned?
 
@@ -177,12 +167,6 @@ class Key < ApplicationRecord
       _('cannot be used because it belongs to a compromised private key. Stop using this key and generate a new one.'),
       help_page_url: help_page_url
     )
-  end
-
-  def forbidden_key_type_message
-    allowed_types = Gitlab::CurrentSettings.allowed_key_types.map(&:upcase)
-
-    "type is forbidden. Must be #{Gitlab::Sentence.to_exclusive_sentence(allowed_types)}"
   end
 
   def expiration

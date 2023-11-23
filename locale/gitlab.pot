@@ -4908,6 +4908,9 @@ msgstr ""
 msgid "Allow use of licensed EE features"
 msgstr ""
 
+msgid "Allow users to create organizations"
+msgstr ""
+
 msgid "Allow users to extend their session"
 msgstr ""
 

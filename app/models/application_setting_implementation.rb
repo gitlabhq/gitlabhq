@@ -263,6 +263,7 @@ module ApplicationSettingImplementation
         users_get_by_id_limit: 300,
         users_get_by_id_limit_allowlist: [],
         can_create_group: true,
+        can_create_organization: true,
         bulk_import_enabled: false,
         bulk_import_max_download_file_size: 5120,
         allow_runner_registration_token: true,

@@ -162,6 +162,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it { is_expected.to validate_inclusion_of(:user_defaults_to_private_profile).in_array([true, false]) }
 
+    it { is_expected.to validate_inclusion_of(:can_create_organization).in_array([true, false]) }
+
     it { is_expected.to validate_inclusion_of(:allow_project_creation_for_guest_and_below).in_array([true, false]) }
 
     it { is_expected.to validate_inclusion_of(:deny_all_requests_except_allowed).in_array([true, false]) }

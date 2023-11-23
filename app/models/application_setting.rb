@@ -468,7 +468,11 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :invisible_captcha_enabled,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
-  validates :invitation_flow_enforcement, :can_create_group, :allow_project_creation_for_guest_and_below, :user_defaults_to_private_profile,
+  validates :invitation_flow_enforcement,
+    :can_create_group,
+    :can_create_organization,
+    :allow_project_creation_for_guest_and_below,
+    :user_defaults_to_private_profile,
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 

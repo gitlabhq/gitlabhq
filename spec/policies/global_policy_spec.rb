@@ -694,6 +694,14 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       let(:current_user) { user }
 
       it { is_expected.to be_allowed(:create_organization) }
+
+      context 'when disallowed by admin' do
+        before do
+          stub_application_setting(can_create_organization: false)
+        end
+
+        it { is_expected.to be_disallowed(:create_organization) }
+      end
     end
 
     context 'with anonymous' do

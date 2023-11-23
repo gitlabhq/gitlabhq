@@ -12200,6 +12200,7 @@ CREATE TABLE application_settings (
     allow_project_creation_for_guest_and_below boolean DEFAULT true NOT NULL,
     update_namespace_name_rate_limit smallint DEFAULT 120 NOT NULL,
     pre_receive_secret_detection_enabled boolean DEFAULT false NOT NULL,
+    can_create_organization boolean DEFAULT true NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),

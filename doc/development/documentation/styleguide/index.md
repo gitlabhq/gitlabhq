@@ -350,10 +350,10 @@ Some contractions, however, should be avoided:
 
 | Do not use a contraction      | Example                                          | Use instead                                                      |
 |-------------------------------|--------------------------------------------------|------------------------------------------------------------------|
-| With a proper noun and a verb | The **Container Registry's** a powerful feature. | The **Container Registry** is a powerful feature.                |
+| With a proper noun and a verb | **Terraform's** a helpful tool.                  | **Terraform** is a helpful tool.                                  |
 | To emphasize a negative       | **Don't** install X with Y.                      | **Do not** install X with Y.                                     |
 | In reference documentation    | **Don't** set a limit.                           | **Do not** set a limit.                                          |
-| In error messages             | Requests to localhost **aren't** allowed.        | Requests to localhost **are not** allowed.                        |
+| In error messages             | Requests to localhost **aren't** allowed.        | Requests to localhost **are not** allowed.                       |
 
 <!-- vale gitlab.Possessive = YES -->
 
@@ -559,9 +559,13 @@ about styling cURL commands.
 
 ## Lists
 
+Use lists to present information in a format that is easier to scan.
+
+- Make all items in the list parallel.
+  For example, do not start some bullets with nouns and others with verbs.
 - Do not use a period if the phrase is not a full sentence.
 - Use a period after every sentence. Do not use semicolons or commas.
-- Majority rules. All items should have the same punctuation.
+- Give all items the same punctuation.
 - Start list items with a capital letter.
 - Separate the introductory phrase from explanatory text with a colon (`:`). For example:
 
