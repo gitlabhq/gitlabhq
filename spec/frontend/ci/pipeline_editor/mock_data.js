@@ -28,6 +28,7 @@ export const commonOptions = {
 export const editorDatasetOptions = {
   initialBranchName: 'production',
   pipelineEtag: 'pipelineEtag',
+  ciCatalogPath: '/explore/catalog',
   ...commonOptions,
 };
 

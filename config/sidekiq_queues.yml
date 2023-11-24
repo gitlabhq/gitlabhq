@@ -665,6 +665,8 @@
   - 1
 - - security_process_scan_result_policy
   - 1
+- - security_refresh_compliance_framework_security_policies
+  - 1
 - - security_refresh_project_policies
   - 1
 - - security_scan_execution_policies_rule_schedule

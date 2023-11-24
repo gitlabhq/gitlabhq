@@ -1,32 +1,16 @@
 <script>
-import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
-import { __ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'FrequentlyVisitedItem',
   components: {
-    GlButton,
     ProjectAvatar,
   },
-  directives: {
-    GlTooltip: GlTooltipDirective,
-  },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     item: {
       type: Object,
       required: true,
     },
-  },
-  methods: {
-    onRemove() {
-      this.$emit('remove', this.item);
-    },
-  },
-  i18n: {
-    remove: __('Remove'),
   },
 };
 </script>
@@ -51,17 +35,5 @@ export default {
         {{ item.subtitle }}
       </div>
     </div>
-
-    <gl-button
-      v-if="!glFeatures.frecentNamespacesSuggestions"
-      v-gl-tooltip.left
-      icon="dash"
-      category="tertiary"
-      :aria-label="$options.i18n.remove"
-      :title="$options.i18n.remove"
-      class="show-on-focus-or-hover--target"
-      @click.stop.prevent="onRemove"
-      @keydown.enter.stop.prevent="onRemove"
-    />
   </div>
 </template>

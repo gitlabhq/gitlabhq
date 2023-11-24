@@ -14,15 +14,10 @@ describe('FrequentlyVisitedItem', () => {
     avatar: '/mock/avatar.png',
   };
 
-  const createComponent = (frecentNamespacesSuggestionsEnabled = false) => {
+  const createComponent = () => {
     wrapper = shallowMountExtended(FrequentItem, {
       propsData: {
         item: mockItem,
-      },
-      provide: {
-        glFeatures: {
-          frecentNamespacesSuggestions: frecentNamespacesSuggestionsEnabled,
-        },
       },
       stubs: {
         GlButton: stubComponent(GlButton, {
@@ -33,7 +28,6 @@ describe('FrequentlyVisitedItem', () => {
   };
 
   const findProjectAvatar = () => wrapper.findComponent(ProjectAvatar);
-  const findRemoveButton = () => wrapper.findByRole('button');
   const findSubtitle = () => wrapper.findByTestId('subtitle');
 
   beforeEach(() => {
@@ -57,57 +51,5 @@ describe('FrequentlyVisitedItem', () => {
   it('does not render the subtitle if not given', async () => {
     await wrapper.setProps({ item: { ...mockItem, subtitle: null } });
     expect(findSubtitle().exists()).toBe(false);
-  });
-
-  describe('clicking the remove button', () => {
-    const bubbledClickSpy = jest.fn();
-    const clickSpy = jest.fn();
-
-    beforeEach(() => {
-      wrapper.element.addEventListener('click', bubbledClickSpy);
-      const button = findRemoveButton();
-      button.element.addEventListener('click', clickSpy);
-      button.trigger('click');
-    });
-
-    it('emits a remove event on clicking the remove button', () => {
-      expect(wrapper.emitted('remove')).toEqual([[mockItem]]);
-    });
-
-    it('stops the native event from bubbling and prevents its default behavior', () => {
-      expect(bubbledClickSpy).not.toHaveBeenCalled();
-      expect(clickSpy.mock.calls[0][0].defaultPrevented).toBe(true);
-    });
-  });
-
-  describe('pressing enter on the remove button', () => {
-    const bubbledKeydownSpy = jest.fn();
-    const keydownSpy = jest.fn();
-
-    beforeEach(() => {
-      wrapper.element.addEventListener('keydown', bubbledKeydownSpy);
-      const button = findRemoveButton();
-      button.element.addEventListener('keydown', keydownSpy);
-      button.trigger('keydown.enter');
-    });
-
-    it('emits a remove event on clicking the remove button', () => {
-      expect(wrapper.emitted('remove')).toEqual([[mockItem]]);
-    });
-
-    it('stops the native event from bubbling and prevents its default behavior', () => {
-      expect(bubbledKeydownSpy).not.toHaveBeenCalled();
-      expect(keydownSpy.mock.calls[0][0].defaultPrevented).toBe(true);
-    });
-  });
-
-  describe('when the frecentNamespacesSuggestionsEnabled feature flag is enabled', () => {
-    beforeEach(() => {
-      createComponent(true);
-    });
-
-    it('does not render the remove button', () => {
-      expect(findRemoveButton().exists()).toBe(false);
-    });
   });
 });

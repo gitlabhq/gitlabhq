@@ -10,10 +10,6 @@ module Resolvers
       def resolve
         return unless current_user.present?
 
-        if Feature.disabled?(:frecent_namespaces_suggestions, current_user)
-          raise_resource_not_available_error!("'frecent_namespaces_suggestions' feature flag is disabled")
-        end
-
         ::Users::ProjectVisit.frecent_projects(user_id: current_user.id)
       end
     end

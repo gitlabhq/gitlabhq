@@ -107,6 +107,33 @@ describe('localeDateFormat (en-US)', () => {
     });
   });
 
+  describe('#asTime', () => {
+    it('exposes a working date formatter', () => {
+      expectDateString(localeDateFormat.asTime.format(date)).toBe('2:15 PM');
+      expectDateString(localeDateFormat.asTime.format(nextYear)).toBe('7:47 AM');
+    });
+
+    it('exposes a working date range formatter', () => {
+      expectDateString(localeDateFormat.asTime.formatRange(date, nextYear)).toBe(
+        '7/9/1983, 2:15 PM – 1/10/1984, 7:47 AM',
+      );
+      expectDateString(localeDateFormat.asTime.formatRange(date, sameMonth)).toBe(
+        '7/9/1983, 2:15 PM – 7/12/1983, 12:36 PM',
+      );
+      expectDateString(localeDateFormat.asTime.formatRange(date, sameDay)).toBe('2:15 – 6:27 PM');
+    });
+
+    it.each([
+      ['automatic', 0, '2:15 PM'],
+      ['h12 preference', 1, '2:15 PM'],
+      ['h24 preference', 2, '14:15'],
+    ])("respects user's hourCycle preference: %s", (_, timeDisplayFormat, result) => {
+      window.gon.time_display_format = timeDisplayFormat;
+      expectDateString(localeDateFormat.asTime.format(date)).toContain(result);
+      expectDateString(localeDateFormat.asTime.formatRange(date, nextYear)).toContain(result);
+    });
+  });
+
   describe('#reset', () => {
     it('removes the cached formatters', () => {
       const spy = jest.spyOn(localeFns, 'createDateTimeFormat');

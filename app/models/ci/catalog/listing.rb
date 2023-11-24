@@ -13,8 +13,9 @@ module Ci
         @current_user = current_user
       end
 
-      def resources(namespace: nil, sort: nil, search: nil)
-        relation = all_resources
+      def resources(namespace: nil, sort: nil, search: nil, scope: :all)
+        relation = Ci::Catalog::Resource.published.joins(:project).includes(:project)
+        relation = by_scope(relation, scope)
         relation = by_namespace(relation, namespace)
         relation = by_search(relation, search)
 
@@ -43,12 +44,6 @@ module Ci
 
       attr_reader :current_user
 
-      def all_resources
-        Ci::Catalog::Resource.published
-          .joins(:project).includes(:project)
-          .merge(Project.public_or_visible_to_user(current_user))
-      end
-
       def by_namespace(relation, namespace)
         return relation unless namespace
         raise ArgumentError, 'Namespace is not a root namespace' unless namespace.root?
@@ -61,6 +56,14 @@ module Ci
         return relation.none if search.length < MIN_SEARCH_LENGTH
 
         relation.search(search)
+      end
+
+      def by_scope(relation, scope)
+        if scope == :namespaces && Feature.enabled?(:ci_guard_for_catalog_resource_scope, current_user)
+          relation.merge(Project.public_and_internal_only.visible_to_user(current_user))
+        else
+          relation.merge(Project.public_or_visible_to_user(current_user))
+        end
       end
     end
   end

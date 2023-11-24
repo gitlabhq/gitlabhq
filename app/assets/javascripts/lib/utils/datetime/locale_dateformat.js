@@ -31,8 +31,24 @@ export const DATE_TIME_FULL_FORMAT = 'asDateTimeFull';
  * localeDateFormat[DATE_ONLY_FORMAT].formatRange(date, date) // returns 'Jul 05 - Jul 07, 2023'
  */
 export const DATE_ONLY_FORMAT = 'asDate';
+
+/**
+ * Format a Date with the help of {@link DateTimeFormat.asTime}
+ *
+ * Note: In case you can use localeDateFormat.asTime directly, please do that.
+ *
+ * @example
+ * localeDateFormat[TIME_ONLY_FORMAT].format(date) // returns '2:43'
+ * localeDateFormat[TIME_ONLY_FORMAT].formatRange(date, date) // returns '2:43 - 6:27 PM'
+ */
+export const TIME_ONLY_FORMAT = 'asTime';
 export const DEFAULT_DATE_TIME_FORMAT = DATE_WITH_TIME_FORMAT;
-export const DATE_TIME_FORMATS = [DATE_WITH_TIME_FORMAT, DATE_TIME_FULL_FORMAT, DATE_ONLY_FORMAT];
+export const DATE_TIME_FORMATS = [
+  DATE_WITH_TIME_FORMAT,
+  DATE_TIME_FULL_FORMAT,
+  DATE_ONLY_FORMAT,
+  TIME_ONLY_FORMAT,
+];
 
 /**
  * The DateTimeFormat utilities support formatting a number of types,
@@ -133,6 +149,38 @@ class DateTimeFormat {
   }
 
   /**
+   * Locale aware formatter to display only the time.
+   *
+   * Use {@link DateTimeFormat.asDateTime} if you also need to display the date.
+   *
+   *
+   * @example
+   * // en-US: returns something like 2:43 PM
+   * // en-GB: returns something like 14:43
+   * localeDateFormat.asTime.format(date)
+   *
+   * Note: If formatting a _range_ and the dates are not on the same day,
+   * the formatter will do something sensible like:
+   * 7/9/1983, 2:43 PM – 7/12/1983, 12:36 PM
+   *
+   * @example
+   * // en-US: returns something like 2:43 – 6:27 PM
+   * // en-GB: returns something like 14:43 – 18:27
+   * localeDateFormat.asTime.formatRange(date, date2)
+   *
+   * @returns {DateTimeFormatter}
+   */
+  get asTime() {
+    return (
+      this.#formatters[TIME_ONLY_FORMAT] ||
+      this.#createFormatter(TIME_ONLY_FORMAT, {
+        timeStyle: 'short',
+        hourCycle: DateTimeFormat.#hourCycle,
+      })
+    );
+  }
+
+  /**
    * Resets the memoized formatters
    *
    * While this method only seems to be useful for testing right now,
@@ -218,5 +266,8 @@ class DateTimeFormat {
  *
  * Date (showing date only):
  * - {@link DateTimeFormat.asDate localeDateFormat.asDate} - the default format for a date
+ *
+ * Time (showing time only):
+ * - {@link DateTimeFormat.asTime localeDateFormat.asTime} - the default format for a time
  */
 export const localeDateFormat = new DateTimeFormat();

@@ -14,6 +14,7 @@ module Ci
       total_branches = project.repository_exists? ? project.repository.branch_count : 0
 
       {
+        "ci-catalog-path" => explore_catalog_index_path,
         "ci-config-path": project.ci_config_path_or_default,
         "ci-examples-help-page-path" => help_page_path('ci/examples/index'),
         "ci-help-page-path" => help_page_path('ci/index'),

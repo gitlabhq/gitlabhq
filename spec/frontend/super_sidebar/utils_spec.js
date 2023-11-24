@@ -1,49 +1,18 @@
 import MockAdapter from 'axios-mock-adapter';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import {
-  getTopFrequentItems,
-  trackContextAccess,
-  getItemsFromLocalStorage,
-  removeItemFromLocalStorage,
-  ariaCurrent,
-} from '~/super_sidebar/utils';
+import { trackContextAccess, ariaCurrent } from '~/super_sidebar/utils';
 import axios from '~/lib/utils/axios_utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { FREQUENT_ITEMS, FIFTEEN_MINUTES_IN_MS } from '~/frequent_items/constants';
 import { HTTP_STATUS_OK, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import waitForPromises from 'helpers/wait_for_promises';
-import { unsortedFrequentItems, sortedFrequentItems } from '../frequent_items/mock_data';
-import { cachedFrequentProjects } from './mock_data';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
 
 useLocalStorageSpy();
 
 describe('Super sidebar utils spec', () => {
-  describe('getTopFrequentItems', () => {
-    const maxItems = 3;
-
-    it.each([undefined, null])('returns empty array if `items` is %s', (items) => {
-      const result = getTopFrequentItems(items);
-
-      expect(result.length).toBe(0);
-    });
-
-    it('returns the requested amount of items', () => {
-      const result = getTopFrequentItems(unsortedFrequentItems, maxItems);
-
-      expect(result.length).toBe(maxItems);
-    });
-
-    it('sorts frequent items in order of frequency and lastAccessedOn', () => {
-      const result = getTopFrequentItems(unsortedFrequentItems, maxItems);
-      const expectedResult = sortedFrequentItems.slice(0, maxItems);
-
-      expect(result).toEqual(expectedResult);
-    });
-  });
-
   describe('trackContextAccess', () => {
     useLocalStorageSpy();
 
@@ -221,125 +190,6 @@ describe('Super sidebar utils spec', () => {
           }),
         ]),
       );
-    });
-  });
-
-  describe('getItemsFromLocalStorage', () => {
-    const storageKey = 'mockStorageKey';
-    const maxItems = 5;
-    const storedItems = JSON.parse(cachedFrequentProjects);
-
-    beforeEach(() => {
-      window.localStorage.setItem(storageKey, cachedFrequentProjects);
-    });
-
-    describe('when localStorage cannot be accessed', () => {
-      beforeEach(() => {
-        jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(false);
-      });
-
-      it('returns an empty array', () => {
-        const items = getItemsFromLocalStorage({ storageKey, maxItems });
-        expect(items).toEqual([]);
-      });
-    });
-
-    describe('when localStorage contains parseable data', () => {
-      it('returns an array of items limited by max items', () => {
-        const items = getItemsFromLocalStorage({ storageKey, maxItems });
-        expect(items.length).toEqual(maxItems);
-
-        items.forEach((item) => {
-          expect(storedItems).toContainEqual(item);
-        });
-      });
-
-      it('returns all items if max items is large', () => {
-        const items = getItemsFromLocalStorage({ storageKey, maxItems: 1 });
-        expect(items.length).toEqual(1);
-
-        expect(storedItems).toContainEqual(items[0]);
-      });
-    });
-
-    describe('when localStorage contains unparseable data', () => {
-      let items;
-
-      beforeEach(() => {
-        window.localStorage.setItem(storageKey, 'unparseable');
-        items = getItemsFromLocalStorage({ storageKey, maxItems });
-      });
-
-      it('logs an error to Sentry', () => {
-        expect(Sentry.captureException).toHaveBeenCalled();
-      });
-
-      it('returns an empty array', () => {
-        expect(items).toEqual([]);
-      });
-    });
-  });
-
-  describe('removeItemFromLocalStorage', () => {
-    const storageKey = 'mockStorageKey';
-    const originalStoredItems = JSON.parse(cachedFrequentProjects);
-
-    beforeEach(() => {
-      window.localStorage.setItem(storageKey, cachedFrequentProjects);
-    });
-
-    describe('when given an item to delete', () => {
-      let items;
-      let modifiedStoredItems;
-
-      beforeEach(() => {
-        items = removeItemFromLocalStorage({ storageKey, item: { id: 3 } });
-        modifiedStoredItems = JSON.parse(window.localStorage.getItem(storageKey));
-      });
-
-      it('removes the item from localStorage', () => {
-        expect(modifiedStoredItems.length).toBe(originalStoredItems.length - 1);
-        expect(modifiedStoredItems).not.toContainEqual(originalStoredItems[2]);
-      });
-
-      it('returns the resulting stored structure', () => {
-        expect(items).toEqual(modifiedStoredItems);
-      });
-    });
-
-    describe('when given an unknown item to delete', () => {
-      let items;
-      let modifiedStoredItems;
-
-      beforeEach(() => {
-        items = removeItemFromLocalStorage({ storageKey, item: { id: 'does-not-exist' } });
-        modifiedStoredItems = JSON.parse(window.localStorage.getItem(storageKey));
-      });
-
-      it('does not change the stored value', () => {
-        expect(modifiedStoredItems).toEqual(originalStoredItems);
-      });
-
-      it('returns the stored structure', () => {
-        expect(items).toEqual(originalStoredItems);
-      });
-    });
-
-    describe('when localStorage has unparseable data', () => {
-      let items;
-
-      beforeEach(() => {
-        window.localStorage.setItem(storageKey, 'unparseable');
-        items = removeItemFromLocalStorage({ storageKey, item: { id: 3 } });
-      });
-
-      it('logs an error to Sentry', () => {
-        expect(Sentry.captureException).toHaveBeenCalled();
-      });
-
-      it('returns an empty array', () => {
-        expect(items).toEqual([]);
-      });
     });
   });
 

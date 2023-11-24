@@ -19,6 +19,7 @@ export const createAppOptions = (el) => {
     initialBranchName,
     pipelineEtag,
     // Add to provide/inject API for static values
+    ciCatalogPath,
     ciConfigPath,
     ciExamplesHelpPagePath,
     ciHelpPagePath,
@@ -110,6 +111,7 @@ export const createAppOptions = (el) => {
     apolloProvider,
     provide: {
       aiChatAvailable: parseBoolean(aiChatAvailable),
+      ciCatalogPath,
       ciConfigPath,
       ciExamplesHelpPagePath,
       ciHelpPagePath,

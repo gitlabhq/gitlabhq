@@ -3,13 +3,17 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
-  let_it_be(:namespace) { create(:group) }
-  let_it_be(:project_x) { create(:project, namespace: namespace, name: 'X Project') }
-  let_it_be(:public_project_a) { create(:project, :public, namespace: namespace, name: 'A Project') }
-  let_it_be(:inaccessable_project) { create(:project, namespace: namespace, name: 'C Project') }
-  let_it_be(:public_project_ext) { create(:project, :public, name: 'TestProject') }
-  let_it_be(:public_project) { create(:project, :public) }
   let_it_be(:user) { create(:user) }
+  let_it_be(:namespace) { create(:group) }
+  let_it_be(:public_namespace_project) do
+    create(:project, :public, namespace: namespace, name: 'A public namespace project')
+  end
+
+  let_it_be(:public_project) { create(:project, :public, name: 'B public test project') }
+  let_it_be(:namespace_project_a) { create(:project, namespace: namespace, name: 'Test namespace project') }
+  let_it_be(:namespace_project_b) { create(:project, namespace: namespace, name: 'X namespace Project') }
+  let_it_be(:project_noaccess) { create(:project, namespace: namespace, name: 'Project with no access') }
+  let_it_be(:internal_project) { create(:project, :internal, name: 'Internal project') }
 
   let_it_be(:private_project) do
     create(:project, namespace: namespace, name: 'B Project', description: 'Rspec test framework')
@@ -18,56 +22,156 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
   let(:list) { described_class.new(user) }
 
   before_all do
-    project_x.add_reporter(user)
-    private_project.add_reporter(user)
-    public_project_a.add_reporter(user)
-    public_project_ext.add_reporter(user)
+    namespace_project_a.add_reporter(user)
+    namespace_project_b.add_reporter(user)
+    public_namespace_project.add_reporter(user)
+    public_project.add_reporter(user)
+    internal_project.add_owner(user)
   end
 
   describe '#resources' do
     subject(:resources) { list.resources(**params) }
 
-    context 'when fetching all resources' do
-      let_it_be(:resource_1) { create(:ci_catalog_resource, :published, project: public_project_a) }
-      let_it_be(:resource_2) { create(:ci_catalog_resource, :published, project: public_project_ext) }
-      let_it_be(:resource_3) { create(:ci_catalog_resource, :published, project: private_project) }
-      let_it_be(:unpublished_resource) { create(:ci_catalog_resource, project: public_project) }
+    let(:params) { {} }
 
-      context 'when user is anonymous' do
-        let(:user) { nil }
-        let(:params) { {} }
+    let_it_be(:public_resource_a) { create(:ci_catalog_resource, :published, project: public_namespace_project) }
+    let_it_be(:public_resource_b) { create(:ci_catalog_resource, :published, project: public_project) }
+    let_it_be(:internal_resource) { create(:ci_catalog_resource, :published, project: internal_project) }
+    let_it_be(:private_namespace_resource) { create(:ci_catalog_resource, :published, project: namespace_project_a) }
+    let_it_be(:unpublished_resource) { create(:ci_catalog_resource, project: namespace_project_b) }
 
-        it 'returns only published resources for public projects' do
-          is_expected.to contain_exactly(resource_1, resource_2)
-          is_expected.not_to include(unpublished_resource)
-        end
+    it 'by default returns all resources visible to the current user' do
+      is_expected.to contain_exactly(public_resource_a, public_resource_b, private_namespace_resource,
+        internal_resource)
+    end
 
-        context 'when sorting is provided' do
-          let(:params) { { sort: :name_desc } }
+    context 'when user is anonymous' do
+      let(:user) { nil }
 
-          it 'returns only resources for public projects sorted by name DESC' do
-            is_expected.to contain_exactly(resource_2, resource_1)
-          end
+      it 'returns only published resources for public projects' do
+        is_expected.to contain_exactly(public_resource_a, public_resource_b)
+      end
+    end
+
+    context 'when search params are provided' do
+      let(:params) { { search: 'test' } }
+
+      it 'returns the resources that match the search params' do
+        is_expected.to contain_exactly(public_resource_b, private_namespace_resource)
+      end
+
+      context 'when search term is too small' do
+        let(:params) { { search: 'te' } }
+
+        it { is_expected.to be_empty }
+      end
+    end
+
+    context 'when the scope is :namespaces' do
+      let_it_be(:public_resource_no_namespace) do
+        create(:ci_catalog_resource, project: create(:project, :public, name: 'public'))
+      end
+
+      let(:params) { { scope: :namespaces } }
+
+      context 'when the `ci_guard_query_for_catalog_resource_scope` ff is enabled' do
+        it "returns the catalog resources belonging to the user's authorized namespaces" do
+          is_expected.to contain_exactly(public_resource_a, public_resource_b, internal_resource)
         end
       end
 
-      context 'when search params are provided' do
-        let(:params) { { search: 'test' } }
-
-        it 'returns the resources that match the search params' do
-          is_expected.to contain_exactly(resource_2, resource_3)
+      context 'when the `ci_guard_query_for_catalog_resource_scope` ff is disabled' do
+        before do
+          stub_feature_flags(ci_guard_for_catalog_resource_scope: false)
         end
 
-        context 'when search term is too small' do
-          let(:params) { { search: 'te' } }
+        it 'returns all resources visible to the current user' do
+          is_expected.to contain_exactly(
+            public_resource_a, public_resource_b, private_namespace_resource,
+            internal_resource)
+        end
+      end
+    end
 
-          it { is_expected.to be_empty }
+    context 'with a sort parameter' do
+      let_it_be(:today) { Time.zone.now }
+      let_it_be(:yesterday) { today - 1.day }
+      let_it_be(:tomorrow) { today + 1.day }
+
+      let(:params) { { sort: sort } }
+
+      before_all do
+        public_resource_a.update!(created_at: today, latest_released_at: yesterday)
+        public_resource_b.update!(created_at: yesterday, latest_released_at: today)
+        private_namespace_resource.update!(created_at: tomorrow, latest_released_at: tomorrow)
+        internal_resource.update!(created_at: tomorrow + 1)
+      end
+
+      context 'when the sort is created_at ascending' do
+        let_it_be(:sort) { :created_at_asc }
+
+        it 'contains catalog resources sorted by created_at ascending' do
+          is_expected.to eq([public_resource_b, public_resource_a, private_namespace_resource, internal_resource])
+        end
+      end
+
+      context 'when the sort is created_at descending' do
+        let_it_be(:sort) { :created_at_desc }
+
+        it 'contains catalog resources sorted by created_at descending' do
+          is_expected.to eq([internal_resource, private_namespace_resource, public_resource_a, public_resource_b])
+        end
+      end
+
+      context 'when the sort is name ascending' do
+        let_it_be(:sort) { :name_asc }
+
+        it 'contains catalog resources for projects sorted by name ascending' do
+          is_expected.to eq([public_resource_a, public_resource_b, internal_resource, private_namespace_resource])
+        end
+      end
+
+      context 'when the sort is name descending' do
+        let_it_be(:sort) { :name_desc }
+
+        it 'contains catalog resources for projects sorted by name descending' do
+          is_expected.to eq([private_namespace_resource, internal_resource, public_resource_b, public_resource_a])
+        end
+      end
+
+      context 'when the sort is latest_released_at ascending' do
+        let_it_be(:sort) { :latest_released_at_asc }
+
+        it 'contains catalog resources sorted by latest_released_at ascending with nulls last' do
+          is_expected.to eq([public_resource_a, public_resource_b, private_namespace_resource, internal_resource])
+        end
+      end
+
+      context 'when the sort is latest_released_at descending' do
+        let_it_be(:sort) { :latest_released_at_desc }
+
+        it 'contains catalog resources sorted by latest_released_at descending with nulls last' do
+          is_expected.to eq([private_namespace_resource, public_resource_b, public_resource_a, internal_resource])
         end
       end
     end
 
     context 'when namespace is provided' do
       let(:params) { { namespace: namespace } }
+
+      context 'when it is a root namespace' do
+        context 'when it has catalog resources' do
+          it 'returns resources in the namespace visible to the user' do
+            is_expected.to contain_exactly(public_resource_a, private_namespace_resource)
+          end
+        end
+
+        context 'when the namespace has no catalog resources' do
+          let(:namespace) { build(:namespace) }
+
+          it { is_expected.to be_empty }
+        end
+      end
 
       context 'when namespace is not a root namespace' do
         let_it_be(:namespace) { create(:group, :nested) }
@@ -76,118 +180,6 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
           expect { resources }.to raise_error(ArgumentError, 'Namespace is not a root namespace')
         end
       end
-
-      context 'when the user has access to all projects in the namespace' do
-        context 'when the namespace has no catalog resources' do
-          let_it_be(:namespace) { create(:group) }
-
-          it { is_expected.to be_empty }
-        end
-
-        context 'when the namespace has catalog resources' do
-          let_it_be(:today) { Time.zone.now }
-          let_it_be(:yesterday) { today - 1.day }
-          let_it_be(:tomorrow) { today + 1.day }
-
-          let_it_be(:resource_1) do
-            create(:ci_catalog_resource, :published, project: project_x, latest_released_at: yesterday,
-              created_at: today)
-          end
-
-          let_it_be(:resource_2) do
-            create(:ci_catalog_resource, :published, project: private_project, latest_released_at: today,
-              created_at: yesterday)
-          end
-
-          let_it_be(:resource_3) do
-            create(:ci_catalog_resource, :published, project: public_project_a, latest_released_at: nil,
-              created_at: tomorrow)
-          end
-
-          let_it_be(:other_namespace_resource) do
-            create(:ci_catalog_resource, :published, project: public_project_ext, latest_released_at: tomorrow)
-          end
-
-          it 'contains only catalog resources for projects in that namespace' do
-            is_expected.to contain_exactly(resource_1, resource_2, resource_3)
-          end
-
-          context 'with a sort parameter' do
-            let(:params) { { namespace: namespace, sort: sort } }
-
-            context 'when the sort is created_at ascending' do
-              let_it_be(:sort) { :created_at_asc }
-
-              it 'contains catalog resources sorted by created_at ascending' do
-                is_expected.to eq([resource_2, resource_1, resource_3])
-              end
-            end
-
-            context 'when the sort is created_at descending' do
-              let_it_be(:sort) { :created_at_desc }
-
-              it 'contains catalog resources sorted by created_at descending' do
-                is_expected.to eq([resource_3, resource_1, resource_2])
-              end
-            end
-
-            context 'when the sort is name ascending' do
-              let_it_be(:sort) { :name_asc }
-
-              it 'contains catalog resources for projects sorted by name ascending' do
-                is_expected.to eq([resource_3, resource_2, resource_1])
-              end
-            end
-
-            context 'when the sort is name descending' do
-              let_it_be(:sort) { :name_desc }
-
-              it 'contains catalog resources for projects sorted by name descending' do
-                is_expected.to eq([resource_1, resource_2, resource_3])
-              end
-            end
-
-            context 'when the sort is latest_released_at ascending' do
-              let_it_be(:sort) { :latest_released_at_asc }
-
-              it 'contains catalog resources sorted by latest_released_at ascending with nulls last' do
-                is_expected.to eq([resource_1, resource_2, resource_3])
-              end
-            end
-
-            context 'when the sort is latest_released_at descending' do
-              let_it_be(:sort) { :latest_released_at_desc }
-
-              it 'contains catalog resources sorted by latest_released_at descending with nulls last' do
-                is_expected.to eq([resource_2, resource_1, resource_3])
-              end
-            end
-          end
-        end
-      end
-
-      context 'when the user only has access to some projects in the namespace' do
-        let_it_be(:accessible_resource) { create(:ci_catalog_resource, :published, project: project_x) }
-        let_it_be(:inaccessible_resource) { create(:ci_catalog_resource, :published, project: inaccessable_project) }
-
-        before do
-          project_x.add_reporter(user)
-        end
-
-        it 'only returns catalog resources for projects the user has access to' do
-          is_expected.to contain_exactly(accessible_resource)
-        end
-      end
-
-      context 'when the user does not have access to the namespace' do
-        let_it_be(:inaccessable_namespace) { create(:group) }
-        let_it_be(:inaccessable_project) { create(:project) }
-        let_it_be(:inaccessable_catalog_resource) do
-          create(:ci_catalog_resource, :published, project: inaccessable_project)
-        end
-
-        it { is_expected.to be_empty }
-      end
     end
   end
 
@@ -195,7 +187,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
     subject { list.find_resource(id: id) }
 
     context 'when the resource is published and visible to the user' do
-      let_it_be(:accessible_resource) { create(:ci_catalog_resource, :published, project: public_project_a) }
+      let_it_be(:accessible_resource) { create(:ci_catalog_resource, :published, project: public_project) }
 
       let(:id) { accessible_resource.id }
 
@@ -213,7 +205,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
     end
 
     context 'when the resource is not published' do
-      let_it_be(:draft_resource) { create(:ci_catalog_resource, project: private_project, state: :draft) }
+      let_it_be(:draft_resource) { create(:ci_catalog_resource, project: public_namespace_project, state: :draft) }
 
       let(:id) { draft_resource.id }
 
@@ -223,7 +215,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
     end
 
     context "when the current user cannot read code on the resource's project" do
-      let_it_be(:inaccessible_resource) { create(:ci_catalog_resource, :published, project: inaccessable_project) }
+      let_it_be(:inaccessible_resource) { create(:ci_catalog_resource, :published, project: project_noaccess) }
 
       let(:id) { inaccessible_resource.id }
 

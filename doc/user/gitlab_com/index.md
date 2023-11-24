@@ -422,6 +422,11 @@ This limit:
 
 No response headers are provided.
 
+`git` requests over `https` always send an unauthenticated request first, which for private repositories results in a `401` error.
+`git` then attempts an authenticated request with a username, password, or access token (if available).
+These requests might lead to a temporary IP block if too many requests are sent simultaneously.
+To resolve this issue, use [SSH keys to communicate with GitLab](../ssh.md).
+
 ### Pagination response headers
 
 For performance reasons, if a query returns more than 10,000 records, [GitLab excludes some headers](../../api/rest/index.md#pagination-response-headers).

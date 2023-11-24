@@ -20,7 +20,7 @@ describe('FrequentlyVisitedGroups', () => {
     },
   });
 
-  const createComponent = (options, frecentNamespacesSuggestionsEnabled = true) => {
+  const createComponent = (options) => {
     const mockApollo = createMockApollo([
       [currentUserFrecentGroupsQuery, currentUserFrecentGroupsQueryHandler],
     ]);
@@ -29,9 +29,6 @@ describe('FrequentlyVisitedGroups', () => {
       apolloProvider: mockApollo,
       provide: {
         groupsPath,
-        glFeatures: {
-          frecentNamespacesSuggestions: frecentNamespacesSuggestionsEnabled,
-        },
       },
       ...options,
     });
@@ -49,8 +46,6 @@ describe('FrequentlyVisitedGroups', () => {
     expect(findFrequentItems().props()).toMatchObject({
       emptyStateText: 'Groups you visit often will appear here.',
       groupName: 'Frequently visited groups',
-      maxItems: 3,
-      storageKey: null,
       viewAllItemsIcon: 'group',
       viewAllItemsText: 'View all my groups',
       viewAllItemsPath: groupsPath,
@@ -72,13 +67,6 @@ describe('FrequentlyVisitedGroups', () => {
     expect(findFrequentItems().props('loading')).toBe(false);
   });
 
-  it('with a user, passes a storage key string to FrequentItems', () => {
-    gon.current_username = 'test_user';
-    createComponent();
-
-    expect(findFrequentItems().props('storageKey')).toBe('test_user/frequent-groups');
-  });
-
   it('passes attrs to FrequentItems', () => {
     createComponent({ attrs: { bordered: true, class: 'test-class' } });
 
@@ -95,16 +83,5 @@ describe('FrequentlyVisitedGroups', () => {
     findFrequentItems().vm.$emit('nothing-to-render');
 
     expect(spy).toHaveBeenCalledTimes(1);
-  });
-
-  describe('when the frecentNamespacesSuggestions feature flag is disabled', () => {
-    beforeEach(() => {
-      createComponent({}, false);
-    });
-
-    it('does not fetch frecent groups', () => {
-      expect(currentUserFrecentGroupsQueryHandler).not.toHaveBeenCalled();
-      expect(findFrequentItems().props('loading')).toBe(false);
-    });
   });
 });

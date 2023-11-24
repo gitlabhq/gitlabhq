@@ -51,8 +51,6 @@ A user is not counted as a billable user if:
 
 - They are [deactivated](../../administration/moderate_users.md#deactivate-a-user) or
   [blocked](../../administration/moderate_users.md#block-a-user).
-  If the user occupied a seat prior to being deactivated or blocked,
-  the user is included in the number of [maximum users](#maximum-users).
 - They are [pending approval](../../administration/moderate_users.md#users-pending-approval).
 - They have only the [Minimal Access role](../../user/permissions.md#users-with-minimal-access) on self-managed Ultimate subscriptions or any GitLab.com subscriptions.
 - They have only the [Guest or Minimal Access roles on an Ultimate subscription](#free-guest-users).
@@ -69,7 +67,7 @@ The amount of **Billable users** is reported once a day in the Admin Area.
 
 ### Maximum users
 
-The number of _maximum users_ reflects the highest number of billable users for the current license period.
+The number of _maximum users_ reflects the highest peak of billable users for the current license period.
 
 ### Users over subscription
 
@@ -324,9 +322,10 @@ You purchase a subscription for 10 users.
 |:---------------------------------------------------|:-----------------|:--------------|
 | Ten users occupy all 10 seats.                     | 10               | 10            |
 | Two new users join.                                | 12               | 12            |
-| Three users leave and their accounts are removed.  | 9                | 12            |
+| Three users leave and their accounts are blocked.  | 9                | 12            |
+| Four new users join.                               | 13               | 13            |
 
-Users over subscription = 12 - 10 (Maximum users - users in license)
+Users over subscription = 13 - 10 (Maximum users - users in license)
 
 ### Add seats to a subscription
 

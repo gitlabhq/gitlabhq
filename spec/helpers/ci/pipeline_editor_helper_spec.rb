@@ -26,6 +26,7 @@ RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition
     let(:project) { create(:project, :repository) }
     let(:default_helper_data) do
       {
+        "ci-catalog-path" => explore_catalog_index_path,
         "ci-config-path": project.ci_config_path_or_default,
         "ci-examples-help-page-path" => help_page_path('ci/examples/index'),
         "ci-help-page-path" => help_page_path('ci/index'),

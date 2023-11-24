@@ -27,17 +27,13 @@ module Resolvers
           description: 'Project with the namespace catalog.'
 
         def resolve_with_lookahead(scope:, project_path: nil, search: nil, sort: nil)
-          if project_path.present?
-            project = Project.find_by_full_path(project_path)
+          project = Project.find_by_full_path(project_path)
 
-            apply_lookahead(
-              ::Ci::Catalog::Listing
-                .new(context[:current_user])
-                .resources(namespace: project.root_namespace, sort: sort, search: search)
-            )
-          elsif scope == :all
-            apply_lookahead(::Ci::Catalog::Listing.new(context[:current_user]).resources(sort: sort, search: search))
-          end
+          apply_lookahead(
+            ::Ci::Catalog::Listing
+              .new(context[:current_user])
+              .resources(namespace: project&.root_namespace, sort: sort, search: search, scope: scope)
+          )
         end
 
         private

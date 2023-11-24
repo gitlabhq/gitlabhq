@@ -1,9 +1,7 @@
 <script>
 import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem, GlIcon } from '@gitlab/ui';
 import { truncateNamespace } from '~/lib/utils/text_utility';
-import { getItemsFromLocalStorage, removeItemFromLocalStorage } from '~/super_sidebar/utils';
 import { TRACKING_UNKNOWN_PANEL } from '~/super_sidebar/constants';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { TRACKING_CLICK_COMMAND_PALETTE_ITEM } from '../command_palette/constants';
 import FrequentItem from './frequent_item.vue';
 import FrequentItemSkeleton from './frequent_item_skeleton.vue';
@@ -17,7 +15,6 @@ export default {
     FrequentItem,
     FrequentItemSkeleton,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     loading: {
       type: Boolean,
@@ -31,15 +28,6 @@ export default {
     groupName: {
       type: String,
       required: true,
-    },
-    maxItems: {
-      type: Number,
-      required: true,
-    },
-    storageKey: {
-      type: String,
-      required: false,
-      default: null,
     },
     viewAllItemsText: {
       type: String,
@@ -60,21 +48,12 @@ export default {
       default: () => [],
     },
   },
-  data() {
-    return {
-      localItems: getItemsFromLocalStorage({
-        storageKey: this.storageKey,
-        maxItems: this.maxItems,
-      }),
-    };
-  },
   computed: {
     formattedItems() {
-      const items = this.glFeatures.frecentNamespacesSuggestions ? this.items : this.localItems;
       // Each item needs two different representations. One is for the
       // GlDisclosureDropdownItem, and the other is for the FrequentItem
       // renderer component inside it.
-      return items.map((item) => ({
+      return this.items.map((item) => ({
         forDropdown: {
           id: item.id,
 
@@ -107,29 +86,11 @@ export default {
       };
     },
   },
-  created() {
-    if (!this.glFeatures.frecentNamespacesSuggestions && !this.storageKey) {
-      this.$emit('nothing-to-render');
-    }
-  },
-  methods: {
-    removeItem(item) {
-      if (this.glFeatures.frecentNamespacesSuggestions) {
-        return;
-      }
-      removeItemFromLocalStorage({
-        storageKey: this.storageKey,
-        item,
-      });
-
-      this.localItems = this.localItems.filter((i) => i.id !== item.id);
-    },
-  },
 };
 </script>
 
 <template>
-  <gl-disclosure-dropdown-group v-if="storageKey" v-bind="$attrs">
+  <gl-disclosure-dropdown-group v-bind="$attrs">
     <template #group-label>{{ groupName }}</template>
 
     <gl-disclosure-dropdown-item v-if="loading">
@@ -142,9 +103,7 @@ export default {
         :item="item.forDropdown"
         class="show-on-focus-or-hover--context"
       >
-        <template #list-item
-          ><frequent-item :item="item.forRenderer" @remove="removeItem"
-        /></template>
+        <template #list-item><frequent-item :item="item.forRenderer" /></template>
       </gl-disclosure-dropdown-item>
     </template>
 

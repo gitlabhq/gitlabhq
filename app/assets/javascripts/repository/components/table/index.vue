@@ -81,22 +81,27 @@ export default {
       return ['', '/'].indexOf(this.path) === -1;
     },
   },
-  watch: {
-    $route: function routeChange() {
-      this.$options.totalRowsLoaded = -1;
-    },
-  },
-  totalRowsLoaded: -1,
   methods: {
     showMore() {
       this.$emit('showMore');
     },
-    generateRowNumber(path, id, index) {
-      const key = `${path}-${id}-${index}`;
+    generateRowNumber(entry, index) {
+      const { flatPath, id } = entry;
+      const key = `${flatPath}-${id}-${index}`;
 
+      // We adjust the offset that we request based on the type of entry
+
+      const numTrees = this.entries?.trees?.length || 0;
+      const numBlobs = this.entries?.blobs?.length || 0;
       if (!this.rowNumbers[key] && this.rowNumbers[key] !== 0) {
-        this.$options.totalRowsLoaded += 1;
-        this.rowNumbers[key] = this.$options.totalRowsLoaded;
+        if (entry.type === 'commit') {
+          // submodules are rendered before blobs but are in the last pages the api response
+          this.rowNumbers[key] = numTrees + numBlobs + index;
+        } else if (entry.type === 'blob') {
+          this.rowNumbers[key] = numTrees + index;
+        } else {
+          this.rowNumbers[key] = index;
+        }
       }
 
       return this.rowNumbers[key];
@@ -145,7 +150,7 @@ export default {
               :lfs-oid="entry.lfsOid"
               :loading-path="loadingPath"
               :total-entries="totalEntries"
-              :row-number="generateRowNumber(entry.flatPath, entry.id, index)"
+              :row-number="generateRowNumber(entry, index)"
               :commit-info="getCommit(entry.name)"
               v-on="$listeners"
             />

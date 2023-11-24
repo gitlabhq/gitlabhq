@@ -19,11 +19,13 @@ describe('CI Editor Header', () => {
     showAiAssistantDrawer = false,
     aiChatAvailable = false,
     aiCiConfigGenerator = false,
+    ciCatalogPath = '/explore/catalog',
   } = {}) => {
     wrapper = extendedWrapper(
       shallowMount(CiEditorHeader, {
         provide: {
           aiChatAvailable,
+          ciCatalogPath,
           glFeatures: {
             aiCiConfigGenerator,
           },
@@ -40,6 +42,7 @@ describe('CI Editor Header', () => {
   const findLinkBtn = () => wrapper.findByTestId('template-repo-link');
   const findHelpBtn = () => wrapper.findByTestId('drawer-toggle');
   const findAiAssistnantBtn = () => wrapper.findByTestId('ai-assistant-drawer-toggle');
+  const findCatalogRepoLinkButton = () => wrapper.findByTestId('catalog-repo-link');
 
   afterEach(() => {
     unmockTracking();
@@ -78,6 +81,32 @@ describe('CI Editor Header', () => {
       });
     });
   });
+
+  describe('component repo link button', () => {
+    beforeEach(() => {
+      createComponent();
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+    });
+
+    afterEach(() => {
+      unmockTracking();
+    });
+
+    it('finds the CI/CD Catalog button', () => {
+      expect(findCatalogRepoLinkButton().exists()).toBe(true);
+    });
+
+    it('has the external-link icon', () => {
+      expect(findCatalogRepoLinkButton().props('icon')).toBe('external-link');
+    });
+
+    it('tracks the click on the Catalog button', () => {
+      const { browseCatalog } = pipelineEditorTrackingOptions.actions;
+
+      testTracker(findCatalogRepoLinkButton(), browseCatalog);
+    });
+  });
+
   describe('link button', () => {
     beforeEach(() => {
       createComponent();

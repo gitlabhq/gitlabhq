@@ -165,12 +165,8 @@ export default {
         return;
       }
 
-      // Since a user could scroll either up or down, we want to support lazy loading in both directions
-      this.loadCommitData(rowNumber);
-
-      if (rowNumber - COMMIT_BATCH_SIZE >= 0) {
-        this.loadCommitData(rowNumber - COMMIT_BATCH_SIZE);
-      }
+      // Assume we are loading from the top and greedily choose offsets in multiples of COMMIT_BATCH_SIZE to minimize number of requests
+      this.loadCommitData(rowNumber - (rowNumber % COMMIT_BATCH_SIZE));
     },
     loadCommitData(rowNumber) {
       loadCommits(this.projectPath, this.path, this.ref, rowNumber, this.refType)

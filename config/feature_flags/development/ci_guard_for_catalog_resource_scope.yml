@@ -1,0 +1,8 @@
+---
+name: ci_guard_for_catalog_resource_scope
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137015
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/432219
+milestone: '16.7'
+type: development
+group: group::pipeline authoring
+default_enabled: false

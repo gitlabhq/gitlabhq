@@ -26,24 +26,14 @@ const sortItemsByFrequencyAndLastAccess = (items) =>
     return 0;
   });
 
-// This imitates getTopFrequentItems from app/assets/javascripts/frequent_items/utils.js, but
-// adjusts the rules to accommodate for the context switcher's designs.
-export const getTopFrequentItems = (items, maxCount) => {
-  if (!Array.isArray(items)) return [];
-
-  const frequentItems = items.filter((item) => item.frequency >= FREQUENT_ITEMS.ELIGIBLE_FREQUENCY);
-  sortItemsByFrequencyAndLastAccess(frequentItems);
-
-  return frequentItems.slice(0, maxCount);
-};
-
 /**
  * This tracks projects' and groups' visits in order to suggest a list of frequently visited
- * entities to the user. Currently, this track visits in two ways:
- * - The legacy approach uses a simple counting algorithm and stores the data in the local storage.
- * - The above approach is being migrated to a backend-based one, where visits will be stored in the
- *   DB, and suggestions will be made through a smarter algorithm. When we are ready to transition
- *   to the newer approach, the legacy one will be cleaned up.
+ * entities to the user. The suggestion logic is implemented server-side and computed items can be
+ * retrieved through the GraphQL API.
+ * To persist a visit in the DB, an AJAX request needs to be triggered by the client. To avoid making
+ * the request on every visited page, we also keep track of the visits in the local storage so that
+ * the request is only sent once every 15 minutes per namespace per user.
+ *
  * @param {object} item The project/group item being tracked.
  * @param {string} namespace A string indicating whether the tracked entity is a project or a group.
  * @param {string} trackVisitsPath The API endpoint to track visits server-side.
@@ -113,33 +103,6 @@ export const trackContextAccess = (username, context, trackVisitsPath) => {
   }
 
   return localStorage.setItem(storageKey, JSON.stringify(storedItems));
-};
-
-export const getItemsFromLocalStorage = ({ storageKey, maxItems }) => {
-  if (!AccessorUtilities.canUseLocalStorage()) {
-    return [];
-  }
-
-  try {
-    const parsedCachedFrequentItems = JSON.parse(localStorage.getItem(storageKey));
-    return getTopFrequentItems(parsedCachedFrequentItems, maxItems);
-  } catch (e) {
-    Sentry.captureException(e);
-    return [];
-  }
-};
-
-export const removeItemFromLocalStorage = ({ storageKey, item }) => {
-  try {
-    const parsedCachedFrequentItems = JSON.parse(localStorage.getItem(storageKey));
-    const filteredItems = parsedCachedFrequentItems.filter((i) => i.id !== item.id);
-    localStorage.setItem(storageKey, JSON.stringify(filteredItems));
-
-    return filteredItems;
-  } catch (e) {
-    Sentry.captureException(e);
-    return [];
-  }
 };
 
 export const ariaCurrent = (isActive) => (isActive ? 'page' : null);

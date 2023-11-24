@@ -27,9 +27,6 @@ boards_epic_board_recent_visits:
 boards_epic_user_preferences:
   index_boards_epic_user_preferences_on_board_user_epic_unique:
     - index_boards_epic_user_preferences_on_board_id
-bulk_import_batch_trackers:
-  i_bulk_import_trackers_id_batch_number:
-    - index_bulk_import_batch_trackers_on_tracker_id
 bulk_import_export_batches:
   i_bulk_import_export_batches_id_batch_number:
     - index_bulk_import_export_batches_on_export_id

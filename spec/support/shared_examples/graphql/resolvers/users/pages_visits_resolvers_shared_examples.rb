@@ -15,16 +15,6 @@ RSpec.shared_examples 'namespace visits resolver' do
     context 'when user is logged in' do
       let_it_be(:current_user) { create(:user) }
 
-      context 'when the frecent_namespaces_suggestions feature flag is disabled' do
-        before do
-          stub_feature_flags(frecent_namespaces_suggestions: false)
-        end
-
-        it 'raises a "Resource not available" exception' do
-          expect(resolve_items).to be_a(::Gitlab::Graphql::Errors::ResourceNotAvailable)
-        end
-      end
-
       it 'returns frecent groups' do
         expect(resolve_items).to be_an_instance_of(Array)
       end

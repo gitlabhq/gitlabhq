@@ -14,7 +14,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 import * as Emoji from '~/emoji';
 import { s__ } from '~/locale';
-import { formatDate, newDate, nSecondsAfter, isToday } from '~/lib/utils/datetime_utility';
+import { newDate, nSecondsAfter, isToday, localeDateFormat } from '~/lib/utils/datetime_utility';
 import { TIME_RANGES_WITH_NEVER, AVAILABILITY_STATUS, NEVER_TIME_RANGE } from './constants';
 
 export default {
@@ -148,10 +148,10 @@ export default {
     },
     formatClearStatusAfterDate(date) {
       if (isToday(date)) {
-        return formatDate(date, 'h:MMtt');
+        return localeDateFormat.asTime.format(date);
       }
 
-      return formatDate(date, 'mmm d, yyyy h:MMtt');
+      return localeDateFormat.asDateTime.format(date);
     },
   },
   TIME_RANGES_WITH_NEVER,

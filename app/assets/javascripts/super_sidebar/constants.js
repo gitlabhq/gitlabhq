@@ -25,9 +25,6 @@ export const helpCenterState = Vue.observable({
   showTanukiBotChatDrawer: false,
 });
 
-export const MAX_FREQUENT_PROJECTS_COUNT = 5;
-export const MAX_FREQUENT_GROUPS_COUNT = 3;
-
 export const SUPER_SIDEBAR_PEEK_OPEN_DELAY = 200;
 export const SUPER_SIDEBAR_PEEK_CLOSE_DELAY = 500;
 export const SUPER_SIDEBAR_PEEK_STATE_CLOSED = 'closed';

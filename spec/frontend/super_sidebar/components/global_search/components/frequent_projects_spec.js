@@ -20,7 +20,7 @@ describe('FrequentlyVisitedProjects', () => {
     },
   });
 
-  const createComponent = (options, frecentNamespacesSuggestionsEnabled = true) => {
+  const createComponent = (options) => {
     const mockApollo = createMockApollo([
       [currentUserFrecentProjectsQuery, currentUserFrecentProjectsQueryHandler],
     ]);
@@ -29,9 +29,6 @@ describe('FrequentlyVisitedProjects', () => {
       apolloProvider: mockApollo,
       provide: {
         projectsPath,
-        glFeatures: {
-          frecentNamespacesSuggestions: frecentNamespacesSuggestionsEnabled,
-        },
       },
       ...options,
     });
@@ -49,8 +46,6 @@ describe('FrequentlyVisitedProjects', () => {
     expect(findFrequentItems().props()).toMatchObject({
       emptyStateText: 'Projects you visit often will appear here.',
       groupName: 'Frequently visited projects',
-      maxItems: 5,
-      storageKey: null,
       viewAllItemsIcon: 'project',
       viewAllItemsText: 'View all my projects',
       viewAllItemsPath: projectsPath,
@@ -72,13 +67,6 @@ describe('FrequentlyVisitedProjects', () => {
     expect(findFrequentItems().props('loading')).toBe(false);
   });
 
-  it('with a user, passes a storage key string to FrequentItems', () => {
-    gon.current_username = 'test_user';
-    createComponent();
-
-    expect(findFrequentItems().props('storageKey')).toBe('test_user/frequent-projects');
-  });
-
   it('passes attrs to FrequentItems', () => {
     createComponent({ attrs: { bordered: true, class: 'test-class' } });
 
@@ -95,16 +83,5 @@ describe('FrequentlyVisitedProjects', () => {
     findFrequentItems().vm.$emit('nothing-to-render');
 
     expect(spy).toHaveBeenCalledTimes(1);
-  });
-
-  describe('when the frecentNamespacesSuggestions feature flag is disabled', () => {
-    beforeEach(() => {
-      createComponent({}, false);
-    });
-
-    it('does not fetch frecent projects', () => {
-      expect(currentUserFrecentProjectsQueryHandler).not.toHaveBeenCalled();
-      expect(findFrequentItems().props('loading')).toBe(false);
-    });
   });
 });
