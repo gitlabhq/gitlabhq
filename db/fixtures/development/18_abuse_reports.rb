@@ -12,7 +12,9 @@ module Db
                   email: FFaker::Internet.email,
                   confirmed_at: DateTime.now,
                   password: ::User.random_password
-                )
+                ) do |user|
+                  user.assign_personal_namespace
+                end
 
               ::AbuseReport.create(reporter: ::User.take, user: reported_user, message: 'User sends spam')
               print '.'

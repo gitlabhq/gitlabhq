@@ -138,6 +138,7 @@ module Users
           email: email,
           &creation_block
         )
+        user.assign_personal_namespace
 
         Users::UpdateService.new(user, user: user).execute(validate: false)
         user

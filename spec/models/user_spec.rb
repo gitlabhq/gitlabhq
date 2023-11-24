@@ -467,7 +467,7 @@ RSpec.describe User, feature_category: :user_profile do
 
   describe 'validations' do
     describe 'password' do
-      let!(:user) { build_stubbed(:user) }
+      let!(:user) { build(:user) }
 
       before do
         allow(Devise).to receive(:password_length).and_return(8..128)
@@ -547,9 +547,7 @@ RSpec.describe User, feature_category: :user_profile do
 
       context 'namespace_move_dir_allowed' do
         context 'when the user is not a new record' do
-          before do
-            expect(user.new_record?).to eq(false)
-          end
+          let!(:user) { create(:user) }
 
           it 'checks when username changes' do
             expect(user).to receive(:namespace_move_dir_allowed)
@@ -5688,21 +5686,35 @@ RSpec.describe User, feature_category: :user_profile do
 
   describe '#ensure_namespace_correct' do
     context 'for a new user' do
-      let(:user) { build(:user) }
+      let(:user) { described_class.new attributes_for(:user) }
 
-      it 'creates the namespace' do
+      it 'does not create the namespace' do
         expect(user.namespace).to be_nil
 
-        user.save!
+        user.valid?
 
-        expect(user.namespace).not_to be_nil
-        expect(user.namespace).to be_kind_of(Namespaces::UserNamespace)
+        expect(user.namespace).to be_nil
       end
 
-      it 'creates the namespace setting' do
-        user.save!
+      context 'when create_user_ns_outside_model feature flag is disabled' do
+        before do
+          stub_feature_flags(create_user_ns_outside_model: false)
+        end
 
-        expect(user.namespace.namespace_settings).to be_persisted
+        it 'creates the namespace' do
+          expect(user.namespace).to be_nil
+
+          user.save!
+
+          expect(user.namespace).to be_present
+          expect(user.namespace).to be_kind_of(Namespaces::UserNamespace)
+        end
+
+        it 'creates the namespace setting' do
+          user.save!
+
+          expect(user.namespace.namespace_settings).to be_persisted
+        end
       end
     end
 
@@ -5766,6 +5778,37 @@ RSpec.describe User, feature_category: :user_profile do
             end.not_to change { user.namespace.updated_at }
           end
         end
+      end
+    end
+  end
+
+  describe '#assign_personal_namespace' do
+    subject(:personal_namespace) { user.assign_personal_namespace }
+
+    context 'when namespace exists' do
+      let(:user) { build(:user) }
+
+      it 'leaves the namespace untouched' do
+        expect { personal_namespace }.not_to change(user, :namespace)
+      end
+
+      it 'returns the personal namespace' do
+        expect(personal_namespace).to eq(user.namespace)
+      end
+    end
+
+    context 'when namespace does not exist' do
+      let(:user) { described_class.new attributes_for(:user) }
+
+      it 'builds a new namespace' do
+        subject
+
+        expect(user.namespace).to be_kind_of(Namespaces::UserNamespace)
+        expect(user.namespace.namespace_settings).to be_present
+      end
+
+      it 'returns the personal namespace' do
+        expect(personal_namespace).to eq(user.namespace)
       end
     end
   end

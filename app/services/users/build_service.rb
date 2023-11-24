@@ -36,6 +36,8 @@ module Users
       else
         standard_build_user
       end
+
+      user.assign_personal_namespace
     end
 
     def admin?

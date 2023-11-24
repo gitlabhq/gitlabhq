@@ -12,6 +12,10 @@ FactoryBot.define do
     can_create_group { true }
     color_scheme_id { 1 }
 
+    after(:build) do |user, evaluator|
+      user.assign_personal_namespace if Feature.enabled?(:create_user_ns_outside_model)
+    end
+
     trait :admin do
       admin { true }
     end

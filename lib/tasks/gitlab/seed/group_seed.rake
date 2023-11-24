@@ -120,13 +120,17 @@ class GroupSeeder
   end
 
   def create_user
+    # rubocop:disable Style/SymbolProc -- Incorrect rubocop advice.
     User.create!(
       username: FFaker::Internet.user_name,
       name: FFaker::Name.name,
       email: FFaker::Internet.email,
       confirmed_at: DateTime.now,
       password: Devise.friendly_token
-    )
+    ) do |user|
+      user.assign_personal_namespace
+    end
+    # rubocop:enable Style/SymbolProc
   end
 
   def create_member(user_id, group_id)

@@ -151,6 +151,7 @@ class User < MainClusterwide::ApplicationRecord
   # Namespace for personal projects
   has_one :namespace,
     -> { where(type: Namespaces::UserNamespace.sti_name) },
+    required: true,
     dependent: :destroy, # rubocop:disable Cop/ActiveRecordDependent
     foreign_key: :owner_id,
     inverse_of: :owner,
@@ -1602,13 +1603,22 @@ class User < MainClusterwide::ApplicationRecord
     if namespace
       namespace.path = username if username_changed?
       namespace.name = name if name_changed?
-    else
+    elsif Feature.disabled?(:create_user_ns_outside_model)
       # TODO: we should no longer need the `type` parameter once we can make the
       #       the `has_one :namespace` association use the correct class.
       #       issue https://gitlab.com/gitlab-org/gitlab/-/issues/341070
       namespace = build_namespace(path: username, name: name, type: ::Namespaces::UserNamespace.sti_name)
       namespace.build_namespace_settings
     end
+  end
+
+  def assign_personal_namespace
+    return namespace if namespace
+
+    build_namespace(path: username, name: name)
+    namespace.build_namespace_settings
+
+    namespace
   end
 
   def set_username_errors
