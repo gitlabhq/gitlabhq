@@ -93,8 +93,8 @@ $highlighted-gc-bg: #eaf2f5;
   text-align: right;
   width: 35px;
   background-color: $gray-light;
-  color: $black-transparent;
-  border-right: 1px solid $white-normal;
+  color: $t-gray-a-24;
+  border-right: 1px solid $gray-50;
 
   &.old {
     background-color: $line-number-old;
@@ -130,7 +130,7 @@ $highlighted-gc-bg: #eaf2f5;
   }
 
   &.match {
-    color: $black-transparent;
+    color: $t-gray-a-24;
     background-color: $gray-light;
   }
 }

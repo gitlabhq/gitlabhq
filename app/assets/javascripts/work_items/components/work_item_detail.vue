@@ -1,13 +1,6 @@
 <script>
 import { isEmpty } from 'lodash';
-import {
-  GlAlert,
-  GlSkeletonLoader,
-  GlIcon,
-  GlButton,
-  GlTooltipDirective,
-  GlEmptyState,
-} from '@gitlab/ui';
+import { GlAlert, GlSkeletonLoader, GlButton, GlTooltipDirective, GlEmptyState } from '@gitlab/ui';
 import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg?raw';
 import { s__ } from '~/locale';
 import { getParameterByName, updateHistory, setUrlParams } from '~/lib/utils/url_utility';
@@ -48,8 +41,8 @@ import WorkItemNotes from './work_item_notes.vue';
 import WorkItemDetailModal from './work_item_detail_modal.vue';
 import WorkItemAwardEmoji from './work_item_award_emoji.vue';
 import WorkItemRelationships from './work_item_relationships/work_item_relationships.vue';
-import WorkItemTypeIcon from './work_item_type_icon.vue';
 import WorkItemStickyHeader from './work_item_sticky_header.vue';
+import WorkItemAncestors from './work_item_ancestors/work_item_ancestors.vue';
 
 export default {
   i18n,
@@ -61,7 +54,6 @@ export default {
     GlAlert,
     GlButton,
     GlSkeletonLoader,
-    GlIcon,
     GlEmptyState,
     WorkItemActions,
     WorkItemTodos,
@@ -70,13 +62,13 @@ export default {
     WorkItemAwardEmoji,
     WorkItemTitle,
     WorkItemAttributesWrapper,
-    WorkItemTypeIcon,
     WorkItemTree,
     WorkItemNotes,
     WorkItemDetailModal,
     AbuseCategorySelector,
     WorkItemRelationships,
     WorkItemStickyHeader,
+    WorkItemAncestors,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['fullPath', 'isGroup', 'reportAbusePath'],
@@ -427,37 +419,9 @@ export default {
           />
         </div>
         <div
-          class="gl-display-block gl-sm-display-flex! gl-align-items-flex-start gl-flex-direction-column gl-sm-flex-direction-row gl-gap-3 gl-pt-3"
+          class="gl-display-block gl-md-display-flex! gl-align-items-flex-start gl-flex-direction-column gl-sm-flex-direction-row flex-wrap gl-gap-3 gl-pt-3"
         >
-          <ul
-            v-if="parentWorkItem"
-            class="list-unstyled gl-display-flex gl-min-w-0 gl-mr-auto gl-mb-0 gl-z-index-0"
-            data-testid="work-item-parent"
-          >
-            <li class="gl-ml-n4 gl-display-flex gl-align-items-center gl-min-w-0">
-              <gl-button
-                v-gl-tooltip.hover
-                class="gl-text-truncate"
-                :icon="parentWorkItemIconName"
-                category="tertiary"
-                :href="parentUrl"
-                :title="parentWorkItemReference"
-                @click="openInModal({ event: $event, modalWorkItem: parentWorkItem })"
-                >{{ parentWorkItemReference }}</gl-button
-              >
-              <gl-icon name="chevron-right" :size="16" class="gl-flex-shrink-0" />
-            </li>
-            <li
-              class="gl-px-4 gl-py-3 gl-line-height-0 gl-display-flex gl-align-items-center gl-overflow-hidden gl-flex-shrink-0"
-            >
-              <work-item-type-icon
-                :work-item-icon-name="workItemIconName"
-                :work-item-type="workItemType"
-                show-text
-              />
-              {{ workItemBreadcrumbReference }}
-            </li>
-          </ul>
+          <work-item-ancestors v-if="parentWorkItem" :work-item="workItem" class="gl-mb-1" />
           <div
             v-if="!error && !workItemLoading"
             :class="titleClassHeader"
@@ -475,7 +439,9 @@ export default {
               @error="updateError = $event"
             />
           </div>
-          <div class="detail-page-header-actions gl-display-flex gl-align-self-start gl-gap-3">
+          <div
+            class="detail-page-header-actions gl-display-flex gl-align-self-start gl-ml-auto gl-gap-3"
+          >
             <work-item-todos
               v-if="showWorkItemCurrentUserTodos"
               :work-item-id="workItem.id"

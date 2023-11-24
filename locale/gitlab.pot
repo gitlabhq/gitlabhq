@@ -24047,6 +24047,9 @@ msgstr ""
 msgid "Hierarchy|Planning hierarchy"
 msgstr ""
 
+msgid "Hierarchy|Something went wrong while fetching ancestors."
+msgstr ""
+
 msgid "Hierarchy|Something went wrong while fetching children."
 msgstr ""
 
@@ -54721,6 +54724,9 @@ msgstr ""
 msgid "WorkItem|All activity"
 msgstr ""
 
+msgid "WorkItem|Ancestor"
+msgstr ""
+
 msgid "WorkItem|Are you sure you want to cancel editing?"
 msgstr ""
 
@@ -54892,6 +54898,9 @@ msgid "WorkItem|Search existing items"
 msgstr ""
 
 msgid "WorkItem|Select type"
+msgstr ""
+
+msgid "WorkItem|Show all ancestors"
 msgstr ""
 
 msgid "WorkItem|Show labels"

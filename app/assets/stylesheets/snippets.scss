@@ -82,12 +82,12 @@
         font-size: $code-font-size;
         line-height: $code-line-height;
         white-space: nowrap;
-        color: $black-transparent;
+        color: $t-gray-a-24;
         min-width: 30px;
       }
 
       .diff-line-num:hover {
-        color: $almost-black;
+        color: $gray-950;
         cursor: pointer;
       }
     }
@@ -158,7 +158,7 @@
       border-right: 0;
 
       &:hover {
-        background-color: $white-normal;
+        background-color: $gray-50;
         border-color: $border-white-normal;
         text-decoration: none;
       }

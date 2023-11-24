@@ -30,6 +30,7 @@ The namespace used for this tutorial must:
    - **Project name**: `sast-scan-result-policy`.
    - Select the **Enable Static Application Security Testing (SAST)** checkbox.
 1. Select **Create project**.
+1. Go to the newly created project and create [protected branches](../../user/project/protected_branches.md).
 
 ## Add a scan result policy
 

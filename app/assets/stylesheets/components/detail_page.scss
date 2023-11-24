@@ -38,18 +38,9 @@
 .detail-page-header-actions {
   flex: 0 0 auto;
 
-  &:not(.is-merge-request) {
-    @include media-breakpoint-down(xs) {
-      width: 100%;
-      margin-top: 10px;
-    }
-  }
-
-  &.is-merge-request {
-    @include media-breakpoint-down(sm) {
-      width: 100%;
-      margin-top: 10px;
-    }
+  @include media-breakpoint-down(sm) {
+    width: 100%;
+    margin-top: 10px;
   }
 }
 

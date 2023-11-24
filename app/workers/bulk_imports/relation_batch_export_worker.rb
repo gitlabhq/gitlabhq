@@ -8,6 +8,7 @@ module BulkImports
     data_consistency :always # rubocop:disable SidekiqLoadBalancing/WorkerDataConsistency
     feature_category :importers
     sidekiq_options status_expiration: StuckExportJobsWorker::EXPORT_JOBS_EXPIRATION, retry: 6
+    worker_resource_boundary :memory
 
     sidekiq_retries_exhausted do |job, exception|
       batch = BulkImports::ExportBatch.find(job['args'][1])

@@ -362,7 +362,7 @@ module Ci
     end
 
     def public_access?
-      return true unless Feature.enabled?(:non_public_artifacts, type: :development)
+      return true unless Feature.enabled?(:non_public_artifacts, project, type: :development)
 
       public_accessibility?
     end

@@ -24,7 +24,7 @@
     .btn.btn-retry:hover,
     .btn.btn-retry:focus {
       border-color: $dropdown-toggle-active-border-color;
-      background-color: $white-normal;
+      background-color: $gray-50;
     }
 
     svg path {
@@ -42,7 +42,7 @@
     }
 
     .btn-group.open .btn-default {
-      background-color: $white-normal;
+      background-color: $gray-50;
       border-color: $border-white-normal;
     }
 

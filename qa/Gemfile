@@ -6,7 +6,7 @@ gem 'gitlab-qa', '~> 12', '>= 12.5.0', require: 'gitlab/qa'
 gem 'gitlab_quality-test_tooling', '~> 1.5.3', require: false
 gem 'gitlab-utils', path: '../gems/gitlab-utils'
 gem 'activesupport', '~> 7.0.8' # This should stay in sync with the root's Gemfile
-gem 'allure-rspec', '~> 2.20.0'
+gem 'allure-rspec', '~> 2.23.0'
 gem 'capybara', '~> 3.39.2'
 gem 'capybara-screenshot', '~> 1.0.26'
 gem 'rake', '~> 13', '>= 13.1.0'

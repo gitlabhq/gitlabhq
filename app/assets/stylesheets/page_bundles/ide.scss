@@ -436,7 +436,7 @@ $ide-commit-header-height: 48px;
   }
 
   &.is-active {
-    background-color: var(--ide-background, $white-normal);
+    background-color: var(--ide-background, $gray-50);
   }
 
   svg {
@@ -545,7 +545,7 @@ $ide-commit-header-height: 48px;
   width: $ide-commit-row-height;
   height: $ide-commit-row-height;
   color: inherit;
-  background-color: var(--ide-background, $white-normal);
+  background-color: var(--ide-background, $gray-50);
 }
 
 .ide-commit-options {
@@ -740,7 +740,7 @@ $ide-commit-header-height: 48px;
     background-color: var(--ide-input-background, transparent);
 
     &:hover {
-      background-color: var(--ide-dropdown-btn-hover-background, $white-normal);
+      background-color: var(--ide-dropdown-btn-hover-background, $gray-50);
     }
 
     svg {
@@ -1063,7 +1063,7 @@ $ide-commit-header-height: 48px;
 
   &:active,
   &:focus {
-    color: $white-normal;
+    color: $gray-50;
     background-color: var(--ide-link-color, $blue-500);
     outline: 0;
   }
@@ -1077,7 +1077,7 @@ $ide-commit-header-height: 48px;
   }
 
   .dropdown.show .ide-entry-dropdown-toggle {
-    color: $white-normal;
+    color: $gray-50;
     background-color: var(--ide-link-color, $blue-500);
   }
 }

@@ -27,8 +27,8 @@ module Ci
 
       before_validation :ensure_metadata, on: :create
 
-      scope :with_project_and_metadata, -> do
-        if Feature.enabled?(:non_public_artifacts, type: :development)
+      scope :with_project_and_metadata, ->(project) do
+        if Feature.enabled?(:non_public_artifacts, project, type: :development)
           joins(:metadata).includes(:metadata).preload(:project)
         end
       end

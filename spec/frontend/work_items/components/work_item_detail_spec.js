@@ -1,4 +1,4 @@
-import { GlAlert, GlSkeletonLoader, GlButton, GlEmptyState } from '@gitlab/ui';
+import { GlAlert, GlSkeletonLoader, GlEmptyState } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -9,6 +9,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { stubComponent } from 'helpers/stub_component';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
+import WorkItemAncestors from '~/work_items/components/work_item_ancestors/work_item_ancestors.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
 import WorkItemCreatedUpdated from '~/work_items/components/work_item_created_updated.vue';
 import WorkItemAttributesWrapper from '~/work_items/components/work_item_attributes_wrapper.vue';
@@ -69,8 +70,7 @@ describe('WorkItemDetail component', () => {
   const findCreatedUpdated = () => wrapper.findComponent(WorkItemCreatedUpdated);
   const findWorkItemDescription = () => wrapper.findComponent(WorkItemDescription);
   const findWorkItemAttributesWrapper = () => wrapper.findComponent(WorkItemAttributesWrapper);
-  const findParent = () => wrapper.findByTestId('work-item-parent');
-  const findParentButton = () => findParent().findComponent(GlButton);
+  const findAncestors = () => wrapper.findComponent(WorkItemAncestors);
   const findCloseButton = () => wrapper.findByTestId('work-item-close');
   const findWorkItemType = () => wrapper.findByTestId('work-item-type');
   const findHierarchyTree = () => wrapper.findComponent(WorkItemTree);
@@ -127,6 +127,7 @@ describe('WorkItemDetail component', () => {
         reportAbusePath: '/report/abuse/path',
       },
       stubs: {
+        WorkItemAncestors: true,
         WorkItemWeight: true,
         WorkItemIteration: true,
         WorkItemHealthStatus: true,
@@ -359,19 +360,19 @@ describe('WorkItemDetail component', () => {
     });
   });
 
-  describe('secondary breadcrumbs', () => {
-    it('does not show secondary breadcrumbs by default', () => {
+  describe('ancestors widget', () => {
+    it('does not show ancestors widget by default', () => {
       createComponent();
 
-      expect(findParent().exists()).toBe(false);
+      expect(findAncestors().exists()).toBe(false);
     });
 
-    it('does not show secondary breadcrumbs if there is not a parent', async () => {
+    it('does not show ancestors widget if there is not a parent', async () => {
       createComponent({ handler: jest.fn().mockResolvedValue(workItemQueryResponseWithoutParent) });
 
       await waitForPromises();
 
-      expect(findParent().exists()).toBe(false);
+      expect(findAncestors().exists()).toBe(false);
     });
 
     it('shows title in the header when there is no parent', async () => {
@@ -389,45 +390,8 @@ describe('WorkItemDetail component', () => {
         return waitForPromises();
       });
 
-      it('shows secondary breadcrumbs if there is a parent', () => {
-        expect(findParent().exists()).toBe(true);
-      });
-
-      it('shows parent breadcrumb icon', () => {
-        expect(findParentButton().props('icon')).toBe(mockParent.parent.workItemType.iconName);
-      });
-
-      it('shows parent title and iid', () => {
-        expect(findParentButton().text()).toBe(
-          `${mockParent.parent.title} #${mockParent.parent.iid}`,
-        );
-      });
-
-      it('sets the parent breadcrumb URL pointing to issue page when parent type is `Issue`', () => {
-        expect(findParentButton().attributes().href).toBe('../../-/issues/5');
-      });
-
-      it('sets the parent breadcrumb URL based on parent webUrl when parent type is not `Issue`', async () => {
-        const mockParentObjective = {
-          parent: {
-            ...mockParent.parent,
-            workItemType: {
-              id: mockParent.parent.workItemType.id,
-              name: 'Objective',
-              iconName: 'issue-type-objective',
-            },
-          },
-        };
-        const parentResponse = workItemByIidResponseFactory(mockParentObjective);
-        createComponent({ handler: jest.fn().mockResolvedValue(parentResponse) });
-        await waitForPromises();
-
-        expect(findParentButton().attributes().href).toBe(mockParentObjective.parent.webUrl);
-      });
-
-      it('shows work item type and iid', () => {
-        const { iid } = workItemQueryResponse.data.workspace.workItems.nodes[0];
-        expect(findParent().text()).toContain(`#${iid}`);
+      it('shows ancestors widget if there is a parent', () => {
+        expect(findAncestors().exists()).toBe(true);
       });
 
       it('does not show title in the header when parent exists', () => {

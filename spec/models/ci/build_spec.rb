@@ -5270,7 +5270,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe '.with_project_and_metadata' do
     it 'does not join across databases' do
       with_cross_joins_prevented do
-        ::Ci::Build.with_project_and_metadata.to_a
+        ::Ci::Build.with_project_and_metadata(project).to_a
       end
     end
   end

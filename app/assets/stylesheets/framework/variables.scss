@@ -108,17 +108,13 @@ $t-gray-a-08: rgba($gray-950, 0.08) !default;
 $t-gray-a-16: rgba($gray-950, 0.16) !default;
 $t-gray-a-24: rgba($gray-950, 0.24) !default;
 
-$white-normal: $gray-50 !default;
 $white-dark: darken($gray-50, 2) !default;
-
-$black-transparent: $t-gray-a-24 !default;
-$almost-black: $gray-950 !default;
 
 // To do this variant right for darkmode, we need to create a variable for it.
 $indigo-900-alpha-008: rgba($theme-indigo-900, 0.08);
 
 $border-white-light: darken($white, $darken-border-factor) !default;
-$border-white-normal: darken($white-normal, $darken-border-factor) !default;
+$border-white-normal: darken($gray-50, $darken-border-factor) !default;
 
 $border-gray-light: darken($gray-light, $darken-border-factor);
 $border-gray-normal: darken($gray-normal, $darken-border-factor);
@@ -315,7 +311,7 @@ $dark-diff-match-color: rgba($white, 0.1);
 $diff-image-info-color: #808080;
 $diff-view-modes-color: #808080;
 $diff-view-modes-border: #c1c1c1;
-$diff-jagged-border-gradient-color: darken($white-normal, 8%);
+$diff-jagged-border-gradient-color: darken($gray-50, 8%);
 
 /*
  * Fonts

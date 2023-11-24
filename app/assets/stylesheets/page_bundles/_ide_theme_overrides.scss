@@ -67,7 +67,7 @@
   }
 
   .drag-handle:hover {
-    background-color: var(--ide-dropdown-hover-background, $white-normal);
+    background-color: var(--ide-dropdown-hover-background, $gray-50);
   }
 
   .card-header {
@@ -221,7 +221,7 @@
 
   .filtered-search-token .value-container,
   .filtered-search-term .value-container {
-    background-color: var(--ide-dropdown-hover-background, $white-normal);
+    background-color: var(--ide-dropdown-hover-background, $gray-50);
     color: var(--ide-text-color, $gl-text-color);
 
     &:hover {
@@ -292,7 +292,7 @@
     &:hover,
     &:focus {
       border-color: var(--ide-btn-default-hover-border, $border-white-normal) !important;
-      background-color: var(--ide-btn-default-background, $white-normal) !important;
+      background-color: var(--ide-btn-default-background, $gray-50) !important;
     }
 
     &:active,

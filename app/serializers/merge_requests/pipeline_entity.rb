@@ -25,12 +25,13 @@ class MergeRequests::PipelineEntity < Grape::Entity
 
     expose :artifacts do |pipeline, options|
       rel = pipeline.downloadable_artifacts
+      project = pipeline.project
 
-      if Feature.enabled?(:non_public_artifacts, type: :development)
+      if Feature.enabled?(:non_public_artifacts, project, type: :development)
         rel = rel.select { |artifact| can?(request.current_user, :read_job_artifacts, artifact) }
       end
 
-      BuildArtifactEntity.represent(rel, options.merge(project: pipeline.project))
+      BuildArtifactEntity.represent(rel, options.merge(project: project))
     end
 
     expose :detailed_status, as: :status, with: DetailedStatusEntity do |pipeline|

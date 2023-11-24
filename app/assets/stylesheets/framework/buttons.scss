@@ -118,7 +118,7 @@
 }
 
 @mixin btn-white {
-  @include btn-color($white, $border-color, $white-normal, $border-white-normal, $white-dark, $border-white-normal, $gl-text-color);
+  @include btn-color($white, $border-color, $gray-50, $border-white-normal, $white-dark, $border-white-normal, $gl-text-color);
 }
 
 @mixin btn-purple {

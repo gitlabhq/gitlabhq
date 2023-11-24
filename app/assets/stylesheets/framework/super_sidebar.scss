@@ -245,7 +245,7 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
       bottom: 0;
       left: 0;
       right: 0;
-      background-color: $black-transparent;
+      background-color: $t-gray-a-24;
       z-index: $super-sidebar-z-index - 1;
 
       @include media-breakpoint-up(md) {

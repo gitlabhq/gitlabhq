@@ -1,0 +1,127 @@
+<script>
+import uniqueId from 'lodash/uniqueId';
+import { GlIcon, GlTooltip, GlDisclosureDropdown } from '@gitlab/ui';
+import DisclosureHierarchyItem from './disclosure_hierarchy_item.vue';
+
+export default {
+  components: {
+    GlDisclosureDropdown,
+    GlIcon,
+    GlTooltip,
+    DisclosureHierarchyItem,
+  },
+  props: {
+    /**
+     * A list of items in the form:
+     * ```
+     * {
+     *   title:    String, required
+     *   icon:     String, optional
+     * }
+     * ```
+     */
+    items: {
+      type: Array,
+      required: false,
+      default: () => [],
+      validator: (items) => {
+        return items.every((item) => Object.keys(item).includes('title'));
+      },
+    },
+    /**
+     * When set, displays only first and last item, and groups the rest under an ellipsis button
+     */
+    withEllipsis: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+    /**
+     * When set, a tooltip displays when hovering middle ellipsis button
+     */
+    ellipsisTooltipLabel: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  data() {
+    return {
+      itemUuid: uniqueId('disclosure-hierarchy-'),
+    };
+  },
+  computed: {
+    middleItems() {
+      return this.items.slice(1, -1).map((item) => ({ ...item, text: item.title }));
+    },
+    firstItem() {
+      return this.items[0];
+    },
+    lastItemIndex() {
+      return this.items.length - 1;
+    },
+    lastItem() {
+      return this.items[this.lastItemIndex];
+    },
+  },
+  methods: {
+    itemId(index) {
+      return `${this.itemUuid}-item-${index}`;
+    },
+  },
+};
+</script>
+
+<template>
+  <div class="gl-relative gl-display-flex">
+    <ul class="gl-p-0 gl-m-0 gl-relative gl-list-style-none gl-display-inline-flex gl-w-85p">
+      <template v-if="withEllipsis">
+        <disclosure-hierarchy-item :item="firstItem" :item-id="itemId(0)">
+          <slot :item="firstItem" :item-id="itemId(0)"></slot>
+        </disclosure-hierarchy-item>
+        <li class="disclosure-hierarchy-item">
+          <gl-disclosure-dropdown :items="middleItems">
+            <template #toggle>
+              <button
+                id="disclosure-hierarchy-ellipsis-button"
+                class="disclosure-hierarchy-button"
+                :aria-label="ellipsisTooltipLabel"
+              >
+                <gl-icon name="ellipsis_h" class="gl-ml-3 gl-text-gray-600 gl-z-index-200" />
+              </button>
+            </template>
+            <template #list-item="{ item }">
+              <span class="gl-display-flex">
+                <gl-icon
+                  v-if="item.icon"
+                  :name="item.icon"
+                  class="gl-mr-3 gl-vertical-align-middle gl-text-gray-600 gl-flex-shrink-0"
+                />
+                {{ item.title }}
+              </span>
+            </template>
+          </gl-disclosure-dropdown>
+        </li>
+        <gl-tooltip
+          v-if="ellipsisTooltipLabel"
+          target="disclosure-hierarchy-ellipsis-button"
+          triggers="hover"
+        >
+          {{ ellipsisTooltipLabel }}
+        </gl-tooltip>
+        <disclosure-hierarchy-item :item="lastItem" :item-id="itemId(lastItemIndex)">
+          <slot :item="lastItem" :item-id="itemId(lastItemIndex)"></slot>
+        </disclosure-hierarchy-item>
+      </template>
+      <disclosure-hierarchy-item
+        v-for="(item, index) in items"
+        v-else
+        :key="index"
+        :item="item"
+        :item-id="itemId(index)"
+      >
+        <slot :item="item" :item-id="itemId(index)"></slot>
+      </disclosure-hierarchy-item>
+    </ul>
+  </div>
+</template>
