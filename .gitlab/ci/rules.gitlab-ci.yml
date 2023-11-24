@@ -418,6 +418,12 @@
   - ".dockerignore"
   - "{,jh/}qa/**/*"
 
+# Frontend view patterns + .qa-patterns
+.frontend-qa-patterns: &frontend-qa-patterns
+  - "{,ee/,jh/}{app/assets,app/components,app/helpers,app/presenters,app/views}/**/*"
+  # QA changes
+  - "{,jh/}qa/**/*"
+
 # Code patterns + .ci-patterns
 .code-patterns: &code-patterns
   - "{package.json,yarn.lock}"
@@ -1470,11 +1476,11 @@
     - <<: *if-default-refs
       changes: *code-qa-patterns
 
-.qa:rules:as-if-foss:
+.qa:rules:selectors-as-if-foss:
   rules:
     - !reference [".strict-ee-only-rules", rules]
-    - <<: *if-security-merge-request
-      changes: *code-qa-patterns
+    - <<: *if-merge-request
+      changes: *frontend-qa-patterns
     - <<: *if-merge-request-labels-as-if-foss
     - <<: *if-merge-request-labels-run-all-rspec
 

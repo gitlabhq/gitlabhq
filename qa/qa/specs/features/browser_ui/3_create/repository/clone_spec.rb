@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Git clone over HTTP', product_group: :source_code do
+    describe 'Git clone over HTTP', :reliable, product_group: :source_code do
       let(:project) { create(:project, name: 'project-with-code', description: 'project for git clone tests') }
 
       before do

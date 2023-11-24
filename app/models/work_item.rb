@@ -37,6 +37,10 @@ class WorkItem < Issue
   }
 
   class << self
+    def find_by_namespace_and_iid!(namespace, iid)
+      find_by!(namespace: namespace, iid: iid)
+    end
+
     def assignee_association_name
       'issue'
     end

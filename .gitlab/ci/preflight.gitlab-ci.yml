@@ -77,5 +77,5 @@ qa:selectors:
 qa:selectors-as-if-foss:
   extends:
     - qa:selectors
-    - .qa:rules:as-if-foss
+    - .qa:rules:selectors-as-if-foss
     - .as-if-foss

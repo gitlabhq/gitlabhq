@@ -146,7 +146,7 @@ module API
       if id.is_a?(Integer) || id =~ INTEGER_ID_REGEX
         projects.find_by(id: id)
       elsif id.include?("/")
-        projects.find_by_full_path(id, follow_redirects: Feature.enabled?(:api_redirect_moved_projects))
+        projects.find_by_full_path(id, follow_redirects: true)
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -905,7 +905,6 @@ module API
     end
 
     def project_moved?(id, project)
-      return false unless Feature.enabled?(:api_redirect_moved_projects)
       return false unless id.is_a?(String) && id.include?('/')
       return false if project.blank? || project.full_path.casecmp?(id)
       return false unless params[:id] == id

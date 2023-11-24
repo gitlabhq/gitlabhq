@@ -342,17 +342,7 @@ module QA
           raise ResourceQueryError, "Could not get import status. Request returned (#{response.code}): `#{response}`."
         end
 
-        result = parse_body(response)
-
-        if result[:import_status] == "failed"
-          Runtime::Logger.error(<<~ERR)
-            Import of project '#{full_path}' failed!
-              error: '#{result[:import_error]}'
-              failed relations: '#{result[:failed_relations]}'
-          ERR
-        end
-
-        result
+        parse_body(response)
       end
 
       def commits(auto_paginate: false, attempts: 0)

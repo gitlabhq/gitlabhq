@@ -2852,16 +2852,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
             expect(response).to have_gitlab_http_status(:not_found)
           end
         end
-
-        context 'when api_redirect_moved_projects is disabled' do
-          it 'returns a 404 error' do
-            stub_feature_flags(api_redirect_moved_projects: false)
-
-            perform_request
-
-            expect(response).to have_gitlab_http_status(:not_found)
-          end
-        end
       end
 
       it 'returns a 404 error if not found' do

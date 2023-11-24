@@ -208,7 +208,7 @@ module QA
         end
       end
 
-      let(:import_status) { imported_project.project_import_status }
+      let(:status_details) { (@import_status || {}).slice(:import_error, :failed_relations, :correlation_id) }
 
       before do
         QA::Support::Helpers::ImportSource.enable('github')
@@ -221,7 +221,7 @@ module QA
             importer: :github,
             import_finished: false,
             import_time: Time.now - @start
-          }))
+          }.merge(status_details)))
         end
 
         # add additional import time metric
@@ -232,18 +232,14 @@ module QA
             status: example.exception ? "failed" : "passed",
             import_time: @import_time,
             import_finished: true,
-            errors: import_status[:failed_relations],
-            correlation_id: import_status[:correlation_id],
             reported_stats: @stats
-          }))
+          }.merge(status_details)))
         end
 
         save_data_json(test_result_data({
           status: example.exception ? "failed" : "passed",
           import_time: @import_time,
           import_finished: true,
-          errors: import_status[:failed_relations],
-          correlation_id: import_status[:correlation_id],
           reported_stats: @stats,
           source: {
             data: {
@@ -277,7 +273,7 @@ module QA
             mrs: @mr_diff,
             issues: @issue_diff
           }
-        }))
+        }.merge(status_details)))
       end
 
       it(
@@ -298,6 +294,7 @@ module QA
 
         import_status = -> {
           imported_project.project_import_status.then do |status|
+            @import_status = status
             @stats = status[:stats]&.slice(:fetched, :imported)
 
             # fail fast if import explicitly failed

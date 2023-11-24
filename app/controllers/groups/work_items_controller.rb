@@ -20,3 +20,5 @@ module Groups
     end
   end
 end
+
+Groups::WorkItemsController.prepend_mod

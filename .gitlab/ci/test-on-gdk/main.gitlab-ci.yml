@@ -3,18 +3,6 @@ include:
   - local: .gitlab/ci/qa-common/main.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/rules.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/variables.gitlab-ci.yml
-  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@7.3.0"
-    inputs:
-      job_name: "e2e-test-report"
-      job_stage: "report"
-      aws_access_key_id_variable_name: "QA_ALLURE_AWS_ACCESS_KEY_ID"
-      aws_secret_access_key_variable_name: "QA_ALLURE_AWS_SECRET_ACCESS_KEY"
-      gitlab_auth_token_variable_name: "PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE"
-      allure_results_glob: "qa/tmp/allure-results"
-      allure_ref_slug: "${CI_COMMIT_REF_SLUG}"
-      allure_project_path: "${CI_PROJECT_PATH}"
-      allure_merge_request_iid: "${CI_MERGE_REQUEST_IID}"
-      allure_job_name: "${QA_RUN_TYPE}"
 
 # code pattern changes
 .code-pattern-changes: &code-pattern-changes
@@ -23,12 +11,6 @@ include:
 # Run all tests when QA framework changes present, full suite execution is explicitly enabled or a feature flag file is removed
 .qa-run-all-tests: &qa-run-all-tests
   if: $QA_FRAMEWORK_CHANGES == "true" || $QA_RUN_ALL_TESTS == "true" || $QA_RUN_ALL_E2E_LABEL == "true" || $QA_FEATURE_FLAGS =~ /deleted/
-
-variables:
-  COLORIZED_LOGS: "true"
-  GIT_DEPTH: "20"
-  GIT_STRATEGY: "clone"  # 'GIT_STRATEGY: clone' optimizes the pack-objects cache hit ratio
-  GIT_SUBMODULE_STRATEGY: "none"
 
 .rules:gdk:qa-selective:
   rules:
@@ -42,6 +24,7 @@ variables:
     - *code-pattern-changes
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::Blocking/
+    - !reference [.rules:test:manual, rules]
 
 .rules:gdk:qa-smoke:
   rules:
@@ -52,6 +35,7 @@ variables:
       variables:
         QA_TESTS: ""
     - if: $QA_SUITES =~ /Test::Instance::Smoke/
+    - !reference [.rules:test:manual, rules]
 
 .gdk-qa-base:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-2.3-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
@@ -119,11 +103,6 @@ variables:
     expire_in: 7 days
     when: always
 
-download-knapsack-report:
-  extends:
-    - .download-knapsack-report
-    - .rules:download-knapsack
-
 # Take the existing GDK docker image and reconfigure it with Postgres load
 # balancing. Adding 5s lag to 1 of the replicas to validate robustness of
 # the load balancer.
@@ -138,11 +117,31 @@ download-knapsack-report:
         gdk reconfigure &&\
         gdk restart"
 
+# ==========================================
+# Pre stage
+# ==========================================
+# override .download-knapsack-report job to not depend on qa-image build
+download-knapsack-report:
+  extends:
+    - .download-knapsack-report
+    - .ruby-image
+    - .bundler-variables
+    - .qa-cache
+    - .rules:download-knapsack
+  variables:
+    GIT_STRATEGY: clone
+  before_script:
+    - cd qa && bundle install
+  after_script: []
+
 download-fast-quarantine-report:
   extends:
     - .download-fast-quarantine-report
     - .rules:download-fast-quarantine-report
 
+# ==========================================
+# Test stage
+# ==========================================
 gdk-qa-smoke:
   extends:
     - .gdk-qa-base
@@ -216,13 +215,15 @@ gdk-qa-non-blocking:
     QA_RUN_TYPE: gdk-qa-non-blocking
   rules:
     - when: manual
-  allow_failure: true
+      allow_failure: true
 
 # ==========================================
 # Post test stage
 # ==========================================
 e2e-test-report:
   extends: .rules:report:allure-report
+  variables:
+    ALLURE_REPORT_RESULTS_GLOB: "qa/tmp/allure-results"
 
 upload-knapsack-report:
   extends:

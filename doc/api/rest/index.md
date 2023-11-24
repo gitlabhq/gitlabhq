@@ -347,12 +347,8 @@ The following table shows the possible return codes for API requests.
 
 ## Redirects
 
-> Introduced in GitLab 16.4 [with a flag](../../user/feature_flags.md) named `api_redirect_moved_projects`. Disabled by default.
-
-FLAG:
-On GitLab.com, this feature is not available.
-On self-managed GitLab, by default this feature is not available. To make it available,
-an administrator can [enable the feature flag](../../user/feature_flags.md) named `api_redirect_moved_projects`.
+> - Introduced in GitLab 16.4 [with a flag](../../user/feature_flags.md) named `api_redirect_moved_projects`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137578) in GitLab 16.7. Feature flag `api_redirect_moved_projects` removed.
 
 After [path changes](../../user/project/repository/index.md#what-happens-when-a-repository-path-changes) the
 REST API can respond with a redirect and users should be able to handle such responses.

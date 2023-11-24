@@ -86,11 +86,11 @@ stages:
     KNAPSACK_DIR: ${CI_PROJECT_DIR}/qa/knapsack
     GIT_STRATEGY: none
   script:
-    - echo "KNAPSACK_TEST_FILE_PATTERN is ${KNAPSACK_TEST_FILE_PATTERN}"
-    # when using qa-image, code runs in /home/gitlab/qa folder
     - bundle exec rake "knapsack:download[test]"
-    - '[ -n "$QA_TESTS" ] && bundle exec rake "knapsack:create_reports_for_selective"'
-    - mkdir -p "$KNAPSACK_DIR" && cp knapsack/*.json "${KNAPSACK_DIR}/"
+    - bundle exec rake "knapsack:create_reports_for_selective"
+  after_script:
+    # when using qa-image, code runs in /home/gitlab/qa folder
+    - mkdir -p "$KNAPSACK_DIR" && cp /home/gitlab/qa/knapsack/*.json "${KNAPSACK_DIR}/"
   allow_failure: true
   artifacts:
     paths:
