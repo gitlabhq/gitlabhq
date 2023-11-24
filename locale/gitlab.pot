@@ -27758,6 +27758,9 @@ msgstr ""
 msgid "Kubernetes deployment not found"
 msgstr ""
 
+msgid "KubernetesDashboard|Age"
+msgstr ""
+
 msgid "KubernetesDashboard|Agent %{name} ID #%{id}"
 msgstr ""
 
@@ -27770,6 +27773,12 @@ msgstr ""
 msgid "KubernetesDashboard|Failed"
 msgstr ""
 
+msgid "KubernetesDashboard|Name"
+msgstr ""
+
+msgid "KubernetesDashboard|Namespace"
+msgstr ""
+
 msgid "KubernetesDashboard|Pending"
 msgstr ""
 
@@ -27777,6 +27786,9 @@ msgid "KubernetesDashboard|Pods"
 msgstr ""
 
 msgid "KubernetesDashboard|Running"
+msgstr ""
+
+msgid "KubernetesDashboard|Status"
 msgstr ""
 
 msgid "KubernetesDashboard|Succeeded"
@@ -32853,6 +32865,9 @@ msgid "Object does not exist on the server or you don't have permissions to acce
 msgstr ""
 
 msgid "Objective"
+msgstr ""
+
+msgid "ObservabilityMetrics|Error: Failed to load metrics details. Try reloading the page."
 msgstr ""
 
 msgid "ObservabilityMetrics|Metrics"

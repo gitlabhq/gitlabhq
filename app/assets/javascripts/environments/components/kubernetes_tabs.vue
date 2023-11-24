@@ -1,8 +1,9 @@
 <script>
 import { GlTabs, GlTab, GlLoadingIcon, GlBadge, GlTable, GlPagination } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
+import { getAge } from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
 import k8sServicesQuery from '../graphql/queries/k8s_services.query.graphql';
-import { generateServicePortsString, getServiceAge } from '../helpers/k8s_integration_helper';
+import { generateServicePortsString } from '../helpers/k8s_integration_helper';
 import { SERVICES_LIMIT_PER_PAGE } from '../constants';
 import KubernetesSummary from './kubernetes_summary.vue';
 
@@ -62,7 +63,7 @@ export default {
           clusterIP: service?.spec?.clusterIP,
           externalIP: service?.spec?.externalIP,
           ports: generateServicePortsString(service?.spec?.ports),
-          age: getServiceAge(service?.metadata?.creationTimestamp),
+          age: getAge(service?.metadata?.creationTimestamp),
         };
       });
     },

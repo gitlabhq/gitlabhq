@@ -1,12 +1,12 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
-import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import PodsPage from '~/kubernetes_dashboard/pages/pods_page.vue';
-import WorkloadStats from '~/kubernetes_dashboard/components/workload_stats.vue';
-import { k8sPodsMock, mockPodStats } from '../graphql/mock_data';
+import WorkloadLayout from '~/kubernetes_dashboard/components/workload_layout.vue';
+import { useFakeDate } from 'helpers/fake_date';
+import { k8sPodsMock, mockPodStats, mockPodsTableItems } from '../graphql/mock_data';
 
 Vue.use(VueApollo);
 
@@ -20,9 +20,7 @@ describe('Kubernetes dashboard pods page', () => {
     },
   };
 
-  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findWorkloadStats = () => wrapper.findComponent(WorkloadStats);
-  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findWorkloadLayout = () => wrapper.findComponent(WorkloadLayout);
 
   const createApolloProvider = () => {
     const mockResolvers = {
@@ -42,33 +40,41 @@ describe('Kubernetes dashboard pods page', () => {
   };
 
   describe('mounted', () => {
-    it('shows the loading icon', () => {
+    it('renders WorkloadLayout component', () => {
       createWrapper();
 
-      expect(findLoadingIcon().exists()).toBe(true);
+      expect(findWorkloadLayout().exists()).toBe(true);
     });
 
-    it('hides the loading icon when the list of pods loaded', async () => {
+    it('sets loading prop for the WorkloadLayout', () => {
+      createWrapper();
+
+      expect(findWorkloadLayout().props('loading')).toBe(true);
+    });
+
+    it('removes loading prop from the WorkloadLayout when the list of pods loaded', async () => {
       createWrapper();
       await waitForPromises();
 
-      expect(findLoadingIcon().exists()).toBe(false);
+      expect(findWorkloadLayout().props('loading')).toBe(false);
     });
   });
 
   describe('when gets pods data', () => {
-    it('renders stats', async () => {
+    useFakeDate(2023, 10, 23, 10, 10);
+
+    it('sets correct stats object for the WorkloadLayout', async () => {
       createWrapper();
       await waitForPromises();
 
-      expect(findWorkloadStats().exists()).toBe(true);
+      expect(findWorkloadLayout().props('stats')).toEqual(mockPodStats);
     });
 
-    it('provides correct data for stats', async () => {
+    it('sets correct table items  object for the WorkloadLayout', async () => {
       createWrapper();
       await waitForPromises();
 
-      expect(findWorkloadStats().props('stats')).toEqual(mockPodStats);
+      expect(findWorkloadLayout().props('items')).toEqual(mockPodsTableItems);
     });
   });
 
@@ -89,12 +95,8 @@ describe('Kubernetes dashboard pods page', () => {
       await waitForPromises();
     });
 
-    it("doesn't show pods stats", () => {
-      expect(findWorkloadStats().exists()).toBe(false);
-    });
-
-    it('renders an alert with the error message', () => {
-      expect(findAlert().text()).toBe(error.message);
+    it('sets errorMessage prop for the WorkloadLayout', () => {
+      expect(findWorkloadLayout().props('errorMessage')).toBe(error.message);
     });
   });
 });

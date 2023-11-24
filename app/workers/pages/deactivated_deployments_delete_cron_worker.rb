@@ -12,6 +12,7 @@ module Pages
 
     def perform
       PagesDeployment.deactivated.each_batch do |deployments| # rubocop: disable Style/SymbolProc
+        deployments.each { |deployment| deployment.file.remove! }
         deployments.delete_all
       end
     end

@@ -1,5 +1,10 @@
 query getK8sDashboardPods($configuration: LocalConfiguration) {
   k8sPods(configuration: $configuration) @client {
+    metadata {
+      name
+      namespace
+      creationTimestamp
+    }
     status {
       phase
     }

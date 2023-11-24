@@ -1,6 +1,6 @@
 <script>
-import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
-import WorkloadStats from '../components/workload_stats.vue';
+import { getAge } from '../helpers/k8s_integration_helper';
+import WorkloadLayout from '../components/workload_layout.vue';
 import k8sPodsQuery from '../graphql/queries/k8s_dashboard_pods.query.graphql';
 import {
   PHASE_RUNNING,
@@ -12,9 +12,7 @@ import {
 
 export default {
   components: {
-    GlLoadingIcon,
-    GlAlert,
-    WorkloadStats,
+    WorkloadLayout,
   },
   inject: ['configuration'],
   apollo: {
@@ -26,7 +24,16 @@ export default {
         };
       },
       update(data) {
-        return data?.k8sPods || [];
+        return (
+          data?.k8sPods?.map((pod) => {
+            return {
+              name: pod.metadata?.name,
+              namespace: pod.metadata?.namespace,
+              status: pod.status.phase,
+              age: getAge(pod.metadata?.creationTimestamp),
+            };
+          }) || []
+        );
       },
       error(err) {
         this.errorMessage = err?.message;
@@ -35,6 +42,7 @@ export default {
   },
   data() {
     return {
+      k8sPods: [],
       errorMessage: '',
     };
   },
@@ -65,7 +73,7 @@ export default {
   },
   methods: {
     countPodsByPhase(phase) {
-      const filteredPods = this.k8sPods?.filter((item) => item.status.phase === phase) || [];
+      const filteredPods = this.k8sPods?.filter((item) => item.status === phase) || [];
 
       return filteredPods.length;
     },
@@ -73,9 +81,10 @@ export default {
 };
 </script>
 <template>
-  <gl-loading-icon v-if="loading" />
-  <gl-alert v-else-if="errorMessage" variant="danger" :dismissible="false" class="gl-mb-5">
-    {{ errorMessage }}
-  </gl-alert>
-  <workload-stats v-else :stats="podStats" />
+  <workload-layout
+    :loading="loading"
+    :error-message="errorMessage"
+    :stats="podStats"
+    :items="k8sPods"
+  />
 </template>

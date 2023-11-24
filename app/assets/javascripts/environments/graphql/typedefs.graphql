@@ -66,8 +66,15 @@ type k8sPodStatus {
   phase: String
 }
 
+type k8sPodMetadata {
+  name: String
+  namespace: String
+  creationTimestamp: String
+}
+
 type LocalK8sPods {
   status: k8sPodStatus
+  metadata: k8sPodMetadata
 }
 
 input LocalConfiguration {

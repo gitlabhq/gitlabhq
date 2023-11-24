@@ -13,6 +13,11 @@ export const apolloProvider = () => {
   cache.writeQuery({
     query: k8sPodsQuery,
     data: {
+      metadata: {
+        name: null,
+        namespace: null,
+        creationTimestamp: null,
+      },
       status: {
         phase: null,
       },

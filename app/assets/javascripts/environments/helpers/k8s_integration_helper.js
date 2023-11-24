@@ -1,4 +1,3 @@
-import { differenceInSeconds } from '~/lib/utils/datetime_utility';
 import { CLUSTER_AGENT_ERROR_MESSAGES, STATUS_TRUE, STATUS_FALSE } from '../constants';
 
 export function generateServicePortsString(ports) {
@@ -10,30 +9,6 @@ export function generateServicePortsString(ports) {
       return `${port.port}${nodePort}/${port.protocol}`;
     })
     .join(', ');
-}
-
-export function getServiceAge(creationTimestamp) {
-  if (!creationTimestamp) return '';
-
-  const timeDifference = differenceInSeconds(new Date(creationTimestamp), new Date());
-
-  const seconds = Math.floor(timeDifference);
-  const minutes = Math.floor(seconds / 60) % 60;
-  const hours = Math.floor(seconds / 60 / 60) % 24;
-  const days = Math.floor(seconds / 60 / 60 / 24);
-
-  let ageString;
-  if (days > 0) {
-    ageString = `${days}d`;
-  } else if (hours > 0) {
-    ageString = `${hours}h`;
-  } else if (minutes > 0) {
-    ageString = `${minutes}m`;
-  } else {
-    ageString = `${seconds}s`;
-  }
-
-  return ageString;
 }
 
 export function getDeploymentsStatuses(items) {
