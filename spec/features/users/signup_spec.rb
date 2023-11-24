@@ -67,12 +67,6 @@ RSpec.describe 'Signup', :js, feature_category: :user_management do
   end
 
   shared_examples 'signup process' do
-    def confirm_email
-      new_user_token = User.find_by_email(new_user.email).confirmation_token
-
-      visit user_confirmation_path(confirmation_token: new_user_token)
-    end
-
     before do
       stub_feature_flags(arkose_labs_signup_challenge: false)
       stub_application_setting(require_admin_approval_after_user_signup: false)
@@ -220,7 +214,7 @@ RSpec.describe 'Signup', :js, feature_category: :user_management do
             expect(page).to have_current_path users_almost_there_path, ignore_query: true
             expect(page).to have_content("Please check your email (#{new_user.email}) to confirm your account")
 
-            confirm_email
+            confirm_email(new_user)
 
             expect(find_field('Username or primary email').value).to eq(new_user.email)
           end

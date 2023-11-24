@@ -147,7 +147,7 @@ testdata/scratch:
 	mkdir -p testdata/scratch
 
 .PHONY: verify
-verify: lint vet detect-context detect-assert detect-external-tests check-formatting staticcheck deps-check
+verify: lint vet detect-context detect-external-tests check-formatting staticcheck deps-check
 
 .PHONY: lint
 lint:
@@ -164,11 +164,6 @@ vet:
 detect-context:
 	$(call message,Verify: $@)
 	_support/detect-context.sh
-
-.PHONY: detect-assert
-detect-assert:
-	$(call message,Verify: $@)
-	_support/detect-assert.sh
 
 .PHONY: detect-external-tests
 detect-external-tests:

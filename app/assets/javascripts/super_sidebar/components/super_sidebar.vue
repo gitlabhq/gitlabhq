@@ -1,6 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/dist/utils';
+import ExtraInfo from 'jh_else_ce/super_sidebar/components/extra_info.vue';
 import { Mousetrap } from '~/lib/mousetrap';
 import { TAB_KEY_CODE } from '~/lib/utils/keycodes';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
@@ -27,6 +28,7 @@ export default {
     GlButton,
     UserBar,
     HelpCenter,
+    ExtraInfo,
     SidebarMenu,
     SidebarPeekBehavior,
     SidebarHoverPeekBehavior,
@@ -233,6 +235,7 @@ export default {
           >
             {{ $options.i18n.adminArea }}
           </gl-button>
+          <extra-info />
         </div>
       </div>
     </nav>

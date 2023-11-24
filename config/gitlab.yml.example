@@ -485,6 +485,7 @@ production: &base
       enabled: true
       # The location where pages are stored (default: shared/pages).
       # path: shared/pages
+    # namespace_in_path: false # Set to true if you want to enable namespace in the URL path. It requires pages nginx to be enabled.
 
   ## Mattermost
   ## For enabling Add to Mattermost button

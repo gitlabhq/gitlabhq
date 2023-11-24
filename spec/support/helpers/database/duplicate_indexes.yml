@@ -145,9 +145,6 @@ pm_package_versions:
 project_compliance_standards_adherence:
   u_project_compliance_standards_adherence_for_reporting:
     - index_project_compliance_standards_adherence_on_project_id
-project_relation_exports:
-  index_project_export_job_relation:
-    - index_project_relation_exports_on_project_export_job_id
 project_repositories:
   index_project_repositories_on_shard_id_and_project_id:
     - index_project_repositories_on_shard_id

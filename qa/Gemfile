@@ -25,7 +25,7 @@ gem 'rainbow', '~> 3.1.1'
 gem 'rspec-parameterized', '~> 1.0.0'
 gem 'octokit', '~> 8.0.0'
 gem "faraday-retry", "~> 2.2"
-gem 'zeitwerk', '~> 2.6', '>= 2.6.8'
+gem 'zeitwerk', '~> 2.6', '>= 2.6.12'
 gem 'influxdb-client', '~> 2.9'
 gem 'terminal-table', '~> 3.0.2', require: false
 gem 'slack-notifier', '~> 2.4', require: false
@@ -39,7 +39,7 @@ gem 'chemlab', '~> 0.11', '>= 0.11.1'
 gem 'chemlab-library-www-gitlab-com', '~> 0.1', '>= 0.1.1'
 
 # dependencies for jenkins client
-gem 'nokogiri', '~> 1.15', '>= 1.15.4'
+gem 'nokogiri', '~> 1.15', '>= 1.15.5'
 
 gem 'deprecation_toolkit', '~> 2.0.3', require: false
 

@@ -14,6 +14,7 @@ RSpec.describe Gitlab::Pages::UrlBuilder, feature_category: :pages do
   let(:project_public) { true }
   let(:unique_domain) { 'unique-domain' }
   let(:unique_domain_enabled) { false }
+  let(:namespace_in_path) { false }
 
   let(:project_setting) do
     instance_double(
@@ -43,7 +44,8 @@ RSpec.describe Gitlab::Pages::UrlBuilder, feature_category: :pages do
       protocol: 'http',
       artifacts_server: artifacts_server,
       access_control: access_control,
-      port: port
+      port: port,
+      namespace_in_path: namespace_in_path
     )
   end
 
@@ -52,63 +54,131 @@ RSpec.describe Gitlab::Pages::UrlBuilder, feature_category: :pages do
 
     it { is_expected.to eq('http://group.example.com/project') }
 
-    context 'when namespace is upper cased' do
-      let(:full_path) { 'Group/project' }
+    context 'when namespace_in_path is false' do
+      let(:namespace_in_path) { false }
 
-      it { is_expected.to eq('http://group.example.com/project') }
-    end
+      context 'when namespace is upper cased' do
+        let(:full_path) { 'Group/project' }
 
-    context 'when project is in a nested group page' do
-      let(:full_path) { 'group/subgroup/project' }
+        it { is_expected.to eq('http://group.example.com/project') }
+      end
 
-      it { is_expected.to eq('http://group.example.com/subgroup/project') }
-    end
+      context 'when project is in a nested group page' do
+        let(:full_path) { 'group/subgroup/project' }
 
-    context 'when using domain pages' do
-      let(:full_path) { 'group/group.example.com' }
+        it { is_expected.to eq('http://group.example.com/subgroup/project') }
+      end
 
-      it { is_expected.to eq('http://group.example.com') }
+      context 'when using domain pages' do
+        let(:full_path) { 'group/group.example.com' }
 
-      context 'in development mode' do
-        let(:port) { 3010 }
+        it { is_expected.to eq('http://group.example.com') }
 
-        before do
-          stub_rails_env('development')
+        context 'in development mode' do
+          let(:port) { 3010 }
+
+          before do
+            stub_rails_env('development')
+          end
+
+          it { is_expected.to eq('http://group.example.com:3010') }
+        end
+      end
+
+      context 'when not using pages_unique_domain' do
+        subject(:pages_url) { builder.pages_url(with_unique_domain: false) }
+
+        context 'when pages_unique_domain_enabled is false' do
+          let(:unique_domain_enabled) { false }
+
+          it { is_expected.to eq('http://group.example.com/project') }
         end
 
-        it { is_expected.to eq('http://group.example.com:3010') }
+        context 'when pages_unique_domain_enabled is true' do
+          let(:unique_domain_enabled) { true }
+
+          it { is_expected.to eq('http://group.example.com/project') }
+        end
+      end
+
+      context 'when using pages_unique_domain' do
+        subject(:pages_url) { builder.pages_url(with_unique_domain: true) }
+
+        context 'when pages_unique_domain_enabled is false' do
+          let(:unique_domain_enabled) { false }
+
+          it { is_expected.to eq('http://group.example.com/project') }
+        end
+
+        context 'when pages_unique_domain_enabled is true' do
+          let(:unique_domain_enabled) { true }
+
+          it { is_expected.to eq('http://unique-domain.example.com') }
+        end
       end
     end
 
-    context 'when not using pages_unique_domain' do
-      subject(:pages_url) { builder.pages_url(with_unique_domain: false) }
+    context 'when namespace_in_path is true' do
+      let(:namespace_in_path) { true }
 
-      context 'when pages_unique_domain_enabled is false' do
-        let(:unique_domain_enabled) { false }
+      context 'when namespace is upper cased' do
+        let(:full_path) { 'Group/project' }
 
-        it { is_expected.to eq('http://group.example.com/project') }
+        it { is_expected.to eq('http://example.com/group/project') }
       end
 
-      context 'when pages_unique_domain_enabled is true' do
-        let(:unique_domain_enabled) { true }
+      context 'when project is in a nested group page' do
+        let(:full_path) { 'group/subgroup/project' }
 
-        it { is_expected.to eq('http://group.example.com/project') }
-      end
-    end
-
-    context 'when using pages_unique_domain' do
-      subject(:pages_url) { builder.pages_url(with_unique_domain: true) }
-
-      context 'when pages_unique_domain_enabled is false' do
-        let(:unique_domain_enabled) { false }
-
-        it { is_expected.to eq('http://group.example.com/project') }
+        it { is_expected.to eq('http://example.com/group/subgroup/project') }
       end
 
-      context 'when pages_unique_domain_enabled is true' do
-        let(:unique_domain_enabled) { true }
+      context 'when using domain pages' do
+        let(:full_path) { 'group/group.example.com' }
 
-        it { is_expected.to eq('http://unique-domain.example.com') }
+        it { is_expected.to eq('http://example.com/group/group.example.com') }
+
+        context 'in development mode' do
+          let(:port) { 3010 }
+
+          before do
+            stub_rails_env('development')
+          end
+
+          it { is_expected.to eq('http://example.com:3010/group/group.example.com') }
+        end
+      end
+
+      context 'when not using pages_unique_domain' do
+        subject(:pages_url) { builder.pages_url(with_unique_domain: false) }
+
+        context 'when pages_unique_domain_enabled is false' do
+          let(:unique_domain_enabled) { false }
+
+          it { is_expected.to eq('http://example.com/group/project') }
+        end
+
+        context 'when pages_unique_domain_enabled is true' do
+          let(:unique_domain_enabled) { true }
+
+          it { is_expected.to eq('http://example.com/group/project') }
+        end
+      end
+
+      context 'when using pages_unique_domain' do
+        subject(:pages_url) { builder.pages_url(with_unique_domain: true) }
+
+        context 'when pages_unique_domain_enabled is false' do
+          let(:unique_domain_enabled) { false }
+
+          it { is_expected.to eq('http://example.com/group/project') }
+        end
+
+        context 'when pages_unique_domain_enabled is true' do
+          let(:unique_domain_enabled) { true }
+
+          it { is_expected.to eq('http://unique-domain.example.com') }
+        end
       end
     end
   end
@@ -155,6 +225,19 @@ RSpec.describe Gitlab::Pages::UrlBuilder, feature_category: :pages do
         let(:port) { 1234 }
 
         it { is_expected.to eq("http://group.example.com:1234/-/project/-/jobs/1/artifacts/path/file.txt") }
+      end
+    end
+
+    context 'with namespace_in_path enabled and allowed extension' do
+      let(:artifact_name) { 'file.txt' }
+      let(:namespace_in_path) { true }
+
+      it { is_expected.to eq("http://example.com/group/-/project/-/jobs/1/artifacts/path/file.txt") }
+
+      context 'when port is configured' do
+        let(:port) { 1234 }
+
+        it { is_expected.to eq("http://example.com:1234/group/-/project/-/jobs/1/artifacts/path/file.txt") }
       end
     end
   end

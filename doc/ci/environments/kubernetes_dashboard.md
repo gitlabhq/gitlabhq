@@ -64,7 +64,7 @@ Prerequisites:
 
 View a dashboard to see the status of any connected clusters.
 If the `k8s_watch_api` feature flag is enabled, the status of your
-pods and Flux reconciliation updates in real time.
+Kubernetes resources and Flux reconciliation updates in real time.
 
 To view a configured dashboard:
 

@@ -16,6 +16,8 @@ module Gitlab
       def pages_url(with_unique_domain: false)
         return unique_url if with_unique_domain && unique_domain_enabled?
 
+        return "#{pages_base_url}/#{project_namespace}/#{project_path}".downcase if config.namespace_in_path
+
         project_path_url = "#{config.protocol}://#{project_path}".downcase
 
         # If the project path is the same as host, we serve it as group page
@@ -40,9 +42,11 @@ module Gitlab
       def artifact_url(artifact, job)
         return unless artifact_url_available?(artifact, job)
 
+        host_url = config.namespace_in_path ? "#{pages_base_url}/#{project_namespace}" : namespace_url
+
         format(
           ARTIFACT_URL,
-          host: namespace_url,
+          host: host_url,
           project_path: project_path,
           job_id: job.id,
           artifact_path: artifact.path)
@@ -65,6 +69,13 @@ module Gitlab
 
       def unique_url
         @unique_url ||= url_for(project.project_setting.pages_unique_domain)
+      end
+
+      def pages_base_url
+        @pages_url ||= URI(config.url)
+                         .tap { |url| url.port = config.port }
+                         .to_s
+                         .downcase
       end
 
       def url_for(subdomain)

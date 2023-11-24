@@ -1,5 +1,6 @@
 import { nextTick } from 'vue';
 import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/dist/utils';
+import ExtraInfo from 'jh_else_ce/super_sidebar/components/extra_info.vue';
 import { Mousetrap } from '~/lib/mousetrap';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SuperSidebar from '~/super_sidebar/components/super_sidebar.vue';
@@ -129,6 +130,11 @@ describe('SuperSidebar component', () => {
     it('renders HelpCenter with sidebarData', () => {
       createWrapper();
       expect(findHelpCenter().props('sidebarData')).toBe(mockSidebarData);
+    });
+
+    it('renders extra info section', () => {
+      createWrapper();
+      expect(wrapper.findComponent(ExtraInfo).exists()).toBe(true);
     });
 
     it('does not render SidebarMenu when items are empty', () => {

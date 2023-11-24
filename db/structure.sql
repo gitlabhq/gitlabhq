@@ -33998,8 +33998,6 @@ CREATE INDEX index_project_pages_metadata_on_project_id_and_deployed_is_true ON 
 
 CREATE INDEX index_project_relation_export_upload_id ON project_relation_export_uploads USING btree (project_relation_export_id);
 
-CREATE INDEX index_project_relation_exports_on_project_export_job_id ON project_relation_exports USING btree (project_export_job_id);
-
 CREATE UNIQUE INDEX index_project_repositories_on_disk_path ON project_repositories USING btree (disk_path);
 
 CREATE UNIQUE INDEX index_project_repositories_on_project_id ON project_repositories USING btree (project_id);
@@ -34109,8 +34107,6 @@ CREATE INDEX index_projects_on_marked_for_deletion_by_user_id ON projects USING 
 CREATE INDEX index_projects_on_mirror_creator_id_created_at ON projects USING btree (creator_id, created_at) WHERE ((mirror = true) AND (mirror_trigger_builds = true));
 
 CREATE INDEX index_projects_on_mirror_id_where_mirror_and_trigger_builds ON projects USING btree (id) WHERE ((mirror = true) AND (mirror_trigger_builds = true));
-
-CREATE INDEX index_projects_on_mirror_last_successful_update_at ON projects USING btree (mirror_last_successful_update_at);
 
 CREATE INDEX index_projects_on_mirror_user_id ON projects USING btree (mirror_user_id);
 

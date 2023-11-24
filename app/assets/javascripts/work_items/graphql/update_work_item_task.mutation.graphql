@@ -2,6 +2,7 @@
 
 mutation workItemUpdateTask($input: WorkItemUpdateTaskInput!) {
   workItemUpdate: workItemUpdateTask(input: $input) {
+    errors
     workItem {
       id
       descriptionHtml

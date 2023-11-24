@@ -272,6 +272,12 @@ export default {
         'gl-display-none gl-sm-display-block!': this.parentWorkItem,
       };
     },
+    headerWrapperClass() {
+      return {
+        'flex-wrap': this.parentWorkItem,
+        'gl-display-block gl-md-display-flex! gl-align-items-flex-start gl-flex-direction-column gl-md-flex-direction-row gl-gap-3 gl-pt-3': true,
+      };
+    },
   },
   mounted() {
     if (this.modalWorkItemIid) {
@@ -418,9 +424,7 @@ export default {
             @click="$emit('close')"
           />
         </div>
-        <div
-          class="gl-display-block gl-md-display-flex! gl-align-items-flex-start gl-flex-direction-column gl-sm-flex-direction-row flex-wrap gl-gap-3 gl-pt-3"
-        >
+        <div :class="headerWrapperClass">
           <work-item-ancestors v-if="parentWorkItem" :work-item="workItem" class="gl-mb-1" />
           <div
             v-if="!error && !workItemLoading"

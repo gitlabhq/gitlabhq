@@ -349,6 +349,7 @@ Settings.pages['object_store']      = ObjectStoreSettings.legacy_parse(Settings.
 Settings.pages['local_store'] ||= {}
 Settings.pages['local_store']['path'] = Settings.absolute(Settings.pages['local_store']['path'] || File.join(Settings.shared['path'], "pages"))
 Settings.pages['local_store']['enabled'] = true if Settings.pages['local_store']['enabled'].nil?
+Settings.pages['namespace_in_path'] = false if Settings.pages['namespace_in_path'].nil?
 
 #
 # GitLab documentation

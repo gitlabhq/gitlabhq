@@ -17,12 +17,6 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
     group.add_owner(owner)
   end
 
-  def confirm_email(new_user)
-    new_user_token = User.find_by_email(new_user.email).confirmation_token
-
-    visit user_confirmation_path(confirmation_token: new_user_token)
-  end
-
   def fill_in_welcome_form
     select 'Software Developer', from: 'user_role'
     click_button 'Get started!'

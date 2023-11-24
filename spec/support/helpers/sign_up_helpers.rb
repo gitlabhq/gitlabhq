@@ -19,6 +19,12 @@ module SignUpHelpers
     click_button submit_button_text
   end
 
+  def confirm_email(new_user)
+    new_user_token = User.find_by_email(new_user.email).confirmation_token
+
+    visit user_confirmation_path(confirmation_token: new_user_token)
+  end
+
   private
 
   def expect_username_to_be_validated
