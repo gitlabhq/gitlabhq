@@ -1,0 +1,41 @@
+valid_image:
+  image: alpine:latest
+
+valid_image_basic:
+  image:
+    name: alpine:latest
+
+valid_image_with_entrypoint:
+  image:
+    name: alpine:latest
+    entrypoint:
+      - /bin/sh
+      - -c
+
+valid_image_with_pull_policy:
+  image:
+    name: alpine:latest
+    pull_policy: always
+
+valid_image_with_pull_policies:
+  image:
+    name: alpine:latest
+    pull_policy:
+      - always
+      - if-not-present
+
+valid_image_with_docker:
+  image:
+    name: alpine:latest
+    docker:
+      platform: linux/amd64
+
+valid_image_full:
+  image:
+    name: alpine:latest
+    entrypoint:
+      - /bin/sh
+      - -c
+    docker:
+      platform: linux/amd64
+    pull_policy: if-not-present

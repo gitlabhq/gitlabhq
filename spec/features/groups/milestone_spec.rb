@@ -98,7 +98,7 @@ RSpec.describe 'Group milestones', feature_category: :groups_and_projects do
       end
 
       it 'counts milestones correctly' do
-        page.within '[data-testid="milestones-filter"]' do
+        within_testid 'milestones-filter' do
           expect(page).to have_content('Open 3')
           expect(page).to have_content('Closed 3')
           expect(page).to have_content('All 6')

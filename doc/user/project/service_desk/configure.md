@@ -159,6 +159,7 @@ To edit the custom email display name:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329990) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `service_desk_custom_email`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/387003) in GitLab 16.4.
+> - Ability to select the SMTP authentication method [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429680) in GitLab 16.6.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature per project or for
@@ -236,6 +237,36 @@ If the verification failed, the email also contains details of the reason.
 
 If the verification was successful, the custom email address is ready to be used.
 You can now enable sending Service Desk emails via the custom email address.
+
+#### Troubleshooting your configuration
+
+When configuring a custom email you might encounter the following issues.
+
+##### Invalid credentials
+
+You might get an error that states that invalid credentials were used.
+
+This occurs when the SMTP server returns that the authentication wasn't successful.
+
+To troubleshoot this:
+
+1. Check your SMTP credentials, especially the username and password.
+1. Sometimes GitLab cannot automatically select an authentication method that the SMTP server supports. Either:
+   - Try the available authentication methods (**Plain**, **Login** and **CRAM-MD5**).
+   - Check which authentication methods your SMTP server supports, using the
+   [`swaks` command line tool](https://www.jetmore.org/john/code/swaks/):
+     1. Run the following command with your credentials and look for a line that starts with `250-AUTH`:
+
+        ```shell
+        swaks --to user@example.com \
+              --from support@example.com \
+              --auth-user support@example.com \
+              --server smtp@example.com:587 \
+              -tls-optional \
+              --auth-password your-app-password
+        ```
+
+     1. Select one of the supported authentication methods in the custom email setup form.
 
 ### Enable or disable the custom email address
 
@@ -353,6 +384,7 @@ In GitLab:
    - **SMTP port**: `587`.
    - **SMTP username**: Prefilled with the custom email address.
    - **SMTP password**: The app password you previously created for the custom email account.
+   - **SMTP authentication method**: Let GitLab select a server-supported method (recommended)
 1. Select **Save and test connection**
 1. After the [verification process](#verification) you should be able to
    [enable the custom email address](#enable-or-disable-the-custom-email-address).

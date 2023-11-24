@@ -18,4 +18,5 @@ tier:
 - ultimate
 performance_indicator_type:
 - umau
+- customer_health_score
 milestone: "<13.9"

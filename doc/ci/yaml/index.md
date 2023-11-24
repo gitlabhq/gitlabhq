@@ -2441,6 +2441,37 @@ image:
 
 - [Override the entrypoint of an image](../docker/using_docker_images.md#override-the-entrypoint-of-an-image).
 
+#### `image:docker`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27919) in GitLab 16.7. Requires GitLab Runner 16.7 or later.
+
+Use `image:docker` to pass options to the Docker executor of a GitLab Runner.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default` section](#default).
+
+**Possible inputs**:
+
+A hash of options for the Docker executor, which can include:
+
+- `platform`: Selects the architecture of the image to pull. When not specified,
+    the default is the same platform as the host runner.
+
+**Example of `image:docker`**:
+
+```yaml
+arm-sql-job:
+  script: echo "Run sql tests"
+  image:
+    name: super/sql:experimental
+    docker:
+      platform: arm64/v8
+```
+
+**Additional details**:
+
+- `image:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/engine/reference/commandline/pull/#options).
+
 #### `image:pull_policy`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21619) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `ci_docker_image_pull_policy`. Disabled by default.
@@ -4257,7 +4288,39 @@ In this example, GitLab launches two containers for the job:
 - [Run your CI/CD jobs in Docker containers](../docker/using_docker_images.md).
 - [Use Docker to build Docker images](../docker/using_docker_build.md).
 
-#### `service:pull_policy`
+#### `services:docker`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27919) in GitLab 16.7. Requires GitLab Runner 16.7 or later.
+
+Use `services:docker` to pass options to the Docker executor of a GitLab Runner.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default` section](#default).
+
+**Possible inputs**:
+
+A hash of options for the Docker executor, which can include:
+
+- `platform`: Selects the architecture of the image to pull. When not specified,
+    the default is the same platform as the host runner.
+
+**Example of `services:docker`**:
+
+```yaml
+arm-sql-job:
+  script: echo "Run sql tests in service container"
+  image: ruby:2.6
+  services:
+    - name: super/sql:experimental
+      docker:
+        platform: arm64/v8
+```
+
+**Additional details**:
+
+- `services:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/engine/reference/commandline/pull/#options).
+
+#### `services:pull_policy`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21619) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `ci_docker_image_pull_policy`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) in GitLab 15.2.
@@ -4273,7 +4336,7 @@ The pull policy that the runner uses to fetch the Docker image.
 - A single pull policy, or multiple pull policies in an array.
   Can be `always`, `if-not-present`, or `never`.
 
-**Examples of `service:pull_policy`**:
+**Examples of `services:pull_policy`**:
 
 ```yaml
 job1:

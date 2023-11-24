@@ -31856,8 +31856,6 @@ CREATE INDEX index_bulk_import_entities_on_parent_id ON bulk_import_entities USI
 
 CREATE INDEX index_bulk_import_entities_on_project_id ON bulk_import_entities USING btree (project_id);
 
-CREATE INDEX index_bulk_import_export_batches_on_export_id ON bulk_import_export_batches USING btree (export_id);
-
 CREATE INDEX index_bulk_import_export_uploads_on_export_id ON bulk_import_export_uploads USING btree (export_id);
 
 CREATE INDEX index_bulk_import_failures_on_bulk_import_entity_id ON bulk_import_failures USING btree (bulk_import_entity_id);

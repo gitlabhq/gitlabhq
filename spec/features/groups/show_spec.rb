@@ -38,7 +38,7 @@ RSpec.describe 'Group show page', feature_category: :groups_and_projects do
 
         expect(page).to have_content('Collaborate with your team')
 
-        page.within(find('[data-testid="invite-members-banner"]')) do
+        within_testid('invite-members-banner') do
           click_button('Invite your colleagues')
         end
 
@@ -48,8 +48,8 @@ RSpec.describe 'Group show page', feature_category: :groups_and_projects do
           click_button('Cancel')
         end
 
-        page.within(find('[data-testid="invite-members-banner"]')) do
-          find('[data-testid="close-icon"]').click
+        within_testid('invite-members-banner') do
+          find_by_testid('close-icon').click
         end
 
         expect(page).not_to have_content('Collaborate with your team')
@@ -119,7 +119,7 @@ RSpec.describe 'Group show page', feature_category: :groups_and_projects do
 
           wait_for_requests
 
-          page.within("[data-testid=\"group-overview-item-#{public_project.id}\"]") do
+          within_testid("group-overview-item-#{public_project.id}") do
             click_button _('Less restrictive visibility')
           end
 

@@ -58,13 +58,5 @@ RSpec.describe Packages::Npm::CreateMetadataCacheWorker, type: :worker, feature_
 
       it_behaves_like 'does not trigger service to create npm metadata cache'
     end
-
-    context 'when npm_metadata_cache flag is disabled' do
-      before do
-        stub_feature_flags(npm_metadata_cache: false)
-      end
-
-      it_behaves_like 'does not trigger service to create npm metadata cache'
-    end
   end
 end

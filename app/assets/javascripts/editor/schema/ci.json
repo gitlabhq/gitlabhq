@@ -509,6 +509,18 @@
               "description": "Command or script that should be executed as the container's entrypoint. It will be translated to Docker's --entrypoint option while creating the container. The syntax is similar to Dockerfile's ENTRYPOINT directive, where each shell token is a separate string in the array.",
               "minItems": 1
             },
+            "docker": {
+              "type": "object",
+              "markdownDescription": "Options to pass to Runners Docker Executor. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#imagedocker)",
+              "additionalProperties": false,
+              "properties": {
+                "platform": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Image architecture to pull."
+                }
+              }
+            },
             "pull_policy": {
               "markdownDescription": "Specifies how to pull the image in Runner. It can be one of `always`, `never` or `if-not-present`. The default value is `always`. [Learn more](https://docs.gitlab.com/ee/ci/yaml/#imagepull_policy).",
               "default": "always",
@@ -540,13 +552,6 @@
           "required": [
             "name"
           ]
-        },
-        {
-          "type": "array",
-          "minLength": 1,
-          "items": {
-            "type": "string"
-          }
         }
       ],
       "markdownDescription": "Specifies the docker image to use for the job or globally for all jobs. Job configuration takes precedence over global setting. Requires a certain kind of Gitlab runner executor. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#image)."
@@ -579,8 +584,20 @@
                   "type": "string"
                 }
               },
+              "docker": {
+                "type": "object",
+                "markdownDescription": "Options to pass to Runners Docker Executor. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#servicesdocker)",
+                "additionalProperties": false,
+                "properties": {
+                  "platform": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Image architecture to pull."
+                  }
+                }
+              },
               "pull_policy": {
-                "markdownDescription": "Specifies how to pull the image in Runner. It can be one of `always`, `never` or `if-not-present`. The default value is `always`. [Learn more](https://docs.gitlab.com/ee/ci/yaml/#servicepull_policy).",
+                "markdownDescription": "Specifies how to pull the image in Runner. It can be one of `always`, `never` or `if-not-present`. The default value is `always`. [Learn more](https://docs.gitlab.com/ee/ci/yaml/#servicespull_policy).",
                 "default": "always",
                 "oneOf": [
                   {

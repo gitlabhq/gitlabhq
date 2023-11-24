@@ -23,6 +23,7 @@ import RetryUnknownWhenJson from './json_tests/negative_tests/retry_unknown_when
 
 // YAML POSITIVE TEST
 import ArtifactsYaml from './yaml_tests/positive_tests/artifacts.yml';
+import ImageYaml from './yaml_tests/positive_tests/image.yml';
 import CacheYaml from './yaml_tests/positive_tests/cache.yml';
 import FilterYaml from './yaml_tests/positive_tests/filter.yml';
 import IncludeYaml from './yaml_tests/positive_tests/include.yml';
@@ -40,6 +41,7 @@ import ScriptYaml from './yaml_tests/positive_tests/script.yml';
 
 // YAML NEGATIVE TEST
 import ArtifactsNegativeYaml from './yaml_tests/negative_tests/artifacts.yml';
+import ImageNegativeYaml from './yaml_tests/negative_tests/image.yml';
 import CacheKeyNeative from './yaml_tests/negative_tests/cache.yml';
 import IncludeNegativeYaml from './yaml_tests/negative_tests/include.yml';
 import JobWhenNegativeYaml from './yaml_tests/negative_tests/job_when.yml';
@@ -90,6 +92,7 @@ describe('positive tests', () => {
 
       // YAML
       ArtifactsYaml,
+      ImageYaml,
       CacheYaml,
       FilterYaml,
       IncludeYaml,
@@ -126,6 +129,7 @@ describe('negative tests', () => {
 
       // YAML
       ArtifactsNegativeYaml,
+      ImageNegativeYaml,
       CacheKeyNeative,
       HooksNegative,
       IdTokensNegativeYaml,

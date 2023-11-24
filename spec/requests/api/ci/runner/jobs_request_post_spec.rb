@@ -272,16 +272,19 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             expect(json_response['job_info']).to include(expected_job_info)
             expect(json_response['git_info']).to eq(expected_git_info)
             expect(json_response['image']).to eq(
-              { 'name' => 'image:1.0', 'entrypoint' => '/bin/sh', 'ports' => [], 'pull_policy' => nil }
+              { 'name' => 'image:1.0', 'entrypoint' => '/bin/sh', 'ports' => [], 'executor_opts' => {},
+                'pull_policy' => nil }
             )
             expect(json_response['services']).to eq(
               [
                 { 'name' => 'postgres', 'entrypoint' => nil, 'alias' => nil, 'command' => nil, 'ports' => [],
-                  'variables' => nil, 'pull_policy' => nil },
-                { 'name' => 'docker:stable-dind', 'entrypoint' => '/bin/sh', 'alias' => 'docker', 'command' => 'sleep 30',
-                  'ports' => [], 'variables' => [], 'pull_policy' => nil },
+                  'variables' => nil, 'executor_opts' => {}, 'pull_policy' => nil },
+                { 'name' => 'docker:stable-dind', 'entrypoint' => '/bin/sh', 'alias' => 'docker',
+                  'command' => 'sleep 30', 'ports' => [], 'variables' => [], 'executor_opts' => {},
+                  'pull_policy' => nil },
                 { 'name' => 'mysql:latest', 'entrypoint' => nil, 'alias' => nil, 'command' => nil, 'ports' => [],
-                  'variables' => [{ 'key' => 'MYSQL_ROOT_PASSWORD', 'value' => 'root123.' }], 'pull_policy' => nil }
+                  'variables' => [{ 'key' => 'MYSQL_ROOT_PASSWORD', 'value' => 'root123.' }], 'executor_opts' => {},
+                  'pull_policy' => nil }
               ])
             expect(json_response['steps']).to eq(expected_steps)
             expect(json_response['hooks']).to eq(expected_hooks)
@@ -920,6 +923,41 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           end
         end
 
+        context 'when image has docker options' do
+          let(:job) { create(:ci_build, :pending, :queued, pipeline: pipeline, options: options) }
+
+          let(:options) do
+            {
+              image: {
+                name: 'ruby',
+                executor_opts: {
+                  docker: {
+                    platform: 'amd64'
+                  }
+                }
+              }
+            }
+          end
+
+          it 'returns the image with docker options' do
+            request_job
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response).to include(
+              'id' => job.id,
+              'image' => { 'name' => 'ruby',
+                           'executor_opts' => {
+                             'docker' => {
+                               'platform' => 'amd64'
+                             }
+                           },
+                           'pull_policy' => nil,
+                           'entrypoint' => nil,
+                           'ports' => [] }
+            )
+          end
+        end
+
         context 'when image has pull_policy' do
           let(:job) { create(:ci_build, :pending, :queued, pipeline: pipeline, options: options) }
 
@@ -938,7 +976,11 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response).to include(
               'id' => job.id,
-              'image' => { 'name' => 'ruby', 'pull_policy' => ['if-not-present'], 'entrypoint' => nil, 'ports' => [] }
+              'image' => { 'name' => 'ruby',
+                           'executor_opts' => {},
+                           'pull_policy' => ['if-not-present'],
+                           'entrypoint' => nil,
+                           'ports' => [] }
             )
           end
         end
@@ -962,7 +1004,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             expect(json_response).to include(
               'id' => job.id,
               'services' => [{ 'alias' => nil, 'command' => nil, 'entrypoint' => nil, 'name' => 'postgres:11.9',
-                               'ports' => [], 'pull_policy' => ['if-not-present'], 'variables' => [] }]
+                               'ports' => [], 'executor_opts' => {}, 'pull_policy' => ['if-not-present'],
+                               'variables' => [] }]
             )
           end
         end

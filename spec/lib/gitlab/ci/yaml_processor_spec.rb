@@ -1313,6 +1313,46 @@ module Gitlab
             })
           end
         end
+
+        context 'when image and service have docker options' do
+          let(:config) do
+            <<~YAML
+            test:
+              script: exit 0
+              image:
+                name: ruby:2.7
+                docker:
+                  platform: linux/amd64
+              services:
+                - name: postgres:11.9
+                  docker:
+                    platform: linux/amd64
+            YAML
+          end
+
+          it { is_expected.to be_valid }
+
+          it "returns with image" do
+            expect(processor.builds).to contain_exactly({
+              stage: "test",
+              stage_idx: 2,
+              name: "test",
+              only: { refs: %w[branches tags] },
+              options: {
+                script: ["exit 0"],
+                image: { name: "ruby:2.7",
+                         executor_opts: { docker: { platform: 'linux/amd64' } } },
+                services: [{ name: "postgres:11.9",
+                             executor_opts: { docker: { platform: 'linux/amd64' } } }]
+              },
+              allow_failure: false,
+              when: "on_success",
+              job_variables: [],
+              root_variables_inheritance: true,
+              scheduling_type: :stage
+            })
+          end
+        end
       end
 
       describe 'Variables' do

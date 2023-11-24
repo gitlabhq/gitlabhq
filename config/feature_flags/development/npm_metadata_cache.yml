@@ -1,8 +1,0 @@
----
-name: npm_metadata_cache
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121714
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/393745
-milestone: '16.1'
-type: development
-group: group::package registry
-default_enabled: false

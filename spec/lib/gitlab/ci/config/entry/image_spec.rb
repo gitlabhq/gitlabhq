@@ -42,6 +42,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
       end
     end
 
+    describe '#executor_opts' do
+      it "returns nil" do
+        expect(entry.executor_opts).to be_nil
+      end
+    end
+
     describe '#ports' do
       it "returns image's ports" do
         expect(entry.ports).to be_nil
@@ -85,6 +91,54 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
     describe '#entrypoint' do
       it "returns image's entrypoint" do
         expect(entry.entrypoint).to eq %w[/bin/sh run]
+      end
+    end
+
+    context 'when configuration specifies docker' do
+      let(:config) { { name: 'image:1.0', docker: {} } }
+
+      it 'is valid' do
+        expect(entry).to be_valid
+      end
+
+      describe '#value' do
+        it "returns value" do
+          expect(entry.value).to eq(
+            name: 'image:1.0',
+            executor_opts: {
+              docker: {}
+            }
+          )
+        end
+      end
+
+      context "when docker specifies an option" do
+        let(:config) { { name: 'image:1.0', docker: { platform: 'amd64' } } }
+
+        it 'is valid' do
+          expect(entry).to be_valid
+        end
+
+        describe '#value' do
+          it "returns value" do
+            expect(entry.value).to eq(
+              name: 'image:1.0',
+              executor_opts: {
+                docker: { platform: 'amd64' }
+              }
+            )
+          end
+        end
+      end
+
+      context "when docker specifies an invalid option" do
+        let(:config) { { name: 'image:1.0', docker: { platform: 1 } } }
+
+        it 'is not valid' do
+          expect(entry).not_to be_valid
+          expect(entry.errors.first)
+            .to match %r{image executor opts '/docker/platform' must be a valid 'string'}
+        end
       end
     end
 
@@ -146,7 +200,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
     describe '#errors' do
       it 'saves errors' do
         expect(entry.errors.first)
-          .to match /config should be a hash or a string/
+          .to match(/config should be a hash or a string/)
       end
     end
 
@@ -163,7 +217,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
     describe '#errors' do
       it 'saves errors' do
         expect(entry.errors.first)
-          .to match /config contains unknown keys: non_existing/
+          .to match(/config contains unknown keys: non_existing/)
       end
     end
 

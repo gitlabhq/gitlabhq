@@ -112,7 +112,7 @@ export const I18N_ERROR_SMTP_HOST_ISSUE_DESC = s__(
 );
 export const I18N_ERROR_INVALID_CREDENTIALS_LABEL = s__('ServiceDesk|Invalid credentials');
 export const I18N_ERROR_INVALID_CREDENTIALS_DESC = s__(
-  'ServiceDesk|The given credentials (username and password) were rejected by the SMTP server.',
+  'ServiceDesk|The given credentials (username and password) were rejected by the SMTP server, or you need to explicitly set an authentication method.',
 );
 export const I18N_ERROR_MAIL_NOT_RECEIVED_IN_TIMEFRAME_LABEL = s__(
   'ServiceDesk|Verification email not received within timeframe',

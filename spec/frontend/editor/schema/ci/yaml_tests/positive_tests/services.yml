@@ -29,3 +29,10 @@ pull_policy_array:
   services:
     - name: postgres:11.6
       pull_policy: [always, if-not-present]
+
+services_platform_string:
+  script: echo "Specifying platform."
+  services:
+    - name: mysql:5.7
+      docker:
+        platform: arm64

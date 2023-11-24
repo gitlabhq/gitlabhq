@@ -1,6 +1,6 @@
 <script>
 import { GlAvatar, GlBadge, GlIcon, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { s__, n__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
@@ -48,6 +48,9 @@ export default {
     },
     starIcon() {
       return this.starCount > 0 ? 'star' : 'star-o';
+    },
+    starCountText() {
+      return n__('Star', 'Stars', this.starCount);
     },
     hasReleasedVersion() {
       return Boolean(this.latestVersion?.releasedAt);
@@ -115,7 +118,12 @@ export default {
         <div class="gl-display-flex gl-flex-grow-1 gl-md-justify-content-space-between">
           <gl-badge size="sm" class="gl-h-5 gl-align-self-center">{{ tagName }}</gl-badge>
           <span class="gl-display-flex gl-align-items-center gl-ml-5">
-            <span class="gl--flex-center" data-testid="stats-favorites">
+            <span
+              v-gl-tooltip.top
+              :title="starCountText"
+              class="gl--flex-center"
+              data-testid="stats-favorites"
+            >
               <gl-icon :name="starIcon" :size="14" class="gl-mr-2" />
               <span class="gl-mr-3">{{ starCount }}</span>
             </span>
@@ -130,7 +138,7 @@ export default {
           <span v-if="hasReleasedVersion">
             <gl-sprintf :message="$options.i18n.releasedMessage">
               <template #timeAgo>
-                <span v-gl-tooltip.bottom :title="formattedDate">
+                <span v-gl-tooltip.top :title="formattedDate">
                   {{ releasedAt }}
                 </span>
               </template>

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 #
 # JsonSchemaValidator
 #
@@ -24,11 +25,19 @@ class JsonSchemaValidator < ActiveModel::EachValidator
   end
 
   def validate_each(record, attribute, value)
-    value = value.to_h.stringify_keys if options[:hash_conversion] == true
+    value = value.to_h.deep_stringify_keys if options[:hash_conversion] == true
     value = Gitlab::Json.parse(value.to_s) if options[:parse_json] == true && !value.nil?
 
-    unless valid_schema?(value)
-      record.errors.add(attribute, _("must be a valid json schema"))
+    if options[:detail_errors]
+      validator.validate(value).each do |error|
+        message = format(
+          _("'%{data_pointer}' must be a valid '%{type}'"),
+          data_pointer: error['data_pointer'], type: error['type']
+        )
+        record.errors.add(attribute, message)
+      end
+    else
+      record.errors.add(attribute, _("must be a valid json schema")) unless valid_schema?(value)
     end
   end
 

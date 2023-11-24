@@ -18,7 +18,7 @@
     <%= s_('Notify|We were not able to make a connection to the specified host or there was an SSL issue.') %>
   <% elsif @verification.invalid_credentials? %>
     <%= s_('Notify|Invalid credentials:') %>
-    <%= s_('Notify|The given credentials (username and password) were rejected by the SMTP server.') %>
+    <%= s_('Notify|The given credentials (username and password) were rejected by the SMTP server, or you need to explicitly set an authentication method.') %>
   <% elsif @verification.mail_not_received_within_timeframe? %>
     <%= s_('Notify|Verification email not received within timeframe:') %>
     <%= s_('Notify|We did not receive the verification email we sent out to %{strong_open}%{email_address}%{strong_close} in time.') % { email_address: verify_email_address, strong_open: '', strong_close: '' } %>

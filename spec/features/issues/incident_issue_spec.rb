@@ -35,7 +35,7 @@ RSpec.describe 'Incident Detail', :js, feature_category: :team_planning do
 
     it 'shows incident and alert data' do
       page.within('.issuable-details') do
-        incident_tabs = find('[data-testid="incident-tabs"]')
+        incident_tabs = find_by_testid('incident-tabs')
 
         aggregate_failures 'shows title and Summary tab' do
           expect(find('h1')).to have_content(incident.title)

@@ -65,8 +65,10 @@ RSpec.describe 'Group Package and registry settings', feature_category: :package
 
       wait_for_requests
 
+      # rubocop:disable Capybara/TestidFinders -- Helper within_testid doesn't cover use case
       expect(page).to be_axe_clean.within('[data-testid="packages-and-registries-group-settings"]')
                                   .skipping :'link-in-text-block', :'heading-order'
+      # rubocop:enable Capybara/TestidFinders
     end
 
     it 'has a Duplicate packages section', :js do
@@ -81,7 +83,7 @@ RSpec.describe 'Group Package and registry settings', feature_category: :package
       visit_settings_page
       wait_for_requests
 
-      within '[data-testid="maven-settings"]' do
+      within_testid 'maven-settings' do
         expect(page).to have_field _('Exceptions'), disabled: true
 
         click_button class: 'gl-toggle'
@@ -98,7 +100,7 @@ RSpec.describe 'Group Package and registry settings', feature_category: :package
       visit_settings_page
       wait_for_requests
 
-      within '[data-testid="maven-settings"]' do
+      within_testid 'maven-settings' do
         click_button class: 'gl-toggle'
 
         fill_in _('Exceptions'), with: ')'
@@ -115,7 +117,7 @@ RSpec.describe 'Group Package and registry settings', feature_category: :package
         visit_sub_group_settings_page
         wait_for_requests
 
-        within '[data-testid="maven-settings"]' do
+        within_testid 'maven-settings' do
           expect(page).to have_content('Allow duplicates')
 
           expect(page).to have_field _('Exceptions'), disabled: true

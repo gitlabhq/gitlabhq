@@ -49,10 +49,6 @@ RSpec.describe BulkImports::EntityWorker, feature_category: :importers do
     end
   end
 
-  it 'has the option to reschedule once if deduplicated' do
-    expect(described_class.get_deduplication_options).to include({ if_deduplicated: :reschedule_once })
-  end
-
   context 'when pipeline workers from a stage are running' do
     before do
       pipeline_tracker.enqueue!
@@ -91,6 +87,26 @@ RSpec.describe BulkImports::EntityWorker, feature_category: :importers do
       expect(described_class).to receive(:perform_in).with(described_class::PERFORM_DELAY, entity.id)
 
       worker.perform(entity.id)
+    end
+
+    context 'when exclusive lease cannot be obtained' do
+      it 'does not start next stage and re-enqueue worker' do
+        expect_next_instance_of(Gitlab::ExclusiveLease) do |lease|
+          expect(lease).to receive(:try_obtain).and_return(false)
+        end
+
+        expect_next_instance_of(BulkImports::Logger) do |logger|
+          expect(logger).to receive(:info).with(
+            hash_including(
+              'message' => 'Cannot obtain an exclusive lease. There must be another instance already in execution.'
+            )
+          )
+        end
+
+        expect(described_class).to receive(:perform_in)
+
+        worker.perform(entity.id)
+      end
     end
   end
 

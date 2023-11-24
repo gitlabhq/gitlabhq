@@ -96,6 +96,10 @@ The first 2-3 quarters are required to define a general split of data, and build
 
     The purpose is to make `users` cluster-wide.
 
+1. **User can create Organization.**
+
+    The purpose is to create Organizations that are isolated from each other.
+
 1. **User can create Group.** ✓ ([demo](https://www.youtube.com/watch?v=LUyV0ncfdRs))
 
     The purpose is to perform a targeted decomposition of `users` and `namespaces`, because `namespaces` will be stored locally in the Cell.
@@ -104,9 +108,9 @@ The first 2-3 quarters are required to define a general split of data, and build
 
     The purpose is to perform a targeted decomposition of `users` and `projects`, because `projects` will be stored locally in the Cell.
 
-1. **User can create Organization on Cell 2.**
+1. **User can create files in repository**
 
-    The purpose is to create Organizations that are isolated from each other.
+    The purpose is to allow `users` to create files in a repository.
 
 1. **User can change profile avatar that is shared in cluster.**
 
@@ -159,7 +163,7 @@ flowchart TD
     A --> L[Manage members]
     B --> L
     C --> L
-    L --> E[Create file in project]
+    L --> E[Create file in repository]
 ```
 
 ### 3. Additional workflows
@@ -316,6 +320,7 @@ It is expected that initial iterations will be rather slow, because they require
 - Data access layer: Data access layer.
 - Routing: User can use single domain to interact with many Cells.
 - Cell deployment: Extend GitLab Dedicated to support GCP.
+- Essential workflows: User can create files in repository.
 - Essential workflows: User can push to Git repository.
 - Essential workflows: User can run CI pipeline.
 - Essential workflows: Instance-wide settings are shared across cluster.

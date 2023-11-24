@@ -3,9 +3,10 @@
 module BulkImports
   class EntityWorker
     include ApplicationWorker
+    include ExclusiveLeaseGuard
 
     idempotent!
-    deduplicate :until_executed, if_deduplicated: :reschedule_once
+    deduplicate :until_executing
     data_consistency :always
     feature_category :importers
     sidekiq_options retry: 3, dead: false
@@ -27,7 +28,10 @@ module BulkImports
       if running_tracker.present?
         log_info(message: 'Stage running', entity_stage: running_tracker.stage)
       else
-        start_next_stage
+        # Use lease guard to prevent duplicated workers from starting multiple stages
+        try_obtain_lease do
+          start_next_stage
+        end
       end
 
       re_enqueue
@@ -76,6 +80,18 @@ module BulkImports
           )
         end
       end
+    end
+
+    def lease_timeout
+      PERFORM_DELAY
+    end
+
+    def lease_key
+      "gitlab:bulk_imports:entity_worker:#{entity.id}"
+    end
+
+    def log_lease_taken
+      log_info(message: lease_taken_message)
     end
 
     def source_version

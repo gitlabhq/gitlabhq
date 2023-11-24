@@ -35,7 +35,7 @@
         %p
           %b
             = s_('Notify|Invalid credentials:')
-          = s_('Notify|The given credentials (username and password) were rejected by the SMTP server.')
+          = s_('Notify|The given credentials (username and password) were rejected by the SMTP server, or you need to explicitly set an authentication method.')
       - if @verification.mail_not_received_within_timeframe?
         %p
           %b

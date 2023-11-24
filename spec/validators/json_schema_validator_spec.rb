@@ -58,5 +58,30 @@ RSpec.describe JsonSchemaValidator do
         end
       end
     end
+
+    context 'when detail_errors is true' do
+      let(:validator) { described_class.new(attributes: [:data], detail_errors: true, filename: "build_report_result_data") }
+
+      context 'when data is valid' do
+        it 'returns no errors' do
+          subject
+
+          expect(build_report_result.errors).to be_empty
+        end
+      end
+
+      context 'when data is invalid' do
+        it 'returns json schema is invalid' do
+          build_report_result.data = { invalid: 'data' }
+
+          subject
+
+          expect(build_report_result.errors.size).to eq(1)
+          expect(build_report_result.errors.full_messages).to match_array(
+            ["Data '/invalid' must be a valid 'schema'"]
+          )
+        end
+      end
+    end
   end
 end

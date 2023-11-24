@@ -86,8 +86,6 @@ module API
         strong_memoize_attr :project_id_or_nil
 
         def enqueue_sync_metadata_cache_worker(project, package_name)
-          return unless Feature.enabled?(:npm_metadata_cache, project)
-
           ::Packages::Npm::CreateMetadataCacheWorker.perform_async(project.id, package_name)
         end
 

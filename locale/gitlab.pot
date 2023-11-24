@@ -1363,6 +1363,9 @@ msgstr ""
 msgid "%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}v*%{code_tag_end} or %{code_tag_start}*-release%{code_tag_end} are supported."
 msgstr ""
 
+msgid "'%{data_pointer}' must be a valid '%{type}'"
+msgstr ""
+
 msgid "'%{level}' is not a valid visibility level"
 msgstr ""
 
@@ -30283,6 +30286,9 @@ msgstr ""
 msgid "MetricImages|There was an issue uploading your image."
 msgstr ""
 
+msgid "Metrics"
+msgstr ""
+
 msgid "Metrics - Grafana"
 msgstr ""
 
@@ -32705,7 +32711,7 @@ msgstr ""
 msgid "Notify|The errors we encountered were:"
 msgstr ""
 
-msgid "Notify|The given credentials (username and password) were rejected by the SMTP server."
+msgid "Notify|The given credentials (username and password) were rejected by the SMTP server, or you need to explicitly set an authentication method."
 msgstr ""
 
 msgid "Notify|The project is now located under %{project_full_name_link_start}%{project_full_name}%{link_end}."
@@ -32871,6 +32877,9 @@ msgid "Objective"
 msgstr ""
 
 msgid "ObservabilityMetrics|Error: Failed to load metrics details. Try reloading the page."
+msgstr ""
+
+msgid "ObservabilityMetrics|Metric Details"
 msgstr ""
 
 msgid "ObservabilityMetrics|Metrics"
@@ -44719,7 +44728,7 @@ msgstr ""
 msgid "ServiceDesk|The SMTP server did not respond in time."
 msgstr ""
 
-msgid "ServiceDesk|The given credentials (username and password) were rejected by the SMTP server."
+msgid "ServiceDesk|The given credentials (username and password) were rejected by the SMTP server, or you need to explicitly set an authentication method."
 msgstr ""
 
 msgid "ServiceDesk|The received email didn't contain the verification token that was sent to your email address."
@@ -46417,6 +46426,11 @@ msgstr ""
 
 msgid "Standard"
 msgstr ""
+
+msgid "Star"
+msgid_plural "Stars"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Star labels to start sorting by priority."
 msgstr ""

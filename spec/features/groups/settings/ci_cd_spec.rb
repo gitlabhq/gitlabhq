@@ -17,7 +17,7 @@ RSpec.describe 'Group CI/CD settings', feature_category: :continuous_integration
   end
 
   describe 'Runners section' do
-    let(:shared_runners_toggle) { page.find('[data-testid="shared-runners-toggle"]') }
+    let(:shared_runners_toggle) { find_by_testid('shared-runners-toggle') }
 
     before do
       visit group_settings_ci_cd_path(group)
