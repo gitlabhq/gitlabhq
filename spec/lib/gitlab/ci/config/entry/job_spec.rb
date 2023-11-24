@@ -789,7 +789,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
             hooks: { pre_get_sources_script: 'echo hello' } }
         end
 
-        it 'returns correct value' do
+        it 'returns correct values' do
           expect(entry.value).to eq(
             name: :rspec,
             before_script: %w[ls pwd],
@@ -804,6 +804,93 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
             scheduling_type: :stage,
             id_tokens: { TEST_ID_TOKEN: { aud: 'https://gitlab.com' } }
           )
+        end
+      end
+
+      context 'with retry present in the config' do
+        let(:config) do
+          {
+            script: 'rspec',
+            retry: { max: 1, when: "always" }
+          }
+        end
+
+        it 'returns correct values' do
+          expect(entry.value)
+            .to eq(name: :rspec,
+              script: %w[rspec],
+              stage: 'test',
+              ignore: false,
+              retry: { max: 1, when: %w[always] },
+              only: { refs: %w[branches tags] },
+              job_variables: {},
+              root_variables_inheritance: true,
+              scheduling_type: :stage
+            )
+        end
+
+        context 'when ci_retry_on_exit_codes feature flag is disabled' do
+          before do
+            stub_feature_flags(ci_retry_on_exit_codes: false)
+          end
+
+          it 'returns correct values' do
+            expect(entry.value)
+              .to eq(name: :rspec,
+                script: %w[rspec],
+                stage: 'test',
+                ignore: false,
+                retry: { max: 1, when: %w[always] },
+                only: { refs: %w[branches tags] },
+                job_variables: {},
+                root_variables_inheritance: true,
+                scheduling_type: :stage
+              )
+          end
+        end
+
+        context 'with exit_codes present' do
+          let(:config) do
+            {
+              script: 'rspec',
+              retry: { max: 1, when: "always", exit_codes: 255 }
+            }
+          end
+
+          it 'returns correct values' do
+            expect(entry.value)
+              .to eq(name: :rspec,
+                script: %w[rspec],
+                stage: 'test',
+                ignore: false,
+                retry: { max: 1, when: %w[always], exit_codes: [255] },
+                only: { refs: %w[branches tags] },
+                job_variables: {},
+                root_variables_inheritance: true,
+                scheduling_type: :stage
+              )
+          end
+
+          context 'when ci_retry_on_exit_codes feature flag is disabled' do
+            before do
+              stub_feature_flags(ci_retry_on_exit_codes: false)
+            end
+
+            it 'returns correct values' do
+              expect(entry.value)
+                .to eq(name: :rspec,
+                  script: %w[rspec],
+                  stage: 'test',
+                  ignore: false,
+                  # Shouldn't include exit_codes
+                  retry: { max: 1, when: %w[always] },
+                  only: { refs: %w[branches tags] },
+                  job_variables: {},
+                  root_variables_inheritance: true,
+                  scheduling_type: :stage
+                )
+            end
+          end
         end
       end
     end

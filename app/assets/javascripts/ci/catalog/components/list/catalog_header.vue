@@ -2,6 +2,7 @@
 import { GlBanner, GlLink } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import BetaBadge from '~/vue_shared/components/badges/beta_badge.vue';
 import { CATALOG_FEEDBACK_DISMISSED_KEY } from '../../constants';
 
 const defaultTitle = __('CI/CD Catalog');
@@ -11,6 +12,7 @@ const defaultDescription = s__(
 
 export default {
   components: {
+    BetaBadge,
     GlBanner,
     GlLink,
   },
@@ -58,7 +60,10 @@ export default {
         {{ $options.i18n.banner.description }}
       </p>
     </gl-banner>
-    <h1 class="page-title gl-font-size-h-display">{{ pageTitle }}</h1>
+    <div class="gl-my-4 gl-display-flex gl-align-items-center">
+      <h1 class="gl-m-0 gl-font-size-h-display">{{ pageTitle }}</h1>
+      <beta-badge class="gl-ml-3" />
+    </div>
     <p>
       <span data-testid="page-description">{{ pageDescription }}</span>
       <gl-link :href="$options.learnMorePath" target="_blank">{{

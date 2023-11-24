@@ -2185,6 +2185,36 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           expect(message).to eq('Submitted the current review.')
         end
       end
+
+      context 'when parameters are passed' do
+        context 'with approve parameter' do
+          it 'calls MergeRequests::ApprovalService service' do
+            expect_next_instance_of(
+              MergeRequests::ApprovalService, project: merge_request.project, current_user: current_user
+            ) do |service|
+              expect(service).to receive(:execute).with(merge_request)
+            end
+
+            _, _, message = service.execute('/submit_review approve', merge_request)
+
+            expect(message).to eq('Submitted the current review.')
+          end
+        end
+
+        context 'with review state parameter' do
+          it 'calls MergeRequests::UpdateReviewerStateService service' do
+            expect_next_instance_of(
+              MergeRequests::UpdateReviewerStateService, project: merge_request.project, current_user: current_user
+            ) do |service|
+              expect(service).to receive(:execute).with(merge_request, 'requested_changes')
+            end
+
+            _, _, message = service.execute('/submit_review requested_changes', merge_request)
+
+            expect(message).to eq('Submitted the current review.')
+          end
+        end
+      end
     end
 
     context 'request_changes command' do

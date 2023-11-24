@@ -461,22 +461,6 @@ RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery 
     end
   end
 
-  describe 'environments folders view' do
-    before do
-      create(:environment, project: project, name: 'staging.review/review-1', state: :available)
-      create(:environment, project: project, name: 'staging.review/review-2', state: :available)
-    end
-
-    it 'user opens folder view' do
-      visit folder_project_environments_path(project, 'staging.review')
-      wait_for_requests
-
-      expect(page).to have_content('Environments / staging.review')
-      expect(page).to have_content('review-1')
-      expect(page).to have_content('review-2')
-    end
-  end
-
   def have_terminal_button
     have_link(_('Terminal'), href: terminal_project_environment_path(project, environment))
   end

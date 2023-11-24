@@ -48,7 +48,7 @@ RSpec.describe 'Groups > Members > Owner adds member with expiration date', :js,
     page.within second_row do
       expect(page).to have_field('Expiration date', with: expiration_date)
 
-      find('[data-testid="clear-button"]').click
+      find_by_testid('clear-button').click
 
       wait_for_requests
 

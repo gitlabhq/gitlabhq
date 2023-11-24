@@ -12196,6 +12196,7 @@ CREATE TABLE application_settings (
     project_jobs_api_rate_limit integer DEFAULT 600 NOT NULL,
     math_rendering_limits_enabled boolean DEFAULT true NOT NULL,
     service_access_tokens_expiration_enforced boolean DEFAULT true NOT NULL,
+    make_profile_private boolean DEFAULT true NOT NULL,
     enable_artifact_external_redirect_warning_page boolean DEFAULT true NOT NULL,
     allow_project_creation_for_guest_and_below boolean DEFAULT true NOT NULL,
     update_namespace_name_rate_limit smallint DEFAULT 120 NOT NULL,
@@ -23437,16 +23438,9 @@ CREATE TABLE service_desk_settings (
     file_template_project_id bigint,
     custom_email_enabled boolean DEFAULT false NOT NULL,
     custom_email text,
-    custom_email_smtp_address text,
-    custom_email_smtp_port integer,
-    custom_email_smtp_username text,
-    encrypted_custom_email_smtp_password bytea,
-    encrypted_custom_email_smtp_password_iv bytea,
     service_desk_enabled boolean DEFAULT true NOT NULL,
     add_external_participants_from_cc boolean DEFAULT false NOT NULL,
-    CONSTRAINT check_57a79552e1 CHECK ((char_length(custom_email) <= 255)),
-    CONSTRAINT check_b283637a9e CHECK ((char_length(custom_email_smtp_address) <= 255)),
-    CONSTRAINT check_e3535d46ee CHECK ((char_length(custom_email_smtp_username) <= 255))
+    CONSTRAINT check_57a79552e1 CHECK ((char_length(custom_email) <= 255))
 );
 
 CREATE TABLE shards (

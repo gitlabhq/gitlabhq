@@ -141,8 +141,8 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
   end
 
   describe 'transfer group', :js do
-    let(:namespace_select) { page.find('[data-testid="transfer-group-namespace-select"]') }
-    let(:confirm_modal) { page.find('[data-testid="confirm-danger-modal"]') }
+    let(:namespace_select) { find_by_testid('transfer-group-namespace-select') }
+    let(:confirm_modal) { find_by_testid('confirm-danger-modal') }
 
     shared_examples 'can transfer the group' do
       before do
@@ -154,7 +154,7 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
 
         visit edit_group_path(selected_group)
 
-        page.within('[data-testid="transfer-locations-dropdown"]') do
+        within_testid('transfer-locations-dropdown') do
           click_button _('Select parent group')
           fill_in _('Search'), with: target_group&.name || ''
           wait_for_requests
@@ -170,7 +170,7 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
           click_button 'Confirm'
         end
 
-        within('[data-testid="breadcrumb-links"]') do
+        within_testid('breadcrumb-links') do
           expect(page).to have_content(target_group.name) if target_group
           expect(page).to have_content(selected_group.name)
         end

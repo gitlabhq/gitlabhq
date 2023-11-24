@@ -16,10 +16,10 @@
 
     = render 'projects/find_file_link'
     = render 'shared/web_ide_button', blob: nil
+
+    .project-code-holder.d-none.d-md-inline-block>
+      = render "projects/buttons/code", dropdown_class: 'dropdown-menu-right', ref: @ref
+
+  .project-code-holder.d-block.d-md-none.mt-sm-2.mt-md-0.ml-md-2>
     = render 'projects/buttons/download', project: @project, ref: @ref
-
-    .project-clone-holder.d-none.d-md-inline-block>
-      = render "projects/buttons/clone", dropdown_class: 'dropdown-menu-right'
-
-  .project-clone-holder.d-block.d-md-none.mt-sm-2.mt-md-0.ml-md-2>
-    = render "shared/mobile_clone_panel"
+    = render "shared/mobile_clone_panel", ref: @ref

@@ -250,7 +250,6 @@ Gitlab/NamespacedClass:
     - 'app/models/plan.rb'
     - 'app/models/plan_limits.rb'
     - 'app/models/pool_repository.rb'
-    - 'app/models/product_analytics_event.rb'
     - 'app/models/programming_language.rb'
     - 'app/models/project.rb'
     - 'app/models/project_authorization.rb'

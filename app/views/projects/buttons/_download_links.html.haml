@@ -1,4 +1,5 @@
-.btn-group.ml-0.w-100
-  - Gitlab::Workhorse::ARCHIVE_FORMATS.each_with_index do |fmt, index|
-    - archive_path = project_archive_path(project, id: tree_join(ref, archive_prefix), path: path, format: fmt)
-    = link_button_to fmt, external_storage_url_or_path(archive_path), rel: 'nofollow', download: '', variant: index == 0 ? :confirm : :default, size: :small
+- Gitlab::Workhorse::ARCHIVE_FORMATS.each_with_index do |fmt, index|
+  - archive_path = project_archive_path(project, id: tree_join(ref, archive_prefix), path: path, format: fmt)
+
+  %a.dropdown-item.open-with-link{ href: external_storage_url_or_path(archive_path), rel: 'nofollow', download: '' }
+    .gl-dropdown-item-text-wrapper= fmt

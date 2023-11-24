@@ -9,8 +9,12 @@ export const handleClusterError = async (err) => {
   throw errorData;
 };
 
+export const buildWatchPath = ({ resource, api = 'api/v1', namespace = '' }) => {
+  return namespace ? `/${api}/namespaces/${namespace}/${resource}` : `/${api}/${resource}`;
+};
+
 export const watchPods = ({ client, query, configuration, namespace }) => {
-  const path = namespace ? `/api/v1/namespaces/${namespace}/pods` : '/api/v1/pods';
+  const path = buildWatchPath({ resource: 'pods', namespace });
   const config = new Configuration(configuration);
   const watcherApi = new WatchApi(config);
 

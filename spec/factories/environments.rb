@@ -35,6 +35,14 @@ FactoryBot.define do
       name { 'development' }
     end
 
+    trait :with_folders do |environment|
+      sequence(:name) { |n| "#{folder}/environment#{n}" }
+
+      transient do
+        folder { 'folder' }
+      end
+    end
+
     trait :with_review_app do |environment|
       sequence(:name) { |n| "review/#{n}" }
 

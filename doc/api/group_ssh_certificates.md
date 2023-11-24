@@ -4,12 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group SSH certificates API **(PREMIUM ALL)**
+# Group SSH certificates API **(PREMIUM SAAS)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421915) in GitLab 16.4 [with a flag](../user/feature_flags.md) named `ssh_certificates_rest_endpoints`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `ssh_certificates_rest_endpoints`.
 On GitLab.com, this feature is not available.
 
 Use this API to create, read and delete SSH certificates for a group.

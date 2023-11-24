@@ -1,15 +1,16 @@
 - project = project || @project
 - dropdown_class = local_assigns.fetch(:dropdown_class, '')
+- ref = local_assigns.fetch(:ref)
 
 - if can?(current_user, :download_code, @project)
   .git-clone-holder.js-git-clone-holder
     = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { id: 'clone-dropdown', class: 'clone-dropdown-btn', data: { toggle: 'dropdown', qa_selector: 'clone_dropdown' } }) do
-      %span.gl-mr-2.js-clone-dropdown-label
-        = _('Clone')
+      %span.js-clone-dropdown-label
+        = _('Code')
       = sprite_icon("chevron-down", css_class: "icon")
-    %ul.dropdown-menu.dropdown-menu-large.dropdown-menu-selectable.clone-options-dropdown{ class: dropdown_class, data: { qa_selector: 'clone_dropdown_content' } }
+    %ul.dropdown-menu.dropdown-menu-large.clone-options-dropdown{ class: dropdown_class, data: { qa_selector: 'clone_dropdown_content' } }
       - if ssh_enabled?
-        %li{ class: 'gl-px-4!' }
+        %li.gl-dropdown-item.js-clone-links{ class: 'gl-px-4!' }
           %label.label-bold
             = _('Clone with SSH')
           .input-group.btn-group
@@ -18,7 +19,7 @@
               = clipboard_button(target: '#ssh_project_clone', title: _("Copy URL"), category: :primary, size: :medium)
               = render_if_exists 'projects/buttons/geo'
       - if http_enabled?
-        %li.pt-2{ class: 'gl-px-4!' }
+        %li.pt-2.gl-dropdown-item.js-clone-links{ class: 'gl-px-4!' }
           %label.label-bold
             = _('Clone with %{http_label}') % { http_label: gitlab_config.protocol.upcase }
           .input-group.btn-group
@@ -28,7 +29,7 @@
               = render_if_exists 'projects/buttons/geo'
         = render_if_exists 'projects/buttons/kerberos_clone_field'
       %li.divider.mt-2
-      %li.pt-2.gl-dropdown-item
+      %li.pt-2.gl-dropdown-item.js-clone-links
         %label.label-bold{ class: 'gl-px-4!' }
           = _('Open in your IDE')
         - if ssh_enabled?
@@ -53,3 +54,6 @@
           %a.dropdown-item.open-with-link{ href: xcode_uri_to_repo(@project) }
             .gl-dropdown-item-text-wrapper
               = _("Xcode")
+        - if !project.empty_repo? && can?(current_user, :download_code, project)
+          %li.divider.mt-2
+          = render 'projects/buttons/download_menu_items', project: project, ref: ref

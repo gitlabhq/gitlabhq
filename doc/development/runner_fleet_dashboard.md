@@ -59,6 +59,7 @@ To setup ClickHouse as the GitLab data storage:
 
 1. [Run ClickHouse Cluster and configure database](#run-and-configure-clickhouse).
 1. [Configure GitLab connection to Clickhouse](#configure-the-gitlab-connection-to-clickhouse).
+1. [Run ClickHouse migrations](#run-clickhouse-migrations).
 1. [Enable the feature flags](#enable-feature-flags).
 
 ### Run and configure ClickHouse

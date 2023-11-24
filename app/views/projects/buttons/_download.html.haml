@@ -1,27 +1,13 @@
 - project = local_assigns.fetch(:project)
 - ref = local_assigns.fetch(:ref)
-- pipeline = local_assigns.fetch(:pipeline) { project.latest_successful_pipeline_for(ref) }
+- pipeline = local_assigns.fetch(:pipeline, nil)
 - css_class = local_assigns.fetch(:css_class, '')
 
 - if !project.empty_repo? && can?(current_user, :download_code, project)
-  - archive_prefix = "#{project.path}-#{ref.tr('/', '-')}"
   .project-action-button.dropdown.gl-dropdown.inline{ class: css_class }>
     = render Pajamas::ButtonComponent.new(button_options: { class: 'dropdown-toggle gl-dropdown-toggle dropdown-icon-only has-tooltip', title: s_('DownloadSource|Download'), 'data-toggle' => 'dropdown', 'aria-label' => s_('DownloadSource|Download'), 'data-display' => 'static', data: { testid: 'download-source-code-button' } }) do
       = sprite_icon('download', css_class: 'gl-icon dropdown-icon')
       %span.sr-only=  _('Select Archive Format')
       = sprite_icon('chevron-down', css_class: 'gl-icon dropdown-chevron')
-    .dropdown-menu.dropdown-menu-right{ role: 'menu' }
-      %section
-        %h5.m-0.dropdown-bold-header= _('Download source code')
-        .dropdown-menu-content
-          = render 'projects/buttons/download_links', project: project, ref: ref, archive_prefix: archive_prefix, path: nil
-      .js-directory-downloads{ data: { links: directory_download_links(project, ref, archive_prefix).to_json } }
-      - if pipeline && pipeline.latest_builds_with_artifacts.any?
-        %section.border-top.pt-1.mt-1
-          %h5.m-0.dropdown-bold-header= _('Download artifacts')
-          - unless pipeline.latest?
-            %span.unclickable= ci_status_for_statuseable(project.latest_pipeline(ref))
-          %h6.m-0.dropdown-header= _('Previous Artifacts')
-          %ul
-            - pipeline.latest_builds_with_artifacts.each do |job|
-              %li= link_to job.name, latest_succeeded_project_artifacts_path(project, "#{ref}/download", job: job.name), rel: 'nofollow', download: ''
+    %ul.dropdown-menu.dropdown-menu-right{ role: 'menu' }
+      = render 'projects/buttons/download_menu_items', project: project, ref: ref, pipeline: pipeline

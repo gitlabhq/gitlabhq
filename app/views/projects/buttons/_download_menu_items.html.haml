@@ -1,0 +1,21 @@
+- project = local_assigns.fetch(:project)
+- ref = local_assigns.fetch(:ref)
+- pipeline = local_assigns.fetch(:pipeline) { project.latest_successful_pipeline_for(ref) }
+- archive_prefix = "#{project.path}-#{ref.tr('/', '-')}"
+
+%li.gl-dropdown-item
+  %h5.m-0.dropdown-bold-header= _('Download source code')
+  = render 'projects/buttons/download_links', project: project, ref: ref, archive_prefix: archive_prefix, path: nil
+.js-directory-downloads{ data: { links: directory_download_links(project, ref, archive_prefix).to_json } }
+- if pipeline && pipeline.latest_builds_with_artifacts.any?
+  %li.divider.mt-2
+  %li.gl-dropdown-item
+    %h5.m-0.dropdown-bold-header= _('Download artifacts')
+    - unless pipeline.latest?
+      %span.gl-ml-3.unclickable= ci_status_for_statuseable(project.latest_pipeline(ref))
+  %li.divider.mt-2
+  %li.gl-dropdown-item
+    %h5.m-0.dropdown-bold-header= _('Previous Artifacts')
+    - pipeline.latest_builds_with_artifacts.each do |job|
+      = link_to latest_succeeded_project_artifacts_path(project, "#{ref}/download", job: job.name), class: 'dropdown-item open-with-link', rel: 'nofollow', download: '' do
+        .gl-dropdown-item-text-wrapper= job.name

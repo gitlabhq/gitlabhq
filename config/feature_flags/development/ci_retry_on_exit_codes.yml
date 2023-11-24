@@ -1,0 +1,8 @@
+---
+name: ci_retry_on_exit_codes
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135430
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/430037
+milestone: '16.7'
+type: development
+group: group::pipeline authoring
+default_enabled: false

@@ -1994,7 +1994,6 @@ RSpec/ContextWording:
     - 'spec/lib/object_storage/direct_upload_spec.rb'
     - 'spec/lib/omni_auth/strategies/jwt_spec.rb'
     - 'spec/lib/peek/views/bullet_detailed_spec.rb'
-    - 'spec/lib/product_analytics/event_params_spec.rb'
     - 'spec/lib/safe_zip/entry_spec.rb'
     - 'spec/lib/security/ci_configuration/container_scanning_build_action_spec.rb'
     - 'spec/lib/security/ci_configuration/sast_build_action_spec.rb'

@@ -10,6 +10,7 @@ import produce from 'immer';
 import {
   getK8sPods,
   handleClusterError,
+  buildWatchPath,
 } from '~/kubernetes_dashboard/graphql/helpers/resolver_helpers';
 import { humanizeClusterErrors } from '../../helpers/k8s_integration_helper';
 import k8sPodsQuery from '../queries/k8s_pods.query.graphql';
@@ -62,9 +63,7 @@ const mapWorkloadItems = (items, kind) => {
 const watchWorkloadItems = ({ kind, apiVersion, configuration, namespace, client }) => {
   const itemKind = kind.toLowerCase().replace('list', 's');
 
-  const path = namespace
-    ? `/apis/${apiVersion}/namespaces/${namespace}/${itemKind}`
-    : `/apis/${apiVersion}/${itemKind}`;
+  const path = buildWatchPath({ resource: itemKind, api: `apis/${apiVersion}`, namespace });
   const config = new Configuration(configuration);
   const watcherApi = new WatchApi(config);
 
@@ -113,7 +112,7 @@ const mapServicesItems = (items) => {
 };
 
 const watchServices = ({ configuration, namespace, client }) => {
-  const path = namespace ? `/api/v1/namespaces/${namespace}/services` : '/api/v1/services';
+  const path = buildWatchPath({ resource: 'services', namespace });
   const config = new Configuration(configuration);
   const watcherApi = new WatchApi(config);
 

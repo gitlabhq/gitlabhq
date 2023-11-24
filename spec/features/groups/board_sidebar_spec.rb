@@ -34,7 +34,7 @@ RSpec.describe 'Group Issue Boards', :js, feature_category: :groups_and_projects
 
         wait_for_requests
 
-        page.within('[data-testid="dropdown-content"]') do
+        within_testid('dropdown-content') do
           expect(page).to have_content(project_1_label.title)
           expect(page).to have_content(group_label.title)
           expect(page).not_to have_content(project_2_label.title)

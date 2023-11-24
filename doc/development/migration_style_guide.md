@@ -1019,6 +1019,10 @@ end
 
 ## Dropping a database table
 
+NOTE:
+After a table has been dropped, it should be added to the database dictionary, following the
+steps in the [database dictionary guide](database/database_dictionary.md#dropping-tables).
+
 Dropping a database table is uncommon, and the `drop_table` method
 provided by Rails is generally considered safe. Before dropping the table,
 please consider the following:
@@ -1104,9 +1108,6 @@ class DroppingTableMigrationClass < Gitlab::Database::Migration[2.1]
   end
 end
 ```
-
-After a table has been dropped, it should be added to the database dictionary, following the
-steps in the [database dictionary guide](database/database_dictionary.md#dropping-tables).
 
 ## Dropping a sequence
 

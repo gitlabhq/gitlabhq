@@ -9,7 +9,7 @@ module QA
         def self.included(base)
           super
 
-          base.view 'app/views/projects/buttons/_clone.html.haml' do
+          base.view 'app/views/projects/buttons/_code.html.haml' do
             element :clone_dropdown
             element :clone_dropdown_content
             element :ssh_clone_url_content

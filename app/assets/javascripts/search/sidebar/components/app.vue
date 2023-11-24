@@ -67,10 +67,7 @@ export default {
       return this.currentScope === SCOPE_MILESTONES;
     },
     showWikiBlobsFilters() {
-      return (
-        this.currentScope === SCOPE_WIKI_BLOBS &&
-        this.glFeatures?.searchProjectWikisHideArchivedProjects
-      );
+      return this.currentScope === SCOPE_WIKI_BLOBS;
     },
   },
   methods: {

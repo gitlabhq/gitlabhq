@@ -468,10 +468,6 @@ class Project < ApplicationRecord
   # rubocop:enable Cop/ActiveRecordDependent
   has_many :active_pages_deployments, -> { active }, class_name: 'PagesDeployment', inverse_of: :project
 
-  # Can be too many records. We need to implement delete_all in batches.
-  # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/228637
-  has_many :product_analytics_events, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-
   has_many :operations_feature_flags, class_name: 'Operations::FeatureFlag'
   has_one :operations_feature_flags_client, class_name: 'Operations::FeatureFlagsClient'
   has_many :operations_feature_flags_user_lists, class_name: 'Operations::FeatureFlags::UserList'

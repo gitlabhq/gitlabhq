@@ -581,7 +581,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/models/packages/rpm/repository_file_spec.rb'
     - 'spec/models/packages/rubygems/metadatum_spec.rb'
     - 'spec/models/packages/tag_spec.rb'
-    - 'spec/models/product_analytics_event_spec.rb'
     - 'spec/policies/design_management/design_policy_spec.rb'
     - 'spec/requests/api/composer_packages_spec.rb'
     - 'spec/requests/api/conan_project_packages_spec.rb'

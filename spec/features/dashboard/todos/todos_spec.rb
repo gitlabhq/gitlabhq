@@ -95,7 +95,7 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :team_planning do
     shared_examples 'deleting the todo' do
       before do
         within first('.todo') do
-          find('[data-testid="check-icon"]').click
+          find_by_testid('check-icon').click
         end
       end
 
@@ -121,9 +121,9 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :team_planning do
     shared_examples 'deleting and restoring the todo' do
       before do
         within first('.todo') do
-          find('[data-testid="check-icon"]').click
+          find_by_testid('check-icon').click
           wait_for_requests
-          find('[data-testid="redo-icon"]').click
+          find_by_testid('redo-icon').click
         end
       end
 
@@ -301,7 +301,7 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :team_planning do
     describe 'restoring the todo' do
       before do
         within first('.todo') do
-          find('[data-testid="todo-add-icon"]').click
+          find_by_testid('todo-add-icon').click
         end
       end
 
@@ -407,7 +407,7 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :team_planning do
       context 'User has deleted a todo' do
         before do
           within first('.todo') do
-            find('[data-testid="check-icon"]').click
+            find_by_testid('check-icon').click
           end
         end
 

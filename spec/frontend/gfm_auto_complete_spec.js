@@ -45,6 +45,16 @@ describe('GfmAutoComplete', () => {
   let sorterValue;
   let filterValue;
 
+  const triggerDropdown = ($textarea, text) => {
+    $textarea
+      .trigger('focus')
+      .val($textarea.val() + text)
+      .caret('pos', -1);
+    $textarea.trigger('keyup');
+
+    jest.runOnlyPendingTimers();
+  };
+
   describe('DefaultOptions.filter', () => {
     let items;
 
@@ -786,13 +796,6 @@ describe('GfmAutoComplete', () => {
       resetHTMLFixture();
     });
 
-    const triggerDropdown = (text) => {
-      $textarea.trigger('focus').val(text).caret('pos', -1);
-      $textarea.trigger('keyup');
-
-      jest.runOnlyPendingTimers();
-    };
-
     const getDropdownItems = () => {
       const dropdown = document.getElementById('at-view-labels');
       const items = dropdown.getElementsByTagName('li');
@@ -800,7 +803,7 @@ describe('GfmAutoComplete', () => {
     };
 
     const expectLabels = ({ input, output }) => {
-      triggerDropdown(input);
+      triggerDropdown($textarea, input);
 
       expect(getDropdownItems()).toEqual(output.map((label) => label.title));
     };
@@ -857,6 +860,50 @@ describe('GfmAutoComplete', () => {
       expect(GfmAutoComplete.Labels.templateFunction(color, title)).toBe(
         '<li><span class="dropdown-label-box" style="background: #123456"></span> &amp;dollar;{search}&lt;script&gt;oh no &amp;dollar;</li>',
       );
+    });
+  });
+
+  describe('submit_review', () => {
+    let autocomplete;
+    let $textarea;
+
+    const getDropdownItems = () => {
+      const dropdown = document.getElementById('at-view-submit_review');
+
+      return dropdown.getElementsByTagName('li');
+    };
+
+    beforeEach(() => {
+      jest
+        .spyOn(AjaxCache, 'retrieve')
+        .mockReturnValue(Promise.resolve([{ name: 'submit_review' }]));
+
+      window.gon = { features: { mrRequestChanges: true } };
+
+      setHTMLFixture('<textarea data-supports-quick-actions="true"></textarea>');
+      autocomplete = new GfmAutoComplete({
+        commands: `${TEST_HOST}/autocomplete_sources/commands`,
+      });
+      $textarea = $('textarea');
+      autocomplete.setup($textarea, {});
+    });
+
+    afterEach(() => {
+      autocomplete.destroy();
+      resetHTMLFixture();
+    });
+
+    it('renders submit review options', async () => {
+      triggerDropdown($textarea, '/');
+
+      await waitForPromises();
+
+      triggerDropdown($textarea, 'submit_review ');
+
+      expect(getDropdownItems()).toHaveLength(3);
+      expect(getDropdownItems()[0].textContent).toContain('Comment');
+      expect(getDropdownItems()[1].textContent).toContain('Approve');
+      expect(getDropdownItems()[2].textContent).toContain('Request changes');
     });
   });
 
@@ -951,13 +998,6 @@ describe('GfmAutoComplete', () => {
       resetHTMLFixture();
     });
 
-    const triggerDropdown = (text) => {
-      $textarea.trigger('focus').val(text).caret('pos', -1);
-      $textarea.trigger('keyup');
-
-      jest.runOnlyPendingTimers();
-    };
-
     const getDropdownItems = () => {
       const dropdown = document.getElementById('at-view-contacts');
       const items = dropdown.getElementsByTagName('li');
@@ -965,7 +1005,7 @@ describe('GfmAutoComplete', () => {
     };
 
     const expectContacts = ({ input, output }) => {
-      triggerDropdown(input);
+      triggerDropdown($textarea, input);
 
       expect(getDropdownItems()).toEqual(
         output.map((contact) => `${contact.first_name} ${contact.last_name} ${contact.email}`),

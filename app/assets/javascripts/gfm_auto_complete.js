@@ -262,6 +262,38 @@ class GfmAutoComplete {
     });
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  setSubmitReviewStates($input) {
+    if (!window.gon.features?.mrRequestChanges) return;
+
+    const REVIEW_STATES = {
+      reviewed: {
+        header: __('Comment'),
+        description: __('Submit general feedback without explicit approval.'),
+      },
+      approve: {
+        header: __('Approve'),
+        description: __('Submit feedback and approve these changes.'),
+      },
+      requested_changes: {
+        header: __('Request changes'),
+        description: __('Submit feedback that should be addressed before merging.'),
+      },
+    };
+
+    $input.filter('[data-supports-quick-actions="true"]').atwho({
+      // Always keep the trailing space otherwise the command won't display correctly
+      at: '/submit_review ',
+      alias: 'submit_review',
+      data: Object.keys(REVIEW_STATES),
+      displayTpl({ name }) {
+        const reviewState = REVIEW_STATES[name];
+
+        return `<li><span class="gl-font-weight-bold gl-display-block">${reviewState.header}</span><small class="description gl-display-block gl-w-full gl-float-left! gl-px-0!">${reviewState.description}</small></li>`;
+      },
+    });
+  }
+
   setupEmoji($input) {
     const fetchData = this.fetchData.bind(this);
 
@@ -851,6 +883,9 @@ class GfmAutoComplete {
     } else if (dataSource) {
       AjaxCache.retrieve(dataSource, true)
         .then((data) => {
+          if (data.some((c) => c.name === 'submit_review')) {
+            this.setSubmitReviewStates($input);
+          }
           this.loadData($input, at, data);
         })
         .catch(() => {

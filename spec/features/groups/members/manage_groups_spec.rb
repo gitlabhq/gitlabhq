@@ -106,7 +106,7 @@ RSpec.describe 'Groups > Members > Manage groups', :js, feature_category: :group
         page.within first_row do
           expect(page).to have_field('Expiration date', with: expiration_date)
 
-          find('[data-testid="clear-button"]').click
+          find_by_testid('clear-button').click
 
           wait_for_requests
 

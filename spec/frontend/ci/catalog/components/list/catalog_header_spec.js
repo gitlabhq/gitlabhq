@@ -1,6 +1,7 @@
 import { GlBanner, GlButton } from '@gitlab/ui';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import BetaBadge from '~/vue_shared/components/badges/beta_badge.vue';
 import CatalogHeader from '~/ci/catalog/components/list/catalog_header.vue';
 import { CATALOG_FEEDBACK_DISMISSED_KEY } from '~/ci/catalog/constants';
 
@@ -16,6 +17,7 @@ describe('CatalogHeader', () => {
   };
 
   const findBanner = () => wrapper.findComponent(GlBanner);
+  const findBetaBadge = () => wrapper.findComponent(BetaBadge);
   const findFeedbackButton = () => findBanner().findComponent(GlButton);
   const findTitle = () => wrapper.find('h1');
   const findDescription = () => wrapper.findByTestId('page-description');
@@ -33,6 +35,16 @@ describe('CatalogHeader', () => {
     });
   };
 
+  describe('Default view', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('renders a Beta Badge', () => {
+      expect(findBetaBadge().exists()).toBe(true);
+    });
+  });
+
   describe('title and description', () => {
     describe('when there are no values provided', () => {
       beforeEach(() => {
@@ -46,6 +58,7 @@ describe('CatalogHeader', () => {
         );
       });
     });
+
     describe('when custom values are provided', () => {
       beforeEach(() => {
         createComponent({ provide: customProvide });
@@ -57,6 +70,7 @@ describe('CatalogHeader', () => {
       });
     });
   });
+
   describe('Feedback banner', () => {
     describe('when user has never dismissed', () => {
       beforeEach(() => {

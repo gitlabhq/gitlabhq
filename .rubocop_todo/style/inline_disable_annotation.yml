@@ -2081,7 +2081,6 @@ Style/InlineDisableAnnotation:
     - 'ee/spec/lib/gitlab/import_export/project/relation_factory_spec.rb'
     - 'ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_real_requests_spec.rb'
     - 'ee/spec/lib/gitlab/llm/chain/tools/epic_identifier/executor_spec.rb'
-    - 'ee/spec/lib/gitlab/llm/concerns/circuit_breaker_spec.rb'
     - 'ee/spec/lib/gitlab/mirror_spec.rb'
     - 'ee/spec/lib/gitlab/patch/database_config_spec.rb'
     - 'ee/spec/lib/gitlab/sitemaps/sitemap_file_spec.rb'

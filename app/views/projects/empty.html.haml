@@ -19,11 +19,11 @@
     = _('You can get started by cloning the repository or start adding files to it with one of the following options.')
 
 .project-buttons{ data: { testid: 'quick-actions-container' } }
-  .project-clone-holder.d-block.d-md-none.gl-mt-3.gl-mr-3
+  .project-code-holder.d-block.d-md-none.gl-mt-3.gl-mr-3
     = render "shared/mobile_clone_panel"
 
-  .project-clone-holder.d-none.d-md-inline-block.gl-mb-3.gl-mr-3.float-left
-    = render "projects/buttons/clone"
+  .project-code-holder.d-none.d-md-inline-block.gl-mb-3.gl-mr-3.float-left
+    = render "projects/buttons/code", ref: @ref
   = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons, project_buttons: true
 
 - if can?(current_user, :push_code, @project)

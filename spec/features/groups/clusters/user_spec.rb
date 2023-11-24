@@ -112,9 +112,9 @@ RSpec.describe 'User Cluster', :js, feature_category: :user_profile do
     context 'when user destroys the cluster' do
       before do
         click_link 'Advanced Settings'
-        find('[data-testid="remove-integration-button"]').click
+        find_by_testid('remove-integration-button').click
         fill_in 'confirm_cluster_name_input', with: cluster.name
-        find('[data-testid="remove-integration-modal-button"]').click
+        find_by_testid('remove-integration-modal-button').click
       end
 
       it 'user sees creation form with the successful message' do
