@@ -9,7 +9,7 @@ module Projects
     private
 
     def track_repository(destination_storage_name)
-      project.update!(repository_storage: destination_storage_name)
+      project.update_column(:repository_storage, destination_storage_name)
 
       # Connect project to pool repository from the new shard
       project.swap_pool_repository!
