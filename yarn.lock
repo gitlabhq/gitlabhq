@@ -1025,10 +1025,10 @@
   resolved "https://registry.yarnpkg.com/@csstools/selector-specificity/-/selector-specificity-3.0.0.tgz#798622546b63847e82389e473fd67f2707d82247"
   integrity sha512-hBI9tfBtuPIi885ZsZ32IMEU/5nlZH/KOVYJCOh7gyMxaVLGmLedYqFN6Ui1LXkI8JlC8IsuC0rF0btcRZKd5g==
 
-"@cubejs-client/core@^0.34.19":
-  version "0.34.19"
-  resolved "https://registry.yarnpkg.com/@cubejs-client/core/-/core-0.34.19.tgz#1894e385995ec602704375dc0a138138930f7875"
-  integrity sha512-h6HVEL4OZHDGihAJ44fT1Q+Cxt41NtyQ9/VIY52d8nfLB97nRnVC0KbiKUTVCcdgvj8Hm7WdDLF4GCmSV4tMxQ==
+"@cubejs-client/core@^0.34.24":
+  version "0.34.24"
+  resolved "https://registry.yarnpkg.com/@cubejs-client/core/-/core-0.34.24.tgz#6bb1f8d223dc0b70b2f543f072c0a07ca58999c4"
+  integrity sha512-6dnRmvxlYYeWtPCuNB8jzkCdndHvZhWNM9RP6gZxtE3pMdVjO/sFeVXQg2Q14egY9854bOCyxVbSNk1qjeeCrw==
   dependencies:
     "@babel/runtime" "^7.1.2"
     core-js "^3.6.5"
@@ -1038,12 +1038,12 @@
     url-search-params-polyfill "^7.0.0"
     uuid "^8.3.2"
 
-"@cubejs-client/vue@^0.34.19":
-  version "0.34.19"
-  resolved "https://registry.yarnpkg.com/@cubejs-client/vue/-/vue-0.34.19.tgz#072fb4b0eb5ba2186f47e36412d54a6f5a6707cd"
-  integrity sha512-G6UkFOXDPQKISJrZtQLm2Gyiir1HX4q7T8/gwqV6qryu3XV9g436JNHhGQAo3FOnvvOWaXrK2Rx4c63mR5gKvg==
+"@cubejs-client/vue@^0.34.24":
+  version "0.34.24"
+  resolved "https://registry.yarnpkg.com/@cubejs-client/vue/-/vue-0.34.24.tgz#0df238edef6cc09e80df8513cf4bc061271aba52"
+  integrity sha512-w9tXm9lDhat1FWAqklIbewXatrLYePFXPpd93tXsiWUzanarVBAeFlQjdPWsjaBU0541Ry4oQqn5y64r+Y996A==
   dependencies:
-    "@cubejs-client/core" "^0.34.19"
+    "@cubejs-client/core" "^0.34.24"
     core-js "^3.6.5"
     ramda "^0.27.2"
 
