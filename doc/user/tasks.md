@@ -271,7 +271,8 @@ To add a task to a milestone:
 
 ## Set task weight **(PREMIUM ALL)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362550) in GitLab 15.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362550) in GitLab 15.3.
+> - Edit button [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429137) in GitLab 16.7.
 
 Prerequisites:
 
@@ -284,8 +285,9 @@ To set issue weight of a task:
 
 1. In the issue description, in the **Tasks** section, select the title of the task you want to edit.
    The task window opens.
-1. Next to **Weight**, enter a whole, positive number.
-1. Select the close icon (**{close}**).
+1. Next to **Weight**, select **Edit**.
+1. Enter a whole, positive number.
+1. Select **Apply** or press <kbd>Enter</kbd>.
 
 ## Add a task to an iteration **(PREMIUM ALL)**
 

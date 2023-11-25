@@ -36,5 +36,33 @@ describe('Test reports utils', () => {
         expect(result).toBe('4.82s');
       });
     });
+
+    describe('when time is greater than a minute', () => {
+      it('should return time in minutes', () => {
+        const result = formattedTime(99);
+        expect(result).toBe('1m 39s');
+      });
+    });
+
+    describe('when time is greater than a hour', () => {
+      it('should return time in hours', () => {
+        const result = formattedTime(3606);
+        expect(result).toBe('1h 6s');
+      });
+    });
+
+    describe('when time is exact a hour', () => {
+      it('should return time as one hour', () => {
+        const result = formattedTime(3600);
+        expect(result).toBe('1h');
+      });
+    });
+
+    describe('when time is greater than a hour with some minutes', () => {
+      it('should return time in hours', () => {
+        const result = formattedTime(3662);
+        expect(result).toBe('1h 1m 2s');
+      });
+    });
   });
 });

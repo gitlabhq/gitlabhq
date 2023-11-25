@@ -40008,6 +40008,9 @@ msgstr ""
 msgid "Remove user from project"
 msgstr ""
 
+msgid "Remove weight"
+msgstr ""
+
 msgid "Removed"
 msgstr ""
 
