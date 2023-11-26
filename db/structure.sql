@@ -17495,7 +17495,9 @@ CREATE TABLE in_product_marketing_emails (
     track smallint,
     series smallint,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_c9bb978e4b CHECK ((track IS NOT NULL)),
+    CONSTRAINT check_ee6c42a107 CHECK ((series IS NOT NULL))
 );
 
 CREATE SEQUENCE in_product_marketing_emails_id_seq
