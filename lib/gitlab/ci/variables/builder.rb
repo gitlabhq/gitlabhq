@@ -202,3 +202,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Ci::Variables::Builder.prepend_mod_with('Gitlab::Ci::Variables::Builder')

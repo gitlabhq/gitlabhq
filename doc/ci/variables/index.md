@@ -640,12 +640,15 @@ To disable variable expansion for the variable:
 
 ## CI/CD variable precedence
 
+> Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `security_policies_variables_precedence`. Disabled by default.
+
 You can use CI/CD variables with the same name in different places, but the values
 can overwrite each other. The type of variable and where they are defined determines
 which variables take precedence.
 
 The order of precedence for variables is (from highest to lowest):
 
+1. [Scan Execution Policies variables](../../user/application_security/policies/scan-execution-policies.md).
 1. These variables all have the same (highest) precedence:
    - [Trigger variables](../triggers/index.md#pass-cicd-variables-in-the-api-call).
    - [Scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule).
