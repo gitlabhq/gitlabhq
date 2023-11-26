@@ -64,12 +64,8 @@ Your dashboard files are versioned in source control with the rest of a project'
 
 ## Dashboard designer
 
-> Introduced in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
+> - Introduced in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/411407) in GitLab 16.6. Feature flag `combined_analytics_dashboards_editor` removed.
 
 You can use the dashboard designer to:
 

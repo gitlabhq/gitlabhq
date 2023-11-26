@@ -206,7 +206,8 @@ export default {
 
 ## Dashboard designer
 
-> Introduced in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`. Disabled by default.
+> - Introduced in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/411407) in GitLab 16.6. Feature flag `combined_analytics_dashboards_editor` removed.
 
 The dashboard designer provides a graphical interface for users to modify the
 panels and add new ones on user-defined dashboards. Is is not available on

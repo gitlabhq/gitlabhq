@@ -33,8 +33,7 @@ Use group-level analytics to get insights into your groups':
 
 Use project-level analytics to get insights into your projects':
 
-- [Analytics dashboards](analytics_dashboards.md), enabled with the `combined_analytics_dashboards_editor`
-  [feature flag](../../development/feature_flags/index.md#enabling-a-feature-flag-locally-in-development)
+- [Analytics dashboards](analytics_dashboards.md)
 - [Security Dashboards](../application_security/security_dashboard/index.md)
 - [CI/CD analytics and DORA metrics](ci_cd_analytics.md)
 - [Code review analytics](code_review_analytics.md)
