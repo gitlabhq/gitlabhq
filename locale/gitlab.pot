@@ -7611,9 +7611,6 @@ msgstr ""
 msgid "Before inserting code, be sure to read the comment that separated each code group."
 msgstr ""
 
-msgid "Before this can be merged, a Jira issue must be linked in the title or description"
-msgstr ""
-
 msgid "Begin with the selected commit"
 msgstr ""
 
@@ -18158,6 +18155,9 @@ msgid "Editing"
 msgstr ""
 
 msgid "Edits"
+msgstr ""
+
+msgid "Either the title or description must reference a Jira issue."
 msgstr ""
 
 msgid "Elapsed time"
@@ -50369,6 +50369,9 @@ msgid "To learn more about this project, read %{link_to_wiki}"
 msgstr ""
 
 msgid "To manage seats for all members associated with this group and its subgroups and projects, visit the %{link_start}usage quotas page%{link_end}."
+msgstr ""
+
+msgid "To merge, either the title or description must reference a Jira issue."
 msgstr ""
 
 msgid "To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here."

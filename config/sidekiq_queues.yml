@@ -723,6 +723,8 @@
   - 1
 - - vulnerabilities_mark_dropped_as_resolved
   - 1
+- - vulnerabilities_remove_all_vulnerabilities
+  - 1
 - - vulnerabilities_statistics_adjustment
   - 1
 - - vulnerabilities_update_namespace_ids_of_vulnerability_reads

@@ -20,6 +20,7 @@ const FAILURE_REASONS = {
   policies_denied: __('Denied licenses must be removed or approved.'),
   merge_request_blocked: __('Merge request is blocked by another merge request.'),
   status_checks_must_pass: __('Status checks must pass.'),
+  jira_association_missing: __('Either the title or description must reference a Jira issue.'),
 };
 
 export default {

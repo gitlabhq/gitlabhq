@@ -9,7 +9,6 @@ RSpec/EmptyLineAfterHook:
     - 'ee/spec/lib/ee/gitlab/auth/ldap/sync/group_spec.rb'
     - 'ee/spec/lib/gitlab/audit/auditor_spec.rb'
     - 'ee/spec/lib/gitlab/proxy_spec.rb'
-    - 'ee/spec/lib/gitlab/vulnerabilities/container_scanning_vulnerability_spec.rb'
     - 'ee/spec/models/ee/key_spec.rb'
     - 'ee/spec/models/ee/project_spec.rb'
     - 'ee/spec/requests/api/users_spec.rb'

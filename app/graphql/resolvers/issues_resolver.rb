@@ -21,8 +21,7 @@ module Resolvers
         raise Gitlab::Graphql::Errors::ArgumentError, Types::IssuableStateEnum::INVALID_LOCKED_MESSAGE
       }
 
-    # see app/graphql/types/issue_connection.rb
-    type 'Types::IssueConnection', null: true
+    type Types::IssueType.connection_type, null: true
 
     before_connection_authorization do |nodes, current_user|
       projects = nodes.map(&:project)

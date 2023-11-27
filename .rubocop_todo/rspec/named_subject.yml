@@ -519,7 +519,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/gitlab/subscription_portal/clients/graphql_spec.rb'
     - 'ee/spec/lib/gitlab/tree_summary_spec.rb'
     - 'ee/spec/lib/gitlab/usage_data_metrics_spec.rb'
-    - 'ee/spec/lib/gitlab/vulnerabilities/parser_spec.rb'
     - 'ee/spec/lib/gitlab/vulnerability_scanning/track_cvs_service_spec.rb'
     - 'ee/spec/lib/gitlab_subscriptions/upcoming_reconciliation_entity_spec.rb'
     - 'ee/spec/lib/omni_auth/strategies/kerberos_spec.rb'

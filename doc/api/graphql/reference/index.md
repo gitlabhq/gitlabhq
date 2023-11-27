@@ -7945,6 +7945,29 @@ Input type: `VulnerabilitiesDismissInput`
 | <a id="mutationvulnerabilitiesdismisserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationvulnerabilitiesdismissvulnerabilities"></a>`vulnerabilities` | [`[Vulnerability!]!`](#vulnerability) | Vulnerabilities after state change. |
 
+### `Mutation.vulnerabilitiesRemoveAllFromProject`
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `VulnerabilitiesRemoveAllFromProjectInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvulnerabilitiesremoveallfromprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilitiesremoveallfromprojectprojectids"></a>`projectIds` | [`[ProjectID!]!`](#projectid) | IDs of project for which all Vulnerabilities should be removed. The deletion will happen in the background so the changes will not be visible immediately. Does not work if `enable_remove_all_vulnerabilties_from_project_mutation` feature flag is disabled. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvulnerabilitiesremoveallfromprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilitiesremoveallfromprojecterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationvulnerabilitiesremoveallfromprojectprojects"></a>`projects` | [`[Project!]!`](#project) | Projects for which the deletion was scheduled. |
+
 ### `Mutation.vulnerabilityConfirm`
 
 Input type: `VulnerabilityConfirmInput`
@@ -29526,6 +29549,7 @@ Detailed representation of whether a GitLab merge request can be merged.
 | <a id="detailedmergestatusdiscussions_not_resolved"></a>`DISCUSSIONS_NOT_RESOLVED` | Discussions must be resolved before merging. |
 | <a id="detailedmergestatusdraft_status"></a>`DRAFT_STATUS` | Merge request must not be draft before merging. |
 | <a id="detailedmergestatusexternal_status_checks"></a>`EXTERNAL_STATUS_CHECKS` | Status checks must pass. |
+| <a id="detailedmergestatusjira_association"></a>`JIRA_ASSOCIATION` | Either the title or description must reference a Jira issue. |
 | <a id="detailedmergestatusmergeable"></a>`MERGEABLE` | Branch can be merged. |
 | <a id="detailedmergestatusnot_approved"></a>`NOT_APPROVED` | Merge request must be approved before merging. |
 | <a id="detailedmergestatusnot_open"></a>`NOT_OPEN` | Merge request must be open before merging. |
@@ -30184,6 +30208,7 @@ Representation of mergeability check identifier.
 | <a id="mergeabilitycheckidentifierconflict"></a>`CONFLICT` | Mergeability check identifier is conflict. |
 | <a id="mergeabilitycheckidentifierdiscussions_not_resolved"></a>`DISCUSSIONS_NOT_RESOLVED` | Mergeability check identifier is discussions_not_resolved. |
 | <a id="mergeabilitycheckidentifierdraft_status"></a>`DRAFT_STATUS` | Mergeability check identifier is draft_status. |
+| <a id="mergeabilitycheckidentifierjira_association_missing"></a>`JIRA_ASSOCIATION_MISSING` | Mergeability check identifier is jira_association_missing. |
 | <a id="mergeabilitycheckidentifiermerge_request_blocked"></a>`MERGE_REQUEST_BLOCKED` | Mergeability check identifier is merge_request_blocked. |
 | <a id="mergeabilitycheckidentifierneed_rebase"></a>`NEED_REBASE` | Mergeability check identifier is need_rebase. |
 | <a id="mergeabilitycheckidentifiernot_approved"></a>`NOT_APPROVED` | Mergeability check identifier is not_approved. |
