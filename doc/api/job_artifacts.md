@@ -18,7 +18,7 @@ available in the Premium and Ultimate tier.
 Get the job's artifacts zipped archive of a project.
 
 If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
-as the request might redirect through a CND.
+as the request might redirect through a CDN.
 
 ```plaintext
 GET /projects/:id/jobs/:job_id/artifacts
@@ -80,7 +80,7 @@ is the same as [getting the job's artifacts](#get-job-artifacts), but by
 defining the job's name instead of its ID.
 
 If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
-as the request might redirect through a CND.
+as the request might redirect through a CDN.
 
 NOTE:
 If a pipeline is [parent of other child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines), artifacts
@@ -148,7 +148,7 @@ the job's artifacts zipped archive. The file is extracted from the archive and
 streamed to the client.
 
 If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
-as the request might redirect through a CND.
+as the request might redirect through a CDN.
 
 ```plaintext
 GET /projects/:id/jobs/:job_id/artifacts/*artifact_path
@@ -194,7 +194,7 @@ are searched in hierarchical order from parent to child. For example, if both pa
 have a job with the same name, the artifact from the parent pipeline is returned.
 
 If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
-as the request might redirect through a CND.
+as the request might redirect through a CDN.
 
 ```plaintext
 GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path?job=name

@@ -497,6 +497,7 @@ workflow:
     - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3/'
       variables:
         PROJECT1_PIPELINE_NAME: 'Ruby 3 pipeline'
+    - when: always  # Other pipelines can run, but use the default name
 ```
 
 **Additional details**:

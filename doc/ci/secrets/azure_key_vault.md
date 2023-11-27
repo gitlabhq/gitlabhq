@@ -81,7 +81,7 @@ Caller is not authorized to perform action on resource.\r\nIf role assignments, 
 ForbiddenByRbac
 ```
 
-If your Azure Key Vault is using RBAC, you must add the **Key Vault Secrets User** to your Azure AD
+If your Azure Key Vault is using RBAC, you must add the **Key Vault Secrets User** role assignment to your Azure AD
 application.
 
 For example:
