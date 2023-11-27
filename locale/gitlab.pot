@@ -28271,6 +28271,9 @@ msgstr ""
 msgid "LearnGitlab|- Included in trial"
 msgstr ""
 
+msgid "LearnGitlab|After your 30-day trial, this feature is available on the %{planName} tier only."
+msgstr ""
+
 msgid "LearnGitlab|Contact your administrator to enable this action."
 msgstr ""
 

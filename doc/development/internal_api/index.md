@@ -467,8 +467,7 @@ Example response:
 ## GitLab agent endpoints
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41045) in GitLab 13.4.
-> - This feature is not deployed on GitLab.com
-> - It's not recommended for production use.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/432773) in GitLab 16.7.
 
 The following endpoints are used by the GitLab agent server (`kas`)
 for various purposes.

@@ -27,18 +27,6 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
-
-    context 'kubernetes_agent_internal_api feature flag disabled' do
-      before do
-        stub_feature_flags(kubernetes_agent_internal_api: false)
-      end
-
-      it 'returns 404' do
-        send_request
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
   end
 
   shared_examples 'agent authentication' do

@@ -30,10 +30,6 @@ module API
           project.repository.gitaly_repository.to_h
         end
 
-        def check_feature_enabled
-          not_found!('Internal API not found') unless Feature.enabled?(:kubernetes_agent_internal_api, type: :ops)
-        end
-
         def check_agent_token
           unauthorized! unless agent_token
 

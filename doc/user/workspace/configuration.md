@@ -178,6 +178,8 @@ remote_development:
   enabled: false
 ```
 
+The `remote_development` module is no longer available when you [create a workspace](#set-up-a-workspace).
+
 If you already have running workspaces, an administrator must manually delete these workspaces in Kubernetes.
 
 ## Related topics

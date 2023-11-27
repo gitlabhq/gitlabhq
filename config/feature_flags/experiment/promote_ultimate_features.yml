@@ -1,0 +1,8 @@
+---
+name: promote_ultimate_features
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136199
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/430868
+milestone: '16.7'
+type: experiment
+group: group::activation
+default_enabled: false

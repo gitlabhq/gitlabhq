@@ -17,8 +17,6 @@ This document covers the future plans for the CI/CD Catalog feature. For informa
 
 ## Summary
 
-## Goals
-
 The goal of the CI/CD pipeline components catalog is to make the reusing
 pipeline configurations easier and more efficient. Providing a way to
 discover, understand and learn how to reuse pipeline constructs allows for a
@@ -107,7 +105,9 @@ identifying abstract concepts and are subject to changes as we refine the design
 - **Template** is a type of component that contains a snippet of CI/CD configuration that can be [included](../../../ci/yaml/includes.md) in a project's pipeline configuration.
 - **Publishing** is the act of listing a version of the resource (for example, a project release) on the Catalog.
 
-## Definition of pipeline component
+## CI component
+
+### Definition of component
 
 A pipeline component is a reusable single-purpose building block that abstracts away a single pipeline configuration unit.
 Components are used to compose a part or entire pipeline configuration.
@@ -155,7 +155,7 @@ predictable. The predictability, determinism, referential transparency and
 making CI components predictable is still important for us, but we may be
 unable to achieve it early iterations.
 
-## Structure of a component
+### Structure of a component
 
 A pipeline component is identified by a unique address in the form `<fqdn>/<component-path>@<version>` containing:
 
@@ -165,12 +165,12 @@ A pipeline component is identified by a unique address in the form `<fqdn>/<comp
 
 For example: `gitlab.com/gitlab-org/dast@1.0`.
 
-### The FQDN
+#### The FQDN
 
 Initially we support only component addresses that point to the same GitLab instance, meaning that the FQDN matches
 the GitLab host.
 
-### The component path
+#### The component path
 
 The directory identified by the component path must contain at least the component YAML and optionally a
 related `README.md` documentation file.
@@ -226,7 +226,7 @@ spec:
 # content of the component
 ```
 
-### The component version
+#### The component version
 
 The version of the component can be (in order of highest priority first):
 
@@ -244,86 +244,37 @@ As we want to be able to reference any revisions (even those not released), a co
 When referencing a component by local path (for example `./path/to/component`), its version is implicit and matches
 the commit SHA of the current pipeline context.
 
-## Components repository
+### Note about future resource types
 
-A components repository is a GitLab project/repository that exclusively hosts one or more pipeline components.
+In the future, to support multiple types of resources in the Catalog we could
+require a file `catalog-resource.yml` to be defined in the root directory of the project:
 
-A components repository can be a catalog resource. For a components repository it's highly recommended to set
-an appropriate avatar and project description to improve discoverability in the catalog.
-
-Components repositories that are released in the catalog must have a `README.md` file at the root directory of the repository.
-The `README.md` represents the documentation of the components repository, hence it's recommended
-even when not listing the repository in the catalog.
-
-### Structure of a components repository
-
-A components repository can host one or more components. The author can decide whether to define a single component
-per repository or include multiple cohesive components in the same repository.
-
-A components repository is identified by the project full path.
-
-Let's imagine we are developing a component that runs RSpec tests for a Rails app. We create a project
-called `myorg/rails-rspec`.
-
-The following directory structure would support 1 component per repository:
-
-```plaintext
-.
-├── template.yml
-├── README.md
-└── .gitlab-ci.yml
+```yaml
+name: DAST
+description: Scan a web endpoint to find vulnerabilities
+category: security
+tags: [dynamic analysis, security scanner]
+type: components_repository
 ```
 
-The `.gitlab-ci.yml` is recommended for the project to ensure changes are verified accordingly.
+This file could also be used for indexing metadata about the content of the resource.
+For example, users could list the components in the repository and we can index
+further data for search purpose:
 
-The component is now identified by the path `gitlab.com/myorg/rails-rspec` which also maps to the
-project path. We expect a `template.yml` file and `README.md` to be located in the root directory of the repository.
-
-The following directory structure would support multiple components per repository:
-
-```plaintext
-.
-├── .gitlab-ci.yml
-├── README.md
-├── unit/
-│   └── template.yml
-├── integration/
-│   └── template.yml
-└── feature/
-    └── template.yml
+```yaml
+name: DAST
+description: Scan a web endpoint to find vulnerabilities
+category: security
+tags: [dynamic analysis, security scanner]
+type: components_repository
+metadata:
+  components:
+    - all-scans
+    - scan-x
+    - scan-y
 ```
 
-In this example we are defining multiple test profiles that are executed with RSpec.
-The user could choose to use one or more of these.
-
-Each of these components are identified by their path `gitlab.com/myorg/rails-rspec/unit`, `gitlab.com/myorg/rails-rspec/integration`
-and `gitlab.com/myorg/rails-rspec/feature`.
-
-This directory structure could also support both strategies:
-
-```plaintext
-.
-├── template.yml       # myorg/rails-rspec
-├── README.md
-├── LICENSE
-├── .gitlab-ci.yml
-├── unit/
-│   └── template.yml   # myorg/rails-rspec/unit
-├── integration/
-│   └── template.yml   # myorg/rails-rspec/integration
-└── feature/
-    └── template.yml   # myorg/rails-rspec/feature
-```
-
-With the above structure we could have a top-level component that can be used as the
-default component. For example, `myorg/rails-rspec` could run all the test profiles together.
-However, more specific test profiles could be used separately (for example `myorg/rails-rspec/integration`).
-
-NOTE:
-Nesting of components is not permitted.
-This limitation encourages cohesion at project level and keeps complexity low.
-
-## `spec:inputs:` parameters
+## Input parameters
 
 If the component takes any input parameters they must be specified according to the following schema:
 
@@ -521,6 +472,85 @@ spec:
 # rest of the pipeline config
 ```
 
+## Components repository
+
+A components repository is a GitLab project/repository that exclusively hosts one or more pipeline components.
+
+A components repository can be a catalog resource. For a components repository it's highly recommended to set
+an appropriate avatar and project description to improve discoverability in the catalog.
+
+Components repositories that are released in the catalog must have a `README.md` file at the root directory of the repository.
+The `README.md` represents the documentation of the components repository, hence it's recommended
+even when not listing the repository in the catalog.
+
+### Structure of a components repository
+
+A components repository can host one or more components. The author can decide whether to define a single component
+per repository or include multiple cohesive components in the same repository.
+
+A components repository is identified by the project full path.
+
+Let's imagine we are developing a component that runs RSpec tests for a Rails app. We create a project
+called `myorg/rails-rspec`.
+
+The following directory structure would support 1 component per repository:
+
+```plaintext
+.
+├── template.yml
+├── README.md
+└── .gitlab-ci.yml
+```
+
+The `.gitlab-ci.yml` is recommended for the project to ensure changes are verified accordingly.
+
+The component is now identified by the path `gitlab.com/myorg/rails-rspec` which also maps to the
+project path. We expect a `template.yml` file and `README.md` to be located in the root directory of the repository.
+
+The following directory structure would support multiple components per repository:
+
+```plaintext
+.
+├── .gitlab-ci.yml
+├── README.md
+├── unit/
+│   └── template.yml
+├── integration/
+│   └── template.yml
+└── feature/
+    └── template.yml
+```
+
+In this example we are defining multiple test profiles that are executed with RSpec.
+The user could choose to use one or more of these.
+
+Each of these components are identified by their path `gitlab.com/myorg/rails-rspec/unit`, `gitlab.com/myorg/rails-rspec/integration`
+and `gitlab.com/myorg/rails-rspec/feature`.
+
+This directory structure could also support both strategies:
+
+```plaintext
+.
+├── template.yml       # myorg/rails-rspec
+├── README.md
+├── LICENSE
+├── .gitlab-ci.yml
+├── unit/
+│   └── template.yml   # myorg/rails-rspec/unit
+├── integration/
+│   └── template.yml   # myorg/rails-rspec/integration
+└── feature/
+    └── template.yml   # myorg/rails-rspec/feature
+```
+
+With the above structure we could have a top-level component that can be used as the
+default component. For example, `myorg/rails-rspec` could run all the test profiles together.
+However, more specific test profiles could be used separately (for example `myorg/rails-rspec/integration`).
+
+NOTE:
+Nesting of components is not permitted.
+This limitation encourages cohesion at project level and keeps complexity low.
+
 ## CI Catalog
 
 The CI Catalog is an index of resources that users can leverage in CI/CD. It initially
@@ -546,7 +576,7 @@ Once a project is marked as a "catalog resource" it can eventually be displayed 
 We could create a database record when the setting is enabled and modify the record's state when
 the same is disabled.
 
-## Catalog resource
+### Catalog resource
 
 Upon publishing, a catalog resource should have at least following attributes:
 
@@ -574,7 +604,7 @@ be listed in the catalog resource's page for various reasons:
 To list a catalog resource in the Catalog we first need to create a release for
 the project.
 
-## Releasing new resource versions to the Catalog
+### Releasing new resource versions to the Catalog
 
 The versions that will be published for the resource should be the project
 [releases](../../../user/project/releases/index.md). Creating project releases is an official
@@ -609,36 +639,6 @@ being released and index their data and metadata.
 For example: index the content of `spec:` section for CI components.
 
 See an [example of development workflow](dev_workflow.md) for a components repository.
-
-## Note about future resource types
-
-In the future, to support multiple types of resources in the Catalog we could
-require a file `catalog-resource.yml` to be defined in the root directory of the project:
-
-```yaml
-name: DAST
-description: Scan a web endpoint to find vulnerabilities
-category: security
-tags: [dynamic analysis, security scanner]
-type: components_repository
-```
-
-This file could also be used for indexing metadata about the content of the resource.
-For example, users could list the components in the repository and we can index
-further data for search purpose:
-
-```yaml
-name: DAST
-description: Scan a web endpoint to find vulnerabilities
-category: security
-tags: [dynamic analysis, security scanner]
-type: components_repository
-metadata:
-  components:
-    - all-scans
-    - scan-x
-    - scan-y
-```
 
 ## Implementation guidelines
 
