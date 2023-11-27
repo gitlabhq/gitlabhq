@@ -18,7 +18,6 @@ Style/SingleArgumentDig:
     - 'ee/app/workers/concerns/elastic/migration_helper.rb'
     - 'ee/lib/gitlab/ci/parsers/security/dependency_list.rb'
     - 'ee/lib/gitlab/subscription_portal/clients/graphql.rb'
-    - 'ee/spec/elastic/migrate/20220119120500_populate_commit_permissions_in_main_index_spec.rb'
     - 'ee/spec/graphql/mutations/vulnerabilities/create_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/parsers/security/common_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/pipeline/chain/validate/external_spec.rb'

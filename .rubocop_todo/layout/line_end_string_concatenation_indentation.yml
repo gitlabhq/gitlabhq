@@ -67,7 +67,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/app/services/merge_trains/create_pipeline_service.rb'
     - 'ee/app/services/system_notes/epics_service.rb'
     - 'ee/app/workers/concerns/elastic/migration_obsolete.rb'
-    - 'ee/elastic/migrate/20220613120500_migrate_commits_to_separate_index.rb'
     - 'ee/lib/api/experiments.rb'
     - 'ee/lib/api/ldap_group_links.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/access.rb'

@@ -402,7 +402,7 @@ actually want to hold up GitLab.com deployments on advanced search migrations,
 as they may still have another week to go, and that's too long to block
 deployments.
 
-### Process for removing migrations
+### Process for marking migrations as obsolete
 
 For every migration that was created 2 minor versions before the major version
 being upgraded to, we do the following:
@@ -415,8 +415,17 @@ being upgraded to, we do the following:
    ```
 
 1. Delete any spec files to support this migration.
+1. Verify that there are no references of the migration in the `.rubocop_todo/` directory.
 1. Remove any logic handling backwards compatibility for this migration. You
    can find this by looking for
    `Elastic::DataMigrationService.migration_has_finished?(:migration_name_in_lowercase)`.
 1. Create a merge request with these changes. Noting that we should not
    accidentally merge this before the major release is started.
+
+### Process for removing migrations
+
+1. Select migrations that were marked as obsolete before the current major release
+1. If the step above includes all obsolete migrations, please keep one last migration as a safeguard for customers with unapplied migrations
+1. Delete migration files and spec files for those migrations
+1. Verify that there are no references of the migrations in the `.rubocop_todo/` directory.
+1. Create a merge request and assign it to a team member from the global search team.

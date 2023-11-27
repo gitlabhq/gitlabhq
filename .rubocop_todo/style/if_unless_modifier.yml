@@ -553,7 +553,6 @@ Style/IfUnlessModifier:
     - 'ee/app/workers/security/orchestration_policy_rule_schedule_namespace_worker.rb'
     - 'ee/db/geo/migrate/20170627195211_add_index_to_project_registry.rb'
     - 'ee/db/geo/migrate/20180402170913_add_missing_on_primary_to_job_artifact_registry..rb'
-    - 'ee/elastic/migrate/20220119120500_populate_commit_permissions_in_main_index.rb'
     - 'ee/lib/api/merge_request_approval_rules.rb'
     - 'ee/lib/api/protected_environments.rb'
     - 'ee/lib/audit/details.rb'

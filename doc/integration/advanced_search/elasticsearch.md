@@ -603,7 +603,7 @@ This should return something similar to:
       {
         "_index": "gitlab-production-migrations",
         "_type": "_doc",
-        "_id": "20201105181100",
+        "_id": "20230209195404",
         "_score": 1,
         "_source": {
           "completed": true

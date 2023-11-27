@@ -94,7 +94,6 @@ Style/SymbolProc:
     - 'ee/lib/gitlab/contribution_analytics/data_collector.rb'
     - 'ee/lib/gitlab/custom_file_templates.rb'
     - 'ee/lib/gitlab/geo/oauth/logout_state.rb'
-    - 'ee/spec/elastic/migrate/20220118150500_delete_orphaned_commits_spec.rb'
     - 'ee/spec/factories/issues.rb'
     - 'ee/spec/features/billings/qrtly_reconciliation_alert_spec.rb'
     - 'ee/spec/helpers/ee/geo_helper_spec.rb'

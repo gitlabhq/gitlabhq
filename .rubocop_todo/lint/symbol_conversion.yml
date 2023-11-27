@@ -18,7 +18,6 @@ Lint/SymbolConversion:
     - 'ee/spec/controllers/admin/audit_logs_controller_spec.rb'
     - 'ee/spec/controllers/groups/audit_events_controller_spec.rb'
     - 'ee/spec/controllers/projects/audit_events_controller_spec.rb'
-    - 'ee/spec/elastic/migrate/20220613120500_migrate_commits_to_separate_index_spec.rb'
     - 'ee/spec/factories/vulnerabilities/findings.rb'
     - 'ee/spec/features/admin/subscriptions/admin_views_subscription_spec.rb'
     - 'ee/spec/graphql/resolvers/security_report_summary_resolver_spec.rb'

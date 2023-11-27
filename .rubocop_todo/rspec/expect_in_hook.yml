@@ -5,8 +5,6 @@ RSpec/ExpectInHook:
     - 'ee/spec/controllers/groups/analytics/productivity_analytics_controller_spec.rb'
     - 'ee/spec/controllers/groups/seat_usage_controller_spec.rb'
     - 'ee/spec/controllers/subscriptions_controller_spec.rb'
-    - 'ee/spec/elastic/migrate/20220118150500_delete_orphaned_commits_spec.rb'
-    - 'ee/spec/elastic/migrate/20220119120500_populate_commit_permissions_in_main_index_spec.rb'
     - 'ee/spec/features/billings/billing_plans_spec.rb'
     - 'ee/spec/features/boards/new_issue_spec.rb'
     - 'ee/spec/features/projects/feature_flags/user_creates_feature_flag_spec.rb'

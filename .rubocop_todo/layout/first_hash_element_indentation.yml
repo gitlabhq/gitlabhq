@@ -65,7 +65,6 @@ Layout/FirstHashElementIndentation:
     - 'ee/spec/controllers/projects/repositories_controller_spec.rb'
     - 'ee/spec/controllers/projects/vulnerability_feedback_controller_spec.rb'
     - 'ee/spec/controllers/projects_controller_spec.rb'
-    - 'ee/spec/elastic/migrate/20220118150500_delete_orphaned_commits_spec.rb'
     - 'ee/spec/elastic/migrate/migration_shared_examples.rb'
     - 'ee/spec/factories/dependencies.rb'
     - 'ee/spec/factories/licenses.rb'

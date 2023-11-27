@@ -38,7 +38,6 @@ Gitlab/AvoidGitlabInstanceChecks:
     - 'config/initializers/rack_multipart_patch.rb'
     - 'config/initializers/validate_puma.rb'
     - 'config/initializers/warden.rb'
-    - 'ee/app/components/namespaces/storage/limit_alert_component.rb'
     - 'ee/app/controllers/admin/namespace_limits_controller.rb'
     - 'ee/app/controllers/ee/admin/users_controller.rb'
     - 'ee/app/controllers/ee/application_controller.rb'

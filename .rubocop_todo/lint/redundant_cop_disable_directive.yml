@@ -135,7 +135,6 @@ Lint/RedundantCopDisableDirective:
     - 'ee/lib/gitlab/status_page/storage/object.rb'
     - 'ee/spec/controllers/concerns/gitlab_subscriptions/seat_count_alert_spec.rb'
     - 'ee/spec/controllers/concerns/routable_actions_spec.rb'
-    - 'ee/spec/elastic/migrate/20221026082700_backfill_users_spec.rb'
     - 'ee/spec/features/boards/user_visits_board_spec.rb'
     - 'ee/spec/features/groups/settings/domain_verification_spec.rb'
     - 'ee/spec/helpers/ee/releases_helper_spec.rb'
