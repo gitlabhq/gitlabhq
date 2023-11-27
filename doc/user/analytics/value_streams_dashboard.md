@@ -73,7 +73,7 @@ These scoring are based on Google's classifications in the [DORA 2022 Accelerate
 
 ### Filter by project topics
 
-When used in combination with a [YAML configuration](#using-yaml-configuration), you can filter the projects shown based on their assigned [topics](../project/working_with_projects.md#organizing-projects-with-topics).
+When used in combination with a [YAML configuration](#using-yaml-configuration), you can filter the projects shown based on their assigned [topics](../project/settings/project_features_permissions.md#project-topics).
 
 ```yaml
 panels:

@@ -30,7 +30,7 @@ For example, if an external user is added as Guest, and your project is internal
 private, they do not have access to the code; you need to grant the external
 user access at the Reporter level or above if you want them to have access to the code. You should
 always take into account the
-[project's visibility](../user/public_access.md#change-project-visibility) and [permissions settings](../user/project/settings/index.md#configure-project-features-and-permissions)
+[project's visibility](../user/public_access.md#change-project-visibility) and [permissions settings](../user/project/settings/project_features_permissions.md#configure-project-features-and-permissions)
 as well as the permission level of the user.
 
 NOTE:

@@ -51,7 +51,7 @@ Prerequisites:
    - **Public** and **Internal** projects can be selected by any authenticated user.
    - **Private** projects can be selected only by members of that project.
 1. Review the project's
-   [feature settings](../user/project/settings/index.md#configure-project-features-and-permissions).
+   [feature settings](../user/project/settings/project_features_permissions.md#configure-project-features-and-permissions).
    All enabled project features should be set to **Everyone With Access**, except
    **GitLab Pages** and **Security and Compliance**.
 

@@ -20,23 +20,6 @@ Prerequisites:
 1. To display all settings in a section, select **Expand**.
 1. Optional. Use the search box to find a setting.
 
-## Assign topics to a project
-
-Use [topics](../working_with_projects.md#organizing-projects-with-topics) to categorize projects and find similar new projects.
-
-To assign topics to a project:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
-1. In the **Topics** text box, enter the project topics. Popular topics are suggested as you type.
-1. Select **Save changes**.
-
-If you're an instance administrator, you can administer all project topics from the
-[Admin Area's Topics page](../../../administration/admin_area.md#administering-topics).
-
-NOTE:
-The assigned topics are visible only to users with access to the project, but everyone can see which topics exist on the GitLab instance. Do not include sensitive information in the name of a topic.
-
 ## Rename a repository
 
 A project's repository name defines its URL and its place on the file disk
@@ -57,40 +40,6 @@ To rename a repository:
 1. Expand **Advanced**.
 1. In the **Change path** text box, edit the path.
 1. Select **Change path**.
-
-## Configure project features and permissions
-
-To configure features and permissions for a project:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
-1. Expand **Visibility, project features, permissions**.
-1. To allow users to request access to the project, select the **Users can request access** checkbox.
-1. To enable or disable features in the project, use the feature toggles.
-1. Select **Save changes**.
-
-When you disable a feature, the following additional features are also disabled:
-
-- If you disable the **Issues** feature, project users cannot use:
-
-  - **Issue Boards**
-  - **Service Desk**
-  - Project users can still access **Milestones** from merge requests.
-
-- If you disable **Issues** and **Merge Requests**, project users cannot use:
-
-  - **Labels**
-  - **Milestones**
-
-- If you disable **Repository**, project users cannot access:
-
-  - **Merge requests**
-  - **CI/CD**
-  - **Git Large File Storage**
-  - **Packages**
-
-- The metrics dashboard requires read access to project environments and deployments.
-  Users with access to the metrics dashboard can also access environments and deployments.
 
 ## Configure merge request settings for a project
 
@@ -216,42 +165,6 @@ To restore a project marked for deletion:
 1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. In the Restore project section, select **Restore project**.
-
-## Disable project analytics
-
-By default, [analytics for a project](../../analytics/index.md#project-level-analytics) are displayed under the **Analyze** item in the left sidebar.
-To disable this feature and remove the **Analyze** item from the left sidebar:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
-1. Expand **Visibility, project features, permissions**.
-1. Turn off the **Analytics** toggle.
-1. Select **Save changes**.
-
-## Disable CVE identifier request in issues **(FREE SAAS)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41203) in GitLab 13.4, only for public projects on GitLab.com.
-
-In some environments, users can submit a [CVE identifier request](../../application_security/cve_id_request.md) in an issue.
-
-To disable the CVE identifier request option in issues in your project:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
-1. Expand **Visibility, project features, permissions**.
-1. Under **Issues**, turn off the **CVE ID requests in the issue sidebar** toggle.
-1. Select **Save changes**.
-
-## Disable project email notifications
-
-Prerequisites:
-
-- You must have the Owner role for the project.
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
-1. Expand **Visibility, project features, permissions**.
-1. Clear the **Disable email notifications** checkbox.
 
 ## Related topics
 

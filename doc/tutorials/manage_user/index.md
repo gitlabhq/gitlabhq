@@ -424,36 +424,3 @@ directly to the project.
 You have successfully added three users who are members of subgroups to a project
 in the parent group, and given those users specific roles in the project and
 parent group.
-
-## Change the visibility of individual features in a project
-
-You have already seen how you can control access to and permissions in groups and
-projects by assigning roles.
-
-You can also change the visibility of individual features in a project. You cannot
-do this for groups.
-
-1. On the left sidebar, select **Search or go to** and find the **Release 2.0** project.
-1. Select **Settings > General**.
-1. Expand **Visibility, project features, permissions**.
-1. In **Project visibility**, you can who can see the project in the public access
-   directory. Because the parent group is private, you can only select **Private**.
-
-You will now use the toggle by each feature to turn features on or off, or change access for.
-
-1. For **Issues**, leave the feature turned on.
-1. In the **Repository** section:
-   - Leave **Merge requests** and **Forks** turned on.
-   - Turn off **Git Large File Storage (LFS)** and **CI/CD**.
-1. For **Analytics**, **Security and Compliance**, **Wiki**, **Snippets**, and
-   **Package registry**, leave these features turned on.
-1. Turn off **Monitor**, **Environments**, **Feature flags**, **Infrastructure**,
-   and **Releases**.
-1. Select the **Disable email notifications** checkbox. Leave the other checkboxes as is.
-1. Select **Save changes**.
-
-You have changed the visibility of individual features in a project. Now, regardless
-of role, the members of this project cannot access the features that you have turned off.
-
-In this tutorial, you've set up your groups, subgroups, projects, and members
-with roles precisely to reflect the structure and workflow of your organization.

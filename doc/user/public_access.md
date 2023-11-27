@@ -75,6 +75,20 @@ Prerequisites:
    as the visibility of its parent group.
 1. Select **Save changes**.
 
+## Change the visibility of individual features in a project
+
+You can change the visibility of individual features in a project.
+
+Prerequisites:
+
+- You must have the Owner role for the project.
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
+1. Use the toggle by each feature you want to turn on or off, or change access for.
+1. Select **Save changes**.
+
 ## Change group visibility
 
 You can change the visibility of all projects in a group.
@@ -100,10 +114,6 @@ Administrators can restrict which visibility levels users can choose when they c
 This setting can help prevent users from publicly exposing their repositories by accident.
 
 For more information, see [Restrict visibility levels](../administration/settings/visibility_and_access_controls.md#restrict-visibility-levels).
-
-## Related topics
-
-- [Change the visibility of features](project/working_with_projects.md#change-the-visibility-of-individual-features-in-a-project)
 
 <!-- ## Troubleshooting
 

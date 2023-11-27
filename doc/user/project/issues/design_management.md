@@ -23,7 +23,7 @@ For a video overview, see [Design Management (GitLab 12.2)](https://www.youtube.
   - On self-managed instances, a GitLab administrator must
     [enable LFS globally](../../../administration/lfs/index.md).
   - On both GitLab.com and self-managed instances, LFS must be
-    [enabled for the project itself](../settings/index.md#configure-project-features-and-permissions).
+    [enabled for the project itself](../settings/project_features_permissions.md#configure-project-features-and-permissions).
     If enabled globally, LFS is enabled by default for all projects. If you have
     disabled it for your project, you must enable it again.
 

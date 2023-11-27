@@ -17,7 +17,7 @@ Prerequisites:
   [email sub-addressing](../../../administration/incoming_email.md#email-sub-addressing),
   but you can also use [catch-all mailboxes](../../../administration/incoming_email.md#catch-all-mailbox).
   To do this, you must have administrator access.
-- You must have enabled [issue](../settings/index.md#configure-project-features-and-permissions)
+- You must have enabled [issue](../settings/project_features_permissions.md#configure-project-features-and-permissions)
   tracker for the project.
 
 To enable Service Desk in your project:

@@ -238,7 +238,7 @@ To [Create a new group](../user/group/index.md#create-a-group) select **New grou
 - > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340920) in GitLab 14.4.
 - > Merging topics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366884) in GitLab 15.5.
 
-[Topics](../user/project/working_with_projects.md#explore-topics) are used to categorize and find similar projects.
+[Topics](../user/project/settings/project_features_permissions.md#project-topics) are used to categorize and find similar projects.
 
 ### View all topics
 

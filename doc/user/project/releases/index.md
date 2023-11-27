@@ -360,7 +360,7 @@ Releases can be made accessible to non-project members while keeping repository-
 projects that use releases as a way to give access to new versions of software but do not want the source code to
 be public.
 
-To make releases available publicly, set the following [project settings](../settings/index.md#configure-project-features-and-permissions):
+To make releases available publicly, set the following [project settings](../settings/project_features_permissions.md#configure-project-features-and-permissions):
 
 - Repository is enabled and set to **Only Project Members**
 - Releases is enabled and set to **Everyone With Access**

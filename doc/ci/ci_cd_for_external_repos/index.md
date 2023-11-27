@@ -18,7 +18,7 @@ external repository to get the benefits of GitLab CI/CD.
 Connecting an external repository sets up [repository mirroring](../../user/project/repository/mirror/index.md)
 and creates a lightweight project with issues, merge requests, wiki, and
 snippets disabled. These features
-[can be re-enabled later](../../user/project/settings/index.md#configure-project-features-and-permissions).
+[can be re-enabled later](../../user/project/settings/project_features_permissions.md#configure-project-features-and-permissions).
 
 ## Connect to an external repository
 

@@ -46,7 +46,7 @@ In a group, GitLab displays milestones that belong to the group and all projects
 ### View milestones in a project with issues turned off
 
 If a project has issue tracking
-[turned off](../settings/index.md#configure-project-features-and-permissions),
+[turned off](../settings/project_features_permissions.md#configure-project-features-and-permissions),
 to get to the milestones page, enter its URL.
 
 To do so:
