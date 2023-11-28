@@ -684,8 +684,8 @@ The documented examples specify `-virtual-storage default`. Check the Praefect s
 ### Check that repositories are in sync
 
 Is [some cases](index.md#known-issues) the Praefect database can get out of sync with the underlying Gitaly nodes. To check that
-a given repository is fully synced on all nodes, run the [`gitlab:praefect:replicas` Rake task](../raketasks/praefect.md#replica-checksums)
-that checksums the repository on all Gitaly nodes.
+a given repository is fully synced on all nodes, run the [`gitlab:praefect:replicas` Rake task](../raketasks/praefect.md#replica-checksums) on your Rails node.
+This Rake task checksums the repository on all Gitaly nodes.
 
 The [Praefect `dataloss`](recovery.md#check-for-data-loss) command only checks the state of the repository in the Praefect database, and cannot
 be relied to detect sync problems in this scenario.

@@ -726,6 +726,9 @@ sudo -u git -H make
 ### Install Gitaly
 
 ```shell
+# Create and restrict access to the git repository data directory
+sudo install -d -o git -m 0700 /home/git/repositories
+
 # Fetch Gitaly source with Git and compile with Go
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,/home/git/repositories]" RAILS_ENV=production
