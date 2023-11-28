@@ -20,6 +20,7 @@ class PagesDeployment < ApplicationRecord
   scope :with_files_stored_locally, -> { where(file_store: ::ObjectStorage::Store::LOCAL) }
   scope :with_files_stored_remotely, -> { where(file_store: ::ObjectStorage::Store::REMOTE) }
   scope :project_id_in, ->(ids) { where(project_id: ids) }
+  scope :ci_build_id_in, ->(ids) { where(ci_build_id: ids) }
   scope :with_path_prefix, ->(prefix) { where("COALESCE(path_prefix, '') = ?", prefix.to_s) }
 
   # We have to mark the PagesDeployment upload as ready to ensure we only
@@ -28,6 +29,7 @@ class PagesDeployment < ApplicationRecord
 
   scope :active, -> { upload_ready.where(deleted_at: nil).order(created_at: :desc) }
   scope :deactivated, -> { where('deleted_at < ?', Time.now.utc) }
+  scope :versioned, -> { where.not(path_prefix: [nil, '']) }
 
   validates :file, presence: true
   validates :file_store, presence: true, inclusion: { in: ObjectStorage::SUPPORTED_STORES }
@@ -60,6 +62,10 @@ class PagesDeployment < ApplicationRecord
       .project_id_in(deployment.project_id)
       .with_path_prefix(deployment.path_prefix)
       .update_all(updated_at: now, deleted_at: time || now)
+  end
+
+  def self.deactivate
+    update(deleted_at: Time.now.utc)
   end
 
   private

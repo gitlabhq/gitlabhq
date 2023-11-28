@@ -1002,7 +1002,8 @@ CREATE TABLE analytics_cycle_analytics_issue_stage_events (
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 )
 PARTITION BY HASH (stage_event_hash_id);
 
@@ -1017,7 +1018,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_01 (
@@ -1031,7 +1033,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_02 (
@@ -1045,7 +1048,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_03 (
@@ -1059,7 +1063,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_04 (
@@ -1073,7 +1078,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_05 (
@@ -1087,7 +1093,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_06 (
@@ -1101,7 +1108,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_07 (
@@ -1115,7 +1123,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_08 (
@@ -1129,7 +1138,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_09 (
@@ -1143,7 +1153,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_10 (
@@ -1157,7 +1168,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_11 (
@@ -1171,7 +1183,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_12 (
@@ -1185,7 +1198,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_13 (
@@ -1199,7 +1213,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_14 (
@@ -1213,7 +1228,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_15 (
@@ -1227,7 +1243,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_16 (
@@ -1241,7 +1258,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_17 (
@@ -1255,7 +1273,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_18 (
@@ -1269,7 +1288,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_19 (
@@ -1283,7 +1303,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_20 (
@@ -1297,7 +1318,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_21 (
@@ -1311,7 +1333,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_22 (
@@ -1325,7 +1348,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_23 (
@@ -1339,7 +1363,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_24 (
@@ -1353,7 +1378,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_25 (
@@ -1367,7 +1393,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_26 (
@@ -1381,7 +1408,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_27 (
@@ -1395,7 +1423,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_28 (
@@ -1409,7 +1438,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_29 (
@@ -1423,7 +1453,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_30 (
@@ -1437,7 +1468,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_31 (
@@ -1451,7 +1483,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL,
     weight integer,
-    sprint_id bigint
+    sprint_id bigint,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE analytics_cycle_analytics_merge_request_stage_events (
@@ -1463,7 +1496,8 @@ CREATE TABLE analytics_cycle_analytics_merge_request_stage_events (
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 )
 PARTITION BY HASH (stage_event_hash_id);
 
@@ -1476,7 +1510,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_01 (
@@ -1488,7 +1523,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_02 (
@@ -1500,7 +1536,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_03 (
@@ -1512,7 +1549,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_04 (
@@ -1524,7 +1562,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_05 (
@@ -1536,7 +1575,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_06 (
@@ -1548,7 +1588,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_07 (
@@ -1560,7 +1601,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_08 (
@@ -1572,7 +1614,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_09 (
@@ -1584,7 +1627,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_10 (
@@ -1596,7 +1640,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_11 (
@@ -1608,7 +1653,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_12 (
@@ -1620,7 +1666,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_13 (
@@ -1632,7 +1679,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_14 (
@@ -1644,7 +1692,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_15 (
@@ -1656,7 +1705,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_16 (
@@ -1668,7 +1718,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_17 (
@@ -1680,7 +1731,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_18 (
@@ -1692,7 +1744,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_19 (
@@ -1704,7 +1757,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_20 (
@@ -1716,7 +1770,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_21 (
@@ -1728,7 +1783,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_22 (
@@ -1740,7 +1796,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_23 (
@@ -1752,7 +1809,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_24 (
@@ -1764,7 +1822,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_25 (
@@ -1776,7 +1835,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_26 (
@@ -1788,7 +1848,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_27 (
@@ -1800,7 +1861,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_28 (
@@ -1812,7 +1874,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_29 (
@@ -1824,7 +1887,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_30 (
@@ -1836,7 +1900,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_31 (
@@ -1848,7 +1913,8 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     author_id bigint,
     start_event_timestamp timestamp with time zone NOT NULL,
     end_event_timestamp timestamp with time zone,
-    state_id smallint DEFAULT 1 NOT NULL
+    state_id smallint DEFAULT 1 NOT NULL,
+    duration_in_milliseconds bigint
 );
 
 CREATE TABLE issue_search_data (

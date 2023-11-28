@@ -119,6 +119,10 @@ module MergeRequests
       Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter
     end
 
+    def deactivate_pages_deployments(merge_request)
+      Pages::DeactivateMrDeploymentsWorker.perform_async(merge_request)
+    end
+
     private
 
     def self.constructor_container_arg(value)

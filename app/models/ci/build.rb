@@ -184,6 +184,10 @@ module Ci
     scope :without_coverage, -> { where(coverage: nil) }
     scope :with_coverage_regex, -> { where.not(coverage_regex: nil) }
 
+    scope :in_merge_request, ->(merge_request) do
+      joins(:pipeline).where(Ci::Pipeline.arel_table[:merge_request_id].eq(merge_request))
+    end
+
     acts_as_taggable
 
     add_authentication_token_field :token,
@@ -365,6 +369,10 @@ module Ci
           project: project
         })
       end
+    end
+
+    def self.ids_in_merge_request(merge_request_ids)
+      in_merge_request(merge_request_ids).pluck(:id)
     end
 
     def build_matcher

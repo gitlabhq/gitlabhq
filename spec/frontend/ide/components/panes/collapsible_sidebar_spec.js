@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import IdeSidebarNav from '~/ide/components/ide_sidebar_nav.vue';
@@ -37,30 +37,25 @@ describe('ide/components/panes/collapsible_sidebar.vue', () => {
   });
 
   describe('with a tab', () => {
-    let fakeView;
-    let extensionTabs;
-
-    beforeEach(() => {
-      const FakeComponent = Vue.component(fakeComponentName, {
-        render: () => null,
-      });
-
-      fakeView = {
-        name: fakeComponentName,
-        keepAlive: true,
-        component: FakeComponent,
-      };
-
-      extensionTabs = [
-        {
-          show: true,
-          title: fakeComponentName,
-          views: [fakeView],
-          icon: 'text-description',
-          buttonClasses: ['button-class-1', 'button-class-2'],
-        },
-      ];
+    const FakeComponent = Vue.component(fakeComponentName, {
+      render: () => null,
     });
+
+    const fakeView = {
+      name: fakeComponentName,
+      keepAlive: true,
+      component: FakeComponent,
+    };
+
+    const extensionTabs = [
+      {
+        show: true,
+        title: fakeComponentName,
+        views: [fakeView],
+        icon: 'text-description',
+        buttonClasses: ['button-class-1', 'button-class-2'],
+      },
+    ];
 
     describe.each`
       side
@@ -79,10 +74,6 @@ describe('ide/components/panes/collapsible_sidebar.vue', () => {
         expect(findSidebarNav().props('side')).toBe(side);
       });
 
-      it('nothing is dispatched', () => {
-        expect(store.dispatch).not.toHaveBeenCalled();
-      });
-
       it('when sidebar emits open, dispatch open', () => {
         const view = 'lorem-view';
 
@@ -95,6 +86,13 @@ describe('ide/components/panes/collapsible_sidebar.vue', () => {
         findSidebarNav().vm.$emit('close');
 
         expect(store.dispatch).toHaveBeenCalledWith(`${side}Pane/toggleOpen`);
+      });
+    });
+
+    describe('when side bar is rendered initially', () => {
+      it('nothing is dispatched', () => {
+        createComponent({ extensionTabs });
+        expect(store.dispatch).not.toHaveBeenCalled();
       });
     });
 
@@ -125,25 +123,15 @@ describe('ide/components/panes/collapsible_sidebar.vue', () => {
     });
 
     describe('with initOpenView that does not exist', () => {
-      beforeEach(async () => {
-        createComponent({ extensionTabs, initOpenView: 'does-not-exist' });
-
-        await nextTick();
-      });
-
       it('nothing is dispatched', () => {
+        createComponent({ extensionTabs, initOpenView: 'does-not-exist' });
         expect(store.dispatch).not.toHaveBeenCalled();
       });
     });
 
     describe('with initOpenView that does exist', () => {
-      beforeEach(async () => {
-        createComponent({ extensionTabs, initOpenView: fakeView.name });
-
-        await nextTick();
-      });
-
       it('dispatches open with view on create', () => {
+        createComponent({ extensionTabs, initOpenView: fakeView.name });
         expect(store.dispatch).toHaveBeenCalledWith('rightPane/open', fakeView);
       });
     });

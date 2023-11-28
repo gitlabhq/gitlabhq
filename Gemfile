@@ -28,8 +28,6 @@ gem 'rails', '~> 7.0.8' # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem 'activerecord-gitlab', path: 'gems/activerecord-gitlab' # rubocop:todo Gemfile/MissingFeatureCategory
 
-gem 'vite_rails' # rubocop:todo Gemfile/MissingFeatureCategory
-
 gem 'bootsnap', '~> 1.17.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem 'openssl', '~> 3.0' # rubocop:todo Gemfile/MissingFeatureCategory
@@ -453,6 +451,11 @@ group :development, :test do
   gem 'sigdump', '~> 0.2.4', require: 'sigdump/setup' # rubocop:todo Gemfile/MissingFeatureCategory
 
   gem 'pact', '~> 1.63' # rubocop:todo Gemfile/MissingFeatureCategory
+
+  # For now we only use vite in development / test, and not for production builds
+  # See: https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/106
+  gem 'vite_rails', '~> 3.0.17', feature_category: :shared
+  gem 'vite_ruby', '~> 3.5.0', feature_category: :shared
 end
 
 group :development, :test, :danger do

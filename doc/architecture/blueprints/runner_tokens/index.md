@@ -359,8 +359,9 @@ scope.
 
 | Component        | Milestone | Issue | Changes |
 |------------------|----------:|-------|---------|
-|GitLab Runner Helm Chart| `%15.10` | Update the Runner Helm Chart to support registration with the authentication token. |
-|GitLab Runner Operator| `%15.10` | Update the Runner Operator to support registration with the authentication token. |
+| GitLab Runner Helm Chart | `%15.10` | Update the Runner Helm Chart to support registration with the authentication token. |
+| GitLab Runner Operator | `%15.10` | Update the Runner Operator to support registration with the authentication token. |
+| GitLab Runner Helm Chart | `%16.2` | Add `systemID` to Runner Helm Chart. |
 
 ### Stage 3 - Database changes
 

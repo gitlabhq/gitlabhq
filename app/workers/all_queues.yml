@@ -3468,6 +3468,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: pages_deactivate_mr_deployments
+  :worker_name: Pages::DeactivateMrDeploymentsWorker
+  :feature_category: :pages
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: pages_domain_ssl_renewal
   :worker_name: PagesDomainSslRenewalWorker
   :feature_category: :pages

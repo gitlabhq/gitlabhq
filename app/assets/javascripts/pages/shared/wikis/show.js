@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Wikis from './wikis';
 import WikiContent from './components/wiki_content.vue';
-import WikiExport from './components/wiki_export.vue';
+import WikiMoreDropdown from './components/wiki_more_dropdown.vue';
 
 const mountWikiContentApp = () => {
   const el = document.querySelector('.js-async-wiki-page-content');
@@ -25,17 +25,16 @@ const mountWikiExportApp = () => {
   const el = document.querySelector('#js-export-actions');
 
   if (!el) return false;
-  const { target, title, stylesheet } = JSON.parse(el.dataset.options);
+  const { history, print } = JSON.parse(el.dataset.options);
 
   return new Vue({
     el,
     provide: {
-      target,
-      title,
-      stylesheet,
+      history,
+      print,
     },
     render(createElement) {
-      return createElement(WikiExport);
+      return createElement(WikiMoreDropdown);
     },
   });
 };

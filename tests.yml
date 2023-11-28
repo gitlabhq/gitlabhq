@@ -55,6 +55,10 @@ mapping:
   - source: '(ee/)?app/views/(.+)\.haml'
     test: '%sspec/views/%s.haml_spec.rb'
 
+  # EE/FOSS controllers should map to request specs
+  - source: '(ee/)?app/controllers/(.+)\.rb'
+    test: '%sspec/requests/%s_spec.rb'
+
   # EE/FOSS spec code should map to itself
   - source: '(.+)_spec\.rb'
     test: '%s_spec.rb'

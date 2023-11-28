@@ -519,6 +519,8 @@
   - 1
 - - pages
   - 1
+- - pages_deactivate_mr_deployments
+  - 1
 - - pages_domain_ssl_renewal
   - 1
 - - pages_domain_verification

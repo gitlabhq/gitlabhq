@@ -13,7 +13,7 @@ import {
   pypiMetadata,
   packageMetadataQuery,
 } from 'jest/packages_and_registries/package_registry/mock_data';
-import component from '~/packages_and_registries/package_registry/components/details/additional_metadata.vue';
+import AdditionalMetadata from '~/packages_and_registries/package_registry/components/details/additional_metadata.vue';
 import {
   FETCH_PACKAGE_METADATA_ERROR_MESSAGE,
   PACKAGE_TYPE_NUGET,
@@ -52,12 +52,9 @@ describe('Package Additional metadata', () => {
     const requestHandlers = [[getPackageMetadata, resolver]];
     apolloProvider = createMockApollo(requestHandlers);
 
-    wrapper = shallowMountExtended(component, {
+    wrapper = shallowMountExtended(AdditionalMetadata, {
       apolloProvider,
       propsData: { ...defaultProps, ...props },
-      stubs: {
-        component: { template: '<div data-testid="component-is"></div>' },
-      },
     });
   };
 
@@ -91,7 +88,7 @@ describe('Package Additional metadata', () => {
     const title = findTitle();
 
     expect(title.exists()).toBe(true);
-    expect(title.text()).toMatchInterpolatedText(component.i18n.componentTitle);
+    expect(title.text()).toMatchInterpolatedText(AdditionalMetadata.i18n.componentTitle);
   });
 
   it('does not render gl-alert', () => {

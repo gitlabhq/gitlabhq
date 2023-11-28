@@ -12,7 +12,7 @@
   %h1.page-title.gl-font-size-h-display.gl-flex-grow-1
     - if @page.persisted?
       = link_to_wiki_page @page
-      %span.light
+      %span.gl-text-secondary
         &middot;
         = s_("Wiki|Edit Page")
     - else

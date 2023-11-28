@@ -225,6 +225,19 @@ tests = [
     explanation: 'Map EE rake tasks',
     source: 'ee/lib/tasks/geo.rake',
     expected: ['ee/spec/tasks/geo_rake_spec.rb']
+  },
+  {
+    explanation: 'Map controllers to request specs',
+    source: 'app/controllers/admin/abuse_reports_controller.rb',
+    expected: ['spec/requests/admin/abuse_reports_controller_spec.rb']
+  },
+  {
+    explanation: 'Map EE controllers to controller and request specs',
+    source: 'ee/app/controllers/users_controller.rb',
+    expected: [
+      'ee/spec/controllers/users_controller_spec.rb',
+      'ee/spec/requests/users_controller_spec.rb'
+    ]
   }
 ]
 

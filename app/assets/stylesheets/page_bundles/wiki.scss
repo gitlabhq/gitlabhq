@@ -90,8 +90,6 @@
   }
 
   a {
-    color: var(--gray-400, $gray-400);
-
     &:hover,
     &.active {
       text-decoration: none;
@@ -103,18 +101,16 @@
   }
 
   .active > .wiki-list {
-    a,
-    .wiki-list-expand-button,
-    .wiki-list-collapse-button {
-      color: var(--gl-text-color, $gl-text-color);
-    }
+    background-color: $gray-50;
   }
 
   .wiki-list {
-    min-height: $gl-spacing-scale-8;
+    padding: $gl-spacing-scale-2 $gl-spacing-scale-3;
+    margin-bottom: $gl-spacing-scale-1;
+    @include gl-rounded-base;
 
     &:hover {
-      background: $gray-10;
+      background: $gray-50;
 
       .wiki-list-create-child-button {
         display: block;
@@ -148,8 +144,7 @@
     margin: 0;
   }
 
-  ul.wiki-pages ul,
-  ul.wiki-pages li:not(.wiki-directory){
+  ul.wiki-pages ul {
     padding-left: 20px;
   }
 

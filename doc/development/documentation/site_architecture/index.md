@@ -77,3 +77,19 @@ code review. For docs changes in merge requests, whenever a change to files unde
 is made, Danger Bot leaves a comment with further instructions about the documentation
 process. This is configured in the `Dangerfile` in the GitLab repository under
 [/danger/documentation/](https://gitlab.com/gitlab-org/gitlab/-/tree/master/danger/documentation).
+
+## Request a documentation survey banner
+
+To reach to a wider audience, you can request
+[a survey banner](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/maintenance.md#survey-banner).
+
+Only one banner can exist at any given time. Priority is given based on who
+asked for the banner first.
+
+To request a survey banner:
+
+1. [Open an issue](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/new?issue[title]=Survey%20banner%20request&issuable_template=Survey%20banner%20request)
+   in the `gitlab-docs` project and use the "Survey banner request" template.
+1. Fill in the details in the issue description.
+1. Create the issue and someone from the Technical Writing team will handle your request.
+1. When you no longer need the banner, ping the person assigned to the issue and ask them to remove it.

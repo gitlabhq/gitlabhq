@@ -22513,6 +22513,18 @@ Version of a machine learning model.
 | <a id="mlmodelversionid"></a>`id` | [`MlModelVersionID!`](#mlmodelversionid) | ID of the model version. |
 | <a id="mlmodelversionversion"></a>`version` | [`String!`](#string) | Name of the version. |
 
+### `MonthlyUsage`
+
+Product analytics events for a specific month and year.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="monthlyusagecount"></a>`count` | [`Int`](#int) | Count of product analytics events. |
+| <a id="monthlyusagemonth"></a>`month` | [`Int!`](#int) | Month of the data. |
+| <a id="monthlyusageyear"></a>`year` | [`Int!`](#int) | Year of the data. |
+
 ### `Namespace`
 
 #### Fields
@@ -24782,16 +24794,19 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `Project.productAnalyticsEventsStored`
 
-Count of all events used, filtered optionally by month.
+Count of all events used, broken down by month.
 
-Returns [`Int`](#int).
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`[MonthlyUsage!]`](#monthlyusage).
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectproductanalyticseventsstoredmonth"></a>`month` | [`Int`](#int) | Month for the period to return. |
-| <a id="projectproductanalyticseventsstoredyear"></a>`year` | [`Int`](#int) | Year for the period to return. |
+| <a id="projectproductanalyticseventsstoredmonthselection"></a>`monthSelection` | [`[MonthSelectionInput!]!`](#monthselectioninput) | Selection for the period to return. |
 
 ##### `Project.projectMembers`
 
@@ -33419,6 +33434,17 @@ Represents an escalation rule.
 | ---- | ---- | ----------- |
 | <a id="mergerequestsresolvernegatedparamslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will not have these labels. |
 | <a id="mergerequestsresolvernegatedparamsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
+
+### `MonthSelectionInput`
+
+A year and month input for querying product analytics usage data.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="monthselectioninputmonth"></a>`month` | [`Int!`](#int) | Month of the period to return. |
+| <a id="monthselectioninputyear"></a>`year` | [`Int!`](#int) | Year of the period to return. |
 
 ### `NegatedBoardIssueInput`
 
