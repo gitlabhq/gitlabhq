@@ -111,4 +111,24 @@ RSpec.describe 'projects/edit' do
       expect(rendered).to have_content(_('GitLab Pages has moved'))
     end
   end
+
+  describe 'notifications on renaming the project path' do
+    it 'displays the warning regarding the container registry' do
+      render
+
+      expect(rendered).to have_content('new uploads to the container registry are blocked')
+    end
+
+    context 'when the feature renaming_project_with_tags is disabled' do
+      before do
+        stub_feature_flags(renaming_project_with_tags: false)
+      end
+
+      it 'does not display the warning regarding the container registry' do
+        render
+
+        expect(rendered).not_to have_content('new uploads to the container registry are blocked')
+      end
+    end
+  end
 end
