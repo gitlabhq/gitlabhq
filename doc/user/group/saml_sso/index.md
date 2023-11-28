@@ -236,6 +236,8 @@ If the **NameID** is configured with the email address, [change the **NameID** f
 
 ## Configure GitLab
 
+> Ability to set a custom role as the default membership role [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/417285) in GitLab 16.7.
+
 After you set up your identity provider to work with GitLab, you must configure GitLab to use it for authentication:
 
 1. On the left sidebar, select **Search or go to** and find your group.
@@ -244,9 +246,12 @@ After you set up your identity provider to work with GitLab, you must configure 
    - In the **Identity provider single sign-on URL** field, enter the SSO URL from your identity provider.
    - In the **Certificate fingerprint** field, enter the fingerprint for the SAML token signing certificate.
 1. In the **Default membership role** field, select the role to assign to new users.
-   The default role is **Guest**. In [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/214523)
-   and later, group owners can set a default membership role other than **Guest**.
-   That role becomes the starting role of all users added to the group.
+   The default role is **Guest**. That role becomes the starting role of all users
+   added to the group:
+   - In [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/214523) and
+     later, group Owners can set a default membership role other than **Guest**.
+   - In GitLab 16.7 and later, group Owners can set a [custom role](../../custom_roles.md)
+     as the default membership role.
 1. Select the **Enable SAML authentication for this group** checkbox.
 1. Optional. Select:
    - **Enforce SSO-only authentication for web activity for this group**.

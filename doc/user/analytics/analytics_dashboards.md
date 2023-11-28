@@ -77,12 +77,8 @@ You can use the dashboard designer to:
 
 ## Visualization designer
 
-> Introduced in GitLab 16.4 [with a flag](../../administration/feature_flags.md) named `combined_analytics_visualization_editor`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `combined_analytics_visualization_editor`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
+> - Introduced in GitLab 16.4 [with a flag](../../administration/feature_flags.md) named `combined_analytics_visualization_editor`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/425048) in GitLab 16.7. Feature flag `combined_analytics_visualization_editor` removed.
 
 NOTE:
 This feature is only compatible with the [product analytics](../product_analytics/index.md) data source.

@@ -7,11 +7,11 @@ module SshKeysHelper
     {
         path: path,
         method: 'delete',
-        qa_selector: 'delete_ssh_key_button',
+        testid: 'delete-ssh-key-button',
         title: title,
         aria_label: title,
         modal_attributes: {
-            'data-qa-selector': 'ssh_key_delete_modal',
+            'data-testid': 'ssh-key-delete-modal',
             title: _('Are you sure you want to delete this SSH key?'),
             message: _('This action cannot be undone, and will permanently delete the %{key} SSH key') % { key: key.title },
             okVariant: 'danger',

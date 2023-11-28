@@ -31,7 +31,7 @@ of requests dropped due to request limiting. The `reason` label indicates why a 
 
 ## Monitor Gitaly concurrency limiting
 
-You can observe specific behavior of [concurrency-queued requests](configure_gitaly.md#limit-rpc-concurrency) using Gitaly logs and Prometheus.
+You can observe specific behavior of [concurrency-queued requests](concurrency_limiting.md#limit-rpc-concurrency) using Gitaly logs and Prometheus.
 
 In the [Gitaly logs](../logs/index.md#gitaly-logs), you can identify logs related to the pack-objects concurrency limiting with entries such as:
 
@@ -62,7 +62,7 @@ In Prometheus, look for the following metrics:
 
 ## Monitor Gitaly pack-objects concurrency limiting
 
-You can observe specific behavior of [pack-objects limiting](configure_gitaly.md#limit-pack-objects-concurrency) using Gitaly logs and Prometheus.
+You can observe specific behavior of [pack-objects limiting](concurrency_limiting.md#limit-pack-objects-concurrency) using Gitaly logs and Prometheus.
 
 In the [Gitaly logs](../logs/index.md#gitaly-logs), you can identify logs related to the pack-objects concurrency limiting with entries such as:
 
@@ -94,7 +94,7 @@ In Prometheus, look for the following metrics:
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10734) in GitLab 16.6.
 
-You can observe specific behavior of [adaptive concurrency limiting](configure_gitaly.md#adaptive-concurrency-limiting) using Gitaly logs and Prometheus.
+You can observe specific behavior of [adaptive concurrency limiting](concurrency_limiting.md#adaptive-concurrency-limiting) using Gitaly logs and Prometheus.
 
 In the [Gitaly logs](../logs/index.md#gitaly-logs), you can identify logs related to the adaptive concurrency limiting when the current limits are adjusted.
 You can filter the content of the logs (`msg`) for "Multiplicative decrease" and "Additive increase" messages.

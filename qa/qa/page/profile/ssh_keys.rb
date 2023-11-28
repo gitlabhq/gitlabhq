@@ -5,9 +5,9 @@ module QA
     module Profile
       class SSHKeys < Page::Base
         view 'app/views/profiles/keys/_form.html.haml' do
-          element :key_title_field
-          element :key_public_key_field
-          element :add_key_button
+          element 'key-title-field'
+          element 'key-public-key-field'
+          element 'add-key-button'
         end
 
         view 'app/assets/javascripts/access_tokens/components/expires_at_field.vue' do
@@ -15,25 +15,25 @@ module QA
         end
 
         view 'app/helpers/ssh_keys_helper.rb' do
-          element :delete_ssh_key_button
-          element :ssh_key_delete_modal
+          element 'delete-ssh-key-button'
+          element 'ssh-key-delete-modal'
         end
 
         view 'app/views/profiles/keys/_key_table.html.haml' do
-          element :ssh_keys_list
+          element 'ssh-keys-list'
         end
 
         def add_key(public_key, title)
           click_button('Add new key')
 
-          fill_element(:key_public_key_field, public_key)
-          fill_element(:key_title_field, title)
+          fill_element('key-public-key-field', public_key)
+          fill_element('key-title-field', title)
           # Expire in 2 days just in case the key is created just before midnight
           fill_expiry_date(Date.today + 2)
           # Close the datepicker
           find_element('expiry-date-field').find('input').send_keys(:enter)
 
-          click_element(:add_key_button)
+          click_element('add-key-button')
         end
 
         def fill_expiry_date(date)
@@ -50,19 +50,19 @@ module QA
         def remove_key(title)
           click_link(title)
 
-          click_element(:delete_ssh_key_button)
+          click_element('delete-ssh-key-button')
 
           # Retrying due to https://gitlab.com/gitlab-org/gitlab/-/issues/255287
           retry_on_exception do
-            wait_for_animated_element(:ssh_key_delete_modal)
-            within_element(:ssh_key_delete_modal) do
+            wait_for_animated_element('ssh-key-delete-modal')
+            within_element('ssh-key-delete-modal') do
               click_button('Delete')
             end
           end
         end
 
         def keys_list
-          find_element(:ssh_keys_list).text
+          find_element('ssh-keys-list').text
         end
       end
     end

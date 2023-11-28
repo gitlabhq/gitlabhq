@@ -202,7 +202,7 @@ Read more about [pipeline creation rate limits](settings/rate_limit_on_pipelines
 
 Clone traffic can put a large strain on your Gitaly service. To prevent such workloads from overwhelming your Gitaly server, you can set concurrency limits in the Gitaly configuration file.
 
-Read more about [Gitaly concurrency limits](gitaly/configure_gitaly.md#limit-rpc-concurrency).
+Read more about [Gitaly concurrency limits](gitaly/concurrency_limiting.md#limit-rpc-concurrency).
 
 - **Default rate limit**: Disabled.
 

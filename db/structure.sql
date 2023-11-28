@@ -34557,7 +34557,7 @@ CREATE INDEX index_sop_schedules_on_sop_configuration_id ON security_orchestrati
 
 CREATE INDEX index_sop_schedules_on_user_id ON security_orchestration_policy_rule_schedules USING btree (user_id);
 
-CREATE UNIQUE INDEX index_source_package_names_on_component_and_purl ON sbom_components USING btree (component_type, source_package_name, purl_type);
+CREATE INDEX index_source_package_names_on_component_and_purl ON sbom_components USING btree (component_type, source_package_name, purl_type);
 
 CREATE INDEX index_spam_logs_on_user_id ON spam_logs USING btree (user_id);
 

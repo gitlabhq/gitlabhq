@@ -432,7 +432,7 @@ The new tier takes effect when the new license is activated.
 Contacts can renew a subscription, cancel a subscription, or transfer the subscription to a different namespace.
 
 For information about how to transfer ownership of the Customers Portal account to another person, see
-[Change account owner information](../customers_portal.md#change-account-owner-information).
+[Change profile owner information](../customers_portal.md#change-profile-owner-information).
 
 To add a secondary contact for your subscription:
 

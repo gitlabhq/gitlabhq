@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Tracking from '~/tracking';
 import TrackEvent from '~/vue_shared/directives/track_event';
 
@@ -10,34 +10,53 @@ describe('TrackEvent directive', () => {
 
   const clickButton = () => wrapper.find('button').trigger('click');
 
-  const createComponent = (trackingOptions) =>
-    Vue.component('DummyElement', {
-      directives: {
-        TrackEvent,
+  const DummyTrackComponent = Vue.component('DummyTrackComponent', {
+    directives: {
+      TrackEvent,
+    },
+    props: {
+      category: {
+        type: String,
+        required: false,
+        default: '',
       },
-      data() {
-        return {
-          trackingOptions,
-        };
+      action: {
+        type: String,
+        required: false,
+        default: '',
       },
-      template: '<button v-track-event="trackingOptions"></button>',
-    });
+      label: {
+        type: String,
+        required: false,
+        default: '',
+      },
+    },
+    template: '<button v-track-event="{ category, action, label }"></button>',
+  });
 
-  const mountComponent = (trackingOptions) => shallowMount(createComponent(trackingOptions));
+  const mountComponent = ({ propsData = {} } = {}) => {
+    wrapper = shallowMount(DummyTrackComponent, {
+      propsData,
+    });
+  };
 
   it('does not track the event if required arguments are not provided', () => {
-    wrapper = mountComponent();
+    mountComponent();
     clickButton();
 
     expect(Tracking.event).not.toHaveBeenCalled();
   });
 
-  it('tracks event on click if tracking info provided', () => {
-    wrapper = mountComponent({
-      category: 'Tracking',
-      action: 'click_trackable_btn',
-      label: 'Trackable Info',
+  it('tracks event on click if tracking info provided', async () => {
+    mountComponent({
+      propsData: {
+        category: 'Tracking',
+        action: 'click_trackable_btn',
+        label: 'Trackable Info',
+      },
     });
+
+    await nextTick();
     clickButton();
 
     expect(Tracking.event).toHaveBeenCalledWith('Tracking', 'click_trackable_btn', {

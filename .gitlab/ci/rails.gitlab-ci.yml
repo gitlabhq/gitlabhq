@@ -341,21 +341,13 @@ gitlab:setup:
 # These intermediate jobs allow us to collect the artifacts of
 # more than 50 jobs and still use `needs:` to ensure a timely execution
 .artifact-collector:
+  extends: .base-artifacts
   stage: post-test
   variables:
     GIT_STRATEGY: none
   image: alpine:3.17
   script:
-    - mkdir -p coverage deprecations rspec auto_explain
-    - ls coverage/ deprecations/ rspec/ auto_explain/
-  artifacts:
-    expire_in: 7d
-    when: always
-    paths:
-      - coverage/
-      - deprecations/
-      - rspec/
-      - auto_explain/
+    - ls -R
 
 rspec:artifact-collector unit:
   extends:

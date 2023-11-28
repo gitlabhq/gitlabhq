@@ -32,6 +32,34 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
       expect(new_token.previous_personal_access_token).to eql(token)
     end
 
+    context 'when token user has a membership' do
+      context 'when its not a bot user' do
+        let_it_be(:user_membership) do
+          create(:project_member, :developer, user: token.user, project: create(:project))
+        end
+
+        it 'does not update membership expires at' do
+          expect { response }.not_to change { user_membership.reload.expires_at }
+        end
+      end
+
+      context 'when its a bot user' do
+        let_it_be(:bot_user) { create(:user, :project_bot) }
+        let_it_be(:bot_user_membership) do
+          create(:project_member, :developer, user: bot_user, project: create(:project))
+        end
+
+        let_it_be(:token, reload: true) { create(:personal_access_token, user: bot_user) }
+
+        it 'updates membership expires at' do
+          response
+
+          new_token = response.payload[:personal_access_token]
+          expect(bot_user_membership.reload.expires_at).to eq(new_token.expires_at)
+        end
+      end
+    end
+
     context 'when user tries to rotate already revoked token' do
       let_it_be(:token, reload: true) { create(:personal_access_token, :revoked) }
 

@@ -2,9 +2,7 @@
 
 module Ci
   class RunnerManagerPolicy < BasePolicy
-    with_options scope: :subject, score: 0
-
-    condition(:can_read_runner, scope: :subject) do
+    condition(:can_read_runner) do
       can?(:read_runner, @subject.runner)
     end
 

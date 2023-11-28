@@ -468,7 +468,7 @@ used on GitLab.com.
 
 Per-repository Gitaly RPC concurrency and queuing limits are configured for different types of Git operations such as `git clone`. When these limits are exceeded, a `fatal: remote error: GitLab is currently unable to handle this request due to load` message is returned to the client.
 
-For administrator documentation, see [limit RPC concurrency](../../administration/gitaly/configure_gitaly.md#limit-rpc-concurrency).
+For administrator documentation, see [limit RPC concurrency](../../administration/gitaly/concurrency_limiting.md#limit-rpc-concurrency).
 
 ## GitLab.com logging
 

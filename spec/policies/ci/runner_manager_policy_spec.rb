@@ -13,10 +13,15 @@ RSpec.describe Ci::RunnerManagerPolicy, feature_category: :runner_fleet do
     let_it_be_with_reload(:group) { create(:group, name: 'top-level', path: 'top-level') }
     let_it_be_with_reload(:subgroup) { create(:group, name: 'subgroup', path: 'subgroup', parent: group) }
     let_it_be_with_reload(:project) { create(:project, group: subgroup) }
+    let_it_be_with_reload(:group_without_project) { create(:group, name: 'top-level2', path: 'top-level2') }
 
     let_it_be(:instance_runner) { create(:ci_runner, :instance, :with_runner_manager) }
     let_it_be(:group_runner) { create(:ci_runner, :group, :with_runner_manager, groups: [group]) }
+    let_it_be(:subgroup_runner) { create(:ci_runner, :group, :with_runner_manager, groups: [subgroup]) }
     let_it_be(:project_runner) { create(:ci_runner, :project, :with_runner_manager, projects: [project]) }
+    let_it_be(:runner_on_group_without_project) do
+      create(:ci_runner, :group, :with_runner_manager, groups: [group_without_project])
+    end
 
     let(:runner_manager) { runner.runner_managers.first }
 
@@ -31,39 +36,116 @@ RSpec.describe Ci::RunnerManagerPolicy, feature_category: :runner_fleet do
 
     shared_examples 'a policy allowing reading instance runner manager depending on runner sharing' do
       context 'with instance runner' do
-        let(:runner) { instance_runner }
+        using RSpec::Parameterized::TableSyntax
 
-        it { expect_allowed :read_runner_manager }
-
-        context 'with shared runners disabled on projects' do
-          before do
-            project.update!(shared_runners_enabled: false)
-          end
-
-          it { expect_allowed :read_runner_manager }
+        where(:shared_runners_enabled_on_group, :shared_runners_enabled_on_project, :expect_can_read) do
+          false  | false  | false
+          false  | true   | true
+          true   | false  | true
+          true   | true   | true
         end
 
-        context 'with shared runners disabled for groups and projects' do
+        with_them do
+          let(:runner) { instance_runner }
+
           before do
-            group.update!(shared_runners_enabled: false)
-            project.update!(shared_runners_enabled: false)
+            group.update!(shared_runners_enabled: shared_runners_enabled_on_group)
+            project.update!(shared_runners_enabled: shared_runners_enabled_on_project)
           end
 
-          it { expect_disallowed :read_runner_manager }
+          specify do
+            if expect_can_read
+              expect_allowed :read_runner_manager
+            else
+              expect_disallowed :read_runner_manager
+            end
+          end
         end
       end
     end
 
-    shared_examples 'a policy allowing reading group runner manager depending on runner sharing' do
+    shared_examples 'a policy allowing reading group runner manager depending on runner sharing' do |user_role|
+      let(:group_runners_enabled_on_project) { true }
+
+      before do
+        project.update!(group_runners_enabled: group_runners_enabled_on_project)
+      end
+
       context 'with group runner' do
         let(:runner) { group_runner }
 
+        # NOTE: The user is allowed to read the runner manager because:
+        # - the user is a developer+ in the runner's group
+        # - the user is a developer+ in `group/subgroup/project`, and the runner is shared to that project
         it { expect_allowed :read_runner_manager }
 
         context 'with sharing of group runners disabled' do
-          before do
-            project.update!(group_runners_enabled: false)
+          let(:group_runners_enabled_on_project) { false }
+
+          it { expect_allowed :read_runner_manager }
+        end
+
+        context 'when user belongs to subgroup only' do
+          let_it_be(:subgroup_member) { create(:user) }
+
+          let(:user) { subgroup_member }
+
+          context 'with runner visible to group project' do
+            # NOTE: The user is allowed to read the runner manager because the user is a developer+
+            # in `group/subgroup/project`, and the runner is shared to that project
+            it { expect_allowed :read_runner_manager }
+
+            before_all do
+              subgroup.add_member(subgroup_member, user_role)
+            end
+
+            context 'with sharing of group runners disabled' do
+              let(:group_runners_enabled_on_project) { false }
+
+              it { expect_disallowed :read_runner_manager }
+            end
           end
+
+          context 'without projects in group' do
+            let(:runner) { runner_on_group_without_project }
+
+            before_all do
+              subgroup.add_member(subgroup_member, user_role)
+            end
+
+            it { expect_disallowed :read_runner_manager }
+          end
+        end
+
+        context "when user is not #{user_role} in associated group" do
+          let_it_be(:user_with_role) { create(:user) }
+
+          let(:user) { user_with_role }
+
+          it { expect_disallowed :read_runner_manager }
+
+          context "when user is #{user_role} in a group invited to group as #{user_role}" do
+            let_it_be(:invited_group) { create(:group, name: "#{user_role}s", path: "#{user_role}s") }
+
+            before_all do
+              invited_group.add_developer(user_with_role)
+              create(:group_group_link, :developer, shared_group: group, shared_with_group: invited_group)
+            end
+
+            it { expect_allowed :read_runner_manager }
+          end
+        end
+      end
+
+      context 'when runner is in subgroup' do
+        let(:runner) { subgroup_runner }
+
+        # NOTE: The user is allowed to read the runner manager because the user is a developer+ in
+        # `group/subgroup/project`, and the runner is shared to that project
+        it { expect_allowed :read_runner_manager }
+
+        context 'with sharing of group runners disabled' do
+          let(:group_runners_enabled_on_project) { false }
 
           it { expect_disallowed :read_runner_manager }
         end
@@ -124,7 +206,7 @@ RSpec.describe Ci::RunnerManagerPolicy, feature_category: :runner_fleet do
 
       it_behaves_like 'a policy allowing reading instance runner manager depending on runner sharing'
 
-      it_behaves_like 'a policy allowing reading group runner manager depending on runner sharing'
+      it_behaves_like 'a policy allowing reading group runner manager depending on runner sharing', :developer
 
       context 'with project runner' do
         let(:runner) { project_runner }
@@ -160,7 +242,7 @@ RSpec.describe Ci::RunnerManagerPolicy, feature_category: :runner_fleet do
 
       it_behaves_like 'a policy allowing reading instance runner manager depending on runner sharing'
 
-      it_behaves_like 'a policy allowing reading group runner manager depending on runner sharing'
+      it_behaves_like 'a policy allowing reading group runner manager depending on runner sharing', :maintainer
 
       context 'with project runner' do
         let(:runner) { project_runner }

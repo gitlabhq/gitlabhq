@@ -6732,6 +6732,7 @@ Input type: `SecurityFindingRevertToDetectedInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationsecurityfindingreverttodetectedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityfindingreverttodetectedcomment"></a>`comment` | [`String`](#string) | Comment that explains why finding was reverted to detected status. |
 | <a id="mutationsecurityfindingreverttodetecteduuid"></a>`uuid` | [`String!`](#string) | UUID of the finding to be dismissed. |
 
 #### Fields

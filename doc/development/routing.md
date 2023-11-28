@@ -83,13 +83,19 @@ gitlab-org/serverless/runtimes/-/settings/repository
 
 Don't change a URL to an existing page, unless it's necessary. If you must make a change,
 make it unnoticeable for users, because we don't want them to receive `404 Not Found`
-if we can avoid it. This table should help:
+if we can avoid it. This table describes the minimum required in different
+cases:
 
 | URL description | Example  | What to do  |
 |---|---|---|
 | Can be used in scripts and automation | `snippet#raw` | Support both an old and new URL for one major release. Then, support a redirect from an old URL to a new URL for another major release. |
 | Likely to be saved or shared | `issue#show` | Add a redirect from an old URL to a new URL until the next major release. |
 | Limited use, unlikely to be shared | `admin#labels` | No extra steps required. |
+
+In all cases, an old route should only be removed once traffic to it has
+dropped sufficiently (e.g., according to logs or BigQuery). Otherwise, more
+effort may be required to inform users about its deprecation before it can be
+considered again for removal.
 
 ## Migrating unscoped routes
 

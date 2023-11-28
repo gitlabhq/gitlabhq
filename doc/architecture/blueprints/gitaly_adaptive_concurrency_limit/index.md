@@ -97,8 +97,8 @@ constraints and distinguishing features, including cgroup utilization and
 upload-pack RPC, among others.
 
 The proposed solution does not aim to replace the existing limits in Gitaly
-for [RPC concurrency](../../../administration/gitaly/configure_gitaly.md#limit-rpc-concurrency)
-and [pack object concurrency](../../../administration/gitaly/configure_gitaly.md#limit-pack-objects-concurrency),
+for [RPC concurrency](../../../administration/gitaly/concurrency_limiting.md#limit-rpc-concurrency)
+and [pack object concurrency](../../../administration/gitaly/concurrency_limiting.md#limit-pack-objects-concurrency),
 but automatically tweak the parameters. This means
 that other aspects, such as queuing, in-queue timeout, queue length,
 partitioning, and scoping, will remain unchanged. The proposed solution only
