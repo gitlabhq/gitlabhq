@@ -53,8 +53,12 @@ module BitbucketServer
         action == 'APPROVED'
       end
 
-      def approver
+      def approver_username
         raw.dig('user', 'slug')
+      end
+
+      def approver_email
+        raw.dig('user', 'emailAddress')
       end
 
       def created_at

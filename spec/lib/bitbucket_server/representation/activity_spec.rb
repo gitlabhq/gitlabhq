@@ -47,7 +47,8 @@ RSpec.describe BitbucketServer::Representation::Activity, feature_category: :imp
     it { expect(subject.inline_comment?).to be_falsey }
     it { expect(subject.merge_event?).to be_falsey }
     it { expect(subject.approved_event?).to be_truthy }
-    it { expect(subject.approver).to eq('slug') }
+    it { expect(subject.approver_username).to eq('slug') }
+    it { expect(subject.approver_email).to eq('test.user@example.com') }
     it { expect(subject.created_at).to be_a(Time) }
   end
 end

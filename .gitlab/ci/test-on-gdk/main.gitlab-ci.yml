@@ -37,6 +37,10 @@ include:
     - if: $QA_SUITES =~ /Test::Instance::Smoke/
     - !reference [.rules:test:manual, rules]
 
+.parallel:
+  variables:
+    QA_TESTS: "" # Reset to empty, because parallel run should never pass in specific specs
+
 .gdk-qa-base:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-2.3-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
   extends:

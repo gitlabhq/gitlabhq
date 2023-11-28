@@ -23,12 +23,18 @@ RSpec.describe ClickHouse::MigrationSupport::MigrationContext,
   end
 
   describe 'performs migrations' do
+    include ExclusiveLeaseHelpers
+
     subject(:migration) { migrate(migration_context, target_version) }
 
     describe 'when creating a table' do
       let(:migrations_dirname) { 'plain_table_creation' }
+      let(:lease_key) { 'click_house:migrations' }
+      let(:lease_timeout) { 1.hour }
 
       it 'creates a table' do
+        expect_to_obtain_exclusive_lease(lease_key, timeout: lease_timeout)
+
         expect { migration }.to change { active_schema_migrations_count }.from(0).to(1)
 
         table_schema = describe_table('some')
@@ -37,6 +43,23 @@ RSpec.describe ClickHouse::MigrationSupport::MigrationContext,
           id: a_hash_including(type: 'UInt64'),
           date: a_hash_including(type: 'Date')
         })
+      end
+
+      context 'when a migration is already running' do
+        let(:migration_name) { 'create_some_table' }
+        let(:migration_klass) do
+          require(File.expand_path("#{migrations_dir}/1_#{migration_name}"))
+          migration_name.camelize.constantize
+        end
+
+        before do
+          stub_exclusive_lease_taken(lease_key)
+        end
+
+        it 'raises error after timeout when migration is executing concurrently' do
+          expect { migration }.to raise_error(ClickHouse::MigrationSupport::LockError)
+            .and not_change { active_schema_migrations_count }
+        end
       end
     end
 

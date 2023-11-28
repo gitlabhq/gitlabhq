@@ -175,7 +175,7 @@ export default {
     <div
       v-if="currentRequest"
       class="gl-display-flex container-fluid gl-overflow-x-auto"
-      data-qa-selector="performance_bar"
+      data-testid="performance-bar"
     >
       <div class="gl-display-flex gl-flex-shrink-0 view-performance-container">
         <div v-if="hasHost" id="peek-view-host" class="gl-display-flex gl-gap-2 view">

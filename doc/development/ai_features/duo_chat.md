@@ -14,7 +14,7 @@ Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for 
 1. [Enable Anthropic API features](index.md#configure-anthropic-access).
 1. [Ensure the embedding database is configured](index.md#set-up-the-embedding-database).
 1. Ensure that your current branch is up-to-date with `master`.
-1. To access the GitLab Duo Chat interface, in the lower-left corner of any page, select **Help** and **Ask GitLab Duo Chat**.
+1. Enable the feature in Rails console: `Feature.enable(:tanuki_bot_breadcrumbs_entry_point)`
 
 ## Working with GitLab Duo Chat
 
@@ -85,7 +85,7 @@ gdk start
 tail -f log/llm.log
 ```
 
-## Testing GitLab Duo Chat against real LLMs
+## Testing GitLab Duo Chat against real LLMs locally
 
 Because success of answers to user questions in GitLab Duo Chat heavily depends
 on toolchain and prompts of each tool, it's common that even a minor change in a
@@ -145,3 +145,14 @@ We therefore need to broadcast messages to multiple clients to keep them in sync
 
 Note that we still broadcast chat messages and currently used tools using the `userId` and `resourceId` as identifier.
 However, this is deprecated and should no longer be used. We want to remove `resourceId` on the subscription as part of [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/420296).
+
+## Testing GitLab Duo Chat in production-like environments
+
+GitLab Duo Chat is enabled in the [Staging](https://staging.gitlab.com) and
+[Staging Ref](https://staging-ref.gitlab.com/) GitLab environments.
+
+Because GitLab Duo Chat is currently only available to members of groups in the
+Ultimate tier, Staging Ref may be an easier place to test changes as a GitLab
+team member because
+[you can make yourself an instance Admin in Staging Ref](https://about.gitlab.com/handbook/engineering/infrastructure/environments/staging-ref/#admin-access)
+and, as an Admin, easily create licensed groups for testing.

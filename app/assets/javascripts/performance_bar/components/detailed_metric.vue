@@ -141,7 +141,7 @@ export default {
     v-if="currentRequest.details && metricDetails"
     :id="`peek-view-${metric}`"
     class="gl-display-flex gl-align-items-baseline view"
-    data-qa-selector="detailed_metric_content"
+    data-testid="detailed-metric-content"
   >
     <gl-button
       v-gl-tooltip.viewport

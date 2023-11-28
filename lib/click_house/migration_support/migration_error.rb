@@ -20,6 +20,7 @@ module ClickHouse
     end
 
     IrreversibleMigration = Class.new(MigrationError)
+    LockError = Class.new(MigrationError)
 
     class DuplicateMigrationVersionError < MigrationError
       def initialize(version = nil)

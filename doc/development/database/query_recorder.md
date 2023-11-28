@@ -17,8 +17,8 @@ As a rule, merge requests [should not increase query counts](../merge_request_co
 This style of test works by counting the number of SQL queries executed by ActiveRecord. First a control count is taken, then you add new records to the database and rerun the count. If the number of queries has significantly increased then an `N+1` queries problem exists.
 
 ```ruby
-it "avoids N+1 database queries" do
-  control = ActiveRecord::QueryRecorder.new { visit_some_page }
+it "avoids N+1 database queries", :use_sql_query_cache do
+  control = ActiveRecord::QueryRecorder.new(skip_cached: false) { visit_some_page }
   create_list(:issue, 5)
   expect { visit_some_page }.to issue_same_number_of_queries_as(control)
 end

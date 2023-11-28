@@ -20,15 +20,28 @@ module Mutations
         required: true,
         description: 'Path for the organization.'
 
+      argument :description, GraphQL::Types::String,
+        required: false,
+        description: 'Description of the organization.'
+
       def resolve(args)
         authorize!(:global)
 
         result = ::Organizations::CreateService.new(
           current_user: current_user,
-          params: args
+          params: create_params(args)
         ).execute
 
         { organization: result.payload, errors: result.errors }
+      end
+
+      private
+
+      def create_params(params)
+        return params unless params.key?(:description)
+
+        params[:organization_detail_attributes] = { description: params.delete(:description) }
+        params
       end
     end
   end

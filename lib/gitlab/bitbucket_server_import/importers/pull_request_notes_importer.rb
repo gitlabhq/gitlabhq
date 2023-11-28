@@ -72,7 +72,8 @@ module Gitlab
             event_id: approved_event.id
           )
 
-          user_id = user_finder.find_user_id(by: :username, value: approved_event.approver)
+          user_id = user_finder.find_user_id(by: :username, value: approved_event.approver_username) ||
+            user_finder.find_user_id(by: :email, value: approved_event.approver_email)
 
           return unless user_id
 

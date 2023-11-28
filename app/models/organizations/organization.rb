@@ -13,6 +13,7 @@ module Organizations
     has_many :projects
 
     has_one :settings, class_name: "OrganizationSetting"
+    has_one :organization_detail, inverse_of: :organization, autosave: true
 
     has_many :organization_users, inverse_of: :organization
     has_many :users, through: :organization_users, inverse_of: :organizations
@@ -26,8 +27,16 @@ module Organizations
       'organizations/path': true,
       length: { minimum: 2, maximum: 255 }
 
+    delegate :description, to: :organization_detail
+
+    accepts_nested_attributes_for :organization_detail
+
     def self.default_organization
       find_by(id: DEFAULT_ORGANIZATION_ID)
+    end
+
+    def organization_detail
+      super.presence || build_organization_detail
     end
 
     def default?
@@ -44,11 +53,6 @@ module Organizations
 
     def web_url(only_path: nil)
       Gitlab::UrlBuilder.build(self, only_path: only_path)
-    end
-
-    # TODO - update to return real description when https://gitlab.com/gitlab-org/gitlab/-/issues/422078 is complete.
-    def description
-      nil
     end
 
     private

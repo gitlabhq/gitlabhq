@@ -280,6 +280,9 @@ When the user is authenticated and `simple` is not set this returns something li
 ]
 ```
 
+NOTE:
+`last_activity_at` is updated based on [project activity](../user/project/working_with_projects.md#view-project-activity) and [project events](events.md). `updated_at` is updated whenever the project record is changed in the database.
+
 You can filter by [custom attributes](custom_attributes.md) with:
 
 ```plaintext

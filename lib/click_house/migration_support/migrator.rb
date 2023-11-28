@@ -3,11 +3,17 @@
 module ClickHouse
   module MigrationSupport
     class Migrator
+      include ::Gitlab::ExclusiveLeaseHelpers
+
       class << self
         attr_accessor :migrations_paths
       end
 
       attr_accessor :logger
+
+      LEASE_KEY = 'click_house:migrations'
+      RETRY_DELAY = ->(num) { 0.2.seconds * (num**2) }
+      LOCK_DURATION = 1.hour
 
       self.migrations_paths = ["db/click_house/migrate"]
 
@@ -24,10 +30,6 @@ module ClickHouse
         @logger            = logger
 
         validate(@migrations)
-
-        migrations.map(&:database).uniq.each do |database|
-          @schema_migration.create_table(database)
-        end
       end
 
       def current_version
@@ -39,12 +41,12 @@ module ClickHouse
       end
       alias_method :current, :current_migration
 
-      def run
-        run_without_lock
-      end
-
       def migrate
-        migrate_without_lock
+        in_lock(LEASE_KEY, ttl: LOCK_DURATION, retries: 5, sleep_sec: RETRY_DELAY) do
+          migrate_without_lock
+        end
+      rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError => e
+        raise ClickHouse::MigrationSupport::LockError, e.message
       end
 
       def runnable
@@ -77,10 +79,18 @@ module ClickHouse
       end
 
       def load_migrated(database)
+        ensure_schema_migration_table(database)
+
         @migrated_versions[database] = Set.new(@schema_migration.all_versions(database).map(&:to_i))
       end
 
       private
+
+      def ensure_schema_migration_table(database)
+        return if @migrated_versions[database]
+
+        @schema_migration.create_table(database)
+      end
 
       # Used for running a specific migration.
       def run_without_lock

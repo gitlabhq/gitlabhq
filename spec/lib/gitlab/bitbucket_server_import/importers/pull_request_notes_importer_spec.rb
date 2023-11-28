@@ -18,7 +18,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
   let_it_be(:pull_request) { BitbucketServer::Representation::PullRequest.new(pull_request_data) }
   let_it_be(:note_author) { create(:user, username: 'note_author', email: 'note_author@example.org') }
 
-  let_it_be(:pull_request_author) do
+  let!(:pull_request_author) do
     create(:user, username: 'pull_request_author', email: 'pull_request_author@example.org')
   end
 
@@ -42,7 +42,8 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
       comment?: false,
       merge_event?: false,
       approved_event?: true,
-      approver: pull_request_author.username,
+      approver_username: pull_request_author.username,
+      approver_email: pull_request_author.email,
       created_at: now
     )
   end
@@ -253,6 +254,37 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
           reviewer = merge_request.reviewers.first
 
           expect(reviewer.id).to eq(pull_request_author.id)
+        end
+
+        context 'when a user with a matching username does not exist' do
+          before do
+            pull_request_author.update!(username: 'another_username')
+          end
+
+          it 'finds the user based on email' do
+            importer.execute
+
+            approval = merge_request.approvals.first
+
+            expect(approval.user).to eq(pull_request_author)
+          end
+
+          context 'when no users match email or username' do
+            let_it_be(:another_author) { create(:user) }
+
+            before do
+              pull_request_author.destroy!
+            end
+
+            it 'does not set an approver' do
+              expect { importer.execute }
+                .to not_change { merge_request.approvals.count }
+                .and not_change { merge_request.notes.count }
+                .and not_change { merge_request.reviewers.count }
+
+              expect(merge_request.approvals).to be_empty
+            end
+          end
         end
 
         context 'if the reviewer already existed' do

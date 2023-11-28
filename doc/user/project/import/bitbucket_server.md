@@ -75,6 +75,8 @@ The following items are changed when they are imported:
 
 ## User assignment
 
+> Importing approvals by email address or username [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23586) in GitLab 16.7.
+
 Prerequisites:
 
 - Authentication token with administrator access.
@@ -87,8 +89,10 @@ original creator.
 The importer creates any new namespaces (groups) if they don't exist. If the namespace is taken, the
 repository imports under the namespace of the user who started the import process.
 
-The importer attempts to find reviewers by their email address in the GitLab user database. If they don't exist in GitLab, they cannot be added as reviewers to a
-merge request.
+The importer attempts to find:
+
+- Reviewers by their email address in the GitLab user database. If they don't exist in GitLab, they are not added as reviewers to a merge request.
+- Approvers by username or email. If they don't exist in GitLab, the approval is not added to a merge request.
 
 ### User assignment by username
 

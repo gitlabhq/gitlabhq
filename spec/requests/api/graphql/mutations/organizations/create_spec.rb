@@ -10,6 +10,7 @@ RSpec.describe Mutations::Organizations::Create, feature_category: :cell do
   let(:mutation) { graphql_mutation(:organization_create, params) }
   let(:name) { 'Name' }
   let(:path) { 'path' }
+  let(:description) { nil }
   let(:params) do
     {
       name: name,
@@ -48,17 +49,35 @@ RSpec.describe Mutations::Organizations::Create, feature_category: :cell do
       end
     end
 
-    it 'creates an organization' do
-      expect { create_organization }.to change { Organizations::Organization.count }.by(1)
+    shared_examples 'creating an organization' do
+      it 'creates an organization' do
+        expect { create_organization }.to change { Organizations::Organization.count }.by(1)
+      end
+
+      it 'returns the new organization' do
+        create_organization
+
+        expect(graphql_data_at(:organization_create, :organization)).to match a_hash_including(
+          'name' => name,
+          'path' => path,
+          'description' => description
+        )
+      end
     end
 
-    it 'returns the new organization' do
-      create_organization
+    context 'with description' do
+      let(:description) { 'Organization description' }
+      let(:params) do
+        {
+          name: name,
+          path: path,
+          description: description
+        }
+      end
 
-      expect(graphql_data_at(:organization_create, :organization)).to match a_hash_including(
-        'name' => name,
-        'path' => path
-      )
+      include_examples 'creating an organization'
     end
+
+    include_examples 'creating an organization'
   end
 end

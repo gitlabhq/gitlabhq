@@ -7,6 +7,8 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
   let_it_be(:default_organization) { create(:organization, :default) }
 
   describe 'associations' do
+    it { is_expected.to have_one(:organization_detail).inverse_of(:organization).autosave(true) }
+
     it { is_expected.to have_many :namespaces }
     it { is_expected.to have_many :groups }
     it { is_expected.to have_many(:users).through(:organization_users).inverse_of(:organizations) }
@@ -52,6 +54,14 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
         end
       end
     end
+  end
+
+  describe 'delegations' do
+    it { is_expected.to delegate_method(:description).to(:organization_detail) }
+  end
+
+  describe 'nested attributes' do
+    it { is_expected.to accept_nested_attributes_for(:organization_detail) }
   end
 
   context 'when using scopes' do
@@ -117,6 +127,13 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
       it 'returns true' do
         expect(to_be_removed.destroy).to eq(to_be_removed)
       end
+    end
+  end
+
+  describe '#organization_detail' do
+    it 'ensures organization has organization_detail upon initialization' do
+      expect(organization.organization_detail).to be_present
+      expect(organization.organization_detail).not_to be_persisted
     end
   end
 

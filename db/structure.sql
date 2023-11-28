@@ -12202,6 +12202,7 @@ CREATE TABLE application_settings (
     update_namespace_name_rate_limit smallint DEFAULT 120 NOT NULL,
     pre_receive_secret_detection_enabled boolean DEFAULT false NOT NULL,
     can_create_organization boolean DEFAULT true NOT NULL,
+    web_ide_oauth_application_id integer,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -19954,6 +19955,16 @@ CREATE SEQUENCE operations_user_lists_id_seq
     CACHE 1;
 
 ALTER SEQUENCE operations_user_lists_id_seq OWNED BY operations_user_lists.id;
+
+CREATE TABLE organization_details (
+    organization_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    cached_markdown_version integer,
+    description text,
+    description_html text,
+    CONSTRAINT check_71dfb7807f CHECK ((char_length(description) <= 1024))
+);
 
 CREATE TABLE organization_settings (
     organization_id bigint NOT NULL,
@@ -29188,6 +29199,9 @@ ALTER TABLE ONLY operations_strategies_user_lists
 ALTER TABLE ONLY operations_user_lists
     ADD CONSTRAINT operations_user_lists_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY organization_details
+    ADD CONSTRAINT organization_details_pkey PRIMARY KEY (organization_id);
+
 ALTER TABLE ONLY organization_settings
     ADD CONSTRAINT organization_settings_pkey PRIMARY KEY (organization_id);
 
@@ -31660,6 +31674,8 @@ CREATE INDEX index_application_settings_on_instance_administrators_group_id ON a
 CREATE UNIQUE INDEX index_application_settings_on_push_rule_id ON application_settings USING btree (push_rule_id);
 
 CREATE INDEX index_application_settings_on_usage_stats_set_by_user_id ON application_settings USING btree (usage_stats_set_by_user_id);
+
+CREATE INDEX index_application_settings_web_ide_oauth_application_id ON application_settings USING btree (web_ide_oauth_application_id);
 
 CREATE INDEX index_applicationsettings_on_instance_administration_project_id ON application_settings USING btree (instance_administration_project_id);
 
@@ -38157,6 +38173,9 @@ ALTER TABLE ONLY cluster_agents
 ALTER TABLE ONLY protected_tag_create_access_levels
     ADD CONSTRAINT fk_f7dfda8c51 FOREIGN KEY (protected_tag_id) REFERENCES protected_tags(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY application_settings
+    ADD CONSTRAINT fk_f9867b3540 FOREIGN KEY (web_ide_oauth_application_id) REFERENCES oauth_applications(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY ci_stages
     ADD CONSTRAINT fk_fb57e6cc56 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
@@ -39200,6 +39219,9 @@ ALTER TABLE ONLY alert_management_alert_user_mentions
 
 ALTER TABLE ONLY project_daily_statistics
     ADD CONSTRAINT fk_rails_8e549b272d FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY organization_details
+    ADD CONSTRAINT fk_rails_8facb04bef FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_pipelines_config
     ADD CONSTRAINT fk_rails_906c9a2533 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
