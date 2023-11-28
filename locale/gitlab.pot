@@ -56685,13 +56685,10 @@ msgstr ""
 msgid "cannot be changed"
 msgstr ""
 
+msgid "cannot be changed because of an existing association with a custom role"
+msgstr ""
+
 msgid "cannot be changed if a personal project has container registry tags."
-msgstr ""
-
-msgid "cannot be changed since member is associated with a custom role"
-msgstr ""
-
-msgid "cannot be changed since the provider is associated with a custom role"
 msgstr ""
 
 msgid "cannot be changed to %{new_type} when linked to a parent %{parent_type}."
@@ -58354,12 +58351,6 @@ msgstr[1] ""
 msgid "repository:"
 msgstr ""
 
-msgid "role's base access level does not match the access level of the membership"
-msgstr ""
-
-msgid "role's base access level does not match the default membership role"
-msgstr ""
-
 msgid "rule"
 msgid_plural "rules"
 msgstr[0] ""
@@ -58530,6 +58521,9 @@ msgid "test case"
 msgstr ""
 
 msgid "the correct format."
+msgstr ""
+
+msgid "the custom role's base access level does not match the current access level"
 msgstr ""
 
 msgid "the following epics"

@@ -28,7 +28,6 @@ class Member < ApplicationRecord
   belongs_to :user
   belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :member_namespace, inverse_of: :namespace_members, foreign_key: 'member_namespace_id', class_name: 'Namespace'
-  belongs_to :member_role
 
   delegate :name, :username, :email, :last_activity_on, to: :user, prefix: true
 

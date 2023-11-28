@@ -112,7 +112,7 @@ The value is in MB, and the default is 100 MB per job. An administrator can chan
 - Project level (this overrides the instance and group settings):
 
   1. Go to the project's **Settings > CI/CD > General Pipelines**.
-  1. Change the value of **maximum artifacts size** (in MB).
+  1. Change the value of **Maximum artifacts size** (in MB).
   1. Select **Save changes** for the changes to take effect.
 
 ## Default artifacts expiration

@@ -85,6 +85,8 @@ added to their To-do list.
 
 A to-do item is created for all the group and subgroup members.
 
+For more information on mentioning subgroups see [Mention subgroups](../group/subgroups/index.md#mention-subgroups).
+
 ## Add a comment to a merge request diff
 
 You can add comments to a merge request diff. These comments

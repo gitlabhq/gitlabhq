@@ -4,7 +4,7 @@ module Enums
   class PackageMetadata
     ADVISORY_SOURCES = {
       glad: 1, # gitlab advisory db
-      trivy: 2
+      'trivy-db': 2
     }.with_indifferent_access.freeze
 
     DATA_TYPES = {
