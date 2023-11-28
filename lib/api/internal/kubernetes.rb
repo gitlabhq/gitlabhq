@@ -140,6 +140,7 @@ module API
           post '/', feature_category: :deployment_management do
             increment_count_events
             increment_unique_events
+            track_unique_user_events
 
             no_content!
           rescue ArgumentError => e

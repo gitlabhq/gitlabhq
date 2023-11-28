@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::IssuesImporter, feature_category: :importers do
-  let(:project) { double(:project, id: 4, import_source: 'foo/bar') }
-  let(:client) { double(:client) }
+  let(:project) { build(:project, id: 4, import_source: 'foo/bar') }
+  let(:client) { instance_double(Gitlab::GithubImport::Client) }
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15) }
 

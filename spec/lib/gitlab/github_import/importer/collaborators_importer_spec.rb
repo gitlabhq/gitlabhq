@@ -6,7 +6,7 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorsImporter, feature_ca
   subject(:importer) { described_class.new(project, client, parallel: parallel) }
 
   let(:parallel) { true }
-  let(:project) { instance_double(Project, id: 4, import_source: 'foo/bar', import_state: nil) }
+  let(:project) { build(:project, id: 4, import_source: 'foo/bar', import_state: nil) }
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
 
   let(:github_collaborator) do

@@ -9,12 +9,15 @@ status: active
 milestone: "16.4"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129463
 time_frame: 7d
-data_source: redis_hll
+data_source: internal_events
 data_category: optional
 instrumentation_class: RedisHLLMetric
 options:
   events:
     - k8s_api_proxy_requests_unique_users_via_pat_access
+events:
+  - name: k8s_api_proxy_requests_unique_users_via_pat_access
+    unique: user.id
 performance_indicator_type: []
 distribution:
 - ce

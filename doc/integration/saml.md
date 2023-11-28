@@ -716,12 +716,23 @@ your provider's support.
 
 ### Configure assertions
 
-| Field           | Supported default keys |
-|-----------------|------------------------|
-| Email (required)| `email`, `mail`        |
-| Full Name       | `name`                 |
-| First Name      | `first_name`, `firstname`, `firstName` |
-| Last Name       | `last_name`, `lastname`, `lastName`    |
+> - Microsoft Azure/Entra ID attribute support [introduced on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/420766) in GitLab 16.7.
+> - Microsoft Azure/Entra ID attribute support [introduced on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136734) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `saml_microsoft_attribute_names`. Disabled by default, and available to GitLab.com administrators only.
+
+FLAG:
+On self-managed GitLab, Microsoft Azure/Entra ID attributes are supported by default.
+In the following table, these attributes begin with either `http://schemas.xmlsoap.org`
+or `http://schemas.microsoft.com`.
+On GitLab.com, Microsoft Azure/Entra ID attributes are introduced
+[with a flag](../administration/feature_flags.md) named `saml_microsoft_attribute_names`.
+On GitLab.com, this feature is unavailable but can be configured by GitLab.com administrators only.
+
+| Field           | Supported default keys                                                                                                                                                         |
+|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Email (required)| `email`, `mail`, `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`, `http://schemas.microsoft.com/ws/2008/06/identity/claims/emailaddress`                  |
+| Full Name       | `name`, `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`, `http://schemas.microsoft.com/ws/2008/06/identity/claims/name`                                           |
+| First Name      | `first_name`, `firstname`, `firstName`, `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname`, `http://schemas.microsoft.com/ws/2008/06/identity/claims/givenname` |
+| Last Name       | `last_name`, `lastname`, `lastName`, `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname`, `http://schemas.microsoft.com/ws/2008/06/identity/claims/surname`   |
 
 See [`attribute_statements`](#map-saml-response-attribute-names) for:
 

@@ -876,6 +876,10 @@ Gitlab.ee do
   Settings.cron_jobs['timeout_pending_status_check_responses_worker'] ||= {}
   Settings.cron_jobs['timeout_pending_status_check_responses_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['timeout_pending_status_check_responses_worker']['job_class'] = 'ComplianceManagement::TimeoutPendingStatusCheckResponsesWorker'
+  Settings.cron_jobs['click_house_ci_finished_builds_sync_worker'] ||= {}
+  Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['cron'] ||= '*/3 * * * *'
+  Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['args'] ||= [1]
+  Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['job_class'] = 'ClickHouse::CiFinishedBuildsSyncCronWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}
@@ -893,10 +897,6 @@ Gitlab.ee do
     Settings.cron_jobs['click_house_events_sync_worker'] ||= {}
     Settings.cron_jobs['click_house_events_sync_worker']['cron'] ||= "*/3 * * * *"
     Settings.cron_jobs['click_house_events_sync_worker']['job_class'] = 'ClickHouse::EventsSyncWorker'
-    Settings.cron_jobs['click_house_ci_finished_builds_sync_worker'] ||= {}
-    Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['cron'] ||= '*/3 * * * *'
-    Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['args'] ||= [1]
-    Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['job_class'] = 'ClickHouse::CiFinishedBuildsSyncCronWorker'
     Settings.cron_jobs['vertex_ai_refresh_access_token_worker'] ||= {}
     Settings.cron_jobs['vertex_ai_refresh_access_token_worker']['cron'] ||= '*/50 * * * *'
     Settings.cron_jobs['vertex_ai_refresh_access_token_worker']['job_class'] = 'Llm::VertexAiAccessTokenRefreshWorker'
@@ -975,22 +975,10 @@ Settings.repositories.storages.each do |key, storage|
   Settings.repositories.storages[key] = Gitlab::GitalyClient::StorageSettings.new(storage)
 end
 
-#
-# The repository_downloads_path is used to remove outdated repository
-# archives, if someone has it configured incorrectly, and it points
-# to the path where repositories are stored this can cause some
-# data-integrity issue. In this case, we sets it to the default
-# repository_downloads_path value.
-#
-repositories_storages          = Settings.repositories.storages.values
-repository_downloads_path      = Settings.gitlab['repository_downloads_path'].to_s.gsub(%r{/$}, '')
-repository_downloads_full_path = File.expand_path(repository_downloads_path, Settings.gitlab['user_home'])
+repository_downloads_path = Settings.gitlab['repository_downloads_path'].to_s.gsub(%r{/$}, '')
 
-# Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1255
-Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-  if repository_downloads_path.blank? || repositories_storages.any? { |rs| [repository_downloads_path, repository_downloads_full_path].include?(rs.legacy_disk_path.gsub(%r{/$}, '')) }
-    Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive')
-  end
+if repository_downloads_path.blank?
+  Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive')
 end
 
 #

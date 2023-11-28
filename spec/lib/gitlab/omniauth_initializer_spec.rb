@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::OmniauthInitializer do
+RSpec.describe Gitlab::OmniauthInitializer, feature_category: :system_access do
+  include LoginHelpers
+
   let(:devise_config) { class_double(Devise) }
 
   subject(:initializer) { described_class.new(devise_config) }
@@ -222,6 +224,119 @@ RSpec.describe Gitlab::OmniauthInitializer do
       expect(devise_config).to receive(:omniauth).with(:shibboleth, { fail_with_empty_uid: true })
 
       subject.execute([shibboleth_config])
+    end
+
+    context 'when SAML providers are configured' do
+      it 'configures default args for a single SAML provider' do
+        stub_omniauth_config(providers: [{ name: 'saml', args: { idp_sso_service_url: 'https://saml.example.com' } }])
+
+        expect(devise_config).to receive(:omniauth).with(
+          :saml,
+          {
+            idp_sso_service_url: 'https://saml.example.com',
+            attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements
+          }
+        )
+
+        initializer.execute(Gitlab.config.omniauth.providers)
+      end
+
+      context 'when configuration provides matching keys' do
+        before do
+          stub_omniauth_config(
+            providers: [
+              {
+                name: 'saml',
+                args: { idp_sso_service_url: 'https://saml.example.com', attribute_statements: { email: ['custom_attr'] } }
+              }
+            ]
+          )
+        end
+
+        it 'merges arguments with user configuration preference' do
+          expect(devise_config).to receive(:omniauth).with(
+            :saml,
+            {
+              idp_sso_service_url: 'https://saml.example.com',
+              attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements
+                                                                .merge({ email: ['custom_attr'] })
+            }
+          )
+
+          initializer.execute(Gitlab.config.omniauth.providers)
+        end
+
+        it 'merges arguments with defaults preference when REVERT_OMNIAUTH_DEFAULT_MERGING is true' do
+          stub_env('REVERT_OMNIAUTH_DEFAULT_MERGING', 'true')
+
+          expect(devise_config).to receive(:omniauth).with(
+            :saml,
+            {
+              idp_sso_service_url: 'https://saml.example.com',
+              attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements
+            }
+          )
+
+          initializer.execute(Gitlab.config.omniauth.providers)
+        end
+      end
+
+      it 'configures defaults args for multiple SAML providers' do
+        stub_omniauth_config(
+          providers: [
+            { name: 'saml', args: { idp_sso_service_url: 'https://saml.example.com' } },
+            {
+              name: 'saml2',
+              args: { strategy_class: 'OmniAuth::Strategies::SAML', idp_sso_service_url: 'https://saml2.example.com' }
+            }
+          ]
+        )
+
+        expect(devise_config).to receive(:omniauth).with(
+          :saml,
+          {
+            idp_sso_service_url: 'https://saml.example.com',
+            attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements
+          }
+        )
+        expect(devise_config).to receive(:omniauth).with(
+          :saml2,
+          {
+            idp_sso_service_url: 'https://saml2.example.com',
+            strategy_class: OmniAuth::Strategies::SAML,
+            attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements
+          }
+        )
+
+        initializer.execute(Gitlab.config.omniauth.providers)
+      end
+
+      it 'merges arguments with user configuration preference for custom SAML provider' do
+        stub_omniauth_config(
+          providers: [
+            {
+              name: 'custom_saml',
+              args: {
+                strategy_class: 'OmniAuth::Strategies::SAML',
+                idp_sso_service_url: 'https://saml2.example.com',
+                attribute_statements: { email: ['custom_attr'] }
+              }
+            }
+          ]
+        )
+
+        expect(devise_config).to receive(:omniauth).with(
+          :custom_saml,
+          {
+            idp_sso_service_url: 'https://saml2.example.com',
+            strategy_class: OmniAuth::Strategies::SAML,
+            attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements
+                                                              .merge({ email: ['custom_attr'] })
+          }
+        )
+
+        initializer.execute(Gitlab.config.omniauth.providers)
+      end
     end
 
     it 'configures defaults for google_oauth2' do

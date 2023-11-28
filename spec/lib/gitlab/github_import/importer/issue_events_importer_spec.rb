@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::Importer::IssueEventsImporter, feature_category: :importers do
   subject(:importer) { described_class.new(project, client, parallel: parallel) }
 
-  let(:project) { instance_double(Project, id: 4, import_source: 'foo/bar') }
+  let(:project) { build(:project, id: 4, import_source: 'foo/bar') }
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
 
   let(:parallel) { true }

@@ -66,7 +66,7 @@ module QA
       let(:source_project) { source_group.projects(auto_paginate: true).find { |project| project.name == gitlab_source_project }.reload! }
       let(:source_branches) { source_project.repository_branches(auto_paginate: true).map { |b| b[:name] } }
       let(:source_commits) { source_project.commits(auto_paginate: true).map { |c| c[:id] } }
-      let(:source_labels) { source_project.labels(auto_paginate: true).map { |l| l.except(:id) } }
+      let(:source_labels) { source_project.labels(auto_paginate: true).map { |l| l.except(:id, :description_html) } }
       let(:source_milestones) { source_project.milestones(auto_paginate: true).map { |ms| ms.except(:id, :web_url, :project_id) } }
       let(:source_mrs) { fetch_mrs(source_project, source_api_client, transform_urls: true) }
       let(:source_issues) { fetch_issues(source_project, source_api_client, transform_urls: true) }
@@ -88,7 +88,7 @@ module QA
       let(:imported_project) { imported_group.projects(auto_paginate: true).find { |project| project.name == gitlab_source_project }.reload! }
       let(:branches) { imported_project.repository_branches(auto_paginate: true).map { |b| b[:name] } }
       let(:commits) { imported_project.commits(auto_paginate: true).map { |c| c[:id] } }
-      let(:labels) { imported_project.labels(auto_paginate: true).map { |l| l.except(:id) } }
+      let(:labels) { imported_project.labels(auto_paginate: true).map { |l| l.except(:id, :description_html) } }
       let(:milestones) { imported_project.milestones(auto_paginate: true).map { |ms| ms.except(:id, :web_url, :project_id) } }
       let(:mrs) { fetch_mrs(imported_project, api_client) }
       let(:issues) { fetch_issues(imported_project, api_client) }

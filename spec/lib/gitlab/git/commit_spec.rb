@@ -8,7 +8,6 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
 
   describe "Commit info from gitaly commit" do
     let(:subject) { (+"My commit").force_encoding('ASCII-8BIT') }
-    let(:body) { subject + (+"My body").force_encoding('ASCII-8BIT') }
     let(:body_size) { body.length }
     let(:gitaly_commit) { build(:gitaly_commit, subject: subject, body: body, body_size: body_size, tree_id: tree_id) }
     let(:id) { gitaly_commit.id }
@@ -16,6 +15,17 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
     let(:committer) { gitaly_commit.committer }
     let(:author) { gitaly_commit.author }
     let(:commit) { described_class.new(repository, gitaly_commit) }
+
+    let(:body) do
+      body = +<<~BODY
+        Bleep bloop.
+
+        Cc: John Doe <johndoe@gitlab.com>
+        Cc: Jane Doe <janedoe@gitlab.com>
+      BODY
+
+      [subject, "\n", body].join.force_encoding("ASCII-8BIT")
+    end
 
     it { expect(commit.short_id).to eq(id[0..10]) }
     it { expect(commit.id).to eq(id) }
@@ -28,6 +38,18 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
     it { expect(commit.committer_email).to eq(committer.email) }
     it { expect(commit.parent_ids).to eq(gitaly_commit.parent_ids) }
     it { expect(commit.tree_id).to eq(tree_id) }
+
+    it "parses the commit trailers" do
+      expect(commit.trailers).to eq(
+        { "Cc" => "Jane Doe <janedoe@gitlab.com>" }
+      )
+    end
+
+    it "parses the extended commit trailers" do
+      expect(commit.extended_trailers).to eq(
+        { "Cc" => ["John Doe <johndoe@gitlab.com>", "Jane Doe <janedoe@gitlab.com>"] }
+      )
+    end
 
     context 'non-UTC dates' do
       let(:seconds) { Time.now.to_i }
@@ -773,6 +795,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
       message: "tree css fixes",
       parent_ids: ["874797c3a73b60d2187ed6e2fcabd289ff75171e"],
       trailers: {},
+      extended_trailers: {},
       referenced_by: []
     }
   end

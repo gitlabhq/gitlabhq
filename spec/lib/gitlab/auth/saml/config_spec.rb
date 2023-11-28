@@ -19,6 +19,41 @@ RSpec.describe Gitlab::Auth::Saml::Config do
     end
   end
 
+  describe '.default_attribute_statements' do
+    it 'includes upstream defaults, nickname and Microsoft values' do
+      expect(described_class.default_attribute_statements).to eq(
+        {
+          nickname: %w[username nickname],
+          name: [
+            'name',
+            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name',
+            'http://schemas.microsoft.com/ws/2008/06/identity/claims/name'
+          ],
+          email: [
+            'email',
+            'mail',
+            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress',
+            'http://schemas.microsoft.com/ws/2008/06/identity/claims/emailaddress'
+          ],
+          first_name: [
+            'first_name',
+            'firstname',
+            'firstName',
+            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname',
+            'http://schemas.microsoft.com/ws/2008/06/identity/claims/givenname'
+          ],
+          last_name: [
+            'last_name',
+            'lastname',
+            'lastName',
+            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname',
+            'http://schemas.microsoft.com/ws/2008/06/identity/claims/surname'
+          ]
+        }
+      )
+    end
+  end
+
   describe '#external_groups' do
     let(:config_1) { described_class.new('saml1') }
 

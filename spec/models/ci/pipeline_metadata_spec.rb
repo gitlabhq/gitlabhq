@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineMetadata do
+RSpec.describe Ci::PipelineMetadata, feature_category: :pipeline_composition do
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:pipeline) }
 
@@ -10,5 +10,13 @@ RSpec.describe Ci::PipelineMetadata do
     it { is_expected.to validate_length_of(:name).is_at_least(1).is_at_most(255) }
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:pipeline) }
+
+    it do
+      is_expected.to define_enum_for(
+        :auto_cancel_on_new_commit
+      ).with_values(
+        conservative: 0, interruptible: 1, disabled: 2
+      ).with_prefix
+    end
   end
 end

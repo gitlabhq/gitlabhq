@@ -96,6 +96,15 @@ To query the database directly for the status of batched background migrations:
    WHERE status <> 3;
    ```
 
+Alternatively, you can wrap the query with `gitlab-psql -c "<QUERY>"` to check the status of
+batched background migrations:
+
+```shell
+gitlab-psql -c "SELECT job_class_name, table_name, column_name, job_arguments FROM batched_background_migrations WHERE status <> 3;"
+```
+
+If the query returns zero rows, all batched background migrations are complete.
+
 ### Enable or disable advanced features
 
 Batched background migrations provide feature flags that enable you to customize

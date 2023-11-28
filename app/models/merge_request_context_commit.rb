@@ -26,6 +26,13 @@ class MergeRequestContextCommit < ApplicationRecord
 
   # create MergeRequestContextCommit by given commit sha and it's diff file record
   def self.bulk_insert(rows, **args)
+    # Remove the new extended_trailers attribute as this shouldn't be
+    # inserted into the database. This will be removed once the old
+    # format of the trailers attribute is deprecated.
+    rows = rows.map do |row|
+      row.except(:extended_trailers).to_hash
+    end
+
     ApplicationRecord.legacy_bulk_insert('merge_request_context_commits', rows, **args) # rubocop:disable Gitlab/BulkInsert
   end
 

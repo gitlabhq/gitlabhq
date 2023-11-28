@@ -278,6 +278,7 @@ praefect['configuration'] = {
    database: {
       # ...
       host: POSTGRESQL_HOST,
+      user: 'praefect',
       port: 5432,
       password: PRAEFECT_SQL_PASSWORD,
       dbname: 'praefect_production',

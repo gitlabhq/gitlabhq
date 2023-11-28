@@ -6,7 +6,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
-  let(:client) { double(:client) }
+  let(:client) { instance_double(Gitlab::GithubImport::Client) }
   let(:discussion_id) { 'b0fa404393eeebb4e82becb8104f238812bb1fe6' }
   let(:created_at) { Time.new(2017, 1, 1, 12, 00).utc }
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15).utc }

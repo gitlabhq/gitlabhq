@@ -53,8 +53,13 @@ class MergeRequestDiffCommit < ApplicationRecord
 
       # These fields are only used to determine the author/committer IDs, we
       # don't store them in the DB.
+      #
+      # Trailers are stored in the DB here in order to allow changelog parsing.
+      # Rather than add an additional column for :extended_trailers, we're instead
+      # ignoring it for now until we deprecate the :trailers field and replace it with
+      # the new functionality.
       commit_hash = commit_hash
-        .except(:author_name, :author_email, :committer_name, :committer_email)
+        .except(:author_name, :author_email, :committer_name, :committer_email, :extended_trailers)
 
       commit_hash.merge(
         commit_author_id: author.id,

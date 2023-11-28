@@ -43,14 +43,35 @@ module API
         def increment_unique_events
           events = params[:unique_counters]&.slice(
             :agent_users_using_ci_tunnel,
-            :k8s_api_proxy_requests_unique_users_via_ci_access, :k8s_api_proxy_requests_unique_agents_via_ci_access,
-            :k8s_api_proxy_requests_unique_users_via_user_access, :k8s_api_proxy_requests_unique_agents_via_user_access,
-            :k8s_api_proxy_requests_unique_users_via_pat_access, :k8s_api_proxy_requests_unique_agents_via_pat_access,
+            :k8s_api_proxy_requests_unique_agents_via_ci_access,
+            :k8s_api_proxy_requests_unique_agents_via_user_access,
+            :k8s_api_proxy_requests_unique_agents_via_pat_access,
             :flux_git_push_notified_unique_projects
           )
 
           events&.each do |event, entity_ids|
             increment_unique_values(event, entity_ids)
+          end
+        end
+
+        def track_unique_user_events
+          events = params[:unique_counters]&.slice(
+            :k8s_api_proxy_requests_unique_users_via_ci_access,
+            :k8s_api_proxy_requests_unique_users_via_user_access,
+            :k8s_api_proxy_requests_unique_users_via_pat_access
+          )
+          return if events.blank?
+
+          unique_user_ids = events.values.flatten.uniq
+          users = User.id_in(unique_user_ids).index_by(&:id)
+
+          events.each do |event, user_ids|
+            user_ids.each do |user_id|
+              user = users[user_id]
+              next if user.nil?
+
+              Gitlab::InternalEvents.track_event(event, user: user)
+            end
           end
         end
 

@@ -1,0 +1,22 @@
+---
+description: Kubernetes API proxy request using the CI/CD Tunnel via User Access
+category: InternalEventTracking
+action: k8s_api_proxy_requests_unique_users_via_user_access
+label_description:
+property_description:
+value_description:
+extra_properties:
+identifiers:
+- user
+product_section: ops
+product_stage: deploy
+product_group: environments
+milestone: "16.7"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137488
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

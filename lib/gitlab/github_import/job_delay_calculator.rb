@@ -7,7 +7,9 @@ module Gitlab
     module JobDelayCalculator
       # Default batch settings for parallel import (can be redefined in Importer/Worker classes)
       def parallel_import_batch
-        { size: 1000, delay: 1.minute }
+        batch_size = Feature.enabled?(:github_import_increased_concurrent_workers, project.creator) ? 5000 : 1000
+
+        { size: batch_size, delay: 1.minute }
       end
 
       private

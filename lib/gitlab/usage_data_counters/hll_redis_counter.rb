@@ -66,7 +66,7 @@ module Gitlab
 
         rescue StandardError => e
           # Ignore any exceptions unless is dev or test env
-          # The application flow should not be blocked by erros in tracking
+          # The application flow should not be blocked by errors in tracking
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
         end
 

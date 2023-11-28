@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchesImporter, feature_category: :importers do
   subject(:importer) { described_class.new(project, client, parallel: parallel) }
 
-  let(:project) { instance_double('Project', id: 4, import_source: 'foo/bar') }
-  let(:client) { instance_double('Gitlab::GithubImport::Client') }
+  let(:project) { build(:project, id: 4, import_source: 'foo/bar') }
+  let(:client) { instance_double(Gitlab::GithubImport::Client) }
   let(:parallel) { true }
 
   let(:branches) do
@@ -112,7 +112,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchesImporter, featur
     end
 
     it 'imports each protected branch in sequence' do
-      protected_branch_importer = instance_double('Gitlab::GithubImport::Importer::ProtectedBranchImporter')
+      protected_branch_importer = instance_double(Gitlab::GithubImport::Importer::ProtectedBranchImporter)
 
       expect(Gitlab::GithubImport::Importer::ProtectedBranchImporter)
         .to receive(:new)

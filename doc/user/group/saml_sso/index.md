@@ -192,9 +192,6 @@ Optionally, you can pass user information to GitLab as attributes in the SAML as
 
 For more information, see the [attributes available for self-managed GitLab instances](../../../integration/saml.md#configure-assertions).
 
-NOTE:
-Attribute names starting with phrases such as `http://schemas.microsoft.com/ws/2008/06/identity/claims/` are not supported. For more information on configuring required attribute names in the SAML identity provider's settings, see [example group SAML and SCIM configurations](../../../user/group/saml_sso/example_saml_config.md).
-
 ### Use metadata
 
 To configure some identity providers, you need a GitLab metadata URL.

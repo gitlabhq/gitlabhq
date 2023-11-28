@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::NotesImporter, feature_category: :importers do
-  let(:project) { double(:project, id: 4, import_source: 'foo/bar') }
-  let(:client) { double(:client) }
+  let(:project) { build(:project, id: 4, import_source: 'foo/bar') }
+  let(:client) { instance_double(Gitlab::GithubImport::Client) }
 
   let(:github_comment) do
     {

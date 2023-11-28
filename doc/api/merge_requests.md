@@ -827,6 +827,7 @@ Use `detailed_merge_status` instead of `merge_status` to account for all potenti
   - `not_approved`: Approval is required before merge.
   - `not_open`: The merge request must be open before merge.
   - `policies_denied`: The merge request contains denied policies.
+  - `jira_association_missing`: The title or description must reference a Jira issue.
 
 ### Preparation steps
 

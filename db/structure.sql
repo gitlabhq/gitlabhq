@@ -14284,7 +14284,7 @@ CREATE TABLE ci_pipeline_metadata (
     project_id bigint NOT NULL,
     pipeline_id bigint NOT NULL,
     name text,
-    CONSTRAINT check_25d23931f1 CHECK ((name IS NOT NULL)),
+    auto_cancel_on_new_commit smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_9d3665463c CHECK ((char_length(name) <= 255))
 );
 

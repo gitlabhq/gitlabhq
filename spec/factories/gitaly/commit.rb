@@ -16,5 +16,15 @@ FactoryBot.define do
     body { subject + "\nMy body" }
     author { association(:gitaly_commit_author) }
     committer { association(:gitaly_commit_author) }
+
+    trailers do
+      trailers = body.lines.keep_if { |l| l =~ /.*: / }.map do |l|
+        key, value = *l.split(":").map(&:strip)
+
+        Gitaly::CommitTrailer.new(key: key, value: value)
+      end
+
+      Google::Protobuf::RepeatedField.new(:message, Gitaly::CommitTrailer, trailers)
+    end
   end
 end
