@@ -105,6 +105,18 @@ Specific information applies to installations using Geo:
   | 16.4   | All    | None   |
   | 16.5   | All    | None   |
 
+- After [Group Wiki](../../user/project/wiki/group.md) verification was added in GitLab 16.3, missing Group Wiki repositories are being incorrectly flagged as failing verification. This issue is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these Group Wiki repositories.
+
+  See details of the problem and workaround in issue [#426571](https://gitlab.com/gitlab-org/gitlab/-/issues/426571)
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ------ | ------ | ------ |
+  | 16.3   | All    | None   |
+  | 16.4   | All    | None   |
+  | 16.5   | 16.5.0 - 16.5.1    | 16.5.2   |
+
 ## 16.4.0
 
 - Updating a group path [received a bug fix](https://gitlab.com/gitlab-org/gitlab/-/issues/419289) that uses a database index introduced in 16.3.
@@ -232,6 +244,18 @@ Specific information applies to installations using Geo:
   | 16.3   | 16.3.0 - 16.3.5    | 16.3.6   |
   | 16.4   | 16.4.0 - 16.4.1    | 16.4.2   |
 
+- After [Group Wiki](../../user/project/wiki/group.md) verification was added in GitLab 16.3, missing Group Wiki repositories are being incorrectly flagged as failing verification. This issue is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these Group Wiki repositories. 
+
+  See details of the problem and workaround in issue [#426571](https://gitlab.com/gitlab-org/gitlab/-/issues/426571)
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ------ | ------ | ------ |
+  | 16.3   | All    | None   |
+  | 16.4   | All    | None   |
+  | 16.5   | 16.5.0 - 16.5.1    | 16.5.2   |
+
 ## 16.3.0
 
 - **Update to GitLab 16.3.5 or later**. This avoids [issue 425971](https://gitlab.com/gitlab-org/gitlab/-/issues/425971) that causes an excessive use of database disk space for GitLab 16.3.3 and 16.3.4.
@@ -327,6 +351,18 @@ Specific information applies to installations using Geo:
   | ------ | ------ | ------ |
   | 16.3   | 16.3.0 - 16.3.5    | 16.3.6   |
   | 16.4   | 16.4.0 - 16.4.1    | 16.4.2   |
+
+- After [Group Wiki](../../user/project/wiki/group.md) verification was added in GitLab 16.3, missing Group Wiki repositories are being incorrectly flagged as failing verification. This issue is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these Group Wiki repositories.
+
+  See details of the problem and workaround in issue [#426571](https://gitlab.com/gitlab-org/gitlab/-/issues/426571)
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ------ | ------ | ------ |
+  | 16.3   | All    | None   |
+  | 16.4   | All    | None   |
+  | 16.5   | 16.5.0 - 16.5.1    | 16.5.2   |
 
 ## 16.2.0
 

@@ -31,12 +31,8 @@ module QA
           Page::Project::WebIDE::VSCode.perform do |ide|
             ide.upload_file(file_path)
             ide.commit_and_push(file_name)
-
-            expect(ide).to have_message('Success! Your changes have been committed.')
-
             ide.create_merge_request
           end
-
           # Opens the MR in new tab and verify the file is in the MR
           page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
 

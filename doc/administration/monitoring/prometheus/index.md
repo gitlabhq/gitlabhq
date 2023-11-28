@@ -216,7 +216,7 @@ To use an external Prometheus server:
 
 1. Install and set up a dedicated Prometheus instance, if necessary, using the [official installation instructions](https://prometheus.io/docs/prometheus/latest/installation/).
 
-1. On **all** GitLab Rails(Puma, Sidekiq) servers, set the Prometheus server IP address and listen port. For example:
+1. On **all** GitLab Rails (Puma, Sidekiq) servers, set the Prometheus server IP address and listen port. For example:
 
    ```ruby
    gitlab_rails['prometheus_address'] = '192.168.0.1:9090'

@@ -202,13 +202,16 @@ module QA
               has_branch_input_field?
               # Typing enter to 'New branch name' popup to take the default branch name
               send_keys(:enter)
+              has_committed_successfully?
             end
           end
 
           def create_merge_request
             within_vscode_editor do
-              has_element?('div[title="GitLab Web IDE Extension (Extension)"]')
-              click_element('.monaco-button[title="Create MR"]')
+              within_element('.notification-toast-container') do
+                has_element?('div[title="GitLab Web IDE Extension (Extension)"]')
+                click_element('.monaco-text-button[title="Create MR"]')
+              end
             end
           end
 
@@ -219,7 +222,9 @@ module QA
               page.execute_script("document.body.removeChild = function(){};")
 
               # Use for stability, WebIDE inside an iframe is finnicky, webdriver sometimes moves too fast
-              Support::Waiter.wait_until(max_duration: 20, retry_on_exception: true) do
+              Support::Retrier.retry_until(
+                max_attempts: 5, retry_on_exception: true, sleep_interval: 2
+              ) do
                 right_click_file_explorer
                 has_right_click_menu_item?
                 click_upload_menu_item
