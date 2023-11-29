@@ -52,6 +52,18 @@ RSpec.describe Projects::TagsController do
       expect(assigns(:releases)).not_to include(invalid_release)
     end
 
+    context 'when releases are private' do
+      before do
+        project.project_feature.update!(releases_access_level: ProjectFeature::PRIVATE)
+      end
+
+      it 'does not contain release data' do
+        subject
+
+        expect(assigns(:releases)).to be_empty
+      end
+    end
+
     context '@tag_pipeline_status' do
       context 'when no pipelines exist' do
         it 'is empty' do
