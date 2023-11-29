@@ -70,13 +70,13 @@ class Ability
       end
     end
 
-    def allowed?(user, ability, subject = :global, opts = {})
+    def allowed?(user, ability, subject = :global, **opts)
       if subject.is_a?(Hash)
         opts = subject
         subject = :global
       end
 
-      policy = policy_for(user, subject)
+      policy = policy_for(user, subject, **opts.slice(:cache))
 
       before_check(policy, ability.to_sym, user, subject, opts)
 
@@ -100,8 +100,14 @@ class Ability
       # See Support::AbilityCheck and Support::PermissionsCheck.
     end
 
-    def policy_for(user, subject = :global)
-      DeclarativePolicy.policy_for(user, subject, cache: ::Gitlab::SafeRequestStore.storage)
+    # We cache in the request store by default. This can lead to unexpected
+    # results if abilities are re-checked after objects are modified and the
+    # check depends on the modified attributes. In such cases, you should pass
+    # `cache: false` for the second check to ensure all rules get re-evaluated.
+    def policy_for(user, subject = :global, cache: true)
+      policy_cache = cache ? ::Gitlab::SafeRequestStore.storage : {}
+
+      DeclarativePolicy.policy_for(user, subject, cache: policy_cache)
     end
 
     # This method is something of a band-aid over the problem. The problem is

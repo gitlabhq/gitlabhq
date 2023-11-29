@@ -7,16 +7,16 @@ RSpec.describe Ci::PipelineSchedules::UpdateService, feature_category: :continuo
   let_it_be_with_reload(:project) { create(:project, :public, :repository) }
   let_it_be_with_reload(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }
   let_it_be(:reporter) { create(:user) }
+  let_it_be(:project_owner) { create(:user) }
 
   let_it_be(:pipeline_schedule_variable) do
     create(:ci_pipeline_schedule_variable,
       key: 'foo', value: 'foovalue', pipeline_schedule: pipeline_schedule)
   end
 
-  subject(:service) { described_class.new(pipeline_schedule, user, params) }
-
   before_all do
     project.add_maintainer(user)
+    project.add_owner(project_owner)
     project.add_reporter(reporter)
 
     pipeline_schedule.reload
@@ -54,13 +54,57 @@ RSpec.describe Ci::PipelineSchedules::UpdateService, feature_category: :continuo
       subject(:service) { described_class.new(pipeline_schedule, user, params) }
 
       it 'updates database values with passed params' do
-        expect { service.execute }
-          .to change { pipeline_schedule.description }.from('pipeline schedule').to('updated_desc')
+        expect do
+          service.execute
+          pipeline_schedule.reload
+        end.to change { pipeline_schedule.description }.from('pipeline schedule').to('updated_desc')
           .and change { pipeline_schedule.ref }.from('master').to('patch-x')
           .and change { pipeline_schedule.active }.from(true).to(false)
           .and change { pipeline_schedule.cron }.from('0 1 * * *').to('*/1 * * * *')
           .and change { pipeline_schedule.variables.last.key }.from('foo').to('bar')
           .and change { pipeline_schedule.variables.last.value }.from('foovalue').to('barvalue')
+      end
+
+      context 'when the new branch is protected', :request_store do
+        let(:maintainer_access) { :no_one_can_merge }
+
+        before do
+          create(:protected_branch, :no_one_can_push, maintainer_access, name: 'patch-x', project: project)
+        end
+
+        after do
+          ProtectedBranches::CacheService.new(project).refresh
+        end
+
+        context 'when called by someone other than the schedule owner who can update the ref' do
+          let(:maintainer_access) { :maintainers_can_merge }
+
+          subject(:service) { described_class.new(pipeline_schedule, project_owner, params) }
+
+          it 'does not update the schedule' do
+            expect do
+              service.execute
+              pipeline_schedule.reload
+            end.not_to change { pipeline_schedule.description }
+          end
+        end
+
+        context 'when called by the schedule owner' do
+          it 'does not update the schedule' do
+            expect do
+              service.execute
+              pipeline_schedule.reload
+            end.not_to change { pipeline_schedule.description }
+          end
+
+          context 'when the owner can update the ref' do
+            let(:maintainer_access) { :maintainers_can_merge }
+
+            it 'updates the schedule' do
+              expect { service.execute }.to change { pipeline_schedule.description }
+            end
+          end
+        end
       end
 
       context 'when creating a variable' do
@@ -126,6 +170,8 @@ RSpec.describe Ci::PipelineSchedules::UpdateService, feature_category: :continuo
       end
     end
 
-    it_behaves_like 'pipeline schedules checking variables permission'
+    it_behaves_like 'pipeline schedules checking variables permission' do
+      subject(:service) { described_class.new(pipeline_schedule, user, params) }
+    end
   end
 end
