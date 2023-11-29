@@ -6908,6 +6908,17 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.with_package_registry_enabled' do
+    subject { described_class.with_package_registry_enabled }
+
+    it 'returns projects with the package registry enabled' do
+      project_1 = create(:project)
+      create(:project, package_registry_access_level: ProjectFeature::DISABLED, packages_enabled: false)
+
+      expect(subject).to contain_exactly(project_1)
+    end
+  end
+
   describe '.deployments' do
     subject { project.deployments }
 
