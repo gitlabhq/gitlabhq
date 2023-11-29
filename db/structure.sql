@@ -23520,6 +23520,7 @@ CREATE TABLE service_desk_settings (
     custom_email text,
     service_desk_enabled boolean DEFAULT true NOT NULL,
     add_external_participants_from_cc boolean DEFAULT false NOT NULL,
+    reopen_issue_on_external_participant_note boolean DEFAULT false NOT NULL,
     CONSTRAINT check_57a79552e1 CHECK ((char_length(custom_email) <= 255))
 );
 

@@ -277,6 +277,10 @@ declaring the subscription in `ee/lib/ee/gitlab/event_store.rb`.
 Subscriptions are stored in memory when the Rails app is loaded and they are immediately frozen.
 It's not possible to modify subscriptions at runtime.
 
+NOTE:
+Before creating a subscription, make sure that the worker is already deployed to GitLab.com as the
+newly introduced workers are [not compatible with canary deployments](sidekiq/compatibility_across_updates.md#adding-new-workers).
+
 ### Conditional dispatch of events
 
 A subscription can specify a condition when to accept an event:

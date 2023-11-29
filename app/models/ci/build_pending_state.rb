@@ -3,7 +3,12 @@
 class Ci::BuildPendingState < Ci::ApplicationRecord
   include Ci::Partitionable
 
-  belongs_to :build, class_name: 'Ci::Build', foreign_key: :build_id, inverse_of: :pending_state
+  belongs_to :build,
+    ->(pending_state) { in_partition(pending_state) },
+    class_name: 'Ci::Build',
+    foreign_key: :build_id,
+    partition_foreign_key: :partition_id,
+    inverse_of: :pending_state
 
   partitionable scope: :build
 

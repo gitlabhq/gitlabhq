@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# This is noisy for draft MRs, so let's ignore this cop in draft mode since we have
+# rubocop watching this as well.
+return if helper.draft_mr?
+
 # Danger should not comment when inline disables are added in the following files.
 no_suggestions_for_extensions = %w[.md]
 

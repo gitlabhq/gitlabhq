@@ -45,7 +45,12 @@ module Ci
     has_one :pending_state, class_name: 'Ci::BuildPendingState', foreign_key: :build_id, inverse_of: :build
     has_one :queuing_entry, class_name: 'Ci::PendingBuild', foreign_key: :build_id, inverse_of: :build
     has_one :runtime_metadata, class_name: 'Ci::RunningBuild', foreign_key: :build_id, inverse_of: :build
-    has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id, inverse_of: :build
+    has_many :trace_chunks,
+      ->(build) { in_partition(build) },
+      class_name: 'Ci::BuildTraceChunk',
+      foreign_key: :build_id,
+      inverse_of: :build,
+      partition_foreign_key: :partition_id
     has_many :report_results, class_name: 'Ci::BuildReportResult', foreign_key: :build_id, inverse_of: :build
     has_one :namespace, through: :project
 
@@ -55,7 +60,12 @@ module Ci
     # Details: https://gitlab.com/gitlab-org/gitlab/-/issues/24644#note_689472685
     has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy, inverse_of: :job # rubocop:disable Cop/ActiveRecordDependent
     has_many :job_variables, class_name: 'Ci::JobVariable', foreign_key: :job_id, inverse_of: :job
-    has_many :job_annotations, class_name: 'Ci::JobAnnotation', foreign_key: :job_id, inverse_of: :job
+    has_many :job_annotations,
+      ->(build) { in_partition(build) },
+      class_name: 'Ci::JobAnnotation',
+      foreign_key: :job_id,
+      partition_foreign_key: :partition_id,
+      inverse_of: :job
     has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_job_id, inverse_of: :build
 
     has_many :pages_deployments, foreign_key: :ci_build_id, inverse_of: :ci_build
@@ -64,7 +74,12 @@ module Ci
       has_one :"job_artifacts_#{key}", -> { where(file_type: value) }, class_name: 'Ci::JobArtifact', foreign_key: :job_id, inverse_of: :job
     end
 
-    has_one :runner_manager_build, class_name: 'Ci::RunnerManagerBuild', foreign_key: :build_id, inverse_of: :build,
+    has_one :runner_manager_build,
+      ->(build) { in_partition(build) },
+      class_name: 'Ci::RunnerManagerBuild',
+      foreign_key: :build_id,
+      inverse_of: :build,
+      partition_foreign_key: :partition_id,
       autosave: true
     has_one :runner_manager, foreign_key: :runner_machine_id, through: :runner_manager_build, class_name: 'Ci::RunnerManager'
 

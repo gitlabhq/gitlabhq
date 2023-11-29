@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::Git::Compare do
+RSpec.describe Gitlab::Git::Compare, feature_category: :source_code_management do
   let_it_be(:repository) { create(:project, :repository).repository.raw }
 
   let(:compare) { described_class.new(repository, SeedRepo::BigCommit::ID, SeedRepo::Commit::ID, straight: false) }

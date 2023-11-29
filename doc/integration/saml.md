@@ -46,6 +46,8 @@ For more information on:
    gitlab_rails['omniauth_auto_link_saml_user'] = true
    ```
 
+   Only the GitLab account's primary email address is matched against the email in the SAML response.
+
    Alternatively, a user can manually link their SAML identity to an existing GitLab
    account by [enabling OmniAuth for an existing user](omniauth.md#enable-omniauth-for-an-existing-user).
 

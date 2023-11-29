@@ -168,6 +168,7 @@ module Ci
     def ensure_pending_state
       build_state = Ci::BuildPendingState.safe_find_or_create_by(
         build_id: build.id,
+        partition_id: build.partition_id,
         state: params.fetch(:state),
         trace_checksum: trace_checksum,
         trace_bytesize: trace_bytesize,

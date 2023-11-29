@@ -196,5 +196,6 @@ build_service_desk_setting: # service_desk_setting
     - encrypted_custom_email_smtp_password_iv
     - custom_email_smtp_password
     - add_external_participants_from_cc
+    - reopen_issue_on_external_participant_note
   remapped_attributes:
     project_key: service_desk_address

@@ -5,7 +5,7 @@ Contact: https://about.gitlab.com/security/disclosure/
 
 Policy: https://hackerone.com/gitlab/
 
-Acknowledgments: https://hackerone.com/gitlab/
+Acknowledgments: https://hackerone.com/gitlab/thanks
 Acknowledgments: https://about.gitlab.com/security/vulnerability-acknowledgements/
 
 Canonical: https://gitlab.com/gitlab-org/gitlab/-/blob/master/security.txt
@@ -13,4 +13,6 @@ Canonical: https://gitlab.com/gitlab-org/gitlab/-/blob/master/security.txt
 Preferred-Languages: en
 Hiring: https://about.gitlab.com/jobs/
 
-Expires: 2023-07-31T00:00:00Z
+Expires: 2024-12-31T00:00:00Z
+
+# This file uses the format described at https://securitytxt.org/

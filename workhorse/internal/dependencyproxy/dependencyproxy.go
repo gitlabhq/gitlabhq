@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
 	"time"
 
@@ -157,10 +158,30 @@ func (p *Injector) newUploadRequest(ctx context.Context, params *entryParams, or
 func (p *Injector) unpackParams(sendData string) (*entryParams, error) {
 	var params entryParams
 	if err := p.Unpack(&params, sendData); err != nil {
-		return nil, fmt.Errorf("dependency proxy: unpack sendData: %v", err)
+		return nil, fmt.Errorf("dependency proxy: unpack sendData: %w", err)
+	}
+
+	if err := p.validateParams(params); err != nil {
+		return nil, fmt.Errorf("dependency proxy: invalid params: %w", err)
 	}
 
 	return &params, nil
+}
+
+func (p *Injector) validateParams(params entryParams) error {
+	var uploadMethod = params.UploadConfig.Method
+	if uploadMethod != "" && uploadMethod != http.MethodPost && uploadMethod != http.MethodPut {
+		return fmt.Errorf("invalid upload method %s", uploadMethod)
+	}
+
+	var uploadUrl = params.UploadConfig.Url
+	if uploadUrl != "" {
+		if _, err := url.ParseRequestURI(uploadUrl); err != nil {
+			return fmt.Errorf("invalid upload url %w", err)
+		}
+	}
+
+	return nil
 }
 
 func (p *Injector) uploadMethodFrom(params *entryParams) string {

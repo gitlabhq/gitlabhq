@@ -44743,6 +44743,9 @@ msgstr ""
 msgid "ServiceDesk|The verification email wasn't received in time. There is a 30 minutes timeframe for verification emails to appear in your instance's Service Desk. Make sure that you have set up email forwarding correctly."
 msgstr ""
 
+msgid "ServiceDesk|This issue has been reopened because it received a new comment from an external participant."
+msgstr ""
+
 msgid "ServiceDesk|To enable Service Desk on this instance, an instance administrator must first set up incoming email."
 msgstr ""
 

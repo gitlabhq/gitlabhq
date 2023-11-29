@@ -31,7 +31,6 @@ Experimental features are:
 - UX not finalized, might be just quick action access.
 - Not announced in a release post.
 - Can be promoted in the user interface through [discovery moments](https://design.gitlab.com/usability/feature-management#discovery-moments), if needed.
-- Feedback issue to engage with team.
 
 ## Beta
 

@@ -184,10 +184,10 @@ are available:
 
 | Urgency    | Duration in seconds | Notes                                         |
 |------------|---------------------|-----------------------------------------------|
-| `:high`    | 0.25s               |                                               |
-| `:medium`  | 0.5s                |                                               |
-| `:default` | 1s                  | The default when nothing is specified.        |
-| `:low`     | 5s                  |                                               |
+| `:high`    | [0.25s](https://gitlab.com/gitlab-org/gitlab/-/blob/2f7a38fe48934b78f04233c4d2c81cde88a06da7/lib/gitlab/endpoint_attributes/config.rb#L8)               |                                               |
+| `:medium`  | [0.5s](https://gitlab.com/gitlab-org/gitlab/-/blob/2f7a38fe48934b78f04233c4d2c81cde88a06da7/lib/gitlab/endpoint_attributes/config.rb#L9)                |                                               |
+| `:default` | [1s](https://gitlab.com/gitlab-org/gitlab/-/blob/2f7a38fe48934b78f04233c4d2c81cde88a06da7/lib/gitlab/endpoint_attributes/config.rb#L10)                  | The default when nothing is specified.        |
+| `:low`     | [5s](https://gitlab.com/gitlab-org/gitlab/-/blob/2f7a38fe48934b78f04233c4d2c81cde88a06da7/lib/gitlab/endpoint_attributes/config.rb#L11)                  |                                               |
 
 ### Rails controller
 

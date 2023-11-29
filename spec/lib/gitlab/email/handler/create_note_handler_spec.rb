@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
+RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :shared do
   include_context 'email shared context'
 
-  let_it_be(:user)      { create(:user, email: 'jake@adventuretime.ooo') }
-  let_it_be(:project)   { create(:project, :public, :repository) }
+  let_it_be_with_reload(:user) { create(:user, email: 'jake@adventuretime.ooo') }
+  let_it_be(:project) { create(:project, :public, :repository) }
 
   let(:noteable)  { note.noteable }
   let(:note)      { create(:diff_note_on_merge_request, project: project) }
@@ -133,14 +133,16 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
         end
       end
 
-      context 'mail key is in the References header' do
+      context 'when mail key is in the References header' do
         let(:email_raw) { fixture_file('emails/reply_without_subaddressing_and_key_inside_references.eml') }
 
         it_behaves_like 'an email that contains a mail key', 'References'
       end
 
-      context 'mail key is in the References header with a comma' do
-        let(:email_raw) { fixture_file('emails/reply_without_subaddressing_and_key_inside_references_with_a_comma.eml') }
+      context 'when mail key is in the References header with a comma' do
+        let(:email_raw) do
+          fixture_file('emails/reply_without_subaddressing_and_key_inside_references_with_a_comma.eml')
+        end
 
         it_behaves_like 'an email that contains a mail key', 'References'
       end
@@ -225,6 +227,98 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
         new_note = noteable.notes.last
 
         expect(new_note.note_metadata.external_author).to eq('jake@adventuretime.ooo')
+      end
+    end
+  end
+
+  context 'when issue is closed' do
+    let_it_be(:noteable) { create(:issue, :closed, :confidential, project: project) }
+    let_it_be(:note) { create(:note, noteable: noteable, project: project) }
+
+    let!(:sent_notification) do
+      allow(Gitlab::ServiceDesk).to receive(:enabled?).with(project: project).and_return(true)
+      SentNotification.record_note(note, Users::Internal.support_bot.id)
+    end
+
+    let(:reply_address) { "support+#{sent_notification.reply_key}@example.com" }
+    let(:reopen_note) { noteable.notes.last }
+    let(:email_raw) do
+      <<~EMAIL
+      From: from@example.com
+      To: #{reply_address}
+      Subject: Issue title
+
+      Issue description
+      EMAIL
+    end
+
+    before do
+      stub_incoming_email_setting(enabled: true, address: 'support+%{key}@example.com')
+    end
+
+    it 'does not reopen issue but adds external participants comment' do
+      # Only 1 from received email
+      expect { receiver.execute }.to change { noteable.notes.count }.by(1)
+      expect(noteable).to be_closed
+    end
+
+    context 'when reopen_issue_on_external_participant_note is true' do
+      shared_examples 'an automatically reopened issue' do
+        it 'reopens issue, adds external participants comment and reopen comment' do
+          # 1 from received email and 1 reopen comment
+          expect { receiver.execute }.to change { noteable.notes.count }.by(2)
+          expect(noteable.reset).to be_open
+
+          expect(reopen_note).to be_confidential
+          expect(reopen_note.author).to eq(Users::Internal.support_bot)
+          expect(reopen_note.note).to include(reopen_comment_body)
+        end
+      end
+
+      let!(:settings) do
+        create(:service_desk_setting, project: project, reopen_issue_on_external_participant_note: true)
+      end
+
+      let(:reopen_comment_body) do
+        s_(
+          "ServiceDesk|This issue has been reopened because it received a new comment from an external participant."
+        )
+      end
+
+      it_behaves_like 'an automatically reopened issue'
+
+      it 'does not contain an assignee mention' do
+        receiver.execute
+        expect(reopen_note.note).not_to include("@")
+      end
+
+      context 'when issue is assigned to a user' do
+        before do
+          noteable.update!(assignees: [user])
+        end
+
+        it_behaves_like 'an automatically reopened issue'
+
+        it 'contains an assignee mention' do
+          receiver.execute
+          expect(reopen_note.note).to include(user.to_reference)
+        end
+      end
+
+      context 'when issue is assigned to multiple users' do
+        let_it_be(:another_user) { create(:user) }
+
+        before do
+          noteable.update!(assignees: [user, another_user])
+        end
+
+        it_behaves_like 'an automatically reopened issue'
+
+        it 'contains two assignee mentions' do
+          receiver.execute
+          expect(reopen_note.note).to include(user.to_reference)
+          expect(reopen_note.note).to include(another_user.to_reference)
+        end
       end
     end
   end

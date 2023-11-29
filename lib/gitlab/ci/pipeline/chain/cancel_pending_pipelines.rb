@@ -6,7 +6,11 @@ module Gitlab
       module Chain
         class CancelPendingPipelines < Chain::Base
           def perform!
-            ::Ci::CancelRedundantPipelinesWorker.perform_async(pipeline.id)
+            if pipeline.schedule?
+              ::Ci::LowUrgencyCancelRedundantPipelinesWorker.perform_async(pipeline.id)
+            else
+              ::Ci::CancelRedundantPipelinesWorker.perform_async(pipeline.id)
+            end
           end
 
           def break?

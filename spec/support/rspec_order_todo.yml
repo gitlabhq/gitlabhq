@@ -5994,7 +5994,6 @@
 - './spec/lib/gitlab/email/failure_handler_spec.rb'
 - './spec/lib/gitlab/email/handler/create_issue_handler_spec.rb'
 - './spec/lib/gitlab/email/handler/create_merge_request_handler_spec.rb'
-- './spec/lib/gitlab/email/handler/create_note_handler_spec.rb'
 - './spec/lib/gitlab/email/handler/create_note_on_issuable_handler_spec.rb'
 - './spec/lib/gitlab/email/handler/service_desk_handler_spec.rb'
 - './spec/lib/gitlab/email/handler_spec.rb'

@@ -5,14 +5,23 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"sync"
 	"time"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/nginx"
 )
 
+const (
+	// matches the default size used in httputil.ReverseProxy
+	bufferPoolSize = 32 * 1024
+)
+
 var (
 	defaultTarget = helper.URLMustParse("http://localhost")
+
+	// pool is a buffer pool that is shared across all Proxy instances to maximize buffer reuse.
+	pool = newBufferPool()
 )
 
 type Proxy struct {
@@ -46,6 +55,7 @@ func NewProxy(myURL *url.URL, version string, roundTripper http.RoundTripper, op
 	u.Path = ""
 	p.reverseProxy = httputil.NewSingleHostReverseProxy(&u)
 	p.reverseProxy.Transport = roundTripper
+	p.reverseProxy.BufferPool = pool
 	chainDirector(p.reverseProxy, func(r *http.Request) {
 		r.Header.Set("Gitlab-Workhorse", p.Version)
 		r.Header.Set("Gitlab-Workhorse-Proxy-Start", fmt.Sprintf("%d", time.Now().UnixNano()))
@@ -103,4 +113,26 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	p.reverseProxy.ServeHTTP(w, r)
+}
+
+type bufferPool struct {
+	pool sync.Pool
+}
+
+func newBufferPool() *bufferPool {
+	return &bufferPool{
+		pool: sync.Pool{
+			New: func() any {
+				return make([]byte, bufferPoolSize)
+			},
+		},
+	}
+}
+
+func (bp *bufferPool) Get() []byte {
+	return bp.pool.Get().([]byte)
+}
+
+func (bp *bufferPool) Put(v []byte) {
+	bp.pool.Put(v) //lint:ignore SA6002 we either allocate manually to satisfy the linter or let the compiler allocate for us and silence the linter
 }
