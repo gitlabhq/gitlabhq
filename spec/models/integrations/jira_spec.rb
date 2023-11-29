@@ -251,7 +251,7 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
       'EXT_EXT-1234'       | 'EXT_EXT-1234'
       'EXT3_EXT-1234'      | 'EXT3_EXT-1234'
       '3EXT_EXT-1234'      | ''
-      'CVE-2022-123'       | ''
+      'CVE-2022-123'       | 'CVE-2022'
       'CVE-123'            | 'CVE-123'
       'abc-JIRA-1234'      | 'JIRA-1234'
     end
