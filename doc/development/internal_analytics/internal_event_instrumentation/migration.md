@@ -48,8 +48,6 @@ To generate metric definitions, you can use the generator like this:
 bin/rails g gitlab:analytics:internal_events \
   --time_frames=7d 28d\
   --group=project_management \
-  --stage=plan \
-  --section=dev \
   --event=ci_templates_unique \
   --unique=user.id \
   --mr=https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121544

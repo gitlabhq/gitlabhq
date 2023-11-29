@@ -50,15 +50,8 @@ module Gitlab
       class_option :group,
         type: :string,
         optional: false,
-        desc: 'Name of group that added this metric'
-      class_option :stage,
-        type: :string,
-        optional: false,
-        desc: 'Name of stage that added this metric'
-      class_option :section,
-        type: :string,
-        optional: false,
-        desc: 'Name of section that added this metric'
+        desc: "Name of group that added this metric. " \
+              "See https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml"
       class_option :mr,
         type: :string,
         optional: false,
@@ -184,9 +177,11 @@ module Gitlab
       def validate!
         validate_tiers!
 
-        %i[event mr section stage group].each do |option|
+        %i[event mr group].each do |option|
           raise "The option: --#{option} is  missing" unless options.key? option
         end
+
+        raise "Unknown group" if GroupFetcher.group_unknown?(options[:group])
 
         time_frames.each do |time_frame|
           validate_time_frame!(time_frame)

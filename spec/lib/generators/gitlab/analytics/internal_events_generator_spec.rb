@@ -10,13 +10,14 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
   let(:tmpfile) { Tempfile.new('test-metadata') }
   let(:existing_key_paths) { {} }
   let(:description) { "This metric counts unique users viewing analytics metrics dashboard section" }
-  let(:group) { "group::analytics instrumentation" }
-  let(:stage) { "analytics" }
+  let(:group) { "analytics_instrumentation" }
+  let(:stage) { "analyze" }
   let(:section) { "analytics" }
   let(:mr) { "https://gitlab.com/some-group/some-project/-/merge_requests/123" }
   let(:event) { "view_analytics_dashboard" }
   let(:unique) { "user.id" }
   let(:time_frames) { %w[7d] }
+  let(:group_unknown) { false }
   let(:include_default_identifiers) { 'yes' }
   let(:base_options) do
     {
@@ -24,8 +25,6 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
       free: true,
       mr: mr,
       group: group,
-      stage: stage,
-      section: section,
       event: event,
       unique: unique
     }.stringify_keys
@@ -44,6 +43,10 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
                            .with(/Please describe in at least 50 characters/)
                            .and_return(description)
     end
+
+    allow(Gitlab::Analytics::GroupFetcher).to receive(:group_unknown?).and_return(group_unknown)
+    allow(Gitlab::Analytics::GroupFetcher).to receive(:stage_text).with(group).and_return(stage)
+    allow(Gitlab::Analytics::GroupFetcher).to receive(:section_text).with(group).and_return(section)
 
     allow(Gitlab::TaskHelpers).to receive(:prompt).and_return(include_default_identifiers)
     allow(Gitlab::Usage::MetricDefinition).to receive(:definitions).and_return(existing_key_paths)
@@ -260,7 +263,7 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
 
       context 'without obligatory parameter' do
         it 'raises error', :aggregate_failures do
-          %w[event mr section stage group].each do |option|
+          %w[event mr group].each do |option|
             expect { described_class.new([], options.without(option)).invoke_all }
               .to raise_error(RuntimeError)
           end

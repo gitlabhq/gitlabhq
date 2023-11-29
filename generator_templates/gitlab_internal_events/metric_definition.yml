@@ -1,8 +1,8 @@
 ---
 key_path: <%= args.second %>
 description: <%= args.last %>
-product_section: <%= options.fetch(:section) %>
-product_stage: <%= options.fetch(:stage) %>
+product_section: <%= Gitlab::Analytics::GroupFetcher.section_text(options.fetch(:group)) %>
+product_stage: <%= Gitlab::Analytics::GroupFetcher.stage_text(options.fetch(:group)) %>
 product_group: <%= options.fetch(:group) %>
 performance_indicator_type: []
 value_type: number

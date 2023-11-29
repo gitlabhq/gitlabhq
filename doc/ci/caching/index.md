@@ -505,7 +505,7 @@ is stored on the machine where GitLab Runner is installed. The location also dep
 | Runner executor        | Default path of the cache |
 | ---------------------- | ------------------------- |
 | [Shell](https://docs.gitlab.com/runner/executors/shell.html) | Locally, under the `gitlab-runner` user's home directory: `/home/gitlab-runner/cache/<user>/<project>/<cache-key>/cache.zip`. |
-| [Docker](https://docs.gitlab.com/runner/executors/docker.html) | Locally, under [Docker volumes](https://docs.gitlab.com/runner/executors/docker.html#the-builds-and-cache-storage): `/var/lib/docker/volumes/<volume-id>/_data/<user>/<project>/<cache-key>/cache.zip`. |
+| [Docker](https://docs.gitlab.com/runner/executors/docker.html) | Locally, under [Docker volumes](https://docs.gitlab.com/runner/executors/docker.html#configure-directories-for-the-container-build-and-cache): `/var/lib/docker/volumes/<volume-id>/_data/<user>/<project>/<cache-key>/cache.zip`. |
 | [Docker Machine](https://docs.gitlab.com/runner/executors/docker_machine.html) (autoscale runners) | The same as the Docker executor. |
 
 If you use cache and artifacts to store the same path in your jobs, the cache might

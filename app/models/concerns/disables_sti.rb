@@ -5,7 +5,7 @@
 module DisablesSti
   extend ActiveSupport::Concern
 
-  SKIP_STI_CHECK = Gitlab.dev_or_test_env? &&
+  SKIP_STI_CHECK = !Gitlab.dev_or_test_env? ||
     Gitlab::Utils.to_boolean(ENV['SKIP_STI_CHECK'], default: false)
 
   included do

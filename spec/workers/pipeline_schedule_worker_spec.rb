@@ -14,13 +14,15 @@ RSpec.describe PipelineScheduleWorker, :sidekiq_inline, feature_category: :conti
     create(:ci_pipeline_schedule, :nightly, project: project, owner: user)
   end
 
+  let(:next_run_at) { pipeline_schedule.next_run_at }
+
   before do
     stub_application_setting(auto_devops_enabled: false)
     stub_ci_pipeline_to_return_yaml_file
   end
 
   around do |example|
-    travel_to(pipeline_schedule.next_run_at + 1.hour) do
+    travel_to(next_run_at + 1.hour) do
       example.run
     end
   end
@@ -140,6 +142,54 @@ RSpec.describe PipelineScheduleWorker, :sidekiq_inline, feature_category: :conti
     it 'does not raise error' do
       expect(lease).to receive(:try_obtain).exactly(described_class::LOCK_RETRY + 1).times
       expect { subject }.to raise_error(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+    end
+  end
+
+  context 'with scheduling delay' do
+    before do
+      stub_const("#{described_class}::BATCH_SIZE", 1)
+    end
+
+    let!(:other_pipeline_schedule) do
+      create(:ci_pipeline_schedule, :every_minute, project: project, owner: user)
+    end
+
+    let(:next_run_at) do
+      [pipeline_schedule, other_pipeline_schedule].maximum(:next_run_at)
+    end
+
+    it 'calls bulk_perform_in with the arguments and delay' do
+      expect(RunPipelineScheduleWorker)
+        .to receive(:bulk_perform_in)
+        .with(7.seconds, [[pipeline_schedule.id, user.id, { scheduling: true }]])
+        .and_call_original
+
+      expect(RunPipelineScheduleWorker)
+        .to receive(:bulk_perform_in)
+        .with(14.seconds, [[other_pipeline_schedule.id, user.id, { scheduling: true }]])
+        .and_call_original
+
+      subject
+    end
+
+    context 'with run_pipeline_schedule_worker_with_delay disabled' do
+      before do
+        stub_feature_flags(run_pipeline_schedule_worker_with_delay: false)
+      end
+
+      it 'calls bulk_perform_async with the arguments and delay' do
+        expect(RunPipelineScheduleWorker)
+          .to receive(:bulk_perform_async)
+          .with([[pipeline_schedule.id, user.id, { scheduling: true }]])
+          .and_call_original
+
+        expect(RunPipelineScheduleWorker)
+          .to receive(:bulk_perform_async)
+          .with([[other_pipeline_schedule.id, user.id, { scheduling: true }]])
+          .and_call_original
+
+        subject
+      end
     end
   end
 end

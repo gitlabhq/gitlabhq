@@ -32,8 +32,6 @@ This example creates an event definition for an event called `project_created` a
 bundle exec rails generate gitlab:analytics:internal_events \
 --time_frames=7d 28d \
 --group=project_management \
---stage=plan \
---section=dev \
 --event=project_created \
 --unique=user.id \
 --mr=https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121544

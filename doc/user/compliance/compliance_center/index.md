@@ -20,6 +20,9 @@ See report and manage standards adherence, violations, and compliance frameworks
 
 Standards adherence dashboard lists the adherence status of projects complying to GitLab standard.
 
+When a project is added or an associated project or group setting is changed, an adherence scan is run on that project to update the standards adherence for that project. The date in the
+**Last Scanned** column reflects any changes.
+
 ### View the standards adherence dashboard
 
 Prerequisites:
