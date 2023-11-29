@@ -84,13 +84,6 @@ module Gitlab
         [self.class, storage, relative_path].hash
       end
 
-      # This method will be removed when Gitaly reaches v1.1.
-      def path
-        File.join(
-          Gitlab.config.repositories.storages[@storage].legacy_disk_path, @relative_path
-        )
-      end
-
       # Default branch in the repository
       def root_ref(head_only: false)
         wrapped_gitaly_errors do

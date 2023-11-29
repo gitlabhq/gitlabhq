@@ -514,7 +514,7 @@ module Gitlab
           end
 
           def to_prompt
-            <<-PROMPT
+            <<~PROMPT
             You are an assistant that writes code for the following context:
 
             context: #{user_input}

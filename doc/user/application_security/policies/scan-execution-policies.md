@@ -201,18 +201,23 @@ The keys for a schedule rule are:
 
 ## `scan` action type
 
-> Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.6 [with a flag](../../../administration/feature_flags.md) named `security_policies_variables_precedence`. Disabled by default.
+> - Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.6 [with a flag](../../../administration/feature_flags.md) named `security_policies_variables_precedence`. Disabled by default.
+> - The `custom` scan action type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126457) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `compliance_pipeline_in_policies`. On GitLab.com, this feature is not available. On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `compliance_pipeline_in_policies`.
 
 This action executes the selected `scan` with additional parameters when conditions for at least one
 rule in the defined policy are met.
 
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
-| `scan` | `string` | `sast`, `sast_iac`, `dast`, `secret_detection`, `container_scanning`, `dependency_scanning` | The action's type. |
+| `scan` | `string` | `sast`, `sast_iac`, `dast`, `secret_detection`, `container_scanning`, `dependency_scanning`, `custom` | The action's type. |
 | `site_profile` | `string` | Name of the selected [DAST site profile](../dast/proxy-based.md#site-profile). | The DAST site profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
 | `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/proxy-based.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
 | `variables` | `object` | | A set of CI variables, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the variable name, with its `value` provided as a string. This parameter supports any variable that the GitLab CI job supports for the specified scan. |
 | `tags` | `array` of `string` | | A list of runner tags for the policy. The policy jobs are run by runner with the specified tags. |
+| `ci_configuration` <sup>1</sup> | `string` | | GitLab CI YAML as formatted as string. |
+| `ci_configuration_path` <sup>1</sup> | object | Object with project path and file name pointing to a CI configuration. |
+
+1. For `custom` scans, you must specify one of `ci_configuration` or `ci_configuration_path`.
 
 Note the following:
 
@@ -232,6 +237,16 @@ Note the following:
 - A container scanning scan that is configured for the `pipeline` rule type ignores the agent defined in the `agents` object. The `agents` object is only considered for `schedule` rule types.
   An agent with a name provided in the `agents` object must be created and configured for the project.
 - Variables defined in a Scan Execution Policy follow the standard [CI/CD variable precedence](../../../ci/variables/index.md#cicd-variable-precedence).
+- `custom` scans are be executed for scheduled rules.
+- Jobs variables and stages definitions from `custom` scans take precedence over the project's CI/CD configuration.
+
+### `ci_configuration_path` object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `project` | `string` | A project namespace path. |
+| `file` | `string` | The filename of the CI/CD YAML file. |
+| `ref` | `string` (optional) | The branch name, tag name, or commit SHA. |
 
 ## Example security policies project
 
@@ -252,6 +267,12 @@ scan_execution_policy:
   - scan: dast
     scanner_profile: Scanner Profile A
     site_profile: Site Profile B
+  - scan: custom
+    ci_configuration: |-
+      test job:
+        stage: test
+        script:
+          - echo "Hello World"
 - name: Enforce DAST and secret detection scans every 10 minutes
   description: This policy enforces DAST and secret detection scans to run every 10 minutes
   enabled: true
@@ -283,7 +304,9 @@ scan_execution_policy:
 In this example:
 
 - For every pipeline executed on branches that match the `release/*` wildcard (for example, branch
-  `release/v1.2.1`), DAST scans run with `Scanner Profile A` and `Site Profile B`.
+  `release/v1.2.1`)
+  - DAST scans run with `Scanner Profile A` and `Site Profile B`.
+  - A `test job` is injected into the `test` stage of the pipeline, printing `Hello World`.
 - DAST and secret detection scans run every 10 minutes. The DAST scan runs with `Scanner Profile C`
   and `Site Profile D`.
 - Secret detection, container scanning, and SAST scans run for every pipeline executed on the `main`
