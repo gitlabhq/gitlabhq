@@ -6027,7 +6027,6 @@
 - './spec/lib/gitlab/etag_caching/router/rails_spec.rb'
 - './spec/lib/gitlab/etag_caching/router_spec.rb'
 - './spec/lib/gitlab/etag_caching/store_spec.rb'
-- './spec/lib/gitlab/event_store/event_spec.rb'
 - './spec/lib/gitlab/event_store/store_spec.rb'
 - './spec/lib/gitlab/exception_log_formatter_spec.rb'
 - './spec/lib/gitlab/exceptions_app_spec.rb'

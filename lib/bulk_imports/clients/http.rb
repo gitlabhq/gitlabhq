@@ -81,7 +81,7 @@ module BulkImports
 
         return true if response['scopes']&.include?('api')
 
-        raise ::BulkImports::Error.scope_validation_failure
+        raise ::BulkImports::Error.scope_or_url_validation_failure
       end
 
       def validate_instance_version!
@@ -110,7 +110,7 @@ module BulkImports
       rescue BulkImports::NetworkError => e
         case e&.response&.code
         when 401, 403
-          raise ::BulkImports::Error.scope_validation_failure
+          raise ::BulkImports::Error.scope_or_url_validation_failure
         when 404
           raise ::BulkImports::Error.invalid_url
         else

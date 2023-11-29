@@ -790,10 +790,6 @@ class Group < Namespace
   end
   strong_memoize_attr :has_project_with_service_desk_enabled?
 
-  def activity_path
-    Gitlab::Routing.url_helpers.activity_group_path(self)
-  end
-
   # rubocop: disable CodeReuse/ServiceClass
   def open_issues_count(current_user = nil)
     Groups::OpenIssuesCountService.new(self, current_user).count

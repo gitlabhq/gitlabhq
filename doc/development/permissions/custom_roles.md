@@ -182,6 +182,7 @@ security dashboard.
 
 To add a new ability to a custom role:
 
+- Generate YAML file by running `./ee/bin/custom-ability` generator
 - Add a new column to `member_roles` table, for example in [this change in merge request 114734](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114734/diffs#diff-content-5c53d6f1c29a272a87eecea3f62d017ab6635275).
 - Add the ability to the  `MemberRole` model, `ALL_CUSTOMIZABLE_PERMISSIONS` hash, for example in [this change in merge request 121534](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121534/diffs#ce5ec769500a53ce2b603467d9984fc2b33ca71d_8_8). There are following possible keys in the `ALL_CUSTOMIZABLE_PERMISSIONS` hash:
 
@@ -199,6 +200,33 @@ Examples of merge requests adding new abilities to custom roles:
 - [Admin vulnerability](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121534) - this is the newest MR implementing a new custom role ability. Some changes from the previous MRs are not necessary anymore (such as a change of the Preloader query or adding a method to `User` model).
 
 You should make sure a new custom roles ability is under a feature flag.
+
+## Custom abilities definition
+
+All new custom abilities must have a type definition stored in `ee/config/custom_abilities` that contains a single source of truth for every ability that is part of custom roles feature.
+
+### Add a new custom ability definition
+
+To add a new custom ability:
+
+1. Create the YAML definition. You can either:
+   - Use the `ee/bin/custom-ability` CLI to create the YAML definition automatically.
+   - Perform manual steps to create a new file in `ee/config/custom_abilities/` with the filename matching the name of the ability name.
+1. Add contents to the file that conform to the [schema](#schema) defined in `ee/config/custom_abilities/types/type_schema.json`.
+
+### Schema
+
+| Field | Required | Description |
+| ----- | -------- |--------------|
+| `name` | yes     | Unique, lowercase and underscored name describing the custom ability. Must match the filename. |
+| `description` | yes | Human-readable description of the custom ability. |
+| `feature_category` | yes | Name of the feature category. For example, `vulnerability_management`. |
+| `introduced_by_issue` | yes | Issue URL that proposed the addition of this custom ability. |
+| `introduced_by_mr` | yes | MR URL that added this custom ability. |
+| `milestone` | yes | Milestone in which this custom ability was added. |
+| `group_ability` | yes | Indicate whether this ability is checked on group level. |
+| `project_ability` | yes | Indicate whether this ability is checked on project level. |
+| `skip_seat_consumption` | yes | Indicate wheter this ability should be skiped when counting licensed users. |
 
 ### Privilege escalation consideration
 

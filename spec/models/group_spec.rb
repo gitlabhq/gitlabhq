@@ -3014,14 +3014,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#activity_path' do
-    it 'returns the group activity_path' do
-      expected_path = "/groups/#{group.name}/-/activity"
-
-      expect(group.activity_path).to eq(expected_path)
-    end
-  end
-
   context 'with export' do
     let(:group) { create(:group, :with_export) }
 

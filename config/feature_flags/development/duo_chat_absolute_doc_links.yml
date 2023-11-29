@@ -1,8 +1,0 @@
----
-name: duo_chat_absolute_doc_links
-introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136240'
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/431338
-milestone: '16.6'
-type: development
-group: group::ai framework
-default_enabled: false

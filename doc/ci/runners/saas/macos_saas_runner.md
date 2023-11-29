@@ -36,11 +36,11 @@ GitLab SaaS provides a set of VM images for macOS.
 You can execute your build in one of the following images, which you specify
 in your `.gitlab-ci.yml` file. Each image runs a specific version of macOS and Xcode.
 
-| VM image                   | Status |
-|----------------------------|--------|
-| `macos-12-xcode-14`        | `GA`   |
-| `macos-13-xcode-14`        | `GA`   |
-| `macos-14-xcode-15`        | `Beta` |
+| VM image                   | Status |              |
+|----------------------------|--------|--------------|
+| `macos-12-xcode-14`        | `GA`   |              |
+| `macos-13-xcode-14`        | `GA`   | [Preinstalled Software](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/job-images/-/blob/main/toolchain/macos-13.yml) |
+| `macos-14-xcode-15`        | `Beta` | [Preinstalled Software](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/job-images/-/blob/main/toolchain/macos-14.yml) |
 
 If no image is specified, the macOS runner uses `macos-13-xcode-14`.
 
@@ -48,7 +48,7 @@ If no image is specified, the macOS runner uses `macos-13-xcode-14`.
 
 macOS and Xcode follow a yearly release cadence, during which GitLab increments its versions synchronously. GitLab typically supports multiple versions of preinstalled tools. For more information, see the [full list of preinstalled software](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/job-images/-/tree/main/toolchain).
 
-When Apple releases a new macOS version, GitLab releases a new `stable` image based on the OS in the next release, 
+When Apple releases a new macOS version, GitLab releases a new `stable` image based on the OS in the next release,
 which is in Beta.
 
 With the release of the first patch to macOS, the `stable` image becomes Generally Available (GA). As only two GA images are supported at a time, the prior OS version becomes deprecated and is deleted after three months in accordance with the [supported image lifecycle](../index.md#supported-image-lifecycle).

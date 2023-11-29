@@ -157,7 +157,7 @@ For the storage-specific form,
 because it does not require a shared folder.
 
 For configuring object storage in GitLab 13.1 and earlier, _or_ for storage types not
-For storage types not supported by the consolidated form, refer to the following guides:
+supported by the consolidated form, refer to the following guides:
 
 | Object storage type | Supported by consolidated form? |
 |---------------------|------------------------------------------|

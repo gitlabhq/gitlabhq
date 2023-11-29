@@ -105,12 +105,12 @@ RSpec.describe 'OAuth Registration', :js, :allow_forgery_protection, feature_cat
           mock_auth_hash(provider, uid, invite_email, additional_info: additional_info)
         end
 
-        it 'redirects to the activity page with all the projects/groups invitations accepted' do
+        it 'redirects to the group page with all the projects/groups invitations accepted' do
           visit invite_path(group_invite.raw_invite_token, extra_params)
           click_link_or_button "oauth-login-#{provider}"
 
           expect(page).to have_content('You have been granted Owner access to group Owned.')
-          expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
+          expect(page).to have_current_path(group_path(group), ignore_query: true)
         end
       end
     end

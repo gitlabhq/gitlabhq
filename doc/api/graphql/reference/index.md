@@ -72,6 +72,23 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="queryabusereportlabelssearchterm"></a>`searchTerm` | [`String`](#string) | Search term to find labels with. |
 
+### `Query.addOnPurchase`
+
+Retrieve the active add-on purchase. This query can be used in GitLab SaaS and self-managed environments.
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`AddOnPurchase`](#addonpurchase).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryaddonpurchaseaddontype"></a>`addOnType` | [`GitlabSubscriptionsAddOnType!`](#gitlabsubscriptionsaddontype) | Type of add-on for the add-on purchase. |
+| <a id="queryaddonpurchasenamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | ID of namespace that the add-on was purchased for. |
+
 ### `Query.aiMessages`
 
 Find GitLab Duo Chat messages.

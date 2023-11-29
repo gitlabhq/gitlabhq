@@ -27,16 +27,19 @@
           - docs_link = link_to('', help_page_path('user/group/import/index', anchor: 'migrated-group-items'), target: '_blank', rel: 'noopener noreferrer')
           = safe_format(s_('GroupsNew|Not all group items are migrated. %{docs_link_start}What items are migrated%{docs_link_end}?'), tag_pair(docs_link, :docs_link_start, :docs_link_end))
 
-    %p.gl-mt-3
-    = s_('GroupsNew|Provide credentials for the source instance to import from. You can provide this instance as a source to move groups in this instance.')
-    .form-group.gl-display-flex.gl-flex-direction-column
-      = f.label :bulk_import_gitlab_url, s_('GroupsNew|GitLab source instance URL'), for: 'import_gitlab_url'
+    %p.gl-mt-5.gl-mb-3
+      - url_link = link_to('', help_page_path('user/group/import/index', anchor: 'connect-the-source-gitlab-instance'), target: '_blank', rel: 'noopener noreferrer')
+      = safe_format(s_('GroupsNew|Provide credentials for the %{url_link_start}source instance%{url_link_end} to import from. You can provide this instance as a source to move groups within this instance.'), tag_pair(url_link, :url_link_start, :url_link_end))
+    .form-group.gl-form-group.gl-display-flex.gl-flex-direction-column
+      = f.label :bulk_import_gitlab_url, s_('GroupsNew|GitLab source instance base URL'), for: 'import_gitlab_url'
       = f.text_field :bulk_import_gitlab_url, disabled: bulk_imports_disabled, placeholder: 'https://gitlab.example.com', class: 'gl-form-input col-xs-12 col-sm-8',
         required: true,
         title: s_('GroupsNew|Enter the URL for the source instance.'),
         id: 'import_gitlab_url',
         data: { testid: 'import-gitlab-url' }
-    .form-group.gl-display-flex.gl-flex-direction-column
+      %small.form-text.text-gl-muted
+        = s_('Import|Must only contain the base URL of the source GitLab instance.')
+    .form-group.gl-form-group.gl-display-flex.gl-flex-direction-column
       = f.label :bulk_import_gitlab_access_token, s_('GroupsNew|Personal access token'), for: 'import_gitlab_token', class: 'col-form-label'
       .gl-font-weight-normal
         - pat_link = link_to('', help_page_path('user/profile/personal_access_tokens'), target: '_blank')

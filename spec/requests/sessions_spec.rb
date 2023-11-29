@@ -41,7 +41,7 @@ RSpec.describe 'Sessions', feature_category: :system_access do
 
         post user_session_path(user: { login: user.username, password: user.password })
 
-        expect(response).to redirect_to(activity_group_path(member.source))
+        expect(response).to redirect_to(group_path(member.source))
       end
     end
 

@@ -100,7 +100,7 @@ class SessionsController < Devise::SessionsController
   def after_pending_invitations_hook
     member = resource.members.last
 
-    store_location_for(:user, member.source.activity_path) if member
+    store_location_for(:user, polymorphic_path(member.source)) if member
   end
 
   def captcha_enabled?

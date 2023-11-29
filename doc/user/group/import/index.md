@@ -201,7 +201,7 @@ Create the group you want to import to and connect the source GitLab instance:
    - A new subgroup. On existing group's page, either:
      - Select **New subgroup**.
      - On the left sidebar, at the top, select **Create new** (**{plus}**) and **New subgroup**. Then select the **import an existing group** link.
-1. Enter the URL of a GitLab instance running GitLab 14.0 or later.
+1. Enter the base URL of a GitLab instance running GitLab 14.0 or later.
 1. Enter the [personal access token](../../../user/profile/personal_access_tokens.md) for your source GitLab instance.
 1. Select **Connect instance**.
 

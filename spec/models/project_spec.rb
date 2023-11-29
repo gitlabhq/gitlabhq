@@ -7955,14 +7955,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         end
       end
     end
-
-    describe '#activity_path' do
-      it 'returns the project activity_path' do
-        expected_path = "/#{project.full_path}/activity"
-
-        expect(project.activity_path).to eq(expected_path)
-      end
-    end
   end
 
   describe '#default_branch_or_main' do

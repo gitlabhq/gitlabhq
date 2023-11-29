@@ -9020,6 +9020,9 @@ msgstr ""
 msgid "BulkImport|Be aware of %{linkStart}visibility rules%{linkEnd} when importing groups."
 msgstr ""
 
+msgid "BulkImport|Check that the source instance base URL and the personal access token meet the necessary requirements."
+msgstr ""
+
 msgid "BulkImport|Destination"
 msgstr ""
 
@@ -9035,7 +9038,19 @@ msgstr ""
 msgid "BulkImport|GitLab Migration history"
 msgstr ""
 
+msgid "BulkImport|Group import disabled on source or destination instance. Ask an administrator to enable it on both instances and try again."
+msgstr ""
+
 msgid "BulkImport|History"
+msgstr ""
+
+msgid "BulkImport|Import failed. '%{path}' already exists. Change the destination and try again."
+msgstr ""
+
+msgid "BulkImport|Import failed. Destination '%{destination}' is invalid, or you don't have permission."
+msgstr ""
+
+msgid "BulkImport|Import failed. Destination URL %{url}"
 msgstr ""
 
 msgid "BulkImport|Import failed: Destination cannot be a subgroup of the source group. Change the destination and try again."
@@ -9057,6 +9072,9 @@ msgid "BulkImport|Importing projects is a %{docsLinkStart}Beta%{docsLinkEnd} fea
 msgstr ""
 
 msgid "BulkImport|Importing the group failed."
+msgstr ""
+
+msgid "BulkImport|Invalid source URL. Enter only the base URL of the source GitLab instance."
 msgstr ""
 
 msgid "BulkImport|Last imported to %{link}"
@@ -9114,6 +9132,9 @@ msgid "BulkImport|Source group"
 msgstr ""
 
 msgid "BulkImport|Template / File-based import / GitLab Migration"
+msgstr ""
+
+msgid "BulkImport|Unsupported GitLab version. Minimum supported version is '%{version}'."
 msgstr ""
 
 msgid "BulkImport|Update of import statuses with realtime changes failed"
@@ -23555,7 +23576,7 @@ msgstr ""
 msgid "GroupsNew|Enter the URL for the source instance."
 msgstr ""
 
-msgid "GroupsNew|GitLab source instance URL"
+msgid "GroupsNew|GitLab source instance base URL"
 msgstr ""
 
 msgid "GroupsNew|Groups"
@@ -23597,7 +23618,7 @@ msgstr ""
 msgid "GroupsNew|Please fill in your personal access token."
 msgstr ""
 
-msgid "GroupsNew|Provide credentials for the source instance to import from. You can provide this instance as a source to move groups in this instance."
+msgid "GroupsNew|Provide credentials for the %{url_link_start}source instance%{url_link_end} to import from. You can provide this instance as a source to move groups within this instance."
 msgstr ""
 
 msgid "GroupsNew|Remember to enable it also on the instance you are migrating from."
@@ -24899,6 +24920,9 @@ msgid "Import|Maximum remote file size for imports from external object storages
 msgstr ""
 
 msgid "Import|Maximum size of decompressed archive."
+msgstr ""
+
+msgid "Import|Must only contain the base URL of the source GitLab instance."
 msgstr ""
 
 msgid "Import|No import details"
@@ -56315,6 +56339,9 @@ msgid "Your projects"
 msgstr ""
 
 msgid "Your public email will be displayed on your public profile."
+msgstr ""
+
+msgid "Your push to this repository has been rejected because it would exceed the namespace storage limit of %{size_limit}. Reduce your namespace storage or purchase additional storage.To manage storage, or purchase additional storage, see %{manage_storage_url}. To learn more about restricted actions, see %{restricted_actions_url}"
 msgstr ""
 
 msgid "Your request for access could not be processed: %{error_message}"

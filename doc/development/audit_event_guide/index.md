@@ -199,7 +199,7 @@ In addition to recording to the database, we also write these events to
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367847) in GitLab 15.4.
 
-All new audit events must have a type definition stored in `config/audit_events/types/` that contains a single source of truth for every auditable event in GitLab.
+All new audit events must have a type definition stored in `config/audit_events/types/` or `ee/config/audit_events/types/` that contains a single source of truth for every auditable event in GitLab.
 
 ### Add a new audit event type
 
