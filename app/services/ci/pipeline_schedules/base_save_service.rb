@@ -23,7 +23,11 @@ module Ci
       attr_reader :project, :user, :params, :schedule
 
       def allowed_to_save?
-        user.can?(self.class::AUTHORIZE, schedule)
+        # Disable cache because the same ability may already have been checked
+        # for the same records with different attributes. For example, we do not
+        # want an unauthorized user to change an unprotected ref to a protected
+        # ref.
+        user.can?(self.class::AUTHORIZE, schedule, cache: false)
       end
 
       def forbidden_to_save

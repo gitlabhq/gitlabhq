@@ -3,9 +3,42 @@
 require 'spec_helper'
 
 RSpec.describe Ability do
-  context 'using a nil subject' do
-    it 'has no permissions' do
-      expect(described_class.policy_for(nil, nil)).to be_banned
+  describe '#policy_for' do
+    subject(:policy) { described_class.policy_for(user, subject, **options) }
+
+    let(:user) { User.new }
+    let(:subject) { :global }
+    let(:options) { {} }
+
+    context 'using a nil subject' do
+      let(:user) { nil }
+      let(:subject) { nil }
+
+      it 'has no permissions' do
+        expect(policy).to be_banned
+      end
+    end
+
+    context 'with request store', :request_store do
+      before do
+        ::Gitlab::SafeRequestStore.write(:example, :value) # make request store different from {}
+      end
+
+      it 'caches in the request store' do
+        expect(DeclarativePolicy).to receive(:policy_for).with(user, subject, cache: ::Gitlab::SafeRequestStore.storage)
+
+        policy
+      end
+
+      context 'when cache: false' do
+        let(:options) { { cache: false } }
+
+        it 'uses a fresh cache each time' do
+          expect(DeclarativePolicy).to receive(:policy_for).with(user, subject, cache: {})
+
+          policy
+        end
+      end
     end
   end
 
