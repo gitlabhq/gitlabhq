@@ -156,12 +156,13 @@ module Members
     end
 
     def commit_member
-      if can_commit_member?
-        assign_member_attributes
-        commit_changes
-      else
-        add_commit_error
-      end
+      return add_commit_error unless can_commit_member?
+
+      assign_member_attributes
+
+      return add_member_role_error if member_role_too_high?
+
+      commit_changes
     end
 
     def can_commit_member?
@@ -173,6 +174,11 @@ module Members
       else
         can_update_existing_member?
       end
+    end
+
+    # overridden in Members::Groups::CreatorService
+    def member_role_too_high?
+      false
     end
 
     def can_create_new_member?
@@ -236,6 +242,12 @@ module Members
             else
               _('not authorized to update member')
             end
+
+      member.errors.add(:base, msg)
+    end
+
+    def add_member_role_error
+      msg = _("the member access level can't be higher than the current user's one")
 
       member.errors.add(:base, msg)
     end

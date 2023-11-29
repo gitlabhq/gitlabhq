@@ -604,4 +604,67 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
       end
     end
   end
+
+  describe '#access_level_roles_user_can_assign' do
+    subject { helper.access_level_roles_user_can_assign(group) }
+
+    let_it_be(:group) { create(:group) }
+    let_it_be_with_reload(:user) { create(:user) }
+
+    context 'when user is provided' do
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+      end
+
+      context 'when a user is a group member' do
+        before do
+          group.add_developer(user)
+        end
+
+        it 'returns only the roles the provided user can assign' do
+          expect(subject).to eq(
+            {
+              'Guest' => 10,
+              'Reporter' => 20,
+              'Developer' => 30
+            }
+          )
+        end
+      end
+
+      context 'when a user is an admin', :enable_admin_mode do
+        before do
+          user.update!(admin: true)
+        end
+
+        it 'returns all roles' do
+          expect(subject).to eq(
+            {
+              'Guest' => 10,
+              'Reporter' => 20,
+              'Developer' => 30,
+              'Maintainer' => 40,
+              'Owner' => 50
+            }
+          )
+        end
+      end
+
+      context 'when a user is not a group member' do
+        it 'returns the empty array' do
+          expect(subject).to be_empty
+        end
+      end
+
+      context 'when user is not provided' do
+        before do
+          allow(helper).to receive(:current_user).and_return(nil)
+        end
+
+        it 'returns the empty array' do
+          expect(subject).to be_empty
+        end
+      end
+    end
+  end
 end
