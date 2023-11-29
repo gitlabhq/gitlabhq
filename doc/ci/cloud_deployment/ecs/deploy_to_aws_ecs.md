@@ -56,7 +56,7 @@ bare-bones application built on some well-known frameworks.
 Now that you created a demo project, you must containerize the application and push it to the
 container registry.
 
-### Push a containerized application image to GitLab Container Registry
+### Push a containerized application image to GitLab container registry
 
 [ECS](https://aws.amazon.com/ecs/) is a container orchestration service, meaning that you must
 provide a containerized application image during the infrastructure build. To do so, you can use
@@ -75,7 +75,7 @@ and [Container Registry](../../../user/packages/container_registry/index.md).
    ```
 
 1. Select **Commit Changes**. It automatically triggers a new pipeline. In this pipeline, the `build`
-   job containerizes the application and pushes the image to [GitLab Container Registry](../../../user/packages/container_registry/index.md).
+   job containerizes the application and pushes the image to [GitLab container registry](../../../user/packages/container_registry/index.md).
 
    ![Create project](img/initial-pipeline.png)
 
@@ -106,7 +106,7 @@ is a specification about how the application image is started by an [ECS service
 1. Select **Container Definitions > Add container**. This opens a container registration form.
 1. Set `web` to **Container name**.
 1. Set `registry.gitlab.com/<your-namespace>/ecs-demo/master:latest` to **Image**.
-   Alternatively, you can copy and paste the image path from the [GitLab Container Registry page](#push-a-containerized-application-image-to-gitlab-container-registry).
+   Alternatively, you can copy and paste the image path from the [GitLab container registry page](#push-a-containerized-application-image-to-gitlab-container-registry).
 
    ![Create project](img/container-name.png)
 

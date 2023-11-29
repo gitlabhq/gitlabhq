@@ -78,7 +78,7 @@ subgraph " `gitlab-org/gitlab-qa-mirror` pipeline"
       and polls for the resulting status. We call this a _status attribution_.
 
 1. In the [`gitlab-org/build/omnibus-gitlab-mirror` pipeline](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror):
-   1. Docker image is being built and pushed to its Container Registry.
+   1. Docker image is being built and pushed to its container registry.
    1. Once Docker images are built and pushed jobs in `test` stage are started
 
 1. In the `Test` stage:

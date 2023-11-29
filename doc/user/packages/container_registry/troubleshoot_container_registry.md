@@ -4,17 +4,17 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting the GitLab Container Registry
+# Troubleshooting the GitLab container registry
 
-You must sign in to GitLab with administrator rights to troubleshoot most issues with the GitLab Container Registry.
+You must sign in to GitLab with administrator rights to troubleshoot most issues with the GitLab container registry.
 
-You can find [additional troubleshooting information](../../../administration/packages/container_registry.md#troubleshooting) in the GitLab Container Registry administration documentation.
+You can find [additional troubleshooting information](../../../administration/packages/container_registry.md#troubleshooting) in the GitLab container registry administration documentation.
 
-## Migrating OCI container images to GitLab Container Registry
+## Migrating OCI container images to GitLab container registry
 
 Migrating container images to the GitLab registry is not supported, but [epic](https://gitlab.com/groups/gitlab-org/-/epics/5210) proposes to change this behavior.
 
-You can use third-party tools to migrate container images. For example, [skopeo](https://github.com/containers/skopeo), can [copy container images](https://github.com/containers/skopeo#copying-images) between various storage mechanisms. You can use skopeo to copy from container registries, container storage backends, local directories, and local OCI-layout directories to the GitLab Container Registry.
+You can use third-party tools to migrate container images. For example, [skopeo](https://github.com/containers/skopeo), can [copy container images](https://github.com/containers/skopeo#copying-images) between various storage mechanisms. You can use skopeo to copy from container registries, container storage backends, local directories, and local OCI-layout directories to the GitLab container registry.
 
 ## Docker connection error
 
@@ -31,13 +31,13 @@ You may get a `404 Not Found` or `Unknown Manifest` error message if you use
 Docker Engine 17.11 or earlier. Current versions of Docker Engine use
 the [v2 API](https://docs.docker.com/registry/spec/manifest-v2-2/).
 
-The images in your GitLab Container Registry must use the Docker v2 API.
+The images in your GitLab container registry must use the Docker v2 API.
 For information on how to update version 1 images to version 2, see the [Docker documentation](https://docs.docker.com/registry/spec/deprecated-schema-v1).
 
 ## `Blob unknown to registry` error when pushing a manifest list
 
 When [pushing a Docker manifest list](https://docs.docker.com/engine/reference/commandline/manifest/#create-and-push-a-manifest-list)
-to the GitLab Container Registry, you may receive the error
+to the GitLab container registry, you may receive the error
 `manifest blob unknown: blob unknown to registry`. This error is likely caused by having multiple images
 with different architectures spread out over several repositories instead of the same repository.
 

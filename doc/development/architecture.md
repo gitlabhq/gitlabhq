@@ -763,7 +763,7 @@ See our [Redis guidelines](redis.md) for more information about how GitLab uses 
   - [Source](../administration/packages/container_registry.md#enable-the-container-registry)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/registry.md)
 - Layer: Core Service (Processor)
-- GitLab.com: [GitLab Container Registry](../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd)
+- GitLab.com: [GitLab container registry](../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd)
 
 The registry is what users use to store their own Docker images. The bundled
 registry uses NGINX as a load balancer and GitLab as an authentication manager.

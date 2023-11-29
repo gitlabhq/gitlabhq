@@ -33,7 +33,7 @@ To restore a namespace to its standard state, you can:
 
 | Feature | Action restricted |
 |---------|-------------------|
-| Container Registry | Create, edit, and delete cleanup policies <br> Push an image to the container registry |
+| Container registry | Create, edit, and delete cleanup policies <br> Push an image to the container registry |
 | Merge Requests | Create and update an MR |
 | Package registry | Publish a package |
 | Repositories | Add tags <br> Create new branches <br> Create and update commit status <br> Push and force push to non-protected branches <br> Push and force push to protected branches <br> Upload files <br> Create merge requests |

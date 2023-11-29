@@ -79,7 +79,7 @@ module API
           end
 
           desc 'Fetch the latest Model Version for the given Registered Model Name' do
-            success Entities::Ml::Mlflow::ModelVersions::Types::ModelVersion
+            success Entities::Ml::Mlflow::ModelVersion
             detail 'https://mlflow.org/docs/2.6.0/rest-api.html#get-latest-modelversions'
           end
           params do
@@ -91,7 +91,7 @@ module API
           post 'get-latest-versions', urgency: :low do
             model = find_model(user_project, params[:name])
 
-            present [model.latest_version], with: Entities::Ml::Mlflow::ModelVersions::Types::ModelVersion,
+            present [model.latest_version], with: Entities::Ml::Mlflow::ModelVersion,
               root: :model_versions
           end
 

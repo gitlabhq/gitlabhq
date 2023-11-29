@@ -106,7 +106,7 @@ Before you begin, you need:
   is displayed in the project or group overview page, under the project or group
   name.
 
-Use the access token in the [`POST /user/runners`](../../api/users.md#create-a-runner)
+Use the access token in the [`POST /user/runners`](../../api/users.md#create-a-runner-linked-to-a-user)
 REST endpoint to create a runner:
 
 1. Use `curl` to invoke the endpoint to create a runner:

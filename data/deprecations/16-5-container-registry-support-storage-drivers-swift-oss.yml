@@ -1,4 +1,4 @@
-- title: "Container Registry support for the Swift and OSS storage drivers"
+- title: "Container registry support for the Swift and OSS storage drivers"
   announcement_milestone: "16.6"
   removal_milestone: "17.0"
   breaking_change: true

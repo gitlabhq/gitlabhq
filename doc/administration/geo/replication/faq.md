@@ -67,7 +67,7 @@ That's totally fine. We use HTTP(s) to fetch repository changes from the **prima
 
 ## Is this possible to set up a container registry for a **secondary** site that mirrors the one on the **primary** site?
 
-Yes. See [Container Registry for a **secondary** site](container_registry.md).
+Yes. See [container registry for a **secondary** site](container_registry.md).
 
 ## Can you sign in to a secondary site?
 

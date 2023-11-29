@@ -16,7 +16,7 @@ participating-stages: []
 
 With the [container registry](https://gitlab.com/gitlab-org/container-registry) integrated into GitLab, every GitLab project can have its own space to store its Docker images. You can use the registry to build, push and share images using the Docker client, CI/CD or the GitLab API.
 
-Each day on GitLab.com, between [150k and 200k images are pushed to the registry](https://app.periscopedata.com/app/gitlab/527857/Package-GitLab.com-Stage-Activity-Dashboard?widget=9620193&udv=0), generating about [700k API events](https://app.periscopedata.com/app/gitlab/527857/Package-GitLab.com-Stage-Activity-Dashboard?widget=7601761&udv=0). It's also worth noting that although some customers use other registry vendors, [more than 96% of instances](https://app.periscopedata.com/app/gitlab/527857/Package-GitLab.com-Stage-Activity-Dashboard?widget=9832282&udv=0) are using the GitLab Container Registry.
+Each day on GitLab.com, between [150k and 200k images are pushed to the registry](https://app.periscopedata.com/app/gitlab/527857/Package-GitLab.com-Stage-Activity-Dashboard?widget=9620193&udv=0), generating about [700k API events](https://app.periscopedata.com/app/gitlab/527857/Package-GitLab.com-Stage-Activity-Dashboard?widget=7601761&udv=0). It's also worth noting that although some customers use other registry vendors, [more than 96% of instances](https://app.periscopedata.com/app/gitlab/527857/Package-GitLab.com-Stage-Activity-Dashboard?widget=9832282&udv=0) are using the GitLab container registry.
 
 For GitLab.com and for GitLab customers, the container registry is a critical component to building and deploying software.
 
@@ -42,18 +42,18 @@ The container registry has two main clients: the GitLab Rails application and th
 
 #### Docker
 
-The Docker client (`docker` CLI) interacts with the GitLab Container Registry mainly using the [login](https://docs.docker.com/engine/reference/commandline/login/), [push](https://docs.docker.com/engine/reference/commandline/push/) and [pull](https://docs.docker.com/engine/reference/commandline/pull/) commands.
+The Docker client (`docker` CLI) interacts with the GitLab container registry mainly using the [login](https://docs.docker.com/engine/reference/commandline/login/), [push](https://docs.docker.com/engine/reference/commandline/push/) and [pull](https://docs.docker.com/engine/reference/commandline/pull/) commands.
 
 ##### Login and Authentication
 
-GitLab Rails is the default token-based authentication provider for the GitLab Container Registry.
+GitLab Rails is the default token-based authentication provider for the GitLab container registry.
 
 Once the registry receives a request sent by an unauthenticated Docker client, it will reply with `401 Unauthorized` and instruct the client to obtain a token from the GitLab Rails API. The Docker client will then request a Bearer token and embed it in the `Authorization` header of all requests. The registry is responsible for determining if the user is authentication/authorized to perform those requests based on the provided token.
 
 ```mermaid
 sequenceDiagram
   participant C as Docker client
-  participant R as GitLab Container Registry
+  participant R as GitLab container registry
   participant G as GitLab Rails
 
   C->>R: docker login gitlab.example.com
@@ -81,7 +81,7 @@ The single entrypoint for the registry is the [HTTP API](https://gitlab.com/gitl
 
 | Operation                                                    | UI                 | Background               | Observations                                                 |
 | ------------------------------------------------------------ | ------------------ | ------------------------ | ------------------------------------------------------------ |
-| [Check API version](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#api-version-check) | **{check-circle}** Yes | **{check-circle}** Yes | Used globally to ensure that the registry supports the Docker Distribution V2 API, as well as for identifying whether GitLab Rails is talking to the GitLab Container Registry or a third-party one (used to toggle features only available in the former). |
+| [Check API version](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#api-version-check) | **{check-circle}** Yes | **{check-circle}** Yes | Used globally to ensure that the registry supports the Docker Distribution V2 API, as well as for identifying whether GitLab Rails is talking to the GitLab container registry or a third-party one (used to toggle features only available in the former). |
 | [List repository tags](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#listing-image-tags) | **{check-circle}** Yes | **{check-circle}** Yes | Used to list and show tags in the UI. Used to list tags in the background for [cleanup policies](../../../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy) and [Geo replication](../../../administration/geo/replication/container_registry.md). |
 | [Check if manifest exists](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#existing-manifests) | **{check-circle}** Yes | **{dotted-circle}** No | Used to get the digest of a manifest by tag. This is then used to pull the manifest and show the tag details in the UI. |
 | [Pull manifest](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#pulling-an-image-manifest) | **{check-circle}** Yes | **{dotted-circle}** No | Used to show the image size and the manifest digest in the tag details UI. |
@@ -208,7 +208,7 @@ for self-managed instances. Customers not able to upgrade to PostgreSQL 12 have 
   with security backports and bug fixes.
 
 Apart from online garbage collection, the metadata database's availability unblocks the
-implementation of many requested features for the GitLab Container Registry. These features are only
+implementation of many requested features for the GitLab container registry. These features are only
 available for instances using the new version backed by the metadata database.
 
 ### Availability
@@ -294,29 +294,29 @@ Together, these resources should provide an adequate level of insight into the r
 
 #### Third-Party Container Registries
 
-GitLab ships with the GitLab Container Registry by default, but it's also compatible with third-party registries, as long as they comply with the [Docker Distribution V2 Specification](https://docs.docker.com/registry/spec/api/), now superseded by the [Open Container Initiative (OCI) Image Specification](https://github.com/opencontainers/image-spec/blob/master/spec.md).
+GitLab ships with the GitLab container registry by default, but it's also compatible with third-party registries, as long as they comply with the [Docker Distribution V2 Specification](https://docs.docker.com/registry/spec/api/), now superseded by the [Open Container Initiative (OCI) Image Specification](https://github.com/opencontainers/image-spec/blob/master/spec.md).
 
 So far, we have tried to maintain full compatibility with third-party registries when adding new features. For example, in 12.8, we introduced a new [tag delete feature](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23325) to delete a single tag without deleting the underlying manifest. Because this feature is not part of the Docker or OCI specifications, we have kept the previous behavior as a fallback option to maintain compatibility with third-party registries.
 
-However, this will likely change in the future. Apart from online garbage collection, and as described in [challenges](#challenges), the metadata database will unblock the implementation of many requested features for the GitLab Container Registry in the mid/long term. Most of these features will only be available for instances using the GitLab Container Registry. They are not part of the Docker Distribution or OCI specifications, neither we will be able to provide a compatible fallback option.
+However, this will likely change in the future. Apart from online garbage collection, and as described in [challenges](#challenges), the metadata database will unblock the implementation of many requested features for the GitLab container registry in the mid/long term. Most of these features will only be available for instances using the GitLab container registry. They are not part of the Docker Distribution or OCI specifications, neither we will be able to provide a compatible fallback option.
 
-For this reason, any features that require the use of the GitLab Container Registry will be disabled if using a third-party registry, for as long as third-party registries continue to be supported.
+For this reason, any features that require the use of the GitLab container registry will be disabled if using a third-party registry, for as long as third-party registries continue to be supported.
 
 #### Synchronizing Changes With GitLab Rails
 
-Currently, the GitLab Rails and GitLab Container Registry releases and deployments have been fully independent, as we have not introduced any new API features or breaking changes, apart from the described tag delete feature.
+Currently, the GitLab Rails and GitLab container registry releases and deployments have been fully independent, as we have not introduced any new API features or breaking changes, apart from the described tag delete feature.
 
 The registry will remain independent from GitLab Rails changes, but in the mid/long term, the implementation of new features or breaking changes will imply a corresponding change in GitLab Rails, so the latter will depend on a specific minimum version of the registry.
 
 For example, to track the size of each repository, we may extend the metadata database to store that information and then propagate it to GitLab Rails by extending the HTTP API that it consumes. In GitLab Rails, this new information would likely be stored in its database and processed to offer a new feature at the UI/API level.
 
-This kind of changes will require a synchronization between the GitLab Rails and the GitLab Container Registry releases and deployments, as the former will depend on a specific version of the latter.
+This kind of changes will require a synchronization between the GitLab Rails and the GitLab container registry releases and deployments, as the former will depend on a specific version of the latter.
 
 ##### Feature Toggling
 
 All GitLab Rails features dependent on a specific version of the registry should be guarded by validating the registry vendor and version.
 
-This is already done to determine whether a tag should be deleted using the new tag delete feature (only available in the GitLab Container Registry v2.8.1+) or the old method. In this case, GitLab Rails sends an `OPTIONS` request to the registry tag route to determine whether the `DELETE` method is supported or not.
+This is already done to determine whether a tag should be deleted using the new tag delete feature (only available in the GitLab container registry v2.8.1+) or the old method. In this case, GitLab Rails sends an `OPTIONS` request to the registry tag route to determine whether the `DELETE` method is supported or not.
 
 Alternatively, and as the universal long-term solution, we need to determine the registry vendor, version, and supported features (the last two are only applicable if the vendor is GitLab) and persist it in the GitLab Rails database. This information can then be used in real time to toggle features or fallback to alternative methods, if possible. The initial implementation of this approach was introduced as part of [#204839](https://gitlab.com/gitlab-org/gitlab/-/issues/204839). Currently, it's only used for metrics purposes. Further improvements are required to guarantee that the version information is kept up to date in self-managed instances, where the registry may be hot swapped.
 
@@ -324,7 +324,7 @@ Alternatively, and as the universal long-term solution, we need to determine the
 
 As described above, feature toggling offers a last line of defense against desynchronized releases and deployments, ensuring that GitLab Rails remains functional in case the registry version that supports new features is not yet available.
 
-However, the release and deployment of GitLab Rails and the GitLab Container Registry should be synchronized to avoid any delays. Contrary to GitLab Rails, the registry release and deployment are manual processes, so special attention must be paid by maintainers to ensure that the GitLab Rails changes are only released and deployed after the corresponding registry changes.
+However, the release and deployment of GitLab Rails and the GitLab container registry should be synchronized to avoid any delays. Contrary to GitLab Rails, the registry release and deployment are manual processes, so special attention must be paid by maintainers to ensure that the GitLab Rails changes are only released and deployed after the corresponding registry changes.
 
 As a solution to strengthen this process, a file can be added to the GitLab Rails codebase, containing the minimum required version of the registry. This file should be updated with every change that depends on a specific version of the registry. It should also be considered when releasing and deploying GitLab Rails, ensuring that the pipeline only goes through once the specified minimum required registry version is deployed.
 

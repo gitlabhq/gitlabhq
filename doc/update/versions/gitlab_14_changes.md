@@ -598,7 +598,7 @@ that may remain stuck permanently in a **pending** state when the instance lacks
    end
    ```
 
-  If you are running a version prior to 14.1 and are using Geo and multi-arch containers in your Container Registry,
+  If you are running a version prior to 14.1 and are using Geo and multi-arch containers in your container registry,
   we recommend [upgrading](../../administration/geo/replication/upgrading_the_geo_sites.md) to at least GitLab 14.1.
 
 ## 14.2.0
@@ -699,7 +699,7 @@ that may remain stuck permanently in a **pending** state when the instance lacks
    end
    ```
 
-  If you are running a version prior to 14.1 and are using Geo and multi-arch containers in your Container Registry,
+  If you are running a version prior to 14.1 and are using Geo and multi-arch containers in your container registry,
   we recommend [upgrading](../../administration/geo/replication/upgrading_the_geo_sites.md) to at least GitLab 14.1.
 
 ## 14.1.0
@@ -766,7 +766,7 @@ that may remain stuck permanently in a **pending** state when the instance lacks
    end
    ```
 
-  If you are running a version prior to 14.1 and are using Geo and multi-arch containers in your Container Registry,
+  If you are running a version prior to 14.1 and are using Geo and multi-arch containers in your container registry,
   we recommend [upgrading](../../administration/geo/replication/upgrading_the_geo_sites.md) to at least GitLab 14.1.
 - We found an issue where [Primary sites cannot be removed from the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/338231).
 

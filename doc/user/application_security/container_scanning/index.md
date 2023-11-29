@@ -533,7 +533,7 @@ To use container scanning in an offline environment, you need:
 - To configure a local Docker container registry with copies of the container scanning images. You
   can find these images in their respective registries:
 
-| GitLab Analyzer | Container Registry |
+| GitLab Analyzer | Container registry |
 | --- | --- |
 | [Container-Scanning](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning) | [Container-Scanning container registry](https://gitlab.com/security-products/container-scanning/container_registry/) |
 

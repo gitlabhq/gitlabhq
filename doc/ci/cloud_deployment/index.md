@@ -61,7 +61,7 @@ deploy:
 
 GitLab provides a Docker image that includes the AWS CLI:
 
-- Images are hosted in the GitLab Container Registry. The latest image is
+- Images are hosted in the GitLab container registry. The latest image is
   `registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest`.
 - [Images are stored in a GitLab repository](https://gitlab.com/gitlab-org/cloud-deploy/-/tree/master/aws).
 
@@ -120,7 +120,7 @@ To deploy to your ECS cluster:
 
 1. Commit and push your updated `.gitlab-ci.yml` to your project's repository.
 
-Your application Docker image is rebuilt and pushed to the GitLab Container Registry.
+Your application Docker image is rebuilt and pushed to the GitLab container registry.
 If your image is located in a private registry, make sure your task definition is
 [configured with a `repositoryCredentials` attribute](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/private-auth.html).
 

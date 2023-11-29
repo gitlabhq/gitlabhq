@@ -228,3 +228,39 @@ To write the output to file:
 ```shell
 curl --header "Authorization: Bearer <personal_access_token>" "https://gitlab.example.com/api/v4/packages/terraform/modules/v1/group/hello-world/local/1.0.0/file" --output hello-world-local.tgz
 ```
+
+## Upload module
+
+```plaintext
+PUT /projects/:id/packages/terraform/modules/:module-name/:module-system/:module-version/file
+```
+
+| Attribute        | Type              | Required | Description |
+|------------------|-------------------|----------|-------------|
+| `id`             | integer or string | yes      | The ID or URL-encoded path of the project. |
+| `module-name`    | string            | yes      | The module name. |
+| `module-system`  | string            | yes      | The name of the module system or [provider](https://www.terraform.io/registry/providers). |
+| `module-version` | string            | yes      | Specific module version to upload. |
+
+```shell
+curl --fail-with-body \
+   --header "PRIVATE-TOKEN: <your_access_token>" \
+   --upload-file path/to/file.tgz \
+   --url  "https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/terraform/modules/my-module/my-system/0.0.1/file"
+```
+
+Tokens that can be used to authenticate:
+
+| Header          | Value |
+|-----------------|-------|
+| `PRIVATE-TOKEN` | A [personal access token](../../user/profile/personal_access_tokens.md) with `api` scope. |
+| `DEPLOY-TOKEN`  | A [deploy token](../../user/project/deploy_tokens/index.md) with `write_package_registry` scope. |
+| `JOB-TOKEN`     | A [job token](../../ci/jobs/ci_job_token.md). |
+
+Example response:
+
+```json
+{
+  "message": "201 Created"
+}
+```

@@ -13,7 +13,7 @@ To manage cluster resources with GitOps, you should use the [Flux integration](.
 You should never store Kubernetes secrets in unencrypted form in a `git` repository. If you use a GitOps workflow, you can follow these steps to securely manage your secrets.
 
 1. Set up the Sealed Secrets controller to manage secrets.
-1. Deploy Docker credentials so the cluster can pull images from the GitLab Container Registry.
+1. Deploy Docker credentials so the cluster can pull images from the GitLab container registry.
 
 ## Prerequisites
 
@@ -49,7 +49,7 @@ For more details on how the Sealed Secrets controller works, view [the usage ins
 
 ## Deploy Docker credentials
 
-To deploy containers from the GitLab Container Registry, you must configure the cluster with the proper Docker registry credentials. You can achieve this by deploying a `docker-registry` type secret.
+To deploy containers from the GitLab container registry, you must configure the cluster with the proper Docker registry credentials. You can achieve this by deploying a `docker-registry` type secret.
 
 1. Generate a GitLab token with at least `read-registry` rights. The token can be either a Personal or a Project Access Token.
 1. Create a Kubernetes secret manifest YAML file. Update the values as needed:

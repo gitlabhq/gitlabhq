@@ -329,7 +329,7 @@ enum column created in the `ci_runners` table.
 ### Runner creation through API
 
 Automated runner creation is possible through a new GraphQL mutation and the existing
-[`POST /user/runners` REST API endpoint](../../../api/users.md#create-a-runner).
+[`POST /user/runners` REST API endpoint](../../../api/users.md#create-a-runner-linked-to-a-user).
 These endpoints are only available to users that are
 [allowed](../../../user/permissions.md#gitlab-cicd-permissions) to create runners at the specified
 scope.
@@ -413,7 +413,7 @@ scope.
 | Component        | Milestone | Changes                                                                                                                                                                                                                                                                                                                            |
 |------------------|----------:|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | GitLab Rails app | `%16.0`   | Adapt `register_{group|project}_runner` permissions to take [application setting](https://gitlab.com/gitlab-org/gitlab/-/issues/386712) in consideration. |
-| GitLab Rails app | `%16.1`   | Make [`POST /api/v4/runners` endpoint](../../../api/runners.md#register-a-new-runner) permanently return `HTTP 410 Gone` if either `allow_runner_registration_token` setting disables registration tokens.<br/>A future v5 version of the API should return `HTTP 404 Not Found`. |
+| GitLab Rails app | `%16.1`   | Make [`POST /api/v4/runners` endpoint](../../../api/runners.md#create-an-instance-runner) permanently return `HTTP 410 Gone` if either `allow_runner_registration_token` setting disables registration tokens.<br/>A future v5 version of the API should return `HTTP 404 Not Found`. |
 | GitLab Rails app | `%16.1`   | Add runner group metadata to the runner list. |
 | GitLab Rails app |           | Add UI to allow disabling use of registration tokens in top-level group settings.                                                                                                                                                                                                                                                               |
 | GitLab Rails app |           | Hide legacy UI showing registration with a registration token, if it disabled on in top-level group settings or by admins.                                                                                                                                                                                                         |

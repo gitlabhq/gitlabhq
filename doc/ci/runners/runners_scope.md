@@ -65,7 +65,7 @@ To create a shared runner:
    - For the `executor`, enter the type of [executor](https://docs.gitlab.com/runner/executors/). The executor is the
      environment where the runner executes the job.
 
-You can also [use the API](../../api/users.md#create-a-runner) to create a runner.
+You can also [use the API](../../api/users.md#create-a-runner-linked-to-a-user) to create a runner.
 
 NOTE:
 The runner authentication token displays in the UI for a limited period of time during registration. After you register the runner,
@@ -263,7 +263,7 @@ To create a group runner:
    - For the `executor`, enter the type of [executor](https://docs.gitlab.com/runner/executors/). The executor is the
      environment where the runner executes the job.
 
-You can also [use the API](../../api/users.md#create-a-runner) to create a runner.
+You can also [use the API](../../api/users.md#create-a-runner-linked-to-a-user) to create a runner.
 
 NOTE:
 The runner authentication token displays in the UI for only a short period of time during registration.
@@ -457,7 +457,7 @@ To create a project runner:
    - For the `executor`, enter the type of [executor](https://docs.gitlab.com/runner/executors/). The executor is the
      environment where the runner executes the job.
 
-You can also [use the API](../../api/users.md#create-a-runner) to create a runner.
+You can also [use the API](../../api/users.md#create-a-runner-linked-to-a-user) to create a runner.
 
 NOTE:
 The runner authentication token displays in the UI for only a short period of time during registration.

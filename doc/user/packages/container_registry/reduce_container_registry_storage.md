@@ -4,7 +4,7 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reduce Container Registry storage **(FREE ALL)**
+# Reduce container registry storage **(FREE ALL)**
 
 Container registries can grow in size over time if you don't manage your registry usage. For example,
 if you add a large number of images or tags:
@@ -24,7 +24,7 @@ To view the storage usage for the container registry:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Usage Quotas**.
 
-You cannot view Container Registry usage for self-managed instances, but this is
+You cannot view container registry usage for self-managed instances, but this is
 proposed in [epic 5521](https://gitlab.com/groups/gitlab-org/-/epics/5521).
 
 ## How container registry usage is calculated
@@ -336,7 +336,7 @@ the GitLab background jobs may get backed up or fail completely.
 For projects created before GitLab 12.8, you should enable container cleanup policies
 only if the number of tags being cleaned up is minimal.
 
-## More Container Registry storage reduction options
+## More container registry storage reduction options
 
 Here are some other options you can use to reduce the container registry storage used by your project:
 

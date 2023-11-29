@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > The use of `CI_JOB_TOKEN` scoped to the current project was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49750) in GitLab 13.12.
 
-This API documentation is about the [GitLab Container Registry](../user/packages/container_registry/index.md).
+This API documentation is about the [GitLab container registry](../user/packages/container_registry/index.md).
 
 When the `ci_job_token_scope` feature flag is enabled (it is **disabled by default**), you can use the below endpoints
 from a CI/CD job, by passing the `$CI_JOB_TOKEN` variable as the `JOB-TOKEN` header.
@@ -51,7 +51,7 @@ If the project is public, the container registry is also public. If the project 
 private, the container registry is also internal or private.
 
 - **private**: The container registry is visible only to project members with Reporter role or
-higher. This behavior is similar to that of a private project with Container Registry visibility set
+higher. This behavior is similar to that of a private project with container registry visibility set
 to **enabled**.
 
 - **disabled**: The container registry is disabled.

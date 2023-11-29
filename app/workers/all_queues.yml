@@ -1749,6 +1749,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: package_cleanup:packages_nuget_cleanup_stale_symbols
+  :worker_name: Packages::Nuget::CleanupStaleSymbolsWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: package_repositories:packages_debian_generate_distribution
   :worker_name: Packages::Debian::GenerateDistributionWorker
   :feature_category: :package_registry

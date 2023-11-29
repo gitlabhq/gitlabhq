@@ -16,7 +16,7 @@ successfully run. For more information, see [Offline environments](../offline_de
 To use DAST in an offline environment, you need:
 
 - GitLab Runner with the [`docker` or `kubernetes` executor](index.md#prerequisites).
-- Docker Container Registry with a locally available copy of the DAST
+- Docker container registry with a locally available copy of the DAST
   [container image](https://gitlab.com/security-products/dast), found in the
   [DAST container registry](https://gitlab.com/security-products/dast/container_registry).
 

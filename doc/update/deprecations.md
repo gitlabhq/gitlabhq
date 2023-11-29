@@ -259,7 +259,7 @@ the aliasing for the `CiRunnerUpgradeStatusType` type will be removed.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Container Registry support for the Swift and OSS storage drivers
+### Container registry support for the Swift and OSS storage drivers
 
 <div class="deprecation-notes">
 - Announced in GitLab <span class="milestone">16.6</span>
@@ -699,7 +699,7 @@ In GitLab 16.0 and later:
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Internal Container Registry API tag deletion endpoint
+### Internal container registry API tag deletion endpoint
 
 <div class="deprecation-notes">
 - Announced in GitLab <span class="milestone">16.4</span>
@@ -709,7 +709,7 @@ In GitLab 16.0 and later:
 
 The [Docker Registry HTTP API V2 Spec](https://docs.docker.com/registry/spec/api/), later replaced by the [OCI Distribution Spec](https://github.com/opencontainers/distribution-spec/blob/main/spec.md) did not include a tag delete operation, and an unsafe and slow workaround (involving deleting manifests, not tags) had to be used to achieve the same end.
 
-Tag deletion is an important function, so we added a tag deletion operation to the GitLab Container Registry, extending the V2 API beyond the scope of the Docker and OCI distribution spec.
+Tag deletion is an important function, so we added a tag deletion operation to the GitLab container registry, extending the V2 API beyond the scope of the Docker and OCI distribution spec.
 
 Since then, the OCI Distribution Spec has had some updates and it now has a tag delete operation, using the [`DELETE /v2/<name>/manifests/<tag>` endpoint](https://github.com/opencontainers/distribution-spec/blob/main/spec.md#deleting-tags).
 
@@ -717,7 +717,7 @@ This leaves the container registry with two endpoints that provide the exact sam
 
 Support for the custom GitLab tag delete endpoint is deprecated in GitLab 16.4, and it will be removed in GitLab 17.0.
 
-This endpoint is used by the **internal** Container Registry application API, not the public [GitLab Container Registry API](https://docs.gitlab.com/ee/api/container_registry.html). No action should be required by the majority of container registry users. All the GitLab UI and API functionality related to tag deletions will remain intact as we transition to the new OCI-compliant endpoint.
+This endpoint is used by the **internal** container registry application API, not the public [GitLab container registry API](https://docs.gitlab.com/ee/api/container_registry.html). No action should be required by the majority of container registry users. All the GitLab UI and API functionality related to tag deletions will remain intact as we transition to the new OCI-compliant endpoint.
 
 If you do access the internal container registry API and use the original tag deletion endpoint, you must update to the new endpoint.
 
@@ -1731,20 +1731,6 @@ config file locations instead, for example `config/redis.cache.yml` or
 
 <div class="deprecation breaking-change" data-milestone="16.0">
 
-### Container Registry pull-through cache
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.8</span>
-- Removal in GitLab <span class="milestone">16.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/container-registry/-/issues/842).
-</div>
-
-The Container Registry [pull-through cache](https://docs.docker.com/registry/recipes/mirror/) is deprecated in GitLab 15.8 and will be removed in GitLab 16.0. The pull-through cache is part of the upstream [Docker Distribution project](https://github.com/distribution/distribution). However, we are removing the pull-through cache in favor of the GitLab Dependency Proxy, which allows you to proxy and cache container images from Docker Hub. Removing the pull-through cache allows us also to remove the upstream client code without sacrificing functionality.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
 ### Container Scanning variables that reference Docker
 
 <div class="deprecation-notes">
@@ -1754,6 +1740,20 @@ The Container Registry [pull-through cache](https://docs.docker.com/registry/rec
 </div>
 
 All Container Scanning variables that are prefixed by `DOCKER_` in variable name are deprecated. This includes the `DOCKER_IMAGE`, `DOCKER_PASSWORD`, `DOCKER_USER`, and `DOCKERFILE_PATH` variables. Support for these variables will be removed in the GitLab 16.0 release. Use the [new variable names](https://docs.gitlab.com/ee/user/application_security/container_scanning/#available-cicd-variables) `CS_IMAGE`, `CS_REGISTRY_PASSWORD`, `CS_REGISTRY_USER`, and `CS_DOCKERFILE_PATH` in place of the deprecated names.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="16.0">
+
+### Container registry pull-through cache
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.8</span>
+- Removal in GitLab <span class="milestone">16.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/container-registry/-/issues/842).
+</div>
+
+The container registry [pull-through cache](https://docs.docker.com/registry/recipes/mirror/) is deprecated in GitLab 15.8 and will be removed in GitLab 16.0. The pull-through cache is part of the upstream [Docker Distribution project](https://github.com/distribution/distribution). However, we are removing the pull-through cache in favor of the GitLab Dependency Proxy, which allows you to proxy and cache container images from Docker Hub. Removing the pull-through cache allows us also to remove the upstream client code without sacrificing functionality.
 
 </div>
 
@@ -2854,13 +2854,13 @@ You can use the vulnerabilityFindingDismiss GraphQL mutation to set the status o
 
 Using third-party container registries with GitLab as an auth endpoint is deprecated in GitLab 15.8 and the [end of support](https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology) is scheduled for GitLab 16.0. This impacts self-managed customers that have connected their external registry to the GitLab user interface to find, view, and delete container images.
 
-Supporting both GitLab's Container Registry as well as third-party container registries is challenging for maintenance, code quality, and backward compatibility. This hinders our ability to stay [efficient](https://about.gitlab.com/handbook/values/#efficiency). As a result we will not support this functionality moving forward.
+Supporting both GitLab's container registry as well as third-party container registries is challenging for maintenance, code quality, and backward compatibility. This hinders our ability to stay [efficient](https://about.gitlab.com/handbook/values/#efficiency). As a result we will not support this functionality moving forward.
 
 This change will not impact your ability to pull and push container images to external registries using pipelines.
 
-Since we released the new [GitLab Container Registry](https://gitlab.com/groups/gitlab-org/-/epics/5523) version for GitLab.com, we've started to implement additional features that are not available in third-party container registries. These new features have allowed us to achieve significant performance improvements, such as [cleanup policies](https://gitlab.com/groups/gitlab-org/-/epics/8379). We are focusing on delivering [new features](https://gitlab.com/groups/gitlab-org/-/epics/5136), most of which will require functionalities only available on the GitLab Container Registry. This deprecation allows us to reduce fragmentation and user frustration in the long term by focusing on delivering a more robust integrated registry experience and feature set.
+Since we released the new [GitLab container registry](https://gitlab.com/groups/gitlab-org/-/epics/5523) version for GitLab.com, we've started to implement additional features that are not available in third-party container registries. These new features have allowed us to achieve significant performance improvements, such as [cleanup policies](https://gitlab.com/groups/gitlab-org/-/epics/8379). We are focusing on delivering [new features](https://gitlab.com/groups/gitlab-org/-/epics/5136), most of which will require functionalities only available on the GitLab container registry. This deprecation allows us to reduce fragmentation and user frustration in the long term by focusing on delivering a more robust integrated registry experience and feature set.
 
-Moving forward, we'll continue to invest in developing and releasing new features that will only be available in the GitLab Container Registry.
+Moving forward, we'll continue to invest in developing and releasing new features that will only be available in the GitLab container registry.
 
 </div>
 
@@ -3768,12 +3768,12 @@ an inline argument expression).
 - Removal in GitLab <span class="milestone">15.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
 </div>
 
-The GitLab Package stage offers a Package Registry, Container Registry, and Dependency Proxy to help you manage all of your dependencies using GitLab. Each of these product categories has a variety of settings that can be adjusted using the API.
+The GitLab Package stage offers a Package Registry, container registry, and Dependency Proxy to help you manage all of your dependencies using GitLab. Each of these product categories has a variety of settings that can be adjusted using the API.
 
 The permissions model for GraphQL is being updated. After 15.0, users with the Guest, Reporter, and Developer role can no longer update these settings:
 
 - [Package Registry settings](https://docs.gitlab.com/ee/api/graphql/reference/#packagesettings)
-- [Container Registry cleanup policy](https://docs.gitlab.com/ee/api/graphql/reference/#containerexpirationpolicy)
+- [Container registry cleanup policy](https://docs.gitlab.com/ee/api/graphql/reference/#containerexpirationpolicy)
 - [Dependency Proxy time-to-live policy](https://docs.gitlab.com/ee/api/graphql/reference/#dependencyproxyimagettlgrouppolicy)
 - [Enabling the Dependency Proxy for your group](https://docs.gitlab.com/ee/api/graphql/reference/#dependencyproxysetting)
 
@@ -4369,7 +4369,7 @@ Tracing in GitLab is an integration with Jaeger, an open-source end-to-end distr
 
 <div class="deprecation breaking-change" data-milestone="15.0">
 
-### Update to the Container Registry group-level API
+### Update to the container registry group-level API
 
 <div class="deprecation-notes">
 - Announced in GitLab <span class="milestone">14.5</span>
@@ -4377,7 +4377,7 @@ Tracing in GitLab is an integration with Jaeger, an open-source end-to-end distr
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336912).
 </div>
 
-In milestone 15.0, support for the `tags` and `tags_count` parameters will be removed from the Container Registry API that [gets registry repositories from a group](../api/container_registry.md#within-a-group).
+In milestone 15.0, support for the `tags` and `tags_count` parameters will be removed from the container registry API that [gets registry repositories from a group](../api/container_registry.md#within-a-group).
 
 The `GET /groups/:id/registry/repositories` endpoint will remain, but won't return any info about tags. To get the info about tags, you can use the existing `GET /registry/repositories/:id` endpoint, which will continue to support the `tags` and `tag_count` options as it does today. The latter must be called once per image repository.
 
@@ -4592,14 +4592,14 @@ If you have explicitly excluded bundler-audit using DS_EXCLUDED_ANALYZERS you wi
 
 <div class="deprecation breaking-change" data-milestone="15.0">
 
-### htpasswd Authentication for the Container Registry
+### htpasswd Authentication for the container registry
 
 <div class="deprecation-notes">
 - Announced in GitLab <span class="milestone">14.9</span>
 - Removal in GitLab <span class="milestone">15.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
 </div>
 
-The Container Registry supports [authentication](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md#auth) with `htpasswd`. It relies on an [Apache `htpasswd` file](https://httpd.apache.org/docs/2.4/programs/htpasswd.html), with passwords hashed using `bcrypt`.
+The container registry supports [authentication](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md#auth) with `htpasswd`. It relies on an [Apache `htpasswd` file](https://httpd.apache.org/docs/2.4/programs/htpasswd.html), with passwords hashed using `bcrypt`.
 
 Since it isn't used in the context of GitLab (the product), `htpasswd` authentication will be deprecated in GitLab 14.9 and removed in GitLab 15.0.
 

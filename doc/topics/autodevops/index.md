@@ -207,7 +207,7 @@ match your new GitLab version:
 
 There is no guarantee that you can use a private container registry with Auto DevOps.
 
-Instead, use the [GitLab Container Registry](../../user/packages/container_registry/index.md) with Auto DevOps to
+Instead, use the [GitLab container registry](../../user/packages/container_registry/index.md) with Auto DevOps to
 simplify configuration and prevent any unforeseen issues.
 
 ## Install applications behind a proxy

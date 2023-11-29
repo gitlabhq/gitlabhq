@@ -352,7 +352,7 @@ the nested method of container execution.
 The following variables can address all of the required image pulls:
 
 - `CODE_QUALITY_IMAGE`: A fully prefixed image name that can be located anywhere
-  accessible from your job environment. GitLab Container Registry can be used here
+  accessible from your job environment. GitLab container registry can be used here
   to host your own copy.
 - `CODECLIMATE_PREFIX`: The domain of your intended container image registry. This
   is a configuration option supported by [CodeClimate CLI](https://github.com/codeclimate/codeclimate/pull/948).

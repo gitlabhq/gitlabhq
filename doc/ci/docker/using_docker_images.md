@@ -203,7 +203,7 @@ Look for the `[runners.docker]` section:
 The image and services defined this way are added to all jobs run by
 that runner.
 
-## Access an image from a private Container Registry
+## Access an image from a private container registry
 
 To access private container registries, the GitLab Runner process can use:
 
@@ -534,11 +534,11 @@ and update Docker images on Amazon ECR, without using manual credential manageme
     build-image:
       stage: build
       script:
-        - echo "Logging into GitLab Container Registry..."
+        - echo "Logging into GitLab container registry..."
         - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
         - echo "Building Docker image..."
         - docker build --build-arg GITLAB_RUNNER_VERSION=${GITLAB_RUNNER_VERSION} --build-arg AWS_CLI_VERSION=${AWS_CLI_VERSION} -t ${IMAGE_NAME} .
-        - echo "Pushing Docker image to GitLab Container Registry..."
+        - echo "Pushing Docker image to GitLab container registry..."
         - docker push ${IMAGE_NAME}
       rules:
         - changes:

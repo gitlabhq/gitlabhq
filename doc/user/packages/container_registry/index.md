@@ -4,11 +4,11 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Container Registry **(FREE ALL)**
+# GitLab container registry **(FREE ALL)**
 
 > Searching by image repository name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31322) in GitLab 13.0.
 
-You can use the integrated Container Registry to store container images for each GitLab project
+You can use the integrated container registry to store container images for each GitLab project
 
 To enable the container registry for your GitLab instance, see the [administrator documentation](../../../administration/packages/container_registry.md).
 
@@ -101,9 +101,9 @@ registry.example.com/mynamespace/myproject/image:latest
 registry.example.com/mynamespace/myproject/my/image:rc1
 ```
 
-## Move or rename Container Registry repositories
+## Move or rename container registry repositories
 
-Moving or renaming existing Container Registry repositories is not supported after you have pushed
+Moving or renaming existing container registry repositories is not supported after you have pushed
 container images. The container images are stored in a path that matches the repository path. To move
 or rename a repository with a container registry, you must delete all existing container images.
 Community suggestions to work around this known issue are shared in
@@ -158,13 +158,13 @@ this setting. However, disabling the container registry disables all Container R
 
 |                                                                                                                   |                                               | Anonymous<br/>(Everyone on internet) | Guest | Reporter, Developer, Maintainer, Owner |
 |-------------------------------------------------------------------------------------------------------------------|-----------------------------------------------|--------------------------------------|-------|----------------------------------------|
-| Public project with Container Registry visibility <br/> set to **Everyone With Access** (UI) or `enabled` (API)   | View Container Registry <br/> and pull images | Yes                                  | Yes   | Yes                                    |
-| Public project with Container Registry visibility <br/> set to **Only Project Members** (UI) or `private` (API)   | View Container Registry <br/> and pull images | No                                   | No    | Yes                                    |
-| Internal project with Container Registry visibility <br/> set to **Everyone With Access** (UI) or `enabled` (API) | View Container Registry <br/> and pull images | No                                   | Yes   | Yes                                    |
-| Internal project with Container Registry visibility <br/> set to **Only Project Members** (UI) or `private` (API) | View Container Registry <br/> and pull images | No                                   | No    | Yes                                    |
-| Private project with Container Registry visibility <br/> set to **Everyone With Access** (UI) or `enabled` (API)  | View Container Registry <br/> and pull images | No                                   | No    | Yes                                    |
-| Private project with Container Registry visibility <br/> set to **Only Project Members** (UI) or `private` (API)  | View Container Registry <br/> and pull images | No                                   | No    | Yes                                    |
-| Any project with Container Registry `disabled`                                                                    | All operations on Container Registry          | No                                   | No    | No                                     |
+| Public project with container registry visibility <br/> set to **Everyone With Access** (UI) or `enabled` (API)   | View container registry <br/> and pull images | Yes                                  | Yes   | Yes                                    |
+| Public project with container registry visibility <br/> set to **Only Project Members** (UI) or `private` (API)   | View container registry <br/> and pull images | No                                   | No    | Yes                                    |
+| Internal project with container registry visibility <br/> set to **Everyone With Access** (UI) or `enabled` (API) | View container registry <br/> and pull images | No                                   | Yes   | Yes                                    |
+| Internal project with container registry visibility <br/> set to **Only Project Members** (UI) or `private` (API) | View container registry <br/> and pull images | No                                   | No    | Yes                                    |
+| Private project with container registry visibility <br/> set to **Everyone With Access** (UI) or `enabled` (API)  | View container registry <br/> and pull images | No                                   | No    | Yes                                    |
+| Private project with container registry visibility <br/> set to **Only Project Members** (UI) or `private` (API)  | View container registry <br/> and pull images | No                                   | No    | Yes                                    |
+| Any project with container registry `disabled`                                                                    | All operations on container registry          | No                                   | No    | No                                     |
 
 ## Supported image types
 

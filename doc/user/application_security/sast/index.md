@@ -642,7 +642,7 @@ run successfully. For more information, see [Offline environments](../offline_de
 To use SAST in an offline environment, you need:
 
 - GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
-- A Docker Container Registry with locally available copies of SAST [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
+- A Docker container registry with locally available copies of SAST [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
 - Configure certificate checking of packages (optional).
 
 GitLab Runner has a [default `pull_policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),

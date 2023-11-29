@@ -1,9 +1,10 @@
 - title = has_ci_cd_only_params? ? _('Connect repositories from GitHub') : _('GitHub import')
 - page_title title
-%h1.page-title.gl-font-size-h-display.d-flex.gl-align-items-center
-  .gl-display-flex.gl-align-items-center.gl-justify-content-center
-    = sprite_icon('github', css_class: 'gl-mr-3', size: 48)
-  = _('Import repositories from GitHub')
+
+.gl-border-solid.gl-border-gray-100.gl-border-0.gl-border-b-1
+  %h1.gl-font-size-h1.gl-my-0.gl-py-4.gl-display-flex.gl-align-items-center.gl-gap-3
+    = sprite_icon('github', size: 24)
+    %span= _('Import repositories from GitHub')
 
 = render 'import/githubish_status',
   provider: 'github', paginatable: true,

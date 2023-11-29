@@ -4,9 +4,9 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Container Registry administration **(FREE SELF)**
+# GitLab container registry administration **(FREE SELF)**
 
-With the GitLab Container Registry, every project can have its
+With the GitLab container registry, every project can have its
 own space to store Docker images.
 
 For more details about the Distribution Registry:
@@ -110,7 +110,7 @@ Because the container registry requires a TLS certificate, cost may be a factor.
 Take this into consideration before configuring the container registry
 for the first time.
 
-### Configure Container Registry under an existing GitLab domain
+### Configure container registry under an existing GitLab domain
 
 If the container registry is configured to use the existing GitLab domain, you can
 expose the container registry on a port. This way you can reuse the existing GitLab TLS
@@ -201,7 +201,7 @@ credentials using:
 docker login gitlab.example.com:5050
 ```
 
-### Configure Container Registry under its own domain
+### Configure container registry under its own domain
 
 When the Registry is configured to use its own domain, you need a TLS
 certificate for that specific domain (for example, `registry.example.com`). You might need
@@ -270,7 +270,7 @@ credentials:
 docker login registry.gitlab.example.com
 ```
 
-## Disable Container Registry site-wide
+## Disable container registry site-wide
 
 When you disable the Registry by following these steps, you do not
 remove any existing Docker images. Docker image removal is handled by the
@@ -302,7 +302,7 @@ Registry application itself.
 
 ::EndTabs
 
-## Disable Container Registry for new projects site-wide
+## Disable container registry for new projects site-wide
 
 If the container registry is enabled, then it should be available on all new
 projects. To disable this function and let the owners of a project to enable
@@ -368,7 +368,7 @@ WARNING:
 Do not directly modify the files or objects stored by the container registry. Anything other than the registry writing or deleting these entries can lead to instance-wide data consistency and instability issues from which recovery may not be possible.
 
 You can configure the container registry to use various storage backends by
-configuring a storage driver. By default the GitLab Container Registry
+configuring a storage driver. By default the GitLab container registry
 is configured to use the [file system driver](#use-file-system)
 configuration.
 
@@ -628,7 +628,7 @@ you can pull from the container registry, but you cannot push.
    flag deletes files that exist in the destination but not in the source.
    If you swap the source and destination, all data in the Registry is deleted.
 
-1. Verify all Container Registry files have been uploaded to object storage
+1. Verify all container registry files have been uploaded to object storage
    by looking at the file count returned by these two commands:
 
    ```shell
@@ -832,7 +832,7 @@ In the examples below we set the Registry's port to `5010`.
 
 ::EndTabs
 
-## Disable Container Registry per project
+## Disable container registry per project
 
 If Registry is enabled in your GitLab instance, but you don't need it for your
 project, you can [disable it from your project's settings](../../user/project/settings/project_features_permissions.md#configure-project-features-and-permissions).
@@ -842,7 +842,7 @@ project, you can [disable it from your project's settings](../../user/project/se
 WARNING:
 Using external container registries in GitLab is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/376217)
 in GitLab 15.8 and the end of support is scheduled for GitLab 16.0.
-If you need to use external container registries instead of the GitLab Container Registry,
+If you need to use external container registries instead of the GitLab container registry,
 tell us about your use cases in [feedback issue 958](https://gitlab.com/gitlab-org/container-registry/-/issues/958).
 
 If you use an external container registry, some features associated with the
@@ -883,8 +883,8 @@ You can use GitLab as an auth endpoint with an external container registry.
    ```
 
    - `gitlab_rails['registry_enabled'] = true` is needed to enable GitLab
-     Container Registry features and authentication endpoint. The GitLab bundled
-     Container Registry service does not start, even with this enabled.
+     container registry features and authentication endpoint. The GitLab bundled
+     container registry service does not start, even with this enabled.
    - `gitlab_rails['registry_api_url'] = "http://<external_registry_host>:5000"`
      must be changed to match the host where Registry is installed.
      It must also specify `https` if the external registry is
@@ -945,7 +945,7 @@ You can use GitLab as an auth endpoint with an external container registry.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
-## Configure Container Registry notifications
+## Configure container registry notifications
 
 You can configure the container registry to send webhook notifications in
 response to events happening in the registry.
@@ -1311,7 +1311,7 @@ for GitLab to run separately from Registry:
   Registry side.
 - `gitlab_rails['internal_key']`, contents of the key that GitLab uses to sign the tokens.
 
-## Architecture of GitLab Container Registry
+## Architecture of GitLab container registry
 
 The GitLab registry is what users use to store their own Docker images.
 Because of that the Registry is client facing, meaning that we expose it directly
@@ -1355,10 +1355,10 @@ in GitLab 15.8 and the end of support occurred in GitLab 16.0. See the [deprecat
 The integration is not disabled in GitLab 16.0, but support for debugging and fixing issues
 is no longer provided. Additionally, the integration is no longer being developed or
 enhanced with new features. Third-party registry functionality might be completely removed
-after the new GitLab Container Registry version is available for self-managed (see epic [5521](https://gitlab.com/groups/gitlab-org/-/epics/5521)). Only the GitLab Container Registry is planned to be supported.
+after the new GitLab container registry version is available for self-managed (see epic [5521](https://gitlab.com/groups/gitlab-org/-/epics/5521)). Only the GitLab container registry is planned to be supported.
 
 This section has guidance for administrators migrating from third-party registries
-to the GitLab Container Registry. If the third-party container registry you are using is not listed here,
+to the GitLab container registry. If the third-party container registry you are using is not listed here,
 you can describe your use cases in [the feedback issue](https://gitlab.com/gitlab-org/container-registry/-/issues/958).
 
 For all of the instructions provided below, you should try them first on a test environment.
@@ -1368,11 +1368,11 @@ Make sure everything continues to work as expected before replicating it in prod
 
 The [Docker Distribution Registry](https://docs.docker.com/registry/) was donated to the CNCF
 and is now known as the [Distribution Registry](https://github.com/distribution/distribution).
-This registry is the open source implementation that the GitLab Container Registry is based on.
-The GitLab Container Registry is compatible with the basic functionality provided by the Distribution Registry,
-including all the supported storage backends. To migrate to the GitLab Container Registry
+This registry is the open source implementation that the GitLab container registry is based on.
+The GitLab container registry is compatible with the basic functionality provided by the Distribution Registry,
+including all the supported storage backends. To migrate to the GitLab container registry
 you can follow the instructions on this page, and use the same storage backend as the Distribution Registry.
-The GitLab Container Registry should accept the same configuration that you are using for the Distribution Registry.
+The GitLab container registry should accept the same configuration that you are using for the Distribution Registry.
 
 ## Use a PostgreSQL database for metadata **(FREE SELF BETA)**
 
@@ -1426,9 +1426,9 @@ Before diving in to the following sections, here's some basic troubleshooting:
    for errors (for example `/var/log/gitlab/gitlab-rails/production.log`). You may be able to find clues
    there.
 
-### Using self-signed certificates with Container Registry
+### Using self-signed certificates with container registry
 
-If you're using a self-signed certificate with your Container Registry, you
+If you're using a self-signed certificate with your container registry, you
 might encounter issues during the CI jobs like the following:
 
 ```plaintext
@@ -1687,9 +1687,9 @@ was:
 - [Deprecated in GitLab 13.7](https://about.gitlab.com/releases/2020/12/22/gitlab-13-7-released/#deprecate-pulls-that-use-v1-of-the-docker-registry-api)
 - [Removed in GitLab 13.9](https://about.gitlab.com/releases/2021/02/22/gitlab-13-9-released/#deprecate-pulls-that-use-v1-of-the-docker-registry-api)
 
-It's no longer possible to push or pull v1 images from the GitLab Container Registry.
+It's no longer possible to push or pull v1 images from the GitLab container registry.
 
-If you had v1 images in the GitLab Container Registry, but you did not upgrade them (following the
+If you had v1 images in the GitLab container registry, but you did not upgrade them (following the
 [steps Docker recommends](https://docs.docker.com/registry/spec/deprecated-schema-v1/))
 ahead of the GitLab 13.9 upgrade, these images are no longer accessible. If you try to pull them,
 this error appears:
@@ -1697,7 +1697,7 @@ this error appears:
 - `Error response from daemon: manifest invalid: Schema 1 manifest not supported`
 
 For self-managed GitLab instances, you can regain access to these images by temporarily downgrading
-the GitLab Container Registry to a version lower than `v3.0.0-gitlab`. Follow these steps to regain
+the GitLab container registry to a version lower than `v3.0.0-gitlab`. Follow these steps to regain
 access to these images:
 
 1. Downgrade the container registry to [`v2.13.1-gitlab`](https://gitlab.com/gitlab-org/container-registry/-/releases/v2.13.1-gitlab).
@@ -1949,7 +1949,7 @@ Once the right permissions were set, the error goes away.
 
 ### Missing `gitlab-registry.key` prevents container repository deletion
 
-If you disable your GitLab instance's Container Registry and try to remove a project that has
+If you disable your GitLab instance's container registry and try to remove a project that has
 container repositories, the following error occurs:
 
 ```plaintext

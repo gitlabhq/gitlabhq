@@ -340,7 +340,7 @@ You can exclude specific tasks on restore by adding the environment variable `SK
 - `artifacts` (CI job artifacts)
 - `lfs` (LFS objects)
 - `terraform_state` (Terraform states)
-- `registry` (Container Registry images)
+- `registry` (Container registry images)
 - `pages` (Pages content)
 - `repositories` (Git repositories data)
 - `packages` (Packages)

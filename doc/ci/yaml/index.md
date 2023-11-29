@@ -3299,7 +3299,7 @@ The release job must have access to the [`release-cli`](https://gitlab.com/gitla
 which must be in the `$PATH`.
 
 If you use the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html),
-you can use this image from the GitLab Container Registry: `registry.gitlab.com/gitlab-org/release-cli:latest`
+you can use this image from the GitLab container registry: `registry.gitlab.com/gitlab-org/release-cli:latest`
 
 If you use the [Shell executor](https://docs.gitlab.com/runner/executors/shell.html) or similar,
 [install `release-cli`](../../user/project/releases/release_cli.md) on the server where the runner is registered.

@@ -40,7 +40,7 @@ when FIPS mode is enabled.
 | Ubuntu 20.04 Libgcrypt Cryptographic Module              | [3902](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3902) | EC2 instances | `gpg`, `sshd` |
 | Amazon Linux 2 Kernel Crypto API Cryptographic Module    | [3709](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3709) | EKS nodes     | Linux kernel |
 | Amazon Linux 2 OpenSSL Cryptographic Module              | [3553](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3553) | EKS nodes     | NGINX |
-| RedHat Enterprise Linux 8 OpenSSL Cryptographic Module   | [4271](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/4271) | EKS nodes     | UBI containers: Workhorse, Pages, Container Registry, Rails (Puma/Sidekiq), Security Analyzers |
+| RedHat Enterprise Linux 8 OpenSSL Cryptographic Module   | [4271](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/4271) | EKS nodes     | UBI containers: Workhorse, Pages, container registry, Rails (Puma/Sidekiq), Security Analyzers |
 | RedHat Enterprise Linux 8 Libgcrypt Cryptographic Module | [3784](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3784) | EKS nodes     | UBI containers: GitLab Shell, `gpg` |
 
 ### Supported Operating Systems

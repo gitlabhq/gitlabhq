@@ -708,11 +708,11 @@ of the following executors:
 In this example, you use Buildah to:
 
 1. Build a Docker image.
-1. Push it to [GitLab Container Registry](../../user/packages/container_registry/index.md).
+1. Push it to [GitLab container registry](../../user/packages/container_registry/index.md).
 
 In the last step, Buildah uses the `Dockerfile` under the
 root directory of the project to build the Docker image. Finally, it pushes the image to the
-project's Container Registry:
+project's container registry:
 
 ```yaml
 build:
@@ -728,7 +728,7 @@ build:
     BUILDAH_FORMAT: docker
     FQ_IMAGE_NAME: "$CI_REGISTRY_IMAGE/test"
   before_script:
-    # GitLab Container Registry credentials taken from the
+    # GitLab container registry credentials taken from the
     # [predefined CI/CD variables](../variables/index.md#predefined-cicd-variables)
     # to authenticate to the registry.
     - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
@@ -742,10 +742,10 @@ build:
 If you are using GitLab Runner Operator deployed to an OpenShift cluster, try the
 [tutorial for using Buildah to build images in rootless container](buildah_rootless_tutorial.md).
 
-## Use the GitLab Container Registry
+## Use the GitLab container registry
 
 After you've built a Docker image, you can push it to the
-[GitLab Container Registry](../../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd).
+[GitLab container registry](../../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd).
 
 ## Troubleshooting
 

@@ -27,7 +27,7 @@ than to install `mysql`, for example, every time the project is built.
 
 You're not limited to only database services. You can add as many
 services you need to `.gitlab-ci.yml` or manually modify the [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
-Any image found at [Docker Hub](https://hub.docker.com/) or your private Container Registry can be
+Any image found at [Docker Hub](https://hub.docker.com/) or your private container registry can be
 used as a service.
 
 Services inherit the same DNS servers, search domains, and additional hosts as

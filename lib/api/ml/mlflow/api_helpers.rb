@@ -95,6 +95,14 @@ module API
           ::Ml::FindModelService.new(project, name).execute || resource_not_found!
         end
 
+        def find_model_version(project, name, version)
+          ::Ml::ModelVersions::GetModelVersionService.new(project, name, version).execute || resource_not_found!
+        end
+
+        def model
+          @model ||= find_model(user_project, params[:name])
+        end
+
         def packages_url
           path = api_v4_projects_packages_generic_package_version_path(
             id: user_project.id, package_name: '', file_name: ''

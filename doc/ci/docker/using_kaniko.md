@@ -43,16 +43,16 @@ few important details:
 In the following example, kaniko is used to:
 
 1. Build a Docker image.
-1. Then push it to [GitLab Container Registry](../../user/packages/container_registry/index.md).
+1. Then push it to [GitLab container registry](../../user/packages/container_registry/index.md).
 
 The job runs only when a tag is pushed. A `config.json` file is created under
-`/kaniko/.docker` with the needed GitLab Container Registry credentials taken from the
+`/kaniko/.docker` with the needed GitLab container registry credentials taken from the
 [predefined CI/CD variables](../variables/index.md#predefined-cicd-variables)
 GitLab CI/CD provides. These are automatically read by the Kaniko tool.
 
 In the last step, kaniko uses the `Dockerfile` under the
 root directory of the project, builds the Docker image and pushes it to the
-project's Container Registry while tagging it with the Git tag:
+project's container registry while tagging it with the Git tag:
 
 ```yaml
 build:

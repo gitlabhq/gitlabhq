@@ -141,7 +141,7 @@ process is started.
 
 ## Creating runners programmatically
 
-In GitLab 15.11 and later, you can use the [POST /user/runners REST API](../../api/users.md#create-a-runner)
+In GitLab 15.11 and later, you can use the [POST /user/runners REST API](../../api/users.md#create-a-runner-linked-to-a-user)
 to create a runner as an authenticated user. This should only be used if the runner configuration is dynamic
 or not reusable. If the runner configuration is static, you should reuse the runner authentication token of
 an existing runner.

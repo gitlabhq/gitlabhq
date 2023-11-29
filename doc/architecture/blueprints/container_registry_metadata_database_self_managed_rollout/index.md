@@ -50,7 +50,7 @@ of the container registry for both GitLab.com and for self-managed users.
 
 ### Non-Goals
 
-- Developing new Container Registry features outside the scope of enabling admins to migrate to the metadata database.
+- Developing new container registry features outside the scope of enabling admins to migrate to the metadata database.
 - Determining lifecycle support decisions, such as when to default to the database, and when to end support for non-database registries.
 
 ## Proposal

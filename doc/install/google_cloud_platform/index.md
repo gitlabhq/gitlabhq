@@ -133,7 +133,7 @@ SAML, and Kerberos. Here are some documents you might be interested in reading:
 - [Linux package documentation](https://docs.gitlab.com/omnibus/)
 - [Integration documentation](../../integration/index.md)
 - [GitLab Pages configuration](../../administration/pages/index.md)
-- [GitLab Container Registry configuration](../../administration/packages/container_registry.md)
+- [GitLab container registry configuration](../../administration/packages/container_registry.md)
 
 <!-- ## Troubleshooting
 

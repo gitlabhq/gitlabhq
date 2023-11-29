@@ -839,7 +839,7 @@ you can configure:
 
 WARNING:
 On GitLab.com, due to the scale of the container registry, the number of tags deleted by this API is limited.
-If your Container Registry has a large number of tags to delete, only some of them are deleted. You might need
+If your container registry has a large number of tags to delete, only some of them are deleted. You might need
 to call the API multiple times. To schedule tags for automatic deletion, use a [cleanup policy](#create-a-cleanup-policy-for-containers) instead.
 
 The following example uses the [`python-gitlab` API library](https://python-gitlab.readthedocs.io/en/stable/gl_objects/repository_tags.html) to fetch a list of tags, and calls the `delete_in_bulk()` method with filter parameters.

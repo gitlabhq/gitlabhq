@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Delete container images from the container registry **(FREE ALL)**
 
-You can delete container images from your Container Registry.
+You can delete container images from your container registry.
 
 WARNING:
 Deleting container images is a destructive action and can't be undone. To restore

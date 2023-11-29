@@ -10,7 +10,7 @@ Before you can build and push container images, you must [authenticate](authenti
 
 ## Use Docker commands
 
-You can use Docker commands to build and push container images to your Container Registry:
+You can use Docker commands to build and push container images to your container registry:
 
 1. [Authenticate](authenticate_with_container_registry.md) with the container registry.
 1. Run the Docker command to build or push. For example:
@@ -50,7 +50,7 @@ You can use [GitLab CI/CD](../../../ci/yaml/index.md) to build and push containe
 Container Registry. You can use CI/CD to test, build, and deploy your project from the container
 image you created.
 
-### Use a Docker-in-Docker container image from your Container Registry
+### Use a Docker-in-Docker container image from your container registry
 
 You can use your own container images for Docker-in-Docker.
 

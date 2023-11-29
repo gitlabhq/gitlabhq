@@ -217,7 +217,7 @@ node than Sidekiq, follow the steps below.
    sudo gitlab-ctl reconfigure
    ```
 
-1. In the instance where Container Registry is hosted, copy the `registry.key`
+1. In the instance where container registry is hosted, copy the `registry.key`
    file to the Sidekiq node.
 
 ## Configure the Sidekiq metrics server

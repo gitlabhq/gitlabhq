@@ -11,12 +11,12 @@ import { catalogSinglePageResponse } from '../../mock';
 Vue.use(VueRouter);
 
 const defaultEvent = { preventDefault: jest.fn, ctrlKey: false, metaKey: false };
-let router;
-let routerPush;
 
 describe('CiResourcesListItem', () => {
   let wrapper;
+  let routerPush;
 
+  const router = createRouter();
   const resource = catalogSinglePageResponse.data.ciCatalogResources.nodes[0];
   const release = {
     author: { name: 'author', webUrl: '/user/1' },
@@ -36,8 +36,6 @@ describe('CiResourcesListItem', () => {
       },
       stubs: {
         GlSprintf,
-        RouterLink: true,
-        RouterView: true,
       },
     });
   };
@@ -51,7 +49,6 @@ describe('CiResourcesListItem', () => {
   const findFavorites = () => wrapper.findByTestId('stats-favorites');
 
   beforeEach(() => {
-    router = createRouter();
     routerPush = jest.spyOn(router, 'push').mockImplementation(() => {});
   });
 
@@ -85,56 +82,51 @@ describe('CiResourcesListItem', () => {
     it('renders the resource description', () => {
       expect(findResourceDescription().exists()).toBe(true);
     });
+  });
 
-    describe('release time', () => {
-      describe('when there is no release data', () => {
-        beforeEach(() => {
-          createComponent({ props: { resource: { ...resource, latestVersion: null } } });
-        });
-
-        it('does not render the release', () => {
-          expect(findTimeAgoMessage().exists()).toBe(false);
-        });
-
-        it('renders the generic `unreleased` badge', () => {
-          expect(findBadge().exists()).toBe(true);
-          expect(findBadge().text()).toBe('Unreleased');
-        });
+  describe('release time', () => {
+    describe('when there is no release data', () => {
+      beforeEach(() => {
+        createComponent({ props: { resource: { ...resource, latestVersion: null } } });
       });
 
-      describe('when there is release data', () => {
-        beforeEach(() => {
-          createComponent({ props: { resource: { ...resource, latestVersion: { ...release } } } });
-        });
+      it('does not render the release', () => {
+        expect(findTimeAgoMessage().exists()).toBe(false);
+      });
 
-        it('renders the user link', () => {
-          expect(findUserLink().exists()).toBe(true);
-          expect(findUserLink().attributes('href')).toBe(release.author.webUrl);
-        });
+      it('renders the generic `unreleased` badge', () => {
+        expect(findBadge().exists()).toBe(true);
+        expect(findBadge().text()).toBe('Unreleased');
+      });
+    });
 
-        it('renders the time since the resource was released', () => {
-          expect(findTimeAgoMessage().exists()).toBe(true);
-        });
+    describe('when there is release data', () => {
+      beforeEach(() => {
+        createComponent({ props: { resource: { ...resource, latestVersion: { ...release } } } });
+      });
 
-        it('renders the version badge', () => {
-          expect(findBadge().exists()).toBe(true);
-          expect(findBadge().text()).toBe(release.tagName);
-        });
+      it('renders the user link', () => {
+        expect(findUserLink().exists()).toBe(true);
+        expect(findUserLink().attributes('href')).toBe(release.author.webUrl);
+      });
+
+      it('renders the time since the resource was released', () => {
+        expect(findTimeAgoMessage().exists()).toBe(true);
+      });
+
+      it('renders the version badge', () => {
+        expect(findBadge().exists()).toBe(true);
+        expect(findBadge().text()).toBe(release.tagName);
       });
     });
   });
 
   describe('when clicking on an item title', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
     describe('without holding down a modifier key', () => {
-      beforeEach(async () => {
+      it('navigates to the details page in the same tab', async () => {
+        createComponent();
         await findResourceName().vm.$emit('click', defaultEvent);
-      });
 
-      it('navigates to the details page in the same tab', () => {
         expect(routerPush).toHaveBeenCalledWith({
           name: CI_RESOURCE_DETAILS_PAGE_NAME,
           params: {
@@ -179,7 +171,7 @@ describe('CiResourcesListItem', () => {
 
   describe('statistics', () => {
     describe('when there are no statistics', () => {
-      beforeEach(() => {
+      it('render favorites as 0', () => {
         createComponent({
           props: {
             resource: {
@@ -188,20 +180,16 @@ describe('CiResourcesListItem', () => {
             },
           },
         });
-      });
 
-      it('render favorites as 0', () => {
         expect(findFavorites().exists()).toBe(true);
         expect(findFavorites().text()).toBe('0');
       });
     });
 
     describe('where there are statistics', () => {
-      beforeEach(() => {
-        createComponent();
-      });
-
       it('render favorites', () => {
+        createComponent();
+
         expect(findFavorites().exists()).toBe(true);
         expect(findFavorites().text()).toBe(String(defaultProps.resource.starCount));
       });

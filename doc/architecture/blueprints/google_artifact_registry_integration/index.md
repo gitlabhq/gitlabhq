@@ -20,7 +20,7 @@ As highlighted in the announcement, one key goal is the ability to "_use Google'
 
 Please refer to the [announcement](https://about.gitlab.com/blog/2023/08/29/gitlab-google-partnership-s3c/) blog post for more details about the motivation and long-term goals of the GitLab and Google Cloud partnership.
 
-Regarding the scope of this design document, our primary focus is to fulfill the Product requirement of providing users with visibility over their container images in GAR. The motivation for this specific goal is rooted in foundational research on the use of external registries as a complement to the GitLab Container Registry ([internal](https://gitlab.com/gitlab-org/ux-research/-/issues/2602)).
+Regarding the scope of this design document, our primary focus is to fulfill the Product requirement of providing users with visibility over their container images in GAR. The motivation for this specific goal is rooted in foundational research on the use of external registries as a complement to the GitLab container registry ([internal](https://gitlab.com/gitlab-org/ux-research/-/issues/2602)).
 
 Since this marks the first step in the GAR integration, our aim is to achieve this goal in a way that establishes a foundation to facilitate reusability in the future. This groundwork could benefit potential future expansions, such as support for additional artifact formats (npm, Maven, etc.), and features beyond the Package stage (e.g., vulnerability scanning, deployments, etc.).
 
@@ -74,7 +74,7 @@ As previously highlighted, access to the GAR integration features is restricted 
 
 #### Resource Mapping
 
-For the [GitLab Container Registry](../../../user/packages/container_registry/index.md), repositories within a specific project must have a path that matches the project full path. This is essentially how we establish a resource mapping between GitLab Rails and the registry, which serves multiple purposes, including granular authorization, scoping storage usage to a given project/group/namespace, and more.
+For the [GitLab container registry](../../../user/packages/container_registry/index.md), repositories within a specific project must have a path that matches the project full path. This is essentially how we establish a resource mapping between GitLab Rails and the registry, which serves multiple purposes, including granular authorization, scoping storage usage to a given project/group/namespace, and more.
 
 Regarding the GAR integration, since there is no equivalent entities for GitLab project/group/namespace resources on the GAR side, we aim to simplify matters by allowing users to attach any [GAR repository](https://cloud.google.com/artifact-registry/docs/repositories) to any GitLab project, regardless of their respective paths. Similarly, we do not plan to restrict the attachment of a particular GAR repository to a single GitLab project. Ultimately, it is up to users to determine how to organize both datasets in the way that best suits their needs.
 
@@ -116,6 +116,6 @@ One alternative solution considered was to use the Docker/OCI API provided by GA
 
 - **Multiple Requests**: To retrieve all the required information about each image, multiple requests to different endpoints (listing tags, obtaining image manifests, and image configuration blobs) would have been necessary, leading to a `1+N` performance issue.
 
-GitLab had previously faced significant challenges with the last two limitations, prompting the development of a custom [GitLab Container Registry API](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/api.md) to address them. Additionally, GitLab decided to [deprecate support](../../../update/deprecations.md#use-of-third-party-container-registries-is-deprecated) for connecting to third-party container registries using the Docker/OCI API due to these same limitations and the increased cost of maintaining two solutions in parallel. As a result, there is an ongoing effort to replace the use of the Docker/OCI API endpoints with custom API endpoints for all container registry functionalities in GitLab.
+GitLab had previously faced significant challenges with the last two limitations, prompting the development of a custom [GitLab container registry API](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/api.md) to address them. Additionally, GitLab decided to [deprecate support](../../../update/deprecations.md#use-of-third-party-container-registries-is-deprecated) for connecting to third-party container registries using the Docker/OCI API due to these same limitations and the increased cost of maintaining two solutions in parallel. As a result, there is an ongoing effort to replace the use of the Docker/OCI API endpoints with custom API endpoints for all container registry functionalities in GitLab.
 
 Considering these factors, the decision was made to build the GAR integration from scratch using the proprietary GAR API. This approach provides more flexibility and control over the integration and can serve as a foundation for future expansions, such as support for other GAR artifact formats.

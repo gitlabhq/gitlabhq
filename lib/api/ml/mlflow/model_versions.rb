@@ -14,8 +14,34 @@ module API
         end
 
         resource 'model-versions' do
+          desc 'Creates a Model Version.' do
+            success Entities::Ml::Mlflow::ModelVersion
+            detail 'MLFlow Model Versions map to GitLab Model Versions. https://mlflow.org/docs/2.6.0/rest-api.html#create-modelversion'
+          end
+          route_setting :api, write: true
+          route_setting :model_registry, write: true
+          params do
+            # The name param is actually required, however it is listed as optional here
+            # we can send a custom error response required by MLFlow
+            optional :name, type: String,
+              desc: 'Register model under this name This field is required.'
+            optional :description, type: String,
+              desc: 'Optional description for model version.'
+          end
+          post 'create', urgency: :low do
+            present ::Ml::CreateModelVersionService.new(
+              model,
+              {
+                model_name: params[:name],
+                description: params[:description]
+              }
+            ).execute,
+              with: Entities::Ml::Mlflow::ModelVersion,
+              root: :model_version
+          end
+
           desc 'Fetch model version by name and version' do
-            success Entities::Ml::Mlflow::ModelVersions::Responses::Get
+            success Entities::Ml::Mlflow::ModelVersion
             detail 'https://mlflow.org/docs/2.6.0/rest-api.html#get-modelversion'
           end
           params do
@@ -23,17 +49,12 @@ module API
             requires :version, type: String, desc: 'Model version number'
           end
           get 'get', urgency: :low do
-            resource_not_found! unless params[:name] && params[:version]
-            model_version = ::Ml::ModelVersions::GetModelVersionService.new(
-              user_project, params[:name], params[:version]
-            ).execute
-            resource_not_found! unless model_version
-            response = { model_version: model_version }
-            present response, with: Entities::Ml::Mlflow::ModelVersions::Responses::Get
+            present find_model_version(user_project, params[:name], params[:version]),
+              with: Entities::Ml::Mlflow::ModelVersion, root: :model_version
           end
 
           desc 'Updates a Model Version.' do
-            success Entities::Ml::Mlflow::ModelVersions::Responses::Update
+            success Entities::Ml::Mlflow::ModelVersion
             detail 'https://mlflow.org/docs/2.6.0/rest-api.html#update-modelversion'
           end
           route_setting :api, write: true
@@ -51,8 +72,8 @@ module API
               user_project, params[:name], params[:version], params[:description]
             ).execute
             update_failed! unless result.success?
-            response = { model_version: result.payload }
-            present response, with: Entities::Ml::Mlflow::ModelVersions::Responses::Update
+
+            present result.payload, with: Entities::Ml::Mlflow::ModelVersion, root: :model_version
           end
         end
       end

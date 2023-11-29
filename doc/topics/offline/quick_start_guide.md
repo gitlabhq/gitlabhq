@@ -98,7 +98,7 @@ Follow these steps to enable SSL for your fresh instance. These steps reflect th
    sudo gitlab-ctl reconfigure
    ```
 
-## Enabling the GitLab Container Registry
+## Enabling the GitLab container registry
 
 Follow these steps to enable the container registry. These steps reflect those for
 [configuring the container registry under an existing domain](../../administration/packages/container_registry.md#configure-container-registry-under-an-existing-gitlab-domain):

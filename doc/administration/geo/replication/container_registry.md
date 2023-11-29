@@ -40,7 +40,7 @@ For more information on supported registry storage drivers see
 
 Read the [Load balancing considerations](https://docs.docker.com/registry/deploying/#load-balancing-considerations)
 when deploying the Registry, and how to set up the storage driver for the GitLab integrated
-[Container Registry](../../packages/container_registry.md#use-object-storage).
+[container registry](../../packages/container_registry.md#use-object-storage).
 
 ### Registries that support OCI artifacts
 
@@ -55,22 +55,22 @@ The following registries support OCI artifacts:
 
 For more information, see the [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec).
 
-## Configure Container Registry replication
+## Configure container registry replication
 
 You can enable a storage-agnostic replication so it
 can be used for cloud or local storage. Whenever a new image is pushed to the
 **primary** site, each **secondary** site pulls it to its own container
 repository.
 
-To configure Container Registry replication:
+To configure container registry replication:
 
 1. Configure the [**primary** site](#configure-primary-site).
 1. Configure the [**secondary** site](#configure-secondary-site).
-1. Verify Container Registry [replication](#verify-replication).
+1. Verify container registry [replication](#verify-replication).
 
 ### Configure **primary** site
 
-Make sure that you have Container Registry set up and working on
+Make sure that you have container registry set up and working on
 the **primary** site before following the next steps.
 
 To be able to replicate new container images, the container registry must send notification events to the
@@ -124,17 +124,17 @@ To be able to replicate new container images, the container registry must send n
 
 ### Configure **secondary** site
 
-Make sure you have Container Registry set up and working on
+Make sure you have container registry set up and working on
 the **secondary** site before following the next steps.
 
 The following steps should be done on each **secondary** site you're
 expecting to see the container images replicated.
 
 Because we need to allow the **secondary** site to communicate securely with
-the **primary** site Container Registry, we need to have a single key
+the **primary** site container registry, we need to have a single key
 pair for all the sites. The **secondary** site uses this key to
 generate a short-lived JWT that is pull-only-capable to access the
-**primary** site Container Registry.
+**primary** site container registry.
 
 For each application and Sidekiq node on the **secondary** site:
 
@@ -164,7 +164,7 @@ For each application and Sidekiq node on the **secondary** site:
 
 ### Verify replication
 
-To verify Container Registry replication is working, on the **secondary** site:
+To verify container registry replication is working, on the **secondary** site:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.

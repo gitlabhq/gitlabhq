@@ -521,7 +521,7 @@ Instead you can authenticate:
 
 - Using a [personal access token](../personal_access_tokens.md) (PAT):
   - For Git requests over HTTP(S), a PAT with `read_repository` or `write_repository` scope is required.
-  - For [GitLab Container Registry](../../packages/container_registry/authenticate_with_container_registry.md) requests, a PAT
+  - For [GitLab container registry](../../packages/container_registry/authenticate_with_container_registry.md) requests, a PAT
     with `read_registry` or `write_registry` scope is required.
   - For [Dependency Proxy](../../packages/dependency_proxy/index.md#authenticate-with-the-dependency-proxy) requests, a PAT with
     `read_registry` and `write_registry` scopes is required.

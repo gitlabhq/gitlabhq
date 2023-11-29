@@ -122,6 +122,7 @@ Prerequisites:
 - You must [authenticate with the package registry](#authenticate-with-the-package-registry).
 - Your [version string must be valid](#ensure-your-version-string-is-valid).
 - The maximum allowed package size is 5 GB.
+- The maximum length of the `description` field is 4000 characters. Longer `description` strings are truncated.
 - You can't upload the same version of a package multiple times. If you try,
   you receive the error `400 Bad Request`.
 - PyPI packages are published using your projectID.

@@ -115,7 +115,7 @@ for details.
 - Non-Rails requests are not proxied, so other services may need to use a separate, non-unified URL to ensure requests
   are always sent to the primary. These services include:
 
-  - GitLab Container Registry - [can be configured to use a separate domain](../../packages/container_registry.md#configure-container-registry-under-its-own-domain).
+  - GitLab container registry - [can be configured to use a separate domain](../../packages/container_registry.md#configure-container-registry-under-its-own-domain).
   - GitLab Pages - should always use a separate domain, as part of [the prerequisites for running GitLab Pages](../../pages/index.md#prerequisites).
 
 - With a unified URL, Let's Encrypt can't generate certificates unless it can reach both IPs through the same domain.

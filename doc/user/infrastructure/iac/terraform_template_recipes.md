@@ -177,7 +177,7 @@ To define a custom container image:
    ```
 
 1. In a new job, define a `prepare` stage that builds the image whenever the `Dockerfile` changes.
-   - The built image is pushed to the [GitLab Container Registry](../../packages/container_registry). A tag is applied to indicate whether the image was built from a merge request or from the default branch.
+   - The built image is pushed to the [GitLab container registry](../../packages/container_registry). A tag is applied to indicate whether the image was built from a merge request or from the default branch.
 1. Use your image in your Terraform jobs, such as `build` and `deploy`.
    - You can combine your image with specialized `before_script` configurations to perform setup commands, like to generate inputs for Terraform.
 

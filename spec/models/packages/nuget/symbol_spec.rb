@@ -7,6 +7,7 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
 
   it { is_expected.to be_a FileStoreMounter }
   it { is_expected.to be_a ShaAttribute }
+  it { is_expected.to be_a Packages::Destructible }
 
   describe 'relationships' do
     it { is_expected.to belong_to(:package).inverse_of(:nuget_symbols) }
@@ -24,6 +25,26 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
 
   describe 'delegations' do
     it { is_expected.to delegate_method(:project_id).to(:package) }
+  end
+
+  describe 'scopes' do
+    describe '.stale' do
+      subject { described_class.stale }
+
+      let_it_be(:symbol) { create(:nuget_symbol) }
+      let_it_be(:stale_symbol) { create(:nuget_symbol, :stale) }
+
+      it { is_expected.to contain_exactly(stale_symbol) }
+    end
+
+    describe '.pending_destruction' do
+      subject { described_class.pending_destruction }
+
+      let_it_be(:symbol) { create(:nuget_symbol, :stale, :processing) }
+      let_it_be(:stale_symbol) { create(:nuget_symbol, :stale) }
+
+      it { is_expected.to contain_exactly(stale_symbol) }
+    end
   end
 
   describe 'callbacks' do

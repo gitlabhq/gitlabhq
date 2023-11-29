@@ -53,7 +53,7 @@ We start by preparing a custom image based on the `quay.io/buildah/stable:v1.23.
    ```
 
 1. Build and push the Buildah image to a container registry. Let's push to the
-   [GitLab Container Registry](../../user/packages/container_registry/index.md):
+   [GitLab container registry](../../user/packages/container_registry/index.md):
 
    ```shell
    docker build -f Containerfile-buildah -t registry.example.com/group/project/buildah:1.23.1 .

@@ -172,7 +172,7 @@ including:
 - CI/CD job artifacts
 - LFS objects
 - Terraform states ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331806) in GitLab 14.7)
-- Container Registry images
+- Container registry images
 - GitLab Pages content
 - Packages ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332006) in GitLab 14.7)
 - Snippets
@@ -460,7 +460,7 @@ You can exclude specific directories from the backup by adding the environment v
 - `artifacts` (CI job artifacts)
 - `lfs` (LFS objects)
 - `terraform_state` (Terraform states)
-- `registry` (Container Registry images)
+- `registry` (Container registry images)
 - `pages` (Pages content)
 - `repositories` (Git repositories data)
 - `packages` (Packages)

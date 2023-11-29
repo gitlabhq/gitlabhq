@@ -13,7 +13,7 @@ already exists to unify the user and developer experiences.
 Existing registries:
 
 - Package registry
-- Container Registry
+- Container registry
 - Terraform Module Registry
 - Dependency Proxy
 

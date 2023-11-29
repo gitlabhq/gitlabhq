@@ -1044,7 +1044,7 @@ This file is located at:
 
 ## Registry logs
 
-For Linux package installations, Container Registry logs are in `/var/log/gitlab/registry/current`.
+For Linux package installations, container registry logs are in `/var/log/gitlab/registry/current`.
 
 ## NGINX logs
 

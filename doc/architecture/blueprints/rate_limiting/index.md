@@ -218,7 +218,7 @@ communicate how the responsible usage is defined at a given moment.
 
 Because of how GitLab architecture has been built, GitLab Rails application, in
 most cases, behaves as a central enterprise service bus (ESB) and there are a
-few satellite services communicating with it. Services like Container Registry,
+few satellite services communicating with it. Services like container registry,
 GitLab Runners, Gitaly, Workhorse, KAS could use the API to receive a set of
 application limits those are supposed to enforce. This will still allow us to
 define all of them in a single place.

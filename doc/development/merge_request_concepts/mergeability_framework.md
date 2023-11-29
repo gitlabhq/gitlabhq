@@ -23,9 +23,8 @@ The mergeability checks live under `app/services/merge_requests/mergeability/`.
    module MergeRequests
      module Mergeability
        class CheckCiStatusService < CheckBaseService
-         def self.failure_reason
-           :ci_must_pass
-         end
+         identifier :ci_must_pass
+         description 'Checks whether CI has passed'
 
          def execute
            # If the merge check is behind a setting, we return inactive if the setting is false

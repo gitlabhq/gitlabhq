@@ -21,7 +21,7 @@ installation.
 - [GitLab Pages](../administration/pages/index.md): Configure GitLab Pages to
   allow hosting of static sites.
 - [GitLab Registry](../administration/packages/container_registry.md): Set up the
-  GitLab Container Registry so every project can have its own space to store Docker
+  GitLab container registry so every project can have its own space to store Docker
   images.
 - [GitLab Dependency Proxy](../administration/packages/dependency_proxy.md): Set up the dependency
   proxy so you can cache container images from Docker Hub for faster, more reliable builds.
