@@ -1,9 +1,7 @@
 import Vue from 'vue';
 import { GlEmptyState } from '@gitlab/ui';
-
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMount } from '@vue/test-utils';
 import GroupFolderComponent from '~/groups/components/group_folder.vue';
-import GroupItemComponent from 'jh_else_ce/groups/components/group_item.vue';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
 import GroupsComponent from '~/groups/components/groups.vue';
 import eventHub from '~/groups/event_hub';
@@ -19,7 +17,7 @@ describe('GroupsComponent', () => {
   };
 
   const createComponent = ({ propsData } = {}) => {
-    wrapper = mountExtended(GroupsComponent, {
+    wrapper = shallowMount(GroupsComponent, {
       propsData: {
         ...defaultPropsData,
         ...propsData,
@@ -31,11 +29,6 @@ describe('GroupsComponent', () => {
   };
 
   const findPaginationLinks = () => wrapper.findComponent(PaginationLinks);
-
-  beforeEach(() => {
-    Vue.component('GroupFolder', GroupFolderComponent);
-    Vue.component('GroupItem', GroupItemComponent);
-  });
 
   describe('methods', () => {
     describe('change', () => {
@@ -57,6 +50,8 @@ describe('GroupsComponent', () => {
   });
 
   describe('template', () => {
+    Vue.component('GroupFolder', GroupFolderComponent);
+
     it('should render component template correctly', () => {
       createComponent();
 

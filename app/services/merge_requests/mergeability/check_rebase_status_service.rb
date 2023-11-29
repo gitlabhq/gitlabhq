@@ -3,9 +3,8 @@
 module MergeRequests
   module Mergeability
     class CheckRebaseStatusService < CheckBaseService
-      def self.failure_reason
-        :need_rebase
-      end
+      identifier :need_rebase
+      description 'Checks whether the merge request needs to be rebased'
 
       def execute
         return inactive unless merge_request.project.ff_merge_must_be_possible?

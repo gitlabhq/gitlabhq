@@ -19,7 +19,7 @@ class MergeRequestCleanupRefsWorker
 
   def perform_work
     unless merge_request
-      logger.error('No existing merge request to be cleaned up.')
+      logger.info('No existing merge request to be cleaned up.')
       return
     end
 

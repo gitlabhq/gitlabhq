@@ -96,6 +96,7 @@ Consult these topics for information on contributing to specific GitLab features
 - [Value Stream Analytics development guide](value_stream_analytics.md)
 - [Application limits](application_limits.md)
 - [AI features](ai_features/index.md)
+- [Application settings](application_settings.md)
 
 ### Import and Export
 

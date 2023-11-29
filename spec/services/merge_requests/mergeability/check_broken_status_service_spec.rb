@@ -7,6 +7,8 @@ RSpec.describe MergeRequests::Mergeability::CheckBrokenStatusService, feature_ca
 
   let(:merge_request) { build(:merge_request) }
 
+  it_behaves_like 'mergeability check service', :broken_status, 'Checks whether the merge request is broken'
+
   describe '#execute' do
     let(:result) { check_broken_status.execute }
 

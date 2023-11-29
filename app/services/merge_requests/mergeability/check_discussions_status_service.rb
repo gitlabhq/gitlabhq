@@ -2,9 +2,8 @@
 module MergeRequests
   module Mergeability
     class CheckDiscussionsStatusService < CheckBaseService
-      def self.failure_reason
-        :discussions_not_resolved
-      end
+      identifier :discussions_not_resolved
+      description 'Checks whether the merge request has open discussions'
 
       def execute
         return inactive unless merge_request.only_allow_merge_if_all_discussions_are_resolved?

@@ -10,6 +10,8 @@ RSpec.describe MergeRequests::Mergeability::CheckCiStatusService, feature_catego
   let(:params) { { skip_ci_check: skip_check } }
   let(:skip_check) { false }
 
+  it_behaves_like 'mergeability check service', :ci_must_pass, 'Checks whether CI has passed'
+
   describe '#execute' do
     let(:result) { check_ci_status.execute }
 

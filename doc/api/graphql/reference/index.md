@@ -30220,17 +30220,17 @@ Representation of mergeability check identifier.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="mergeabilitycheckidentifierbroken_status"></a>`BROKEN_STATUS` | Mergeability check identifier is broken_status. |
-| <a id="mergeabilitycheckidentifierci_must_pass"></a>`CI_MUST_PASS` | Mergeability check identifier is ci_must_pass. |
-| <a id="mergeabilitycheckidentifierconflict"></a>`CONFLICT` | Mergeability check identifier is conflict. |
-| <a id="mergeabilitycheckidentifierdiscussions_not_resolved"></a>`DISCUSSIONS_NOT_RESOLVED` | Mergeability check identifier is discussions_not_resolved. |
-| <a id="mergeabilitycheckidentifierdraft_status"></a>`DRAFT_STATUS` | Mergeability check identifier is draft_status. |
-| <a id="mergeabilitycheckidentifierjira_association_missing"></a>`JIRA_ASSOCIATION_MISSING` | Mergeability check identifier is jira_association_missing. |
-| <a id="mergeabilitycheckidentifiermerge_request_blocked"></a>`MERGE_REQUEST_BLOCKED` | Mergeability check identifier is merge_request_blocked. |
-| <a id="mergeabilitycheckidentifierneed_rebase"></a>`NEED_REBASE` | Mergeability check identifier is need_rebase. |
-| <a id="mergeabilitycheckidentifiernot_approved"></a>`NOT_APPROVED` | Mergeability check identifier is not_approved. |
-| <a id="mergeabilitycheckidentifiernot_open"></a>`NOT_OPEN` | Mergeability check identifier is not_open. |
-| <a id="mergeabilitycheckidentifierstatus_checks_must_pass"></a>`STATUS_CHECKS_MUST_PASS` | Mergeability check identifier is status_checks_must_pass. |
+| <a id="mergeabilitycheckidentifierbroken_status"></a>`BROKEN_STATUS` | Checks whether the merge request is broken. |
+| <a id="mergeabilitycheckidentifierci_must_pass"></a>`CI_MUST_PASS` | Checks whether CI has passed. |
+| <a id="mergeabilitycheckidentifierconflict"></a>`CONFLICT` | Checks whether the merge request has a conflict. |
+| <a id="mergeabilitycheckidentifierdiscussions_not_resolved"></a>`DISCUSSIONS_NOT_RESOLVED` | Checks whether the merge request has open discussions. |
+| <a id="mergeabilitycheckidentifierdraft_status"></a>`DRAFT_STATUS` | Checks whether the merge request is draft. |
+| <a id="mergeabilitycheckidentifierjira_association_missing"></a>`JIRA_ASSOCIATION_MISSING` | Checks whether the title or description references a Jira issue. |
+| <a id="mergeabilitycheckidentifiermerge_request_blocked"></a>`MERGE_REQUEST_BLOCKED` | Checks whether the merge request is blocked. |
+| <a id="mergeabilitycheckidentifierneed_rebase"></a>`NEED_REBASE` | Checks whether the merge request needs to be rebased. |
+| <a id="mergeabilitycheckidentifiernot_approved"></a>`NOT_APPROVED` | Checks whether the merge request is approved. |
+| <a id="mergeabilitycheckidentifiernot_open"></a>`NOT_OPEN` | Checks whether the merge request is open. |
+| <a id="mergeabilitycheckidentifierstatus_checks_must_pass"></a>`STATUS_CHECKS_MUST_PASS` | Checks whether the external status checks pass. |
 
 ### `MergeabilityCheckStatus`
 

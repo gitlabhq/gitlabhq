@@ -3,9 +3,8 @@
 module MergeRequests
   module Mergeability
     class CheckDraftStatusService < CheckBaseService
-      def self.failure_reason
-        :draft_status
-      end
+      identifier :draft_status
+      description 'Checks whether the merge request is draft'
 
       def execute
         if merge_request.draft?

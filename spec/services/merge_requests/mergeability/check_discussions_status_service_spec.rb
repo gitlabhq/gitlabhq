@@ -10,6 +10,9 @@ RSpec.describe MergeRequests::Mergeability::CheckDiscussionsStatusService, featu
   let(:params) { { skip_discussions_check: skip_check } }
   let(:skip_check) { false }
 
+  it_behaves_like 'mergeability check service', :discussions_not_resolved,
+    'Checks whether the merge request has open discussions'
+
   describe '#execute' do
     let(:result) { check_discussions_status.execute }
 

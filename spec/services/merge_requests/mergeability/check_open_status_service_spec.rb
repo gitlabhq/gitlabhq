@@ -7,6 +7,8 @@ RSpec.describe MergeRequests::Mergeability::CheckOpenStatusService, feature_cate
 
   let(:merge_request) { build(:merge_request) }
 
+  it_behaves_like 'mergeability check service', :not_open, 'Checks whether the merge request is open'
+
   describe '#execute' do
     let(:result) { check_open_status.execute }
 

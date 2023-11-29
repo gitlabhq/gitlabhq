@@ -2,9 +2,8 @@
 module MergeRequests
   module Mergeability
     class CheckBrokenStatusService < CheckBaseService
-      def self.failure_reason
-        :broken_status
-      end
+      identifier :broken_status
+      description 'Checks whether the merge request is broken'
 
       def execute
         if merge_request.broken?

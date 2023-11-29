@@ -10,6 +10,8 @@ RSpec.describe MergeRequests::Mergeability::CheckDraftStatusService, feature_cat
   let(:params) { { skip_draft_check: skip_check } }
   let(:skip_check) { false }
 
+  it_behaves_like 'mergeability check service', :draft_status, 'Checks whether the merge request is draft'
+
   describe '#execute' do
     let(:result) { check_draft_status.execute }
 

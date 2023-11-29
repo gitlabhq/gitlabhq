@@ -4,13 +4,19 @@ module MergeRequests
     class CheckBaseService
       attr_reader :merge_request, :params
 
+      class_attribute :identifier, :description
+
+      def self.identifier(new_identifier)
+        self.identifier = new_identifier
+      end
+
+      def self.description(new_description)
+        self.description = new_description
+      end
+
       def initialize(merge_request:, params:)
         @merge_request = merge_request
         @params = params
-      end
-
-      def self.identifier
-        failure_reason
       end
 
       def skip?
@@ -27,10 +33,6 @@ module MergeRequests
       end
 
       private
-
-      def failure_reason
-        self.class.failure_reason
-      end
 
       def success(**args)
         Gitlab::MergeRequests::Mergeability::CheckResult

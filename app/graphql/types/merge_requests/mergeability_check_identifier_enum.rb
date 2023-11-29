@@ -11,7 +11,7 @@ module Types
 
         value identifier.upcase,
           value: identifier,
-          description: "Mergeability check identifier is #{identifier}."
+          description: check_class.description
       end
     end
   end
