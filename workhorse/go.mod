@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.1.0
 	github.com/BurntSushi/toml v1.3.2
+	github.com/FZambia/sentinel v1.1.1
 	github.com/alecthomas/chroma/v2 v2.9.1
 	github.com/aws/aws-sdk-go v1.45.20
 	github.com/disintegration/imaging v1.6.2
@@ -12,12 +13,14 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/golang/gddo v0.0.0-20210115222349-20d68f94ee1f
 	github.com/golang/protobuf v1.5.3
+	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/gorilla/websocket v1.5.0
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/johannesboyne/gofakes3 v0.0.0-20230914150226-f005f5cc03aa
 	github.com/jpillora/backoff v1.0.0
 	github.com/mitchellh/copystructure v1.2.0
 	github.com/prometheus/client_golang v1.17.0
+	github.com/rafaeljusto/redigomock/v3 v3.1.2
 	github.com/redis/go-redis/v9 v9.2.1
 	github.com/sebest/xff v0.0.0-20210106013422-671bd2870b3a
 	github.com/sirupsen/logrus v1.9.3

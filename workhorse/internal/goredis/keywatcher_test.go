@@ -1,14 +1,16 @@
-package redis
+package goredis
 
 import (
 	"context"
+	"os"
 	"sync"
 	"testing"
 	"time"
 
-	"github.com/gomodule/redigo/redis"
-	"github.com/rafaeljusto/redigomock/v3"
 	"github.com/stretchr/testify/require"
+
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
 )
 
 var ctx = context.Background()
@@ -17,27 +19,10 @@ const (
 	runnerKey = "runner:build_queue:10"
 )
 
-func createSubscriptionMessage(key, data string) []interface{} {
-	return []interface{}{
-		[]byte("message"),
-		[]byte(key),
-		[]byte(data),
-	}
-}
-
-func createSubscribeMessage(key string) []interface{} {
-	return []interface{}{
-		[]byte("subscribe"),
-		[]byte(key),
-		[]byte("1"),
-	}
-}
-func createUnsubscribeMessage(key string) []interface{} {
-	return []interface{}{
-		[]byte("unsubscribe"),
-		[]byte(key),
-		[]byte("1"),
-	}
+func initRdb() {
+	buf, _ := os.ReadFile("../../config.toml")
+	cfg, _ := config.LoadConfig(string(buf))
+	Configure(cfg.Redis)
 }
 
 func (kw *KeyWatcher) countSubscribers(key string) int {
@@ -47,17 +32,14 @@ func (kw *KeyWatcher) countSubscribers(key string) int {
 }
 
 // Forces a run of the `Process` loop against a mock PubSubConn.
-func (kw *KeyWatcher) processMessages(t *testing.T, numWatchers int, value string, ready chan<- struct{}) {
-	psc := redigomock.NewConn()
-	psc.ReceiveWait = true
-
-	channel := channelPrefix + runnerKey
-	psc.Command("SUBSCRIBE", channel).Expect(createSubscribeMessage(channel))
-	psc.Command("UNSUBSCRIBE", channel).Expect(createUnsubscribeMessage(channel))
-	psc.AddSubscriptionMessage(createSubscriptionMessage(channel, value))
+func (kw *KeyWatcher) processMessages(t *testing.T, numWatchers int, value string, ready chan<- struct{}, wg *sync.WaitGroup) {
+	kw.mu.Lock()
+	kw.redisConn = rdb
+	psc := kw.redisConn.Subscribe(ctx, []string{}...)
+	kw.mu.Unlock()
 
 	errC := make(chan error)
-	go func() { errC <- kw.receivePubSubStream(psc) }()
+	go func() { errC <- kw.receivePubSubStream(ctx, psc) }()
 
 	require.Eventually(t, func() bool {
 		kw.mu.Lock()
@@ -69,7 +51,15 @@ func (kw *KeyWatcher) processMessages(t *testing.T, numWatchers int, value strin
 	require.Eventually(t, func() bool {
 		return kw.countSubscribers(runnerKey) == numWatchers
 	}, time.Second, time.Millisecond)
-	close(psc.ReceiveNow)
+
+	// send message after listeners are ready
+	kw.redisConn.Publish(ctx, channelPrefix+runnerKey, value)
+
+	// close subscription after all workers are done
+	wg.Wait()
+	kw.mu.Lock()
+	kw.conn.Close()
+	kw.mu.Unlock()
 
 	require.NoError(t, <-errC)
 }
@@ -80,18 +70,20 @@ type keyChangeTestCase struct {
 	isKeyMissing   bool
 	watchValue     string
 	processedValue string
-	expectedStatus WatchKeyStatus
+	expectedStatus redis.WatchKeyStatus
 	timeout        time.Duration
 }
 
 func TestKeyChangesInstantReturn(t *testing.T) {
+	initRdb()
+
 	testCases := []keyChangeTestCase{
 		// WatchKeyStatusAlreadyChanged
 		{
 			desc:           "sees change with key existing and changed",
 			returnValue:    "somethingelse",
 			watchValue:     "something",
-			expectedStatus: WatchKeyStatusAlreadyChanged,
+			expectedStatus: redis.WatchKeyStatusAlreadyChanged,
 			timeout:        time.Second,
 		},
 		{
@@ -99,7 +91,7 @@ func TestKeyChangesInstantReturn(t *testing.T) {
 			isKeyMissing:   true,
 			watchValue:     "something",
 			processedValue: "somethingelse",
-			expectedStatus: WatchKeyStatusAlreadyChanged,
+			expectedStatus: redis.WatchKeyStatusAlreadyChanged,
 			timeout:        time.Second,
 		},
 		// WatchKeyStatusTimeout
@@ -107,32 +99,34 @@ func TestKeyChangesInstantReturn(t *testing.T) {
 			desc:           "sees timeout with key existing and unchanged",
 			returnValue:    "something",
 			watchValue:     "something",
-			expectedStatus: WatchKeyStatusTimeout,
+			expectedStatus: redis.WatchKeyStatusTimeout,
 			timeout:        time.Millisecond,
 		},
 		{
 			desc:           "sees timeout with key non-existing and unchanged",
 			isKeyMissing:   true,
 			watchValue:     "",
-			expectedStatus: WatchKeyStatusTimeout,
+			expectedStatus: redis.WatchKeyStatusTimeout,
 			timeout:        time.Millisecond,
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.desc, func(t *testing.T) {
-			conn, td := setupMockPool()
-			defer td()
 
-			if tc.isKeyMissing {
-				conn.Command("GET", runnerKey).ExpectError(redis.ErrNil)
-			} else {
-				conn.Command("GET", runnerKey).Expect(tc.returnValue)
+			// setup
+			if !tc.isKeyMissing {
+				rdb.Set(ctx, runnerKey, tc.returnValue, 0)
 			}
+
+			defer func() {
+				rdb.FlushDB(ctx)
+			}()
 
 			kw := NewKeyWatcher()
 			defer kw.Shutdown()
-			kw.conn = &redis.PubSubConn{Conn: redigomock.NewConn()}
+			kw.redisConn = rdb
+			kw.conn = kw.redisConn.Subscribe(ctx, []string{}...)
 
 			val, err := kw.WatchKey(ctx, runnerKey, tc.watchValue, tc.timeout)
 
@@ -143,6 +137,8 @@ func TestKeyChangesInstantReturn(t *testing.T) {
 }
 
 func TestKeyChangesWhenWatching(t *testing.T) {
+	initRdb()
+
 	testCases := []keyChangeTestCase{
 		// WatchKeyStatusSeenChange
 		{
@@ -150,14 +146,14 @@ func TestKeyChangesWhenWatching(t *testing.T) {
 			returnValue:    "something",
 			watchValue:     "something",
 			processedValue: "somethingelse",
-			expectedStatus: WatchKeyStatusSeenChange,
+			expectedStatus: redis.WatchKeyStatusSeenChange,
 		},
 		{
 			desc:           "sees change with key non-existing, when watching empty value",
 			isKeyMissing:   true,
 			watchValue:     "",
 			processedValue: "something",
-			expectedStatus: WatchKeyStatusSeenChange,
+			expectedStatus: redis.WatchKeyStatusSeenChange,
 		},
 		// WatchKeyStatusNoChange
 		{
@@ -165,23 +161,21 @@ func TestKeyChangesWhenWatching(t *testing.T) {
 			returnValue:    "something",
 			watchValue:     "something",
 			processedValue: "something",
-			expectedStatus: WatchKeyStatusNoChange,
+			expectedStatus: redis.WatchKeyStatusNoChange,
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.desc, func(t *testing.T) {
-			conn, td := setupMockPool()
-			defer td()
-
-			if tc.isKeyMissing {
-				conn.Command("GET", runnerKey).ExpectError(redis.ErrNil)
-			} else {
-				conn.Command("GET", runnerKey).Expect(tc.returnValue)
+			if !tc.isKeyMissing {
+				rdb.Set(ctx, runnerKey, tc.returnValue, 0)
 			}
 
 			kw := NewKeyWatcher()
 			defer kw.Shutdown()
+			defer func() {
+				rdb.FlushDB(ctx)
+			}()
 
 			wg := &sync.WaitGroup{}
 			wg.Add(1)
@@ -196,27 +190,28 @@ func TestKeyChangesWhenWatching(t *testing.T) {
 				require.Equal(t, tc.expectedStatus, val, "Expected value")
 			}()
 
-			kw.processMessages(t, 1, tc.processedValue, ready)
-			wg.Wait()
+			kw.processMessages(t, 1, tc.processedValue, ready, wg)
 		})
 	}
 }
 
 func TestKeyChangesParallel(t *testing.T) {
+	initRdb()
+
 	testCases := []keyChangeTestCase{
 		{
 			desc:           "massively parallel, sees change with key existing",
 			returnValue:    "something",
 			watchValue:     "something",
 			processedValue: "somethingelse",
-			expectedStatus: WatchKeyStatusSeenChange,
+			expectedStatus: redis.WatchKeyStatusSeenChange,
 		},
 		{
 			desc:           "massively parallel, sees change with key existing, watching missing keys",
 			isKeyMissing:   true,
 			watchValue:     "",
 			processedValue: "somethingelse",
-			expectedStatus: WatchKeyStatusSeenChange,
+			expectedStatus: redis.WatchKeyStatusSeenChange,
 		},
 	}
 
@@ -224,18 +219,13 @@ func TestKeyChangesParallel(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			runTimes := 100
 
-			conn, td := setupMockPool()
-			defer td()
-
-			getCmd := conn.Command("GET", runnerKey)
-
-			for i := 0; i < runTimes; i++ {
-				if tc.isKeyMissing {
-					getCmd = getCmd.ExpectError(redis.ErrNil)
-				} else {
-					getCmd = getCmd.Expect(tc.returnValue)
-				}
+			if !tc.isKeyMissing {
+				rdb.Set(ctx, runnerKey, tc.returnValue, 0)
 			}
+
+			defer func() {
+				rdb.FlushDB(ctx)
+			}()
 
 			wg := &sync.WaitGroup{}
 			wg.Add(runTimes)
@@ -255,21 +245,20 @@ func TestKeyChangesParallel(t *testing.T) {
 				}()
 			}
 
-			kw.processMessages(t, runTimes, tc.processedValue, ready)
-			wg.Wait()
+			kw.processMessages(t, runTimes, tc.processedValue, ready, wg)
 		})
 	}
 }
 
 func TestShutdown(t *testing.T) {
-	conn, td := setupMockPool()
-	defer td()
+	initRdb()
 
 	kw := NewKeyWatcher()
-	kw.conn = &redis.PubSubConn{Conn: redigomock.NewConn()}
+	kw.redisConn = rdb
+	kw.conn = kw.redisConn.Subscribe(ctx, []string{}...)
 	defer kw.Shutdown()
 
-	conn.Command("GET", runnerKey).Expect("something")
+	rdb.Set(ctx, runnerKey, "something", 0)
 
 	wg := &sync.WaitGroup{}
 	wg.Add(2)
@@ -279,7 +268,7 @@ func TestShutdown(t *testing.T) {
 		val, err := kw.WatchKey(ctx, runnerKey, "something", 10*time.Second)
 
 		require.NoError(t, err, "Expected no error")
-		require.Equal(t, WatchKeyStatusNoChange, val, "Expected value not to change")
+		require.Equal(t, redis.WatchKeyStatusNoChange, val, "Expected value not to change")
 	}()
 
 	go func() {
@@ -294,7 +283,7 @@ func TestShutdown(t *testing.T) {
 	require.Eventually(t, func() bool { return kw.countSubscribers(runnerKey) == 0 }, 10*time.Second, time.Millisecond)
 
 	// Adding a key after the shutdown should result in an immediate response
-	var val WatchKeyStatus
+	var val redis.WatchKeyStatus
 	var err error
 	done := make(chan struct{})
 	go func() {
@@ -305,7 +294,7 @@ func TestShutdown(t *testing.T) {
 	select {
 	case <-done:
 		require.NoError(t, err, "Expected no error")
-		require.Equal(t, WatchKeyStatusNoChange, val, "Expected value not to change")
+		require.Equal(t, redis.WatchKeyStatusNoChange, val, "Expected value not to change")
 	case <-time.After(100 * time.Millisecond):
 		t.Fatal("timeout waiting for WatchKey")
 	}
