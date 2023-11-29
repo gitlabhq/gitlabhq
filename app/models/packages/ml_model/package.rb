@@ -3,6 +3,8 @@
 module Packages
   module MlModel
     class Package < Packages::Package
+      self.allow_legacy_sti_class = true
+
       has_one :model_version, class_name: "Ml::ModelVersion", inverse_of: :package
 
       validates :name,

@@ -41,7 +41,7 @@ Note: Please make sure to run the chatops commands in the Slack channel that get
       as this is the first environment deployed to. Make sure you are [configured to use canary](https://next.gitlab.com/).
 - [ ] If the feature flag causes end-to-end tests to fail, disable the feature flag on staging to avoid blocking [deployments](https://about.gitlab.com/handbook/engineering/deployments-and-releases/deployments/).
 
-For assistance with end-to-end test failures, please reach out via the [`#quality` Slack channel](https://gitlab.slack.com/archives/C3JJET4Q6). Note that end-to-end test failures on `staging-ref` [don't block deployments](https://about.gitlab.com/handbook/engineering/infrastructure/environments/staging-ref/#how-to-use-staging-ref).
+For assistance with end-to-end test failures, please reach out via the [`#test-platform` Slack channel](https://gitlab.slack.com/archives/C3JJET4Q6). Note that end-to-end test failures on `staging-ref` [don't block deployments](https://about.gitlab.com/handbook/engineering/infrastructure/environments/staging-ref/#how-to-use-staging-ref).
 
 ### Specific rollout on production
 

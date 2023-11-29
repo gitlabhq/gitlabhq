@@ -141,7 +141,6 @@ RSpec/ReturnFromStub:
     - 'spec/lib/gitlab/prometheus_client_spec.rb'
     - 'spec/lib/gitlab/redis/cache_spec.rb'
     - 'spec/lib/gitlab/redis/shared_state_spec.rb'
-    - 'spec/lib/gitlab/redis/sidekiq_status_spec.rb'
     - 'spec/lib/gitlab/relative_positioning/range_spec.rb'
     - 'spec/lib/gitlab/sidekiq_logging/structured_logger_spec.rb'
     - 'spec/lib/gitlab/sidekiq_middleware/duplicate_jobs/duplicate_job_spec.rb'

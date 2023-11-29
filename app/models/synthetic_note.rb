@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class SyntheticNote < Note
+  self.allow_legacy_sti_class = true
+
   attr_accessor :resource_parent, :event
 
   def self.note_attributes(action, event, resource, resource_parent)

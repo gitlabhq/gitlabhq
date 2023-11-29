@@ -1416,7 +1416,6 @@ Layout/ArgumentAlignment:
     - 'spec/lib/gitlab/pagination_delegate_spec.rb'
     - 'spec/lib/gitlab/path_regex_spec.rb'
     - 'spec/lib/gitlab/profiler_spec.rb'
-    - 'spec/lib/gitlab/redis/sidekiq_status_spec.rb'
     - 'spec/lib/gitlab/repository_cache/preloader_spec.rb'
     - 'spec/lib/gitlab/repository_cache_spec.rb'
     - 'spec/lib/gitlab/search_context/builder_spec.rb'

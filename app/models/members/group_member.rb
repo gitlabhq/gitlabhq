@@ -4,6 +4,8 @@ class GroupMember < Member
   include FromUnion
   include CreatedAtFilterable
 
+  self.allow_legacy_sti_class = true
+
   SOURCE_TYPE = 'Namespace'
   SOURCE_TYPE_FORMAT = /\ANamespace\z/
 

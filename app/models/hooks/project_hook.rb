@@ -6,6 +6,8 @@ class ProjectHook < WebHook
   include Limitable
   extend ::Gitlab::Utils::Override
 
+  self.allow_legacy_sti_class = true
+
   self.limit_scope = :project
 
   triggerable_hooks [

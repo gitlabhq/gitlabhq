@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class PushEvent < Event
+  self.allow_legacy_sti_class = true
+
   # This validation exists so we can't accidentally use PushEvent with a
   # different "action" value.
   validate :validate_push_action

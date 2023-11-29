@@ -212,7 +212,7 @@ subgraph "CNG-mirror pipeline"
   your merge request. You can also download the artifacts to see screenshots of
   the page at the time the failures occurred. If you don't find the cause of the
   failure or if it seems unrelated to your change, please post a message in the
-  `#quality` channel and/or create a ~Quality ~"type::bug" issue with a link to your
+  `#test-platform` channel and/or create a ~Quality ~"type::bug" issue with a link to your
   merge request.
 - The manual `review-stop` can be used to
   stop a review app manually, and is also started by GitLab once a merge

@@ -41,7 +41,7 @@ gitlab_schema: gitlab_main
 | `feature_categories`       | Array(String) | yes      | List of feature categories using this table. |
 | `description`              | String        | no       | Text description of the information stored in the table, and its purpose. |
 | `introduced_by_url`        | URL           | no       | URL to the merge request or commit which introduced this table. |
-| `milestone`                | String        | no       | The milestone that introduced this table. |
+| `milestone`                | String        | yes      | The milestone that introduced this table. |
 | `gitlab_schema`            | String        | yes      | GitLab schema name. |
 
 ### Process

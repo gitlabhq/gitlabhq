@@ -4,6 +4,8 @@ class ProjectMember < Member
   SOURCE_TYPE = 'Project'
   SOURCE_TYPE_FORMAT = /\AProject\z/
 
+  self.allow_legacy_sti_class = true
+
   belongs_to :project, foreign_key: 'source_id'
 
   delegate :namespace_id, to: :project

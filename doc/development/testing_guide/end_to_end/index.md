@@ -302,7 +302,7 @@ Continued reading:
 
 ## Where can you ask for help?
 
-You can ask question in the `#quality` channel on Slack (GitLab internal) or
+You can ask question in the `#test-platform` channel on Slack (GitLab internal) or
 you can find an issue you would like to work on in
 [the `gitlab` issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name%5B%5D=QA&label_name%5B%5D=test), or
 [the `gitlab-qa` issue tracker](https://gitlab.com/gitlab-org/gitlab-qa/-/issues?label_name%5B%5D=new+scenario).

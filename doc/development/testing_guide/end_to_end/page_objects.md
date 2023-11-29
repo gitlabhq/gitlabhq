@@ -303,7 +303,7 @@ from within the `qa` directory.
 
 ## Where to ask for help?
 
-If you need more information, ask for help on `#quality` channel on Slack
+If you need more information, ask for help on `#test-platform` channel on Slack
 (internal, GitLab Team only).
 
 If you are not a Team Member, and you still need help to contribute, please

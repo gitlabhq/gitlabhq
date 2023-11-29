@@ -2373,7 +2373,6 @@ RSpec/NamedSubject:
     - 'spec/lib/gitlab/redis/db_load_balancing_spec.rb'
     - 'spec/lib/gitlab/redis/multi_store_spec.rb'
     - 'spec/lib/gitlab/redis/queues_spec.rb'
-    - 'spec/lib/gitlab/redis/sidekiq_status_spec.rb'
     - 'spec/lib/gitlab/reference_extractor_spec.rb'
     - 'spec/lib/gitlab/regex_spec.rb'
     - 'spec/lib/gitlab/relative_positioning/item_context_spec.rb'

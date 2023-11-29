@@ -3889,7 +3889,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/redis/rate_limiting_spec.rb'
     - 'spec/lib/gitlab/redis/sessions_spec.rb'
     - 'spec/lib/gitlab/redis/shared_state_spec.rb'
-    - 'spec/lib/gitlab/redis/sidekiq_status_spec.rb'
     - 'spec/lib/gitlab/redis/trace_chunks_spec.rb'
     - 'spec/lib/gitlab/redis/wrapper_spec.rb'
     - 'spec/lib/gitlab/reference_counter_spec.rb'

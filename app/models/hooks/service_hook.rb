@@ -5,6 +5,8 @@ class ServiceHook < WebHook
 
   extend ::Gitlab::Utils::Override
 
+  self.allow_legacy_sti_class = true
+
   belongs_to :integration
   validates :integration, presence: true
 

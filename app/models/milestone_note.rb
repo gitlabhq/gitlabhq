@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class MilestoneNote < SyntheticNote
+  self.allow_legacy_sti_class = true
+
   attr_accessor :milestone
 
   def self.from_event(event, resource: nil, resource_parent: nil)

@@ -23,6 +23,8 @@ class Group < Namespace
 
   extend ::Gitlab::Utils::Override
 
+  self.allow_legacy_sti_class = true
+
   README_PROJECT_PATH = 'gitlab-profile'
 
   def self.sti_name

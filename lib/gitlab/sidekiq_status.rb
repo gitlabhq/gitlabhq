@@ -132,7 +132,8 @@ module Gitlab
           Feature.enabled?(:use_primary_store_as_default_for_sidekiq_status)
         # TODO: Swap for Gitlab::Redis::SharedState after store transition
         # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/923
-        Gitlab::Redis::SidekiqStatus.with { |redis| yield redis }
+        # For now, we use SharedState to reduce amount of spawned connection to Redis Cluster during initialisation
+        Gitlab::Redis::SharedState.with { |redis| yield redis }
       else
         # Keep the old behavior intact if neither feature flag is turned on
         Sidekiq.redis { |redis| yield redis } # rubocop:disable Cop/SidekiqRedisCall

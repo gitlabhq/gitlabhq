@@ -6,6 +6,8 @@ class DeployKey < Key
   include PolicyActor
   include Presentable
 
+  self.allow_legacy_sti_class = true
+
   has_many :deploy_keys_projects, inverse_of: :deploy_key, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :projects, through: :deploy_keys_projects
 

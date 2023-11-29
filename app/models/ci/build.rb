@@ -15,6 +15,8 @@ module Ci
 
     extend ::Gitlab::Utils::Override
 
+    self.allow_legacy_sti_class = true
+
     belongs_to :project, inverse_of: :builds
     belongs_to :runner
     belongs_to :trigger_request

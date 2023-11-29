@@ -7,7 +7,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_sharding_key) do
     [
-      'abuse_report_assignees' # https://gitlab.com/gitlab-org/gitlab/-/issues/432365
+      'abuse_report_assignees', # https://gitlab.com/gitlab-org/gitlab/-/issues/432365
+      'sbom_occurrences_vulnerabilities' # https://gitlab.com/gitlab-org/gitlab/-/issues/432900
     ]
   end
 

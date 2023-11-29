@@ -8,6 +8,8 @@ class DiffNote < Note
   include DiffPositionableNote
   include Gitlab::Utils::StrongMemoize
 
+  self.allow_legacy_sti_class = true
+
   def self.noteable_types
     %w[MergeRequest Commit DesignManagement::Design]
   end

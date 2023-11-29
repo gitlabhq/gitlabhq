@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class PersonalSnippet < Snippet
+  self.allow_legacy_sti_class = true
+
   include WithUploads
 
   def parent_user

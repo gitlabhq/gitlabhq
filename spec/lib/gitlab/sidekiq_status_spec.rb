@@ -134,11 +134,11 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues,
 
   context 'with multi-store feature flags turned on' do
     def with_redis(&block)
-      Gitlab::Redis::SidekiqStatus.with(&block)
+      Gitlab::Redis::SharedState.with(&block)
     end
 
-    it 'uses Gitlab::Redis::SidekiqStatus.with' do
-      expect(Gitlab::Redis::SidekiqStatus).to receive(:with).and_call_original
+    it 'uses Gitlab::Redis::SharedState.with' do
+      expect(Gitlab::Redis::SharedState).to receive(:with).and_call_original
       expect(Sidekiq).not_to receive(:redis)
 
       described_class.job_status(%w[123 456 789])
@@ -159,7 +159,7 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues,
 
     it 'uses Sidekiq.redis' do
       expect(Sidekiq).to receive(:redis).and_call_original
-      expect(Gitlab::Redis::SidekiqStatus).not_to receive(:with)
+      expect(Gitlab::Redis::SharedState).not_to receive(:with)
 
       described_class.job_status(%w[123 456 789])
     end

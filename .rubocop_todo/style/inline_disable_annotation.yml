@@ -2659,7 +2659,6 @@ Style/InlineDisableAnnotation:
     - 'lib/gitlab/redis/cross_slot.rb'
     - 'lib/gitlab/redis/hll.rb'
     - 'lib/gitlab/redis/multi_store.rb'
-    - 'lib/gitlab/redis/sidekiq_status.rb'
     - 'lib/gitlab/reference_extractor.rb'
     - 'lib/gitlab/relative_positioning/item_context.rb'
     - 'lib/gitlab/repository_cache_adapter.rb'

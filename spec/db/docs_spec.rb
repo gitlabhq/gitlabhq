@@ -185,7 +185,7 @@ RSpec.describe 'Tables documentation', feature_category: :database do
   database_base_models = Gitlab::Database.database_base_models.reject { |k, _| k.in?(excluded) }
   tables = database_base_models.flat_map { |_, m| m.connection.tables }.sort.uniq
   directory_path = File.join('db', 'docs')
-  required_fields = %i[feature_categories table_name gitlab_schema]
+  required_fields = %i[feature_categories table_name gitlab_schema milestone]
 
   include_examples 'validate dictionary', tables, directory_path, required_fields
 end

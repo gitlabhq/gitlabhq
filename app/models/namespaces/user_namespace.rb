@@ -22,6 +22,8 @@ module Namespaces
   ####################################################################
 
   class UserNamespace < Namespace
+    self.allow_legacy_sti_class = true
+
     def self.sti_name
       'User'
     end

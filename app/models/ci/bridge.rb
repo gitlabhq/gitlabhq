@@ -16,6 +16,8 @@ module Ci
       pipeline_variables: false
     }.freeze
 
+    self.allow_legacy_sti_class = true
+
     belongs_to :project
     belongs_to :trigger_request
 

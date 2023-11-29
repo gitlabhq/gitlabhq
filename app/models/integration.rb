@@ -15,6 +15,7 @@ class Integration < ApplicationRecord
 
   UnknownType = Class.new(StandardError)
 
+  self.allow_legacy_sti_class = true
   self.inheritance_column = :type_new
 
   INTEGRATION_NAMES = %w[

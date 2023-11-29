@@ -3,6 +3,8 @@
 class SystemHook < WebHook
   include TriggerableHooks
 
+  self.allow_legacy_sti_class = true
+
   triggerable_hooks [
     :repository_update_hooks,
     :push_hooks,

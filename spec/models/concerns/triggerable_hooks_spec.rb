@@ -10,6 +10,8 @@ RSpec.describe TriggerableHooks do
       include TriggerableHooks # rubocop:disable RSpec/DescribedClass
       triggerable_hooks [:push_hooks]
 
+      self.allow_legacy_sti_class = true
+
       scope :executable, -> { all }
     end
   end

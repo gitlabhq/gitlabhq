@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class LabelNote < SyntheticNote
+  self.allow_legacy_sti_class = true
+
   attr_accessor :resource_parent
   attr_reader :events
 
