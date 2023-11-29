@@ -52,6 +52,7 @@ module Gitlab
           project_testing_integration: { threshold: 5, interval: 1.minute },
           email_verification: { threshold: 10, interval: 10.minutes },
           email_verification_code_send: { threshold: 10, interval: 1.hour },
+          phone_verification_challenge: { threshold: 3, interval: 1.day },
           phone_verification_send_code: { threshold: 5, interval: 1.day },
           phone_verification_verify_code: { threshold: 5, interval: 1.day },
           namespace_exists: { threshold: 20, interval: 1.minute },

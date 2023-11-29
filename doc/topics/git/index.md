@@ -38,7 +38,7 @@ appropriate for when you're ready to start learning Git by doing:
 - [How to install Git](how_to_install_git/index.md)
 - [Start using Git on the command line](../../gitlab-basics/start-using-git.md)
 - Tutorial: [Make your first Git commit](../../tutorials/make_first_git_commit/index.md)
-- Tutorial: [How to update Git commit messages](../../tutorials/update_commit_messages/index.md)
+- Tutorial: [Update Git commit messages](../../tutorials/update_commit_messages/index.md)
 - The [GitLab CLI](https://gitlab.com/gitlab-org/cli/)
 
 A typical Git user encounters these concepts soon after starting to use Git:

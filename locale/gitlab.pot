@@ -24316,9 +24316,6 @@ msgid_plural "IdentityVerification|%d countries found"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "IdentityVerification|%{linkStart}Enter a new phone number%{linkEnd}"
-msgstr ""
-
 msgid "IdentityVerification|A code has already been sent to this email address. Check your spam folder or enter another email address."
 msgstr ""
 
@@ -24334,7 +24331,7 @@ msgstr ""
 msgid "IdentityVerification|Before you sign in, we need to verify your identity. Enter the following code on the sign-in page."
 msgstr ""
 
-msgid "IdentityVerification|Complete verification to sign in."
+msgid "IdentityVerification|Complete verification to sign up."
 msgstr ""
 
 msgid "IdentityVerification|Confirm your email address"
@@ -24346,7 +24343,7 @@ msgstr ""
 msgid "IdentityVerification|Didn't receive a code?"
 msgstr ""
 
-msgid "IdentityVerification|Didn't receive a code? %{linkStart}Send a new code%{linkEnd}"
+msgid "IdentityVerification|Didn't receive a code? %{codeLinkStart}Send a new code%{codeLinkEnd} or %{phoneLinkStart}enter a new phone number%{phoneLinkEnd}"
 msgstr ""
 
 msgid "IdentityVerification|Email update is only offered once."
