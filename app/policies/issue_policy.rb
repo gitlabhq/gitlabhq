@@ -60,6 +60,7 @@ class IssuePolicy < IssuablePolicy
   rule { ~can?(:read_issue) }.policy do
     prevent :create_note
     prevent :read_note
+    prevent :award_emoji
   end
 
   rule { locked }.policy do

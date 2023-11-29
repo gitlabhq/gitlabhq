@@ -35,10 +35,11 @@ class PagesDomain < ApplicationRecord
   validates :verification_code, presence: true, allow_blank: false
 
   validate :validate_pages_domain
-  validate :validate_matching_key, if: ->(domain) { domain.certificate.present? || domain.key.present? }
-  validate :validate_intermediates, if: ->(domain) { domain.certificate.present? && domain.certificate_changed? }
-  validate :validate_custom_domain_count_per_project, on: :create
   validate :max_certificate_key_length, if: ->(domain) { domain.key.present? }
+  validate :validate_matching_key, if: ->(domain) { domain.certificate.present? || domain.key.present? }
+  # validate_intermediates must run after key validations to skip expensive SSL validation when there is a key error
+  validate :validate_intermediates, if: ->(domain) { domain.certificate.present? && domain.certificate_changed? && errors[:key].blank? }
+  validate :validate_custom_domain_count_per_project, on: :create
 
   attribute :auto_ssl_enabled, default: -> { ::Gitlab::LetsEncrypt.enabled? }
   attribute :wildcard, default: false
