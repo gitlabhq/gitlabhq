@@ -10364,12 +10364,6 @@ msgstr ""
 msgid "CiCatalog|Last release at %{date}"
 msgstr ""
 
-msgid "CiCatalog|Mark project as a CI/CD Catalog resource"
-msgstr ""
-
-msgid "CiCatalog|Mark project as a CI/CD Catalog resource. %{linkStart}What is the CI/CD Catalog?%{linkEnd}"
-msgstr ""
-
 msgid "CiCatalog|No component available"
 msgstr ""
 
@@ -10388,28 +10382,43 @@ msgstr ""
 msgid "CiCatalog|Released %{timeAgo} by %{author}"
 msgstr ""
 
+msgid "CiCatalog|Remove from the CI/CD catalog"
+msgstr ""
+
+msgid "CiCatalog|Remove project from the CI/CD Catalog?"
+msgstr ""
+
 msgid "CiCatalog|Repositories of pipeline components available in this namespace."
 msgstr ""
 
 msgid "CiCatalog|Search must be at least 3 characters"
 msgstr ""
 
-msgid "CiCatalog|The project must contain a README.md file and a template.yml file. When enabled, the repository is available in the CI/CD Catalog."
+msgid "CiCatalog|Set project as a CI/CD Catalog resource. %{linkStart}What is the CI/CD Catalog?%{linkEnd}"
+msgstr ""
+
+msgid "CiCatalog|The project and any released versions will be removed from the CI/CD Catalog. If you re-enable this toggle, the project's existing releases are not re-added to the catalog. You must %{linkStart}create a new release%{linkEnd}."
+msgstr ""
+
+msgid "CiCatalog|The project will be findable in the CI/CD Catalog after the project has at least one release."
 msgstr ""
 
 msgid "CiCatalog|There was a problem fetching the CI/CD Catalog setting."
 msgstr ""
 
-msgid "CiCatalog|There was a problem marking the project as a CI/CD Catalog resource."
+msgid "CiCatalog|There was an error fetching CI/CD Catalog resources."
 msgstr ""
 
-msgid "CiCatalog|There was an error fetching CI/CD Catalog resources."
+msgid "CiCatalog|This project is no longer a CI/CD Catalog resource."
 msgstr ""
 
 msgid "CiCatalog|This project is now a CI/CD Catalog resource."
 msgstr ""
 
-msgid "CiCatalog|This project will be marked as a CI/CD Catalog resource and will be visible in the CI/CD Catalog. This action is not reversible."
+msgid "CiCatalog|Unable to remove project as a CI/CD Catalog resource."
+msgstr ""
+
+msgid "CiCatalog|Unable to set project as a CI/CD Catalog resource."
 msgstr ""
 
 msgid "CiCatalog|Unreleased"
@@ -32876,6 +32885,9 @@ msgstr ""
 msgid "Objective"
 msgstr ""
 
+msgid "ObservabilityMetrics|Date"
+msgstr ""
+
 msgid "ObservabilityMetrics|Description"
 msgstr ""
 
@@ -32898,6 +32910,9 @@ msgid "ObservabilityMetrics|Search metrics starting with..."
 msgstr ""
 
 msgid "ObservabilityMetrics|Type"
+msgstr ""
+
+msgid "ObservabilityMetrics|Value"
 msgstr ""
 
 msgid "Observability|Enable"
@@ -37405,7 +37420,7 @@ msgstr ""
 msgid "ProjectOverview|Create new fork"
 msgstr ""
 
-msgid "ProjectOverview|Forks"
+msgid "ProjectOverview|Fork"
 msgstr ""
 
 msgid "ProjectOverview|Go to your fork"

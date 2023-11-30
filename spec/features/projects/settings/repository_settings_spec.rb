@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Settings > Repository settings', feature_category: :groups_and_projects do
+RSpec.describe 'Projects > Settings > Repository settings', feature_category: :source_code_management do
   include Features::MirroringHelpers
 
   let(:project) { create(:project_empty_repo) }

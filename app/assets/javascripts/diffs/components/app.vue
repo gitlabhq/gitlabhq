@@ -147,6 +147,7 @@ export default {
       subscribedToVirtualScrollingEvents: false,
       autoScrolled: false,
       activeProject: undefined,
+      hasScannerError: false,
     };
   },
   apollo: {
@@ -159,6 +160,10 @@ export default {
       skip() {
         const codeQualityBoolean = Boolean(this.endpointCodequality);
 
+        if (this.hasScannerError) {
+          return true;
+        }
+
         return !this.sastReportsInInlineDiff || (!codeQualityBoolean && !this.sastReportAvailable);
       },
       update(data) {
@@ -170,13 +175,13 @@ export default {
           (sastReport?.status === FINDINGS_STATUS_PARSED || !this.sastReportAvailable) &&
           (!codeQualityBoolean || codequalityReportsComparer.status === FINDINGS_STATUS_PARSED)
         ) {
-          this.getMRCodequalityAndSecurityReportStopPolling(
-            this.$apollo.queries.getMRCodequalityAndSecurityReports,
-          );
+          this.$apollo.queries.getMRCodequalityAndSecurityReports.stopPolling();
         }
 
         if (sastReport?.status === FINDINGS_STATUS_ERROR && this.sastReportAvailable) {
           this.fetchScannerFindingsError();
+
+          this.$apollo.queries.getMRCodequalityAndSecurityReports.stopPolling();
         }
 
         if (codequalityReportsComparer?.report?.newErrors) {
@@ -192,6 +197,7 @@ export default {
       },
       error() {
         this.fetchScannerFindingsError();
+        this.$apollo.queries.getMRCodequalityAndSecurityReports.stopPolling();
       },
     },
   },
@@ -432,6 +438,7 @@ export default {
       this.setDrawer({});
     },
     fetchScannerFindingsError() {
+      this.hasScannerError = true;
       createAlert({
         message: __('Something went wrong fetching the Scanner Findings. Please try again.'),
       });
@@ -444,9 +451,6 @@ export default {
       diffsEventHub.$on('doneLoadingBatches', this.autoScroll);
       diffsEventHub.$on(EVT_MR_PREPARED, this.fetchData);
       diffsEventHub.$on(EVT_DISCUSSIONS_ASSIGNED, this.handleHash);
-    },
-    getMRCodequalityAndSecurityReportStopPolling(query) {
-      query.stopPolling();
     },
     unsubscribeFromEvents() {
       diffsEventHub.$off(EVT_DISCUSSIONS_ASSIGNED, this.handleHash);

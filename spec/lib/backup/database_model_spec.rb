@@ -63,7 +63,7 @@ RSpec.describe Backup::DatabaseModel, :reestablished_active_record_base, feature
       it_behaves_like 'no configuration is overridden'
     end
 
-    context 'when GITLAB_BACKUP_PG* variables are set' do
+    context 'when generic database configuration is overridden' do
       where(:env_variable, :overridden_value) do
         'GITLAB_BACKUP_PGHOST'           | 'test.invalid.'
         'GITLAB_BACKUP_PGUSER'           | 'some_user'
@@ -75,10 +75,20 @@ RSpec.describe Backup::DatabaseModel, :reestablished_active_record_base, feature
         'GITLAB_BACKUP_PGSSLROOTCERT'    | '/path/to/root/cert'
         'GITLAB_BACKUP_PGSSLCRL'         | '/path/to/crl'
         'GITLAB_BACKUP_PGSSLCOMPRESSION' | '1'
+        'GITLAB_OVERRIDE_PGHOST'           | 'test.invalid.'
+        'GITLAB_OVERRIDE_PGUSER'           | 'some_user'
+        'GITLAB_OVERRIDE_PGPORT'           | '1543'
+        'GITLAB_OVERRIDE_PGPASSWORD'       | 'secret'
+        'GITLAB_OVERRIDE_PGSSLMODE'        | 'allow'
+        'GITLAB_OVERRIDE_PGSSLKEY'         | 'some_key'
+        'GITLAB_OVERRIDE_PGSSLCERT'        | '/path/to/cert'
+        'GITLAB_OVERRIDE_PGSSLROOTCERT'    | '/path/to/root/cert'
+        'GITLAB_OVERRIDE_PGSSLCRL'         | '/path/to/crl'
+        'GITLAB_OVERRIDE_PGSSLCOMPRESSION' | '1'
       end
 
       with_them do
-        let(:pg_env) { env_variable[/GITLAB_BACKUP_(\w+)/, 1] }
+        let(:pg_env) { env_variable[/GITLAB_(BACKUP|OVERRIDE)_(\w+)/, 2] }
 
         before do
           stub_env(env_variable, overridden_value)
@@ -88,7 +98,7 @@ RSpec.describe Backup::DatabaseModel, :reestablished_active_record_base, feature
       end
     end
 
-    context 'when GITLAB_BACKUP_<DBNAME>_PG* variables are set' do
+    context 'when specific database configuration is overridden' do
       context 'and environment variables are for the current database name' do
         where(:env_variable, :overridden_value) do
           'GITLAB_BACKUP_MAIN_PGHOST'           | 'test.invalid.'
@@ -101,10 +111,20 @@ RSpec.describe Backup::DatabaseModel, :reestablished_active_record_base, feature
           'GITLAB_BACKUP_MAIN_PGSSLROOTCERT'    | '/path/to/root/cert'
           'GITLAB_BACKUP_MAIN_PGSSLCRL'         | '/path/to/crl'
           'GITLAB_BACKUP_MAIN_PGSSLCOMPRESSION' | '1'
+          'GITLAB_OVERRIDE_MAIN_PGHOST'           | 'test.invalid.'
+          'GITLAB_OVERRIDE_MAIN_PGUSER'           | 'some_user'
+          'GITLAB_OVERRIDE_MAIN_PGPORT'           | '1543'
+          'GITLAB_OVERRIDE_MAIN_PGPASSWORD'       | 'secret'
+          'GITLAB_OVERRIDE_MAIN_PGSSLMODE'        | 'allow'
+          'GITLAB_OVERRIDE_MAIN_PGSSLKEY'         | 'some_key'
+          'GITLAB_OVERRIDE_MAIN_PGSSLCERT'        | '/path/to/cert'
+          'GITLAB_OVERRIDE_MAIN_PGSSLROOTCERT'    | '/path/to/root/cert'
+          'GITLAB_OVERRIDE_MAIN_PGSSLCRL'         | '/path/to/crl'
+          'GITLAB_OVERRIDE_MAIN_PGSSLCOMPRESSION' | '1'
         end
 
         with_them do
-          let(:pg_env) { env_variable[/GITLAB_BACKUP_MAIN_(\w+)/, 1] }
+          let(:pg_env) { env_variable[/GITLAB_(BACKUP|OVERRIDE)_MAIN_(\w+)/, 2] }
 
           before do
             stub_env(env_variable, overridden_value)
@@ -126,10 +146,20 @@ RSpec.describe Backup::DatabaseModel, :reestablished_active_record_base, feature
           'GITLAB_BACKUP_CI_PGSSLROOTCERT'    | '/path/to/root/cert'
           'GITLAB_BACKUP_CI_PGSSLCRL'         | '/path/to/crl'
           'GITLAB_BACKUP_CI_PGSSLCOMPRESSION' | '1'
+          'GITLAB_OVERRIDE_CI_PGHOST'           | 'test.invalid.'
+          'GITLAB_OVERRIDE_CI_PGUSER'           | 'some_user'
+          'GITLAB_OVERRIDE_CI_PGPORT'           | '1543'
+          'GITLAB_OVERRIDE_CI_PGPASSWORD'       | 'secret'
+          'GITLAB_OVERRIDE_CI_PGSSLMODE'        | 'allow'
+          'GITLAB_OVERRIDE_CI_PGSSLKEY'         | 'some_key'
+          'GITLAB_OVERRIDE_CI_PGSSLCERT'        | '/path/to/cert'
+          'GITLAB_OVERRIDE_CI_PGSSLROOTCERT'    | '/path/to/root/cert'
+          'GITLAB_OVERRIDE_CI_PGSSLCRL'         | '/path/to/crl'
+          'GITLAB_OVERRIDE_CI_PGSSLCOMPRESSION' | '1'
         end
 
         with_them do
-          let(:pg_env) { env_variable[/GITLAB_BACKUP_CI_(\w+)/, 1] }
+          let(:pg_env) { env_variable[/GITLAB_(BACKUP|OVERRIDE)_CI_(\w+)/, 1] }
 
           before do
             stub_env(env_variable, overridden_value)

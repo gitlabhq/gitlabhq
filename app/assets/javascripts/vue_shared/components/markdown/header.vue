@@ -473,6 +473,7 @@ export default {
         <toolbar-button
           v-if="!previewMarkdown && !restrictedToolBarItems.includes('attach-file')"
           data-testid="button-attach-file"
+          data-button-type="attach-file"
           :button-title="__('Attach a file or image')"
           icon="paperclip"
           class="gl-mr-3"

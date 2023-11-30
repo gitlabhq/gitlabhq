@@ -16,7 +16,7 @@ module Backup
       sslcompression: 'PGSSLCOMPRESSION'
     }.freeze
 
-    OVERRIDE_PREFIX = "GITLAB_BACKUP_"
+    OVERRIDE_PREFIXES = %w[GITLAB_BACKUP_ GITLAB_OVERRIDE_].freeze
 
     attr_reader :config
 
@@ -31,7 +31,8 @@ module Backup
     private
 
     def configure_model(name)
-      source_model = Gitlab::Database.database_base_models_with_gitlab_shared[name]
+      source_model = Gitlab::Database.database_base_models_with_gitlab_shared[name] ||
+        Gitlab::Database.database_base_models_with_gitlab_shared['main']
 
       @model = backup_model_for(name)
 
@@ -67,14 +68,16 @@ module Backup
         # This enables the use of different PostgreSQL settings in
         # case PgBouncer is used. PgBouncer clears the search path,
         # which wreaks havoc on Rails if connections are reused.
-        override_all = "#{OVERRIDE_PREFIX}#{arg}"
-        override_db = "#{OVERRIDE_PREFIX}#{name.upcase}_#{arg}"
-        val = ENV[override_db].presence || ENV[override_all].presence || config[opt].to_s.presence
+        OVERRIDE_PREFIXES.each do |override_prefix|
+          override_all = "#{override_prefix}#{arg}"
+          override_db = "#{override_prefix}#{name.upcase}_#{arg}"
+          val = ENV[override_db].presence || ENV[override_all].presence || config[opt].to_s.presence
 
-        next unless val
+          next unless val
 
-        db_config[:pg_env][arg] = val
-        db_config[:activerecord][opt] = val
+          db_config[:pg_env][arg] = val
+          db_config[:activerecord][opt] = val
+        end
       end
 
       db_config

@@ -7,40 +7,47 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Storage **(FREE ALL)**
 
-Storage usage statistics are available for projects and namespaces. You can use that information to
-manage storage usage within the applicable quotas.
+All projects on GitLab SaaS have 10 GiB of free storage for their Git repository and Large File Storage (LFS).
 
-Statistics include:
+When a project's repository and LFS exceed 10 GiB, the project is set to a read-only state.
+You cannot push changes to a read-only project. To increase storage of the project's repository and LFS to more than 10 GiB,
+you must [purchase more storage](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer).
 
-- Storage usage across projects in a namespace.
-- Storage usage that exceeds the storage SaaS limit or [self-managed storage quota](../administration/settings/account_and_limit_settings.md#repository-size-limit).
-- Available purchased storage for SaaS.
+GitLab plans to introduce storage limits for namespaces on GitLab SaaS. After these storage limits have been applied,
+storage usage will be calculated across the entire namespace and project storage limits will no longer apply.
 
-Storage and network usage are calculated with the binary measurement system (1024 unit multiples).
-Storage usage is displayed in kibibytes (KiB), mebibytes (MiB),
-or gibibytes (GiB). 1 KiB is 2^10 bytes (1024 bytes),
-1 MiB is 2^20 bytes (1024 kibibytes), 1 GiB is 2^30 bytes (1024 mebibytes).
+The amount of storage and transfer for self-managed instances has no application limits. Administrators are responsible for the underlying infrastructure costs and can set [repository size limits](../administration/settings/account_and_limit_settings.md#repository-size-limit).
 
-NOTE:
-Storage usage labels are being transitioned from `KB` to `KiB`, `MB` to `MiB`, and `GB` to `GiB`. During this transition,
-you might see references to `KB`, `MB`, and `GB` in the UI and documentation.
+## View storage
 
-## View storage usage
+You can view the following statistics for storage usage in projects and namespaces:
+
+- Storage usage that exceeds the GitLab SaaS storage limit or [self-managed storage quota](../administration/settings/account_and_limit_settings.md#repository-size-limit).
+- Available purchased storage for GitLab SaaS.
 
 Prerequisites:
 
 - To view storage usage for a project, you must have at least the Maintainer role for the project or Owner role for the namespace.
 - To view storage usage for a group namespace, you must have the Owner role for the namespace.
 
+To view storage:
+
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. On the left sidebar, select **Settings > Usage Quotas**.
 1. Select the **Storage** tab to see namespace storage usage.
-1. To view storage usage for a project, select one of the projects from the table at the bottom of the **Storage** tab of the **Usage Quotas** page.
-
-The information on the **Usage Quotas** page is updated every 90 minutes.
+1. To view storage usage for a project, in the table at the bottom, select a project. Storage usage is updated every 90 minutes.
 
 If your namespace shows `'Not applicable.'`, push a commit to any project in the
 namespace to recalculate the storage.
+
+Storage and network usage is calculated with the binary measurement system (1024 unit multiples).
+Storage usage is displayed in kibibytes (KiB), mebibytes (MiB),
+or gibibytes (GiB). 1 KiB is 2^10 bytes (1024 bytes),
+1 MiB is 2^20 bytes (1024 kibibytes), and 1 GiB is 2^30 bytes (1024 mebibytes).
+
+NOTE:
+Storage usage labels are being transitioned from `KB` to `KiB`, `MB` to `MiB`, and `GB` to `GiB`. During this transition,
+you might see references to `KB`, `MB`, and `GB` in the UI and documentation.
 
 ### View project fork storage usage **(FREE SAAS)**
 
@@ -56,57 +63,26 @@ The cost factor applies to the project repository, LFS objects, job artifacts, p
 
 The cost factor does not apply to private forks in namespaces on the Free plan.
 
-## Manage storage usage
+## Excess storage usage **(FREE SAAS)**
 
-To manage your storage, if you are a namespace Owner you can [purchase more storage for the namespace](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer).
+Excess storage usage is the amount that exceeds the 10 GiB free storage of a project's repository and LFS. If no purchased storage is available,
+the project is set to a read-only state. You cannot push changes to a read-only project.
 
-Depending on your role, you can also use the following methods to manage or reduce your storage:
+To remove the read-only state, you must [purchase more storage](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer)
+for the namespace. After the purchase has completed, the read-only state is removed and projects are automatically
+restored. The amount of available purchased storage must always
+be greater than zero.
 
-- [Reduce package registry storage](packages/package_registry/reduce_package_registry_storage.md).
-- [Reduce dependency proxy storage](packages/dependency_proxy/reduce_dependency_proxy_storage.md).
-- [Reduce repository size](project/repository/reducing_the_repo_size_using_git.md).
-- [Reduce container registry storage](packages/container_registry/reduce_container_registry_storage.md).
-- [Reduce wiki repository size](../administration/wikis/index.md#reduce-wiki-repository-size).
-- [Manage artifact expiration period](../ci/yaml/index.md#artifactsexpire_in).
-- [Reduce build artifact storage](../ci/jobs/job_artifacts.md#delete-job-log-and-artifacts).
-
-To automate storage usage analysis and management, see the [storage management automation](storage_management_automation.md) documentation.
-
-## Set usage quotas **(FREE SELF)**
-
-There are no application limits on the amount of storage and transfer for self-managed instances. The administrators are responsible for the underlying infrastructure costs. Administrators can set [repository size limits](../administration/settings/account_and_limit_settings.md#repository-size-limit) to manage your repositories’ size.
-
-## Storage limits **(FREE SAAS)**
-
-### Project storage limit
-
-Projects on GitLab SaaS have a 10 GiB storage limit on their Git repository and LFS storage. Limits on project storage
-will be removed before limits are applied to GitLab SaaS namespace storage in the future.
-
-When a project's repository and LFS reaches the quota, the project is set to a read-only state.
-You cannot push changes to a read-only project. To monitor the size of each
-repository in a namespace, including a breakdown for each project,
-[view storage usage](#view-storage-usage). To allow a project's repository and LFS to exceed the free quota
-you must purchase additional storage. For more details, see [Excess storage usage](#excess-storage-usage).
-
-#### Excess storage usage
-
-Excess storage usage is the amount that a project's repository and LFS exceeds the [project storage limit](#project-storage-limit). If no
-purchased storage is available the project is set to a read-only state. You cannot push changes to a read-only project.
-To remove the read-only state you must [purchase more storage](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer)
-for the namespace. When the purchase is completed, read-only projects are automatically restored to their standard state. The
-amount of purchased storage available must always be greater than zero.
-
-The **Storage** tab of the **Usage Quotas** page warns you of the following:
+The **Storage** tab of the **Usage Quotas** page displays the following:
 
 - Purchased storage available is running low.
 - Projects that are at risk of becoming read-only if purchased storage available is zero.
 - Projects that are read-only because purchased storage available is zero. Read-only projects are
   marked with an information icon (**{information-o}**) beside their name.
 
-#### Excess storage example
+### Excess storage example
 
-The following example describes an excess storage scenario for a namespace:
+The following example describes an excess storage scenario for projects in a namespace:
 
 | Repository | Storage used | Excess storage | Quota  | Status               |
 |------------|--------------|----------------|--------|----------------------|
@@ -133,23 +109,47 @@ available decreases. All projects no longer have the read-only status because 40
 | Yellow     | 5 GiB         | 0 GiB           | 10 GiB   | Not read-only     |
 | **Totals** | **45 GiB**    | **10 GiB**      | -       | -                 |
 
-### Namespace storage limit **(FREE SAAS)**
+## Namespace storage limit **(FREE SAAS)**
 
-GitLab plans to enforce a storage limit for namespaces on GitLab SaaS. For more information, see
-the FAQs for the following tiers:
+GitLab plans to introduce the following storage limits per top-level group:
 
-- [Free tier](https://about.gitlab.com/pricing/faq-efficient-free-tier/#storage-limits-on-gitlab-saas-free-tier).
-- [Premium and Ultimate](https://about.gitlab.com/pricing/faq-paid-storage-transfer/).
+| Subscription tier     | Storage limit |
+|-----------------------|---------------|
+| Free                  | 5 GiB          |
+| Premium               | 50 GiB         |
+| Ultimate | 250 GiB <sup>1</sup>        |
 
-Namespaces on GitLab SaaS have a [10 GiB project limit](#project-storage-limit) with a soft limit on
-namespace storage. Soft storage limits are limits that have not yet been enforced by GitLab, and will become
-hard limits after namespace storage limits apply. To avoid your namespace from becoming
-[read-only](../user/read_only_namespaces.md) after namespace storage limits apply,
-you should ensure that your namespace storage adheres to the soft storage limit.
+<html>
+<small>
+  <ol>
+    <li>Applies to GitLab Trial, GitLab for Open Source, GitLab for Education, and GitLab for Startups.</li>
+  </ol>
+</small>
+</html>
 
-Namespace storage limits do not apply to self-managed deployments, but administrators can [manage the repository size](../administration/settings/account_and_limit_settings.md#repository-size-limit).
+If you have a multi-year contract for GitLab Premium or Ultimate, storage limits will not apply until your first renewal after GitLab introduces the namespace storage limits.
 
-Storage types that add to the total namespace storage are:
+Any additional storage you purchase before the introduction of namespace storage limits, including additional storage purchased due to project storage limits, will apply to the top-level group.
+
+Namespaces have a 10 GiB project limit with
+a soft limit on namespace storage. After GitLab applies namespace storage limits,
+soft limits will become hard limits and your namespace will be [read-only](../user/read_only_namespaces.md).
+
+To prevent your namespace from becoming read-only:
+
+- Manage your storage usage.
+- [Purchase more storage](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer).
+- If you are eligible, apply for a [community program subscription](../subscriptions/community_programs.md):
+  - GitLab for Education
+  - GitLab for Open Source
+  - GitLab for Startups
+- If you have GitLab Free, [start a trial](https://about.gitlab.com/free-trial/) or upgrade to [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/), which has higher storage limits and more features.
+- Consider a self-managed subscription, which does not have storage limits.
+- [Talk to an expert](https://page.gitlab.com/usage_limits_help.html) for more information about your options.
+
+### Storage types in namespace storage usage
+
+Storage types that count toward the total namespace storage are:
 
 - Git repository
 - Git LFS
@@ -160,25 +160,33 @@ Storage types that add to the total namespace storage are:
 - Wiki
 - Snippets
 
-If your total namespace storage exceeds the available namespace storage quota, all projects under the namespace become read-only. Your ability to write new data is restricted until the read-only state is removed. For more information, see [Restricted actions](../user/read_only_namespaces.md#restricted-actions).
+### Excess storage notifications **(FREE SAAS)**
 
-To notify you that you have nearly exceeded your namespace storage quota:
+Storage limits are included in GitLab subscription terms but do not apply. At least 60 days before GitLab introduces storage limits,
+GitLab will notify you of namespaces that exceed, or are close to exceeding, the storage limit.
 
-- In the command-line interface, a notification displays after each `git push` action when your namespace has reached between 95% and 100%+ of your namespace storage quota.
-- In the GitLab UI, a notification displays when your namespace has reached between 75% and 100%+ of your namespace storage quota.
-- GitLab sends an email to members with the Owner role to notify them when namespace storage usage is at 70%, 85%, 95%, and 100%.
+- In the command-line interface, a notification displays after each `git push`
+action when your namespace has reached between 95% and 100% of your namespace storage quota.
+- In the GitLab UI, a notification displays when your namespace has reached between
+75% and 100% of your namespace storage quota.
+- GitLab sends an email to members with the Owner role to notify them when namespace
+storage usage is at 70%, 85%, 95%, and 100%.
 
-To prevent exceeding the namespace storage limit, you can:
+## Manage storage usage
 
-- [Manage your storage usage](#manage-storage-usage).
-- If you meet the eligibility requirements, you can apply for:
-  - [GitLab for Education](https://about.gitlab.com/solutions/education/join/)
-  - [GitLab for Open Source](https://about.gitlab.com/solutions/open-source/join/)
-  - [GitLab for Startups](https://about.gitlab.com/solutions/startups/)
-- Consider using a [self-managed instance](../subscriptions/self_managed/index.md) of GitLab, which does not have these limits on the Free tier.
-- [Purchase additional storage](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer) units at $60 per year for 10 GiB of storage.
-- [Start a trial](https://about.gitlab.com/free-trial/) or [upgrade to GitLab Premium or Ultimate](https://about.gitlab.com/pricing/), which include higher limits and features to enable growing teams to ship faster without sacrificing on quality.
-- [Talk to an expert](https://page.gitlab.com/usage_limits_help.html) for more information about your options.
+To manage your storage, if you are a namespace Owner, you can [purchase more storage for the namespace](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer).
+
+Depending on your role, you can also use the following methods to manage or reduce your storage:
+
+- [Reduce package registry storage](packages/package_registry/reduce_package_registry_storage.md).
+- [Reduce dependency proxy storage](packages/dependency_proxy/reduce_dependency_proxy_storage.md).
+- [Reduce repository size](project/repository/reducing_the_repo_size_using_git.md).
+- [Reduce container registry storage](packages/container_registry/reduce_container_registry_storage.md).
+- [Reduce wiki repository size](../administration/wikis/index.md#reduce-wiki-repository-size).
+- [Manage artifact expiration period](../ci/yaml/index.md#artifactsexpire_in).
+- [Reduce build artifact storage](../ci/jobs/job_artifacts.md#delete-job-log-and-artifacts).
+
+To automate storage usage analysis and management, see [storage management automation](storage_management_automation.md).
 
 ## Related Topics
 

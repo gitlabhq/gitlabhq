@@ -410,6 +410,23 @@ To enable group sync:
 1. Add the [required elements](../../user/group/saml_sso/group_sync.md#configure-saml-group-sync) to the SAML configuration block you provide in your [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 1. Configure the [Group Links](../../user/group/saml_sso/group_sync.md#configure-saml-group-links).
 
+### Add users to a tenant instance
+
+Tenant administrators can add Switchboard users to their tenant instance. There are two types of users:
+
+- **Read only**: Users can only view tenant data.
+- **Admin**: Users can edit the tenant configuration and manage users.
+
+To add a new user to your GitLab Dedicated instance:
+
+1. From the **Tenants** page, select **Manage** next to the tenant instance.
+1. From the top of the page, select **Users**.
+1. Select **New user**.
+1. Enter the **Email** and select a **Role** for the user.
+1. Select **Create**.
+
+An invitation to use Switchboard is sent to the user.
+
 ### Access to application logs
 
 GitLab [application logs](../../administration/logs/index.md) are delivered to an S3 bucket in the GitLab tenant account, which can be shared with you. Logs stored in the S3 bucket are retained indefinitely, until the 1 year retention policy is fully enforced. GitLab team members can view more information in this confidential issue:

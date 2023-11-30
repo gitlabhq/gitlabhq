@@ -28,8 +28,13 @@ module ExternalRedirect
       uri_data.site == Gitlab.config.gitlab.url
     end
 
+    def should_handle_url?(url)
+      # note: To avoid lots of redirects, don't allow url to point to self.
+      ::Gitlab::UrlSanitizer.valid_web?(url) && !url.starts_with?(request.base_url + request.path)
+    end
+
     def check_url_param
-      render_404 unless ::Gitlab::UrlSanitizer.valid_web?(url_param)
+      render_404 unless should_handle_url?(url_param)
     end
   end
 end

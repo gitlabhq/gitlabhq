@@ -16,6 +16,10 @@ module Types
         ::Types::WorkItems::WidgetDefinitions::GenericType
       ].freeze
 
+      def self.ce_orphan_types
+        ORPHAN_TYPES
+      end
+
       def self.resolve_type(object, _context)
         if object == ::WorkItems::Widgets::Assignees
           ::Types::WorkItems::WidgetDefinitions::AssigneesType
@@ -24,7 +28,9 @@ module Types
         end
       end
 
-      orphan_types(*ORPHAN_TYPES)
+      orphan_types(*ce_orphan_types)
     end
   end
 end
+
+Types::WorkItems::WidgetDefinitionInterface.prepend_mod

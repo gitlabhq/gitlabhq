@@ -125,4 +125,37 @@ RSpec.describe GitlabSchema.types['Group'] do
       expect { clean_state_query }.not_to exceed_all_query_limit(control)
     end
   end
+
+  describe 'custom emoji' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: group) }
+    let_it_be(:custom_emoji) { create(:custom_emoji, group: group) }
+    let_it_be(:custom_emoji_subgroup) { create(:custom_emoji, group: subgroup) }
+    let(:query) do
+      %(
+        query {
+          group(fullPath: "#{subgroup.full_path}") {
+            customEmoji(includeAncestorGroups: true) {
+              nodes {
+                id
+              }
+            }
+          }
+        }
+      )
+    end
+
+    before_all do
+      group.add_reporter(user)
+    end
+
+    describe 'when includeAncestorGroups is true' do
+      it 'returns emoji from ancestor groups' do
+        result = GitlabSchema.execute(query, context: { current_user: user }).as_json
+
+        expect(result.dig('data', 'group', 'customEmoji', 'nodes').count).to eq(2)
+      end
+    end
+  end
 end

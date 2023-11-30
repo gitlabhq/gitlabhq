@@ -590,6 +590,7 @@ header.navbar-gitlab.super-sidebar-logged-out {
   li.nav-item > a {
     @include gl-text-gray-100;
     @include gl-font-weight-normal;
+    @include gl-font-base;
 
     &:hover,
     &:focus,

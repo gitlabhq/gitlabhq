@@ -1,48 +1,56 @@
 <script>
 import { GlBadge, GlLink, GlLoadingIcon, GlModal, GlSprintf, GlToggle } from '@gitlab/ui';
-import { createAlert, VARIANT_INFO } from '~/alert';
+import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 import getCiCatalogSettingsQuery from '../graphql/queries/get_ci_catalog_settings.query.graphql';
 import catalogResourcesCreate from '../graphql/mutations/catalog_resources_create.mutation.graphql';
+import catalogResourcesDestroy from '../graphql/mutations/catalog_resources_destroy.mutation.graphql';
 
-export const i18n = {
+const i18n = {
   badgeText: __('Experiment'),
   catalogResourceQueryError: s__(
     'CiCatalog|There was a problem fetching the CI/CD Catalog setting.',
   ),
-  catalogResourceMutationError: s__(
-    'CiCatalog|There was a problem marking the project as a CI/CD Catalog resource.',
+  setCatalogResourceMutationError: s__(
+    'CiCatalog|Unable to set project as a CI/CD Catalog resource.',
   ),
-  catalogResourceMutationSuccess: s__('CiCatalog|This project is now a CI/CD Catalog resource.'),
+  removeCatalogResourceMutationError: s__(
+    'CiCatalog|Unable to remove project as a CI/CD Catalog resource.',
+  ),
+  setCatalogResourceMutationSuccess: s__('CiCatalog|This project is now a CI/CD Catalog resource.'),
+  removeCatalogResourceMutationSuccess: s__(
+    'CiCatalog|This project is no longer a CI/CD Catalog resource.',
+  ),
   ciCatalogLabel: s__('CiCatalog|CI/CD Catalog resource'),
   ciCatalogHelpText: s__(
-    'CiCatalog|Mark project as a CI/CD Catalog resource. %{linkStart}What is the CI/CD Catalog?%{linkEnd}',
+    'CiCatalog|Set project as a CI/CD Catalog resource. %{linkStart}What is the CI/CD Catalog?%{linkEnd}',
   ),
   modal: {
     actionPrimary: {
-      text: s__('CiCatalog|Mark project as a CI/CD Catalog resource'),
+      text: s__('CiCatalog|Remove from the CI/CD catalog'),
     },
     actionCancel: {
       text: __('Cancel'),
     },
     body: s__(
-      'CiCatalog|This project will be marked as a CI/CD Catalog resource and will be visible in the CI/CD Catalog. This action is not reversible.',
+      "CiCatalog|The project and any released versions will be removed from the CI/CD Catalog. If you re-enable this toggle, the project's existing releases are not re-added to the catalog. You must %{linkStart}create a new release%{linkEnd}.",
     ),
-    title: s__('CiCatalog|Mark project as a CI/CD Catalog resource'),
+    title: s__('CiCatalog|Remove project from the CI/CD Catalog?'),
   },
   readMeHelpText: s__(
-    'CiCatalog|The project must contain a README.md file and a template.yml file. When enabled, the repository is available in the CI/CD Catalog.',
+    'CiCatalog|The project will be findable in the CI/CD Catalog after the project has at least one release.',
   ),
 };
 
-export const ciCatalogHelpPath = helpPagePath('ci/components/index', {
+const ciCatalogHelpPath = helpPagePath('ci/components/index', {
   anchor: 'components-catalog',
 });
 
+const releasesHelpPath = helpPagePath('user/project/releases/release_cicd_examples');
+
 export default {
-  i18n,
   components: {
     GlBadge,
     GlLink,
@@ -59,7 +67,6 @@ export default {
   },
   data() {
     return {
-      ciCatalogHelpPath,
       isCatalogResource: false,
       showCatalogResourceModal: false,
     };
@@ -81,19 +88,34 @@ export default {
     },
   },
   computed: {
+    successMessage() {
+      return this.isCatalogResource
+        ? this.$options.i18n.setCatalogResourceMutationSuccess
+        : this.$options.i18n.removeCatalogResourceMutationSuccess;
+    },
+    errorMessage() {
+      return this.isCatalogResource
+        ? this.$options.i18n.removeCatalogResourceMutationError
+        : this.$options.i18n.setCatalogResourceMutationError;
+    },
     isLoading() {
       return this.$apollo.queries.isCatalogResource.loading;
     },
   },
   methods: {
-    async markProjectAsCatalogResource() {
+    async toggleCatalogResourceMutation({ isCreating }) {
+      this.showCatalogResourceModal = false;
+
+      const mutation = isCreating ? catalogResourcesCreate : catalogResourcesDestroy;
+      const mutationInput = isCreating ? 'catalogResourcesCreate' : 'catalogResourcesDestroy';
+
       try {
         const {
           data: {
-            catalogResourcesCreate: { errors },
+            [mutationInput]: { errors },
           },
         } = await this.$apollo.mutate({
-          mutation: catalogResourcesCreate,
+          mutation,
           variables: { input: { projectPath: this.fullPath } },
         });
 
@@ -101,23 +123,30 @@ export default {
           throw new Error(errors[0]);
         }
 
-        this.isCatalogResource = true;
-        createAlert({
-          message: this.$options.i18n.catalogResourceMutationSuccess,
-          variant: VARIANT_INFO,
-        });
+        this.isCatalogResource = !this.isCatalogResource;
+        this.$toast.show(this.successMessage);
       } catch (error) {
-        const message = error.message || this.$options.i18n.catalogResourceMutationError;
+        const message = error.message || this.errorMessage;
         createAlert({ message });
       }
-    },
-    onCatalogResourceEnabledToggled() {
-      this.showCatalogResourceModal = true;
     },
     onModalCanceled() {
       this.showCatalogResourceModal = false;
     },
+    onToggleCatalogResource() {
+      if (this.isCatalogResource) {
+        this.showCatalogResourceModal = true;
+      } else {
+        this.toggleCatalogResourceMutation({ isCreating: true });
+      }
+    },
+    unlistCatalogResource() {
+      this.toggleCatalogResourceMutation({ isCreating: false });
+    },
   },
+  i18n,
+  ciCatalogHelpPath,
+  releasesHelpPath,
 };
 </script>
 
@@ -133,32 +162,36 @@ export default {
       </div>
       <gl-sprintf :message="$options.i18n.ciCatalogHelpText">
         <template #link="{ content }">
-          <gl-link :href="ciCatalogHelpPath" target="_blank">{{ content }}</gl-link>
+          <gl-link :href="$options.ciCatalogHelpPath" target="_blank">{{ content }}</gl-link>
         </template>
       </gl-sprintf>
       <gl-toggle
         class="gl-my-2"
-        :disabled="isCatalogResource"
         :value="isCatalogResource"
         :label="$options.i18n.ciCatalogLabel"
         label-position="hidden"
         name="ci_resource_enabled"
-        @change="onCatalogResourceEnabledToggled"
+        data-testid="catalog-resource-toggle"
+        @change="onToggleCatalogResource"
       />
       <div class="gl-text-secondary">
         {{ $options.i18n.readMeHelpText }}
       </div>
       <gl-modal
         :visible="showCatalogResourceModal"
-        modal-id="mark-as-catalog-resource"
+        modal-id="unlist-catalog-resource"
         size="sm"
         :title="$options.i18n.modal.title"
         :action-cancel="$options.i18n.modal.actionCancel"
         :action-primary="$options.i18n.modal.actionPrimary"
         @canceled="onModalCanceled"
-        @primary="markProjectAsCatalogResource"
+        @primary="unlistCatalogResource"
       >
-        {{ $options.i18n.modal.body }}
+        <gl-sprintf :message="$options.i18n.modal.body">
+          <template #link="{ content }">
+            <gl-link :href="$options.releasesHelpPath" target="_blank">{{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
       </gl-modal>
     </div>
   </div>

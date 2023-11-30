@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Global Catalog', :js, feature_category: :pipeline_composition do
+RSpec.describe 'CI/CD Catalog', :js, feature_category: :pipeline_composition do
   let_it_be(:namespace) { create(:group) }
   let_it_be(:user) { create(:user) }
 

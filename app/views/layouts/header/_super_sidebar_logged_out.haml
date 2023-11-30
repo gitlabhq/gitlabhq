@@ -42,6 +42,6 @@
           %li.nav-item.gl-mr-3
             = link_to _('Sign in'), new_session_path(:user, redirect_to_referer: 'yes')
           - if allow_signup?
-            %li
+            %li.nav-item
               = render Pajamas::ButtonComponent.new(href: new_user_registration_path, variant: :confirm) do
                 = Gitlab.com? ? _('Get free trial') : _('Register')

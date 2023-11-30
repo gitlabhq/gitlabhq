@@ -82,6 +82,14 @@ describe('Markdown field header component', () => {
     });
   });
 
+  it('attach file button should have data-button-type attribute', () => {
+    const attachButton = findToolbarButtonByProp('icon', 'paperclip');
+
+    // Used for dropzone_input.js as `clickable` property
+    // to prevent triggers upload file by clicking on the edge of textarea
+    expect(attachButton.attributes('data-button-type')).toBe('attach-file');
+  });
+
   it('hides markdown preview when previewMarkdown is false', () => {
     expect(findPreviewToggle().text()).toBe('Preview');
   });

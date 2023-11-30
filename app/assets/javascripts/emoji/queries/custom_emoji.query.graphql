@@ -1,7 +1,7 @@
 query getCustomEmoji($groupPath: ID!) {
   group(fullPath: $groupPath) {
     id
-    customEmoji {
+    customEmoji(includeAncestorGroups: true) {
       nodes {
         id
         name

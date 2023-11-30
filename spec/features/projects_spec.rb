@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project', feature_category: :groups_and_projects do
+RSpec.describe 'Project', feature_category: :source_code_management do
   include ProjectForksHelper
   include MobileHelpers
 

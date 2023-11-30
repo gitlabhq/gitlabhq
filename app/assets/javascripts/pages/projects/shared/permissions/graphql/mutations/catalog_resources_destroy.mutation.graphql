@@ -1,0 +1,5 @@
+mutation catalogResourcesDestroy($input: CatalogResourcesDestroyInput!) {
+  catalogResourcesDestroy(input: $input) {
+    errors
+  }
+}

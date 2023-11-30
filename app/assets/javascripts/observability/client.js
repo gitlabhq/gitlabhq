@@ -281,6 +281,64 @@ async function fetchMetrics(metricsUrl, { filters = {}, limit } = {}) {
   }
 }
 
+async function fetchMetric() {
+  // TODO https://gitlab.com/gitlab-org/opstrace/opstrace/-/work_items/2545 Load metric from API
+  /* eslint-disable @gitlab/require-i18n-strings */
+  return [
+    {
+      name: 'container_cpu_usage_seconds_total',
+      description: 'System disk operations',
+      type: 'Gauge',
+      unit: 'gb',
+      attributes: {
+        beta_kubernetes_io_arch: 'amd64',
+        beta_kubernetes_io_instance_type: 'n1-standard-4',
+        beta_kubernetes_io_os: 'linux',
+        env: 'production',
+      },
+      values: [
+        [1700118610000 * 1e6, 0.25595267476015443],
+        [1700118660000 * 1e6, 0.1881374588830907],
+        [1700118720000 * 1e6, 0.28915416028993485],
+        [1700118780000 * 1e6, 0.29304883966696416],
+        [1700118840000 * 1e6, 0.2657727031708884],
+        [1700118900000 * 1e6, 0.24415948639572538],
+        [1700118960000 * 1e6, 0.32778875228243076],
+        [1700119020000 * 1e6, 0.9658100987444416],
+        [1700119080000 * 1e6, 1.0604918827864345],
+        [1700119140000 * 1e6, 1.0205790879854122],
+        [1700119200000 * 1e6, 0.868291210099945],
+      ],
+    },
+    {
+      name: 'container_cpu_usage_seconds_total',
+      description: 'System disk operations',
+      type: 'Gauge',
+      unit: 'gb',
+      attributes: {
+        beta_kubernetes_io_arch: 'amd64',
+        beta_kubernetes_io_instance_type: 'n1-standard-4',
+        beta_kubernetes_io_os: 'linux',
+        env: 'staging',
+      },
+      values: [
+        [1700118600000 * 1e6, 0.3559526747601544],
+        [1700118660000 * 1e6, 0.1881374588830907],
+        [1700118720000 * 1e6, 0.7891541602899349],
+        [1700118780000 * 1e6, 0.6930488396669642],
+        [1700118840000 * 1e6, 0.2959927031708884],
+        [1700118900000 * 1e6, 0.34415948639572536],
+        [1700118960000 * 1e6, 0.39778875228243077],
+        [1700119020000 * 1e6, 1.2658100987444416],
+        [1700119080000 * 1e6, 3.0604918827864345],
+        [1700119140000 * 1e6, 3.0205790879854124],
+        [1700119200000 * 1e6, 0.888291210099945],
+      ],
+    },
+  ];
+  /* eslint-enable @gitlab/require-i18n-strings */
+}
+
 export function buildClient(config) {
   if (!config) {
     throw new Error('No options object provided'); // eslint-disable-line @gitlab/require-i18n-strings
@@ -316,5 +374,6 @@ export function buildClient(config) {
     fetchServices: () => fetchServices(servicesUrl),
     fetchOperations: (serviceName) => fetchOperations(operationsUrl, serviceName),
     fetchMetrics: (options) => fetchMetrics(metricsUrl, options),
+    fetchMetric: (metricId) => fetchMetric(metricId),
   };
 }
