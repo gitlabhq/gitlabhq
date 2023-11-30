@@ -372,6 +372,7 @@
 .ai-patterns: &ai-patterns
   - "{,ee/,jh/}lib/gitlab/llm/**/*"
   - "{,ee/,jh/}{,spec/}lib/gitlab/llm/**/*"
+  - "{,ee/,jh/}lib/gitlab/duo/**/*"
 
 # DB patterns + .ci-patterns
 .db-patterns: &db-patterns
@@ -2166,7 +2167,7 @@
       when: manual
       allow_failure: true
 
-.rails:rules:ee-gitlab-duo-chat-qa-fast:
+.rails:rules:ee-gitlab-duo-chat-always:
   rules:
     - !reference [".rails:rules:ee-gitlab-duo-chat-base", rules]
     - <<: *if-merge-request

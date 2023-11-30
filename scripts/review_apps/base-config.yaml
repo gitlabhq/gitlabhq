@@ -16,8 +16,6 @@ global:
   image:
     pullPolicy: Always
   ingress:
-    annotations:
-      external-dns.alpha.kubernetes.io/ttl: 10
     configureCertmanager: false
     tls:
       secretName: review-apps-tls

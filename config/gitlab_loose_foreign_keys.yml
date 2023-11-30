@@ -302,6 +302,10 @@ pages_deployments:
   - table: p_ci_builds
     column: ci_build_id
     on_delete: async_nullify
+project_authorizations:
+  - table: users
+    column: user_id
+    on_delete: async_delete
 projects:
   - table: organizations
     column: organization_id

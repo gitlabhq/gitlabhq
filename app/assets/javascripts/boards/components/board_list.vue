@@ -70,7 +70,8 @@ export default {
     },
     boardItems: {
       type: Array,
-      required: true,
+      required: false, // This is temporary while we remove :apollo_board FF
+      default: () => [],
     },
     filterParams: {
       type: Object,

@@ -1,7 +1,15 @@
 - page_title _("IDE"), @project.full_name
 - add_page_specific_style 'page_bundles/web_ide_loader'
 
+// The block below is for the Web IDE
+// See: https://gitlab.com/groups/gitlab-org/-/epics/7683
 - unless use_new_web_ide?
+  - @breadcrumb_title = _("IDE")
+  - @breadcrumb_link = '#'
+  - @no_container = true
+  - @content_wrapper_class = 'pb-0'
+  - add_to_breadcrumbs(s_('Navigation|Your work'), root_path)
+  - nav 'your_work' # Couldn't get the `project` nav to work easily
   - add_page_specific_style 'page_bundles/build'
   - add_page_specific_style 'page_bundles/ide'
 

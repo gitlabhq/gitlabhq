@@ -1,11 +1,15 @@
 import { GlFormCheckbox } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
+import Vuex from 'vuex';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-
 import JiraTriggerFields from '~/integrations/edit/components/jira_trigger_fields.vue';
+
+Vue.use(Vuex);
 
 describe('JiraTriggerFields', () => {
   let wrapper;
+  let store;
 
   const defaultProps = {
     initialTriggerCommit: false,
@@ -14,11 +18,15 @@ describe('JiraTriggerFields', () => {
   };
 
   const createComponent = (props, isInheriting = false) => {
-    wrapper = mountExtended(JiraTriggerFields, {
-      propsData: { ...defaultProps, ...props },
-      computed: {
+    store = new Vuex.Store({
+      getters: {
         isInheriting: () => isInheriting,
       },
+    });
+
+    wrapper = mountExtended(JiraTriggerFields, {
+      propsData: { ...defaultProps, ...props },
+      store,
     });
   };
 

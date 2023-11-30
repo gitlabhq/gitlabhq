@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Group issues page', feature_category: :groups_and_projects do
+  include Features::SortingHelpers
   include FilteredSearchHelpers
   include DragTo
 
@@ -180,8 +181,7 @@ RSpec.describe 'Group issues page', feature_category: :groups_and_projects do
     end
 
     def select_manual_sort
-      click_button 'Created date'
-      click_button 'Manual'
+      pajamas_sort_by 'Manual', from: 'Created date'
       wait_for_requests
     end
 

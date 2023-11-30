@@ -216,8 +216,8 @@ def add_test_to_specs(definition)
   spec_test = <<-EOF.strip_heredoc.indent(2)
     context 'with loose foreign key on #{definition.from_table}.#{definition.column}' do
       it_behaves_like 'cleanup by a loose foreign key' do
-        let!(:parent) { create(:#{definition.to_table.singularize}) }
-        let!(:model) { create(:#{definition.from_table.singularize}, #{definition.column.delete_suffix("_id").singularize}: parent) }
+        let_it_be(:parent) { create(:#{definition.to_table.singularize}) }
+        let_it_be(:model) { create(:#{definition.from_table.singularize}, #{definition.column.delete_suffix("_id").singularize}: parent) }
       end
     end
   EOF

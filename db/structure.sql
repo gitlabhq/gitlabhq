@@ -12269,6 +12269,7 @@ CREATE TABLE application_settings (
     pre_receive_secret_detection_enabled boolean DEFAULT false NOT NULL,
     can_create_organization boolean DEFAULT true NOT NULL,
     web_ide_oauth_application_id integer,
+    instance_level_ai_beta_features_enabled boolean DEFAULT false NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -38408,9 +38409,6 @@ ALTER TABLE ONLY zoom_meetings
 
 ALTER TABLE ONLY gpg_signatures
     ADD CONSTRAINT fk_rails_11ae8cb9a7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY project_authorizations
-    ADD CONSTRAINT fk_rails_11e7aa3ed9 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY pm_affected_packages
     ADD CONSTRAINT fk_rails_1279c1b9a1 FOREIGN KEY (pm_advisory_id) REFERENCES pm_advisories(id) ON DELETE CASCADE;

@@ -16,6 +16,7 @@ import {
   NAMESPACE_STORAGE_TYPES,
   TOTAL_USAGE_DEFAULT_TEXT,
 } from '~/usage_quotas/storage/constants';
+import getCostFactoredProjectStorageStatistics from 'ee_else_ce/usage_quotas/storage/queries/cost_factored_project_storage.query.graphql';
 import getProjectStorageStatistics from 'ee_else_ce/usage_quotas/storage/queries/project_storage.query.graphql';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import {
@@ -38,7 +39,10 @@ describe('ProjectStorageApp', () => {
       response = jest.fn().mockResolvedValue(mockedValue);
     }
 
-    const requestHandlers = [[getProjectStorageStatistics, response]];
+    const requestHandlers = [
+      [getProjectStorageStatistics, response],
+      [getCostFactoredProjectStorageStatistics, response],
+    ];
 
     return createMockApollo(requestHandlers);
   };
@@ -185,6 +189,32 @@ describe('ProjectStorageApp', () => {
         },
         { formattedValue: '292.97 KiB', id: 'wiki', label: 'Wiki', value: 300000 },
       ]);
+    });
+  });
+
+  describe('when displayCostFactoredStorageSizeOnProjectPages feature flag is enabled', () => {
+    let mockApollo;
+    beforeEach(async () => {
+      mockApollo = createMockApolloProvider({
+        mockedValue: mockGetProjectStorageStatisticsGraphQLResponse,
+      });
+      createComponent({
+        mockApollo,
+        provide: {
+          glFeatures: {
+            displayCostFactoredStorageSizeOnProjectPages: true,
+          },
+        },
+      });
+      await waitForPromises();
+    });
+
+    it('renders correct total usage', () => {
+      const expectedValue = numberToHumanSize(
+        mockGetProjectStorageStatisticsGraphQLResponse.data.project.statistics.storageSize,
+        1,
+      );
+      expect(findUsagePercentage().text()).toBe(expectedValue);
     });
   });
 });

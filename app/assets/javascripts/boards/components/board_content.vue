@@ -3,8 +3,6 @@ import { GlAlert } from '@gitlab/ui';
 import { sortBy } from 'lodash';
 import produce from 'immer';
 import Draggable from 'vuedraggable';
-// eslint-disable-next-line no-restricted-imports
-import { mapState, mapActions } from 'vuex';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import { s__ } from '~/locale';
 import { defaultSortableOptions } from '~/sortable/constants';
@@ -29,15 +27,7 @@ export default {
     EpicsSwimlanes: () => import('ee_component/boards/components/epics_swimlanes.vue'),
     GlAlert,
   },
-  inject: [
-    'boardType',
-    'canAdminList',
-    'isIssueBoard',
-    'isEpicBoard',
-    'disabled',
-    'issuableType',
-    'isApolloBoard',
-  ],
+  inject: ['boardType', 'canAdminList', 'isIssueBoard', 'isEpicBoard', 'disabled', 'issuableType'],
   props: {
     boardId: {
       type: String,
@@ -51,7 +41,7 @@ export default {
       type: Boolean,
       required: true,
     },
-    boardListsApollo: {
+    boardLists: {
       type: Object,
       required: false,
       default: () => {},
@@ -77,12 +67,11 @@ export default {
     };
   },
   computed: {
-    ...mapState(['boardLists', 'error']),
     boardListsById() {
-      return this.isApolloBoard ? this.boardListsApollo : this.boardLists;
+      return this.boardLists;
     },
     boardListsToUse() {
-      const lists = this.isApolloBoard ? this.boardListsApollo : this.boardLists;
+      const lists = this.boardLists;
       return sortBy([...Object.values(lists)], 'position');
     },
     canDragColumns() {
@@ -109,11 +98,10 @@ export default {
       return this.canDragColumns ? options : {};
     },
     errorToDisplay() {
-      return this.apolloError || this.error || null;
+      return this.apolloError || null;
     },
   },
   methods: {
-    ...mapActions(['moveList', 'unsetError']),
     afterFormEnters() {
       const el = this.canDragColumns ? this.$refs.list.$el : this.$refs.list;
       el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' });
@@ -126,11 +114,7 @@ export default {
       }, flashAnimationDuration);
     },
     dismissError() {
-      if (this.isApolloBoard) {
-        setError({ message: null, captureError: false });
-      } else {
-        this.unsetError();
-      }
+      setError({ message: null, captureError: false });
     },
     async updateListPosition({
       item: {
@@ -139,17 +123,6 @@ export default {
       newIndex,
       to: { children },
     }) {
-      if (!this.isApolloBoard) {
-        this.moveList({
-          item: {
-            dataset: { listId: movedListId, draggableItemType },
-          },
-          newIndex,
-          to: { children },
-        });
-        return;
-      }
-
       if (draggableItemType !== DraggableItemTypes.list) {
         return;
       }
@@ -199,7 +172,7 @@ export default {
               __typename: 'UpdateBoardListPayload',
               errors: [],
               list: {
-                ...this.boardListsApollo[movedListId],
+                ...this.boardLists[movedListId],
                 position: targetPosition,
               },
             },
@@ -240,7 +213,7 @@ export default {
         :board-id="boardId"
         :list="list"
         :filters="filterParams"
-        :highlighted-lists-apollo="highlightedLists"
+        :highlighted-lists="highlightedLists"
         :data-draggable-item-type="$options.draggableItemTypes.list"
         :class="{ 'gl-display-none! gl-sm-display-inline-block!': addColumnFormVisible }"
         @setActiveList="$emit('setActiveList', $event)"

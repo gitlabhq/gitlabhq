@@ -4,6 +4,8 @@ import { sprintf } from '~/locale';
 import { updateRepositorySize } from '~/api/projects_api';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import SectionedPercentageBar from '~/usage_quotas/components/sectioned_percentage_bar.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import getCostFactoredProjectStorageStatistics from 'ee_else_ce/usage_quotas/storage/queries/cost_factored_project_storage.query.graphql';
 import getProjectStorageStatistics from 'ee_else_ce/usage_quotas/storage/queries/project_storage.query.graphql';
 import {
   ERROR_MESSAGE,
@@ -32,10 +34,15 @@ export default {
     ProjectStorageDetail,
     SectionedPercentageBar,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['projectPath'],
   apollo: {
     project: {
-      query: getProjectStorageStatistics,
+      query() {
+        return this.glFeatures?.displayCostFactoredStorageSizeOnProjectPages
+          ? getCostFactoredProjectStorageStatistics
+          : getProjectStorageStatistics;
+      },
       variables() {
         return {
           fullPath: this.projectPath,

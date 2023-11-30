@@ -1,13 +1,5 @@
 <script>
-import {
-  GlFilteredSearch,
-  GlButtonGroup,
-  GlButton,
-  GlDropdown,
-  GlDropdownItem,
-  GlFormCheckbox,
-  GlTooltipDirective,
-} from '@gitlab/ui';
+import { GlFilteredSearch, GlSorting, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
 
 import RecentSearchesStorageKeys from 'ee_else_ce/filtered_search/recent_searches_storage_keys';
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
@@ -22,10 +14,7 @@ import { filterEmptySearchTerm, uniqueTokens } from './filtered_search_utils';
 export default {
   components: {
     GlFilteredSearch,
-    GlButtonGroup,
-    GlButton,
-    GlDropdown,
-    GlDropdownItem,
+    GlSorting,
     GlFormCheckbox,
   },
   directives: {
@@ -118,8 +107,7 @@ export default {
       recentSearchesPromise: null,
       recentSearches: [],
       filterValue: this.initialFilterValue,
-      selectedSortOption: this.sortOptions[0],
-      selectedSortDirection: SORT_DIRECTION.descending,
+      ...this.getInitialSort(),
     };
   },
   computed: {
@@ -141,15 +129,14 @@ export default {
         {},
       );
     },
-    sortDirectionIcon() {
-      return this.selectedSortDirection === SORT_DIRECTION.ascending
-        ? 'sort-lowest'
-        : 'sort-highest';
+    transformedSortOptions() {
+      return this.sortOptions.map(({ id: value, title: text }) => ({ value, text }));
     },
-    sortDirectionTooltip() {
-      return this.selectedSortDirection === SORT_DIRECTION.ascending
-        ? __('Sort direction: Ascending')
-        : __('Sort direction: Descending');
+    selectedSortDirection() {
+      return this.sortDirectionAscending ? SORT_DIRECTION.ascending : SORT_DIRECTION.descending;
+    },
+    selectedSortOption() {
+      return this.sortOptions.find((sortOption) => sortOption.id === this.sortById);
     },
     /**
      * This prop fixes a behaviour affecting GlFilteredSearch
@@ -184,14 +171,13 @@ export default {
         this.filterValue = newValue;
       }
     },
-    initialSortBy(newValue) {
-      if (this.syncFilterAndSort) {
-        this.updateSelectedSortValues(newValue);
+    initialSortBy(newInitialSortBy) {
+      if (this.syncFilterAndSort && newInitialSortBy) {
+        this.updateSelectedSortValues();
       }
     },
   },
   created() {
-    this.updateSelectedSortValues(this.initialSortBy);
     if (this.recentSearchesStorageKey) this.setupRecentSearch();
   },
   methods: {
@@ -273,15 +259,12 @@ export default {
         return filter;
       });
     },
-    handleSortOptionClick(sortBy) {
-      this.selectedSortOption = sortBy;
-      this.$emit('onSort', sortBy.sortDirection[this.selectedSortDirection]);
+    handleSortByChange(sortById) {
+      this.sortById = sortById;
+      this.$emit('onSort', this.selectedSortOption.sortDirection[this.selectedSortDirection]);
     },
-    handleSortDirectionClick() {
-      this.selectedSortDirection =
-        this.selectedSortDirection === SORT_DIRECTION.ascending
-          ? SORT_DIRECTION.descending
-          : SORT_DIRECTION.ascending;
+    handleSortDirectionChange(isAscending) {
+      this.sortDirectionAscending = isAscending;
       this.$emit('onSort', this.selectedSortOption.sortDirection[this.selectedSortDirection]);
     },
     handleHistoryItemSelected(filters) {
@@ -328,18 +311,30 @@ export default {
       const cleared = true;
       this.$emit('onFilter', [], cleared);
     },
-    updateSelectedSortValues(sort) {
-      if (!sort) {
-        return;
+    updateSelectedSortValues() {
+      Object.assign(this, this.getInitialSort());
+    },
+    getInitialSort() {
+      for (const sortOption of this.sortOptions) {
+        if (sortOption.sortDirection.ascending === this.initialSortBy) {
+          return {
+            sortById: sortOption.id,
+            sortDirectionAscending: true,
+          };
+        }
+
+        if (sortOption.sortDirection.descending === this.initialSortBy) {
+          return {
+            sortById: sortOption.id,
+            sortDirectionAscending: false,
+          };
+        }
       }
 
-      this.selectedSortOption = this.sortOptions.find(
-        (sortBy) =>
-          sortBy.sortDirection.ascending === sort || sortBy.sortDirection.descending === sort,
-      );
-      this.selectedSortDirection = Object.keys(this.selectedSortOption?.sortDirection || {}).find(
-        (key) => this.selectedSortOption.sortDirection[key] === sort,
-      );
+      return {
+        sortById: this.sortOptions[0]?.id,
+        sortDirectionAscending: false,
+      };
     },
   },
 };
@@ -390,25 +385,14 @@ export default {
         </template>
       </template>
     </gl-filtered-search>
-    <gl-button-group v-if="selectedSortOption" class="sort-dropdown-container d-flex">
-      <gl-dropdown :text="selectedSortOption.title" :right="true" class="w-100">
-        <gl-dropdown-item
-          v-for="sortBy in sortOptions"
-          :key="sortBy.id"
-          is-check-item
-          :is-checked="sortBy.id === selectedSortOption.id"
-          @click="handleSortOptionClick(sortBy)"
-          >{{ sortBy.title }}</gl-dropdown-item
-        >
-      </gl-dropdown>
-      <gl-button
-        v-gl-tooltip
-        :title="sortDirectionTooltip"
-        :aria-label="sortDirectionTooltip"
-        :icon="sortDirectionIcon"
-        class="flex-shrink-1"
-        @click="handleSortDirectionClick"
-      />
-    </gl-button-group>
+    <gl-sorting
+      v-if="selectedSortOption"
+      :sort-options="transformedSortOptions"
+      :sort-by="sortById"
+      :is-ascending="sortDirectionAscending"
+      class="sort-dropdown-container"
+      @sortByChange="handleSortByChange"
+      @sortDirectionChange="handleSortDirectionChange"
+    />
   </div>
 </template>

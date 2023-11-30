@@ -11,7 +11,6 @@ module ExternalRedirect
         redirect_to url_param
       else
         render layout: 'fullscreen', locals: {
-          minimal: true,
           url: url_param
         }
       end

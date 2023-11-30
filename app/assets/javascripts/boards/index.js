@@ -24,7 +24,7 @@ const apolloProvider = new VueApollo({
 
 function mountBoardApp(el) {
   const { boardId, groupId, fullPath, rootPath } = el.dataset;
-  const isApolloBoard = window.gon?.features?.apolloBoards;
+  const isApolloBoard = true;
 
   const rawFilterParams = queryToObject(window.location.search, { gatherArrays: true });
 

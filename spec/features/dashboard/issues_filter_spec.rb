@@ -111,8 +111,7 @@ RSpec.describe 'Dashboard Issues filtering', :js, feature_category: :team_planni
     end
 
     it 'keeps sorting issues after visiting Projects Issues page' do
-      click_button 'Created date'
-      click_button 'Due date'
+      pajamas_sort_by 'Due date', from: 'Created date'
 
       visit project_issues_path(project)
 

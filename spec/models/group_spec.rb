@@ -391,8 +391,15 @@ RSpec.describe Group, feature_category: :groups_and_projects do
           expect(internal_group.errors[:visibility_level]).to include('private is not allowed since this group contains projects with higher visibility.')
         end
 
-        it 'is valid if higher visibility project is deleted' do
+        it 'is valid if higher visibility project is currently undergoing deletion' do
           internal_project.update_attribute(:pending_delete, true)
+          internal_group.visibility_level = Gitlab::VisibilityLevel::PRIVATE
+
+          expect(internal_group).to be_valid
+        end
+
+        it 'is valid if higher visibility project is pending deletion via marked_for_deletion_at' do
+          internal_project.update_attribute(:marked_for_deletion_at, Time.current)
           internal_group.visibility_level = Gitlab::VisibilityLevel::PRIVATE
 
           expect(internal_group).to be_valid

@@ -68,15 +68,6 @@ RSpec.describe Event, feature_category: :user_profile do
         end.not_to change { project.last_repository_updated_at }
       end
     end
-
-    describe 'after_create UserInteractedProject.track' do
-      let(:event) { build(:push_event, project: project, author: project.first_owner) }
-
-      it 'passes event to UserInteractedProject.track' do
-        expect(UserInteractedProject).to receive(:track).with(event)
-        event.save!
-      end
-    end
   end
 
   describe 'validations' do

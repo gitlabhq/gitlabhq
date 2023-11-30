@@ -2,14 +2,6 @@
 
 :root {
   &.ui-green {
-    @include gitlab-theme(
-      $theme-green-200,
-      $theme-green-500,
-      $theme-green-700,
-      $theme-green-900,
-      $white
-    );
-
     .page-with-super-sidebar {
       @include gitlab-theme-super-sidebar(
         $theme-green-50,

@@ -1,7 +1,5 @@
 import { GlModal } from '@gitlab/ui';
 import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -22,8 +20,6 @@ jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn().mockName('visitUrlMock'),
 }));
 jest.mock('~/boards/eventhub');
-
-Vue.use(Vuex);
 
 const currentBoard = {
   id: 'gid://gitlab/Board/1',
@@ -54,14 +50,6 @@ describe('BoardForm', () => {
   const findFormWrapper = () => wrapper.findByTestId('board-form-wrapper');
   const findDeleteConfirmation = () => wrapper.findByTestId('delete-confirmation-message');
   const findInput = () => wrapper.find('#board-new-name');
-
-  const setBoardMock = jest.fn();
-
-  const store = new Vuex.Store({
-    actions: {
-      setBoard: setBoardMock,
-    },
-  });
 
   const defaultHandlers = {
     createBoardMutationHandler: jest.fn().mockResolvedValue({
@@ -107,7 +95,6 @@ describe('BoardForm', () => {
         isProjectBoard: false,
         ...provide,
       },
-      store,
       attachTo: document.body,
     });
   };
@@ -220,7 +207,7 @@ describe('BoardForm', () => {
         });
 
         await waitForPromises();
-        expect(setBoardMock).toHaveBeenCalledTimes(1);
+        expect(wrapper.emitted('addBoard')).toHaveLength(1);
       });
 
       it('sets error in state if GraphQL mutation fails', async () => {
@@ -239,30 +226,7 @@ describe('BoardForm', () => {
         expect(requestHandlers.createBoardMutationHandler).toHaveBeenCalled();
 
         await waitForPromises();
-        expect(setBoardMock).not.toHaveBeenCalled();
         expect(cacheUpdates.setError).toHaveBeenCalled();
-      });
-
-      describe('when Apollo boards FF is on', () => {
-        it('calls a correct GraphQL mutation and emits addBoard event when creating a board', async () => {
-          createComponent({
-            props: { canAdminBoard: true, currentPage: formType.new },
-            provide: { isApolloBoard: true },
-          });
-
-          fillForm();
-
-          await waitForPromises();
-
-          expect(requestHandlers.createBoardMutationHandler).toHaveBeenCalledWith({
-            input: expect.objectContaining({
-              name: 'test',
-            }),
-          });
-
-          await waitForPromises();
-          expect(wrapper.emitted('addBoard')).toHaveLength(1);
-        });
       });
     });
   });
@@ -314,8 +278,12 @@ describe('BoardForm', () => {
       });
 
       await waitForPromises();
-      expect(setBoardMock).toHaveBeenCalledTimes(1);
       expect(global.window.location.href).not.toContain('?group_by=epic');
+      expect(eventHub.$emit).toHaveBeenCalledTimes(1);
+      expect(eventHub.$emit).toHaveBeenCalledWith('updateBoard', {
+        id: 'gid://gitlab/Board/321',
+        webPath: 'test-path',
+      });
     });
 
     it('calls GraphQL mutation with correct parameters when issues are grouped by epic', async () => {
@@ -335,7 +303,6 @@ describe('BoardForm', () => {
       });
 
       await waitForPromises();
-      expect(setBoardMock).toHaveBeenCalledTimes(1);
       expect(global.window.location.href).toContain('?group_by=epic');
     });
 
@@ -355,35 +322,7 @@ describe('BoardForm', () => {
       expect(requestHandlers.updateBoardMutationHandler).toHaveBeenCalled();
 
       await waitForPromises();
-      expect(setBoardMock).not.toHaveBeenCalled();
       expect(cacheUpdates.setError).toHaveBeenCalled();
-    });
-
-    describe('when Apollo boards FF is on', () => {
-      it('calls a correct GraphQL mutation and emits updateBoard event when updating a board', async () => {
-        setWindowLocation('https://test/boards/1');
-
-        createComponent({
-          props: { canAdminBoard: true, currentPage: formType.edit },
-          provide: { isApolloBoard: true },
-        });
-        findInput().trigger('keyup.enter', { metaKey: true });
-
-        await waitForPromises();
-
-        expect(requestHandlers.updateBoardMutationHandler).toHaveBeenCalledWith({
-          input: expect.objectContaining({
-            id: currentBoard.id,
-          }),
-        });
-
-        await waitForPromises();
-        expect(eventHub.$emit).toHaveBeenCalledTimes(1);
-        expect(eventHub.$emit).toHaveBeenCalledWith('updateBoard', {
-          id: 'gid://gitlab/Board/321',
-          webPath: 'test-path',
-        });
-      });
     });
   });
 
@@ -427,7 +366,6 @@ describe('BoardForm', () => {
           destroyBoardMutationHandler: jest.fn().mockRejectedValue('Houston, we have a problem'),
         },
       });
-      jest.spyOn(store, 'dispatch').mockImplementation(() => {});
 
       findModal().vm.$emit('primary');
 

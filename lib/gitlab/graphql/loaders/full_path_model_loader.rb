@@ -19,7 +19,6 @@ module Gitlab
             scope = args[:key]
             # this logic cannot be placed in the NamespaceResolver due to N+1
             scope = scope.without_project_namespaces if scope == Namespace
-            # `with_route` avoids an N+1 calculating full_path
             scope = scope.where_full_path_in(full_paths)
 
             scope.each do |model_instance|

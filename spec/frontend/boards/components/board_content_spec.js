@@ -3,14 +3,11 @@ import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
 import Draggable from 'vuedraggable';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import EpicsSwimlanes from 'ee_component/boards/components/epics_swimlanes.vue';
-import getters from 'ee_else_ce/boards/stores/getters';
 import * as cacheUpdates from '~/boards/graphql/cache_updates';
 import BoardColumn from '~/boards/components/board_column.vue';
 import BoardContent from '~/boards/components/board_content.vue';
@@ -27,11 +24,6 @@ import {
 } from '../mock_data';
 
 Vue.use(VueApollo);
-Vue.use(Vuex);
-
-const actions = {
-  moveList: jest.fn(),
-};
 
 describe('BoardContent', () => {
   let wrapper;
@@ -41,26 +33,9 @@ describe('BoardContent', () => {
   const errorMessage = 'Failed to update list';
   const updateListHandlerFailure = jest.fn().mockRejectedValue(new Error(errorMessage));
 
-  const defaultState = {
-    isShowingEpicsSwimlanes: false,
-    boardLists: mockListsById,
-    error: undefined,
-    issuableType: 'issue',
-  };
-
-  const createStore = (state = defaultState) => {
-    return new Vuex.Store({
-      actions,
-      getters,
-      state,
-    });
-  };
-
   const createComponent = ({
-    state,
     props = {},
     canAdminList = true,
-    isApolloBoard = false,
     issuableType = 'issue',
     isIssueBoard = true,
     isEpicBoard = false,
@@ -75,17 +50,13 @@ describe('BoardContent', () => {
       data: boardListsQueryResponse.data,
     });
 
-    const store = createStore({
-      ...defaultState,
-      ...state,
-    });
     wrapper = shallowMount(BoardContent, {
       apolloProvider: mockApollo,
       propsData: {
         boardId: 'gid://gitlab/Board/1',
         filterParams: {},
         isSwimlanesOn: false,
-        boardListsApollo: mockListsById,
+        boardLists: mockListsById,
         listQueryVariables,
         addColumnFormVisible: false,
         ...props,
@@ -98,9 +69,7 @@ describe('BoardContent', () => {
         isEpicBoard,
         isGroupBoard: true,
         disabled: false,
-        isApolloBoard,
       },
-      store,
       stubs: {
         BoardContentSidebar: stubComponent(BoardContentSidebar, {
           template: '<div></div>',
@@ -114,13 +83,26 @@ describe('BoardContent', () => {
   const findDraggable = () => wrapper.findComponent(Draggable);
   const findError = () => wrapper.findComponent(GlAlert);
 
+  const moveList = () => {
+    const movableListsOrder = [mockLists[0].id, mockLists[1].id];
+
+    findDraggable().vm.$emit('end', {
+      item: { dataset: { listId: mockLists[0].id, draggableItemType: DraggableItemTypes.list } },
+      newIndex: 1,
+      to: {
+        children: movableListsOrder.map((listId) => ({ dataset: { listId } })),
+      },
+    });
+  };
+
   beforeEach(() => {
     cacheUpdates.setError = jest.fn();
   });
 
   describe('default', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       createComponent();
+      await waitForPromises();
     });
 
     it('renders a BoardColumn component per list', () => {
@@ -145,6 +127,40 @@ describe('BoardContent', () => {
 
     it('does not show the "add column" form', () => {
       expect(findBoardAddNewColumn().exists()).toBe(false);
+    });
+
+    it('reorders lists', async () => {
+      moveList();
+      await waitForPromises();
+
+      expect(updateListHandler).toHaveBeenCalled();
+    });
+
+    it('sets error on reorder lists failure', async () => {
+      createComponent({ handler: updateListHandlerFailure });
+
+      moveList();
+      await waitForPromises();
+
+      expect(cacheUpdates.setError).toHaveBeenCalled();
+    });
+
+    describe('when error is passed', () => {
+      beforeEach(async () => {
+        createComponent({ props: { apolloError: 'Error' } });
+        await waitForPromises();
+      });
+
+      it('displays error banner', () => {
+        expect(findError().exists()).toBe(true);
+      });
+
+      it('dismisses error', async () => {
+        findError().vm.$emit('dismiss');
+        await nextTick();
+
+        expect(cacheUpdates.setError).toHaveBeenCalledWith({ message: null, captureError: false });
+      });
     });
   });
 
@@ -175,67 +191,6 @@ describe('BoardContent', () => {
 
     it('does not render draggable component', () => {
       expect(findDraggable().exists()).toBe(false);
-    });
-  });
-
-  describe('when Apollo boards FF is on', () => {
-    const moveList = () => {
-      const movableListsOrder = [mockLists[0].id, mockLists[1].id];
-
-      findDraggable().vm.$emit('end', {
-        item: { dataset: { listId: mockLists[0].id, draggableItemType: DraggableItemTypes.list } },
-        newIndex: 1,
-        to: {
-          children: movableListsOrder.map((listId) => ({ dataset: { listId } })),
-        },
-      });
-    };
-
-    beforeEach(async () => {
-      createComponent({ isApolloBoard: true });
-      await waitForPromises();
-    });
-
-    it('renders a BoardColumn component per list', () => {
-      expect(wrapper.findAllComponents(BoardColumn)).toHaveLength(mockLists.length);
-    });
-
-    it('renders BoardContentSidebar', () => {
-      expect(wrapper.findComponent(BoardContentSidebar).exists()).toBe(true);
-    });
-
-    it('reorders lists', async () => {
-      moveList();
-      await waitForPromises();
-
-      expect(updateListHandler).toHaveBeenCalled();
-    });
-
-    it('sets error on reorder lists failure', async () => {
-      createComponent({ isApolloBoard: true, handler: updateListHandlerFailure });
-
-      moveList();
-      await waitForPromises();
-
-      expect(cacheUpdates.setError).toHaveBeenCalled();
-    });
-
-    describe('when error is passed', () => {
-      beforeEach(async () => {
-        createComponent({ isApolloBoard: true, props: { apolloError: 'Error' } });
-        await waitForPromises();
-      });
-
-      it('displays error banner', () => {
-        expect(findError().exists()).toBe(true);
-      });
-
-      it('dismisses error', async () => {
-        findError().vm.$emit('dismiss');
-        await nextTick();
-
-        expect(cacheUpdates.setError).toHaveBeenCalledWith({ message: null, captureError: false });
-      });
     });
   });
 

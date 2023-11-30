@@ -2,8 +2,6 @@ import { GlLabel, GlLoadingIcon } from '@gitlab/ui';
 import { range } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -13,7 +11,6 @@ import BoardCardInner from '~/boards/components/board_card_inner.vue';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import eventHub from '~/boards/eventhub';
-import defaultStore from '~/boards/stores';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { mockLabelList, mockIssue, mockIssueFullPath, mockIssueDirectNamespace } from './mock_data';
@@ -21,7 +18,6 @@ import { mockLabelList, mockIssue, mockIssueFullPath, mockIssueDirectNamespace }
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/boards/eventhub');
 
-Vue.use(Vuex);
 Vue.use(VueApollo);
 
 describe('Board card component', () => {
@@ -43,23 +39,11 @@ describe('Board card component', () => {
   let wrapper;
   let issue;
   let list;
-  let store;
 
   const findIssuableBlockedIcon = () => wrapper.findComponent(IssuableBlockedIcon);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findHiddenIssueIcon = () => wrapper.findByTestId('hidden-icon');
   const findWorkItemIcon = () => wrapper.findComponent(WorkItemTypeIcon);
-
-  const performSearchMock = jest.fn();
-
-  const createStore = () => {
-    store = new Vuex.Store({
-      actions: {
-        performSearch: performSearchMock,
-      },
-      state: defaultStore.state,
-    });
-  };
 
   const mockApollo = createMockApollo();
 
@@ -72,7 +56,6 @@ describe('Board card component', () => {
     });
 
     wrapper = mountExtended(BoardCardInner, {
-      store,
       apolloProvider: mockApollo,
       propsData: {
         list,
@@ -94,7 +77,6 @@ describe('Board card component', () => {
         allowSubEpics: false,
         issuableType: TYPE_ISSUE,
         isGroupBoard,
-        isApolloBoard: false,
       },
     });
   };
@@ -108,12 +90,7 @@ describe('Board card component', () => {
       weight: 1,
     };
 
-    createStore();
     createWrapper({ props: { item: issue, list } });
-  });
-
-  afterEach(() => {
-    store = null;
   });
 
   it('renders issue title', () => {
@@ -159,7 +136,6 @@ describe('Board card component', () => {
   });
 
   it('does not render item reference path', () => {
-    createStore();
     createWrapper({ isGroupBoard: false });
 
     expect(wrapper.find('.board-card-number').text()).not.toContain(mockIssueDirectNamespace);
@@ -460,10 +436,6 @@ describe('Board card component', () => {
         expect(updateHistory).toHaveBeenCalledTimes(1);
       });
 
-      it('dispatches performSearch vuex action', () => {
-        expect(performSearchMock).toHaveBeenCalledTimes(1);
-      });
-
       it('emits updateTokens event', () => {
         expect(eventHub.$emit).toHaveBeenCalledTimes(1);
         expect(eventHub.$emit).toHaveBeenCalledWith('updateTokens');
@@ -478,10 +450,6 @@ describe('Board card component', () => {
 
       it('does not call updateHistory', () => {
         expect(updateHistory).not.toHaveBeenCalled();
-      });
-
-      it('does not dispatch performSearch vuex action', () => {
-        expect(performSearchMock).not.toHaveBeenCalled();
       });
 
       it('does not emit updateTokens event', () => {

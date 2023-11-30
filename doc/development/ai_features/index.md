@@ -50,8 +50,14 @@ All AI features are experimental.
 
 ## Test AI features locally
 
-NOTE:
-Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for help automating the following section.
+**One-line setup**
+
+```shell
+# Replace the <test-group-name> by the group name you want to enable GitLab Duo features. If the group doesn't exist, it creates a new one.
+RAILS_ENV=development bundle exec rake gitlab:duo:setup['<test-group-name>']
+```
+
+**Manual way**
 
 1. Enable the required general feature flags:
 

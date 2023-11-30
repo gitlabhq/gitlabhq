@@ -9,6 +9,9 @@
 @import './ide_themes/solarized-dark';
 @import './ide_themes/monokai';
 
+// This whole file is for the legacy Web IDE
+// See: https://gitlab.com/groups/gitlab-org/-/epics/7683
+
 $search-list-icon-width: 18px;
 $ide-activity-bar-width: 60px;
 $ide-context-header-padding: 10px;
@@ -17,6 +20,10 @@ $ide-tree-padding: $gl-padding;
 $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 $ide-commit-row-height: 32px;
 $ide-commit-header-height: 48px;
+
+.web-ide-loader {
+  padding-top: 1rem;
+}
 
 .project-refs-form,
 .project-refs-target-form {
@@ -517,7 +524,6 @@ $ide-commit-header-height: 48px;
 
 .ide-empty-state {
   display: flex;
-  height: 100vh;
   align-items: center;
   justify-content: center;
   background-color: var(--ide-empty-state-background, transparent);
@@ -526,6 +532,7 @@ $ide-commit-header-height: 48px;
 .ide {
   overflow: hidden;
   flex: 1;
+  height: calc(100vh - var(--top-bar-height))
 }
 
 .ide-commit-list-container {

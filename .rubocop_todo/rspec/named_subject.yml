@@ -2858,7 +2858,6 @@ RSpec/NamedSubject:
     - 'spec/models/uploads/fog_spec.rb'
     - 'spec/models/uploads/local_spec.rb'
     - 'spec/models/user_custom_attribute_spec.rb'
-    - 'spec/models/user_interacted_project_spec.rb'
     - 'spec/models/user_spec.rb'
     - 'spec/models/user_status_spec.rb'
     - 'spec/models/users/credit_card_validation_spec.rb'

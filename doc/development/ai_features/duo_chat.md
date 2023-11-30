@@ -125,6 +125,11 @@ The following CI jobs for GitLab project run the rspecs tagged with `real_ai_req
   The job is always run and not allowed to fail. Although there's a chance that the QA test still might fail,
   it is cheap and fast to run and intended to prevent a regression in the QA test helpers.
 
+- `rspec-ee unit gitlab-duo pg14`:
+  This job runs tests to ensure that the GitLab Duo features are functional without running into system errors.
+  The job is always run and not allowed to fail.
+  This job does NOT conduct evaluations. The quality of the feature is tested in the other jobs such as QA jobs.
+
 ### Management of credentials and API keys for CI jobs
 
 All API keys required to run the rspecs should be [masked](../../ci/variables/index.md#mask-a-cicd-variable)

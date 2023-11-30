@@ -1,7 +1,5 @@
 <script>
 import { pickBy, isEmpty, mapValues } from 'lodash';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
 import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { updateHistory, setUrlParams, queryToObject } from '~/lib/utils/url_utility';
@@ -31,7 +29,7 @@ export default {
     search: __('Search'),
   },
   components: { FilteredSearch },
-  inject: ['initialFilterParams', 'isApolloBoard'],
+  inject: ['initialFilterParams'],
   props: {
     isSwimlanesOn: {
       type: Boolean,
@@ -353,7 +351,6 @@ export default {
     eventHub.$off('updateTokens', this.updateTokens);
   },
   methods: {
-    ...mapActions(['performSearch']),
     formattedFilterParams() {
       const rawFilterParams = queryToObject(window.location.search, { gatherArrays: true });
       const filtersCopy = convertObjectPropsToCamelCase(rawFilterParams, {});
@@ -374,11 +371,7 @@ export default {
         replace: true,
       });
 
-      if (this.isApolloBoard) {
-        this.$emit('setFilters', this.formattedFilterParams());
-      } else {
-        this.performSearch();
-      }
+      this.$emit('setFilters', this.formattedFilterParams());
     },
     getFilterParams(filters = []) {
       const notFilters = filters.filter((item) => item.value.operator === '!=');

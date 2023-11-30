@@ -1,13 +1,9 @@
-- minimal = local_assigns.fetch(:minimal, false)
 !!! 5
 %html{ class: [user_application_theme, page_class], lang: I18n.locale }
   = render "layouts/head"
   %body{ class: "#{user_tab_width} #{@body_class} fullscreen-layout", data: { page: body_data_page } }
     = render 'peek/bar'
     = header_message
-    - unless minimal
-      = render partial: "layouts/header/default", locals: { project: @project, group: @group }
-      .mobile-overlay
     .hide-when-top-nav-responsive-open.gl--flex-full.gl-h-full{ class: nav ? ["layout-page", page_with_sidebar_class, "gl-mt-0!"]: '' }
       - if defined?(nav) && nav
         = render "layouts/nav/sidebar/#{nav}"
@@ -19,6 +15,4 @@
           = render "layouts/flash", flash_container_no_margin: true
         .content-wrapper{ id: "content-body", class: "d-flex flex-column align-items-stretch gl-p-0" }
           = yield
-    - unless minimal
-      = render "layouts/nav/top_nav_responsive", class: "gl-flex-grow-1 gl-overflow-y-auto"
     = footer_message

@@ -1,6 +1,4 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters } from 'vuex';
 import { omit } from 'lodash';
 import { refreshCurrentPage, queryToObject } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
@@ -33,11 +31,10 @@ export default {
     'isGroupBoard',
     'issuableType',
     'boardType',
-    'isApolloBoard',
   ],
   data() {
     return {
-      boardListsApollo: {},
+      boardLists: {},
       activeListId: '',
       boardId: this.initialBoardId,
       filterParams: { ...this.initialFilterParams },
@@ -59,19 +56,13 @@ export default {
           this.setActiveId('');
         }
       },
-      skip() {
-        return !this.isApolloBoard;
-      },
     },
-    boardListsApollo: {
+    boardLists: {
       query() {
         return listsQuery[this.issuableType].query;
       },
       variables() {
         return this.listQueryVariables;
-      },
-      skip() {
-        return !this.isApolloBoard;
       },
       update(data) {
         const { lists } = data[this.boardType].board;
@@ -91,7 +82,6 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['isSidebarOpen']),
     listQueryVariables() {
       return {
         ...(this.isIssueBoard && {
@@ -107,13 +97,10 @@ export default {
       return (gon?.licensed_features?.swimlanes && this.isShowingEpicsSwimlanes) ?? false;
     },
     isAnySidebarOpen() {
-      if (this.isApolloBoard) {
-        return this.activeBoardItem?.id || this.activeListId;
-      }
-      return this.isSidebarOpen;
+      return this.activeBoardItem?.id || this.activeListId;
     },
     activeList() {
-      return this.activeListId ? this.boardListsApollo[this.activeListId] : undefined;
+      return this.activeListId ? this.boardLists[this.activeListId] : undefined;
     },
     formattedFilterParams() {
       return filterVariables({
@@ -134,7 +121,7 @@ export default {
   },
   methods: {
     refetchLists() {
-      this.$apollo.queries.boardListsApollo.refetch();
+      this.$apollo.queries.boardLists.refetch();
     },
     setActiveId(id) {
       this.activeListId = id;
@@ -167,14 +154,14 @@ export default {
       :add-column-form-visible="addColumnFormVisible"
       :is-swimlanes-on="isSwimlanesOn"
       :filter-params="formattedFilterParams"
-      :board-lists-apollo="boardListsApollo"
+      :board-lists="boardLists"
       :apollo-error="error"
       :list-query-variables="listQueryVariables"
       @setActiveList="setActiveId"
       @setAddColumnFormVisibility="addColumnFormVisible = $event"
     />
     <board-settings-sidebar
-      v-if="!isApolloBoard || activeList"
+      v-if="activeList"
       :list="activeList"
       :list-id="activeListId"
       :board-id="boardId"

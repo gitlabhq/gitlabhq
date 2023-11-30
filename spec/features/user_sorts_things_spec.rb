@@ -25,8 +25,7 @@ RSpec.describe "User sorts things", :js do
 
     visit(project_issues_path(project))
 
-    click_button s_('SortOptions|Created date')
-    click_button sort_option
+    pajamas_sort_by sort_option, from: s_('SortOptions|Created date')
 
     visit(project_path(project))
     visit(project_issues_path(project))
@@ -39,7 +38,7 @@ RSpec.describe "User sorts things", :js do
 
     visit(project_merge_requests_path(project))
 
-    pajamas_sort_by(sort_option)
+    pajamas_sort_by sort_option, from: s_('SortOptions|Created date')
 
     visit(assigned_mrs_dashboard_path)
 

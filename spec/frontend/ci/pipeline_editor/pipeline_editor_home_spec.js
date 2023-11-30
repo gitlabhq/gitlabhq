@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlButton, GlModal } from '@gitlab/ui';
+import { GlModal } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import CommitSection from '~/ci/pipeline_editor/components/commit/commit_section.vue';
@@ -60,7 +61,7 @@ describe('Pipeline editor home wrapper', () => {
   const findPipelineEditorFileTree = () => wrapper.findComponent(PipelineEditorFileTree);
   const findPipelineEditorHeader = () => wrapper.findComponent(PipelineEditorHeader);
   const findPipelineEditorTabs = () => wrapper.findComponent(PipelineEditorTabs);
-  const findFileTreeBtn = () => wrapper.findByTestId('file-tree-toggle');
+  const findPipelineEditorFileNav = () => wrapper.findComponent(PipelineEditorFileNav);
 
   const clickHelpBtn = async () => {
     await findPipelineEditorDrawer().vm.$emit('switch-drawer', EDITOR_APP_DRAWER_HELP);
@@ -279,24 +280,16 @@ describe('Pipeline editor home wrapper', () => {
 
   describe('file tree', () => {
     const toggleFileTree = async () => {
-      await findFileTreeBtn().vm.$emit('click');
+      findPipelineEditorFileNav().vm.$emit('toggle-file-tree');
+      await nextTick();
     };
 
-    describe('button toggle', () => {
+    describe('file navigation', () => {
       beforeEach(() => {
-        createComponent({
-          stubs: {
-            GlButton,
-            PipelineEditorFileNav,
-          },
-        });
+        createComponent({});
       });
 
-      it('shows button toggle', () => {
-        expect(findFileTreeBtn().exists()).toBe(true);
-      });
-
-      it('toggles the drawer on button click', async () => {
+      it('toggles the drawer on `toggle-file-tree` event', async () => {
         await toggleFileTree();
 
         expect(findPipelineEditorFileTree().exists()).toBe(true);

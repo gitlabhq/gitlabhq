@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe "Admin Runners", feature_category: :runner_fleet do
+  include Features::SortingHelpers
   include Features::RunnersHelpers
   include Spec::Support::Helpers::ModalHelpers
 
@@ -480,8 +481,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
           end
         end
 
-        click_on 'Created date' # Open "sort by" dropdown
-        click_on 'Last contact'
+        pajamas_sort_by 'Last contact', from: 'Created date'
         click_on 'Sort direction: Descending'
 
         within_testid('runner-list') do

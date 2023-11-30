@@ -2387,8 +2387,8 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
   context 'with loose foreign key on organization_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
-      let!(:parent) { create(:organization) }
-      let!(:model) { create(:namespace, organization: parent) }
+      let_it_be(:parent) { create(:organization) }
+      let_it_be(:model) { create(:namespace, organization: parent) }
     end
   end
 end

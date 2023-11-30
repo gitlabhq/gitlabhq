@@ -8,8 +8,6 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { sortBy } from 'lodash';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
 import boardCardInner from 'ee_else_ce/boards/mixins/board_card_inner';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { updateHistory } from '~/lib/utils/url_utility';
@@ -51,7 +49,6 @@ export default {
     'isEpicBoard',
     'issuableType',
     'isGroupBoard',
-    'isApolloBoard',
   ],
   props: {
     item: {
@@ -187,7 +184,6 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['performSearch']),
     setError,
     isIndexLessThanlimit(index) {
       return index < this.limitBeforeCounter;
@@ -225,9 +221,6 @@ export default {
         updateHistory({
           url: `${filterPath}${filter}`,
         });
-        if (!this.isApolloBoard) {
-          this.performSearch();
-        }
         eventHub.$emit('updateTokens');
       }
     },

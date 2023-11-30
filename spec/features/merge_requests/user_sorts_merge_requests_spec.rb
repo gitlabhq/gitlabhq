@@ -23,7 +23,7 @@ RSpec.describe 'User sorts merge requests', :js, feature_category: :code_review_
   end
 
   it 'keeps the sort option' do
-    pajamas_sort_by(s_('SortOptions|Milestone'))
+    pajamas_sort_by(s_('SortOptions|Milestone'), from: s_('SortOptions|Created date'))
 
     visit(merge_requests_dashboard_path(assignee_username: user.username))
 
@@ -49,7 +49,7 @@ RSpec.describe 'User sorts merge requests', :js, feature_category: :code_review_
   it 'separates remember sorting with issues', :js do
     create(:issue, project: project)
 
-    pajamas_sort_by(s_('SortOptions|Milestone'))
+    pajamas_sort_by(s_('SortOptions|Milestone'), from: s_('SortOptions|Created date'))
 
     visit(project_issues_path(project))
 
@@ -66,7 +66,7 @@ RSpec.describe 'User sorts merge requests', :js, feature_category: :code_review_
     end
 
     it 'sorts by popularity' do
-      pajamas_sort_by(s_('SortOptions|Popularity'))
+      pajamas_sort_by(s_('SortOptions|Popularity'), from: s_('SortOptions|Created date'))
 
       page.within('.mr-list') do
         page.within('li.merge-request:nth-child(1)') do

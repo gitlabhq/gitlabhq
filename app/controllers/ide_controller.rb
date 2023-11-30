@@ -24,7 +24,7 @@ class IdeController < ApplicationController
       @fork_info = fork_info(project, params[:branch])
     end
 
-    render layout: 'fullscreen', locals: { minimal: helpers.use_new_web_ide? }
+    render layout: helpers.use_new_web_ide? ? 'fullscreen' : 'application'
   end
 
   private

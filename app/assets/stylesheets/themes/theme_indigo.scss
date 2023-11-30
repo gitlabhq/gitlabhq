@@ -2,14 +2,6 @@
 
 :root {
   &.ui-indigo {
-    @include gitlab-theme(
-      $theme-indigo-200,
-      $theme-indigo-500,
-      $theme-indigo-700,
-      $theme-indigo-900,
-      $white
-    );
-
     .page-with-super-sidebar {
       @include gitlab-theme-super-sidebar(
         $theme-indigo-50,

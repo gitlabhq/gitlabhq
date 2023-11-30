@@ -220,9 +220,6 @@ class User < MainClusterwide::ApplicationRecord
   has_many :project_authorizations, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_many :authorized_projects, through: :project_authorizations, source: :project
 
-  has_many :user_interacted_projects
-  has_many :project_interactions, through: :user_interacted_projects, source: :project, class_name: 'Project'
-
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent

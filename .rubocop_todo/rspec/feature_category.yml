@@ -4754,7 +4754,6 @@ RSpec/FeatureCategory:
     - 'spec/models/user_custom_attribute_spec.rb'
     - 'spec/models/user_detail_spec.rb'
     - 'spec/models/user_highest_role_spec.rb'
-    - 'spec/models/user_interacted_project_spec.rb'
     - 'spec/models/user_mentions/commit_user_mention_spec.rb'
     - 'spec/models/user_mentions/issue_user_mention_spec.rb'
     - 'spec/models/user_mentions/merge_request_user_mention_spec.rb'

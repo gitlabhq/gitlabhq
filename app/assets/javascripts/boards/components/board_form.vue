@@ -1,9 +1,6 @@
 <script>
 import { GlModal, GlAlert } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { visitUrl, updateHistory, getParameterByName } from '~/lib/utils/url_utility';
+import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import eventHub from '~/boards/eventhub';
 import { formType } from '../constants';
@@ -59,9 +56,6 @@ export default {
       default: false,
     },
     isProjectBoard: {
-      default: false,
-    },
-    isApolloBoard: {
       default: false,
     },
   },
@@ -184,7 +178,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setBoard']),
     setError,
     isFocusMode() {
       return Boolean(document.querySelector('.content-wrapper > .js-focus-mode-board.is-focused'));
@@ -227,23 +220,12 @@ export default {
       } else {
         try {
           const board = await this.createOrUpdateBoard();
-          if (this.isApolloBoard) {
-            if (this.board.id) {
-              eventHub.$emit('updateBoard', board);
-            } else {
-              this.$emit('addBoard', board);
-            }
+          if (this.board.id) {
+            eventHub.$emit('updateBoard', board);
           } else {
-            this.setBoard(board);
+            this.$emit('addBoard', board);
           }
           this.cancel();
-
-          if (!this.isApolloBoard) {
-            const param = getParameterByName('group_by')
-              ? `?group_by=${getParameterByName('group_by')}`
-              : '';
-            updateHistory({ url: `${this.boardBaseUrl}/${getIdFromGraphQLId(board.id)}${param}` });
-          }
         } catch (error) {
           setError({ error, message: this.$options.i18n.saveErrorMessage });
         } finally {

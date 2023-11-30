@@ -4,17 +4,15 @@ import { nextTick } from 'vue';
 import { listObj } from 'jest/boards/mock_data';
 import BoardColumn from '~/boards/components/board_column.vue';
 import { ListType } from '~/boards/constants';
-import { createStore } from '~/boards/stores';
 
 describe('Board Column Component', () => {
   let wrapper;
-  let store;
 
-  const initStore = () => {
-    store = createStore();
-  };
-
-  const createComponent = ({ listType = ListType.backlog, collapsed = false } = {}) => {
+  const createComponent = ({
+    listType = ListType.backlog,
+    collapsed = false,
+    highlightedLists = [],
+  } = {}) => {
     const listMock = {
       ...listObj,
       listType,
@@ -27,14 +25,11 @@ describe('Board Column Component', () => {
     }
 
     wrapper = shallowMount(BoardColumn, {
-      store,
       propsData: {
         list: listMock,
         boardId: 'gid://gitlab/Board/1',
         filters: {},
-      },
-      provide: {
-        isApolloBoard: false,
+        highlightedLists,
       },
     });
   };
@@ -43,10 +38,6 @@ describe('Board Column Component', () => {
   const isCollapsed = () => wrapper.classes('is-collapsed');
 
   describe('Given different list types', () => {
-    beforeEach(() => {
-      initStore();
-    });
-
     it('is expandable when List Type is `backlog`', () => {
       createComponent({ listType: ListType.backlog });
 
@@ -70,40 +61,11 @@ describe('Board Column Component', () => {
 
   describe('highlighting', () => {
     it('scrolls to column when highlighted', async () => {
-      createComponent();
-
-      store.state.highlightedLists.push(listObj.id);
+      createComponent({ highlightedLists: [listObj.id] });
 
       await nextTick();
 
       expect(wrapper.element.scrollIntoView).toHaveBeenCalled();
-    });
-  });
-
-  describe('on mount', () => {
-    beforeEach(() => {
-      initStore();
-      jest.spyOn(store, 'dispatch').mockImplementation();
-    });
-
-    describe('when list is collapsed', () => {
-      it('does not call fetchItemsForList when', async () => {
-        createComponent({ collapsed: true });
-
-        await nextTick();
-
-        expect(store.dispatch).toHaveBeenCalledTimes(0);
-      });
-    });
-
-    describe('when the list is not collapsed', () => {
-      it('calls fetchItemsForList when', async () => {
-        createComponent({ collapsed: false });
-
-        await nextTick();
-
-        expect(store.dispatch).toHaveBeenCalledWith('fetchItemsForList', { listId: 300 });
-      });
     });
   });
 });

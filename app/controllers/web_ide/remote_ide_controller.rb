@@ -17,7 +17,7 @@ module WebIde
     def index
       return render_404 unless Feature.enabled?(:vscode_web_ide, current_user)
 
-      render layout: 'fullscreen', locals: { minimal: true, data: root_element_data }
+      render layout: 'fullscreen', locals: { data: root_element_data }
     end
 
     private

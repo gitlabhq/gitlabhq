@@ -31,7 +31,6 @@ export default {
     'fullPath',
     'boardType',
     'isEpicBoard',
-    'isApolloBoard',
   ],
   props: {
     boardId: {
@@ -62,9 +61,6 @@ export default {
           fullPath: this.fullPath,
           boardId: this.boardId,
         };
-      },
-      skip() {
-        return !this.isApolloBoard;
       },
       update(data) {
         const { board } = data.workspace;

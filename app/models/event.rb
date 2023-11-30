@@ -79,7 +79,6 @@ class Event < ApplicationRecord
   # Callbacks
   after_create :reset_project_activity
   after_create :set_last_repository_updated_at, if: :push_action?
-  after_create ->(event) { UserInteractedProject.track(event) }
 
   # Scopes
   scope :recent, -> { reorder(id: :desc) }

@@ -326,7 +326,6 @@ Gitlab/NamespacedClass:
     - 'app/models/user_custom_attribute.rb'
     - 'app/models/user_detail.rb'
     - 'app/models/user_highest_role.rb'
-    - 'app/models/user_interacted_project.rb'
     - 'app/models/user_mention.rb'
     - 'app/models/user_preference.rb'
     - 'app/models/user_status.rb'

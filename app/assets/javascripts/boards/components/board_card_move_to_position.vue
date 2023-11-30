@@ -1,7 +1,5 @@
 <script>
 import { GlDisclosureDropdown } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapState } from 'vuex';
 import Tracking from '~/tracking';
 import {
   BOARD_CARD_MOVE_TO_POSITIONS_OPTIONS,
@@ -15,7 +13,6 @@ export default {
     GlDisclosureDropdown,
   },
   mixins: [Tracking.mixin()],
-  inject: ['isApolloBoard'],
   props: {
     item: {
       type: Object,
@@ -37,16 +34,12 @@ export default {
     },
   },
   computed: {
-    ...mapState(['pageInfoByListId']),
     tracking() {
       return {
         category: 'boards:list',
         label: 'move_to_position',
         property: `type_card`,
       };
-    },
-    listHasNextPage() {
-      return this.pageInfoByListId[this.list.id]?.hasNextPage;
     },
     itemIdentifier() {
       return `${this.item.id}-${this.item.iid}-${this.index}`;
@@ -59,7 +52,6 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['moveItem']),
     moveToStart() {
       this.track('click_toggle_button', {
         label: 'move_to_start',
@@ -85,20 +77,7 @@ export default {
       });
     },
     moveToPosition({ positionInList }) {
-      if (this.isApolloBoard) {
-        this.$emit('moveToPosition', positionInList);
-      } else {
-        this.moveItem({
-          itemId: this.item.id,
-          itemIid: this.item.iid,
-          itemPath: this.item.referencePath,
-          fromListId: this.list.id,
-          toListId: this.list.id,
-          positionInList,
-          atIndex: this.index,
-          allItemsLoadedInList: !this.listHasNextPage,
-        });
-      }
+      this.$emit('moveToPosition', positionInList);
     },
     selectMoveAction({ text }) {
       if (text === BOARD_CARD_MOVE_TO_POSITIONS_START_OPTION) {

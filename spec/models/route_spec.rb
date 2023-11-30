@@ -311,8 +311,8 @@ RSpec.describe Route do
 
   context 'with loose foreign key on routes.namespace_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
-      let!(:parent) { create(:namespace) }
-      let!(:model) { parent.route }
+      let_it_be(:parent) { create(:namespace) }
+      let_it_be(:model) { parent.route }
     end
   end
 end

@@ -17,8 +17,6 @@ RSpec.describe IdeController, feature_category: :web_ide do
   let_it_be(:creator) { project.creator }
   let_it_be(:other_user) { create(:user) }
 
-  let_it_be(:top_nav_partial) { 'layouts/header/_default' }
-
   let(:user) { creator }
 
   before do
@@ -156,27 +154,27 @@ RSpec.describe IdeController, feature_category: :web_ide do
         end
       end
 
-      # This indirectly tests that `minimal: true` was passed to the fullscreen layout
-      describe 'layout' do
-        where(:ff_state, :expect_top_nav) do
-          false | true
-          true  | false
+      describe 'legacy Web IDE' do
+        before do
+          stub_feature_flags(vscode_web_ide: false)
         end
 
-        with_them do
-          before do
-            stub_feature_flags(vscode_web_ide: ff_state)
+        it 'uses application layout' do
+          subject
 
-            subject
-          end
+          expect(response).to render_template('layouts/application')
+        end
+      end
 
-          it 'handles rendering top nav' do
-            if expect_top_nav
-              expect(response).to render_template(top_nav_partial)
-            else
-              expect(response).not_to render_template(top_nav_partial)
-            end
-          end
+      describe 'vscode IDE' do
+        before do
+          stub_feature_flags(vscode_web_ide: true)
+        end
+
+        it 'uses fullscreen layout' do
+          subject
+
+          expect(response).to render_template('layouts/fullscreen')
         end
       end
     end

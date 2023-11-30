@@ -1,7 +1,4 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import BoardFilteredSearch from '~/boards/components/board_filtered_search.vue';
 import { updateHistory } from '~/lib/utils/url_utility';
 import {
@@ -20,9 +17,6 @@ import {
 import FilteredSearchBarRoot from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import UserToken from '~/vue_shared/components/filtered_search_bar/tokens/user_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
-import { createStore } from '~/boards/stores';
-
-Vue.use(Vuex);
 
 jest.mock('~/lib/utils/url_utility', () => ({
   updateHistory: jest.fn(),
@@ -32,7 +26,6 @@ jest.mock('~/lib/utils/url_utility', () => ({
 
 describe('BoardFilteredSearch', () => {
   let wrapper;
-  let store;
   const tokens = [
     {
       icon: 'labels',
@@ -63,15 +56,12 @@ describe('BoardFilteredSearch', () => {
   ];
 
   const createComponent = ({ initialFilterParams = {}, props = {}, provide = {} } = {}) => {
-    store = createStore();
     wrapper = shallowMount(BoardFilteredSearch, {
       provide: {
         initialFilterParams,
         fullPath: '',
-        isApolloBoard: false,
         ...provide,
       },
-      store,
       propsData: {
         ...props,
         tokens,
@@ -84,8 +74,6 @@ describe('BoardFilteredSearch', () => {
   describe('default', () => {
     beforeEach(() => {
       createComponent();
-
-      jest.spyOn(store, 'dispatch').mockImplementation();
     });
 
     it('passes the correct tokens to FilteredSearch', () => {
@@ -93,12 +81,6 @@ describe('BoardFilteredSearch', () => {
     });
 
     describe('when onFilter is emitted', () => {
-      it('calls performSearch', () => {
-        findFilteredSearch().vm.$emit('onFilter', [{ value: { data: '' } }]);
-
-        expect(store.dispatch).toHaveBeenCalledWith('performSearch');
-      });
-
       it('calls historyPushState', () => {
         findFilteredSearch().vm.$emit('onFilter', [{ value: { data: 'searchQuery' } }]);
 
@@ -108,6 +90,18 @@ describe('BoardFilteredSearch', () => {
           url: 'http://test.host/',
         });
       });
+    });
+
+    it('emits setFilters and updates URL when onFilter is emitted', () => {
+      findFilteredSearch().vm.$emit('onFilter', [{ value: { data: '' } }]);
+
+      expect(updateHistory).toHaveBeenCalledWith({
+        title: '',
+        replace: true,
+        url: 'http://test.host/',
+      });
+
+      expect(wrapper.emitted('setFilters')).toHaveLength(1);
     });
   });
 
@@ -130,8 +124,6 @@ describe('BoardFilteredSearch', () => {
   describe('when searching', () => {
     beforeEach(() => {
       createComponent();
-
-      jest.spyOn(store, 'dispatch').mockImplementation();
     });
 
     it('sets the url params to the correct results', () => {
@@ -151,7 +143,6 @@ describe('BoardFilteredSearch', () => {
 
       findFilteredSearch().vm.$emit('onFilter', mockFilters);
 
-      expect(store.dispatch).toHaveBeenCalledWith('performSearch');
       expect(updateHistory).toHaveBeenCalledWith({
         title: '',
         replace: true,
@@ -198,56 +189,42 @@ describe('BoardFilteredSearch', () => {
     });
   });
 
-  describe('when Apollo boards FF is on', () => {
+  describe('when iteration is passed a wildcard value with a cadence id', () => {
+    const url = (arg) => `http://test.host/?iteration_id=${arg}&iteration_cadence_id=1349`;
+
     beforeEach(() => {
-      createComponent({ provide: { isApolloBoard: true } });
+      createComponent();
     });
 
-    it('emits setFilters and updates URL when onFilter is emitted', () => {
-      findFilteredSearch().vm.$emit('onFilter', [{ value: { data: '' } }]);
+    it.each([
+      ['Current&1349', url('Current'), 'Current'],
+      ['Any&1349', url('Any'), 'Any'],
+    ])('sets the url param %s', (iterationParam, expected, wildCardId) => {
+      Object.defineProperty(window, 'location', {
+        writable: true,
+        value: new URL(expected),
+      });
+
+      const mockFilters = [
+        { type: TOKEN_TYPE_ITERATION, value: { data: iterationParam, operator: '=' } },
+      ];
+
+      findFilteredSearch().vm.$emit('onFilter', mockFilters);
 
       expect(updateHistory).toHaveBeenCalledWith({
         title: '',
         replace: true,
-        url: 'http://test.host/',
+        url: expected,
       });
 
-      expect(wrapper.emitted('setFilters')).toHaveLength(1);
-    });
-
-    describe('when iteration is passed a wildcard value with a cadence id', () => {
-      const url = (arg) => `http://test.host/?iteration_id=${arg}&iteration_cadence_id=1349`;
-
-      it.each([
-        ['Current&1349', url('Current'), 'Current'],
-        ['Any&1349', url('Any'), 'Any'],
-      ])('sets the url param %s', (iterationParam, expected, wildCardId) => {
-        Object.defineProperty(window, 'location', {
-          writable: true,
-          value: new URL(expected),
-        });
-
-        const mockFilters = [
-          { type: TOKEN_TYPE_ITERATION, value: { data: iterationParam, operator: '=' } },
-        ];
-
-        findFilteredSearch().vm.$emit('onFilter', mockFilters);
-
-        expect(updateHistory).toHaveBeenCalledWith({
-          title: '',
-          replace: true,
-          url: expected,
-        });
-
-        expect(wrapper.emitted('setFilters')).toStrictEqual([
-          [
-            {
-              iterationCadenceId: '1349',
-              iterationId: wildCardId,
-            },
-          ],
-        ]);
-      });
+      expect(wrapper.emitted('setFilters')).toStrictEqual([
+        [
+          {
+            iterationCadenceId: '1349',
+            iterationId: wildCardId,
+          },
+        ],
+      ]);
     });
   });
 });

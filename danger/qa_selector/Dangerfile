@@ -31,7 +31,7 @@ return if lines_with_testids.empty? && deprecated_qa_class.empty?
 
 if lines_with_testids.any?
   markdown(<<~MARKDOWN)
-    ### Deprecated `testid` selectors
+    ### `testid` selectors
 
     The following changed lines in this MR contain `testid` selectors:
 

@@ -272,8 +272,8 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
 
   context 'with loose foreign key on ml_candidates.ci_build_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
-      let!(:parent) { create(:ci_build) }
-      let!(:model) { create(:ml_candidates, ci_build: parent) }
+      let_it_be(:parent) { create(:ci_build) }
+      let_it_be(:model) { create(:ml_candidates, ci_build: parent) }
     end
   end
 end

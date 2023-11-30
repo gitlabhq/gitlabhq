@@ -1273,9 +1273,6 @@ msgstr ""
 msgid "%{time} UTC"
 msgstr ""
 
-msgid "%{title} changes"
-msgstr ""
-
 msgid "%{totalCpu} (%{freeSpacePercentage}%{percentSymbol} free)"
 msgstr ""
 

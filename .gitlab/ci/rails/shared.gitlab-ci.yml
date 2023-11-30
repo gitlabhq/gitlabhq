@@ -85,13 +85,27 @@ include:
     - bundle exec gem list gitlab_quality-test_tooling
     - |
       if [ "$CREATE_RAILS_TEST_FAILURE_ISSUES" == "true" ]; then
-        bundle exec relate-failure-issue --input-files "rspec/rspec-*.json" --system-log-files "log" --project "gitlab-org/gitlab" --token "${TEST_FAILURES_PROJECT_TOKEN}" --related-issues-file "rspec/${CI_JOB_ID}-failed-test-issues.json";
+        bundle exec relate-failure-issue \
+          --token "${TEST_FAILURES_PROJECT_TOKEN}" \
+          --project "gitlab-org/gitlab" \
+          --input-files "rspec/rspec-*.json" \
+          --exclude-labels-for-search "QA,rspec:slow test" \
+          --system-log-files "log" \
+          --related-issues-file "rspec/${CI_JOB_ID}-failed-test-issues.json";
       fi
       if [ "$CREATE_RAILS_SLOW_TEST_ISSUES" == "true" ]; then
-        bundle exec slow-test-issues --input-files "rspec/rspec-*.json" --project "gitlab-org/gitlab" --token "${TEST_FAILURES_PROJECT_TOKEN}" --related-issues-file "rspec/${CI_JOB_ID}-slow-test-issues.json";
+        bundle exec slow-test-issues \
+          --token "${TEST_FAILURES_PROJECT_TOKEN}" \
+          --project "gitlab-org/gitlab" \
+          --input-files "rspec/rspec-*.json" \
+          --related-issues-file "rspec/${CI_JOB_ID}-slow-test-issues.json";
       fi
       if [ "$ADD_SLOW_TEST_NOTE_TO_MERGE_REQUEST" == "true" ]; then
-        bundle exec slow-test-merge-request-report-note --input-files "rspec/rspec-*.json" --project "gitlab-org/gitlab" --merge_request_iid "$CI_MERGE_REQUEST_IID" --token "${TEST_SLOW_NOTE_PROJECT_TOKEN}";
+        bundle exec slow-test-merge-request-report-note \
+          --token "${TEST_SLOW_NOTE_PROJECT_TOKEN}" \
+          --project "gitlab-org/gitlab" \
+          --input-files "rspec/rspec-*.json" \
+          --merge_request_iid "$CI_MERGE_REQUEST_IID";
       fi
     - echo -e "\e[0Ksection_end:`date +%s`:report_results_section\r\e[0K"
     - tooling/bin/push_job_metrics || true
