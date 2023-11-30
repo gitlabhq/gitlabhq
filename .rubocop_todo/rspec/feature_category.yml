@@ -5410,7 +5410,6 @@ RSpec/FeatureCategory:
     - 'spec/views/import/gitlab_projects/new.html.haml_spec.rb'
     - 'spec/views/layouts/_flash.html.haml_spec.rb'
     - 'spec/views/layouts/_head.html.haml_spec.rb'
-    - 'spec/views/layouts/_header_search.html.haml_spec.rb'
     - 'spec/views/layouts/_published_experiments.html.haml_spec.rb'
     - 'spec/views/layouts/application.html.haml_spec.rb'
     - 'spec/views/layouts/devise_empty.html.haml_spec.rb'

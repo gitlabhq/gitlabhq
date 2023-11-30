@@ -1,6 +1,3 @@
-$search-input-field-min-width: 320px;
-$search-input-field-x-min-width: 200px;
-
 .navbar-gitlab {
   padding: 0 16px;
   z-index: $header-zindex;
@@ -74,47 +71,6 @@ $search-input-field-x-min-width: 200px;
     .navbar-collapse > ul.nav > li:not(.d-none) {
       margin: 0 2px;
     }
-  }
-
-  .header-search-form {
-    min-width: $search-input-field-min-width;
-
-    // This is a temporary workaround!
-    // the button in GitLab UI Search components need to be updated to not be the small size
-    // see in Figma: https://www.figma.com/file/qEddyqCrI7kPSBjGmwkZzQ/Component-library?node-id=43905%3A45540
-    .gl-search-box-by-type-clear.btn-sm {
-      padding: 0.5rem !important;
-    }
-
-    @include media-breakpoint-between(md, lg) {
-      min-width: $search-input-field-x-min-width;
-    }
-
-    &.is-searching {
-      .in-search-scope-help {
-        position: absolute;
-        top: $gl-spacing-scale-2;
-        right: 2.125rem;
-        z-index: 2;
-      }
-    }
-
-    &.is-not-focused {
-      .gl-search-box-by-type-clear {
-        display: none;
-      }
-    }
-
-    .keyboard-shortcut-helper {
-      transform: translateY(calc(50% - 2px));
-      box-shadow: none;
-      border-color: transparent;
-    }
-  }
-
-  .header-search-dropdown-menu {
-    max-height: $dropdown-max-height;
-    top: 100%;
   }
 
   .navbar-collapse {

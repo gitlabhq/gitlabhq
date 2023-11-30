@@ -32,7 +32,6 @@ import initUserPopovers from './user_popovers';
 import initBroadcastNotifications from './broadcast_notification';
 import { initTopNav } from './nav';
 import { initCopyCodeButton } from './behaviors/copy_code';
-import initHeaderSearch from './header_search/init';
 import initGitlabVersionCheck from './gitlab_version_check';
 
 import 'ee_else_ce/main_ee';
@@ -116,11 +115,6 @@ function deferredInitialisation() {
   // Adding a helper class to activate animations only after all is rendered
   setTimeout(() => $body.addClass('page-initialised'), 1000);
 }
-
-// header search vue component bootstrap
-// loading this inside requestIdleCallback is causing issues
-// see https://gitlab.com/gitlab-org/gitlab/-/issues/365746
-initHeaderSearch();
 
 const $body = $('body');
 const $document = $(document);

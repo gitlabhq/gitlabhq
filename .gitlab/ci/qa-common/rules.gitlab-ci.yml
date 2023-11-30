@@ -1,3 +1,6 @@
+include:
+  - local: .gitlab/ci/rules.gitlab-ci.yml
+
 # Specific specs passed
 .specs-specified: &specs-specified
   if: $QA_TESTS != ""
@@ -13,10 +16,6 @@
 # Specific specs specified
 .spec-file-specified: &spec-file-specified
   if: $QA_TESTS =~ /_spec\.rb/
-
-# code pattern changes
-.code-pattern-changes: &code-pattern-changes
-  if: $MR_CODE_PATTERNS == "true"
 
 # Specs directory specified
 .spec-directory-specified: &spec-directory-specified
@@ -147,11 +146,10 @@
     # these jobs need gitlab version because we can't reliably detect it from just the image
     - if: $GITLAB_SEMVER_VERSION !~ /^\d+\.\d+\.\d+/
       when: never
-    # $QA_SUPER_SIDEBAR_ENABLED is now only present as a variable when testing old nav so we skip update jobs
-    # in pipeline where it is explicitly disabled
-    - if: $QA_SUPER_SIDEBAR_ENABLED
-      when: never
-    - !reference [.rules:test:qa, rules]
+    # update jobs are only relevant in testing app updates that can be affected by code changes only
+    # by checking code patterns, skip running job on changes that can't affect the outcome
+    - !reference [.qa:rules:code-merge-request, rules]
+    - *default-branch
 
 .rules:test:never-schedule-pipeline:
   rules:

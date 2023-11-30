@@ -66,7 +66,6 @@ Capybara/VisibilityMatcher:
     - 'spec/support/shared_examples/features/rss_shared_examples.rb'
     - 'spec/support/shared_examples/features/wiki/file_attachments_shared_examples.rb'
     - 'spec/views/import/gitlab_projects/new.html.haml_spec.rb'
-    - 'spec/views/layouts/_header_search.html.haml_spec.rb'
     - 'spec/views/layouts/nav/sidebar/_project.html.haml_spec.rb'
     - 'spec/views/profiles/preferences/show.html.haml_spec.rb'
     - 'spec/views/projects/merge_requests/edit.html.haml_spec.rb'

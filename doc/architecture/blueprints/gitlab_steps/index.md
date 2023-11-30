@@ -165,7 +165,7 @@ Output will be a standard proto trace which will include details for debugging a
 
 ### Example invocations
 
-#### Commandline
+#### Command line
 
 - `STEPS=$(cat steps.yml) step-runner ci`
 - `step-runner local .gitlab-ci.yml --format gitlab-ci --job-name hello-world --output-file trace.json`
@@ -194,7 +194,7 @@ hello-world:
 ### Basic compilation and execution process
 
 Steps as expressed in GitLab CI are complied to the baseline step definition.
-Referenced steps are loaded and compliled to produce an `exec` command,
+Referenced steps are loaded and compiled to produce an `exec` command,
 or to produce an additional list of GitLab CI steps which are compiled recursively.
 Each steps is executed immediately after compilation so its output will be available for subsequent compilations.
 
@@ -210,13 +210,17 @@ Finally all the compiled inputs and outputs for each step are collected in a ste
 - [Step Definition](step-definition.md).
 - [Syntactic Sugar extensions](steps-syntactic-sugar.md).
 
-### Integration of GitLab Steps in `.gitlab-ci.yml`
+### Integration of GitLab Steps
 
 - [Usage of the GitLab Steps with `.gitlab-ci.yml`](gitlab-ci.md).
+- [Runner Integration](runner-integration.md).
 
 ## Design and implementation details
 
-See [implementation.md](implementation.md) and [runner-integration.md](runner-integration.md).
+### 2023-11-28 - GitLab Steps ADR 001: Bootstrap Step Runner
+
+- See the [GitLab Steps ADR 001: Bootstrap Step Runner](decisions/001_initial_support.md).
+- See the [Baseline Step Proto](implementation.md).
 
 ## References
 

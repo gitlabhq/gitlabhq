@@ -18,21 +18,6 @@
             .gl-display-none.gl-sm-display-block
               = render "layouts/nav/top_nav"
 
-      - if top_nav_show_search
-        .navbar-collapse.gl-transition-medium.collapse.gl-mr-auto.global-search-container.hide-when-top-nav-responsive-open
-          - search_menu_item = top_nav_search_menu_item_attrs
-          %ul.nav.navbar-nav.gl-w-full.gl-align-items-center
-            %li.nav-item.header-search.gl-display-none.gl-lg-display-block.gl-w-full
-              - unless current_controller?(:search)
-                = render 'layouts/header_search'
-            %li.nav-item{ class: 'd-none d-sm-inline-block d-lg-none' }
-              = link_to search_menu_item.fetch(:href), title: search_menu_item.fetch(:title), aria: { label: search_menu_item.fetch(:title) },
-                data: { toggle: 'tooltip', placement: 'bottom', container: 'body',
-                track_action: 'click_link',
-                track_label: 'global_search',
-                track_property: 'navigation_top' } do
-                = sprite_icon(search_menu_item.fetch(:icon))
-
       .navbar-collapse.gl-transition-medium.collapse
         %ul.nav.navbar-nav.gl-w-full.gl-align-items-center.gl-justify-content-end
           - if current_user

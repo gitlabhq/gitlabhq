@@ -43,8 +43,7 @@ export default {
         text: this.$options.i18n.deletePageText,
         attributes: {
           variant: 'danger',
-          'data-qa-selector': 'confirm_deletion_button',
-          'data-testid': 'confirm_deletion_button',
+          'data-testid': 'confirm-deletion-button',
         },
       };
     },
@@ -77,7 +76,7 @@ export default {
       v-gl-modal="$options.modal.modalId"
       category="secondary"
       variant="danger"
-      data-qa-selector="delete-button"
+      data-testid="delete-button"
     >
       {{ $options.i18n.deletePageText }}
     </gl-button>

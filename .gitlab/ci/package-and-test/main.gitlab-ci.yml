@@ -579,7 +579,6 @@ update-minor:
     QA_RSPEC_TAGS: --tag smoke
   rules:
     - !reference [.rules:test:update, rules]
-    - if: $QA_SUITES =~ /Test::Instance::Smoke/
     - !reference [.rules:test:manual, rules]
 
 update-major:
@@ -591,7 +590,6 @@ update-major:
     QA_RSPEC_TAGS: --tag smoke
   rules:
     - !reference [.rules:test:update, rules]
-    - if: $QA_SUITES =~ /Test::Instance::Smoke/
     - !reference [.rules:test:manual, rules]
 
 update-ee-to-ce:
@@ -605,7 +603,6 @@ update-ee-to-ce:
   rules:
     - !reference [.rules:test:ce-only, rules]
     - !reference [.rules:test:update, rules]
-    - if: $QA_SUITES =~ /Test::Instance::Smoke/
     - !reference [.rules:test:manual, rules]
 
 # ==========================================

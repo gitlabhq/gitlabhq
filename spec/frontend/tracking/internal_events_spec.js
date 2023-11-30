@@ -1,15 +1,9 @@
 import API from '~/api';
-import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import InternalEvents from '~/tracking/internal_events';
-import {
-  GITLAB_INTERNAL_EVENT_CATEGORY,
-  SERVICE_PING_SCHEMA,
-  LOAD_INTERNAL_EVENTS_SELECTOR,
-} from '~/tracking/constants';
+import { LOAD_INTERNAL_EVENTS_SELECTOR } from '~/tracking/constants';
 import * as utils from '~/tracking/utils';
 import { Tracker } from '~/tracking/tracker';
-import { extraContext } from './mock_data';
 
 jest.mock('~/api', () => ({
   trackInternalEvent: jest.fn(),
@@ -41,26 +35,6 @@ describe('InternalEvents', () => {
       expect(InternalEvents.trackBrowserSDK).toHaveBeenCalledTimes(1);
       expect(InternalEvents.trackBrowserSDK).toHaveBeenCalledWith(event);
     });
-
-    it('trackEvent calls tracking.event functions with correct arguments', () => {
-      const trackingSpy = mockTracking(GITLAB_INTERNAL_EVENT_CATEGORY, undefined, jest.spyOn);
-
-      InternalEvents.trackEvent(event, { context: extraContext });
-
-      expect(trackingSpy).toHaveBeenCalledTimes(1);
-      expect(trackingSpy).toHaveBeenCalledWith(GITLAB_INTERNAL_EVENT_CATEGORY, event, {
-        context: [
-          {
-            schema: SERVICE_PING_SCHEMA,
-            data: {
-              event_name: event,
-              data_source: 'redis_hll',
-            },
-          },
-          extraContext,
-        ],
-      });
-    });
   });
 
   describe('mixin', () => {
@@ -68,16 +42,12 @@ describe('InternalEvents', () => {
     const Component = {
       template: `
     <div>
-      <button data-testid="button1" @click="handleButton1Click">Button 1</button>
-      <button data-testid="button2" @click="handleButton2Click">Button 2</button>
+      <button data-testid="button" @click="handleButton1Click">Button</button>
     </div>
   `,
       methods: {
         handleButton1Click() {
           this.trackEvent(event);
-        },
-        handleButton2Click() {
-          this.trackEvent(event, extraContext);
         },
       },
       mixins: [InternalEvents.mixin()],
@@ -90,20 +60,10 @@ describe('InternalEvents', () => {
     it('this.trackEvent function calls InternalEvent`s track function with an event', async () => {
       const trackEventSpy = jest.spyOn(InternalEvents, 'trackEvent');
 
-      await wrapper.findByTestId('button1').trigger('click');
+      await wrapper.findByTestId('button').trigger('click');
 
       expect(trackEventSpy).toHaveBeenCalledTimes(1);
-      expect(trackEventSpy).toHaveBeenCalledWith(event, {});
-    });
-
-    it("this.trackEvent function calls InternalEvent's track function with an event and data", async () => {
-      const data = extraContext;
-      const trackEventSpy = jest.spyOn(InternalEvents, 'trackEvent');
-
-      await wrapper.findByTestId('button2').trigger('click');
-
-      expect(trackEventSpy).toHaveBeenCalledTimes(1);
-      expect(trackEventSpy).toHaveBeenCalledWith(event, data);
+      expect(trackEventSpy).toHaveBeenCalledWith(event);
     });
   });
 

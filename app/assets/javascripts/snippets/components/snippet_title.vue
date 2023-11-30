@@ -28,7 +28,7 @@ export default {
 };
 </script>
 <template>
-  <div class="snippet-header limited-header-width">
+  <div class="snippet-header limited-header-width gl-py-3">
     <div class="gl-display-flex">
       <span
         v-if="snippet.hidden"
@@ -42,14 +42,17 @@ export default {
         />
       </span>
 
-      <h2 class="snippet-title gl-mt-0 mb-3" data-testid="snippet-title-content">
+      <h2 class="snippet-title gl-mt-0 gl-mb-5" data-testid="snippet-title-content">
         {{ snippet.title }}
       </h2>
     </div>
 
     <snippet-description v-if="snippet.description" :description="snippet.descriptionHtml" />
 
-    <small v-if="snippet.updatedAt !== snippet.createdAt" class="edited-text">
+    <small
+      v-if="snippet.updatedAt !== snippet.createdAt"
+      class="edited-text gl-text-secondary gl-display-inline-block gl-mt-4"
+    >
       <gl-sprintf :message="__('Edited %{timeago}')">
         <template #timeago>
           <time-ago-tooltip :time="snippet.updatedAt" tooltip-placement="bottom" />

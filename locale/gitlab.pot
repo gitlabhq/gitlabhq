@@ -22334,9 +22334,6 @@ msgstr ""
 msgid "Global notification level"
 msgstr ""
 
-msgid "GlobalSearch| %{search} %{description} %{scope}"
-msgstr ""
-
 msgid "GlobalSearch|%{count} default results provided. Use the up and down arrow keys to navigate search results list."
 msgstr ""
 
@@ -22442,9 +22439,6 @@ msgstr ""
 msgid "GlobalSearch|Search"
 msgstr ""
 
-msgid "GlobalSearch|Search GitLab"
-msgstr ""
-
 msgid "GlobalSearch|Search for projects, issues, etc."
 msgstr ""
 
@@ -22482,9 +22476,6 @@ msgid "GlobalSearch|Type and press the enter key to submit search."
 msgstr ""
 
 msgid "GlobalSearch|Type for new suggestions to appear below."
-msgstr ""
-
-msgid "GlobalSearch|Use the shortcut key %{kbdOpen}/%{kbdClose} to start a search"
 msgstr ""
 
 msgid "GlobalSearch|Users"

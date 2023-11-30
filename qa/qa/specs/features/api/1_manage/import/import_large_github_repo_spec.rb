@@ -161,6 +161,10 @@ module QA
         end
       end
 
+      let(:gh_milestone_titles) do
+        gh_milestones.map { |milestone| milestone[:title] }
+      end
+
       let(:gh_all_issues) do
         logger.info("= Fetching issues and prs =")
         with_paginated_request { github_client.list_issues(github_repo, state: 'all') }
@@ -434,6 +438,7 @@ module QA
       # @return [Array]
       def fetch_issuable_events(id)
         with_paginated_request { github_client.issue_events(github_repo, id) }
+          .reject { |event| deleted_milestone_event?(event) }
           .map { |event| event[:event] }
           .reject { |event| unsupported_events.include?(event) }
       end
@@ -648,6 +653,16 @@ module QA
         end
 
         [*mapped_label_events, *mapped_milestone_events, *mapped_state_event, *mapped_comment_events].compact
+      end
+
+      # Check if a milestone event is from a deleted milestone
+      #
+      # @param [Hash] event
+      # @return [Boolean]
+      def deleted_milestone_event?(event)
+        return false if %w[milestoned demilestoned].exclude?(event[:event])
+
+        gh_milestone_titles.exclude?(event[:milestone][:title])
       end
 
       # Normalize comments and make them directly comparable

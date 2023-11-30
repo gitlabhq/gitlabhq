@@ -9354,7 +9354,6 @@
 - './spec/views/layouts/fullscreen.html.haml_spec.rb'
 - './spec/views/layouts/header/_gitlab_version.html.haml_spec.rb'
 - './spec/views/layouts/header/_new_dropdown.haml_spec.rb'
-- './spec/views/layouts/_header_search.html.haml_spec.rb'
 - './spec/views/layouts/_head.html.haml_spec.rb'
 - './spec/views/layouts/nav/sidebar/_admin.html.haml_spec.rb'
 - './spec/views/layouts/nav/sidebar/_group.html.haml_spec.rb'

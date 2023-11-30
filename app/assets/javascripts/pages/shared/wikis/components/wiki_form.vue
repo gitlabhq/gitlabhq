@@ -307,7 +307,7 @@ export default {
     />
 
     <div class="row">
-      <div class="col-sm-9">
+      <div class="col-12">
         <gl-form-group :label="$options.i18n.title.label" label-for="wiki_title">
           <template #description>
             <gl-icon class="gl-mr-n1" name="bulb" />
@@ -408,7 +408,7 @@ export default {
       </div>
     </div>
 
-    <div class="form-actions">
+    <div class="gl-display-flex gl-gap-3" data-testid="wiki-form-actions">
       <gl-button
         category="primary"
         variant="confirm"
@@ -420,7 +420,6 @@ export default {
       <gl-button
         data-testid="wiki-cancel-button"
         :href="cancelFormPath"
-        class="float-right"
         @click="isFormDirty = false"
       >
         {{ $options.i18n.cancel }}</gl-button

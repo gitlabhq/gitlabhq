@@ -3007,7 +3007,6 @@ RSpec/ContextWording:
     - 'spec/views/events/event/_push.html.haml_spec.rb'
     - 'spec/views/groups/_home_panel.html.haml_spec.rb'
     - 'spec/views/groups/edit.html.haml_spec.rb'
-    - 'spec/views/layouts/_header_search.html.haml_spec.rb'
     - 'spec/views/layouts/application.html.haml_spec.rb'
     - 'spec/views/layouts/nav/sidebar/_project.html.haml_spec.rb'
     - 'spec/views/notify/changed_milestone_email.html.haml_spec.rb'

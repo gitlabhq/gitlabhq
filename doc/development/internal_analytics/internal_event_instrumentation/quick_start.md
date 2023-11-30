@@ -69,6 +69,10 @@ If a `project` but no `namespace` is provided, the `project.namespace` is used a
 
 ### Frontend tracking
 
+Any frontend tracking call automatically passes the values `user.id`, `namespace.id`, and `project.id` from the current context of the page.
+
+If you need to pass any further properties, such as `extra`, `context`, `label`, `property`, and `value`, you can use the [deprecated snowplow implementation](https://docs.gitlab.com/16.4/ee/development/internal_analytics/snowplow/implementation.html). In this case, please let us know about your specific use-case in our [feedback issue for Internal Events](https://gitlab.com/gitlab-org/analytics-section/analytics-instrumentation/internal/-/issues/690).
+
 #### Vue components
 
 In Vue components, tracking can be done with [Vue mixin](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/tracking/internal_events.js#L29).
@@ -151,28 +155,4 @@ Sometimes we want to send internal events when the component is rendered or load
 ```haml
 = render Pajamas::ButtonComponent.new(button_options: { data: { event_tracking_load: 'true', event_tracking: 'i_devops' } }) do
         = _("New project")
-```
-
-### Props
-
-Apart from `eventName`, the `trackEvent` method also supports `extra` and `context` props.
-
-`extra`: Use this property to append supplementary information to GitLab standard context.
-`context`: Use this property to attach an additional context, if needed.
-
-The following example shows how to use the `extra` and `context` props with the `trackEvent` method:
-
-```javascript
-this.trackEvent('i_code_review_user_apply_suggestion', {
-  extra: {
-    projectId : 123,
-  },
-  context: {
-    schema: 'iglu:com.gitlab/design_management_context/jsonschema/1-0-0',
-    data: {
-      'design-version-number': '1.0.0',
-      'design-is-current-version': '1.0.1',
-    },
-  },
-});
 ```

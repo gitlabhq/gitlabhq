@@ -5,11 +5,11 @@ module QA
     module Modal
       class DeleteWiki < Base
         view 'app/assets/javascripts/pages/shared/wikis/components/delete_wiki_modal.vue' do
-          element :confirm_deletion_button, required: true
+          element 'confirm-deletion-button', required: true
         end
 
         def confirm_deletion
-          click_element :confirm_deletion_button
+          click_element 'confirm-deletion-button'
         end
       end
     end

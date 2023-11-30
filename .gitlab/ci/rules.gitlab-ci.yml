@@ -1466,6 +1466,11 @@
       when: manual
       allow_failure: true
 
+.qa:rules:code-merge-request:
+  rules:
+    - <<: *if-merge-request
+      changes: *code-patterns
+
 .qa:rules:internal:
   rules:
     - <<: *if-default-refs
