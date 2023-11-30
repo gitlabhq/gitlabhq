@@ -1,9 +1,0 @@
----
-name: service_desk_custom_email
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108017
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/329990
-milestone: '15.9'
-type: development
-group: group::incubation
-default_enabled: true
-log_state_changes: true

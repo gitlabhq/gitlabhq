@@ -4,7 +4,6 @@ module ServiceDesk
   module CustomEmails
     class CreateService < BaseService
       def execute
-        return error_feature_flag_disabled unless feature_flag_enabled?
         return error_user_not_authorized unless legitimate_user?
         return error_params_missing unless has_required_params?
         return error_custom_email_exists if credential? || verification?

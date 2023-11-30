@@ -32,10 +32,6 @@ module ServiceDesk
         )
       end
 
-      def error_feature_flag_disabled
-        error_response('Feature flag service_desk_custom_email is not enabled')
-      end
-
       def error_response(message)
         log_warning(error_message: message)
         ServiceResponse.error(message: message)

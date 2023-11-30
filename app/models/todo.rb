@@ -4,9 +4,6 @@ class Todo < ApplicationRecord
   include Sortable
   include FromUnion
   include EachBatch
-  include IgnorableColumns
-
-  ignore_column :note_id_convert_to_bigint, remove_with: '16.7', remove_after: '2023-11-16'
 
   # Time to wait for todos being removed when not visible for user anymore.
   # Prevents TODOs being removed by mistake, for example, removing access from a user

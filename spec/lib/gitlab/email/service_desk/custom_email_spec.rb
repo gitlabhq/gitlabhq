@@ -58,14 +58,6 @@ RSpec.describe Gitlab::Email::ServiceDesk::CustomEmail, feature_category: :servi
         end
 
         it { is_expected.to eq reply_key }
-
-        context 'when feature flag service_desk_custom_email is disabled' do
-          before do
-            stub_feature_flags(service_desk_custom_email: false)
-          end
-
-          it { is_expected.to be nil }
-        end
       end
     end
 

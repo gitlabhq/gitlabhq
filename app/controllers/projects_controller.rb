@@ -42,7 +42,6 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:highlight_js_worker, @project)
     push_frontend_feature_flag(:remove_monitor_metrics, @project)
     push_frontend_feature_flag(:explain_code_chat, current_user)
-    push_frontend_feature_flag(:service_desk_custom_email, @project)
     push_frontend_feature_flag(:issue_email_participants, @project)
     # TODO: We need to remove the FF eventually when we rollout page_specific_styles
     push_frontend_feature_flag(:page_specific_styles, current_user)

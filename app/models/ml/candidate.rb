@@ -4,9 +4,6 @@ module Ml
   class Candidate < ApplicationRecord
     include Sortable
     include AtomicInternalId
-    include IgnorableColumns
-
-    ignore_column :iid, remove_with: '16.0', remove_after: '2023-05-01'
 
     enum status: { running: 0, scheduled: 1, finished: 2, failed: 3, killed: 4 }
 

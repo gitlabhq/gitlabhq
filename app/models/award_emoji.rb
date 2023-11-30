@@ -7,9 +7,6 @@ class AwardEmoji < ApplicationRecord
   include Participable
   include GhostUser
   include Importable
-  include IgnorableColumns
-
-  ignore_column :awardable_id_convert_to_bigint, remove_with: '16.7', remove_after: '2023-11-16'
 
   belongs_to :awardable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :user

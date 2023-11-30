@@ -74,7 +74,6 @@ module Gitlab
         attr_reader :project_id, :project_path, :service_desk_key
 
         def contains_custom_email_address_verification_subaddress?
-          return false unless Feature.enabled?(:service_desk_custom_email, project)
           return false unless to_address.present?
 
           # Verification email only has one recipient

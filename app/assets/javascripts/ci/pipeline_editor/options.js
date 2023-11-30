@@ -41,7 +41,6 @@ export const createAppOptions = (el) => {
     usesExternalConfig,
     validateTabIllustrationPath,
     ymlHelpPagePath,
-    aiChatAvailable,
   } = el.dataset;
 
   const configurationPaths = Object.fromEntries(
@@ -110,7 +109,6 @@ export const createAppOptions = (el) => {
     el,
     apolloProvider,
     provide: {
-      aiChatAvailable: parseBoolean(aiChatAvailable),
       ciCatalogPath,
       ciConfigPath,
       ciExamplesHelpPagePath,

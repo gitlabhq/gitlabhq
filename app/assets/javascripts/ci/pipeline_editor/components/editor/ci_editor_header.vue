@@ -4,7 +4,6 @@ import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
-  EDITOR_APP_DRAWER_AI_ASSISTANT,
   EDITOR_APP_DRAWER_HELP,
   EDITOR_APP_DRAWER_JOB_ASSISTANT,
   EDITOR_APP_DRAWER_NONE,
@@ -18,14 +17,13 @@ export default {
     browseTemplates: __('Browse templates'),
     help: __('Help'),
     jobAssistant: s__('JobAssistant|Job assistant'),
-    aiAssistant: s__('PipelinesAiAssistant|Ai assistant'),
   },
   TEMPLATE_REPOSITORY_URL,
   components: {
     GlButton,
   },
   mixins: [glFeatureFlagMixin(), Tracking.mixin()],
-  inject: ['aiChatAvailable', 'ciCatalogPath'],
+  inject: ['ciCatalogPath'],
   props: {
     showHelpDrawer: {
       type: Boolean,
@@ -34,15 +32,6 @@ export default {
     showJobAssistantDrawer: {
       type: Boolean,
       required: true,
-    },
-    showAiAssistantDrawer: {
-      type: Boolean,
-      required: true,
-    },
-  },
-  computed: {
-    isAiConfigChatAvailable() {
-      return this.glFeatures.aiCiConfigGenerator && this.aiChatAvailable;
     },
   },
   methods: {
@@ -58,12 +47,6 @@ export default {
       this.$emit(
         'switch-drawer',
         this.showJobAssistantDrawer ? EDITOR_APP_DRAWER_NONE : EDITOR_APP_DRAWER_JOB_ASSISTANT,
-      );
-    },
-    toggleAiAssistantDrawer() {
-      this.$emit(
-        'switch-drawer',
-        this.showAiAssistantDrawer ? EDITOR_APP_DRAWER_NONE : EDITOR_APP_DRAWER_AI_ASSISTANT,
       );
     },
     trackCatalogBrowsing() {
@@ -124,15 +107,6 @@ export default {
       @click="toggleJobAssistantDrawer"
     >
       {{ $options.i18n.jobAssistant }}
-    </gl-button>
-    <gl-button
-      v-if="isAiConfigChatAvailable"
-      icon="bulb"
-      size="small"
-      data-testid="ai-assistant-drawer-toggle"
-      @click="toggleAiAssistantDrawer"
-    >
-      {{ $options.i18n.aiAssistant }}
     </gl-button>
   </div>
 </template>

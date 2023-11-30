@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe ServiceDeskSettings::UpdateService, :aggregate_failures, feature_category: :service_desk do

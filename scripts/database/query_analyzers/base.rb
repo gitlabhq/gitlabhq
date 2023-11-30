@@ -7,9 +7,11 @@ class Database
   class QueryAnalyzers
     class Base
       attr_accessor :output
+      attr_reader :config
 
-      def initialize
+      def initialize(config)
         @output = {}
+        @config = config
       end
 
       def filename

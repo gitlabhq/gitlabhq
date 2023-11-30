@@ -14,7 +14,6 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::CreateService, feature_cat
 
     let(:service) { described_class.new(project: project, current_user: user) }
 
-    let(:error_feature_flag_disabled) { 'Feature flag service_desk_custom_email is not enabled' }
     let(:error_user_not_authorized) { s_('ServiceDesk|User cannot manage project.') }
     let(:error_settings_missing) { s_('ServiceDesk|Service Desk setting missing') }
     let(:expected_error_message) { error_settings_missing }
@@ -79,16 +78,6 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::CreateService, feature_cat
     end
 
     it_behaves_like 'a verification process that exits early'
-
-    context 'when feature flag :service_desk_custom_email is disabled' do
-      let(:expected_error_message) { error_feature_flag_disabled }
-
-      before do
-        stub_feature_flags(service_desk_custom_email: false)
-      end
-
-      it_behaves_like 'a verification process that exits early'
-    end
 
     context 'when service desk setting exists' do
       let(:settings) { create(:service_desk_setting, project: project, custom_email: 'user@example.com') }

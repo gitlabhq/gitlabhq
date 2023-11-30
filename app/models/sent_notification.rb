@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 class SentNotification < ApplicationRecord
-  include IgnorableColumns
-
-  ignore_column %i[id_convert_to_bigint], remove_with: '16.5', remove_after: '2023-09-22'
-
   belongs_to :project
   belongs_to :noteable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :recipient, class_name: "User"

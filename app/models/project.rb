@@ -2907,7 +2907,6 @@ class Project < ApplicationRecord
   end
 
   def service_desk_custom_address
-    return unless Feature.enabled?(:service_desk_custom_email, self)
     return unless service_desk_setting&.custom_email_enabled?
 
     service_desk_setting.custom_email

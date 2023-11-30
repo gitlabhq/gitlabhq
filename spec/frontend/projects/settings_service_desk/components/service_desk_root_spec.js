@@ -28,9 +28,6 @@ describe('ServiceDeskRoot', () => {
     templates: ['Bug', 'Documentation'],
     publicProject: false,
     customEmailEndpoint: '/gitlab-org/gitlab-test/-/service_desk/custom_email',
-    glFeatures: {
-      serviceDeskCustomEmail: true,
-    },
   };
 
   const getAlertText = () => wrapper.findComponent(GlAlert).text();
@@ -221,16 +218,6 @@ describe('ServiceDeskRoot', () => {
     describe('when issue tracker is disabled', () => {
       beforeEach(() => {
         wrapper = createComponent({ isIssueTrackerEnabled: false });
-      });
-
-      it('is not rendered', () => {
-        expect(wrapper.findComponent(CustomEmailWrapper).exists()).toBe(false);
-      });
-    });
-
-    describe('when feature flag service_desk_custom_email is disabled', () => {
-      beforeEach(() => {
-        wrapper = createComponent({ glFeatures: { serviceDeskCustomEmail: false } });
       });
 
       it('is not rendered', () => {

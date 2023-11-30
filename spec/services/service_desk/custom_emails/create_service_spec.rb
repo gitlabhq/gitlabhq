@@ -8,7 +8,6 @@ RSpec.describe ServiceDesk::CustomEmails::CreateService, feature_category: :serv
     let_it_be(:user) { create(:user) }
 
     let(:service) { described_class.new(project: project, current_user: user, params: params) }
-    let(:error_feature_flag_disabled) { 'Feature flag service_desk_custom_email is not enabled' }
     let(:error_user_not_authorized) { s_('ServiceDesk|User cannot manage project.') }
     let(:error_cannot_create_custom_email) { s_('ServiceDesk|Cannot create custom email') }
     let(:error_custom_email_exists) { s_('ServiceDesk|Custom email already exists') }
@@ -50,16 +49,6 @@ RSpec.describe ServiceDesk::CustomEmails::CreateService, feature_category: :serv
           custom_email_enabled: false
         )
       end
-    end
-
-    context 'when feature flag service_desk_custom_email is disabled' do
-      let(:expected_error_message) { error_feature_flag_disabled }
-
-      before do
-        stub_feature_flags(service_desk_custom_email: false)
-      end
-
-      it_behaves_like 'a service that exits with error'
     end
 
     context 'with illegitimate user' do

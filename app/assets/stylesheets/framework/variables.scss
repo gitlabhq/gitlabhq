@@ -130,7 +130,6 @@ $shadow-color: $t-gray-a-08;
 $well-expand-item: #e8f2f7 !default;
 $well-inner-border: #eef0f2 !default;
 $well-light-border: #f1f1f1;
-$well-light-text-color: #5b6169;
 $nav-active-bg: $t-gray-a-08;
 
 /*
@@ -151,7 +150,6 @@ $gl-text-color-disabled: $gray-400;
 $link-color: $blue-500 !default;
 $link-hover-color: $blue-500 !default;
 $gl-grayish-blue: #7f8fa4;
-$gl-header-color: #4c4e54;
 $gl-font-size-12: 12px;
 $gl-font-size-14: 14px;
 $gl-font-size-16: 16px;
@@ -214,14 +212,11 @@ $limited-layout-width: 1006px;
 $fixed-layout-width: 1296px;
 $container-margin: $gl-padding;
 $container-margin-xl: $gl-padding-24;
-$container-text-max-width: 540px;
 $border-radius-default: 4px;
 $border-radius-small: 2px;
 $border-radius-large: 8px;
 $default-icon-size: 16px;
-$layout-link-gray: #7e7c7c;
 $btn-side-margin: $grid-size;
-$count-arrow-border: #dce0e5;
 $general-hover-transition-duration: 100ms;
 $general-hover-transition-curve: linear;
 $highlight-changes-color: rgb(235, 255, 232);
@@ -230,8 +225,6 @@ $system-header-height: 16px;
 $system-footer-height: $system-header-height;
 $mr-sticky-header-height: 72px;
 $mr-review-bar-height: calc(2rem + 16px);
-$flash-height: 52px;
-$context-header-height: 60px;
 $top-bar-height: 48px;
 $home-panel-title-row-height: 64px;
 $home-panel-avatar-mobile-size: 24px;
@@ -243,8 +236,6 @@ $gl-line-height-20: 20px;
 $gl-line-height-24: 24px;
 $gl-line-height-14: 14px;
 
-$pages-group-name-color: #4c4e54;
-
 /*
  * Calculated heights
  */
@@ -253,12 +244,6 @@ $calc-application-bars-height: calc(var(--header-height) + #{$calc-system-header
 $calc-application-header-height: calc(#{$calc-application-bars-height} + var(--top-bar-height));
 $calc-application-footer-height: var(--system-footer-height);
 $calc-application-viewport-height: calc(100vh - #{$calc-application-header-height} - #{$calc-application-footer-height});
-
-/*
-* Common component specific colors
-*/
-$user-mention-bg: rgba($blue-500, 0.044);
-$user-mention-bg-hover: rgba($blue-500, 0.15);
 
 /* tanuki logo colors */
 $tanuki-red: #e24329;
@@ -270,7 +255,6 @@ $tanuki-yellow: #fca326;
  */
 $green-500-focus: rgba($green-500, 0.4);
 $gl-btn-active-background: rgba(0, 0, 0, 0.16);
-$gl-btn-active-gradient: inset 0 2px 3px $gl-btn-active-background;
 
 /*
  * Commit Diff Colors
@@ -281,6 +265,7 @@ $line-added: #ecfdf0;
 $line-added-dark: #c7f0d2 !default;
 $line-removed: #fbe9eb;
 $line-removed-dark: #fac5cd !default;
+
 /*
  * The transparent colors are used in Monaco editor. Using full opacity colors
  * would hide other layers (selected text, matching brackets).
@@ -299,13 +284,7 @@ $line-removed-transparent: rgba(235, 145, 155, 0.2);
 $line-removed-dark-transparent: rgba(246, 53, 85, 0.2);
 $line-number-old: #f9d7dc;
 $line-number-new: #ddfbe6;
-$line-number-select: #fbf2da;
-$line-number-commented: #dae5fb;
 $line-target-blue: $blue-50;
-$line-select-yellow: #fcf8e7;
-$line-select-yellow-dark: #f0e2bd;
-$line-commented-blue: #e8effc;
-$line-commented-blue-dark: #bccef0;
 $dark-diff-match-bg: rgba($white, 0.3);
 $dark-diff-match-color: rgba($white, 0.1);
 $diff-image-info-color: #808080;
@@ -334,12 +313,9 @@ $dropdown-min-height: 40px;
 $dropdown-max-height: 312px;
 $dropdown-max-height-lg: 445px;
 $dropdown-vertical-offset: 4px;
-$dropdown-empty-row-bg: rgba(#000, 0.04);
 $dropdown-shadow-color: rgba(#000, 0.1);
 $dropdown-title-btn-color: #bfbfbf;
-$dropdown-input-focus-shadow: rgba($blue-300, 0.4);
 $dropdown-loading-bg: rgba($white, 0.6);
-$dropdown-chevron-size: 10px;
 $dropdown-toggle-active-border-color: darken($border-color, 14%);
 $dropdown-fade-mask-height: 32px;
 $dropdown-member-form-control-width: 163px;
@@ -352,13 +328,10 @@ $filtered-search-term-shadow-color: rgba(0, 0, 0, 0.09);
 /*
 * Contextual Sidebar
 */
-$link-active-background: rgba($black, 0.04);
 $link-hover-background: rgba($gray-900, 0.06);
-$inactive-badge-background: rgba($black, 0.08);
 $sidebar-toggle-height: 60px;
 $sidebar-toggle-width: 40px;
 $sidebar-milestone-toggle-bottom-margin: 10px;
-$sidebar-avatar-size: 32px;
 $sidebar-top-item-lr-margin: 8px;
 $sidebar-top-item-tb-margin: 1px;
 
@@ -381,20 +354,6 @@ $gl-btn-small-line-height: 18px;
 $badge-bg: rgba($black, 0.07);
 
 /*
-* Pagination
-*/
-$pagination-padding-y: 6px;
-$pagination-padding-x: 16px;
-$pagination-line-height: 20px;
-$pagination-disabled-color: #cdcdcd;
-
-/*
- *  Status icons
- */
-$status-icon-size: 22px;
-
-
-/*
 * Social Icons
 */
 $discord: #5865f2;
@@ -406,7 +365,6 @@ $skype: #0078d7;
  *  Award emoji
  */
 $award-emoji-menu-shadow: rgba(0, 0, 0, 0.175);
-$award-emoji-positive-add-bg: #fed159;
 $award-emoji-positive-add-lines: #bb9c13;
 $award-emoji-width: 376px;
 $award-emoji-width-xs: 90%;
@@ -414,7 +372,6 @@ $award-emoji-width-xs: 90%;
 /*
  * Search Box
  */
-$search-input-border-color: rgba($blue-400, 0.8);
 $search-input-width: 200px;
 $search-input-xl-width: 320px;
 
@@ -422,8 +379,6 @@ $search-input-xl-width: 320px;
  *  Notes
  */
 $note-disabled-comment-color: #b2b2b2;
-$note-targe3-outside: #fffff0;
-$note-targe3-inside: #ffffd3;
 
 /*
 * Calendar
@@ -431,14 +386,8 @@ $note-targe3-inside: #ffffd3;
 $calendar-user-contrib-text: #959494;
 
 /*
-* CI
-*/
-$ci-skipped-color: #888;
-
-/*
 * Boards
 */
-$issue-boards-font-size: 14px;
 $issue-boards-card-shadow: rgba(0, 0, 0, 0.1);
 
 /*
@@ -458,7 +407,6 @@ $blame-blue: #254e77;
 * Builds
 */
 $builds-log-bg: #111;
-$job-log-highlight-height: 18px;
 $job-log-line-padding: 63px;
 $job-line-number-width: 50px;
 $job-line-number-margin: 51px;
@@ -502,20 +450,12 @@ $input-md-width: 240px;
 $input-lg-width: 320px;
 
 /*
-* Help
-*/
-$document-index-color: #888;
-$help-shortcut-header-color: #333;
-
-/*
 * Label
 */
 $label-font-size: 12px;
 $label-padding: 7px;
-$label-padding-modal: 10px;
 $label-gray-bg: #f8fafc;
 $label-inverse-bg: #333;
-$label-remove-border: rgba(0, 0, 0, 0.1);
 $label-border-radius: 100px;
 
 /*
@@ -531,35 +471,15 @@ $fade-mask-transition-curve: ease-in-out;
 $login-brand-holder-color: #888;
 
 /*
-Stat Graph
-*/
-$stat-graph-common-bg: #f3f3f3;
-$stat-graph-selection-fill: #333;
-$stat-graph-selection-stroke: #333;
-
-/*
 * Typography
 */
 $body-text-shadow: rgba(255, 255, 255, 0.01);
 
 /*
-* UI Dev Kit
-*/
-$ui-dev-kit-example-color: #bbb;
-
-/*
 Pipeline Graph
 */
-$ci-action-icon-size: 22px;
-$ci-action-icon-size-lg: 24px;
-$pipeline-dropdown-line-height: 20px;
 $ci-action-dropdown-button-size: 24px;
 $ci-action-dropdown-svg-size: 16px;
-
-/*
-CI variable lists
-*/
-$ci-variable-remove-button-width: calc(1em + #{2 * $gl-padding});
 
 /*
 GitLab Plans
@@ -567,11 +487,6 @@ GitLab Plans
 $gl-ultimate-plan: #d4af37;
 $gl-premium-plan: #91a1ab;
 $gl-bronze-plan: #cd7f32;
-
-/*
-Cross-project Pipelines
- */
-$linked-project-column-margin: 60px;
 
 /*
 Performance Bar
@@ -617,11 +532,6 @@ $popup-triangle-border-size: 1px;
 $popup-box-shadow-color: rgba(90, 90, 90, 0.05);
 
 /*
-Multi file editor
-*/
-$border-color-settings: #e1e1e1;
-
-/*
 Drawers
 */
 $wide-drawer: 500px;
@@ -630,7 +540,6 @@ $wide-drawer: 500px;
 Modals
 */
 $modal-body-height: 80px;
-$modal-border-color: #e9ecef;
 $modal-border-radius: 0.25rem;
 
 $priority-label-empty-state-width: 114px;
@@ -640,11 +549,6 @@ Popovers
 */
 $popover-max-width: 384px;
 $popover-box-shadow: 0 2px 3px 1px $gray-100;
-
-/*
-Issue Analytics
-*/
-$issues-analytics-popover-boarder-color: rgba(0, 0, 0, 0.15);
 
 /*
 Merge requests

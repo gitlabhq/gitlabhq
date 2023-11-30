@@ -95,10 +95,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    showAiAssistantDrawer: {
-      type: Boolean,
-      required: true,
-    },
     isNewCiConfigFile: {
       type: Boolean,
       required: true,
@@ -198,7 +194,6 @@ export default {
       <ci-editor-header
         :show-help-drawer="showHelpDrawer"
         :show-job-assistant-drawer="showJobAssistantDrawer"
-        :show-ai-assistant-drawer="showAiAssistantDrawer"
         v-on="$listeners"
       />
       <text-editor :commit-sha="commitSha" :value="ciFileContent" v-on="$listeners" />

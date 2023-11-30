@@ -2460,17 +2460,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it 'returns custom email address' do
         expect(subject).to eq(custom_email)
       end
-
-      context 'when feature flag service_desk_custom_email is disabled' do
-        before do
-          stub_feature_flags(service_desk_custom_email: false)
-        end
-
-        it 'returns custom email address' do
-          # Don't check for a specific value. Just make sure it's not the custom email
-          expect(subject).not_to eq(custom_email)
-        end
-      end
     end
   end
 

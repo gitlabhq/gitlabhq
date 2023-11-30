@@ -9,10 +9,7 @@ class Event < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include UsageStatistics
   include ShaAttribute
-  include IgnorableColumns
   include EachBatch
-
-  ignore_column :target_id_convert_to_bigint, remove_with: '16.7', remove_after: '2023-11-16'
 
   ACTIONS = HashWithIndifferentAccess.new(
     created: 1,

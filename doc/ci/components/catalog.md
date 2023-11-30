@@ -1,52 +1,11 @@
 ---
-stage: Verify
-group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+redirect_to: '/ee/ci/components/#cicd-catalog'
+remove_date: '2024-02-24'
 ---
 
-# CI/CD catalog **(PREMIUM ALL EXPERIMENT)**
+This document was moved to [CI/CD components](index.md#cicd-catalog).
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407249) in GitLab 16.1.
-
-The CI/CD catalog is a list of [components repositories](index.md#components-repository),
-each containing resources that you can add to your CI/CD pipelines.
-
-Each top level namespace has its own catalog, which contains all the releases from
-components repositories hosted under it. You can create components repositories anywhere
-under the desired top level namespace and the released components are available to
-all projects in that namespace.
-
-## Add a components repository to the Catalog
-
-After components are added to a components repository, they can immediately be [used](index.md#use-a-component-in-a-cicd-configuration)
-to build pipelines in other projects.
-
-However, the repository is not discoverable. You must set the project as a catalog resource
-for it to be visible in the CI/CD Catalog, then other users can discover it. You should only set a repository as a catalog resource when the components are ready for usage.
-
-To set a project as a catalog resource:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Settings > General**.
-1. Expand **Visibility, project features, permissions**.
-1. Scroll down to **CI/CD Catalog resource** and select the toggle to mark the project as a catalog resource.
-
-Ensure the project has a clear [description](../../user/project/working_with_projects.md#edit-project-name-and-description),
-as the project description is displayed in the component list in the catalog.
-
-NOTE:
-This action is not reversible, and the
-component is always visible in the Catalog unless the repository is deleted. If a component has a bug or other issue, you can [create a new release](index.md#release-a-component) with an updated version.
-
-After the repository is set as a components repository, it appears in the CI/CD Catalog of the namespace.
-
-## View available components in the CI/CD Catalog
-
-To access the CI/CD Catalog and view the published components that are available to you:
-
-1. On the left sidebar, select **Search or go to**.
-1. Select **Explore**.
-1. Select **CI/CD Catalog**.
-
-Alternatively, if you are already in the [pipeline editor](../pipeline_editor/index.md)
-in your project, you can select **Browse CI/CD Catalog**.
+<!-- This redirect file can be deleted after <YYYY-MM-DD>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

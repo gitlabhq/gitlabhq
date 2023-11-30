@@ -540,16 +540,6 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
               it_behaves_like 'a handler that does not verify the custom email', 'incorrect_from'
             end
           end
-
-          context 'when service_desk_custom_email feature flag is disabled' do
-            before do
-              stub_feature_flags(service_desk_custom_email: false)
-            end
-
-            it 'does not trigger the verification process and adds an issue instead' do
-              expect { receiver.execute }.to change { Issue.count }.by(1)
-            end
-          end
         end
 
         context 'when using incoming_email address' do

@@ -4,7 +4,6 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import axios from '~/lib/utils/axios_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { __, sprintf } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ServiceDeskSetting from './service_desk_setting.vue';
 
 const CustomEmailWrapper = () => import('./custom_email_wrapper.vue');
@@ -23,7 +22,6 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
     initialIsEnabled: {
       default: false,
@@ -81,7 +79,7 @@ export default {
   },
   computed: {
     showCustomEmailWrapper() {
-      return this.glFeatures.serviceDeskCustomEmail && this.isEnabled && this.isIssueTrackerEnabled;
+      return this.isEnabled && this.isIssueTrackerEnabled;
     },
   },
   methods: {

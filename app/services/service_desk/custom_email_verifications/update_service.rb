@@ -6,7 +6,6 @@ module ServiceDesk
       EMAIL_TOKEN_REGEXP = /Verification token: ([A-Za-z0-9_-]{12})/
 
       def execute
-        return error_feature_flag_disabled unless Feature.enabled?(:service_desk_custom_email, project)
         return error_parameter_missing if settings.blank? || verification.blank?
         return error_already_finished if verification.finished?
         return error_already_failed if already_failed_and_no_mail?

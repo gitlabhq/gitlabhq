@@ -139,7 +139,7 @@ module Emails
     end
 
     def inject_service_desk_custom_email(force: false)
-      return mail if !service_desk_custom_email_enabled? && !force
+      return mail if !@service_desk_setting&.custom_email_enabled? && !force
       return mail unless @service_desk_setting.custom_email_credential.present?
 
       # Only set custom email reply address if it's enabled, not when we force it.
@@ -158,10 +158,6 @@ module Emails
       mail.delivery_method(::Mail::SMTP, delivery_options)
     end
 
-    def service_desk_custom_email_enabled?
-      Feature.enabled?(:service_desk_custom_email, @project) && @service_desk_setting&.custom_email_enabled?
-    end
-
     def inject_service_desk_custom_email_reply_address
       return unless Feature.enabled?(:service_desk_custom_email_reply, @project)
 
@@ -172,7 +168,7 @@ module Emails
     end
 
     def service_desk_sender_email_address
-      return unless service_desk_custom_email_enabled?
+      return unless @service_desk_setting&.custom_email_enabled?
 
       @service_desk_setting.custom_email
     end

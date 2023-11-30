@@ -1,0 +1,11 @@
+MultiplePartitionScanDetector:
+  tables:
+    - p_ci_builds
+    - p_ci_builds_metadata
+    - p_ci_job_annotations
+    - p_ci_runner_machine_builds
+  todos:
+    # List query fingerprints which should be ignored until they are fixed.
+    # These fingerprints can be found in the auto_explain pipeline artifacts.
+    # Example:
+    # - c2cfe803a497101b

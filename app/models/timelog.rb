@@ -2,10 +2,7 @@
 
 class Timelog < ApplicationRecord
   include Importable
-  include IgnorableColumns
   include Sortable
-
-  ignore_column :note_id_convert_to_bigint, remove_with: '16.7', remove_after: '2023-11-16'
 
   before_save :set_project
 

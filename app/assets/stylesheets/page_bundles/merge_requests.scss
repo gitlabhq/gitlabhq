@@ -487,11 +487,6 @@ $tabs-holder-z-index: 250;
   background: var(--white, $white);
 
   > .mr-widget-section {
-    > :first-child {
-      border-top-left-radius: $border-radius-default - 1px;
-      border-top-right-radius: $border-radius-default - 1px;
-    }
-
     > :last-child,
     .deploy-heading:last-child {
       border-bottom-left-radius: $border-radius-default - 1px;
@@ -554,6 +549,11 @@ $tabs-holder-z-index: 250;
   .mr-widget-section:not(:first-child) > section,
   .mr-widget-section .mr-widget-section > div:not(:first-child) {
     border-top: solid 1px var(--border-color, $border-color);
+    // Avoid two lines being rendered
+    // instead of exessively adressing those
+    // edge cases we can use this as a boring
+    // solution
+    margin-top: -1px;
   }
 
   .mr-widget-alert-container + .mr-widget-section {

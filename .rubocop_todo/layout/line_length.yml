@@ -4331,6 +4331,7 @@ Layout/LineLength:
     - 'spec/requests/api/settings_spec.rb'
     - 'spec/requests/api/snippets_spec.rb'
     - 'spec/requests/api/terraform/modules/v1/packages_spec.rb'
+    - 'spec/requests/api/terraform/modules/v1/project_packages_spec.rb'
     - 'spec/requests/api/todos_spec.rb'
     - 'spec/requests/api/topics_spec.rb'
     - 'spec/requests/api/unleash_spec.rb'

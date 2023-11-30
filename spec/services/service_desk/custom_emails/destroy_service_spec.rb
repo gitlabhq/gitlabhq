@@ -8,7 +8,6 @@ RSpec.describe ServiceDesk::CustomEmails::DestroyService, feature_category: :ser
 
     let(:user) { build_stubbed(:user) }
     let(:service) { described_class.new(project: project, current_user: user) }
-    let(:error_feature_flag_disabled) { 'Feature flag service_desk_custom_email is not enabled' }
     let(:error_user_not_authorized) { s_('ServiceDesk|User cannot manage project.') }
     let(:error_does_not_exist) { s_('ServiceDesk|Custom email does not exist') }
     let(:expected_error_message) { nil }
@@ -43,16 +42,6 @@ RSpec.describe ServiceDesk::CustomEmails::DestroyService, feature_category: :ser
           custom_email_enabled: false
         )
       end
-    end
-
-    context 'when feature flag service_desk_custom_email is disabled' do
-      let(:expected_error_message) { error_feature_flag_disabled }
-
-      before do
-        stub_feature_flags(service_desk_custom_email: false)
-      end
-
-      it_behaves_like 'a service that exits with error'
     end
 
     context 'with illegitimate user' do

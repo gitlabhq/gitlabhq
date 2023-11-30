@@ -22,7 +22,6 @@ export const commonOptions = {
   usesExternalConfig: 'false',
   validateTabIllustrationPath: 'illustrations/tab',
   ymlHelpPagePath: 'help/ci/yml',
-  aiChatAvailable: 'true',
 };
 
 export const editorDatasetOptions = {
@@ -34,7 +33,6 @@ export const editorDatasetOptions = {
 
 export const expectedInjectValues = {
   ...commonOptions,
-  aiChatAvailable: true,
   usesExternalConfig: false,
   totalBranches: 10,
 };

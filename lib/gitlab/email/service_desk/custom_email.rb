@@ -33,8 +33,6 @@ module Gitlab
             # so we don't lose emails that are addressed to a disabled custom email address
             return unless settings
 
-            return unless Feature.enabled?(:service_desk_custom_email, settings.project)
-
             key
           end
 

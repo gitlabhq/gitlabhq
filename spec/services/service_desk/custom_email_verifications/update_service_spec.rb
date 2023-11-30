@@ -14,7 +14,6 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::UpdateService, feature_cat
     let(:message_delivery) { instance_double(ActionMailer::MessageDelivery) }
     let(:service) { described_class.new(project: settings.project, params: { mail: mail_object }) }
 
-    let(:error_feature_flag_disabled) { 'Feature flag service_desk_custom_email is not enabled' }
     let(:error_parameter_missing) { s_('ServiceDesk|Service Desk setting or verification object missing') }
     let(:error_already_finished) { s_('ServiceDesk|Custom email address has already been verified.') }
     let(:error_already_failed) do
@@ -84,26 +83,6 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::UpdateService, feature_cat
 
       expect(response).to be_error
       expect(settings).not_to be_custom_email_enabled
-    end
-
-    context 'when feature flag :service_desk_custom_email is disabled' do
-      let(:expected_error_message) { error_feature_flag_disabled }
-
-      before do
-        stub_feature_flags(service_desk_custom_email: false)
-      end
-
-      it 'exits early' do
-        expect(Notify).to receive(:service_desk_verification_result_email).exactly(0).times
-
-        expect(Gitlab::AppLogger).to receive(:warn).with(logger_params.merge(
-          error_message: expected_error_message
-        )).once
-
-        response = service.execute
-
-        expect(response).to be_error
-      end
     end
 
     context 'when verification exists' do

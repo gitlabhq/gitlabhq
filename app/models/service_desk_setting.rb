@@ -2,17 +2,8 @@
 
 class ServiceDeskSetting < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
-  include IgnorableColumns
 
   CUSTOM_EMAIL_VERIFICATION_SUBADDRESS = '+verify'
-
-  ignore_columns %i[
-    custom_email_smtp_address
-    custom_email_smtp_port
-    custom_email_smtp_username
-    encrypted_custom_email_smtp_password
-    encrypted_custom_email_smtp_password_iv
-  ], remove_with: '16.1', remove_after: '2023-05-22'
 
   attribute :custom_email_enabled, default: false
 
