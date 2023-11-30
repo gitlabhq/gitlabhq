@@ -749,6 +749,7 @@ class Project < ApplicationRecord
   scope :service_desk_enabled, -> { where(service_desk_enabled: true) }
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
+  scope :with_package_registry_enabled, -> { with_feature_enabled(:package_registry) }
   scope :with_issues_available_for_user, ->(current_user) { with_feature_available_for_user(:issues, current_user) }
   scope :with_merge_requests_available_for_user, ->(current_user) { with_feature_available_for_user(:merge_requests, current_user) }
   scope :with_issues_or_mrs_available_for_user, -> (user) do

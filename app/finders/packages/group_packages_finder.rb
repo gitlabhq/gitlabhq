@@ -40,14 +40,17 @@ module Packages
       # access to packages is ruled by:
       # - project is public or the current user has access to it with at least the reporter level
       # - the repository feature is available to the current_user
-      if current_user.is_a?(DeployToken)
-        current_user.accessible_projects
-      else
-        ::Project
-          .in_namespace(groups)
-          .public_or_visible_to_user(current_user, Gitlab::Access::REPORTER)
-          .with_feature_available_for_user(:repository, current_user)
-      end
+      projects = if current_user.is_a?(DeployToken)
+                   current_user.accessible_projects
+                 else
+                   ::Project
+                     .in_namespace(groups)
+                     .public_or_visible_to_user(current_user, Gitlab::Access::REPORTER)
+                     .with_feature_available_for_user(:repository, current_user)
+                 end
+
+      projects = projects.with_package_registry_enabled if params[:with_package_registry_enabled]
+      projects
     end
 
     def groups

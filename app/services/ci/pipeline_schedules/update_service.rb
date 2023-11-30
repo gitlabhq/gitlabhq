@@ -12,6 +12,12 @@ module Ci
         @params = params
       end
 
+      def execute
+        return forbidden_to_save unless allowed_to_save?
+
+        super
+      end
+
       private
 
       def authorize_message

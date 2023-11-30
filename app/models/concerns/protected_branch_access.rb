@@ -10,3 +10,5 @@ module ProtectedBranchAccess
     delegate :project, to: :protected_branch
   end
 end
+
+ProtectedBranchAccess.prepend_mod_with('ProtectedBranchAccess')

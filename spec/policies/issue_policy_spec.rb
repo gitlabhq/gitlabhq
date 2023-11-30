@@ -142,50 +142,50 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
       let(:confidential_issue_no_assignee) { create(:issue, :confidential, project: project) }
 
       it 'does not allow non-members to read confidential issues' do
-        expect(permissions(non_member, confidential_issue)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :admin_issue_relation)
-        expect(permissions(non_member, confidential_issue_no_assignee)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation)
+        expect(permissions(non_member, confidential_issue)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :admin_issue_relation, :award_emoji)
+        expect(permissions(non_member, confidential_issue_no_assignee)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation, :award_emoji)
       end
 
       it 'does not allow guests to read confidential issues' do
-        expect(permissions(guest, confidential_issue)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :admin_issue_relation)
-        expect(permissions(guest, confidential_issue_no_assignee)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation)
+        expect(permissions(guest, confidential_issue)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :admin_issue_relation, :award_emoji)
+        expect(permissions(guest, confidential_issue_no_assignee)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation, :award_emoji)
       end
 
       it 'allows reporters to read, update, and admin confidential issues' do
-        expect(permissions(reporter, confidential_issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation)
-        expect(permissions(reporter, confidential_issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation)
+        expect(permissions(reporter, confidential_issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation, :award_emoji)
+        expect(permissions(reporter, confidential_issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation, :award_emoji)
       end
 
       it 'allows reporters from group links to read, update, and admin confidential issues' do
-        expect(permissions(reporter_from_group_link, confidential_issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation)
-        expect(permissions(reporter_from_group_link, confidential_issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation)
+        expect(permissions(reporter_from_group_link, confidential_issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation, :award_emoji)
+        expect(permissions(reporter_from_group_link, confidential_issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation, :award_emoji)
       end
 
       it 'allows issue authors to read and update their confidential issues' do
-        expect(permissions(author, confidential_issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue_relation)
+        expect(permissions(author, confidential_issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue_relation, :award_emoji)
         expect(permissions(author, confidential_issue)).to be_disallowed(:admin_issue, :set_issue_metadata, :set_confidentiality)
 
-        expect(permissions(author, confidential_issue_no_assignee)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :admin_issue_relation)
-        expect(permissions(author, confidential_issue_no_assignee)).to be_disallowed(:admin_issue, :set_issue_metadata, :set_confidentiality)
+        expect(permissions(author, confidential_issue_no_assignee)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :admin_issue_relation, :award_emoji)
+        expect(permissions(author, confidential_issue_no_assignee)).to be_disallowed(:admin_issue, :set_issue_metadata, :set_confidentiality, :award_emoji)
       end
 
       it 'does not allow issue author to read or update confidential issue moved to an private project' do
         confidential_issue.project = create(:project, :private)
 
-        expect(permissions(author, confidential_issue)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation)
+        expect(permissions(author, confidential_issue)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation, :award_emoji)
       end
 
       it 'allows issue assignees to read and update their confidential issues' do
-        expect(permissions(assignee, confidential_issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue)
+        expect(permissions(assignee, confidential_issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :award_emoji)
         expect(permissions(assignee, confidential_issue)).to be_disallowed(:admin_issue, :set_issue_metadata, :set_confidentiality)
 
-        expect(permissions(assignee, confidential_issue_no_assignee)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation)
+        expect(permissions(assignee, confidential_issue_no_assignee)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation, :award_emoji)
       end
 
       it 'does not allow issue assignees to read or update confidential issue moved to an private project' do
         confidential_issue.project = create(:project, :private)
 
-        expect(permissions(assignee, confidential_issue)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation)
+        expect(permissions(assignee, confidential_issue)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation, :award_emoji)
       end
     end
   end
