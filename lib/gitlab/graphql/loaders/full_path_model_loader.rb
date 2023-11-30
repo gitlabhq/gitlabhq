@@ -20,8 +20,7 @@ module Gitlab
             # this logic cannot be placed in the NamespaceResolver due to N+1
             scope = scope.without_project_namespaces if scope == Namespace
             # `with_route` avoids an N+1 calculating full_path
-            scope = scope.where_full_path_in(full_paths).with_route
-              .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
+            scope = scope.where_full_path_in(full_paths)
 
             scope.each do |model_instance|
               loader.call(model_instance.full_path.downcase, model_instance)

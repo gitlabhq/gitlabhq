@@ -140,7 +140,7 @@ export default {
       :namespace="namespace"
       :configuration="configuration"
       @loading="$emit('loading', $event)"
-      @failed="$emit('failed')"
+      @update-failed-state="$emit('update-failed-state', $event)"
       @cluster-error="$emit('cluster-error', $event)"
     />
 

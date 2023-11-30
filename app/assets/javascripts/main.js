@@ -30,7 +30,6 @@ import { initUserTracking, initDefaultTrackers } from './tracking';
 import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
 import initBroadcastNotifications from './broadcast_notification';
-import { initTopNav } from './nav';
 import { initCopyCodeButton } from './behaviors/copy_code';
 import initGitlabVersionCheck from './gitlab_version_check';
 
@@ -82,9 +81,6 @@ initRails();
 function deferredInitialisation() {
   const $body = $('body');
 
-  if (!gon.use_new_navigation) {
-    initTopNav();
-  }
   initBreadcrumbs();
   initPrefetchLinks('.js-prefetch-document');
   initLogoAnimation();

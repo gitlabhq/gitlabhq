@@ -6,6 +6,7 @@ FactoryBot.define do
 
     model { association :ml_models }
     project { model.project }
+    description { 'Some description' }
 
     trait :with_package do
       package do

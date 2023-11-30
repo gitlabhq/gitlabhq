@@ -3,6 +3,7 @@ import { GlTab, GlTabs, GlBadge } from '@gitlab/ui';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import ModelVersionList from '~/ml/model_registry/components/model_version_list.vue';
+import ModelVersionDetail from '~/ml/model_registry/components/model_version_detail.vue';
 import * as i18n from '../translations';
 
 export default {
@@ -14,6 +15,7 @@ export default {
     GlTab,
     GlBadge,
     MetadataItem,
+    ModelVersionDetail,
   },
   props: {
     model: {
@@ -27,6 +29,9 @@ export default {
     },
     candidateCount() {
       return this.model.candidateCount || 0;
+    },
+    latestVersionTitle() {
+      return `${i18n.LATEST_VERSION_LABEL}: ${this.model.latestVersion.version}`;
     },
   },
   i18n,
@@ -50,9 +55,9 @@ export default {
 
     <gl-tabs class="gl-mt-4">
       <gl-tab :title="$options.i18n.MODEL_DETAILS_TAB_LABEL">
-        <h3 class="gl-font-lg">{{ $options.i18n.LATEST_VERSION_LABEL }}</h3>
         <template v-if="model.latestVersion">
-          {{ model.latestVersion.version }}
+          <h3 class="gl-font-lg">{{ latestVersionTitle }}</h3>
+          <model-version-detail :model-version="model.latestVersion" />
         </template>
         <div v-else class="gl-text-secondary">{{ $options.i18n.NO_VERSIONS_LABEL }}</div>
       </gl-tab>

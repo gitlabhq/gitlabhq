@@ -911,4 +911,18 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       expect(actual).to contain_exactly(migration)
     end
   end
+
+  describe '#finalize_command' do
+    let_it_be(:migration) do
+      create(
+        :batched_background_migration,
+        gitlab_schema: :gitlab_main,
+        job_arguments: [['column_1'], ['column_1_convert_to_bigint']]
+      )
+    end
+
+    it 'generates the correct finalize command' do
+      expect(migration.finalize_command).to eq("sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,events,id,'[[\"column_1\"]\\,[\"column_1_convert_to_bigint\"]]']")
+    end
+  end
 end

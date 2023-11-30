@@ -6,7 +6,6 @@ module QA
       class Menu < Page::Base
         # We need to check phone_layout? instead of mobile_layout? here
         # since tablets have the regular top navigation bar
-        prepend Mobile::Page::Main::Menu if Runtime::Env.phone_layout?
         include SubMenus::CreateNewMenu
         include SubMenus::SuperSidebar::GlobalSearchModal
 
@@ -38,14 +37,6 @@ module QA
 
         view 'app/assets/javascripts/super_sidebar/components/global_search/components/global_search.vue' do
           element 'global-search-input'
-        end
-
-        view 'app/assets/javascripts/nav/components/top_nav_app.vue' do
-          element :navbar_dropdown
-        end
-
-        view 'app/assets/javascripts/nav/components/top_nav_dropdown_menu.vue' do
-          element 'menu-subview'
         end
 
         view 'lib/gitlab/nav/top_nav_menu_item.rb' do

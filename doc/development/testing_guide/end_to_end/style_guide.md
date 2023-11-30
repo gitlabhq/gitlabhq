@@ -19,10 +19,8 @@ When selecting a single link to navigate, use `click_`.
 For example:
 
 ```ruby
-def click_ci_cd_pipelines
-  within_sidebar do
-    click_element(:link_pipelines)
-  end
+def click_add_badge_button
+  click_element :add_badge_button
 end
 ```
 
@@ -38,12 +36,8 @@ When interacting with multiple elements to go to a page, use `go_to_`.
 For example:
 
 ```ruby
-def go_to_operations_environments
-  hover_operations do
-    within_submenu do
-      click_element(:operations_environments_link)
-    end
-  end
+def go_to_applications
+  click_element('nav-item-link', submenu_item: 'Applications')
 end
 ```
 

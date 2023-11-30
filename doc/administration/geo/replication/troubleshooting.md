@@ -682,6 +682,19 @@ In GitLab 13.4, a seed project is added when GitLab is first installed. This mak
 on a new Geo secondary site. There is an [issue to account for seed projects](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5618)
 when checking the database.
 
+### Message: `FATAL:  could not map anonymous shared memory: Cannot allocate memory`
+
+If you see this message, it means that the secondary site's PostgreSQL tries to request memory that is higher than the available memory. There is an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/381585) that tracks this problem. 
+
+Example error message in Patroni logs (located at `/var/log/gitlab/patroni/current` for Linux package installations):
+
+```plaintext
+2023-11-21_23:55:18.63727 FATAL:  could not map anonymous shared memory: Cannot allocate memory
+2023-11-21_23:55:18.63729 HINT:  This error usually means that PostgreSQL's request for a shared memory segment exceeded available memory, swap space, or huge pages. To reduce the request size (currently 17035526144 bytes), reduce PostgreSQL's shared memory usage, perhaps by reducing shared_buffers or max_connections.
+```
+
+The workaround is to increase the memory available to the secondary site's PostgreSQL nodes to match the memory requirements of the primary site's PostgreSQL nodes.
+
 ## Synchronization errors
 
 ### Reverify all uploads (or any SSF data type which is verified)

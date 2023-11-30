@@ -36,7 +36,10 @@ export default {
   <span>
     <gl-button
       v-gl-modal="$options.uploadBlobModalId"
+      variant="link"
       icon="upload"
+      class="stat-link gl-px-0!"
+      button-text-classes="gl-ml-2"
       data-testid="upload-file-button"
       >{{ __('Upload File') }}</gl-button
     >

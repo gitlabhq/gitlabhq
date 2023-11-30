@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'Frequently visited items', :js, feature_category: :shared do
-  include Features::TopNavSpecHelpers
-
   let_it_be(:user) { create(:user) }
 
   before do

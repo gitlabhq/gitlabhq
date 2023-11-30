@@ -29,8 +29,13 @@ module Projects
       def latest_version_view_model
         return unless model.latest_version
 
+        model_version = model.latest_version
+
         {
-          version: model.latest_version.version
+          version: model_version.version,
+          description: model_version.description,
+          project_path: project_path(model_version.project),
+          package_id: model_version.package_id
         }
       end
     end

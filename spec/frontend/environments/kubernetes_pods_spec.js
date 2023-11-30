@@ -90,11 +90,17 @@ describe('~/environments/components/kubernetes_pods.vue', () => {
       ]);
     });
 
-    it('emits a failed event when there are failed pods', async () => {
+    it('emits a update-failed-state event for each pod', async () => {
       createWrapper();
       await waitForPromises();
 
-      expect(wrapper.emitted('failed')).toHaveLength(1);
+      expect(wrapper.emitted('update-failed-state')).toHaveLength(4);
+      expect(wrapper.emitted('update-failed-state')).toEqual([
+        [{ pods: false }],
+        [{ pods: false }],
+        [{ pods: false }],
+        [{ pods: true }],
+      ]);
     });
   });
 

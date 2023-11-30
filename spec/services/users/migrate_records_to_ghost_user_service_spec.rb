@@ -143,6 +143,13 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
         let(:created_record) { create(:release, author: user) }
       end
     end
+
+    context 'for user achievements' do
+      include_examples 'migrating records to the ghost user', Achievements::UserAchievement,
+        [:awarded_by_user, :revoked_by_user] do
+        let(:created_record) { create(:user_achievement, awarded_by_user: user, revoked_by_user: user) }
+      end
+    end
   end
 
   context 'on post-migrate cleanups' do
@@ -357,6 +364,16 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
         service.execute(hard_delete: true)
 
         expect(Issue).not_to exist(issue.id)
+      end
+
+      it 'migrates awarded and revoked fields of user achievements' do
+        user_achievement = create(:user_achievement, awarded_by_user: user, revoked_by_user: user)
+
+        service.execute(hard_delete: true)
+        user_achievement.reload
+
+        expect(user_achievement.revoked_by_user).to eq(Users::Internal.ghost)
+        expect(user_achievement.awarded_by_user).to eq(Users::Internal.ghost)
       end
     end
   end

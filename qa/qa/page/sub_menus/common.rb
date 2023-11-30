@@ -8,18 +8,10 @@ module QA
           super
 
           base.class_eval do
-            prepend Mobile::Page::SubMenus::Common if QA::Runtime::Env.mobile_layout?
-
             view 'app/assets/javascripts/super_sidebar/components/super_sidebar.vue' do
               element :navbar
             end
           end
-        end
-
-        def within_sidebar(&block)
-          wait_for_requests
-
-          within_element(:navbar, &block)
         end
 
         private

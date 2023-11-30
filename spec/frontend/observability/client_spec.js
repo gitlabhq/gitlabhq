@@ -439,8 +439,82 @@ describe('buildClient', () => {
       expect(axios.get).toHaveBeenCalledTimes(1);
       expect(axios.get).toHaveBeenCalledWith(metricsUrl, {
         withCredentials: true,
+        params: expect.any(URLSearchParams),
       });
       expect(result).toEqual(mockResponse);
+    });
+
+    describe('query filter', () => {
+      beforeEach(() => {
+        axiosMock.onGet(metricsUrl).reply(200, {
+          metrics: [],
+        });
+      });
+
+      it('does not set any query param without filters', async () => {
+        await client.fetchMetrics();
+
+        expect(getQueryParam()).toBe('');
+      });
+
+      it('sets the start_with query param based on the search filter', async () => {
+        await client.fetchMetrics({
+          filters: { search: [{ value: 'foo' }, { value: 'bar' }, { value: ' ' }] },
+        });
+        expect(getQueryParam()).toBe('starts_with=foo+bar');
+      });
+
+      it('ignores empty search', async () => {
+        await client.fetchMetrics({
+          filters: {
+            search: [{ value: ' ' }, { value: '' }, { value: null }, { value: undefined }],
+          },
+        });
+        expect(getQueryParam()).toBe('');
+      });
+
+      it('ignores unsupported filters', async () => {
+        await client.fetchMetrics({
+          filters: {
+            unsupportedFilter: [{ operator: '=', value: 'foo' }],
+          },
+        });
+
+        expect(getQueryParam()).toBe('');
+      });
+
+      it('ignores non-array search filters', async () => {
+        await client.fetchMetrics({
+          filters: {
+            search: { value: 'foo' },
+          },
+        });
+
+        expect(getQueryParam()).toBe('');
+      });
+
+      it('adds the search limit param if specified with the search filter', async () => {
+        await client.fetchMetrics({
+          filters: { search: [{ value: 'foo' }] },
+          limit: 50,
+        });
+        expect(getQueryParam()).toBe('starts_with=foo&limit=50');
+      });
+
+      it('does not add the search limit param if the search filter is missing', async () => {
+        await client.fetchMetrics({
+          limit: 50,
+        });
+        expect(getQueryParam()).toBe('');
+      });
+
+      it('does not add the search limit param if the search filter is empty', async () => {
+        await client.fetchMetrics({
+          limit: 50,
+          search: [{ value: ' ' }, { value: '' }, { value: null }, { value: undefined }],
+        });
+        expect(getQueryParam()).toBe('');
+      });
     });
 
     it('rejects if metrics are missing', async () => {

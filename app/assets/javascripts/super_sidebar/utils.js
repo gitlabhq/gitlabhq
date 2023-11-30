@@ -27,6 +27,22 @@ const sortItemsByFrequencyAndLastAccess = (items) =>
   });
 
 /**
+ * Returns the most frequently visited items.
+ *
+ * @param {Array} items - A list of items retrieved from the local storage
+ * @param {Number} maxCount - The maximum number of items to be returned
+ * @returns {Array}
+ */
+export const getTopFrequentItems = (items, maxCount) => {
+  if (!Array.isArray(items)) return [];
+
+  const frequentItems = items.filter((item) => item.frequency >= FREQUENT_ITEMS.ELIGIBLE_FREQUENCY);
+  sortItemsByFrequencyAndLastAccess(frequentItems);
+
+  return frequentItems.slice(0, maxCount);
+};
+
+/**
  * This tracks projects' and groups' visits in order to suggest a list of frequently visited
  * entities to the user. The suggestion logic is implemented server-side and computed items can be
  * retrieved through the GraphQL API.

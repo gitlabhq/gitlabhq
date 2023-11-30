@@ -86,7 +86,7 @@ class CommitStatus < Ci::ApplicationRecord
   scope :for_project_paths, -> (paths) do
     # Pluck is used to split this query. Splitting the query is required for database decomposition for `ci_*` tables.
     # https://docs.gitlab.com/ee/development/database/transaction_guidelines.html#database-decomposition-and-sharding
-    project_ids = Project.where_full_path_in(Array(paths)).pluck(:id)
+    project_ids = Project.where_full_path_in(Array(paths), use_includes: false).pluck(:id)
 
     for_project(project_ids)
   end

@@ -428,6 +428,10 @@ RSpec.describe ProjectPresenter do
     end
 
     describe '#new_file_anchor_data' do
+      before do
+        stub_feature_flags(project_overview_reorg: false)
+      end
+
       it 'returns new file data if user can push' do
         project.add_developer(user)
 
@@ -751,6 +755,7 @@ RSpec.describe ProjectPresenter do
     subject(:empty_repo_statistics_buttons) { presenter.empty_repo_statistics_buttons }
 
     before do
+      stub_feature_flags(project_overview_reorg: false)
       allow(project).to receive(:auto_devops_enabled?).and_return(false)
     end
 

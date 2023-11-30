@@ -2,6 +2,7 @@ import { GlBadge, GlTab } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { ShowMlModel } from '~/ml/model_registry/apps';
 import ModelVersionList from '~/ml/model_registry/components/model_version_list.vue';
+import ModelVersionDetail from '~/ml/model_registry/components/model_version_detail.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import { NO_VERSIONS_LABEL } from '~/ml/model_registry/translations';
@@ -16,6 +17,7 @@ const findDetailTab = () => wrapper.findAllComponents(GlTab).at(0);
 const findVersionsTab = () => wrapper.findAllComponents(GlTab).at(1);
 const findVersionsCountBadge = () => findVersionsTab().findComponent(GlBadge);
 const findModelVersionList = () => findVersionsTab().findComponent(ModelVersionList);
+const findModelVersionDetail = () => findDetailTab().findComponent(ModelVersionDetail);
 const findCandidateTab = () => wrapper.findAllComponents(GlTab).at(2);
 const findCandidatesCountBadge = () => findCandidateTab().findComponent(GlBadge);
 const findTitleArea = () => wrapper.findComponent(TitleArea);
@@ -47,7 +49,11 @@ describe('ShowMlModel', () => {
 
     describe('when it has latest version', () => {
       it('displays the version', () => {
-        expect(findDetailTab().text()).toContain(MODEL.latestVersion.version);
+        expect(findModelVersionDetail().props('modelVersion')).toBe(MODEL.latestVersion);
+      });
+
+      it('displays the title', () => {
+        expect(findDetailTab().text()).toContain('Latest version: 1.2.3');
       });
     });
 
@@ -58,6 +64,10 @@ describe('ShowMlModel', () => {
 
       it('shows no version message', () => {
         expect(findDetailTab().text()).toContain(NO_VERSIONS_LABEL);
+      });
+
+      it('does not render model version detail', () => {
+        expect(findModelVersionDetail().exists()).toBe(false);
       });
     });
   });

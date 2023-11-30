@@ -6,70 +6,70 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Web Editor **(FREE ALL)**
 
-You can use the Web Editor to make changes to a single file directly from the
-GitLab UI. To make changes to multiple files, see [Web IDE](../web_ide/index.md).
+You can use the Web Editor to make changes to a single file directly from the GitLab UI.
+To make changes to multiple files, see [Web IDE](../web_ide/index.md).
 
-Your [primary email address](../../../user/profile/index.md#change-the-email-displayed-on-your-commits)
-is used by default for any change you commit through the Web Editor.
+Your [primary email address](../../profile/index.md#change-the-email-displayed-on-your-commits)
+is used by default for any change you commit with the Web Editor.
+When you create or edit a file in the Web Editor, you can use the same
+[keyboard shortcuts](../../shortcuts.md#web-ide) for the Web IDE.
 
 ## Create a file
 
 To create a text file in the Web Editor:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. From the project dashboard or repository, next to the branch name,
-   select the plus icon (**{plus}**).
-1. From the dropdown list, select **New file**.
+1. Go to the directory where you want to create the new file.
+1. Next to the directory name, select the plus icon (**{plus}**) > **New file**.
 1. Complete the fields.
-1. To create a merge request with the new file, ensure the **Start a new merge request with these changes** checkbox is selected, if you had chosen a **Target branch** other than the [default branch (such as `main`)](../../../user/project/repository/branches/default.md).
+   - To create a merge request with your changes, enter a branch name
+   that's not your repository's [default branch](branches/default.md).
 1. Select **Commit changes**.
 
-### Create a file from a template
+### From a template
+
+To create a text file from a template in the Web Editor:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Repository**.
-1. Next to the project name, select the plus icon (**{plus}**) to display a
-   dropdown list, then select **New file** from the list.
-1. For **Filename**, provide one of the filenames that GitLab provides a template for:
+1. Go to the directory where you want to create the new file.
+1. Next to the directory name, select the plus icon (**{plus}**) > **New file**.
+1. In **Filename**, enter a filename that GitLab provides a template for:
    - `.gitignore`
    - `.gitlab-ci.yml`
    - `LICENSE`
    - `Dockerfile`
-1. Select **Apply a template**, then select the template you want to apply.
-1. Make your changes to the file.
-1. Provide a **Commit message**.
-1. Enter a **Target branch** to merge into. To create a new merge request with
-   your changes, enter a branch name that is not your repository's
-   [default branch](../../../user/project/repository/branches/default.md),
-1. Select **Commit changes** to add the commit to your branch.
+1. From the **Apply a template** dropdown list, select a template.
+1. Complete the fields.
+   - To create a merge request with your changes, enter a branch name
+   that's not your repository's [default branch](branches/default.md).
+1. Select **Commit changes**.
 
 ## Edit a file
 
 To edit a text file in the Web Editor:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Go to your file.
-1. In the upper right, select **Edit > Edit single file**.
-
-Here you can use the same [keyboard shortcuts](../../shortcuts.md#web-ide) for the Web IDE.
+1. Go to the file you want to edit.
+1. Select **Edit > Edit single file**.
+1. Complete the fields.
+   - To create a merge request with your changes, enter a branch name
+   that's not your repository's [default branch](branches/default.md).
+1. Select **Commit changes**.
 
 ### Preview Markdown
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378966) in GitLab 15.6.
 
-To preview Markdown content in the Web Editor:
+To preview a Markdown file in the Web Editor:
 
-1. [Edit a file](#edit-a-file).
-1. Do one of the following:
-   - Select the **Preview** tab.
-   - From the context menu, select **Preview Markdown**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Go to the file you want to preview.
+1. Select **Edit > Edit single file**.
+1. Select the **Preview** tab.
 
-In the **Preview** tab, you can see a live Markdown preview alongside your content.
+You can see a live Markdown preview alongside your content.
 
-To close the preview panel, do one of the following:
-
-- Select the **Write** tab.
-- From the context menu, select **Hide Live Preview**.
+To close the preview panel, select the **Write** tab.
 
 ### Link to specific lines
 
@@ -79,22 +79,21 @@ information to the filename segment of the URL. For example:
 - `MY_FILE.js#L3` highlights line 3 in `MY_FILE.js`.
 - `MY_FILE.js#L3-10` highlights lines 3 to 10 in `MY_FILE.js`.
 
-To link to a single line, you can also:
-
-1. [Edit a file](#edit-a-file).
-1. Select a line number.
+When you edit a file, you can also link to a single line by selecting a line number.
 
 ## Upload a file
 
-To upload a binary file in the Web Editor:
+To upload a file in the Web Editor:
 
-<!-- This list is duplicated at doc/gitlab-basics/add-file.md#from-the-ui -->
+<!-- This list is duplicated at doc/user/project/repository/index.md#add-a-file-from-the-ui -->
 <!-- For why we duplicated the info, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111072#note_1267429478 -->
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. From the project dashboard or repository, next to the branch name, select the plus icon (**{plus}**).
-1. From the dropdown list, select **Upload file**.
-1. Complete the fields. To create a merge request with the uploaded file, ensure the **Start a new merge request with these changes** toggle is turned on.
+1. Go to the directory where you want to upload the file.
+1. Next to the directory name, select the plus icon (**{plus}**) > **Upload file**.
+1. Complete the fields.
+   - To create a merge request with your changes, enter a branch name
+   that's not your repository's [default branch](branches/default.md).
 1. Select **Upload file**.
 
 ## Create a directory
@@ -102,9 +101,11 @@ To upload a binary file in the Web Editor:
 To create a directory in the Web Editor:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. From the project dashboard or repository, next to the branch name, select the plus icon (**{plus}**).
-1. From the dropdown list, select **New directory**.
-1. Complete the fields. To create a merge request with the new directory, ensure the **Start a new merge request with these changes** toggle is turned on.
+1. Go to the directory where you want to create the new directory.
+1. Next to the directory name, select the plus icon (**{plus}**) > **New directory**.
+1. Complete the fields.
+   - To create a merge request with your changes, enter a branch name
+   that's not your repository's [default branch](branches/default.md).
 1. Select **Create directory**.
 
 ## Create a branch
@@ -112,8 +113,7 @@ To create a directory in the Web Editor:
 To create a [branch](branches/index.md) in the Web Editor:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. From the project dashboard or repository, next to the branch name, select the plus icon (**{plus}**).
-1. From the dropdown list, select **New branch**.
+1. Next to the repository name, select the plus icon (**{plus}**) > **New branch**.
 1. Complete the fields.
 1. Select **Create branch**.
 
@@ -123,7 +123,6 @@ You can create [tags](tags/index.md) to mark milestones such as
 production releases and release candidates. To create a tag in the Web Editor:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. From the project dashboard or repository, next to the branch name, select the plus icon (**{plus}**).
-1. From the dropdown list, select **New tag**.
+1. Next to the repository name, select the plus icon (**{plus}**) > **New tag**.
 1. Complete the fields.
 1. Select **Create tag**.

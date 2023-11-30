@@ -1,0 +1,8 @@
+---
+name: project_overview_reorg
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137025
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/432034
+milestone: '16.7'
+type: development
+group: group::ux paper cuts
+default_enabled: false

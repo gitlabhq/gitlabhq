@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
-  include Features::TopNavSpecHelpers
-
   before do
     stub_application_setting(import_sources: Gitlab::ImportSources.values)
   end

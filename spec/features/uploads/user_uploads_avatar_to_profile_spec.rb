@@ -18,8 +18,10 @@ RSpec.describe 'User uploads avatar to profile', feature_category: :user_profile
 
       wait_for_all_requests
 
-      data_uri = find('.avatar-image .gl-avatar')['src']
-      within_testid('user-dropdown') { expect(find('.gl-avatar')['src']).to eq data_uri }
+      within_testid('user-dropdown') do
+        # We are setting a blob URL
+        expect(find('.gl-avatar')['src']).to start_with 'blob:'
+      end
 
       visit profile_path
 

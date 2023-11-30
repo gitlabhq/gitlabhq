@@ -264,6 +264,13 @@ module Gitlab
           100 * migrated_tuple_count / total_tuple_count
         end
 
+        def finalize_command
+          <<~SCRIPT.delete("\n").squeeze(' ').strip
+            sudo gitlab-rake gitlab:background_migrations:finalize
+            [#{job_class_name},#{table_name},#{column_name},'#{job_arguments.to_json.gsub(',', '\,')}']
+          SCRIPT
+        end
+
         private
 
         def validate_batched_jobs_status

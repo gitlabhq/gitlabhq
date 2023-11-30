@@ -9,8 +9,6 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/golang/protobuf/jsonpb" //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/issues/324868
-	"github.com/golang/protobuf/proto"  //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/issues/324868
 	"github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -18,6 +16,8 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 
 	"gitlab.com/gitlab-org/gitaly/v16/client"
 	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
@@ -71,8 +71,7 @@ func (s *GitalyTestServer) InfoRefsUploadPack(in *gitalypb.InfoRefsRequest, stre
 
 	fmt.Printf("Result: %+v\n", in)
 
-	marshaler := &jsonpb.Marshaler{}
-	jsonString, err := marshaler.MarshalToString(in)
+	jsonString, err := marshalJSON(in)
 	if err != nil {
 		return err
 	}
@@ -116,8 +115,11 @@ func (s *GitalyTestServer) InfoRefsReceivePack(in *gitalypb.InfoRefsRequest, str
 }
 
 func marshalJSON(msg proto.Message) (string, error) {
-	marshaler := &jsonpb.Marshaler{}
-	return marshaler.MarshalToString(msg)
+	b, err := protojson.Marshal(msg)
+	if err != nil {
+		return "", err
+	}
+	return string(b), nil
 }
 
 type infoRefsSender interface {
@@ -198,14 +200,13 @@ func (s *GitalyTestServer) PostUploadPackWithSidechannel(ctx context.Context, re
 	}
 	defer conn.Close()
 
-	marshaler := &jsonpb.Marshaler{}
-	jsonBytes := &bytes.Buffer{}
-	if err := marshaler.Marshal(jsonBytes, req); err != nil {
+	jsonBytes, err := protojson.Marshal(req)
+	if err != nil {
 		return nil, err
 	}
 
 	if _, err := io.Copy(conn, io.MultiReader(
-		bytes.NewReader(append(jsonBytes.Bytes(), 0)),
+		bytes.NewReader(append(jsonBytes, 0)),
 		conn,
 	)); err != nil {
 		return nil, err

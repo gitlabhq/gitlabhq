@@ -8,23 +8,27 @@
   - add_page_startup_api_call project_blob_path(@project, tree_join(@ref, readme_path), viewer: "rich", format: "json")
 
 #tree-holder.tree-holder.clearfix.js-per-page{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
+  - if Feature.enabled?(:project_overview_reorg)
+    .nav-block.gl-display-flex.gl-flex-direction-column.gl-sm-flex-direction-row.gl-align-items-stretch
+      = render 'projects/tree/tree_header', tree: @tree
+
   .info-well.gl-display-none.gl-sm-display-flex.project-last-commit.gl-flex-direction-column.gl-mt-5
     #js-last-commit.gl-m-auto{ data: {ref_type: @ref_type.to_s} }
       = gl_loading_icon(size: 'md')
     - if project.licensed_feature_available?(:code_owners)
       #js-code-owners{ data: { branch: @ref, can_view_branch_rules: can_view_branch_rules?, branch_rules_path: branch_rules_path } }
 
-  .nav-block.gl-display-flex.gl-flex-direction-column.gl-sm-flex-direction-row.gl-align-items-stretch
-    = render 'projects/tree/tree_header', tree: @tree
+  - if Feature.disabled?(:project_overview_reorg)
+    .nav-block.gl-display-flex.gl-flex-direction-column.gl-sm-flex-direction-row.gl-align-items-stretch
+      = render 'projects/tree/tree_header', tree: @tree
 
   - if project.forked?
     #js-fork-info{ data: vue_fork_divergence_data(project, ref) }
 
-  - if is_project_overview && has_project_shortcut_buttons
+  - if Feature.disabled?(:project_overview_reorg) && is_project_overview && has_project_shortcut_buttons
     .project-buttons.gl-mb-5.js-show-on-project-root{ data: { testid: 'project-buttons' } }
       = render 'stat_anchor_list', anchors: @project.statistics_buttons(show_auto_devops_callout: show_auto_devops_callout), project_buttons: true
 
   #js-tree-list{ data: vue_file_list_data(project, ref) }
   - if can_edit_tree?
     = render 'projects/blob/new_dir'
-

@@ -43,7 +43,7 @@ export default {
     return {
       isVisible: false,
       error: '',
-      hasFailedState: false,
+      failedState: {},
       podsLoading: false,
       workloadTypesLoading: false,
     };
@@ -78,6 +78,9 @@ export default {
 
       return this.hasFailedState ? 'error' : 'success';
     },
+    hasFailedState() {
+      return Object.values(this.failedState).some((item) => item);
+    },
   },
   methods: {
     toggleCollapse() {
@@ -85,6 +88,12 @@ export default {
     },
     onClusterError(message) {
       this.error = message;
+    },
+    onUpdateFailedState(event) {
+      this.failedState = {
+        ...this.failedState,
+        ...event,
+      };
     },
   },
   i18n: {
@@ -126,14 +135,14 @@ export default {
           class="gl-mb-5"
           @cluster-error="onClusterError"
           @loading="podsLoading = $event"
-          @failed="hasFailedState = true" />
+          @update-failed-state="onUpdateFailedState" />
         <kubernetes-tabs
           :configuration="k8sAccessConfiguration"
           :namespace="namespace"
           class="gl-mb-5"
           @cluster-error="onClusterError"
           @loading="workloadTypesLoading = $event"
-          @failed="hasFailedState = true"
+          @update-failed-state="onUpdateFailedState"
       /></template>
     </gl-collapse>
   </div>

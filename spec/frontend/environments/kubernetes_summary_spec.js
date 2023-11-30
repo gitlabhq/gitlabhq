@@ -107,8 +107,8 @@ describe('~/environments/components/kubernetes_summary.vue', () => {
       );
     });
 
-    it('emits a failed event when there are failed workload types', () => {
-      expect(wrapper.emitted('failed')).toHaveLength(1);
+    it('emits a update-failed-state event when there are failed workload types', () => {
+      expect(wrapper.emitted('update-failed-state')).toEqual([[{ summary: true }]]);
     });
 
     it('emits an error message when gets an error from the cluster_client API', async () => {

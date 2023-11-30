@@ -140,9 +140,7 @@ export default {
         return workloadType.items?.failed?.length > 0;
       });
 
-      if (failed) {
-        this.$emit('failed');
-      }
+      this.$emit('update-failed-state', { summary: failed });
     },
   },
   i18n: {

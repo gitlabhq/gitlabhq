@@ -2,6 +2,7 @@ package redis
 
 import (
 	"context"
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"net"
@@ -55,7 +56,7 @@ const (
 
 // createDialer references https://github.com/redis/go-redis/blob/b1103e3d436b6fe98813ecbbe1f99dc8d59b06c9/options.go#L214
 // it intercepts the error and tracks it via a Prometheus counter
-func createDialer(sentinels []string) func(ctx context.Context, network, addr string) (net.Conn, error) {
+func createDialer(sentinels []string, tlsConfig *tls.Config) func(ctx context.Context, network, addr string) (net.Conn, error) {
 	return func(ctx context.Context, network, addr string) (net.Conn, error) {
 		var isSentinel bool
 		for _, sentinelAddr := range sentinels {
@@ -81,7 +82,15 @@ func createDialer(sentinels []string) func(ctx context.Context, network, addr st
 			KeepAlive: 5 * time.Minute,
 		}
 
-		conn, err := netDialer.DialContext(ctx, network, addr)
+		var conn net.Conn
+		var err error
+
+		if tlsConfig != nil {
+			conn, err = tls.DialWithDialer(netDialer, network, addr, tlsConfig)
+		} else {
+			conn, err = netDialer.DialContext(ctx, network, addr)
+		}
+
 		if err != nil {
 			ErrorCounter.WithLabelValues("dial", destination).Inc()
 		} else {
@@ -160,7 +169,8 @@ func configureRedis(cfg *config.RedisConfig) (*redis.Client, error) {
 	opt.ReadTimeout = defaultReadTimeout
 	opt.WriteTimeout = defaultWriteTimeout
 
-	opt.Dialer = createDialer([]string{})
+	// ParseURL seeds TLSConfig if schems is rediss
+	opt.Dialer = createDialer([]string{}, opt.TLSConfig)
 
 	return redis.NewClient(opt), nil
 }
@@ -181,7 +191,7 @@ func configureSentinel(cfg *config.RedisConfig) *redis.Client {
 		ReadTimeout:  defaultReadTimeout,
 		WriteTimeout: defaultWriteTimeout,
 
-		Dialer: createDialer(sentinels),
+		Dialer: createDialer(sentinels, nil),
 	})
 
 	client.AddHook(sentinelInstrumentationHook{})

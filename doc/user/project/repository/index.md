@@ -36,9 +36,11 @@ You can upload a file from the GitLab UI.
 <!-- For why we duplicated the info, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111072#note_1267429478 -->
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. From the project dashboard or repository, next to the branch name, select the plus icon (**{plus}**).
-1. From the dropdown list, select **Upload file**.
-1. Complete the fields. To create a merge request with the uploaded file, ensure the **Start a new merge request with these changes** toggle is turned on.
+1. Go to the directory where you want to upload the file.
+1. Next to the directory name, select the plus icon (**{plus}**) > **Upload file**.
+1. Complete the fields.
+   - To create a merge request with your changes, enter a branch name
+   that's not your repository's [default branch](branches/default.md).
 1. Select **Upload file**.
 
 ## Commit changes to a repository

@@ -59,9 +59,13 @@ export default {
   data() {
     return {
       setStatusModalReady: false,
+      updatedAvatarUrl: null,
     };
   },
   computed: {
+    avatarUrl() {
+      return this.updatedAvatarUrl || this.data.avatar_url;
+    },
     toggleText() {
       return sprintf(__('%{user} user’s menu'), { user: this.data.name });
     },
@@ -190,7 +194,16 @@ export default {
       };
     },
   },
+  mounted() {
+    document.addEventListener('userAvatar:update', this.updateAvatar);
+  },
+  unmounted() {
+    document.removeEventListener('userAvatar:update', this.updateAvatar);
+  },
   methods: {
+    updateAvatar(event) {
+      this.updatedAvatarUrl = event.detail?.url;
+    },
     onShow() {
       this.initBuyCIMinsCallout();
     },
@@ -240,7 +253,7 @@ export default {
           <gl-avatar
             :size="24"
             :entity-name="data.name"
-            :src="data.avatar_url"
+            :src="avatarUrl"
             aria-hidden="true"
             data-testid="user-avatar-content"
           />

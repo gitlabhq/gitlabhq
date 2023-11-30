@@ -251,10 +251,26 @@ async function fetchOperations(operationsUrl, serviceName) {
   }
 }
 
-async function fetchMetrics(metricsUrl) {
+async function fetchMetrics(metricsUrl, { filters = {}, limit } = {}) {
   try {
+    const params = new URLSearchParams();
+
+    if (Array.isArray(filters.search)) {
+      const searchPrefix = filters.search
+        .map((f) => f.value)
+        .join(' ')
+        .trim();
+
+      if (searchPrefix) {
+        params.append('starts_with', searchPrefix);
+        if (limit) {
+          params.append('limit', limit);
+        }
+      }
+    }
     const { data } = await axios.get(metricsUrl, {
       withCredentials: true,
+      params,
     });
     if (!Array.isArray(data.metrics)) {
       throw new Error('metrics are missing/invalid in the response'); // eslint-disable-line @gitlab/require-i18n-strings
@@ -299,6 +315,6 @@ export function buildClient(config) {
     fetchTrace: (traceId) => fetchTrace(tracingUrl, traceId),
     fetchServices: () => fetchServices(servicesUrl),
     fetchOperations: (serviceName) => fetchOperations(operationsUrl, serviceName),
-    fetchMetrics: () => fetchMetrics(metricsUrl),
+    fetchMetrics: (options) => fetchMetrics(metricsUrl, options),
   };
 }

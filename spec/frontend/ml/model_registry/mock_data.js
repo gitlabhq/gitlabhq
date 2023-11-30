@@ -14,7 +14,15 @@ export const makeModel = ({ latestVersion } = { latestVersion: LATEST_VERSION })
 
 export const MODEL = makeModel();
 
-export const MODEL_VERSION = { version: '1.2.3', model: MODEL };
+export const makeModelVersion = ({ version = '1.2.3', model = MODEL, packageId = 12 } = {}) => ({
+  version,
+  model,
+  packageId,
+  description: 'Model version description',
+  projectPath: 'path/to/project',
+});
+
+export const MODEL_VERSION = makeModelVersion();
 
 export const mockModels = [
   {

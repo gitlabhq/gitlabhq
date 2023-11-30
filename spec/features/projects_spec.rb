@@ -12,6 +12,7 @@ RSpec.describe 'Project', feature_category: :groups_and_projects do
     before do
       sign_in user
       visit new_project_path
+      stub_feature_flags(project_overview_reorg: false)
     end
 
     shared_examples 'creates from template' do |template, sub_template_tab = nil|
@@ -99,6 +100,7 @@ RSpec.describe 'Project', feature_category: :groups_and_projects do
 
     before do
       sign_in(project.first_owner)
+      stub_feature_flags(project_overview_reorg: false)
     end
 
     it 'parses Markdown' do
@@ -164,6 +166,7 @@ RSpec.describe 'Project', feature_category: :groups_and_projects do
     before do
       sign_in(project.first_owner)
       visit path
+      stub_feature_flags(project_overview_reorg: false)
     end
 
     it 'shows project topics' do
@@ -195,6 +198,7 @@ RSpec.describe 'Project', feature_category: :groups_and_projects do
     before do
       sign_in(project.first_owner)
       visit path
+      stub_feature_flags(project_overview_reorg: false)
     end
 
     context 'desktop component' do
@@ -426,6 +430,10 @@ RSpec.describe 'Project', feature_category: :groups_and_projects do
   describe 'view for a user without an access to a repo' do
     let(:project) { create(:project, :repository) }
     let(:user) { create(:user) }
+
+    before do
+      stub_feature_flags(project_overview_reorg: false)
+    end
 
     it 'does not contain default branch information in its content', :js do
       default_branch = 'merge-commit-analyze-side-branch'

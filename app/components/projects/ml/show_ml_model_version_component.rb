@@ -18,6 +18,9 @@ module Projects
             id: model_version.id,
             version: model_version.version,
             path: model_version.path,
+            description: model_version.description,
+            project_path: project_path(model_version.project),
+            package_id: model_version.package_id,
             model: {
               name: model.name,
               path: model.path

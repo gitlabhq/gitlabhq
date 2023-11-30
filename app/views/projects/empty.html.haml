@@ -9,68 +9,142 @@
 = render "home_panel"
 = render "archived_notice", project: @project
 
-= render "invite_members_empty_project" if can_admin_project_member?(@project)
+- if Feature.enabled?(:project_overview_reorg)
+  - add_page_specific_style 'page_bundles/project'
 
-%h4.gl-mt-0.gl-mb-3
-  = _('The repository for this project is empty')
+  .project-page-indicator.js-show-on-project-root
 
-- if @project.can_current_user_push_code?
-  %p
-    = _('You can get started by cloning the repository or start adding files to it with one of the following options.')
+  .project-page-layout
+    .project-page-layout-content.gl-mt-5
+      .project-buttons.gl-mb-5{ data: { testid: 'quick-actions-container' } }
+        .project-clone-holder.d-block.d-md-none
+          = render "shared/mobile_clone_panel"
 
-.project-buttons{ data: { testid: 'quick-actions-container' } }
-  .project-code-holder.d-block.d-md-none.gl-mt-3.gl-mr-3
-    = render "shared/mobile_clone_panel"
+        .project-clone-holder.gl-display-none.gl-md-display-flex.gl-justify-content-end.gl-w-full.gl-mt-2
+          = render "projects/buttons/code", ref: @ref
 
-  .project-code-holder.d-none.d-md-inline-block.gl-mb-3.gl-mr-3.float-left
-    = render "projects/buttons/code", ref: @ref
-  = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons, project_buttons: true
+      = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-new-card-body gl-bg-gray-10 gl-p-5' }) do |c|
+        - c.with_body do
+          %h4.gl-font-lg.gl-mt-0.gl-mb-2= _('The repository for this project is empty')
+          - if @project.can_current_user_push_code?
+            %p.gl-m-0.gl-text-secondary= _('You can get started by cloning the repository or start adding files to it with one of the following options.')
 
-- if can?(current_user, :push_code, @project)
-  .empty-wrapper.gl-mt-4
-    %h3#repo-command-line-instructions.page-title-empty
-      = _('Command line instructions')
+      - if can?(current_user, :push_code, @project)
+        = render Pajamas::CardComponent.new(header_options: { class: 'gl-py-4' }) do |c|
+          - c.with_header do
+            %h5.gl-font-lg.gl-m-0= _('Command line instructions')
+          - c.with_body do
+            %p
+              = _('You can also upload existing files from your computer using the instructions below.')
+            .git-empty.js-git-empty
+              %h5= _('Git global setup')
+              %pre.gl-bg-gray-10
+                :preserve
+                  git config --global user.name "#{h git_user_name}"
+                  git config --global user.email "#{h git_user_email}"
+
+              %h5= _('Create a new repository')
+              %pre.gl-bg-gray-10
+                :preserve
+                  git clone #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
+                  cd #{h @project.path}
+                  git switch --create #{h escaped_default_branch_name}
+                  touch README.md
+                  git add README.md
+                  git commit -m "add README"
+                - if @project.can_current_user_push_to_default_branch?
+                  %span><
+                    git push --set-upstream origin #{h escaped_default_branch_name }
+
+              %h5= _('Push an existing folder')
+              %pre.gl-bg-gray-10
+                :preserve
+                  cd existing_folder
+                  git init --initial-branch=#{h escaped_default_branch_name}
+                  git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
+                  git add .
+                  git commit -m "Initial commit"
+                - if @project.can_current_user_push_to_default_branch?
+                  %span><
+                    git push --set-upstream origin #{h escaped_default_branch_name }
+
+              %h5= _('Push an existing Git repository')
+              %pre.gl-bg-gray-10
+                :preserve
+                  cd existing_repo
+                  git remote rename origin old-origin
+                  git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
+                - if @project.can_current_user_push_to_default_branch?
+                  %span><
+                    git push --set-upstream origin --all
+                    git push --set-upstream origin --tags
+
+    .project-page-layout-sidebar.js-show-on-project-root.gl-mt-5
+      = render "sidebar"
+
+- else
+  = render "invite_members_empty_project" if can_admin_project_member?(@project)
+
+  %h4.gl-mt-0.gl-mb-3
+    = _('The repository for this project is empty')
+
+  - if @project.can_current_user_push_code?
     %p
-      = _('You can also upload existing files from your computer using the instructions below.')
-    .git-empty.js-git-empty
-      %h5= _('Git global setup')
-      %pre.bg-light
-        :preserve
-          git config --global user.name "#{h git_user_name}"
-          git config --global user.email "#{h git_user_email}"
+      = _('You can get started by cloning the repository or start adding files to it with one of the following options.')
 
-      %h5= _('Create a new repository')
-      %pre.bg-light
-        :preserve
-          git clone #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
-          cd #{h @project.path}
-          git switch --create #{h escaped_default_branch_name}
-          touch README.md
-          git add README.md
-          git commit -m "add README"
-        - if @project.can_current_user_push_to_default_branch?
-          %span><
-            git push --set-upstream origin #{h escaped_default_branch_name }
+  .project-buttons{ data: { testid: 'quick-actions-container' } }
+    .project-clone-holder.d-block.d-md-none.gl-mt-3.gl-mr-3
+      = render "shared/mobile_clone_panel"
 
-      %h5= _('Push an existing folder')
-      %pre.bg-light
-        :preserve
-          cd existing_folder
-          git init --initial-branch=#{h escaped_default_branch_name}
-          git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
-          git add .
-          git commit -m "Initial commit"
-        - if @project.can_current_user_push_to_default_branch?
-          %span><
-            git push --set-upstream origin #{h escaped_default_branch_name }
+    .project-clone-holder.d-none.d-md-inline-block.gl-mb-3.gl-mr-3.float-left
+      = render "projects/buttons/code", ref: @ref
+    = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons, project_buttons: true
 
-      %h5= _('Push an existing Git repository')
-      %pre.bg-light
-        :preserve
-          cd existing_repo
-          git remote rename origin old-origin
-          git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
-        - if @project.can_current_user_push_to_default_branch?
-          %span><
-            git push --set-upstream origin --all
-            git push --set-upstream origin --tags
+  - if can?(current_user, :push_code, @project)
+    .empty-wrapper.gl-mt-4
+      %h3#repo-command-line-instructions.page-title-empty
+        = _('Command line instructions')
+      %p
+        = _('You can also upload existing files from your computer using the instructions below.')
+      .git-empty.js-git-empty
+        %h5= _('Git global setup')
+        %pre.bg-light
+          :preserve
+            git config --global user.name "#{h git_user_name}"
+            git config --global user.email "#{h git_user_email}"
+
+        %h5= _('Create a new repository')
+        %pre.bg-light
+          :preserve
+            git clone #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
+            cd #{h @project.path}
+            git switch --create #{h escaped_default_branch_name}
+            touch README.md
+            git add README.md
+            git commit -m "add README"
+          - if @project.can_current_user_push_to_default_branch?
+            %span><
+              git push --set-upstream origin #{h escaped_default_branch_name }
+
+        %h5= _('Push an existing folder')
+        %pre.bg-light
+          :preserve
+            cd existing_folder
+            git init --initial-branch=#{h escaped_default_branch_name}
+            git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
+            git add .
+            git commit -m "Initial commit"
+          - if @project.can_current_user_push_to_default_branch?
+            %span><
+              git push --set-upstream origin #{h escaped_default_branch_name }
+
+        %h5= _('Push an existing Git repository')
+        %pre.bg-light
+          :preserve
+            cd existing_repo
+            git remote rename origin old-origin
+            git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
+          - if @project.can_current_user_push_to_default_branch?
+            %span><
+              git push --set-upstream origin --all
+              git push --set-upstream origin --tags

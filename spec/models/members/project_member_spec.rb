@@ -57,6 +57,7 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
     let_it_be(:developer) { create(:user) }
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:admin) { create(:admin) }
 
     before do
       project.add_owner(owner)
@@ -71,6 +72,30 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
 
       it 'returns Gitlab::Access.options_with_owner' do
         expect(access_levels).to eq(Gitlab::Access.options_with_owner)
+      end
+    end
+
+    context 'when member can manage owners via admin' do
+      let(:user) { admin }
+
+      context 'with admin mode', :enable_admin_mode do
+        it 'returns Gitlab::Access.options_with_owner' do
+          expect(access_levels).to eq(Gitlab::Access.options_with_owner)
+        end
+      end
+
+      context 'without admin mode' do
+        it 'returns empty hash' do
+          expect(access_levels).to eq({})
+        end
+      end
+    end
+
+    context 'when user is not a project member' do
+      let(:user) { create(:user) }
+
+      it 'return an empty hash' do
+        expect(access_levels).to eq({})
       end
     end
 

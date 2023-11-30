@@ -86,7 +86,6 @@ Style/ExplicitBlockArgument:
     - 'spec/support/database/gitlab_schemas_validate_connection.rb'
     - 'spec/support/helpers/feature_flag_helpers.rb'
     - 'spec/support/helpers/features/runners_helpers.rb'
-    - 'spec/support/helpers/features/top_nav_spec_helpers.rb'
     - 'spec/support/helpers/modal_helpers.rb'
     - 'spec/support/helpers/next_found_instance_of.rb'
     - 'spec/support/helpers/usage_data_helpers.rb'

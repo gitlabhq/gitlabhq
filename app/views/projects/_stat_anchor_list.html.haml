@@ -2,8 +2,9 @@
 - project_buttons = local_assigns.fetch(:project_buttons, false)
 
 - return unless anchors.any?
-%ul.nav{ class: (project_buttons ? 'gl-gap-3' : 'gl-gap-5') }
+
+%ul.nav.gl-gap-2
   - anchors.each do |anchor|
     %li.nav-item
       = link_to_if(anchor.link, anchor.label, anchor.link, stat_anchor_attrs(anchor)) do
-        .stat-text.d-flex.align-items-center{ class: ('btn gl-button btn-default disabled' if project_buttons) }= anchor.label
+        .stat-text.d-flex.align-items-center{ class: ('btn gl-button btn-default gl-px-0! disabled' if project_buttons) }= anchor.label

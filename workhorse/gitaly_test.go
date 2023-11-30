@@ -17,11 +17,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/protobuf/jsonpb" //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/issues/324868
-	"github.com/golang/protobuf/proto"  //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/issues/324868
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 
 	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
 
@@ -107,7 +107,7 @@ func TestGetInfoRefsProxiedToGitalySuccessfully(t *testing.T) {
 			require.Len(t, bodySplit, 3)
 
 			gitalyRequest := &gitalypb.InfoRefsRequest{}
-			require.NoError(t, jsonpb.UnmarshalString(bodySplit[0], gitalyRequest))
+			require.NoError(t, protojson.Unmarshal([]byte(bodySplit[0]), gitalyRequest))
 
 			require.Equal(t, gitProtocol, gitalyRequest.GitProtocol)
 			if tc.showAllRefs {
@@ -263,7 +263,7 @@ func TestPostReceivePackProxiedToGitalySuccessfully(t *testing.T) {
 	require.Len(t, split, 2)
 
 	gitalyRequest := &gitalypb.PostReceivePackRequest{}
-	require.NoError(t, jsonpb.UnmarshalString(split[0], gitalyRequest))
+	require.NoError(t, protojson.Unmarshal([]byte(split[0]), gitalyRequest))
 
 	require.Equal(t, apiResponse.Repository.StorageName, gitalyRequest.Repository.StorageName)
 	require.Equal(t, apiResponse.Repository.RelativePath, gitalyRequest.Repository.RelativePath)
@@ -437,7 +437,7 @@ func TestPostUploadPackProxiedToGitalySuccessfully(t *testing.T) {
 			require.Len(t, bodySplit, 2)
 
 			gitalyRequest := &gitalypb.PostUploadPackWithSidechannelRequest{}
-			require.NoError(t, jsonpb.UnmarshalString(bodySplit[0], gitalyRequest))
+			require.NoError(t, protojson.Unmarshal([]byte(bodySplit[0]), gitalyRequest))
 
 			require.Equal(t, apiResponse.Repository.StorageName, gitalyRequest.Repository.StorageName)
 			require.Equal(t, apiResponse.Repository.RelativePath, gitalyRequest.Repository.RelativePath)
@@ -822,13 +822,12 @@ func buildPbRepo(storageName, relativePath string) *gitalypb.Repository {
 }
 
 func serializedMessage(name string, arg proto.Message) rpcArg {
-	m := &jsonpb.Marshaler{}
-	str, err := m.MarshalToString(arg)
+	data, err := protojson.Marshal(arg)
 	if err != nil {
 		panic(err)
 	}
 
-	return rpcArg{name, str}
+	return rpcArg{name, string(data)}
 }
 
 func serializedProtoMessage(name string, arg proto.Message) rpcArg {

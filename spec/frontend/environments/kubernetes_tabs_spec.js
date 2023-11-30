@@ -179,9 +179,10 @@ describe('~/environments/components/kubernetes_tabs.vue', () => {
       expect(wrapper.emitted('loading')[1]).toEqual([false]);
     });
 
-    it('emits a failed event when gets it from the component', () => {
-      findKubernetesSummary().vm.$emit('failed');
-      expect(wrapper.emitted('failed')).toHaveLength(1);
+    it('emits a state update event when gets it from the component', () => {
+      const eventData = { summary: true };
+      findKubernetesSummary().vm.$emit('update-failed-state', eventData);
+      expect(wrapper.emitted('update-failed-state')).toEqual([[eventData]]);
     });
   });
 });

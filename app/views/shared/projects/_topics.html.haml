@@ -2,8 +2,9 @@
 
 - if project.topics.present?
   .gl-w-full.gl-display-inline-flex.gl-flex-wrap.gl-font-base.gl-font-weight-normal.gl-align-items-center.gl-mx-n2.gl-my-n2{ 'data-testid': 'project_topic_list' }
-    %span.gl-p-2.gl-text-gray-500
-      = _('Topics') + ':'
+    - if Feature.disabled?(:project_overview_reorg)
+      %span.gl-p-2.gl-text-gray-500
+        = _('Topics') + ':'
     - project.topics_to_show.each do |topic|
       - explore_project_topic_path = topic_explore_projects_cleaned_path(topic_name: topic[:name])
       - if topic[:title].length > max_project_topic_length

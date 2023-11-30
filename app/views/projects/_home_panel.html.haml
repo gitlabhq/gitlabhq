@@ -1,9 +1,9 @@
 - empty_repo = @project.empty_repo?
-- show_auto_devops_callout = show_auto_devops_callout?(@project)
 - emails_disabled = @project.emails_disabled?
+- ff_reorg_disabled = Feature.disabled?(:project_overview_reorg)
 
-.project-home-panel.js-show-on-project-root.gl-mt-4.gl-mb-5{ class: [("empty-project" if empty_repo)] }
-  .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-flex-direction-column.gl-md-flex-direction-row.gl-mb-3.gl-gap-5
+%header.project-home-panel.js-show-on-project-root.gl-mt-5{ class: [("empty-project" if empty_repo)] }
+  .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-flex-direction-column.gl-md-flex-direction-row.gl-gap-5
     .home-panel-title-row.gl-display-flex.gl-align-items-center
       %div{ class: 'avatar-container rect-avatar s64 home-panel-avatar gl-flex-shrink-0 gl-w-11 gl-h-11 gl-mr-3! float-none' }
         = project_icon(@project, alt: @project.name, class: 'avatar avatar-tile s64', width: 64, height: 64, itemprop: 'image')
@@ -35,25 +35,29 @@
       = render 'projects/buttons/star'
       = render 'projects/buttons/fork'
 
-  - if can?(current_user, :read_code, @project)
-    %nav.project-stats
-      - if @project.empty_repo?
-        = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_anchors
-      - else
-        = render 'stat_anchor_list', anchors: @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
-  .gl-my-3
-    = render "shared/projects/topics", project: @project
-  .home-panel-home-desc.mt-1
-    - if @project.description.present?
-      .home-panel-description.text-break
-        .home-panel-description-markdown.read-more-container{ itemprop: 'description' }
-          = markdown_field(@project, :description)
-        = render Pajamas::ButtonComponent.new(category: :tertiary, variant: :link, button_options: { class: 'js-read-more-trigger gl-lg-display-none' }) do
-          = _("Read more")
+  - if ff_reorg_disabled
+    - if can?(current_user, :read_code, @project)
+      - show_auto_devops_callout = show_auto_devops_callout?(@project)
+
+      %nav.project-stats.gl-mt-3
+        - if @project.empty_repo?
+          = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_anchors
+        - else
+          = render 'stat_anchor_list', anchors: @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
+    .gl-my-3
+      = render "shared/projects/topics", project: @project
+
+    .home-panel-home-desc.mt-1
+      - if @project.description.present?
+        .home-panel-description.text-break
+          .home-panel-description-markdown.read-more-container{ itemprop: 'description' }
+            = markdown_field(@project, :description)
+          = render Pajamas::ButtonComponent.new(category: :tertiary, variant: :link, button_options: { class: 'js-read-more-trigger gl-lg-display-none' }) do
+            = _("Read more")
 
     = render_if_exists "projects/home_mirror"
 
-  - if @project.badges.present?
+  - if ff_reorg_disabled && @project.badges.present?
     .project-badges.mb-2{ data: { testid: 'project-badges-content' } }
       - @project.badges.each do |badge|
         - badge_link_url = badge.rendered_link_url(@project)

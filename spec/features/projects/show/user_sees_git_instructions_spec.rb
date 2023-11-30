@@ -10,6 +10,7 @@ RSpec.describe 'Projects > Show > User sees Git instructions', feature_category:
     # validation failure on NotificationSetting.
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/299822#note_492817174
     user.notification_settings.reset
+    stub_feature_flags(project_overview_reorg: false)
   end
 
   shared_examples_for 'redirects to the sign in page' do

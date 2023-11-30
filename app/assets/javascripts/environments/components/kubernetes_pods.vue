@@ -82,9 +82,10 @@ export default {
   methods: {
     countPodsByPhase(phase) {
       const filteredPods = this.k8sPods.filter((item) => item.status.phase === phase);
-      if (phase === PHASE_FAILED && filteredPods.length) {
-        this.$emit('failed');
-      }
+
+      const hasFailedState = Boolean(phase === PHASE_FAILED && filteredPods.length);
+      this.$emit('update-failed-state', { pods: hasFailedState });
+
       return filteredPods.length;
     },
   },

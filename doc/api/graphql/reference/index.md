@@ -1472,6 +1472,29 @@ Input type: `AuditEventsAmazonS3ConfigurationUpdateInput`
 | <a id="mutationauditeventsamazons3configurationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationauditeventsamazons3configurationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.auditEventsInstanceAmazonS3ConfigurationCreate`
+
+Input type: `AuditEventsInstanceAmazonS3ConfigurationCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsinstanceamazons3configurationcreateaccesskeyxid"></a>`accessKeyXid` | [`String!`](#string) | Access key ID of the Amazon S3 account. |
+| <a id="mutationauditeventsinstanceamazons3configurationcreateawsregion"></a>`awsRegion` | [`String!`](#string) | AWS region where the bucket is created. |
+| <a id="mutationauditeventsinstanceamazons3configurationcreatebucketname"></a>`bucketName` | [`String!`](#string) | Name of the bucket where the audit events would be logged. |
+| <a id="mutationauditeventsinstanceamazons3configurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsinstanceamazons3configurationcreatename"></a>`name` | [`String`](#string) | Destination name. |
+| <a id="mutationauditeventsinstanceamazons3configurationcreatesecretaccesskey"></a>`secretAccessKey` | [`String!`](#string) | Secret access key of the Amazon S3 account. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsinstanceamazons3configurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsinstanceamazons3configurationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationauditeventsinstanceamazons3configurationcreateinstanceamazons3configuration"></a>`instanceAmazonS3Configuration` | [`InstanceAmazonS3ConfigurationType`](#instanceamazons3configurationtype) | Created instance Amazon S3 configuration. |
+
 ### `Mutation.auditEventsStreamingDestinationEventsAdd`
 
 Input type: `AuditEventsStreamingDestinationEventsAddInput`
@@ -20317,6 +20340,20 @@ CI/CD variables a project inherites from its parent group and ancestors.
 | <a id="inheritedcivariableraw"></a>`raw` | [`Boolean`](#boolean) | Indicates whether the variable is raw. |
 | <a id="inheritedcivariablevariabletype"></a>`variableType` | [`CiVariableType`](#civariabletype) | Type of the variable. |
 
+### `InstanceAmazonS3ConfigurationType`
+
+Stores instance level Amazon S3 configurations for audit event streaming.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="instanceamazons3configurationtypeaccesskeyxid"></a>`accessKeyXid` | [`String!`](#string) | Access key ID of the Amazon S3 account. |
+| <a id="instanceamazons3configurationtypeawsregion"></a>`awsRegion` | [`String!`](#string) | AWS region where the bucket is created. |
+| <a id="instanceamazons3configurationtypebucketname"></a>`bucketName` | [`String!`](#string) | Name of the bucket where the audit events would be logged. |
+| <a id="instanceamazons3configurationtypeid"></a>`id` | [`ID!`](#id) | ID of the configuration. |
+| <a id="instanceamazons3configurationtypename"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
+
 ### `InstanceExternalAuditEventDestination`
 
 Represents an external resource to send instance audit events to.
@@ -32377,6 +32414,7 @@ Implementations:
 Implementations:
 
 - [`AmazonS3ConfigurationType`](#amazons3configurationtype)
+- [`InstanceAmazonS3ConfigurationType`](#instanceamazons3configurationtype)
 
 ##### Fields
 

@@ -1,18 +1,42 @@
 import MockAdapter from 'axios-mock-adapter';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { trackContextAccess, ariaCurrent } from '~/super_sidebar/utils';
+import { getTopFrequentItems, trackContextAccess, ariaCurrent } from '~/super_sidebar/utils';
 import axios from '~/lib/utils/axios_utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { FREQUENT_ITEMS, FIFTEEN_MINUTES_IN_MS } from '~/frequent_items/constants';
 import { HTTP_STATUS_OK, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import waitForPromises from 'helpers/wait_for_promises';
+import { unsortedFrequentItems, sortedFrequentItems } from '../frequent_items/mock_data';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
 
 useLocalStorageSpy();
 
 describe('Super sidebar utils spec', () => {
+  describe('getTopFrequentItems', () => {
+    const maxItems = 3;
+
+    it.each([undefined, null, []])('returns empty array if `items` is %s', (items) => {
+      const result = getTopFrequentItems(items);
+
+      expect(result.length).toBe(0);
+    });
+
+    it('returns the requested amount of items', () => {
+      const result = getTopFrequentItems(unsortedFrequentItems, maxItems);
+
+      expect(result.length).toBe(maxItems);
+    });
+
+    it('sorts frequent items in order of frequency and lastAccessedOn', () => {
+      const result = getTopFrequentItems(unsortedFrequentItems, maxItems);
+      const expectedResult = sortedFrequentItems.slice(0, maxItems);
+
+      expect(result).toEqual(expectedResult);
+    });
+  });
+
   describe('trackContextAccess', () => {
     useLocalStorageSpy();
 

@@ -21,8 +21,16 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   AnchorData = Struct.new(:is_link, :label, :link, :class_modifier, :icon, :itemprop, :data)
   MAX_TOPICS_TO_SHOW = 3
 
-  def statistic_icon(icon_name = 'plus-square-o')
-    sprite_icon(icon_name, css_class: 'icon gl-mr-2 gl-text-gray-500')
+  def statistic_default_class_list
+    Feature.enabled?(:project_overview_reorg) ? 'icon gl-mr-3 gl-text-gray-500' : 'icon gl-mr-2 gl-text-gray-500'
+  end
+
+  def statistic_default_icon
+    Feature.enabled?(:project_overview_reorg) ? 'plus' : 'plus-square-o'
+  end
+
+  def statistic_icon(icon_name = statistic_default_icon, class_list = statistic_default_class_list)
+    sprite_icon(icon_name, css_class: class_list)
   end
 
   def statistics_anchors(show_auto_devops_callout:)
@@ -288,13 +296,19 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     if can_current_user_push_to_default_branch?
       new_file_path = empty_repo? ? ide_edit_path(project, default_branch_or_main) : project_new_blob_path(project, default_branch_or_main)
 
-      AnchorData.new(false, statistic_icon + _('New file'), new_file_path, 'btn-dashed')
+      if Feature.enabled?(:project_overview_reorg)
+        AnchorData.new(false, statistic_icon('plus', 'gl-text-blue-500! gl-mr-3') + _('New file'), new_file_path)
+      else
+        AnchorData.new(false, statistic_icon + _('New file'), new_file_path, 'btn-dashed')
+      end
     end
   end
 
   def readme_anchor_data
     if can_current_user_push_to_default_branch? && readme_path.nil?
-      AnchorData.new(false, statistic_icon + _('Add README'), empty_repo? ? add_readme_ide_path : add_readme_path)
+      icon = Feature.enabled?(:project_overview_reorg) ? statistic_icon('plus', 'gl-text-blue-500! gl-mr-3') : statistic_icon
+      label = icon + _('Add README')
+      AnchorData.new(false, label, empty_repo? ? add_readme_ide_path : add_readme_path)
     elsif readme_path
       AnchorData.new(
         false,
@@ -308,9 +322,11 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def changelog_anchor_data
     if can_current_user_push_to_default_branch? && repository.changelog.blank?
+      icon = Feature.enabled?(:project_overview_reorg) ? statistic_icon('plus', 'gl-mr-3') : statistic_icon
+      label = icon + _('Add CHANGELOG')
       AnchorData.new(
         false,
-        statistic_icon + _('Add CHANGELOG'),
+        label,
         empty_repo? ? add_changelog_ide_path : add_changelog_path
       )
     elsif repository.changelog.present?
@@ -336,9 +352,11 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
         'license'
       )
     elsif can_current_user_push_to_default_branch?
+      icon = Feature.enabled?(:project_overview_reorg) ? statistic_icon('plus', 'gl-text-blue-500! gl-mr-3') : statistic_icon
+      label = icon + _('Add LICENSE')
       AnchorData.new(
         false,
-        content_tag(:span, statistic_icon + _('Add LICENSE'), class: 'add-license-link d-flex'),
+        content_tag(:span, label, class: 'add-license-link d-flex'),
         empty_repo? ? add_license_ide_path : add_license_path
       )
     end
@@ -346,9 +364,11 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def contribution_guide_anchor_data
     if can_current_user_push_to_default_branch? && repository.contribution_guide.blank?
+      icon = Feature.enabled?(:project_overview_reorg) ? statistic_icon('plus', 'gl-text-blue-500! gl-mr-3') : statistic_icon
+      label = icon + _('Add CONTRIBUTING')
       AnchorData.new(
         false,
-        statistic_icon + _('Add CONTRIBUTING'),
+        label,
         empty_repo? ? add_contribution_guide_ide_path : add_contribution_guide_path
       )
     elsif repository.contribution_guide.present?
@@ -387,7 +407,11 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def kubernetes_cluster_anchor_data
     if can_instantiate_cluster?
       if clusters.empty?
-        AnchorData.new(false, statistic_icon + _('Add Kubernetes cluster'), project_clusters_path(project))
+        if Feature.enabled?(:project_overview_reorg)
+          AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'gl-mr-3') + _('Add Kubernetes cluster'), class: 'btn-link'), project_clusters_path(project))
+        else
+          AnchorData.new(false, content_tag(:span, statistic_icon + _('Add Kubernetes cluster')), project_clusters_path(project))
+        end
       else
         cluster_link = clusters.count == 1 ? project_cluster_path(project, clusters.first) : project_clusters_path(project)
 
@@ -402,7 +426,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     if cicd_missing?
       AnchorData.new(false, statistic_icon + _('Set up CI/CD'), project_ci_pipeline_editor_path(project))
     elsif repository.gitlab_ci_yml.present?
-      AnchorData.new(false, statistic_icon('doc-text') + _('CI/CD configuration'), project_ci_pipeline_editor_path(project), 'btn-default')
+      AnchorData.new(false, statistic_icon('rocket') + _('CI/CD configuration'), project_ci_pipeline_editor_path(project), 'btn-default')
     end
   end
 
@@ -412,7 +436,9 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     if project.wiki.has_home_page?
       AnchorData.new(false, statistic_icon('book') + _('Wiki'), project_wiki_path, 'btn-default', nil, nil)
     elsif can_create_wiki?
-      AnchorData.new(false, statistic_icon + _('Add Wiki'), project_create_wiki_path, nil, nil, nil)
+      icon = Feature.enabled?(:project_overview_reorg) ? statistic_icon('plus', 'gl-mr-3') : statistic_icon
+      label = icon + _('Add Wiki')
+      AnchorData.new(false, label, project_create_wiki_path, nil, nil, nil)
     end
   end
 
@@ -457,8 +483,11 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def integrations_anchor_data
     return unless can?(current_user, :admin_project, project)
 
-    label = statistic_icon('settings') + _('Configure Integrations')
-    AnchorData.new(false, label, project_settings_integrations_path(project), nil, nil, nil)
+    if Feature.enabled?(:project_overview_reorg)
+      AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'gl-blue-500! gl-mr-3') + _('Configure Integrations'), class: 'btn-link'), project_settings_integrations_path(project), nil, nil, nil)
+    else
+      AnchorData.new(false, content_tag(:span, statistic_icon('settings') + _('Configure Integrations')), project_settings_integrations_path(project), nil, nil, nil)
+    end
   end
 
   def cicd_missing?

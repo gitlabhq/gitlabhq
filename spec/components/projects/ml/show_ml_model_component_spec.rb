@@ -25,7 +25,10 @@ RSpec.describe Projects::Ml::ShowMlModelComponent, type: :component, feature_cat
           'path' => "/#{project.full_path}/-/ml/models/#{model1.id}",
           'description' => 'This is a placeholder for the short description',
           'latestVersion' => {
-            'version' => model1.latest_version.version
+            'version' => model1.latest_version.version,
+            'description' => model1.latest_version.description,
+            'projectPath' => "/#{project.full_path}",
+            'packageId' => model1.latest_version.package_id
           },
           'versionCount' => 1
         }

@@ -59,7 +59,7 @@ module Clusters
 
             return unless project_entries
 
-            allowed_projects.where_full_path_in(project_entries.keys).map do |project|
+            allowed_projects.where_full_path_in(project_entries.keys, use_includes: false).map do |project|
               { project_id: project.id, config: user_access_as }
             end
           end
@@ -70,7 +70,7 @@ module Clusters
 
             return unless group_entries
 
-            allowed_groups.where_full_path_in(group_entries.keys).map do |group|
+            allowed_groups.where_full_path_in(group_entries.keys, use_includes: false).map do |group|
               { group_id: group.id, config: user_access_as }
             end
           end

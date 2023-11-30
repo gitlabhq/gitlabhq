@@ -57,6 +57,6 @@ else
   end
 
   puts missing_issue_message % missing_issues unless missing_issues.empty?
-  puts "See https://about.gitlab.com/handbook/engineering/quality/quality-engineering/debugging-qa-test-failures/#quarantining-tests"
+  puts "See https://about.gitlab.com/handbook/engineering/infrastructure/test-platform/debugging-qa-test-failures/#quarantining-tests"
   exit 1
 end

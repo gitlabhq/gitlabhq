@@ -100,6 +100,8 @@ RSpec.describe 'projects/_home_panel' do
       allow(view).to receive(:current_user).and_return(user)
       allow(view).to receive(:can?).with(user, :read_project, project).and_return(false)
       allow(project).to receive(:license_anchor_data).and_return(false)
+
+      stub_feature_flags(project_overview_reorg: false)
     end
 
     context 'has no badges' do

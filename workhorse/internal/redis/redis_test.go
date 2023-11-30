@@ -42,6 +42,9 @@ func TestConfigureValidConfigX(t *testing.T) {
 			scheme: "redis",
 		},
 		{
+			scheme: "rediss",
+		},
+		{
 			scheme: "tcp",
 		},
 	}

@@ -51,8 +51,15 @@ class ProjectMember < Member
     end
 
     def permissible_access_level_roles_for_project_access_token(current_user, project)
-      permissible_access_level_roles(current_user, project).filter do |_, value|
-        value <= project.project_authorizations.find_by(user: current_user).access_level
+      if Ability.allowed?(current_user, :manage_owners, project)
+        Gitlab::Access.options_with_owner
+      else
+        max_access_level = project.team.max_member_access(current_user.id)
+        return {} unless max_access_level.present?
+
+        ProjectMember.access_level_roles.filter do |_, value|
+          value <= max_access_level
+        end
       end
     end
 

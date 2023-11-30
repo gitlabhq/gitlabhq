@@ -78,6 +78,20 @@ describe('UserMenu component', () => {
       });
     });
 
+    it('updates avatar url on custom avatar update event', async () => {
+      const url = `${userMenuMockData.avatar_url}-new-avatar`;
+
+      document.dispatchEvent(new CustomEvent('userAvatar:update', { detail: { url } }));
+      await nextTick();
+
+      const avatar = toggle.findComponent(GlAvatar);
+      expect(avatar.exists()).toBe(true);
+      expect(avatar.props()).toMatchObject({
+        entityName: userMenuMockData.name,
+        src: url,
+      });
+    });
+
     it('renders screen reader text', () => {
       expect(toggle.find('.gl-sr-only').text()).toBe(`${userMenuMockData.name} user’s menu`);
     });

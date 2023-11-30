@@ -15,15 +15,35 @@
 
 = render "home_panel"
 
-- if can?(current_user, :read_code, @project) && @project.repository_languages.present?
-  - add_page_startup_graphql_call('repository/path_last_commit', { projectPath: @project.full_path, ref: current_ref, path: current_route_path || "" })
-  = repository_languages_bar(@project.repository_languages)
+- if Feature.enabled?(:project_overview_reorg)
+  .project-page-indicator.js-show-on-project-root
 
-= render "archived_notice", project: @project
-= render_if_exists "projects/marked_for_deletion_notice", project: @project
-= render_if_exists "projects/ancestor_group_marked_for_deletion_notice", project: @project
+  .project-page-layout
+    .project-page-layout-sidebar.js-show-on-project-root.gl-mt-5
+      = render "sidebar"
 
-- view_path = @project.default_view
+    .project-page-layout-content.gl-mt-5
+      - if can?(current_user, :read_code, @project) && @project.repository_languages.present?
+        - add_page_startup_graphql_call('repository/path_last_commit', { projectPath: @project.full_path, ref: current_ref, path: current_route_path || "" })
 
-%div{ class: project_child_container_class(view_path) }
-  = render view_path, is_project_overview: true
+      = render "archived_notice", project: @project
+      = render_if_exists "projects/marked_for_deletion_notice", project: @project
+      = render_if_exists "projects/ancestor_group_marked_for_deletion_notice", project: @project
+
+      - view_path = @project.default_view
+
+      %div{ class: project_child_container_class(view_path) }
+        = render view_path, is_project_overview: true
+- else
+  - if can?(current_user, :read_code, @project) && @project.repository_languages.present?
+    - add_page_startup_graphql_call('repository/path_last_commit', { projectPath: @project.full_path, ref: current_ref, path: current_route_path || "" })
+    = repository_languages_bar(@project.repository_languages)
+
+  = render "archived_notice", project: @project
+  = render_if_exists "projects/marked_for_deletion_notice", project: @project
+  = render_if_exists "projects/ancestor_group_marked_for_deletion_notice", project: @project
+
+  - view_path = @project.default_view
+
+  %div{ class: project_child_container_class(view_path) }
+    = render view_path, is_project_overview: true

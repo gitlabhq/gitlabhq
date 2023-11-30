@@ -63,9 +63,9 @@ Use CI/CD environment variables to configure your project.
 
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Variables**.
-1. Set the variable `AZURE_CLIENT_ID` to your Azure client ID.
-1. Set the variable `AZURE_CLIENT_SECRET` to your Azure client secret.
-1. Set the variable `AZURE_TENANT_ID` to your service principal.
+1. Set the variable `ARM_CLIENT_ID` to your Azure client ID.
+1. Set the variable `ARM_CLIENT_SECRET` to your Azure client secret.
+1. Set the variable `ARM_TENANT_ID` to your service principal.
 1. Set the variable `TF_VAR_agent_token` to the agent token displayed in the previous task.
 1. Set the variable `TF_VAR_kas_address` to the agent server address displayed in the previous task.
 

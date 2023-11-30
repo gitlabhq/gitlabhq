@@ -3,7 +3,6 @@ import { nextTick } from 'vue';
 import { GlForm, GlButton } from '@gitlab/ui';
 import { VARIANT_DANGER, VARIANT_INFO, createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
-import { readFileAsDataURL } from '~/lib/utils/file_utility';
 import SetStatusForm from '~/set_status_modal/set_status_form.vue';
 import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
 import { isUserBusy, computedClearStatusAfterValue } from '~/set_status_modal/utils';
@@ -106,20 +105,12 @@ export default {
         this.updateProfileSettings = false;
       }
     },
-    async syncHeaderAvatars() {
-      const dataURL = await readFileAsDataURL(this.avatarBlob);
-
-      const elements = gon?.use_new_navigation
-        ? ['[data-testid="user-dropdown"] .gl-avatar']
-        : ['.header-user-avatar', '.js-sidebar-user-avatar'];
-
-      elements.forEach((selector) => {
-        const node = document.querySelector(selector);
-        if (!node) return;
-
-        node.setAttribute('src', dataURL);
-        node.setAttribute('srcset', dataURL);
-      });
+    syncHeaderAvatars() {
+      document.dispatchEvent(
+        new CustomEvent('userAvatar:update', {
+          detail: { url: URL.createObjectURL(this.avatarBlob) },
+        }),
+      );
     },
     onBlobChange(blob) {
       this.avatarBlob = blob;

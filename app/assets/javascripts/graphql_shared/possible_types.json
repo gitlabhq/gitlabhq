@@ -4,7 +4,8 @@
     "AlertManagementPrometheusIntegration"
   ],
   "AmazonS3ConfigurationInterface": [
-    "AmazonS3ConfigurationType"
+    "AmazonS3ConfigurationType",
+    "InstanceAmazonS3ConfigurationType"
   ],
   "BaseHeaderInterface": [
     "AuditEventStreamingHeader",

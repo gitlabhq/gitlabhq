@@ -555,8 +555,6 @@ Style/GuardClause:
     - 'lib/tasks/config_lint.rake'
     - 'lib/tasks/gettext.rake'
     - 'qa/qa/ee/page/file/show.rb'
-    - 'qa/qa/mobile/page/main/menu.rb'
-    - 'qa/qa/mobile/page/sub_menus/common.rb'
     - 'qa/qa/page/component/snippet.rb'
     - 'qa/qa/page/mattermost/login.rb'
     - 'qa/qa/page/page_concern.rb'
