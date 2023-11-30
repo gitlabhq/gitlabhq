@@ -155,7 +155,6 @@ RSpec.describe 'User adds pages domain', :js, feature_category: :pages do
           click_button 'Save Changes'
 
           expect(page).to have_content('Certificate must be a valid PEM certificate')
-          expect(page).to have_content('Certificate misses intermediates')
           expect(page).to have_content("Key doesn't match the certificate")
         end
       end

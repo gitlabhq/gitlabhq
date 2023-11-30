@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::GroupPackagesFinder do
+RSpec.describe Packages::GroupPackagesFinder, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
@@ -23,6 +23,16 @@ RSpec.describe Packages::GroupPackagesFinder do
       let(:params) { { exclude_subgroups: false, package_type: package_type } }
 
       it { is_expected.to match_array([send("package_#{package_type}")]) }
+    end
+
+    shared_examples 'disabling package registry for project' do
+      let(:params) { super().merge(with_package_registry_enabled: true) }
+
+      before do
+        project.update!(package_registry_access_level: 'disabled', packages_enabled: false)
+      end
+
+      it { is_expected.to match_array(packages_returned) }
     end
 
     def self.package_types
@@ -117,6 +127,10 @@ RSpec.describe Packages::GroupPackagesFinder do
             let(:user) { deploy_token_for_group }
 
             it { is_expected.to match_array([package1, package2, package4]) }
+
+            it_behaves_like 'disabling package registry for project' do
+              let(:packages_returned) { [package4] }
+            end
           end
 
           context 'project deploy token' do
@@ -126,6 +140,11 @@ RSpec.describe Packages::GroupPackagesFinder do
             let(:user) { deploy_token_for_project }
 
             it { is_expected.to match_array([package4]) }
+
+            it_behaves_like 'disabling package registry for project' do
+              let(:project) { subproject }
+              let(:packages_returned) { [] }
+            end
           end
         end
 
@@ -200,6 +219,9 @@ RSpec.describe Packages::GroupPackagesFinder do
 
       it_behaves_like 'concerning versionless param'
       it_behaves_like 'concerning package statuses'
+      it_behaves_like 'disabling package registry for project' do
+        let(:packages_returned) { [] }
+      end
     end
 
     context 'group has package of all types' do

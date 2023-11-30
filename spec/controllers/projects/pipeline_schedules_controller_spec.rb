@@ -65,6 +65,10 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
           create(:protected_branch, *branch_access_levels, name: ref_name, project: project)
         end
 
+        after do
+          ProtectedBranches::CacheService.new(project).refresh
+        end
+
         it { expect { go }.to try(maintainer_accessible, :maintainer).of(project) }
         it { expect { go }.to try(developer_accessible, :developer).of(project) }
       end

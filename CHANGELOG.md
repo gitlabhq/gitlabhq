@@ -2,6 +2,22 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.5.3 (2023-11-30)
+
+### Security (11 changes)
+
+- [Validate adding members with higher role](gitlab-org/security/gitlab@4159a01ca7dfca9856a0ce404fcba8459382b104) ([merge request](gitlab-org/security/gitlab!3714))
+- [Enforce ref protection on pipeline schedule updates](gitlab-org/security/gitlab@4bafe829109bedb1d31f1c28eccafa425083c297) ([merge request](gitlab-org/security/gitlab!3656))
+- [Update mermaid version for DOS security fixes](gitlab-org/security/gitlab@641557519046d680bf8916a60b66c3d6020b1b88) ([merge request](gitlab-org/security/gitlab!3673))
+- [Prevent guest users from being able to add emojis in confidential issues](gitlab-org/security/gitlab@f6fe0644a285e323b0469510a69c8d01d7fbe2a7) ([merge request](gitlab-org/security/gitlab!3690))
+- [Do not run ssl cert validation if key has errors](gitlab-org/security/gitlab@dcd5a3dcafc8ec943b78b43b8898201b5a9c4de5) ([merge request](gitlab-org/security/gitlab!3661))
+- [Ensure access is checked when loading releases associated with tags](gitlab-org/security/gitlab@1d1a454147e80ea27cee382743cfff9e9041d0fe) ([merge request](gitlab-org/security/gitlab!3695))
+- [XSS and ReDoS in Markdown via Banzai pipeline of Jira](gitlab-org/security/gitlab@13cae16669e25b1f7a889ca3fdc5d08c5a6d28a2) ([merge request](gitlab-org/security/gitlab!3691))
+- [Prevent branch names starting with SHA-1 and SHA-256 values](gitlab-org/security/gitlab@bd18a249dbae6dc362dc5ecad26c61eb69407d78) ([merge request](gitlab-org/security/gitlab!3687))
+- [Filter out projects with disabled package registry in Composer finder](gitlab-org/security/gitlab@1d7e1de18c0ce2bf380f44aa777566dd61919a25) ([merge request](gitlab-org/security/gitlab!3682))
+- [Check max role for user for group access to protected ref](gitlab-org/security/gitlab@d3eef816a353bb0a4fb611a91c1cf0af6d9006bf) ([merge request](gitlab-org/security/gitlab!3646))
+- [Treat security policy bots as external](gitlab-org/security/gitlab@f16c6f2b80bd70d04a304b0441da2642dd32abe5) ([merge request](gitlab-org/security/gitlab!3676))
+
 ## 16.5.2 (2023-11-14)
 
 ### Fixed (4 changes)
