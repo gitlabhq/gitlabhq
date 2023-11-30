@@ -1307,9 +1307,11 @@ class User < MainClusterwide::ApplicationRecord
     several_namespaces? || admin
   end
 
-  def can?(action, subject = :global)
-    Ability.allowed?(self, action, subject)
+  # rubocop: disable Style/ArgumentsForwarding
+  def can?(action, subject = :global, **opts)
+    Ability.allowed?(self, action, subject, **opts)
   end
+  # rubocop: enable Style/ArgumentsForwarding
 
   def confirm_deletion_with_password?
     !password_automatically_set? && allow_password_authentication?

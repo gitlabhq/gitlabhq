@@ -207,6 +207,17 @@ module GroupsHelper
     new_group_custom_emoji_path(group)
   end
 
+  def access_level_roles_user_can_assign(group)
+    return {} unless current_user
+    return group.access_level_roles if current_user.can_admin_all_resources?
+
+    max_access_level = group.highest_group_member(current_user)&.access_level
+
+    return {} unless max_access_level
+
+    GroupMember.access_level_roles.select { |_k, v| v <= max_access_level }
+  end
+
   private
 
   def group_title_link(group, hidable: false, show_avatar: false, for_dropdown: false)

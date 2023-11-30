@@ -58301,6 +58301,9 @@ msgstr ""
 msgid "the following issues"
 msgstr ""
 
+msgid "the member access level can't be higher than the current user's one"
+msgstr ""
+
 msgid "the wiki"
 msgstr ""
 

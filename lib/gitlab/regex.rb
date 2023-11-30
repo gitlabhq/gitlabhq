@@ -241,10 +241,8 @@ module Gitlab
 
     # Based on Jira's project key format
     # https://confluence.atlassian.com/adminjiraserver073/changing-the-project-key-format-861253229.html
-    # Avoids linking CVE IDs (https://cve.mitre.org/cve/identifiers/syntaxchange.html#new) as Jira issues.
-    # CVE IDs use the format of CVE-YYYY-NNNNNNN
     def jira_issue_key_regex(expression_escape: '\b')
-      /#{expression_escape}(?!CVE-\d+-\d+)[A-Z][A-Z_0-9]+-\d+/
+      /#{expression_escape}([A-Z][A-Z_0-9]+-\d+)/
     end
 
     def jira_issue_key_project_key_extraction_regex
