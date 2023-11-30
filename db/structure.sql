@@ -35201,11 +35201,7 @@ CREATE INDEX index_zoekt_indexed_namespaces_on_namespace_id ON zoekt_indexed_nam
 
 CREATE UNIQUE INDEX index_zoekt_node_and_namespace ON zoekt_indexed_namespaces USING btree (zoekt_node_id, namespace_id);
 
-CREATE UNIQUE INDEX index_zoekt_nodes_on_index_base_url ON zoekt_nodes USING btree (index_base_url);
-
 CREATE INDEX index_zoekt_nodes_on_last_seen_at ON zoekt_nodes USING btree (last_seen_at);
-
-CREATE UNIQUE INDEX index_zoekt_nodes_on_search_base_url ON zoekt_nodes USING btree (search_base_url);
 
 CREATE UNIQUE INDEX index_zoekt_nodes_on_uuid ON zoekt_nodes USING btree (uuid);
 

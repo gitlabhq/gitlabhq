@@ -198,6 +198,7 @@ class BulkImports::Entity < ApplicationRecord
     return unless failures.any?
 
     update!(has_failures: true)
+    bulk_import.update!(has_failures: true)
   end
 
   def source_version

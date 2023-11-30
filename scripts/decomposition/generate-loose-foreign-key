@@ -161,7 +161,8 @@ def generate_migration(definition)
   content = <<-EOF.strip_heredoc
     # frozen_string_literal: true
 
-    class Remove#{definition.to_table.camelcase}#{definition.from_table.camelcase}#{definition.column.camelcase}Fk < Gitlab::Database::Migration[2.1]
+    class Remove#{definition.to_table.camelcase}#{definition.from_table.camelcase}#{definition.column.camelcase}Fk < Gitlab::Database::Migration[#{Gitlab::Database::Migration.current_version}]
+      milestone '#{Gitlab.current_milestone}'
       disable_ddl_transaction!
 
       FOREIGN_KEY_NAME = "#{definition.name}"

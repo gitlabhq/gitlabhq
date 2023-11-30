@@ -444,6 +444,13 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
 
         expect(entity.has_failures).to eq(true)
       end
+
+      it 'sets the has_failures flag on the parent import' do
+        create(:bulk_import_failure, entity: entity)
+
+        expect { entity.update_has_failures }
+          .to change { entity.bulk_import.has_failures? }.from(false).to(true)
+      end
     end
 
     context 'when entity does not have failures' do
