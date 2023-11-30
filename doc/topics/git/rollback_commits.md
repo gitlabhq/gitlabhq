@@ -6,48 +6,49 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Roll back commits **(FREE ALL)**
 
-## Undo Commits
+In Git, if you make a mistake, you can undo or roll back your changes.
+For more details, see [Undo options](numerous_undo_possibilities_in_git/index.md).
 
-- Undo last commit putting everything back into the staging area:
+## Undo commits
+
+- Undo your last commit and put everything back in the staging area:
 
   ```shell
   git reset --soft HEAD^
   ```
 
-- Add files and change message with:
+- Add files and change the commit message:
 
   ```shell
   git commit --amend -m "New Message"
   ```
 
-- Undo last and remove changes:
+- Undo the last change and remove all other changes,
+  if you did not push yet:
 
   ```shell
   git reset --hard HEAD^
   ```
 
-- Same as last one but for two commits back:
+- Undo the last change and remove the last two commits,
+  if you did not push yet:
 
   ```shell
   git reset --hard HEAD^^
   ```
 
-**Don't reset after pushing**
+## Git reset sample workflow
 
-## Reset Workflow
-
-1. Edit file again 'edit_this_file.rb'
-1. Check status
-1. Add and commit with wrong message
-1. Check log
-1. Amend commit
-1. Check log
-1. Soft reset
-1. Check log
-1. Pull for updates
-1. Push changes
-
-## Commands
+1. Edit file again `edit_this_file.rb`.
+1. Check status.
+1. Add and commit with wrong message.
+1. Check log.
+1. Amend commit.
+1. Check log.
+1. Soft reset.
+1. Check log.
+1. Pull for updates.
+1. Push changes.
 
 ```shell
 # Change file edit_this_file.rb
@@ -62,11 +63,10 @@ git pull origin master
 git push origin master
 ```
 
-## Note
+## The difference between `git revert` and `git reset`
 
-- `git revert` vs `git reset`
-- Reset removes the commit while revert removes the changes but leaves the commit
-- Revert is safer considering we can revert a revert
+- The `git reset` command removes the commit. The `git revert` command removes the changes but leaves the commit.
+- The `git revert` command is safer, because you can revert a revert.
 
 ```shell
 # Changed file

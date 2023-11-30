@@ -70,7 +70,7 @@ project.
 
 NOTE:
 For more information about these migration steps,
-see [Transferring your project into another namespace](../../user/project/settings/index.md#transfer-a-project-to-another-namespace).
+see [Transferring your project into another namespace](../../user/project/settings/migrate_projects.md#transfer-a-project-to-another-namespace).
 A migration might result in follow-up work to update the project path in
 your related resources and tools, such as websites and package managers.
 

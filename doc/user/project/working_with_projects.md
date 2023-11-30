@@ -215,6 +215,27 @@ You can filter projects by the programming language they use. To do this:
 
 A list of projects that use the selected language is displayed.
 
+## Rename a repository
+
+A project's repository name defines its URL and its place on the file disk
+where GitLab is installed.
+
+Prerequisites:
+
+- You must be an administrator or have the Maintainer or Owner role for the project.
+
+NOTE:
+When you change the repository path, users may experience issues if they push to, or pull from, the old URL. For more information, see
+[redirects when renaming repositories](../project/repository/index.md#what-happens-when-a-repository-path-changes).
+
+To rename a repository:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. Expand **Advanced**.
+1. In the **Change path** text box, edit the path.
+1. Select **Change path**.
+
 ## Access the Project overview page by using the project ID
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53671) in GitLab 11.8.
@@ -277,14 +298,6 @@ Prerequisites:
 1. [Set up LDAP synchronization](../../administration/auth/ldap/ldap_synchronization.md) for that group.
 1. To use LDAP groups to manage access to a project,
 [add the LDAP-synchronized group as a member](../group/manage.md) to the project.
-
-## Related topics
-
-- [Import a project](../../user/project/import/index.md).
-- [Connect an external repository to GitLab CI/CD](../../ci/ci_cd_for_external_repos/index.md).
-- [Fork a project](repository/forking_workflow.md#create-a-fork).
-- Adjust [project visibility](../../user/public_access.md#change-project-visibility) and [permissions](settings/project_features_permissions.md#configure-project-features-and-permissions).
-- [Limitations on project and group names](../../user/reserved_names.md#limitations-on-project-and-group-names)
 
 ## Troubleshooting
 
@@ -385,3 +398,11 @@ end
 To find features that can be toggled, run `pp p.project_feature`.
 Available permission levels are listed in
 [concerns/featurable.rb](https://gitlab.com/gitlab-org/gitlab/blob/master/app/models/concerns/featurable.rb).
+
+## Related topics
+
+- [Import a project](../../user/project/import/index.md).
+- [Connect an external repository to GitLab CI/CD](../../ci/ci_cd_for_external_repos/index.md).
+- [Fork a project](repository/forking_workflow.md#create-a-fork).
+- Adjust [project visibility](../../user/public_access.md#change-project-visibility) and [permissions](settings/project_features_permissions.md#configure-project-features-and-permissions).
+- [Limitations on project and group names](../../user/reserved_names.md#limitations-on-project-and-group-names)

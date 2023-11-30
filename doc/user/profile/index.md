@@ -127,7 +127,7 @@ GitLab displays the contents of your README below your contribution graph.
 ### From an existing project
 
 To add the README from an existing project to your profile,
-[update the path](../project/settings/index.md#rename-a-repository) of the project
+[update the path](../project/working_with_projects.md#rename-a-repository) of the project
 to match your username.
 
 ## Add external accounts to your user profile page

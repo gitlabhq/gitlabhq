@@ -21,3 +21,5 @@ tier:
 - premium
 - ultimate
 milestone: "<13.9"
+performance_indicator_type:
+- customer_health_score

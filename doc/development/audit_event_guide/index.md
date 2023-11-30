@@ -244,7 +244,7 @@ to check if the documentation is up-to-date.
 ## Event streaming
 
 All events where the entity is a `Group` or `Project` are recorded in the audit log, and also streamed to one or more
-[event streaming destinations](../../administration/audit_event_streaming.md). When the entity is a:
+[event streaming destinations](../../administration/audit_event_streaming/index.md). When the entity is a:
 
 - `Group`, events are streamed to the group's root ancestor's event streaming destinations.
 - `Project`, events are streamed to the project's root ancestor's event streaming destinations.

@@ -35,7 +35,7 @@ To configure deletion of inactive projects:
 
 Inactive projects that meet the criteria are scheduled for deletion and a warning email is sent. If the
 projects remain inactive, they are deleted after the specified duration. These projects are deleted even if
-[the project is archived](../user/project/settings/index.md#archive-a-project).
+[the project is archived](../user/project/settings/migrate_projects.md#archive-a-project).
 
 ### Configuration example
 

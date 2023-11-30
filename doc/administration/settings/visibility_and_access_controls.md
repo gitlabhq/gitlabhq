@@ -113,7 +113,7 @@ In GitLab 15.11 and later with the `always_perform_delayed_deletion` feature fla
 
 Alternatively, projects that are marked for removal can be deleted immediately. To do so:
 
-1. [Restore the project](../../user/project/settings/index.md#restore-a-project).
+1. [Restore the project](../../user/project/settings/migrate_projects.md#restore-a-project).
 1. Delete the project as described in the
    [Administering Projects page](../admin_area.md#administering-projects).
 

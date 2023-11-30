@@ -1613,7 +1613,7 @@ project or branch name. Special characters can include:
 - Double hyphen/dash
 
 To get around this, you can [change the group path](../../user/group/manage.md#change-a-groups-path),
-[change the project path](../../user/project/settings/index.md#rename-a-repository) or change the
+[change the project path](../../user/project/working_with_projects.md#rename-a-repository) or change the
 branch name. Another option is to create a [push rule](../../user/project/repository/push_rules.md) to prevent
 this at the instance level.
 

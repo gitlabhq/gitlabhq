@@ -6,33 +6,33 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Git add **(FREE ALL)**
 
-Adds content to the index or staging area.
+Before you commit content, add it to the staging area.
 
-- Adds a list of file:
+- Add a list of files:
 
   ```shell
   git add <files>
   ```
 
-- Adds all files including deleted ones:
+- Add all files, including deleted ones:
 
   ```shell
   git add -A
   ```
 
-- Add all text files in current dir:
+- Add all text files in current directory:
 
   ```shell
   git add *.txt
   ```
 
-- Add all text file in the project:
+- Add all text files in the project:
 
   ```shell
   git add "*.txt*"
   ```
 
-- Adds all files in directory:
+- Add all files in a directory called `views/layouts`:
 
   ```shell
   git add views/layouts/

@@ -20,5 +20,5 @@
     - `--tag-list`
     - `--maintenance-note`
 
-    This change is a breaking change. You should [create a runner in the UI](../ci/runners/register_runner.md) to add configurations, and use the authentication token in the `gitlab-runner register` command instead.
+    This change is a breaking change. You should [create a runner in the UI](../ci/runners/runners_scope.html) to add configurations, and use the authentication token in the `gitlab-runner register` command instead.
   end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.

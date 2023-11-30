@@ -7,21 +7,36 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Unstage a file in Git **(FREE ALL)**
 
 When you _stage_ a file in Git, you instruct Git to track changes to the file in
-preparation for a commit. To instruct Git to disregard changes to a file, and not
+preparation for a commit. To disregard changes to a file, and not
 include it in your next commit, _unstage_ the file.
 
-- To remove files from stage use `reset HEAD`, where HEAD is the last commit of
-  the current branch. This unstages the file but maintains the modifications.
+## Unstage a file
+
+- To remove files from staging, but keep your changes:
 
   ```shell
   git reset HEAD <file>
   ```
 
-- To revert the file back to the state it was in before the changes:
+- To unstage the last three commits:
 
   ```shell
-  git checkout -- <file>
+  git reset HEAD^3
   ```
+
+- To unstage changes to a certain file from HEAD:
+
+  ```shell
+  git reset <filename>
+  ```
+
+After you unstage the file, to revert the file back to the state it was in before the changes:
+
+```shell
+git checkout -- <file>
+```
+
+## Remove a file
 
 - To remove a file from disk and repository, use `git rm`. To remove a directory, use the `-r` flag:
 

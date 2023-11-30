@@ -25,7 +25,7 @@ project, or branch name. Special characters include:
 - A trailing hyphen or dash.
 
 To resolve this error, you can change the [group path](../../group/manage.md#change-a-groups-path),
-the [project path](../../project/settings/index.md#rename-a-repository) or the branch name.
+the [project path](../../project/working_with_projects.md#rename-a-repository) or the branch name.
 
 You may get a `404 Not Found` or `Unknown Manifest` error message if you use
 Docker Engine 17.11 or earlier. Current versions of Docker Engine use

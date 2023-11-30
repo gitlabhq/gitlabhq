@@ -1,3 +1,4 @@
+- page_title _("Forks")
 - sort_value = @sort || sort_value_recently_created
 - excluded_filters = [:state, :scope, :label_name, :milestone_id, :assignee_id, :author_id]
 - created_at = { value: sort_value_created_date, text: sort_title_created_date, href: page_filter_path(sort: sort_value_recently_created, without: excluded_filters) }

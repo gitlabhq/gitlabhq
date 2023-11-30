@@ -91,6 +91,37 @@ Prerequisites:
 1. Expand **Visibility, project features, permissions**.
 1. Clear the **Disable email notifications** checkbox.
 
+## Configure merge request settings for a project
+
+Configure your project's merge request settings:
+
+- Set up the [merge request method](../merge_requests/methods/index.md) (merge commit, fast-forward merge).
+- Add merge request [description templates](../description_templates.md).
+- Enable:
+  - [Merge request approvals](../merge_requests/approvals/index.md).
+  - [Status checks](../merge_requests/status_checks.md).
+  - [Merge only if pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).
+  - [Merge only when all threads are resolved](../merge_requests/index.md#prevent-merge-unless-all-threads-are-resolved).
+  - [Required associated issue from Jira](../../../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged).
+  - [GitLab Duo Suggested Reviewers](../merge_requests/reviews/index.md#gitlab-duo-suggested-reviewers)
+  - [**Delete source branch when merge request is accepted** option by default](#delete-the-source-branch-on-merge-by-default).
+- Configure:
+  - [Suggested changes commit messages](../merge_requests/reviews/suggestions.md#configure-the-commit-message-for-applied-suggestions).
+  - [Merge and squash commit message templates](../merge_requests/commit_templates.md).
+  - [Default target project](../merge_requests/creating_merge_requests.md#set-the-default-target-project) for merge requests coming from forks.
+
+### Delete the source branch on merge by default
+
+In merge requests, you can change the default behavior so that the
+**Delete the source branch** checkbox is always selected.
+
+To set this default:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
+1. Select **Enable "Delete source branch" option by default**.
+1. Select **Save changes**.
+
 ## Project topics
 
 Topics are labels that you can assign to projects to help you organize and find them.

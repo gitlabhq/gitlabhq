@@ -23,9 +23,23 @@ To create a repository, you can:
 You can add files to a repository:
 
 - When you create a project.
-- After you create a project:
-  - By using [the web editor](web_editor.md).
-  - From the command line.
+- After you create a project, by using:
+  - [The web editor](web_editor.md#upload-a-file).
+  - [The UI](#add-a-file-from-the-ui).
+  - [The command line](../../../topics/git/git_add.md).
+
+### Add a file from the UI
+
+You can upload a file from the GitLab UI.
+
+<!-- Original source for this list: doc/user/project/repository/web_editor.md#upload-a-file -->
+<!-- For why we duplicated the info, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111072#note_1267429478 -->
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. From the project dashboard or repository, next to the branch name, select the plus icon (**{plus}**).
+1. From the dropdown list, select **Upload file**.
+1. Complete the fields. To create a merge request with the uploaded file, ensure the **Start a new merge request with these changes** toggle is turned on.
+1. Select **Upload file**.
 
 ## Commit changes to a repository
 
@@ -259,7 +273,7 @@ When a repository path changes, GitLab handles the transition from the
 old location to the new one with a redirect.
 
 When you [rename a user](../../profile/index.md#change-your-username),
-[change a group path](../../group/manage.md#change-a-groups-path), or [rename a repository](../settings/index.md#rename-a-repository):
+[change a group path](../../group/manage.md#change-a-groups-path), or [rename a repository](../../project/working_with_projects.md#rename-a-repository):
 
 - URLs for the namespace and everything under it, like projects, are
   redirected to the new URLs.

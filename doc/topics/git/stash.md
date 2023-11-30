@@ -6,8 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Git stash **(FREE ALL)**
 
-We use `git stash` to store our changes when they are not ready to be committed,
-but we must change to a different branch.
+Use `git stash` when you want to change to a different branch, and you
+want to store changes that are not ready to be committed.
 
 - Stash:
 
@@ -27,7 +27,7 @@ but we must change to a different branch.
   git stash apply stash@{3}
   ```
 
-- Every time we save a stash it gets stacked so by using `list` we can see all our
+- Every time you save a stash, it gets stacked. Use `list` to see all of the
   stashes.
 
   ```shell
@@ -36,7 +36,7 @@ but we must change to a different branch.
   git stash list --stat
   ```
 
-- To clean our stack, manually remove them:
+- To clean the stack, manually remove them:
 
   ```shell
   # drop top stash
@@ -47,24 +47,24 @@ but we must change to a different branch.
   git stash clear
   ```
 
-- Apply and drop on one command:
+- Use one command to apply and drop:
 
   ```shell
   git stash pop
   ```
 
-- If we meet conflicts, either reset or commit our changes.
-- Conflicts through `pop` doesn't drop a stash afterwards.
+- If you have conflicts, either reset or commit your changes.
+- Conflicts through `pop` don't drop a stash afterwards.
 
-## Git Stash sample workflow
+## Git stash sample workflow
 
-1. Modify a file
-1. Stage file
-1. Stash it
-1. View our stash list
-1. Confirm no pending changes through status
-1. Apply with pop
-1. View list to confirm changes
+1. Modify a file.
+1. Stage file.
+1. Stash it.
+1. View the stash list.
+1. Confirm no pending changes through `git status`.
+1. Apply with `git stash pop`.
+1. View list to confirm changes.
 
 ```shell
 # Modify edit_this_file.rb file

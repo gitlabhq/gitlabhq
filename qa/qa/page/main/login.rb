@@ -105,6 +105,8 @@ module QA
           end
 
           Page::Main::Menu.perform(&:signed_in?)
+
+          dismiss_duo_chat_popup
         end
 
         # Handle request for password change
@@ -251,11 +253,21 @@ module QA
 
           wait_for_gitlab_to_respond
 
+          dismiss_duo_chat_popup
+
           return if skip_page_validation
 
           Page::Main::Menu.validate_elements_present!
 
           validate_canary!
+        end
+
+        def dismiss_duo_chat_popup
+          return unless has_element?('duo-chat-promo-callout-popover')
+
+          within_element('duo-chat-promo-callout-popover') do
+            click_element('close-button')
+          end
         end
 
         def fill_in_credential(user)

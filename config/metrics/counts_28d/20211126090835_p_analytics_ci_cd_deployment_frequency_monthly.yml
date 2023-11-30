@@ -12,7 +12,8 @@ time_frame: 28d
 data_source: redis_hll
 data_category: operational
 instrumentation_class: RedisHLLMetric
-performance_indicator_type: []
+performance_indicator_type:
+- customer_health_score
 events:
   - name: p_analytics_ci_cd_deployment_frequency
     unique: user.id

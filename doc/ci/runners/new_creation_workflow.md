@@ -29,7 +29,7 @@ you can let us know in the [feedback issue](https://gitlab.com/gitlab-org/gitlab
 
 For the new runner registration workflow, you:
 
-1. [Create a runner](register_runner.md) directly in the GitLab UI.
+1. [Create a runner](runners_scope.md) directly in the GitLab UI.
 1. Receive a runner authentication token.
 1. Use the runner authentication token instead of the registration token when you register
    a runner with this configuration. Runner managers registered in multiple hosts appear

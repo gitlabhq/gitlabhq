@@ -7,8 +7,7 @@ type: reference
 
 # Frequently used Git commands **(FREE ALL)**
 
-The GitLab support team has collected these commands to help you. You may not
-need them frequently.
+The following commands are frequently used.
 
 ## Remotes
 
@@ -16,28 +15,6 @@ need them frequently.
 
 ```shell
 git remote set-url --add <remote_name> <remote_url>
-```
-
-## Staging and reverting changes
-
-### Remove last commit and leave the changes in unstaged
-
-```shell
-git reset --soft HEAD^
-```
-
-### Unstage a certain number of commits from HEAD
-
-To unstage 3 commits, for example, run:
-
-```shell
-git reset HEAD^3
-```
-
-### Unstage changes to a certain file from HEAD
-
-```shell
-git reset <filename>
 ```
 
 ### Revert a file to HEAD state and remove changes
@@ -100,38 +77,6 @@ git commit --amend
 
 Append `--no-edit` to the `commit` command if you do not want to edit the commit
 message.
-
-## Stashing
-
-### Stash changes
-
-```shell
-git stash save
-```
-
-The default behavior of `stash` is to save, so you can also use just:
-
-```shell
-git stash
-```
-
-### Unstash your changes
-
-```shell
-git stash apply
-```
-
-### Discard your stashed changes
-
-```shell
-git stash drop
-```
-
-### Apply and drop your stashed changes
-
-```shell
-git stash pop
-```
 
 ## Refs and Log
 

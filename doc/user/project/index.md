@@ -122,7 +122,7 @@ GitLab creates your project in your chosen namespace.
 You cannot use `git push` to create projects with project paths that:
 
 - Have previously been used.
-- Have been [renamed](settings/index.md#rename-a-repository).
+- Have been [renamed](working_with_projects.md#rename-a-repository).
 
 Previously used project paths have a redirect. The redirect causes push attempts to redirect requests
 to the renamed project location, instead of creating a new project. To create a new project for a previously
