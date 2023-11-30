@@ -105,7 +105,7 @@ For more information, see [Deployment safety](../environments/deployment_safety.
 
 ## Restrict roles that can cancel pipelines or jobs **(PREMIUM ALL)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/410634) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `restrict_pipeline_cancellation_by_role`. Disabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137301) in GitLab 16.7.
 
 You can customize which roles have permission to cancel pipelines or jobs.
 

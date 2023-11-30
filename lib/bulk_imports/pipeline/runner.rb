@@ -16,6 +16,8 @@ module BulkImports
 
         if extracted_data
           extracted_data.each_with_index do |entry, index|
+            refresh_entity_and_import if index % 1000 == 0
+
             raw_entry = entry.dup
             next if already_processed?(raw_entry, index)
 
@@ -192,6 +194,11 @@ module BulkImports
         )
 
         payload.stringify_keys.merge(context)
+      end
+
+      def refresh_entity_and_import
+        context.entity.touch
+        context.bulk_import.touch
       end
     end
   end

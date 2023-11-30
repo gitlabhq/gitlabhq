@@ -344,7 +344,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
         end
       end
 
-      it 'reenqueues the worker' do
+      it 're_enqueues the worker' do
         expect_any_instance_of(BulkImports::Tracker) do |tracker|
           expect(tracker).to receive(:retry).and_call_original
         end

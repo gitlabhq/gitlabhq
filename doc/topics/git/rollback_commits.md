@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 In Git, if you make a mistake, you can undo or roll back your changes.
 For more details, see [Undo options](numerous_undo_possibilities_in_git/index.md).
 
-## Undo commits
+## Undo commits by removing them
 
 - Undo your last commit and put everything back in the staging area:
 
@@ -37,7 +37,7 @@ For more details, see [Undo options](numerous_undo_possibilities_in_git/index.md
   git reset --hard HEAD^^
   ```
 
-## Git reset sample workflow
+### Git reset sample workflow
 
 1. Edit file again `edit_this_file.rb`.
 1. Check status.
@@ -61,6 +61,12 @@ git reset --soft HEAD^
 git log
 git pull origin master
 git push origin master
+```
+
+## Undo commits with a new replacement commit
+
+```shell
+git revert <commit-sha>
 ```
 
 ## The difference between `git revert` and `git reset`

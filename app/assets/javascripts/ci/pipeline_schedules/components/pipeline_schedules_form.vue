@@ -391,7 +391,6 @@ export default {
               :placeholder="s__('CiVariables|Input variable key')"
               :class="$options.formElementClasses"
               data-testid="pipeline-form-ci-variable-key"
-              data-qa-selector="ci_variable_key_field"
               @change="addEmptyVariable(variable)"
             />
 
@@ -411,7 +410,6 @@ export default {
               class="gl-mb-3 gl-h-7!"
               :no-resize="false"
               data-testid="pipeline-form-ci-variable-value"
-              data-qa-selector="ci_variable_value_field"
               @change="resetVariable(index)"
             />
 

@@ -137,7 +137,9 @@ RSpec.shared_examples 'unlicensed cycle analytics request params' do
     it 'disables all paid features' do
       is_expected.to match(a_hash_including(enable_tasks_by_type_chart: 'false',
         enable_customizable_stages: 'false',
-        enable_projects_filter: 'false'))
+        enable_projects_filter: 'false',
+        enable_vsd_link: 'false'
+      ))
     end
   end
 

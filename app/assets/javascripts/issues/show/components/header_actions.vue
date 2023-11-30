@@ -352,7 +352,7 @@ export default {
         <template v-if="isMrSidebarMoved">
           <gl-disclosure-dropdown-item
             :data-clipboard-text="issuableReference"
-            button-class="js-copy-reference"
+            class="js-copy-reference"
             data-testid="copy-reference"
             @action="copyReference"
             ><template #list-item>{{
@@ -453,7 +453,7 @@ export default {
       <template v-if="isMrSidebarMoved">
         <gl-disclosure-dropdown-item
           :data-clipboard-text="issuableReference"
-          button-class="js-copy-reference"
+          class="js-copy-reference"
           data-testid="copy-reference"
           @action="copyReference"
           ><template #list-item>{{

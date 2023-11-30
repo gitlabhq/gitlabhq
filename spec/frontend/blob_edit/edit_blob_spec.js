@@ -6,6 +6,7 @@ import EditBlob from '~/blob_edit/edit_blob';
 import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
 import { FileTemplateExtension } from '~/editor/extensions/source_editor_file_template_ext';
 import { EditorMarkdownExtension } from '~/editor/extensions/source_editor_markdown_ext';
+import { SecurityPolicySchemaExtension } from '~/editor/extensions/source_editor_security_policy_schema_ext';
 import { EditorMarkdownPreviewExtension } from '~/editor/extensions/source_editor_markdown_livepreview_ext';
 import { ToolbarExtension } from '~/editor/extensions/source_editor_toolbar_ext';
 import SourceEditor from '~/editor/source_editor';
@@ -17,6 +18,7 @@ jest.mock('~/editor/extensions/source_editor_file_template_ext');
 jest.mock('~/editor/extensions/source_editor_markdown_ext');
 jest.mock('~/editor/extensions/source_editor_markdown_livepreview_ext');
 jest.mock('~/editor/extensions/source_editor_toolbar_ext');
+jest.mock('~/editor/extensions/source_editor_security_policy_schema_ext');
 
 const PREVIEW_MARKDOWN_PATH = '/foo/bar/preview_markdown';
 const defaultExtensions = [
@@ -67,16 +69,18 @@ describe('Blob Editing', () => {
     resetHTMLFixture();
   });
 
-  const editorInst = (isMarkdown) => {
+  const editorInst = ({ isMarkdown = false, isSecurityPolicy = false }) => {
     blobInstance = new EditBlob({
       isMarkdown,
       previewMarkdownPath: PREVIEW_MARKDOWN_PATH,
+      filePath: isSecurityPolicy ? '.gitlab/security-policies/policy.yml' : '',
+      projectPath: 'path/to/project',
     });
     return blobInstance;
   };
 
-  const initEditor = async (isMarkdown = false) => {
-    editorInst(isMarkdown);
+  const initEditor = async ({ isMarkdown = false, isSecurityPolicy = false } = {}) => {
+    editorInst({ isMarkdown, isSecurityPolicy });
     await waitForPromises();
   };
 
@@ -93,13 +97,13 @@ describe('Blob Editing', () => {
     });
 
     it('loads MarkdownExtension only for the markdown files', async () => {
-      await initEditor(true);
+      await initEditor({ isMarkdown: true });
       expect(useMock).toHaveBeenCalledTimes(2);
       expect(useMock.mock.calls[1]).toEqual([markdownExtensions]);
     });
 
     it('correctly handles switching from markdown and un-uses markdown extensions', async () => {
-      await initEditor(true);
+      await initEditor({ isMarkdown: true });
       expect(unuseMock).not.toHaveBeenCalled();
       await emitter.fire({ newLanguage: 'plaintext', oldLanguage: 'markdown' });
       expect(unuseMock).toHaveBeenCalledWith(markdownExtensions);
@@ -112,6 +116,19 @@ describe('Blob Editing', () => {
       expect(mdSpy).not.toHaveBeenCalled();
       await emitter.fire({ newLanguage: 'markdown', oldLanguage: 'plaintext' });
       expect(mdSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('Security Policy Yaml', () => {
+    it('does not load SecurityPolicySchemaExtension by default', async () => {
+      await initEditor();
+      expect(SecurityPolicySchemaExtension).not.toHaveBeenCalled();
+    });
+
+    it('loads SecurityPolicySchemaExtension only for the security policies yml', async () => {
+      await initEditor({ isSecurityPolicy: true });
+      expect(useMock).toHaveBeenCalledTimes(2);
+      expect(useMock.mock.calls[1]).toEqual([[{ definition: SecurityPolicySchemaExtension }]]);
     });
   });
 
@@ -142,7 +159,7 @@ describe('Blob Editing', () => {
             },
           },
         });
-        await initEditor(isMarkdown);
+        await initEditor({ isMarkdown });
         blobInstance.markdownLivePreviewOpened = isPreviewOpened;
         const elToClick = document.querySelector(`a[href='${tabToClick}']`);
         elToClick.dispatchEvent(new Event('click'));

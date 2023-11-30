@@ -3,6 +3,7 @@ mutation updateOrganization($input: LocalUpdateOrganizationInput!) {
     organization {
       id
       name
+      webUrl
     }
     errors
   }

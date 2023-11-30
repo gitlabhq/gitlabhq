@@ -1,6 +1,6 @@
 include:
   - project: gitlab-org/quality/pipeline-common
-    ref: 7.10.4
+    ref: 7.13.2
     file:
       - /ci/danger-review.yml
 

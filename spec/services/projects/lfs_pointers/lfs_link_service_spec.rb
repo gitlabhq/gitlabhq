@@ -91,5 +91,23 @@ RSpec.describe Projects::LfsPointers::LfsLinkService, feature_category: :source_
       # 3. Insert the lfs_objects_projects for that batch
       expect { subject.execute(new_oid_list.keys) }.not_to exceed_query_limit(3)
     end
+
+    context 'when MAX_OIDS is 5' do
+      let(:max_oids) { 5 }
+      let(:oids) { Array.new(max_oids) { |i| "oid-#{i}" } }
+
+      before do
+        stub_const("#{described_class}::MAX_OIDS", max_oids)
+      end
+
+      it 'does not raise an error when trying to link exactly the OID limit' do
+        expect { subject.execute(oids) }.not_to raise_error
+      end
+
+      it 'raises an error when trying to link more than OID limit' do
+        oids << 'the straw'
+        expect { subject.execute(oids) }.to raise_error(described_class::TooManyOidsError)
+      end
+    end
   end
 end

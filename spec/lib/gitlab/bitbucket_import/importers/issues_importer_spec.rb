@@ -67,7 +67,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssuesImporter, feature_categ
       it 'tracks the failure and does not fail' do
         expect(Gitlab::Import::ImportFailureService).to receive(:track).once
 
-        importer.execute
+        expect(importer.execute).to be_a(Gitlab::JobWaiter)
       end
     end
 

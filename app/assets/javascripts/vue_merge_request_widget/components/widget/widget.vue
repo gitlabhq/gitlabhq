@@ -386,7 +386,6 @@ export default {
             category="tertiary"
             data-testid="toggle-button"
             size="small"
-            data-qa-selector="expand_report_button"
             @click="toggleCollapsed"
           />
         </div>

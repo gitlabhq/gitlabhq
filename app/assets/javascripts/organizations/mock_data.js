@@ -306,6 +306,7 @@ export const updateOrganizationResponse = {
   organization: {
     id: 'gid://gitlab/Organizations/1',
     name: 'Default updated',
+    webUrl: 'http://127.0.0.1:3000/-/organizations/default',
   },
   errors: [],
 };

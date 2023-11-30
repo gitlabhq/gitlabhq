@@ -16451,6 +16451,9 @@ msgstr ""
 msgid "Dependencies|There was a problem fetching the licenses for this group."
 msgstr ""
 
+msgid "Dependencies|There was an error fetching the projects for this group. Please try again later."
+msgstr ""
+
 msgid "Dependencies|This group exceeds the maximum number of sub-groups of 600. We cannot accurately display a project list at this time. Please access a sub-group dependency list to view this information or see the %{linkStart}dependency list help %{linkEnd} page to learn more."
 msgstr ""
 
@@ -28726,6 +28729,9 @@ msgstr ""
 msgid "Load more users"
 msgstr ""
 
+msgid "Load new file"
+msgstr ""
+
 msgid "Loading"
 msgstr ""
 
@@ -33591,6 +33597,9 @@ msgstr ""
 msgid "Organization|A group is a collection of several projects. If you organize your projects under a group, it works like a folder."
 msgstr ""
 
+msgid "Organization|An error occurred changing your organization URL. Please try again."
+msgstr ""
+
 msgid "Organization|An error occurred creating an organization. Please try again."
 msgstr ""
 
@@ -33607,6 +33616,12 @@ msgid "Organization|An error occurred loading user organizations. Please refresh
 msgstr ""
 
 msgid "Organization|An error occurred updating your organization. Please try again."
+msgstr ""
+
+msgid "Organization|Change organization URL"
+msgstr ""
+
+msgid "Organization|Changing an organization's URL can have unintended side effects."
 msgstr ""
 
 msgid "Organization|Choose what organization you want to see by default."
@@ -33657,7 +33672,10 @@ msgstr ""
 msgid "Organization|Organization URL is required."
 msgstr ""
 
-msgid "Organization|Organization URL must be a minimum of two characters."
+msgid "Organization|Organization URL is too short (minimum is 2 characters)."
+msgstr ""
+
+msgid "Organization|Organization URL successfully changed."
 msgstr ""
 
 msgid "Organization|Organization name"
@@ -33682,6 +33700,9 @@ msgid "Organization|Organization was successfully updated."
 msgstr ""
 
 msgid "Organization|Organizations"
+msgstr ""
+
+msgid "Organization|Perform advanced options such as deleting the organization."
 msgstr ""
 
 msgid "Organization|Public - The organization can be accessed without any authentication."
@@ -42251,9 +42272,6 @@ msgstr ""
 msgid "ScanExecutionPolicy|DAST site profiles"
 msgstr ""
 
-msgid "ScanExecutionPolicy|Execute a YAML code block"
-msgstr ""
-
 msgid "ScanExecutionPolicy|If there are any conflicting variables with the local pipeline configuration (Ex, gitlab-ci.yml) then variables defined here will take precedence. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
@@ -42276,6 +42294,9 @@ msgid "ScanExecutionPolicy|Maximum number of CI-criteria is one"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Only one variable can be added at a time."
+msgstr ""
+
+msgid "ScanExecutionPolicy|Run CI/CD code"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Run a %{scan} scan with the following options:"
@@ -43167,6 +43188,12 @@ msgstr ""
 msgid "SecurityOrchestration|%{cadence} on %{branches}%{branchExceptionsString}"
 msgstr ""
 
+msgid "SecurityOrchestration|%{fileName} loaded succeeded."
+msgstr ""
+
+msgid "SecurityOrchestration|%{fileName} loading failed. Please try again."
+msgstr ""
+
 msgid "SecurityOrchestration|%{licenses} and %{lastLicense}"
 msgstr ""
 
@@ -43386,6 +43413,9 @@ msgstr ""
 msgid "SecurityOrchestration|License Scan"
 msgstr ""
 
+msgid "SecurityOrchestration|Load CI/CD code from file"
+msgstr ""
+
 msgid "SecurityOrchestration|Logic error"
 msgstr ""
 
@@ -43437,6 +43467,9 @@ msgid "SecurityOrchestration|Only owners can update Security Policy Project"
 msgstr ""
 
 msgid "SecurityOrchestration|Override the following project settings:"
+msgstr ""
+
+msgid "SecurityOrchestration|Overwrite the current CI/CD code with the new file's content?"
 msgstr ""
 
 msgid "SecurityOrchestration|Policies"
@@ -57681,6 +57714,9 @@ msgstr ""
 msgid "mrWidgetCommitsAdded|The changes were not merged into %{targetBranch}."
 msgstr ""
 
+msgid "mrWidgetDraftCheck|Mark as ready"
+msgstr ""
+
 msgid "mrWidgetNothingToMerge|Merge request contains no changes"
 msgstr ""
 
@@ -58560,6 +58596,9 @@ msgid "the following incidents or issues"
 msgstr ""
 
 msgid "the following issues"
+msgstr ""
+
+msgid "the member access level can't be higher than the current user's one"
 msgstr ""
 
 msgid "the wiki"

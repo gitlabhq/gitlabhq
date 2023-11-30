@@ -121,6 +121,7 @@ module Gitlab
             attrs[:enable_customizable_stages] = 'false'
             attrs[:can_edit] = 'false'
             attrs[:enable_projects_filter] = 'false'
+            attrs[:enable_vsd_link] = 'false'
             attrs[:default_stages] = Gitlab::Analytics::CycleAnalytics::DefaultStages.all.map do |stage_params|
               ::Analytics::CycleAnalytics::StagePresenter.new(stage_params)
             end.to_json

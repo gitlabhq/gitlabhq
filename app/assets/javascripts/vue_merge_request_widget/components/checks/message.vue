@@ -8,7 +8,7 @@ const ICON_NAMES = {
   success: 'success',
 };
 
-const FAILURE_REASONS = {
+export const FAILURE_REASONS = {
   broken_status: __('Cannot merge the source into the target branch, due to a conflict.'),
   ci_must_pass: __('Pipeline must succeed.'),
   conflict: __('Merge conflicts must be resolved.'),

@@ -165,7 +165,7 @@ RSpec.describe PagesDomain, feature_category: :pages do
         it "adds error to certificate" do
           domain.valid?
 
-          expect(domain.errors.attribute_names).to contain_exactly(:key, :certificate)
+          expect(domain.errors.attribute_names).to contain_exactly(:key)
         end
       end
 
@@ -206,10 +206,25 @@ RSpec.describe PagesDomain, feature_category: :pages do
       it 'validates the certificate key length' do
         valid_domain = build(:pages_domain, :key_length_8192)
         expect(valid_domain).to be_valid
+      end
 
-        invalid_domain = build(:pages_domain, :extra_long_key)
-        expect(invalid_domain).to be_invalid
-        expect(invalid_domain.errors[:key]).to include('Certificate Key is too long. (Max 8192 bytes)')
+      context 'when the key has more than 8192 bytes' do
+        let(:domain) do
+          build(:pages_domain, :extra_long_key)
+        end
+
+        it 'adds a human readable error' do
+          expect(domain).to be_invalid
+          expect(domain.errors[:key]).to include('Certificate Key is too long. (Max 8192 bytes)')
+        end
+
+        it 'does not run SSL key verification' do
+          allow(domain).to receive(:validate_intermediates)
+
+          domain.valid?
+
+          expect(domain).not_to have_received(:validate_intermediates)
+        end
       end
     end
   end

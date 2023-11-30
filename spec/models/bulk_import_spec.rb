@@ -7,8 +7,8 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
   let_it_be(:started_bulk_import) { create(:bulk_import, :started) }
   let_it_be(:finished_bulk_import) { create(:bulk_import, :finished) }
   let_it_be(:failed_bulk_import) { create(:bulk_import, :failed) }
-  let_it_be(:stale_created_bulk_import) { create(:bulk_import, :created, created_at: 3.days.ago) }
-  let_it_be(:stale_started_bulk_import) { create(:bulk_import, :started, created_at: 3.days.ago) }
+  let_it_be(:stale_created_bulk_import) { create(:bulk_import, :created, updated_at: 3.days.ago) }
+  let_it_be(:stale_started_bulk_import) { create(:bulk_import, :started, updated_at: 3.days.ago) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:user).required }

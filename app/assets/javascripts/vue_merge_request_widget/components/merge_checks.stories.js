@@ -41,6 +41,10 @@ const Template = ({ canMerge, failed, pushToSourceBranch }) => {
                     identifier: 'CONFLICT',
                     status: failed ? 'FAILED' : 'SUCCESS',
                   },
+                  {
+                    identifier: 'DRAFT_STATUS',
+                    status: failed ? 'FAILED' : 'SUCCESS',
+                  },
                 ],
               },
             },

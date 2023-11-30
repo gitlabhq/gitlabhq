@@ -91,10 +91,10 @@ gitlab:
         # Based on https://console.cloud.google.com/monitoring/metrics-explorer;duration=P14D?pageState=%7B%22xyChart%22:%7B%22constantLines%22:%5B%5D,%22dataSets%22:%5B%7B%22plotType%22:%22LINE%22,%22targetAxis%22:%22Y1%22,%22timeSeriesFilter%22:%7B%22aggregations%22:%5B%7B%22crossSeriesReducer%22:%22REDUCE_NONE%22,%22groupByFields%22:%5B%5D,%22perSeriesAligner%22:%22ALIGN_RATE%22%7D,%7B%22crossSeriesReducer%22:%22REDUCE_NONE%22,%22groupByFields%22:%5B%5D,%22perSeriesAligner%22:%22ALIGN_MEAN%22%7D%5D,%22apiSource%22:%22DEFAULT_CLOUD%22,%22crossSeriesReducer%22:%22REDUCE_NONE%22,%22filter%22:%22metric.type%3D%5C%22kubernetes.io%2Fcontainer%2Fcpu%2Fcore_usage_time%5C%22%20resource.type%3D%5C%22k8s_container%5C%22%20resource.label.%5C%22container_name%5C%22%3D%5C%22sidekiq%5C%22%22,%22groupByFields%22:%5B%5D,%22minAlignmentPeriod%22:%2260s%22,%22perSeriesAligner%22:%22ALIGN_RATE%22,%22secondaryCrossSeriesReducer%22:%22REDUCE_NONE%22,%22secondaryGroupByFields%22:%5B%5D%7D%7D%5D,%22options%22:%7B%22mode%22:%22STATS%22%7D,%22y1Axis%22:%7B%22label%22:%22%22,%22scale%22:%22LINEAR%22%7D%7D%7D&project=gitlab-review-apps
         cpu: 400m
         # Based on https://console.cloud.google.com/monitoring/metrics-explorer;duration=P14D?pageState=%7B%22xyChart%22:%7B%22constantLines%22:%5B%5D,%22dataSets%22:%5B%7B%22plotType%22:%22LINE%22,%22targetAxis%22:%22Y1%22,%22timeSeriesFilter%22:%7B%22aggregations%22:%5B%7B%22crossSeriesReducer%22:%22REDUCE_NONE%22,%22groupByFields%22:%5B%5D,%22perSeriesAligner%22:%22ALIGN_MEAN%22%7D%5D,%22apiSource%22:%22DEFAULT_CLOUD%22,%22crossSeriesReducer%22:%22REDUCE_NONE%22,%22filter%22:%22metric.type%3D%5C%22kubernetes.io%2Fcontainer%2Fmemory%2Fused_bytes%5C%22%20resource.type%3D%5C%22k8s_container%5C%22%20resource.label.%5C%22container_name%5C%22%3D%5C%22sidekiq%5C%22%22,%22groupByFields%22:%5B%5D,%22minAlignmentPeriod%22:%2260s%22,%22perSeriesAligner%22:%22ALIGN_MEAN%22%7D%7D%5D,%22options%22:%7B%22mode%22:%22STATS%22%7D,%22y1Axis%22:%7B%22label%22:%22%22,%22scale%22:%22LINEAR%22%7D%7D%7D&project=gitlab-review-apps
-        memory: 1300Mi
+        memory: 1500Mi
       limits:
         cpu: 700m
-        memory: 1800Mi
+        memory: 2000Mi
     hpa:
       cpu:
         targetAverageValue: 650m

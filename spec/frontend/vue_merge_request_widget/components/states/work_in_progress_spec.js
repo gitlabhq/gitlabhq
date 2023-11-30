@@ -42,6 +42,9 @@ describe('~/vue_merge_request_widget/components/states/work_in_progress.vue', ()
         mergeRequest: {
           __typename: 'MergeRequest',
           id: TEST_MR_ID,
+          draft: true,
+          title: TEST_MR_TITLE,
+          mergeableDiscussionsState: false,
           userPermissions: {
             updateMergeRequest: canUpdateMergeRequest,
           },

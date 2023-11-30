@@ -161,7 +161,6 @@ export default {
       :tooltip-text="jobActionTooltipText"
       :link="status.action.path"
       :action-icon="status.action.icon"
-      data-qa-selector="action_button"
     />
   </div>
 </template>

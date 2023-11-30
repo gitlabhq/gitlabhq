@@ -39,6 +39,7 @@ You can use the following environment variables to override certain values:
 | `RAILS_ENV`                                | string  | The Rails environment; can be one of `production`, `development`, `staging`, or `test`.                 |
 | `GITLAB_RAILS_CACHE_DEFAULT_TTL_SECONDS` | integer | The default TTL used for entries stored in the Rails-cache. Default is `28800`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95042) in 15.3. |
 | `GITLAB_CI_CONFIG_FETCH_TIMEOUT_SECONDS` | integer | Timeout for resolving remote includes in CI config in seconds. Must be between `0` and `60`. Default is `30`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116383) in 15.11. |
+| `GITLAB_LFS_MAX_OID_TO_FETCH`              | integer  | Sets the maximum number of LFS objects to link. Default is `100,000`.                                        |
 
 ## Adding more variables
 

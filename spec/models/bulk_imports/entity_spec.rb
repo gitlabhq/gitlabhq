@@ -191,6 +191,15 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
         expect(described_class.by_user_id(user.id)).to contain_exactly(entity_1, entity_2)
       end
     end
+
+    describe '.stale' do
+      it 'returns entities that are stale' do
+        entity_1 = create(:bulk_import_entity, updated_at: 3.days.ago)
+        create(:bulk_import_entity)
+
+        expect(described_class.stale).to contain_exactly(entity_1)
+      end
+    end
   end
 
   describe '.all_human_statuses' do

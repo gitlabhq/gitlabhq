@@ -1,6 +1,8 @@
-import { GlButton, GlInputGroupText, GlTruncate } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
+import { nextTick } from 'vue';
 
 import NewEditForm from '~/organizations/shared/components/new_edit_form.vue';
+import OrganizationUrlField from '~/organizations/shared/components/organization_url_field.vue';
 import { FORM_FIELD_NAME, FORM_FIELD_ID, FORM_FIELD_PATH } from '~/organizations/shared/constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 
@@ -29,7 +31,12 @@ describe('NewEditForm', () => {
 
   const findNameField = () => wrapper.findByLabelText('Organization name');
   const findIdField = () => wrapper.findByLabelText('Organization ID');
-  const findUrlField = () => wrapper.findByLabelText('Organization URL');
+  const findUrlField = () => wrapper.findComponent(OrganizationUrlField);
+
+  const setUrlFieldValue = async (value) => {
+    findUrlField().vm.$emit('input', value);
+    await nextTick();
+  };
   const submitForm = async () => {
     await wrapper.findByRole('button', { name: 'Create organization' }).trigger('click');
   };
@@ -43,20 +50,17 @@ describe('NewEditForm', () => {
   it('renders `Organization URL` field', () => {
     createComponent();
 
-    expect(wrapper.findComponent(GlInputGroupText).findComponent(GlTruncate).props('text')).toBe(
-      'http://127.0.0.1:3000/-/organizations/',
-    );
     expect(findUrlField().exists()).toBe(true);
   });
 
   it('requires `Organization URL` field to be a minimum of two characters', async () => {
     createComponent();
 
-    await findUrlField().setValue('f');
+    await setUrlFieldValue('f');
     await submitForm();
 
     expect(
-      wrapper.findByText('Organization URL must be a minimum of two characters.').exists(),
+      wrapper.findByText('Organization URL is too short (minimum is 2 characters).').exists(),
     ).toBe(true);
   });
 
@@ -89,7 +93,7 @@ describe('NewEditForm', () => {
     it('sets initial values for fields', () => {
       expect(findNameField().element.value).toBe('Foo bar');
       expect(findIdField().element.value).toBe('1');
-      expect(findUrlField().element.value).toBe('foo-bar');
+      expect(findUrlField().props('value')).toBe('foo-bar');
     });
   });
 
@@ -116,7 +120,7 @@ describe('NewEditForm', () => {
       createComponent();
 
       await findNameField().setValue('Foo bar');
-      await findUrlField().setValue('foo-bar');
+      await setUrlFieldValue('foo-bar');
       await submitForm();
     });
 
@@ -134,7 +138,7 @@ describe('NewEditForm', () => {
     });
 
     it('sets `Organization URL` when typing in `Organization name`', () => {
-      expect(findUrlField().element.value).toBe('foo-bar');
+      expect(findUrlField().props('value')).toBe('foo-bar');
     });
   });
 
@@ -142,13 +146,13 @@ describe('NewEditForm', () => {
     beforeEach(async () => {
       createComponent();
 
-      await findUrlField().setValue('foo-bar-baz');
+      await setUrlFieldValue('foo-bar-baz');
       await findNameField().setValue('Foo bar');
       await submitForm();
     });
 
     it('does not modify `Organization URL` when typing in `Organization name`', () => {
-      expect(findUrlField().element.value).toBe('foo-bar-baz');
+      expect(findUrlField().props('value')).toBe('foo-bar-baz');
     });
   });
 

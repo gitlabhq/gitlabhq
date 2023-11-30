@@ -24,6 +24,10 @@ export default class EditBlob {
       this.fetchMarkdownExtension();
     }
 
+    if (this.options.filePath === '.gitlab/security-policies/policy.yml') {
+      this.fetchSecurityPolicyExtension(this.options.projectPath);
+    }
+
     this.initModePanesAndLinks();
     this.initFilepathForm();
     this.initSoftWrap();
@@ -54,6 +58,20 @@ export default class EditBlob {
     addEditorMarkdownListeners(this.editor);
   }
 
+  async fetchSecurityPolicyExtension(projectPath) {
+    try {
+      const { SecurityPolicySchemaExtension } = await import(
+        '~/editor/extensions/source_editor_security_policy_schema_ext'
+      );
+      this.editor.use([{ definition: SecurityPolicySchemaExtension }]);
+      this.editor.registerSecurityPolicySchema(projectPath);
+    } catch (e) {
+      createAlert({
+        message: `${BLOB_EDITOR_ERROR}: ${e}`,
+      });
+    }
+  }
+
   configureMonacoEditor() {
     const editorEl = document.getElementById('editor');
     const fileContentEl = document.getElementById('file-content');
@@ -64,6 +82,7 @@ export default class EditBlob {
     this.editor = rootEditor.createInstance({
       el: editorEl,
       blobContent: editorEl.innerText,
+      blobPath: this.options.filePath,
     });
     this.editor.use([
       { definition: ToolbarExtension },

@@ -42,16 +42,24 @@ To view the organizations you have access to:
 ## Create an organization
 
 1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New organization**.
-1. In the **Organization name** field, enter a name for the organization.
-1. In the **Organization URL** field, enter a path for the organization.
+1. In the **Organization name** text box, enter a name for the organization.
+1. In the **Organization URL** text box, enter a path for the organization.
 1. Select **Create organization**.
 
 ## Edit an organization's name
 
 1. On the left sidebar, select **Organizations** (**{organization}**) and find the organization you want to edit.
 1. Select **Settings > General**.
-1. Update the **Organization name** field.
+1. In the **Organization name** text box, edit the name.
 1. Select **Save changes**.
+
+## Change an organization's URL
+
+1. On the left sidebar, select **Organizations** (**{organization}**) and find organization whose URL you want to change.
+1. Select **Settings > General**.
+1. Expand the **Advanced** section.
+1. In the **Organization URL** text box, edit the URL.
+1. Select **Change organization URL**.
 
 ## Manage groups and projects
 

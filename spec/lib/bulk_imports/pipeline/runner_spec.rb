@@ -195,6 +195,8 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
         end
 
         expect(subject).to receive(:on_finish)
+        expect(context.bulk_import).to receive(:touch)
+        expect(context.entity).to receive(:touch)
 
         expect_next_instance_of(Gitlab::Import::Logger) do |logger|
           expect(logger).to receive(:info)

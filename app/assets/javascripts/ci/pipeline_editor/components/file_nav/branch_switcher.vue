@@ -105,9 +105,6 @@ export default {
     branchesData() {
       return this.availableBranches.map((branch) => ({
         text: branch,
-        extraAttrs: {
-          'data-qa-selector': 'branch_menu_item_button',
-        },
         value: branch,
       }));
     },
@@ -211,7 +208,6 @@ export default {
   <gl-collapsible-listbox
     v-model="currentBranch"
     v-gl-tooltip.hover
-    data-qa-selector="branch_selector_button"
     searchable
     :items="branchesData"
     :title="$options.i18n.dropdownHeader"

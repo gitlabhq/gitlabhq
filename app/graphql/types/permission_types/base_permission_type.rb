@@ -30,7 +30,7 @@ module Types
       def self.define_field_resolver_method(ability)
         unless respond_to?(ability)
           define_method ability.to_sym do |*args|
-            Ability.allowed?(context[:current_user], ability, object, args.to_h)
+            Ability.allowed?(context[:current_user], ability, object, **args.to_h)
           end
         end
       end

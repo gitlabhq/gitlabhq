@@ -9,74 +9,13 @@ type: reference
 
 The following commands are frequently used.
 
-## Remotes
+## Add another URL to a remote
 
-### Add another URL to a remote, so both remotes get updated on each push
+Add another URL to a remote, so both remotes get updated on each push:
 
 ```shell
 git remote set-url --add <remote_name> <remote_url>
 ```
-
-### Revert a file to HEAD state and remove changes
-
-To revert changes to a file, you can use either:
-
-- `git checkout <filename>`
-- `git reset --hard <filename>`
-
-### Undo a previous commit by creating a new replacement commit
-
-```shell
-git revert <commit-sha>
-```
-
-### Create a new message for last commit
-
-```shell
-git commit --amend
-```
-
-### Create a new message for older commits
-
-WARNING:
-Changing commit history can disrupt others' work if they have cloned, forked, or have active branches.
-Only amend pushed commits if you're sure it's safe.
-To learn more, see [Git rebase and force push](git_rebase.md).
-
-```shell
-git rebase -i HEAD~n
-```
-
-Replace `n` with the number of commits you want to go back.
-
-This opens your text editor with a list of commits.
-In the editor, replace `pick` with `reword` for each commit you want to change the message:
-
-```shell
-reword 1fc6c95 original commit message
-pick 6b2481b another commit message
-pick 5c1291b another commit message
-```
-
-After saving and closing the file, you can update each message in a new editor window.
-
-After updating your commits, you must push them to the repository.
-As this rewrites history, a force push is required.
-To prevent unintentional overwrites, use `--force-with-lease`:
-
-```shell
-git push --force-with-lease
-```
-
-### Add a file to the last commit
-
-```shell
-git add <filename>
-git commit --amend
-```
-
-Append `--no-edit` to the `commit` command if you do not want to edit the commit
-message.
 
 ## Refs and Log
 

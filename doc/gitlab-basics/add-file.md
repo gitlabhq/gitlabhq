@@ -86,6 +86,16 @@ repository.
 To create a merge request, copy the link sent back from the remote
 repository and paste it into a browser window.
 
+## Add a file to the last commit
+
+```shell
+git add <filename>
+git commit --amend
+```
+
+Append `--no-edit` to the `commit` command if you do not want to edit the commit
+message.
+
 ## Related topics
 
 - [Add file from the UI](../user/project/repository/index.md#add-a-file-from-the-ui)
