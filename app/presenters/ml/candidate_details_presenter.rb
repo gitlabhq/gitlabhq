@@ -4,13 +4,13 @@ module Ml
   class CandidateDetailsPresenter
     include Rails.application.routes.url_helpers
 
-    def initialize(candidate, include_ci_job = false)
+    def initialize(candidate, current_user)
       @candidate = candidate
-      @include_ci_job = include_ci_job
+      @current_user = current_user
     end
 
     def present
-      data = {
+      {
         candidate: {
           info: {
             iid: candidate.iid,
@@ -27,16 +27,18 @@ module Ml
           metadata: candidate.metadata
         }
       }
+    end
 
-      Gitlab::Json.generate(data)
+    def present_as_json
+      Gitlab::Json.generate(present.deep_transform_keys { |k| k.to_s.camelize(:lower) })
     end
 
     private
 
-    attr_reader :candidate, :include_ci_job
+    attr_reader :candidate, :current_user
 
     def job_info
-      return unless include_ci_job && candidate.from_ci?
+      return unless candidate.from_ci? && current_user.can?(:read_build, candidate.ci_build)
 
       build = candidate.ci_build
 

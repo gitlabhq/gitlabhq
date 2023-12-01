@@ -10,6 +10,10 @@ type: tutorial
 To trigger a pipeline for a specific branch or tag, you can use an API call
 to the [pipeline triggers API endpoint](../../api/pipeline_triggers.md).
 
+If you are [migrating to GitLab CI/CD](../migration/plan_a_migration.md), you can
+trigger GitLab CI/CD pipelines by calling the API endpoint from the other provider's jobs.
+For example, as part of a migration from [Jenkins](../migration/jenkins.md) or [CircleCI](../migration/circleci.md).
+
 When authenticating with the API, you can use:
 
 - A [pipeline trigger token](#create-a-pipeline-trigger-token) to trigger a branch or tag pipeline.

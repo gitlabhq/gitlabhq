@@ -18,6 +18,7 @@ export default {
     'initialLabels',
     'issuableType',
     'labelType',
+    'supportsLockOnMerge',
     'variant',
     'workspaceType',
   ],
@@ -76,6 +77,7 @@ export default {
           :issuable-type="issuableType"
           :label-create-type="labelType"
           :selected-labels="selectedLabels"
+          :supports-lock-on-merge="supportsLockOnMerge"
           @updateSelectedLabels="handleUpdateSelectedLabels"
           @onLabelRemove="handleLabelRemove"
         >

@@ -8,6 +8,7 @@ query mergeRequestLabels($fullPath: ID!, $iid: String!) {
       labels {
         nodes {
           ...Label
+          lockOnMerge
         }
       }
     }

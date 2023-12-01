@@ -18,6 +18,12 @@ You should use a Jenkins integration with GitLab when:
 - You're invested in [Jenkins plugins](https://plugins.jenkins.io/) and choose
   to keep using Jenkins to build your apps.
 
+This integration can trigger a Jenkins build when a change is pushed to GitLab.
+
+You cannot use this integration to trigger GitLab CI/CD pipelines from Jenkins. Instead,
+use the [pipeline triggers API endpoint](../api/pipeline_triggers.md) in a Jenkins job,
+authenticated with a [pipeline trigger token](../ci/triggers/index.md#create-a-pipeline-trigger-token).
+
 After you have configured a Jenkins integration, you trigger a build in Jenkins
 when you push code to your repository or create a merge request in GitLab. The
 Jenkins pipeline status displays on merge request widgets and the GitLab

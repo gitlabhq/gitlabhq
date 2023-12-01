@@ -6,6 +6,13 @@
     = render 'devise/shared/error_messages', resource: resource
   - if Gitlab::CurrentSettings.invisible_captcha_enabled
     = invisible_captcha nonce: true, autocomplete: SecureRandom.alphanumeric(12)
+  - if @invite_email.present?
+    .form-group
+      = f.label :email, _('Email'), class: 'gl-display-block'
+      .gl-font-weight-bold{ 'data-testid': 'invite-email' }
+        = @invite_email
+      = f.hidden_field :email, value: @invite_email
+      = hidden_field_tag :invite_email, @invite_email
   .name.form-row
     .col.form-group
       = f.label :first_name, _('First name'), for: 'new_user_first_name'
@@ -36,17 +43,18 @@
     %p.validation-error.gl-text-red-500.gl-field-error-ignore.gl-mt-2.field-validation.hide= _('Username is already taken.')
     %p.validation-success.gl-text-green-600.gl-field-error-ignore.gl-mt-2.field-validation.hide= _('Username is available.')
     %p.validation-pending.gl-field-error-ignore.gl-mt-2.field-validation.hide= _('Checking username availability...')
-  .form-group
-    = f.label :email, _('Email')
-    = f.email_field :email,
-      class: 'form-control gl-form-input middle js-validate-email',
-      data: { testid: 'new-user-email-field' },
-      required: true,
-      title: _('Please provide a valid email address.')
-    %p.validation-hint.gl-field-hint.text-secondary= _('We recommend a work email address.')
-    %p.validation-warning.gl-field-error-ignore.text-secondary.hide= _('This email address does not look right, are you sure you typed it correctly?')
-    -# This is used for providing entry to Jihu on email verification
-    = render_if_exists 'devise/shared/signup_email_additional_info'
+  - unless @invite_email.present?
+    .form-group
+      = f.label :email, _('Email')
+      = f.email_field :email,
+        class: 'form-control gl-form-input middle js-validate-email',
+        data: { testid: 'new-user-email-field' },
+        required: true,
+        title: _('Please provide a valid email address.')
+      %p.validation-hint.gl-field-hint.text-secondary= _('We recommend a work email address.')
+      %p.validation-warning.gl-field-error-ignore.text-secondary.hide= _('This email address does not look right, are you sure you typed it correctly?')
+      -# This is used for providing entry to Jihu on email verification
+      = render_if_exists 'devise/shared/signup_email_additional_info'
   .form-group.gl-mb-5
     = f.label :password, _('Password')
     %input.form-control.gl-form-input.js-password{ data: { id: "#{form_resource_name}_password",

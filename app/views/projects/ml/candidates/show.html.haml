@@ -3,6 +3,6 @@
 - add_to_breadcrumbs experiment.name, project_ml_experiment_path(@project, experiment.iid)
 - breadcrumb_title "Candidate #{@candidate.iid}"
 - add_page_specific_style 'page_bundles/ml_experiment_tracking'
-- presenter = ::Ml::CandidateDetailsPresenter.new(@candidate, @include_ci_info)
+- presenter = ::Ml::CandidateDetailsPresenter.new(@candidate, current_user)
 
-#js-show-ml-candidate{ data: { view_model: presenter.present } }
+#js-show-ml-candidate{ data: { view_model: presenter.present_as_json } }

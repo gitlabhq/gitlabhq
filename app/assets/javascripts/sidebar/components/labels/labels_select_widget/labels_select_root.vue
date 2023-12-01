@@ -52,6 +52,11 @@ export default {
       required: false,
       default: false,
     },
+    supportsLockOnMerge: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     showEmbeddedLabelsList: {
       type: Boolean,
       required: false,
@@ -150,6 +155,9 @@ export default {
     },
     isLabelListEnabled() {
       return this.showEmbeddedLabelsList && isDropdownVariantEmbedded(this.variant);
+    },
+    isLockOnMergeSupported() {
+      return this.enforceLockedLabelsOnMerge;
     },
   },
   apollo: {
@@ -376,6 +384,7 @@ export default {
             :disable-labels="labelsSelectInProgress"
             :selected-labels="issuableLabels"
             :allow-label-remove="allowLabelRemove"
+            :supports-lock-on-merge="isLockOnMergeSupported"
             :labels-filter-base-path="labelsFilterBasePath"
             :labels-filter-param="labelsFilterParam"
             @onLabelRemove="handleLabelRemove"
@@ -389,6 +398,7 @@ export default {
             :disable-labels="labelsSelectInProgress"
             :selected-labels="issuableLabels"
             :allow-label-remove="allowLabelRemove"
+            :supports-lock-on-merge="isLockOnMergeSupported"
             :labels-filter-base-path="labelsFilterBasePath"
             :labels-filter-param="labelsFilterParam"
             class="gl-mb-2"
@@ -440,6 +450,7 @@ export default {
         :disabled="labelsSelectInProgress"
         :selected-labels="issuableLabels"
         :allow-label-remove="allowLabelRemove"
+        :supports-lock-on-merge="isLockOnMergeSupported"
         :labels-filter-base-path="labelsFilterBasePath"
         :labels-filter-param="labelsFilterParam"
         @onLabelRemove="handleLabelRemove"

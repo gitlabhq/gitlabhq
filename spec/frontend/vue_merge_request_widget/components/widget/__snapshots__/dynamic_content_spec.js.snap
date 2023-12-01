@@ -89,7 +89,6 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
           <li>
             <div
               class="gl-align-items-center gl-display-flex"
-              data-qa-selector="child_content"
             >
               <div
                 class="gl-min-w-0 gl-w-full"

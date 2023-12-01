@@ -10,6 +10,10 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
     create(:ml_candidates, :with_artifact, experiment: experiment, user: user, project: project) # rubocop:disable RSpec/FactoryBot/AvoidCreate
   end
 
+  let_it_be(:pipeline) { build_stubbed(:ci_pipeline, project: project, user: user) }
+  let_it_be(:build) { candidate.ci_build = build_stubbed(:ci_build, pipeline: pipeline, user: user) }
+  let_it_be(:mr) { pipeline.merge_request = build_stubbed(:merge_request, source_project: project) }
+
   let_it_be(:metrics) do
     [
       build_stubbed(:ml_candidate_metrics, name: 'metric1', value: 0.1, candidate: candidate),
@@ -27,16 +31,61 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
     ]
   end
 
-  let(:include_ci_job) { true }
-
-  subject { Gitlab::Json.parse(described_class.new(candidate, include_ci_job).present)['candidate'] }
+  let(:can_user_read_build) { true }
 
   before do
     allow(candidate).to receive(:metrics).and_return(metrics)
     allow(candidate).to receive(:params).and_return(params)
+
+    allow(Ability).to receive(:allowed?).and_call_original
+    allow(Ability).to receive(:allowed?)
+                        .with(user, :read_build, candidate.ci_build)
+                        .and_return(can_user_read_build)
   end
 
-  describe '#execute' do
+  describe '#present' do
+    subject { described_class.new(candidate, user).present }
+
+    it 'presents the candidate correctly' do
+      is_expected.to eq(
+        {
+          candidate: {
+            info: {
+              iid: candidate.iid,
+              eid: candidate.eid,
+              path_to_artifact: "/#{project.full_path}/-/packages/#{candidate.artifact.id}",
+              experiment_name: candidate.experiment.name,
+              path_to_experiment: "/#{project.full_path}/-/ml/experiments/#{experiment.iid}",
+              path: "/#{project.full_path}/-/ml/candidates/#{candidate.iid}",
+              status: candidate.status,
+              ci_job: {
+                merge_request: {
+                  iid: mr.iid,
+                  path: "/#{project.full_path}/-/merge_requests/#{mr.iid}",
+                  title: mr.title
+                },
+                name: "test",
+                path: "/#{project.full_path}/-/jobs/#{build.id}",
+                user: {
+                  avatar: user.avatar_url,
+                  name: pipeline.user.name,
+                  path: "/#{pipeline.user.username}",
+                  username: pipeline.user.username
+                }
+              }
+            },
+            params: params,
+            metrics: metrics,
+            metadata: []
+          }
+        }
+      )
+    end
+  end
+
+  describe '#present_as_json' do
+    subject { Gitlab::Json.parse(described_class.new(candidate, user).present_as_json)['candidate'] }
+
     context 'when candidate has metrics, params and artifacts' do
       it 'generates the correct params' do
         expect(subject['params']).to include(
@@ -59,9 +108,9 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
         expected_info = {
           'iid' => candidate.iid,
           'eid' => candidate.eid,
-          'path_to_artifact' => "/#{project.full_path}/-/packages/#{candidate.artifact.id}",
-          'experiment_name' => candidate.experiment.name,
-          'path_to_experiment' => "/#{project.full_path}/-/ml/experiments/#{experiment.iid}",
+          'pathToArtifact' => "/#{project.full_path}/-/packages/#{candidate.artifact.id}",
+          'experimentName' => candidate.experiment.name,
+          'pathToExperiment' => "/#{project.full_path}/-/ml/experiments/#{experiment.iid}",
           'status' => 'running',
           'path' => "/#{project.full_path}/-/ml/candidates/#{candidate.iid}"
         }
@@ -71,11 +120,6 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
     end
 
     context 'when candidate has job' do
-      let_it_be(:pipeline) { build_stubbed(:ci_pipeline, project: project, user: user) }
-      let_it_be(:build) { candidate.ci_build = build_stubbed(:ci_build, pipeline: pipeline, user: user) }
-
-      let(:can_read_build) { true }
-
       it 'generates the correct ci' do
         expected_info = {
           'path' => "/#{project.full_path}/-/jobs/#{build.id}",
@@ -88,25 +132,18 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
           }
         }
 
-        expect(subject.dig('info', 'ci_job')).to include(expected_info)
+        expect(subject.dig('info', 'ciJob')).to include(expected_info)
       end
 
       context 'when build user is nil' do
         it 'does not include build user info' do
-          expected_info = {
-            'path' => "/#{project.full_path}/-/jobs/#{build.id}",
-            'name' => 'test'
-          }
-
           allow(build).to receive(:user).and_return(nil)
 
-          expect(subject.dig('info', 'ci_job')).to eq(expected_info)
+          expect(subject.dig('info', 'ciJob')).not_to include(:user)
         end
       end
 
       context 'and job is from MR' do
-        let_it_be(:mr) { pipeline.merge_request = build_stubbed(:merge_request, source_project: project) }
-
         it 'generates the correct ci' do
           expected_info = {
             'path' => "/#{project.full_path}/-/merge_requests/#{mr.iid}",
@@ -114,15 +151,15 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
             'title' => mr.title
           }
 
-          expect(subject.dig('info', 'ci_job', 'merge_request')).to include(expected_info)
+          expect(subject.dig('info', 'ciJob', 'mergeRequest')).to include(expected_info)
         end
       end
 
       context 'when ci job is not to be added' do
-        let(:include_ci_job) { false }
+        let(:can_user_read_build) { false }
 
-        it 'ci_job is nil' do
-          expect(subject.dig('info', 'ci_job')).to be_nil
+        it 'ciJob is nil' do
+          expect(subject.dig('info', 'ciJob')).to be_nil
         end
       end
     end

@@ -27,6 +27,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    supportsLockOnMerge: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     labelsFilterBasePath: {
       type: String,
       required: true,
@@ -66,6 +71,12 @@ export default {
     },
     scopedLabel(label) {
       return this.allowScopedLabels && isScopedLabel(label);
+    },
+    isLabelLocked(label) {
+      return label.lockOnMerge && this.supportsLockOnMerge;
+    },
+    showCloseButton(label) {
+      return this.allowLabelRemove && !this.isLabelLocked(label);
     },
     removeLabel(labelId) {
       this.$emit('onLabelRemove', labelId);
@@ -115,7 +126,7 @@ export default {
         :background-color="label.color"
         :target="labelFilterUrl(label)"
         :scoped="scopedLabel(label)"
-        :show-close-button="allowLabelRemove"
+        :show-close-button="showCloseButton(label)"
         :disabled="disableLabels"
         tooltip-placement="top"
         @close="removeLabel(label.id)"

@@ -355,6 +355,7 @@ export function mountSidebarLabelsWidget() {
           workspaceType: WORKSPACE_PROJECT,
           attrWorkspacePath: el.dataset.projectPath,
           labelCreateType: WORKSPACE_PROJECT,
+          enforceLockedLabelsOnMerge: gon.features.enforceLockedLabelsOnMerge,
         },
         class: ['block labels js-labels-block'],
         scopedSlots: {

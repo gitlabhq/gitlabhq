@@ -3,14 +3,15 @@ import { shallowMount } from '@vue/test-utils';
 
 import DropdownValue from '~/sidebar/components/labels/labels_select_widget/dropdown_value.vue';
 
-import { mockRegularLabel, mockScopedLabel } from './mock_data';
+import { mockRegularLabel, mockScopedLabel, mockLockedLabel } from './mock_data';
 
 describe('DropdownValue', () => {
   let wrapper;
 
   const findAllLabels = () => wrapper.findAllComponents(GlLabel);
-  const findRegularLabel = () => findAllLabels().at(1);
+  const findRegularLabel = () => findAllLabels().at(2);
   const findScopedLabel = () => findAllLabels().at(0);
+  const findLockedLabel = () => findAllLabels().at(1);
   const findWrapper = () => wrapper.find('[data-testid="value-wrapper"]');
   const findEmptyPlaceholder = () => wrapper.find('[data-testid="empty-placeholder"]');
 
@@ -18,7 +19,7 @@ describe('DropdownValue', () => {
     wrapper = shallowMount(DropdownValue, {
       slots,
       propsData: {
-        selectedLabels: [mockRegularLabel, mockScopedLabel],
+        selectedLabels: [mockLockedLabel, mockRegularLabel, mockScopedLabel],
         allowLabelRemove: true,
         labelsFilterBasePath: '/gitlab-org/my-project/issues',
         labelsFilterParam: 'label_name',
@@ -69,8 +70,8 @@ describe('DropdownValue', () => {
       expect(findEmptyPlaceholder().exists()).toBe(false);
     });
 
-    it('renders a list of two labels', () => {
-      expect(findAllLabels().length).toBe(2);
+    it('renders a list of three labels', () => {
+      expect(findAllLabels().length).toBe(3);
     });
 
     it('passes correct props to the regular label', () => {
@@ -95,6 +96,20 @@ describe('DropdownValue', () => {
     it('emits `onCollapsedValueClick` when clicking on collapsed value', () => {
       wrapper.find('.sidebar-collapsed-icon').trigger('click');
       expect(wrapper.emitted('onCollapsedValueClick')).toEqual([[]]);
+    });
+
+    it('does not show close button if label is locked', () => {
+      createComponent({
+        supportsLockOnMerge: true,
+      });
+      expect(findLockedLabel().props('showCloseButton')).toBe(false);
+    });
+
+    it('shows close button if label is not locked', () => {
+      createComponent({
+        supportsLockOnMerge: true,
+      });
+      expect(findRegularLabel().props('showCloseButton')).toBe(true);
     });
   });
 });

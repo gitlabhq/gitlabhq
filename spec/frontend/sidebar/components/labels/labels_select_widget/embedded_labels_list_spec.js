@@ -1,7 +1,7 @@
 import { GlLabel } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import EmbeddedLabelsList from '~/sidebar/components/labels/labels_select_widget/embedded_labels_list.vue';
-import { mockRegularLabel, mockScopedLabel } from './mock_data';
+import { mockRegularLabel, mockScopedLabel, mockLockedLabel } from './mock_data';
 
 describe('EmbeddedLabelsList', () => {
   let wrapper;
@@ -13,12 +13,13 @@ describe('EmbeddedLabelsList', () => {
       .at(0);
   const findRegularLabel = () => findLabelByTitle(mockRegularLabel.title);
   const findScopedLabel = () => findLabelByTitle(mockScopedLabel.title);
+  const findLockedLabel = () => findLabelByTitle(mockLockedLabel.title);
 
   const createComponent = (props = {}, slots = {}) => {
     wrapper = shallowMountExtended(EmbeddedLabelsList, {
       slots,
       propsData: {
-        selectedLabels: [mockRegularLabel, mockScopedLabel],
+        selectedLabels: [mockRegularLabel, mockScopedLabel, mockLockedLabel],
         allowLabelRemove: true,
         labelsFilterBasePath: '/gitlab-org/my-project/issues',
         labelsFilterParam: 'label_name',
@@ -47,8 +48,8 @@ describe('EmbeddedLabelsList', () => {
       createComponent();
     });
 
-    it('renders a list of two labels', () => {
-      expect(findAllLabels()).toHaveLength(2);
+    it('renders a list of three labels', () => {
+      expect(findAllLabels()).toHaveLength(3);
     });
 
     it('passes correct props to the regular label', () => {
@@ -68,6 +69,13 @@ describe('EmbeddedLabelsList', () => {
     it('emits `onLabelRemove` event with the correct ID', () => {
       findRegularLabel().vm.$emit('close');
       expect(wrapper.emitted('onLabelRemove')).toStrictEqual([[mockRegularLabel.id]]);
+    });
+
+    it('does not show close button if label is locked', () => {
+      createComponent({
+        supportsLockOnMerge: true,
+      });
+      expect(findLockedLabel().props('showCloseButton')).toBe(false);
     });
   });
 });

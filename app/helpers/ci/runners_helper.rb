@@ -53,16 +53,6 @@ module Ci
       end
     end
 
-    # Due to inability of performing sorting of runners by cached "contacted_at" values we have to show uncached values if sorting by "contacted_asc" is requested.
-    # Please refer to the following issue for more details: https://gitlab.com/gitlab-org/gitlab-foss/issues/55920
-    def runner_contacted_at(runner)
-      if params[:sort] == 'contacted_asc'
-        runner.uncached_contacted_at
-      else
-        runner.contacted_at
-      end
-    end
-
     def admin_runners_data_attributes
       {
         # Runner install help page is external, located at

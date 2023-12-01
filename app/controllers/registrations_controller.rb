@@ -23,6 +23,7 @@ class RegistrationsController < Devise::RegistrationsController
   before_action :load_recaptcha, only: :new
   before_action only: [:create] do
     check_rate_limit!(:user_sign_up, scope: request.ip)
+    invite_email # set for failure path so we still remember we are invite in form
   end
 
   feature_category :instance_resiliency
@@ -271,9 +272,14 @@ class RegistrationsController < Devise::RegistrationsController
 
   def set_invite_params
     if resource.email.blank? && params[:invite_email].present?
-      resource.email = @invite_email = ActionController::Base.helpers.sanitize(params[:invite_email])
+      resource.email = invite_email
     end
   end
+
+  def invite_email
+    ActionController::Base.helpers.sanitize(params[:invite_email])
+  end
+  strong_memoize_attr :invite_email
 
   def user_invited?
     !!member_id

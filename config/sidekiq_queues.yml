@@ -685,6 +685,10 @@
   - 1
 - - security_sync_scan_policies
   - 1
+- - security_unenforceable_policy_rules_notification
+  - 1
+- - security_unenforceable_policy_rules_pipeline_notification
+  - 1
 - - service_desk_email_receiver
   - 2
 - - set_user_status_based_on_user_cap_setting

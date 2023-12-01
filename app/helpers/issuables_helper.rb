@@ -248,7 +248,8 @@ module IssuablesHelper
         title: label.title,
         description: label.description,
         color: label.color,
-        text_color: label.text_color
+        text_color: label.text_color,
+        lock_on_merge: label.lock_on_merge
       }
     end
 
@@ -265,7 +266,8 @@ module IssuablesHelper
       initial_labels: initial_labels.to_json,
       issuable_type: issuable.issuable_type,
       labels_filter_base_path: filter_base_path,
-      labels_manage_path: project_labels_path(project)
+      labels_manage_path: project_labels_path(project),
+      supports_lock_on_merge: issuable.supports_lock_on_merge?.to_s
     }
   end
 

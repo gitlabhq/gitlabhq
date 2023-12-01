@@ -4,6 +4,9 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   before_action :check_merge_requests_available!
   before_action :merge_request
   before_action :authorize_read_merge_request!
+  before_action do
+    push_force_frontend_feature_flag(:enforce_locked_labels_on_merge, project&.supports_lock_on_merge?)
+  end
 
   feature_category :code_review_workflow
 

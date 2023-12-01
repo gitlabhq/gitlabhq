@@ -109,7 +109,6 @@ export default {
               :data="childData"
               :widget-name="widgetName"
               :level="3"
-              data-qa-selector="child_content"
               @clickedAction="onClickedAction"
             />
           </li>

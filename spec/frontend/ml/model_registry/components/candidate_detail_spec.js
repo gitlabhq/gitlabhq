@@ -21,9 +21,9 @@ describe('ml/model_registry/components/candidate_detail.vue', () => {
   const PARAMETER_SECTION = 2;
   const METADATA_SECTION = 3;
 
-  const createWrapper = (createCandidate = () => CANDIDATE) => {
+  const createWrapper = (createCandidate = () => CANDIDATE, showInfoSection = true) => {
     wrapper = shallowMountExtended(CandidateDetail, {
-      propsData: { candidate: createCandidate() },
+      propsData: { candidate: createCandidate(), showInfoSection },
       stubs: {
         GlTableLite: { ...stubComponent(GlTableLite), props: ['items', 'fields'] },
       },
@@ -45,14 +45,14 @@ describe('ml/model_registry/components/candidate_detail.vue', () => {
   describe('All info available', () => {
     beforeEach(() => createWrapper());
 
-    const mrText = `!${CANDIDATE.info.ci_job.merge_request.iid} ${CANDIDATE.info.ci_job.merge_request.title}`;
+    const mrText = `!${CANDIDATE.info.ciJob.mergeRequest.iid} ${CANDIDATE.info.ciJob.mergeRequest.title}`;
     const expectedTable = [
       [INFO_SECTION, 0, 'ID', CANDIDATE.info.iid],
       [INFO_SECTION, 1, 'MLflow run ID', CANDIDATE.info.eid],
       [INFO_SECTION, 2, 'Status', CANDIDATE.info.status],
-      [INFO_SECTION, 3, 'Experiment', CANDIDATE.info.experiment_name],
+      [INFO_SECTION, 3, 'Experiment', CANDIDATE.info.experimentName],
       [INFO_SECTION, 4, 'Artifacts', 'Artifacts'],
-      [CI_SECTION, 0, 'Job', CANDIDATE.info.ci_job.name],
+      [CI_SECTION, 0, 'Job', CANDIDATE.info.ciJob.name],
       [CI_SECTION, 1, 'Triggered by', 'CI User'],
       [CI_SECTION, 2, 'Merge request', mrText],
       [PARAMETER_SECTION, 0, CANDIDATE.params[0].name, CANDIDATE.params[0].value],
@@ -70,10 +70,10 @@ describe('ml/model_registry/components/candidate_detail.vue', () => {
 
     describe('Table links', () => {
       const linkRows = [
-        [INFO_SECTION, 3, CANDIDATE.info.path_to_experiment],
-        [INFO_SECTION, 4, CANDIDATE.info.path_to_artifact],
-        [CI_SECTION, 0, CANDIDATE.info.ci_job.path],
-        [CI_SECTION, 2, CANDIDATE.info.ci_job.merge_request.path],
+        [INFO_SECTION, 3, CANDIDATE.info.pathToExperiment],
+        [INFO_SECTION, 4, CANDIDATE.info.pathToArtifact],
+        [CI_SECTION, 0, CANDIDATE.info.ciJob.path],
+        [CI_SECTION, 2, CANDIDATE.info.ciJob.mergeRequest.path],
       ];
 
       it.each(linkRows)('row %s is created correctly', (section, rowIndex, href) => {
@@ -123,7 +123,7 @@ describe('ml/model_registry/components/candidate_detail.vue', () => {
     beforeEach(() =>
       createWrapper(() => {
         const candidate = newCandidate();
-        delete candidate.info.path_to_artifact;
+        delete candidate.info.pathToArtifact;
         return candidate;
       }),
     );
@@ -140,7 +140,7 @@ describe('ml/model_registry/components/candidate_detail.vue', () => {
         delete candidate.params;
         delete candidate.metrics;
         delete candidate.metadata;
-        delete candidate.info.ci_job;
+        delete candidate.info.ciJob;
         return candidate;
       }),
     );
@@ -166,8 +166,8 @@ describe('ml/model_registry/components/candidate_detail.vue', () => {
     beforeEach(() =>
       createWrapper(() => {
         const candidate = newCandidate();
-        delete candidate.info.ci_job.user;
-        delete candidate.info.ci_job.merge_request;
+        delete candidate.info.ciJob.user;
+        delete candidate.info.ciJob.mergeRequest;
         return candidate;
       }),
     );
@@ -178,6 +178,14 @@ describe('ml/model_registry/components/candidate_detail.vue', () => {
 
     it('does not render CI user info', () => {
       expect(findLabel('Triggered by').exists()).toBe(false);
+    });
+  });
+
+  describe('showInfoSection is set to false', () => {
+    beforeEach(() => createWrapper(() => CANDIDATE, false));
+
+    it('does not render the info section', () => {
+      expect(findLabel('MLflow run ID').exists()).toBe(false);
     });
   });
 });

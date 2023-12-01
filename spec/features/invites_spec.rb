@@ -17,11 +17,6 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
     group.add_owner(owner)
   end
 
-  def fill_in_welcome_form
-    select 'Software Developer', from: 'user_role'
-    click_button 'Get started!'
-  end
-
   context 'when inviting a registered user' do
     let(:invite_email) { 'user@example.com' }
 
@@ -47,8 +42,8 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
           expect(find_field('Username or primary email').value).to eq(group_invite.invite_email)
         end
 
-        it 'pre-fills the Email field on the sign up box with the invite_email from the invite' do
-          expect(find_field('Email').value).to eq(group_invite.invite_email)
+        it 'shows the Email to be the invite_email from the invite' do
+          expect(find_by_testid('invite-email').text).to eq(group_invite.invite_email)
         end
       end
 
@@ -154,7 +149,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
         end
 
         it 'does not sign the user in' do
-          fill_in_sign_up_form(new_user)
+          fill_in_sign_up_form(new_user, invite: true)
 
           expect(page).to have_current_path(new_user_session_path, ignore_query: true)
           sign_up_message = 'You have signed up successfully. However, we could not sign you in because your account ' \
@@ -170,20 +165,10 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
 
         context 'when the user signs up for an account with the invitation email address' do
           it 'redirects to the most recent membership group page with all invitations automatically accepted' do
-            fill_in_sign_up_form(new_user)
+            fill_in_sign_up_form(new_user, invite: true)
 
             expect(page).to have_current_path(group_path(group), ignore_query: true)
             expect(page).to have_content('You have been granted Owner access to group Owned.')
-          end
-        end
-
-        context 'when the user sign-up using a different email address' do
-          let(:invite_email) { build_stubbed(:user).email }
-
-          it 'signs up and redirects to the projects dashboard' do
-            fill_in_sign_up_form(new_user)
-
-            expect_to_be_on_projects_dashboard_with_zero_authorized_projects
           end
         end
       end
@@ -193,16 +178,16 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
           let(:new_user) { build_stubbed(:user, password: '11111111') }
 
           it 'fails sign up and redirects back to sign up', :aggregate_failures do
-            expect { fill_in_sign_up_form(new_user) }.not_to change { User.count }
+            expect { fill_in_sign_up_form(new_user, invite: true) }.not_to change { User.count }
             expect(page).to have_content('prohibited this user from being saved')
             expect(page).to have_current_path(user_registration_path, ignore_query: true)
-            expect(find_field('Email').value).to eq(group_invite.invite_email)
+            expect(find_by_testid('invite-email').text).to eq(group_invite.invite_email)
           end
         end
 
         context 'with invite email acceptance', :snowplow do
           it 'tracks the accepted invite' do
-            fill_in_sign_up_form(new_user)
+            fill_in_sign_up_form(new_user, invite: true)
 
             expect_snowplow_event(
               category: 'RegistrationsController',
@@ -216,50 +201,24 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
 
         context 'when the user signs up for an account with the invitation email address' do
           it 'redirects to the most recent membership group page with all invitations automatically accepted' do
-            fill_in_sign_up_form(new_user)
+            fill_in_sign_up_form(new_user, invite: true)
 
             expect(page).to have_current_path(group_path(group), ignore_query: true)
           end
         end
-
-        context 'when the user signs up using a different email address' do
-          let(:invite_email) { build_stubbed(:user).email }
-
-          context 'when email confirmation is not set to `soft`' do
-            before do
-              allow(User).to receive(:allow_unconfirmed_access_for).and_return 0
-              stub_feature_flags(identity_verification: false)
-            end
-
-            it 'signs up and redirects to the projects dashboard' do
-              fill_in_sign_up_form(new_user)
-              confirm_email(new_user)
-              gitlab_sign_in(new_user, remember: true, visit: false)
-
-              expect_to_be_on_projects_dashboard_with_zero_authorized_projects
-            end
-          end
-
-          context 'when email confirmation setting is set to `soft`' do
-            before do
-              stub_application_setting_enum('email_confirmation_setting', 'soft')
-              allow(User).to receive(:allow_unconfirmed_access_for).and_return 2.days
-            end
-
-            it 'signs up and redirects to the projects dashboard' do
-              fill_in_sign_up_form(new_user)
-
-              expect_to_be_on_projects_dashboard_with_zero_authorized_projects
-            end
-          end
-        end
       end
 
-      def expect_to_be_on_projects_dashboard_with_zero_authorized_projects
-        expect(page).to have_current_path(dashboard_projects_path)
+      context 'when the email is already taken by a registered user' do
+        before do
+          create(:user, email: invite_email)
+        end
 
-        expect(page).to have_content _('Welcome to GitLab')
-        expect(page).to have_content _('Faster releases. Better code. Less pain.')
+        it 'shows error state of email already used' do
+          fill_in_sign_up_form(new_user, invite: true)
+
+          expect(page).to have_content('Email has already been taken')
+          expect(find_by_testid('invite-email').text).to eq(group_invite.invite_email)
+        end
       end
     end
 
@@ -269,7 +228,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
 
         expect(page).to have_current_path(new_user_registration_path, ignore_query: true)
 
-        fill_in_sign_up_form(new_user, 'Register')
+        fill_in_sign_up_form(new_user, 'Register', invite: true)
 
         expect(page).to have_current_path(group_path(group))
         expect(page).to have_content('You have been granted Owner access to group Owned.')

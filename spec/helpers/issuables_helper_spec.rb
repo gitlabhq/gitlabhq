@@ -600,7 +600,8 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
           initial_labels: '[]',
           issuable_type: issuable.issuable_type,
           labels_filter_base_path: project_issues_path(project),
-          labels_manage_path: project_labels_path(project)
+          labels_manage_path: project_labels_path(project),
+          supports_lock_on_merge: issuable.supports_lock_on_merge?.to_s
         })
       end
     end
@@ -620,7 +621,8 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
             title: label.title,
             description: label.description,
             color: label.color,
-            text_color: label.text_color
+            text_color: label.text_color,
+            lock_on_merge: label.lock_on_merge
           },
           {
             __typename: "Label",
@@ -628,7 +630,8 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
             title: label2.title,
             description: label2.description,
             color: label2.color,
-            text_color: label2.text_color
+            text_color: label2.text_color,
+            lock_on_merge: label.lock_on_merge
           }
         ]
 
@@ -638,7 +641,8 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
           initial_labels: initial_labels.to_json,
           issuable_type: issuable.issuable_type,
           labels_filter_base_path: project_merge_requests_path(project),
-          labels_manage_path: project_labels_path(project)
+          labels_manage_path: project_labels_path(project),
+          supports_lock_on_merge: issuable.supports_lock_on_merge?.to_s
         })
       end
     end

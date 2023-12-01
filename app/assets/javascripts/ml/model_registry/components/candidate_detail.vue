@@ -24,7 +24,8 @@ import {
 import DetailRow from './candidate_detail_row.vue';
 
 export default {
-  name: 'MlCandidatesShow',
+  HEADER_CLASSES: ['gl-font-lg', 'gl-mt-5'],
+  name: 'MlCandidateDetail',
   components: {
     DetailRow,
     GlAvatarLabeled,
@@ -35,6 +36,11 @@ export default {
     candidate: {
       type: Object,
       required: true,
+    },
+    showInfoSection: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   i18n: {
@@ -61,7 +67,7 @@ export default {
       return Object.freeze(this.candidate.info);
     },
     ciJob() {
-      return Object.freeze(this.info.ci_job);
+      return Object.freeze(this.info.ciJob);
     },
     hasMetadata() {
       return !isEmpty(this.candidate.metadata);
@@ -102,7 +108,7 @@ export default {
 
 <template>
   <div>
-    <section class="gl-mb-6">
+    <section v-if="showInfoSection" class="gl-mb-6">
       <table class="candidate-details">
         <tbody>
           <detail-row :label="$options.i18n.ID_LABEL">
@@ -114,13 +120,13 @@ export default {
           <detail-row :label="$options.i18n.STATUS_LABEL">{{ info.status }}</detail-row>
 
           <detail-row :label="$options.i18n.EXPERIMENT_LABEL">
-            <gl-link :href="info.path_to_experiment">
-              {{ info.experiment_name }}
+            <gl-link :href="info.pathToExperiment">
+              {{ info.experimentName }}
             </gl-link>
           </detail-row>
 
-          <detail-row v-if="info.path_to_artifact" :label="$options.i18n.ARTIFACTS_LABEL">
-            <gl-link :href="info.path_to_artifact">
+          <detail-row v-if="info.pathToArtifact" :label="$options.i18n.ARTIFACTS_LABEL">
+            <gl-link :href="info.pathToArtifact">
               {{ $options.i18n.ARTIFACTS_LABEL }}
             </gl-link>
           </detail-row>
@@ -129,7 +135,7 @@ export default {
     </section>
 
     <section class="gl-mb-6">
-      <h4>{{ $options.i18n.CI_SECTION_LABEL }}</h4>
+      <h3 :class="$options.HEADER_CLASSES">{{ $options.i18n.CI_SECTION_LABEL }}</h3>
 
       <table v-if="ciJob" class="candidate-details">
         <tbody>
@@ -150,9 +156,9 @@ export default {
             </gl-avatar-labeled>
           </detail-row>
 
-          <detail-row v-if="ciJob.merge_request" :label="$options.i18n.CI_MR_LABEL">
-            <gl-link :href="ciJob.merge_request.path">
-              !{{ ciJob.merge_request.iid }} {{ ciJob.merge_request.title }}
+          <detail-row v-if="ciJob.mergeRequest" :label="$options.i18n.CI_MR_LABEL">
+            <gl-link :href="ciJob.mergeRequest.path">
+              !{{ ciJob.mergeRequest.iid }} {{ ciJob.mergeRequest.title }}
             </gl-link>
           </detail-row>
         </tbody>
@@ -162,7 +168,7 @@ export default {
     </section>
 
     <section class="gl-mb-6">
-      <h4>{{ $options.i18n.PARAMETERS_LABEL }}</h4>
+      <h3 :class="$options.HEADER_CLASSES">{{ $options.i18n.PARAMETERS_LABEL }}</h3>
 
       <table v-if="hasParameters" class="candidate-details">
         <tbody>
@@ -176,7 +182,7 @@ export default {
     </section>
 
     <section class="gl-mb-6">
-      <h4>{{ $options.i18n.METADATA_LABEL }}</h4>
+      <h3 :class="$options.HEADER_CLASSES">{{ $options.i18n.METADATA_LABEL }}</h3>
 
       <table v-if="hasMetadata" class="candidate-details">
         <tbody>
@@ -190,7 +196,7 @@ export default {
     </section>
 
     <section class="gl-mb-6">
-      <h4>{{ $options.i18n.PERFORMANCE_LABEL }}</h4>
+      <h3 :class="$options.HEADER_CLASSES">{{ $options.i18n.PERFORMANCE_LABEL }}</h3>
 
       <div v-if="hasMetrics" class="gl-overflow-x-auto">
         <gl-table-lite

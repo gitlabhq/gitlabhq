@@ -46,42 +46,6 @@ RSpec.describe Ci::RunnersHelper, feature_category: :runner_fleet do
     end
   end
 
-  describe '#runner_contacted_at' do
-    let(:contacted_at_stored) { 1.hour.ago.change(usec: 0) }
-    let(:contacted_at_cached) { 1.second.ago.change(usec: 0) }
-    let(:runner) { create(:ci_runner, contacted_at: contacted_at_stored) }
-
-    before do
-      runner.cache_attributes(contacted_at: contacted_at_cached)
-    end
-
-    context 'without sorting' do
-      it 'returns cached value' do
-        expect(helper.runner_contacted_at(runner)).to eq(contacted_at_cached)
-      end
-    end
-
-    context 'with sorting set to created_date' do
-      before do
-        controller.params[:sort] = 'created_date'
-      end
-
-      it 'returns cached value' do
-        expect(helper.runner_contacted_at(runner)).to eq(contacted_at_cached)
-      end
-    end
-
-    context 'with sorting set to contacted_asc' do
-      before do
-        controller.params[:sort] = 'contacted_asc'
-      end
-
-      it 'returns stored value' do
-        expect(helper.runner_contacted_at(runner)).to eq(contacted_at_stored)
-      end
-    end
-  end
-
   describe '#admin_runners_data_attributes' do
     subject { helper.admin_runners_data_attributes }
 
