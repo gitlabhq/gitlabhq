@@ -176,7 +176,10 @@ export default {
     </p>
     <form v-if="showForm" class="js-quick-submit" @submit.prevent="submitForm">
       <tag-field />
-      <gl-form-group :label="__('Release title')">
+      <gl-form-group
+        :label="__('Release title')"
+        :description="s__('Release|Leave blank to use the tag name as the release title.')"
+      >
         <gl-form-input
           id="release-title"
           ref="releaseTitleInput"

@@ -1,5 +1,10 @@
-query getEnvironmentFolder($environment: NestedLocalEnvironment, $scope: String, $search: String) {
-  folder(environment: $environment, scope: $scope, search: $search) @client {
+query getEnvironmentFolder(
+  $environment: NestedLocalEnvironment
+  $scope: String
+  $search: String
+  $perPage: Int
+) {
+  folder(environment: $environment, scope: $scope, search: $search, perPage: $perPage) @client {
     activeCount
     environments
     stoppedCount

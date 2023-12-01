@@ -76,7 +76,7 @@ RSpec.describe Gitlab::ErrorTracking, feature_category: :shared do
   end
 
   after do
-    Sentry.get_current_scope.clear
+    clear_sentry_settings
   end
 
   describe '.track_and_raise_for_dev_exception' do

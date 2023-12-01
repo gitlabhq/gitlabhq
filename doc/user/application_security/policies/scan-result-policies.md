@@ -116,7 +116,7 @@ This rule enforces the defined actions based on security scan findings.
 |-------|------|----------|-----------------|-------------|
 | `type` | `string` | true | `scan_finding` | The rule's type. |
 | `branches` | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field. |
-| `branch_type` | `string` | true if `branches` field does not exist | `default` or `protected` | The types of branches the given policy applies to. Cannot be used with the `branches` field. |
+| `branch_type` | `string` | true if `branches` field does not exist | `default` or `protected` | The types of protected branches the given policy applies to. Cannot be used with the `branches` field. Default branches must also be `protected`. |
 | `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
 | `scanners` | `array` of `string` | true | `sast`, `secret_detection`, `dependency_scanning`, `container_scanning`, `dast`, `coverage_fuzzing`, `api_fuzzing` | The security scanners for this rule to consider. `sast` includes results from both SAST and SAST IaC scanners. |
 | `vulnerabilities_allowed` | `integer` | true | Greater than or equal to zero | Number of vulnerabilities allowed before this rule is considered. |
@@ -137,7 +137,7 @@ This rule enforces the defined actions based on license findings.
 |------------|------|----------|-----------------|-------------|
 | `type` | `string` | true | `license_finding` | The rule's type. |
 | `branches` | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field. |
-| `branch_type` | `string` | true if `branches` field does not exist | `default` or `protected` | The types of branches the given policy applies to. Cannot be used with the `branches` field. |
+| `branch_type` | `string` | true if `branches` field does not exist | `default` or `protected` |  The types of protected branches the given policy applies to. Cannot be used with the `branches` field. Default branches must also be `protected`. |
 | `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
 | `match_on_inclusion` | `boolean` | true | `true`, `false` | Whether the rule matches inclusion or exclusion of licenses listed in `license_types`. |
 | `license_types` | `array` of `string` | true | license types | [SPDX license names](https://spdx.org/licenses) to match on, for example `Affero General Public License v1.0` or `MIT License`. |
@@ -158,7 +158,7 @@ This rule enforces the defined actions for any merge request based on the commit
 |---------------|---------------------|--------------------------------------------|---------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `type`        | `string`            | true                                       | `any_merge_request`       | The rule's type. |
 | `branches`    | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field. |
-| `branch_type` | `string`            | true if `branches` field does not exist    | `default` or `protected`  | The types of branches the given policy applies to. Cannot be used with the `branches` field. |
+| `branch_type` | `string`            | true if `branches` field does not exist    | `default` or `protected`  |  The types of protected branches the given policy applies to. Cannot be used with the `branches` field. Default branches must also be `protected`. |
 | `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
 | `commits`     | `string`            | true                                       | `any`, `unsigned`         | Whether the rule matches for any commits, or only if unsigned commits are detected in the merge request. |
 

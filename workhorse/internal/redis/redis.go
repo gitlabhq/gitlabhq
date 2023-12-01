@@ -17,7 +17,6 @@ import (
 )
 
 var (
-	rdb *redis.Client
 	// found in https://github.com/redis/go-redis/blob/c7399b6a17d7d3e2a57654528af91349f2468529/sentinel.go#L626
 	errSentinelMasterAddr error = errors.New("redis: all sentinels specified in configuration are unreachable")
 
@@ -129,16 +128,13 @@ func (s sentinelInstrumentationHook) ProcessPipelineHook(next redis.ProcessPipel
 	}
 }
 
-func GetRedisClient() *redis.Client {
-	return rdb
-}
-
 // Configure redis-connection
-func Configure(cfg *config.RedisConfig) error {
+func Configure(cfg *config.RedisConfig) (*redis.Client, error) {
 	if cfg == nil {
-		return nil
+		return nil, nil
 	}
 
+	var rdb *redis.Client
 	var err error
 
 	if len(cfg.Sentinel) > 0 {
@@ -147,7 +143,7 @@ func Configure(cfg *config.RedisConfig) error {
 		rdb, err = configureRedis(cfg)
 	}
 
-	return err
+	return rdb, err
 }
 
 func configureRedis(cfg *config.RedisConfig) (*redis.Client, error) {

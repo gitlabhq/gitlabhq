@@ -1772,7 +1772,6 @@ RSpec/NamedSubject:
     - 'spec/lib/bulk_imports/projects/graphql/get_project_query_spec.rb'
     - 'spec/lib/bulk_imports/projects/graphql/get_repository_query_spec.rb'
     - 'spec/lib/bulk_imports/projects/graphql/get_snippet_repository_query_spec.rb'
-    - 'spec/lib/bulk_imports/projects/pipelines/legacy_references_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/projects/pipelines/references_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/projects/stage_spec.rb'
     - 'spec/lib/bulk_imports/source_url_builder_spec.rb'

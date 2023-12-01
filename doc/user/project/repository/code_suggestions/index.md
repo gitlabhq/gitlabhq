@@ -36,14 +36,17 @@ GitLab Duo Code Suggestions are available:
 </figure>
 
 During Beta, usage of Code Suggestions is governed by the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
-Learn about [data usage when using Code Suggestions](#code-suggestions-data-usage). As Code Suggestions matures to General Availibility it will be governed by our [AI Functionality Terms](https://about.gitlab.com/handbook/legal/ai-functionality-terms/). 
+Learn about [data usage when using Code Suggestions](#code-suggestions-data-usage). As Code Suggestions matures to General Availability it will be governed by our [AI Functionality Terms](https://about.gitlab.com/handbook/legal/ai-functionality-terms/).
 
 ## Use Code Suggestions
 
 Prerequisites:
 
-- Code Suggestions must be enabled for [SaaS](saas.md#enable-code-suggestions) or for [self-managed](self_managed.md#enable-code-suggestions-on-self-managed-gitlab).
 - You must have installed and configured a [supported IDE editor extension](index.md#supported-editor-extensions).
+- If you are a **SaaS** user, you must enable Code Suggestions for:
+  - [The top-level group](../../../group/manage.md#enable-code-suggestions) (you must have the Owner role for that group).
+  - [Your own account](../../../profile/preferences.md#enable-code-suggestions).
+  - If you are a **self-managed** user, you must enable Code Suggestions [for your instance](self_managed.md#enable-code-suggestions-on-self-managed-gitlab). How you enable Code Suggestions differs depending on your version of GitLab.
 
 To use Code Suggestions:
 

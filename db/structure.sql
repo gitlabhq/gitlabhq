@@ -34882,8 +34882,6 @@ CREATE INDEX index_users_for_active_billable_users ON users USING btree (id) WHE
 
 CREATE INDEX index_users_for_auditors ON users USING btree (id) WHERE (auditor IS TRUE);
 
-CREATE INDEX index_users_on_accepted_term_id ON users USING btree (accepted_term_id);
-
 CREATE INDEX index_users_on_admin ON users USING btree (admin);
 
 CREATE UNIQUE INDEX index_users_on_confirmation_token ON users USING btree (confirmation_token);

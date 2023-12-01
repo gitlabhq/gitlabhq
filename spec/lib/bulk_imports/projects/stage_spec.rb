@@ -21,24 +21,6 @@ RSpec.describe BulkImports::Projects::Stage, feature_category: :importers do
       expect(pipelines.last).to match(hash_including({ pipeline: BulkImports::Common::Pipelines::EntityFinisher }))
     end
 
-    context 'when bulk_import_async_references_pipeline feature flag is disabled' do
-      before do
-        stub_feature_flags(bulk_import_async_references_pipeline: false)
-      end
-
-      it 'uses the legacy references pipeline' do
-        pipelines = subject.pipelines
-
-        expect(pipelines).to include(
-          hash_including({ stage: 5, pipeline: BulkImports::Projects::Pipelines::LegacyReferencesPipeline })
-        )
-
-        expect(pipelines).not_to include(
-          hash_including({ stage: 5, pipeline: BulkImports::Projects::Pipelines::ReferencesPipeline })
-        )
-      end
-    end
-
     it 'only have pipelines with valid keys' do
       pipeline_keys = subject.pipelines.collect(&:keys).flatten.uniq
       allowed_keys = %i[pipeline stage minimum_source_version maximum_source_version]

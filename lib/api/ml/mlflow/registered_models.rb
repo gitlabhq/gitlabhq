@@ -120,6 +120,49 @@ module API
               render_api_error!('Model could not be deleted', 400)
             end
           end
+
+          desc 'Search Registered Models within a project' do
+            success Entities::Ml::Mlflow::RegisteredModel
+            detail 'https://mlflow.org/docs/2.6.0/rest-api.html#search-registeredmodels'
+          end
+          params do
+            optional :filter,
+              type: String,
+              desc: "Filter to search models. must be in the format `name='value'`. Only filtering by name is supported"
+            optional :max_results,
+              type: Integer,
+              desc: 'Maximum number of models desired. Default is 200. Max threshold is 1000.',
+              default: 200
+            optional :order_by,
+              type: String,
+              desc: 'Order criteria. Can be by name or last_updated_timestamp, with optional DESC or ASC (default)' \
+                    'Valid examples: `name`, `name DESC`, `last_updated_timestamp DESC`' \
+                    'Sorting by model metadata is not supported.',
+              default: 'name ASC'
+            optional :page_token,
+              type: String,
+              desc: 'Token for pagination'
+          end
+          get 'search', urgency: :low do
+            max_results = [params[:max_results], 1000].min
+
+            finder_params = model_order_params(params)
+            filter_params = model_filter_params(params)
+
+            if !params[:filter].nil? && !filter_params.key?(:name)
+              invalid_parameter!("Invalid attribute key specified. Valid keys are '{'name'}'")
+            end
+
+            finder = ::Projects::Ml::ModelFinder.new(user_project, finder_params.merge(filter_params))
+            paginator = finder.execute.keyset_paginate(cursor: params[:page_token], per_page: max_results)
+
+            result = {
+              registered_models: paginator.records,
+              next_page_token: paginator.cursor_for_next_page
+            }
+
+            present result, with: Entities::Ml::Mlflow::ListRegisteredModels
+          end
         end
       end
     end

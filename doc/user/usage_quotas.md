@@ -5,7 +5,7 @@ group: Utilization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Storage **(FREE ALL)**
+# Storage **(FREE SAAS)**
 
 All projects on GitLab SaaS have 10 GiB of free storage for their Git repository and Large File Storage (LFS).
 
@@ -16,13 +16,11 @@ you must [purchase more storage](../subscriptions/gitlab_com/index.md#purchase-m
 GitLab plans to introduce storage limits for namespaces on GitLab SaaS. After these storage limits have been applied,
 storage usage will be calculated across the entire namespace and project storage limits will no longer apply.
 
-The amount of storage and transfer for self-managed instances has no application limits. Administrators are responsible for the underlying infrastructure costs and can set [repository size limits](../administration/settings/account_and_limit_settings.md#repository-size-limit).
-
-## View storage
+## View storage **(FREE ALL)**
 
 You can view the following statistics for storage usage in projects and namespaces:
 
-- Storage usage that exceeds the GitLab SaaS storage limit or [self-managed storage quota](../administration/settings/account_and_limit_settings.md#repository-size-limit).
+- Storage usage that exceeds the GitLab SaaS storage limit or [self-managed storage limits](../administration/settings/account_and_limit_settings.md#repository-size-limit).
 - Available purchased storage for GitLab SaaS.
 
 Prerequisites:
@@ -49,7 +47,7 @@ NOTE:
 Storage usage labels are being transitioned from `KB` to `KiB`, `MB` to `MiB`, and `GB` to `GiB`. During this transition,
 you might see references to `KB`, `MB`, and `GB` in the UI and documentation.
 
-### View project fork storage usage **(FREE SAAS)**
+## View project fork storage usage
 
 A cost factor is applied to the storage consumed by project forks so that forks consume less namespace storage than their actual size.
 
@@ -63,7 +61,7 @@ The cost factor applies to the project repository, LFS objects, job artifacts, p
 
 The cost factor does not apply to private forks in namespaces on the Free plan.
 
-## Excess storage usage **(FREE SAAS)**
+## Excess storage usage
 
 Excess storage usage is the amount that exceeds the 10 GiB free storage of a project's repository and LFS. If no purchased storage is available,
 the project is set to a read-only state. You cannot push changes to a read-only project.
@@ -109,7 +107,7 @@ available decreases. All projects no longer have the read-only status because 40
 | Yellow     | 5 GiB         | 0 GiB           | 10 GiB   | Not read-only     |
 | **Totals** | **45 GiB**    | **10 GiB**      | -       | -                 |
 
-## Namespace storage limit **(FREE SAAS)**
+## Namespace storage limit
 
 GitLab plans to introduce the following storage limits per top-level group:
 
@@ -160,7 +158,7 @@ Storage types that count toward the total namespace storage are:
 - Wiki
 - Snippets
 
-### Excess storage notifications **(FREE SAAS)**
+### Excess storage notifications
 
 Storage limits are included in GitLab subscription terms but do not apply. At least 60 days before GitLab introduces storage limits,
 GitLab will notify you of namespaces that exceed, or are close to exceeding, the storage limit.

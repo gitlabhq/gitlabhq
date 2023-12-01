@@ -13,6 +13,8 @@ module EnvironmentsHelper
     {
       "endpoint" => folder_project_environments_path(@project, @folder, format: :json),
       "folder_name" => @folder,
+      "project_path" => project_path(@project),
+      "help_page_path" => help_page_path("ci/environments/index"),
       "can_read_environment" => can?(current_user, :read_environment, @project).to_s
     }
   end

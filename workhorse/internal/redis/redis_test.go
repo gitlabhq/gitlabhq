@@ -29,8 +29,8 @@ func mockRedisServer(t *testing.T, connectReceived *atomic.Value) string {
 }
 
 func TestConfigureNoConfig(t *testing.T) {
-	rdb = nil
-	Configure(nil)
+	rdb, err := Configure(nil)
+	require.NoError(t, err)
 	require.Nil(t, rdb, "rdb client should be nil")
 }
 
@@ -57,15 +57,15 @@ func TestConfigureValidConfigX(t *testing.T) {
 			parsedURL := helper.URLMustParse(tc.scheme + "://" + a)
 			cfg := &config.RedisConfig{URL: config.TomlURL{URL: *parsedURL}}
 
-			Configure(cfg)
+			rdb, err := Configure(cfg)
+			require.NoError(t, err)
+			defer rdb.Close()
 
-			require.NotNil(t, GetRedisClient().Conn(), "Pool should not be nil")
+			require.NotNil(t, rdb.Conn(), "Pool should not be nil")
 
 			// goredis initialise connections lazily
 			rdb.Ping(context.Background())
 			require.True(t, connectReceived.Load().(bool))
-
-			rdb = nil
 		})
 	}
 }
@@ -96,15 +96,15 @@ func TestConnectToSentinel(t *testing.T) {
 			}
 
 			cfg := &config.RedisConfig{Sentinel: sentinelUrls}
-			Configure(cfg)
+			rdb, err := Configure(cfg)
+			require.NoError(t, err)
+			defer rdb.Close()
 
-			require.NotNil(t, GetRedisClient().Conn(), "Pool should not be nil")
+			require.NotNil(t, rdb.Conn(), "Pool should not be nil")
 
 			// goredis initialise connections lazily
 			rdb.Ping(context.Background())
 			require.True(t, connectReceived.Load().(bool))
-
-			rdb = nil
 		})
 	}
 }

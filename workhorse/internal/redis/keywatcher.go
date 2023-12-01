@@ -21,11 +21,11 @@ type KeyWatcher struct {
 	subscribers      map[string][]chan string
 	shutdown         chan struct{}
 	reconnectBackoff backoff.Backoff
-	redisConn        *redis.Client
+	redisConn        *redis.Client // can be nil
 	conn             *redis.PubSub
 }
 
-func NewKeyWatcher() *KeyWatcher {
+func NewKeyWatcher(redisConn *redis.Client) *KeyWatcher {
 	return &KeyWatcher{
 		shutdown: make(chan struct{}),
 		reconnectBackoff: backoff.Backoff{
@@ -34,6 +34,7 @@ func NewKeyWatcher() *KeyWatcher {
 			Factor: 2,
 			Jitter: true,
 		},
+		redisConn: redisConn,
 	}
 }
 
@@ -125,16 +126,13 @@ func (kw *KeyWatcher) receivePubSubStream(ctx context.Context, pubsub *redis.Pub
 	}
 }
 
-func (kw *KeyWatcher) Process(client *redis.Client) {
+func (kw *KeyWatcher) Process() {
 	log.Info("keywatcher: starting process loop")
 
 	ctx := context.Background() // lint:allow context.Background
-	kw.mu.Lock()
-	kw.redisConn = client
-	kw.mu.Unlock()
 
 	for {
-		pubsub := client.Subscribe(ctx, []string{}...)
+		pubsub := kw.redisConn.Subscribe(ctx, []string{}...)
 		if err := pubsub.Ping(ctx); err != nil {
 			log.WithError(fmt.Errorf("keywatcher: %v", err)).Error()
 			time.Sleep(kw.reconnectBackoff.Duration())

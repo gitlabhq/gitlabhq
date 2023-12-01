@@ -320,6 +320,10 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
       Gitlab::ErrorTracking.configure
     end
 
+    after do
+      clear_sentry_settings
+    end
+
     it 'does not report a MethodNotAllowed exception to Sentry' do
       exception = Grape::Exceptions::MethodNotAllowed.new({ 'X-GitLab-Test' => '1' })
       allow(exception).to receive(:backtrace).and_return(caller)

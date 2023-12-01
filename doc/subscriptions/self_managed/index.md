@@ -467,6 +467,10 @@ existing feature requests in the [GitLab](https://gitlab.com/gitlab-org/gitlab/-
 These issues are the best avenue for getting updates on specific product plans
 and for communicating directly with the relevant GitLab team members.
 
+## Storage
+
+The amount of storage and transfer for self-managed instances has no application limits. Administrators are responsible for the underlying infrastructure costs and can set [repository size limits](../../administration/settings/account_and_limit_settings.md#repository-size-limit).
+
 ## Troubleshooting
 
 ### Subscription data fails to synchronize

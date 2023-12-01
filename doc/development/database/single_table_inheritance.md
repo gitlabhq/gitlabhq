@@ -53,8 +53,13 @@ class Animal < ActiveRecord::Base
   def self.inheritance_column = 'species'
 end
 
-class Dog < Animal; end
-class Cat < Animal; end
+class Dog < Animal
+  self.allow_legacy_sti_class = true
+end
+
+class Cat < Animal
+  self.allow_legacy_sti_class = true
+end
 ```
 
 If your table already has a `*_type`, new classes for the different types can be added as needed.

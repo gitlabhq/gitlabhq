@@ -9,6 +9,10 @@ RSpec.describe 'Environments Folder page', :js, feature_category: :environment_m
   let_it_be(:user) { create(:user) }
   let!(:envs) { create_list(:environment, 4, :with_folders, project: project, folder: folder_name) }
 
+  def get_env_name(environment)
+    environment.name.split('/').last
+  end
+
   before_all do
     project.add_role(user, :developer)
   end
@@ -27,6 +31,11 @@ RSpec.describe 'Environments Folder page', :js, feature_category: :environment_m
     it 'renders the header with a folder name' do
       expect(page).to have_content("Environments / #{folder_name}")
     end
+
+    it 'renders the environments' do
+      expect(page).not_to have_content('production')
+      envs.each { |env| expect(page).to have_content(get_env_name(env)) }
+    end
   end
 
   describe 'legacy folders page' do
@@ -40,7 +49,7 @@ RSpec.describe 'Environments Folder page', :js, feature_category: :environment_m
     it 'user opens folder view' do
       expect(page).to have_content("Environments / #{folder_name}")
       expect(page).not_to have_content('production')
-      envs.each { |env| expect(page).to have_content(env.name.split('/').last) }
+      envs.each { |env| expect(page).to have_content(get_env_name(env)) }
     end
   end
 end

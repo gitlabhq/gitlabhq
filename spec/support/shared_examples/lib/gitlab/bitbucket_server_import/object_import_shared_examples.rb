@@ -65,5 +65,17 @@ RSpec.shared_examples Gitlab::BitbucketServerImport::ObjectImporter do
 
       it_behaves_like 'notifies the waiter'
     end
+
+    context 'when project import has failed' do
+      let_it_be(:project_id) { create(:project, :import_failed).id }
+
+      it 'does not call the importer' do
+        expect_next(worker.importer_class).not_to receive(:execute)
+
+        worker.perform(project_id, {}, waiter_key)
+      end
+
+      it_behaves_like 'notifies the waiter'
+    end
   end
 end

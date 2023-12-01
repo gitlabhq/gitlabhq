@@ -225,13 +225,14 @@ func run(boot bootConfig, cfg config.Config) error {
 
 	log.Info("Using redis/go-redis")
 
-	redisKeyWatcher := redis.NewKeyWatcher()
-	if err := redis.Configure(cfg.Redis); err != nil {
+	rdb, err := redis.Configure(cfg.Redis)
+	if err != nil {
 		log.WithError(err).Error("unable to configure redis client")
 	}
+	redisKeyWatcher := redis.NewKeyWatcher(rdb)
 
-	if rdb := redis.GetRedisClient(); rdb != nil {
-		go redisKeyWatcher.Process(rdb)
+	if rdb != nil {
+		go redisKeyWatcher.Process()
 	}
 
 	watchKeyFn := redisKeyWatcher.WatchKey

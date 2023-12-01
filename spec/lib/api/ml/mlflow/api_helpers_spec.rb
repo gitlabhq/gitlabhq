@@ -61,4 +61,47 @@ RSpec.describe API::Ml::Mlflow::ApiHelpers, feature_category: :mlops do
       end
     end
   end
+
+  describe '#model_order_params' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { model_order_params(params) }
+
+    where(:input, :order_by, :sort) do
+      ''                            | 'name'        | 'asc'
+      'name'                        | 'name'        | 'asc'
+      'name DESC'                   | 'name'        | 'desc'
+      'last_updated_timestamp'      | 'updated_at'  | 'asc'
+      'last_updated_timestamp asc'  | 'updated_at'  | 'asc'
+      'last_updated_timestamp DESC' | 'updated_at'  | 'desc'
+    end
+    with_them do
+      let(:params) { { order_by: input } }
+
+      it 'is correct' do
+        is_expected.to include({ order_by: order_by, sort: sort })
+      end
+    end
+  end
+
+  describe '#model_filter_params' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { model_filter_params(params) }
+
+    where(:input, :output) do
+      ''                            | {}
+      'name=""'                     | { name: '' }
+      'name=foo'                    | { name: 'foo' }
+      'name="foo"'                  | { name: 'foo' }
+      'invalid="foo"'               | {}
+    end
+    with_them do
+      let(:params) { { filter: input } }
+
+      it 'is correct' do
+        is_expected.to eq(output)
+      end
+    end
+  end
 end

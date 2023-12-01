@@ -1,8 +1,0 @@
----
-name: bulk_import_async_references_pipeline
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135806
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/430181
-milestone: '16.7'
-type: development
-group: group::import and integrate
-default_enabled: false

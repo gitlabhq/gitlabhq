@@ -4,6 +4,8 @@ module API
   module Ml
     module Mlflow
       module ApiHelpers
+        OUTER_QUOTES_REGEXP = /^("|')|("|')?$/
+
         def check_api_read!
           not_found! unless can?(current_user, :read_model_experiments, user_project)
         end
@@ -81,6 +83,34 @@ module API
             order_by_type: order_by_column_type,
             sort: order_by_sort
           }
+        end
+
+        def model_order_params(params)
+          if params[:order_by].blank?
+            order_by = 'name'
+            sort = 'asc'
+          else
+            order_by, sort = params[:order_by].downcase.split(' ')
+            order_by = 'updated_at' if order_by == 'last_updated_timestamp'
+            sort ||= 'asc'
+          end
+
+          {
+            order_by: order_by,
+            sort: sort
+          }
+        end
+
+        def model_filter_params(params)
+          return {} if params[:filter].blank?
+
+          param, filter = params[:filter].split('=')
+
+          return {} unless param == 'name'
+
+          filter.gsub!(OUTER_QUOTES_REGEXP, '') unless filter.blank?
+
+          { name: filter }
         end
 
         def find_experiment!(iid, name)

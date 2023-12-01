@@ -21,6 +21,10 @@ module API
           def last_updated_timestamp
             object.updated_at.to_i
           end
+
+          def description
+            object.description.to_s
+          end
         end
       end
     end

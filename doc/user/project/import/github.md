@@ -84,6 +84,8 @@ If you are importing from GitHub.com to a self-managed GitLab instance:
   [OmniAuth configuration](../../../integration/github.md#enable-github-oauth-in-gitlab).
 - Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/424400), Markdown attachments from
   repositories on GitHub Enterprise Server instances aren't imported.
+- Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/418800), when importing projects that used
+  [GitHub auto-merge](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/automatically-merging-a-pull-request), the imported project in GitLab can have merge commits labeled "unverified" if the commit was signed with GitHub's internal GPG key.
 
 ## Import your GitHub repository into GitLab
 

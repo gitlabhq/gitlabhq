@@ -77,12 +77,12 @@ export default {
       :size="32"
     />
     <div class="commit-detail flex-list gl-display-flex gl-flex-grow-1 gl-min-w-0">
-      <div class="commit-content gl-w-full gl-text-truncate" data-testid="commit-content">
+      <div class="commit-content gl-w-full" data-testid="commit-content">
         <gl-link
           v-safe-html:[$options.safeHtmlConfig]="commit.titleHtml"
           :href="commit.webPath"
           :class="{ 'gl-font-style-italic': !commit.message }"
-          class="commit-row-message item-title"
+          class="commit-row-message item-title gl-line-clamp-1"
         />
         <gl-button
           v-if="commit.descriptionHtml"
@@ -95,7 +95,7 @@ export default {
           icon="ellipsis_h"
           @click="toggleShowDescription"
         />
-        <div class="committer">
+        <div class="committer gl-pb-2">
           <gl-link
             v-if="commit.author"
             :href="commit.author.webPath"

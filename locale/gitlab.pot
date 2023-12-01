@@ -6818,12 +6818,6 @@ msgstr ""
 msgid "At least one of group_id or project_id must be specified"
 msgstr ""
 
-msgid "At least one of your Personal Access Tokens is expired. %{generate_new}"
-msgstr ""
-
-msgid "At least one of your Personal Access Tokens will expire soon. %{generate_new}"
-msgstr ""
-
 msgid "At risk"
 msgstr ""
 
@@ -39843,6 +39837,9 @@ msgstr ""
 msgid "Release|Learn more about releases"
 msgstr ""
 
+msgid "Release|Leave blank to use the tag name as the release title."
+msgstr ""
+
 msgid "Release|More information"
 msgstr ""
 
@@ -48664,6 +48661,9 @@ msgstr ""
 msgid "The name of the Jenkins project. Copy the name from the end of the URL to the project."
 msgstr ""
 
+msgid "The namespace storage size (%{current_size}) exceeds the limit of %{size_limit} by %{exceeded_size}. You won't be able to push new code to this project. Please contact your GitLab administrator for more information."
+msgstr ""
+
 msgid "The number of changes to fetch from GitLab when cloning a repository. Lower values can speed up pipeline execution. Set to %{code_open}0%{code_close} or blank to fetch all branches and tags for each job"
 msgstr ""
 
@@ -56339,6 +56339,9 @@ msgid "Your membership will expire in %{days_to_expire} days"
 msgstr ""
 
 msgid "Your name"
+msgstr ""
+
+msgid "Your namespace storage is full. This merge request cannot be merged. To continue, %{link_start}manage your storage usage%{link_end}."
 msgstr ""
 
 msgid "Your new %{accessTokenType}"

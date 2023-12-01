@@ -55,8 +55,7 @@ RSpec.describe Gitlab::HTTP, feature_category: :shared do
       end
 
       context 'when there is a DB call in the concurrent thread' do
-        it 'raises Gitlab::Utils::ConcurrentRubyThreadIsUsedError error',
-          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/432145' do
+        it 'raises Gitlab::Utils::ConcurrentRubyThreadIsUsedError error' do
           stub_request(:get, 'http://example.org').to_return(status: 200, body: 'hello world')
 
           result = described_class.get('http://example.org', async: true) do |_fragment|

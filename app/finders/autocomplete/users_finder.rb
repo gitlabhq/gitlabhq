@@ -101,14 +101,9 @@ module Autocomplete
       if Feature.enabled?(:group_users_autocomplete_using_batch_reduction, current_user)
         members_relation = ::Autocomplete::GroupUsersFinder.new(group: group, members_relation: true).execute # rubocop: disable CodeReuse/Finder
 
-        user_ids = Set.new
-        members_relation.each_batch(of: BATCH_SIZE) do |relation|
-          user_ids += relation.pluck_user_ids
-        end
-
         user_relations = []
-        user_ids.to_a.in_groups_of(BATCH_SIZE, false) do |batch_user_ids|
-          user_relations << users_relation.id_in(batch_user_ids)
+        members_relation.distinct_each_batch(column: :user_id, of: BATCH_SIZE) do |relation|
+          user_relations << users_relation.id_in(relation.pluck_user_ids)
         end
 
         # When there is more than 1 batch, we need to apply users_relation again on

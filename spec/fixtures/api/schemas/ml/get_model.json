@@ -19,7 +19,7 @@
           "type": "string"
         },
         "user_id": {
-          "type": "integer"
+          "type": "string"
         },
         "creation_timestamp": {
           "type": "integer"

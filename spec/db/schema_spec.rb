@@ -14,7 +14,8 @@ RSpec.describe 'Database schema', feature_category: :database do
     # but in Search::NamespaceIndexAssignment model, only `search_index_id` is used as foreign key and indexed
     search_namespace_index_assignments: [%w[search_index_id index_type]],
     slack_integrations_scopes: [%w[slack_api_scope_id]],
-    notes: %w[namespace_id] # this index is added in an async manner, hence it needs to be ignored in the first phase.
+    notes: %w[namespace_id], # this index is added in an async manner, hence it needs to be ignored in the first phase.
+    users: [%w[accepted_term_id]]
   }.with_indifferent_access.freeze
 
   TABLE_PARTITIONS = %w[ci_builds_metadata].freeze

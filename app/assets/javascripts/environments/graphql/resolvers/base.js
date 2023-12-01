@@ -59,8 +59,10 @@ export const baseQueries = (endpoint) => ({
       };
     });
   },
-  folder(_, { environment: { folderPath }, scope, search }) {
-    return axios.get(folderPath, { params: { scope, search, per_page: 3 } }).then((res) => ({
+  folder(_, { environment: { folderPath }, scope, search, perPage }) {
+    // eslint-disable-next-line camelcase
+    const per_page = perPage || 3;
+    return axios.get(folderPath, { params: { scope, search, per_page } }).then((res) => ({
       activeCount: res.data.active_count,
       environments: res.data.environments.map(mapEnvironment),
       stoppedCount: res.data.stopped_count,

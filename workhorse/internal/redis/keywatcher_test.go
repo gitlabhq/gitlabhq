@@ -7,6 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/redis/go-redis/v9"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
@@ -18,24 +20,28 @@ const (
 	runnerKey = "runner:build_queue:10"
 )
 
-func initRdb() {
-	buf, _ := os.ReadFile("../../config.toml")
-	cfg, _ := config.LoadConfig(string(buf))
-	Configure(cfg.Redis)
+func initRdb(t *testing.T) *redis.Client {
+	buf, err := os.ReadFile("../../config.toml")
+	require.NoError(t, err)
+	cfg, err := config.LoadConfig(string(buf))
+	require.NoError(t, err)
+	rdb, err := Configure(cfg.Redis)
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		assert.NoError(t, rdb.Close())
+	})
+	return rdb
 }
 
-func (kw *KeyWatcher) countSubscribers(key string) int {
+func countSubscribers(kw *KeyWatcher, key string) int {
 	kw.mu.Lock()
 	defer kw.mu.Unlock()
 	return len(kw.subscribers[key])
 }
 
 // Forces a run of the `Process` loop against a mock PubSubConn.
-func (kw *KeyWatcher) processMessages(t *testing.T, numWatchers int, value string, ready chan<- struct{}, wg *sync.WaitGroup) {
-	kw.mu.Lock()
-	kw.redisConn = rdb
+func processMessages(t *testing.T, kw *KeyWatcher, numWatchers int, value string, ready chan<- struct{}, wg *sync.WaitGroup) {
 	psc := kw.redisConn.Subscribe(ctx, []string{}...)
-	kw.mu.Unlock()
 
 	errC := make(chan error)
 	go func() { errC <- kw.receivePubSubStream(ctx, psc) }()
@@ -48,7 +54,7 @@ func (kw *KeyWatcher) processMessages(t *testing.T, numWatchers int, value strin
 	close(ready)
 
 	require.Eventually(t, func() bool {
-		return kw.countSubscribers(runnerKey) == numWatchers
+		return countSubscribers(kw, runnerKey) == numWatchers
 	}, time.Second, time.Millisecond)
 
 	// send message after listeners are ready
@@ -74,7 +80,7 @@ type keyChangeTestCase struct {
 }
 
 func TestKeyChangesInstantReturn(t *testing.T) {
-	initRdb()
+	rdb := initRdb(t)
 
 	testCases := []keyChangeTestCase{
 		// WatchKeyStatusAlreadyChanged
@@ -118,13 +124,10 @@ func TestKeyChangesInstantReturn(t *testing.T) {
 				rdb.Set(ctx, runnerKey, tc.returnValue, 0)
 			}
 
-			defer func() {
-				rdb.FlushDB(ctx)
-			}()
+			defer rdb.FlushDB(ctx)
 
-			kw := NewKeyWatcher()
+			kw := NewKeyWatcher(rdb)
 			defer kw.Shutdown()
-			kw.redisConn = rdb
 			kw.conn = kw.redisConn.Subscribe(ctx, []string{}...)
 
 			val, err := kw.WatchKey(ctx, runnerKey, tc.watchValue, tc.timeout)
@@ -136,7 +139,7 @@ func TestKeyChangesInstantReturn(t *testing.T) {
 }
 
 func TestKeyChangesWhenWatching(t *testing.T) {
-	initRdb()
+	rdb := initRdb(t)
 
 	testCases := []keyChangeTestCase{
 		// WatchKeyStatusSeenChange
@@ -170,11 +173,9 @@ func TestKeyChangesWhenWatching(t *testing.T) {
 				rdb.Set(ctx, runnerKey, tc.returnValue, 0)
 			}
 
-			kw := NewKeyWatcher()
+			kw := NewKeyWatcher(rdb)
 			defer kw.Shutdown()
-			defer func() {
-				rdb.FlushDB(ctx)
-			}()
+			defer rdb.FlushDB(ctx)
 
 			wg := &sync.WaitGroup{}
 			wg.Add(1)
@@ -189,13 +190,13 @@ func TestKeyChangesWhenWatching(t *testing.T) {
 				require.Equal(t, tc.expectedStatus, val, "Expected value")
 			}()
 
-			kw.processMessages(t, 1, tc.processedValue, ready, wg)
+			processMessages(t, kw, 1, tc.processedValue, ready, wg)
 		})
 	}
 }
 
 func TestKeyChangesParallel(t *testing.T) {
-	initRdb()
+	rdb := initRdb(t)
 
 	testCases := []keyChangeTestCase{
 		{
@@ -222,15 +223,13 @@ func TestKeyChangesParallel(t *testing.T) {
 				rdb.Set(ctx, runnerKey, tc.returnValue, 0)
 			}
 
-			defer func() {
-				rdb.FlushDB(ctx)
-			}()
+			defer rdb.FlushDB(ctx)
 
 			wg := &sync.WaitGroup{}
 			wg.Add(runTimes)
 			ready := make(chan struct{})
 
-			kw := NewKeyWatcher()
+			kw := NewKeyWatcher(rdb)
 			defer kw.Shutdown()
 
 			for i := 0; i < runTimes; i++ {
@@ -244,16 +243,15 @@ func TestKeyChangesParallel(t *testing.T) {
 				}()
 			}
 
-			kw.processMessages(t, runTimes, tc.processedValue, ready, wg)
+			processMessages(t, kw, runTimes, tc.processedValue, ready, wg)
 		})
 	}
 }
 
 func TestShutdown(t *testing.T) {
-	initRdb()
+	rdb := initRdb(t)
 
-	kw := NewKeyWatcher()
-	kw.redisConn = rdb
+	kw := NewKeyWatcher(rdb)
 	kw.conn = kw.redisConn.Subscribe(ctx, []string{}...)
 	defer kw.Shutdown()
 
@@ -272,14 +270,14 @@ func TestShutdown(t *testing.T) {
 
 	go func() {
 		defer wg.Done()
-		require.Eventually(t, func() bool { return kw.countSubscribers(runnerKey) == 1 }, 10*time.Second, time.Millisecond)
+		require.Eventually(t, func() bool { return countSubscribers(kw, runnerKey) == 1 }, 10*time.Second, time.Millisecond)
 
 		kw.Shutdown()
 	}()
 
 	wg.Wait()
 
-	require.Eventually(t, func() bool { return kw.countSubscribers(runnerKey) == 0 }, 10*time.Second, time.Millisecond)
+	require.Eventually(t, func() bool { return countSubscribers(kw, runnerKey) == 0 }, 10*time.Second, time.Millisecond)
 
 	// Adding a key after the shutdown should result in an immediate response
 	var val WatchKeyStatus

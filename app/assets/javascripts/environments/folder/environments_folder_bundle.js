@@ -2,13 +2,14 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import Translate from '~/vue_shared/translate';
+import { apolloProvider } from '../graphql/client';
 import EnvironmentsFolderView from './environments_folder_view.vue';
 import EnvironmentsFolderApp from './environments_folder_app.vue';
 
 Vue.use(Translate);
 Vue.use(VueApollo);
 
-const apolloProvider = new VueApollo({
+const legacyApolloProvider = new VueApollo({
   defaultClient: createDefaultClient(),
 });
 
@@ -17,16 +18,25 @@ export default () => {
   const environmentsData = el.dataset;
   if (gon.features.environmentsFolderNewLook) {
     const folderName = environmentsData.environmentsDataFolderName;
+    const folderPath = environmentsData.environmentsDataEndpoint.replace('.json', '');
+    const projectPath = environmentsData.environmentsDataProjectPath;
+    const helpPagePath = environmentsData.environmentsDataHelpPagePath;
 
     return new Vue({
       el,
       components: {
         EnvironmentsFolderApp,
       },
+      provide: {
+        projectPath,
+        helpPagePath,
+      },
+      apolloProvider,
       render(createElement) {
         return createElement('environments-folder-app', {
           props: {
             folderName,
+            folderPath,
           },
         });
       },
@@ -38,7 +48,7 @@ export default () => {
     components: {
       EnvironmentsFolderView,
     },
-    apolloProvider,
+    apolloProvider: legacyApolloProvider,
     provide: {
       projectPath: el.dataset.projectPath,
     },

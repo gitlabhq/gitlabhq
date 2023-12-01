@@ -5,7 +5,7 @@ module Projects
     class ModelFinder
       include Gitlab::Utils::StrongMemoize
 
-      VALID_ORDER_BY = %w[name created_at id].freeze
+      VALID_ORDER_BY = %w[name created_at updated_at id].freeze
       VALID_SORT = %w[asc desc].freeze
 
       def initialize(project, params = {})
