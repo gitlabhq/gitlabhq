@@ -48,9 +48,10 @@ module Banzai
       private
 
       def has_custom_emoji?
-        all_custom_emoji&.any?
+        strong_memoize(:has_custom_emoji) do
+          CustomEmoji.for_resource(resource_parent).any?
+        end
       end
-      strong_memoize_attr :has_custom_emoji?
 
       def resource_parent
         context[:project] || context[:group]
@@ -61,12 +62,9 @@ module Banzai
       end
 
       def all_custom_emoji
-        Groups::CustomEmojiFinder.new(resource_parent, { include_ancestor_groups: true })
-          .execute
-          .by_name(custom_emoji_candidates)
-          .index_by(&:name)
+        @all_custom_emoji ||=
+          CustomEmoji.for_resource(resource_parent).by_name(custom_emoji_candidates).index_by(&:name)
       end
-      strong_memoize_attr :all_custom_emoji
     end
   end
 end

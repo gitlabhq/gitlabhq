@@ -21,8 +21,7 @@ module Types
     field :custom_emoji,
           type: Types::CustomEmojiType.connection_type,
           null: true,
-          resolver: Resolvers::CustomEmojiResolver,
-          description: 'Custom emoji in this namespace.',
+          description: 'Custom emoji within this namespace.',
           alpha: { milestone: '13.6' }
 
     field :share_with_group_lock,
@@ -329,6 +328,10 @@ module Types
 
     def dependency_proxy_setting
       group.dependency_proxy_setting || group.create_dependency_proxy_setting
+    end
+
+    def custom_emoji
+      object.custom_emoji if Feature.enabled?(:custom_emoji)
     end
 
     private

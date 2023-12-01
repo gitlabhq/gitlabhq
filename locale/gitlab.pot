@@ -8975,6 +8975,12 @@ msgstr ""
 msgid "Browse templates"
 msgstr ""
 
+msgid "Bugs created per month by Priority"
+msgstr ""
+
+msgid "Bugs created per month by Severity"
+msgstr ""
+
 msgid "Build cannot be erased"
 msgstr ""
 

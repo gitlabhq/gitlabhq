@@ -497,7 +497,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/gitlab/etag_caching/router/rails_spec.rb'
     - 'spec/lib/gitlab/etag_caching/router_spec.rb'
     - 'spec/lib/gitlab/event_store/store_spec.rb'
-    - 'spec/lib/gitlab/experiment/rollout/feature_spec.rb'
     - 'spec/lib/gitlab/external_authorization/access_spec.rb'
     - 'spec/lib/gitlab/external_authorization/logger_spec.rb'
     - 'spec/lib/gitlab/faraday/error_callback_spec.rb'

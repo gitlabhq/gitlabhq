@@ -25,12 +25,8 @@ module Gitlab
 
     def valid_custom_emoji?(record, value)
       resource = record.try(:resource_parent)
-      namespace = resource.try(:namespace)
 
-      return unless resource.is_a?(Group) || namespace.is_a?(Group)
-
-      Groups::CustomEmojiFinder.new(resource, { include_ancestor_groups: true }).execute
-        .by_name(value.to_s).any?
+      CustomEmoji.for_resource(resource).by_name(value.to_s).any?
     end
   end
 end

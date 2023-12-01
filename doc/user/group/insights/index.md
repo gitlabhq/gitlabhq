@@ -56,6 +56,16 @@ By default, insights display all available dimensions on the chart.
 
 To exclude a dimension, from the legend below the chart, select the name of the dimension.
 
+### Drill down on charts
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372215/) in GitLab 16.7.
+
+You can drill down into the data of the **Bugs created per month by priority** and **Bugs created per month by severity** charts from the [default configuration file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/fixtures/insights/default.yml).
+
+To view a drill-down report of the data for a specific priority or severity in a month:
+
+- On the chart, select the bar stack you want to drill down on.
+
 ## Configure group insights
 
 GitLab reads insights from the

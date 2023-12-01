@@ -13,7 +13,7 @@ module Gitlab
         #   no inclusions, etc.)
         def enabled?
           return false unless feature_flag_defined?
-          return false unless Gitlab.com?
+          return false unless available?
           return false unless ::Feature.enabled?(:gitlab_experiment, type: :ops)
 
           feature_flag_instance.state != :off
@@ -57,8 +57,12 @@ module Gitlab
 
         private
 
+        def available?
+          ApplicationExperiment.available?
+        end
+
         def feature_flag_instance
-          ::Feature.get(feature_flag_name) # rubocop:disable Gitlab/AvoidFeatureGet
+          ::Feature.get(feature_flag_name) # rubocop:disable Gitlab/AvoidFeatureGet -- We are using at a lower layer here in experiment framework
         end
 
         def feature_flag_defined?

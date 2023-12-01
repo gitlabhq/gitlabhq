@@ -319,17 +319,6 @@ RSpec.describe AwardEmoji, feature_category: :team_planning do
       expect(new_award.url).to eq(custom_emoji.url)
     end
 
-    describe 'when inside subgroup' do
-      let_it_be(:subgroup) { create(:group, parent: custom_emoji.group) }
-      let_it_be(:project) { create(:project, namespace: subgroup) }
-
-      it 'is set for custom emoji' do
-        new_award = build_award(custom_emoji.name)
-
-        expect(new_award.url).to eq(custom_emoji.url)
-      end
-    end
-
     context 'feature flag disabled' do
       before do
         stub_feature_flags(custom_emoji: false)

@@ -132,7 +132,6 @@ Gitlab/AvoidGitlabInstanceChecks:
     - 'lib/gitlab/database/migration_helpers/convert_to_bigint.rb'
     - 'lib/gitlab/database/migration_helpers/wraparound_autovacuum.rb'
     - 'lib/gitlab/database/migration_helpers/wraparound_vacuum_helpers.rb'
-    - 'lib/gitlab/experiment/rollout/feature.rb'
     - 'lib/gitlab/gon_helper.rb'
     - 'lib/gitlab/monitor/demo_projects.rb'
     - 'lib/gitlab/qa.rb'

@@ -66,8 +66,7 @@ class AwardEmoji < ApplicationRecord
   def url
     return if TanukiEmoji.find_by_alpha_code(name)
 
-    Groups::CustomEmojiFinder.new(resource_parent, { include_ancestor_groups: true }).execute
-      .by_name(name)&.select(:url)&.first&.url
+    CustomEmoji.for_resource(resource_parent).by_name(name).select(:url).first&.url
   end
 
   def expire_cache

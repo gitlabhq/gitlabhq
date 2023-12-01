@@ -212,7 +212,6 @@ RSpec.configure do |config|
   config.include_context 'when rendered has no HTML escapes', type: :view
 
   include StubFeatureFlags
-  include StubSaasFeatures
   include StubSnowplow
   include StubMember
 

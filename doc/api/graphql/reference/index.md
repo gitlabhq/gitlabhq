@@ -18894,6 +18894,7 @@ GPG signature for a signed commit.
 | <a id="groupcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the group. |
 | <a id="groupcontainslockedprojects"></a>`containsLockedProjects` | [`Boolean!`](#boolean) | Includes at least one project where the repository size exceeds the limit. This only applies to namespaces under Project limit enforcement. |
 | <a id="groupcrossprojectpipelineavailable"></a>`crossProjectPipelineAvailable` | [`Boolean!`](#boolean) | Indicates if the cross_project_pipeline feature is available for the namespace. |
+| <a id="groupcustomemoji"></a>`customEmoji` **{warning-solid}** | [`CustomEmojiConnection`](#customemojiconnection) | **Introduced** in 13.6. This feature is an Experiment. It can be changed or removed at any time. Custom emoji within this namespace. |
 | <a id="groupdependencyproxyblobcount"></a>`dependencyProxyBlobCount` | [`Int!`](#int) | Number of dependency proxy blobs cached in the group. |
 | <a id="groupdependencyproxyblobs"></a>`dependencyProxyBlobs` | [`DependencyProxyBlobConnection`](#dependencyproxyblobconnection) | Dependency Proxy blobs. (see [Connections](#connections)) |
 | <a id="groupdependencyproxyimagecount"></a>`dependencyProxyImageCount` | [`Int!`](#int) | Number of dependency proxy images cached in the group. |
@@ -19184,26 +19185,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="groupcontributionsfrom"></a>`from` | [`ISO8601Date!`](#iso8601date) | Start date of the reporting time range. |
 | <a id="groupcontributionsto"></a>`to` | [`ISO8601Date!`](#iso8601date) | End date of the reporting time range. The end date must be within 93 days after the start date. |
-
-##### `Group.customEmoji`
-
-Custom emoji in this namespace.
-
-WARNING:
-**Introduced** in 13.6.
-This feature is an Experiment. It can be changed or removed at any time.
-
-Returns [`CustomEmojiConnection`](#customemojiconnection).
-
-This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
-
-###### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="groupcustomemojiincludeancestorgroups"></a>`includeAncestorGroups` | [`Boolean`](#boolean) | Includes custom emoji from parent groups. |
 
 ##### `Group.customizableDashboardVisualizations`
 

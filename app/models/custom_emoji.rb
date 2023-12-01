@@ -25,33 +25,20 @@ class CustomEmoji < ApplicationRecord
     format: { with: /\A#{NAME_REGEXP}\z/o }
 
   scope :by_name, -> (names) { where(name: names) }
-  scope :for_namespaces, -> (namespace_ids) do
-    order = Gitlab::Pagination::Keyset::Order.build([
-      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-        attribute_name: 'name',
-        order_expression: CustomEmoji.arel_table[:name].asc,
-        nullable: :not_nullable,
-        distinct: true
-      ),
-      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-        attribute_name: 'current_namespace',
-        order_expression: Arel.sql("CASE WHEN namespace_id = #{namespace_ids.first} THEN 0 ELSE 1 END").asc,
-        nullable: :not_nullable,
-        add_to_projections: true
-      )
-    ])
-    where(namespace_id: namespace_ids)
-      .select("DISTINCT ON (name) *")
-      .order(order)
-  end
 
   alias_attribute :url, :file # this might need a change in https://gitlab.com/gitlab-org/gitlab/-/issues/230467
 
+  # Find custom emoji for the given resource.
+  # A resource can be either a Project or a Group, or anything responding to #root_ancestor.
+  # Usually it's the return value of #resource_parent on any model.
   scope :for_resource, -> (resource) do
-    return none if resource.nil? || Feature.disabled?(:custom_emoji, resource)
-    return none unless resource.is_a?(Group)
+    return none if resource.nil?
 
-    resource.custom_emoji
+    namespace = resource.root_ancestor
+
+    return none if namespace.nil? || Feature.disabled?(:custom_emoji, namespace)
+
+    namespace.custom_emoji
   end
 
   private
