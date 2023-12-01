@@ -92,7 +92,7 @@ To copy the name of a single failed test:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235525) in Test Reports in GitLab 13.9.
 
 If a test failed in the project's default branch in the last 14 days, a message like
-`Failed {n} time(s) in {default_branch} in the last 14 days` is displayed for that test. 
+`Failed {n} time(s) in {default_branch} in the last 14 days` is displayed for that test.
 
 The calculation includes failed tests in completed pipelines, but not [blocked pipelines](../jobs/job_control.md#types-of-manual-jobs).
 [Issue 431265](https://gitlab.com/gitlab-org/gitlab/-/issues/431265) proposes to

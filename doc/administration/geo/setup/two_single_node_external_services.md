@@ -306,8 +306,7 @@ secondary site is a read-only copy.
    ```
 
 1. Go to the primary node GitLab instance:
-   1. On the left sidebar, select **Search or go to**.
-   1. Select **Admin Area**.
+   1. On the left sidebar, at the bottom, select **Admin Area**..
    1. Select **Geo > Sites**.
    1. Select **Add site**.
 

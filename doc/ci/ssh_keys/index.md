@@ -58,7 +58,7 @@ to access it. In this case, you can use an SSH key pair.
 1. Create a new [file type CI/CD variable](../variables/index.md#for-a-project).
    - In the **Key** field, enter `SSH_PRIVATE_KEY`.
    - In the **Value** field, paste the content of your _private_ key from the key pair that you created earlier.
-   Make sure the file ends with a newline. To add a newline, press 
+   Make sure the file ends with a newline. To add a newline, press
    <kbd>Enter</kbd> or <kbd>Return</kbd> at the end of the last line of the SSH key before saving your changes.
 
 1. Modify your `.gitlab-ci.yml` with a `before_script` action. In the following

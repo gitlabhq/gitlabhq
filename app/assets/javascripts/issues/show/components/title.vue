@@ -54,7 +54,7 @@ export default {
 
 <template>
   <div
-    class="gl-display-flex gl-align-items-flex-start gl-flex-direction-column gl-sm-flex-direction-row gl-gap-3 gl-pt-3"
+    class="gl-display-flex gl-align-items-flex-start gl-flex-direction-column gl-md-flex-direction-row gl-gap-3 gl-pt-3"
   >
     <h1
       v-safe-html="titleHtml"

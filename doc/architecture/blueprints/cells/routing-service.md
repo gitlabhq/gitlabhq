@@ -71,7 +71,7 @@ For example:
 | Stateless     | does not need database, Cells provide all routing information     | medium   |
 | Secrets-based | can make routing decision based on secret (e.g. JWT)              | medium   |
 | Observability | can use existing observability tooling                            | low      |
-| Self-managed  | can be eventually used by [self-managed](goals.md#self-managed)   | low      | 
+| Self-managed  | can be eventually used by [self-managed](goals.md#self-managed)   | low      |
 | Regional      | can route requests to different [regions](goals.md#regions)       | low       |
 
 ## Non-Goals

@@ -22,7 +22,7 @@ The examples documented here can be run using:
 
 ### GraphiQL
 
-GraphiQL (pronounced "graphical") allows you to run real GraphQL queries against the API interactively. 
+GraphiQL (pronounced "graphical") allows you to run real GraphQL queries against the API interactively.
 It makes exploring the schema easier by providing a UI with syntax highlighting and autocompletion.
 
 For most people, using GraphiQL will be the easiest way to explore the GitLab GraphQL API.

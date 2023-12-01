@@ -27,7 +27,7 @@ Do **not** create publicly viewable issues for suspected security vulnerabilitie
 
 ### Feature proposals
 
-To create a feature proposal, open an issue in the issue tracker using the 
+To create a feature proposal, open an issue in the issue tracker using the
 [**Feature Proposal - detailed** issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal%20-%20detailed).
 
 In order to help track feature proposals, we use the

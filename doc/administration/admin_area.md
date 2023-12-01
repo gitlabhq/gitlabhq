@@ -117,8 +117,7 @@ This allows the administrator to "see what the user sees," and take actions on b
 You can impersonate a user in the following ways:
 
 - Through the UI:
-  1. On the left sidebar, select **Search or go to**.
-  1. Select **Admin Area**.
+  1. On the left sidebar, at the bottom, select **Admin Area**.
   1. On the left sidebar, select **Overview > Users**.
   1. From the list of users, select a user.
   1. Select **Impersonate**.

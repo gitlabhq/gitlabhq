@@ -209,7 +209,7 @@ The below reflects the current retention periods of GitLab AI model [Sub-Process
 - Anthropic retains input and output data for 30 days.
 - Google discards input and output data immediately after the output is provided. Google currently does not store data for abuse monitoring.
 
-All of these AI providers are under data protection agreements with GitLab that prohibit the use of Customer Content for their own purposes, except to perform their independent legal obligations. 
+All of these AI providers are under data protection agreements with GitLab that prohibit the use of Customer Content for their own purposes, except to perform their independent legal obligations.
 
 ### Telemetry
 

@@ -133,8 +133,7 @@ export default {
           item.classList.toggle('gl-display-none', !isSummaryTab);
         });
 
-        editButton?.classList.toggle('gl-display-none', !isSummaryTab);
-        editButton?.classList.toggle('gl-sm-display-inline-flex!', isSummaryTab);
+        editButton?.classList.toggle('gl-md-display-block!', isSummaryTab);
       }
     },
   },

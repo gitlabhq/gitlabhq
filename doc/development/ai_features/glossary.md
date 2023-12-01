@@ -48,7 +48,7 @@ to AI that you think could benefit from being in this list, please add it!
 - **Model Validation**: group within the AI-powered Stage working on the Prompt
   Library and researching AI/ML models to support other use-cases for AI at GitLab.
   [Team handbook section](https://about.gitlab.com/handbook/product/categories/features/#ai-poweredai-model-validation-group).
-- **Prompt library**: The ["Prompt Library"](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/prompt-library) is a Python library that provides a CLI for testing different prompting techniques with LLMs. It enables data-driven improvements to LLM applications by facilitating hypothesis testing. Key features include the ability to manage and run dataflow pipelines using Apache Beam, and the execution of multiple evaluation experiments in a single pipeline run. 
+- **Prompt library**: The ["Prompt Library"](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/prompt-library) is a Python library that provides a CLI for testing different prompting techniques with LLMs. It enables data-driven improvements to LLM applications by facilitating hypothesis testing. Key features include the ability to manage and run dataflow pipelines using Apache Beam, and the execution of multiple evaluation experiments in a single pipeline run.
   on prompts with various third-party AI Services.
   [Code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/prompt-library).
 - **Prompt Registry**: stored, versioned prompts used to interact with third-party

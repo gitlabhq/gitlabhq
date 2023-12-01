@@ -683,7 +683,7 @@ when checking the database.
 
 ### Message: `FATAL:  could not map anonymous shared memory: Cannot allocate memory`
 
-If you see this message, it means that the secondary site's PostgreSQL tries to request memory that is higher than the available memory. There is an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/381585) that tracks this problem. 
+If you see this message, it means that the secondary site's PostgreSQL tries to request memory that is higher than the available memory. There is an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/381585) that tracks this problem.
 
 Example error message in Patroni logs (located at `/var/log/gitlab/patroni/current` for Linux package installations):
 

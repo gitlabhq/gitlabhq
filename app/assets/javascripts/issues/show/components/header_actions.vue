@@ -308,7 +308,7 @@ export default {
 
 <template>
   <div class="detail-page-header-actions gl-display-flex gl-align-self-start gl-sm-gap-3">
-    <div class="gl-sm-display-none! w-100">
+    <div class="gl-md-display-none! gl-w-full">
       <gl-disclosure-dropdown
         v-if="hasMobileDropdown"
         ref="issuableActionsDropdownMobile"
@@ -398,7 +398,7 @@ export default {
       v-gl-tooltip.bottom
       :title="$options.i18n.editTitleAndDescription"
       :aria-label="$options.i18n.editTitleAndDescription"
-      class="js-issuable-edit gl-display-none! gl-sm-display-block!"
+      class="js-issuable-edit gl-display-none! gl-md-display-block!"
       data-testid="edit-button"
       @click="edit"
     >
@@ -410,7 +410,7 @@ export default {
       id="new-actions-header-dropdown"
       ref="issuableActionsDropdownDesktop"
       v-gl-tooltip.hover
-      class="gl-display-none gl-sm-display-inline-flex!"
+      class="gl-display-none gl-md-display-inline-flex!"
       icon="ellipsis_v"
       category="tertiary"
       placement="left"

@@ -29,26 +29,26 @@ This page attempts to index the ways in which GitLab can integrate with AWS. It 
 
 - **AWS CodeStar Connections** - enables SCM connections to multiple AWS Services. **Currently for GitLab.com SaaS only**. [Configure GitLab](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-create-gitlab.html). [Supported Providers](https://docs.aws.amazon.com/dtconsole/latest/userguide/supported-versions-connections.html). [Supported AWS Services](https://docs.aws.amazon.com/dtconsole/latest/userguide/integrations-connections.html) - each one may have to make updates to support GitLab, so here is the subset that currently support GitLab `[AWS Built]`
   - [AWS CodePipeline Integration](https://docs.aws.amazon.com/codepipeline/latest/userguide/connections-gitlab.html) - use GitLab as source for CodePipeline. `[AWS Built]`
-  - **AWS CodeBuild Integration** - indirectly through CodePipeline support. `[AWS Built]` 
+  - **AWS CodeBuild Integration** - indirectly through CodePipeline support. `[AWS Built]`
   - **Amazon CodeWhisperer Customization Capability** [can connect to a GitLab repo](https://aws.amazon.com/blogs/aws/new-customization-capability-in-amazon-codewhisperer-generates-even-better-suggestions-preview/). `[AWS Built]`
   - **AWS Service Catalog** directly inherits CodeStar Connections, there is not any specific documentation about GitLab since it just uses any GitLab CodeStar Connection that has been created in the account.  `[AWS Built]`
   - **AWS Proton** directly inherits CodeStar Connections, there is not any specific documentation about GitLab since it just uses any GitLab CodeStar Connection that has been created in the account.  `[AWS Built]`
   - **AWS Glue Notebook Jobs** directly inherit CodeStar Connections, there is not any specific documentation about GitLab since it just uses any GitLab CodeStar Connection that has been created in the account.  `[AWS Built]`
-  - **Amazon SageMaker MLOps Projects** are done in CodePipeline and so directly inherit CodeStar Connections ([as noted here](https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-projects-walkthrough-3rdgit.html#sagemaker-proejcts-walkthrough-connect-3rdgit)), there is not any specific documentation about GitLab since it just uses any GitLab CodeStar Connection that has been created in the account.  `[AWS Built]` 
+  - **Amazon SageMaker MLOps Projects** are done in CodePipeline and so directly inherit CodeStar Connections ([as noted here](https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-projects-walkthrough-3rdgit.html#sagemaker-proejcts-walkthrough-connect-3rdgit)), there is not any specific documentation about GitLab since it just uses any GitLab CodeStar Connection that has been created in the account.  `[AWS Built]`
   - **Amazon SageMaker Notebooks** [allow Git repositories to be specified by the Git clone URL](https://docs.aws.amazon.com/sagemaker/latest/dg/nbi-git-resource.html) and configuration of a secret - so GitLab is configurable. `[AWS Configuration]`
-  - **AWS CloudFormation** publishing of public extensions - **not yet supported**. `[AWS Built]` 
-  - **Amazon CodeGuru Reviewer Repositories** - **not yet supported**. `[AWS Built]` 
+  - **AWS CloudFormation** publishing of public extensions - **not yet supported**. `[AWS Built]`
+  - **Amazon CodeGuru Reviewer Repositories** - **not yet supported**. `[AWS Built]`
 - [GitLab Push Mirroring to CodeCommit](../../../user/project/repository/mirror/push.md#set-up-a-push-mirror-from-gitlab-to-aws-codecommit) Workaround enables GitLab repositories to leverage CodePipeline SCM Triggers. GitLab can already leverage S3 and Container Triggers for CodePipeline. **Still required for Self-Managed and Dedicated for the time being.** `[GitLab Configuration]`
 
 ### CI Integrations
 
 - **Direct CI Integrations That Use Keys, IAM or OIDC/JWT to Authenticate to AWS Services from GitLab Runners**
-  - **Amazon CodeGuru Reviewer CI workflows using GitLab CI** - can be done, not yet documented. `[AWS Solution]` `[CI Solution]` 
-  - [Amazon CodeGuru Secure Scanning using GitLab CI](https://docs.aws.amazon.com/codeguru/latest/security-ug/get-started-gitlab.html)  `[AWS Solution]` `[CI Solution]` 
+  - **Amazon CodeGuru Reviewer CI workflows using GitLab CI** - can be done, not yet documented. `[AWS Solution]` `[CI Solution]`
+  - [Amazon CodeGuru Secure Scanning using GitLab CI](https://docs.aws.amazon.com/codeguru/latest/security-ug/get-started-gitlab.html)  `[AWS Solution]` `[CI Solution]`
 
 ### CD and Operations Integrations
 
-- **AWS CodeDeploy Integration** - indirectly through CodePipeline support. `[AWS Built]` 
+- **AWS CodeDeploy Integration** - indirectly through CodePipeline support. `[AWS Built]`
 - [Integrate EKS clusters for application deployment](../../../user/infrastructure/clusters/connect/new_eks_cluster.md). `[GitLab Built]`
 
 ## Solutions For Specific Development Frameworks and Ecosystems

@@ -241,8 +241,7 @@ curl --request PUT --header "Content-Type: application/json" --header "Authoriza
 After you have made sure no group members have that custom role, delete the
 custom role.
 
-1. On the left sidebar, select **Search or go to**.
-1. GitLab.com only. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Roles and Permissions**.
 1. Select **Custom Roles**.
 1. In the **Actions** column, select **Delete role** (**{remove}**) and confirm.

@@ -15,6 +15,7 @@ import notesEventHub from '~/notes/event_hub';
 import { generateTreeList } from '~/diffs/utils/tree_worker_utils';
 import { sortTree } from '~/ide/stores/utils';
 import { containsSensitiveToken, confirmSensitiveAction } from '~/lib/utils/secret_detection';
+import { isCollapsed } from '~/diffs/utils/diff_file';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
   INLINE_DIFF_VIEW_TYPE,
@@ -73,6 +74,7 @@ import {
   prepareLineForRenamedFile,
   parseUrlHashAsFileHash,
   isUrlHashNoteLink,
+  findDiffFile,
 } from './utils';
 
 export const setBaseConfig = ({ commit }, options) => {
@@ -1041,8 +1043,15 @@ export function reviewFile({ commit, state }, { file, reviewed = true }) {
 
 export const disableVirtualScroller = ({ commit }) => commit(types.DISABLE_VIRTUAL_SCROLLING);
 
-export const toggleFileCommentForm = ({ commit }, filePath) =>
-  commit(types.TOGGLE_FILE_COMMENT_FORM, filePath);
+export const toggleFileCommentForm = ({ state, commit }, filePath) => {
+  const file = findDiffFile(state.diffFiles, filePath, 'file_path');
+  if (isCollapsed(file)) {
+    commit(types.SET_FILE_COMMENT_FORM, { filePath, expanded: true });
+  } else {
+    commit(types.TOGGLE_FILE_COMMENT_FORM, filePath);
+  }
+  commit(types.SET_FILE_COLLAPSED, { filePath, collapsed: false });
+};
 
 export const addDraftToFile = ({ commit }, { filePath, draft }) =>
   commit(types.ADD_DRAFT_TO_FILE, { filePath, draft });

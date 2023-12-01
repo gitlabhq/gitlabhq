@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue2';
 import graphql from '@rollup/plugin-graphql';
 import RubyPlugin from 'vite-plugin-ruby';
+import chokidar from 'chokidar';
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import webpackConfig from './config/webpack.config';
 import {
@@ -58,6 +59,23 @@ const JH_ALIAS_FALLBACK = [
   },
 ];
 
+const autoRestartPlugin = {
+  configureServer(server) {
+    const watcher = chokidar.watch(['node_modules/.yarn-integrity'], {
+      ignoreInitial: true,
+    });
+
+    // GDK will restart Vite server for us
+    const stop = () => server.stop();
+
+    watcher.on('add', stop);
+    watcher.on('change', stop);
+    watcher.on('unlink', stop);
+
+    server.httpServer?.addListener?.('close', () => watcher.close());
+  },
+};
+
 export default defineConfig({
   cacheDir: path.resolve(__dirname, 'tmp/cache/vite'),
   resolve: {
@@ -76,6 +94,8 @@ export default defineConfig({
     ],
   },
   plugins: [
+    // VITE_ENABLED is present when running with GDK
+    process.env.VITE_ENABLED ? autoRestartPlugin : null,
     fixedRubyPlugin,
     vue({
       template: {

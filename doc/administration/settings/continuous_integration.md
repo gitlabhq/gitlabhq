@@ -93,8 +93,7 @@ The value is in MB, and the default is 100 MB per job. An administrator can chan
 
 - Instance level:
 
-  1. On the left sidebar, select **Search or go to**.
-  1. Select **Admin Area**.
+  1. On the left sidebar, at the bottom, select **Admin Area**.
   1. On the left sidebar, select **Settings > CI/CD > Continuous Integration and Deployment**.
   1. Change the value of **Maximum artifacts size (MB)**.
   1. Select **Save changes** for the changes to take effect.

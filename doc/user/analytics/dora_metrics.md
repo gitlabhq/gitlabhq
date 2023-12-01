@@ -139,7 +139,7 @@ FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `dora_configuration`.
 On GitLab.com, this feature is not available.
 
-This feature is an [Experiment](../../policy/experiment-beta-support.md). 
+This feature is an [Experiment](../../policy/experiment-beta-support.md).
 To join the list of users testing this feature, [here is a suggested test flow](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96561#steps-to-check-on-localhost).
 If you find a bug, [open an issue here](https://gitlab.com/groups/gitlab-org/-/epics/11490).
 To share your use cases and feedback, comment in [epic 11490](https://gitlab.com/groups/gitlab-org/-/epics/11490).

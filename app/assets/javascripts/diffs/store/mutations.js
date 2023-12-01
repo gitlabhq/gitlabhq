@@ -394,6 +394,11 @@ export default {
 
     file.hasCommentForm = !file.hasCommentForm;
   },
+  [types.SET_FILE_COMMENT_FORM](state, { filePath, expanded }) {
+    const file = findDiffFile(state.diffFiles, filePath, 'file_path');
+
+    file.hasCommentForm = expanded;
+  },
   [types.ADD_DRAFT_TO_FILE](state, { filePath, draft }) {
     const file = findDiffFile(state.diffFiles, filePath, 'file_path');
 

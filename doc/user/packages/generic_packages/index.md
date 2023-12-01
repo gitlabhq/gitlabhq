@@ -142,8 +142,8 @@ If multiple packages have the same name, version, and filename, then the most re
 
 Prerequisites:
 
-- You need to [authenticate with the API](../../../api/rest/index.md#authentication). 
-  - If authenticating with a deploy token, it must be configured with the `read_package_registry` and/or `write_package_registry` scope. 
+- You need to [authenticate with the API](../../../api/rest/index.md#authentication).
+  - If authenticating with a deploy token, it must be configured with the `read_package_registry` and/or `write_package_registry` scope.
   - Project access tokens require the `read_api` scope and at least the `Reporter` role.
 
 ```plaintext

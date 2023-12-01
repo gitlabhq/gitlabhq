@@ -222,7 +222,7 @@ to [reset their password](https://gitlab.com/users/password/new) if both:
 Users might get an error that states "SAML Name ID and email address do not match your user account. Contact an administrator."
 This means:
 
-- The NameID value sent by SAML does not match the existing SAML identity `extern_uid` value. Both the NameID and the `extern_uid` are case sensitive. For more information, see  [manage user SAML identity](index.md#manage-user-saml-identity). 
+- The NameID value sent by SAML does not match the existing SAML identity `extern_uid` value. Both the NameID and the `extern_uid` are case sensitive. For more information, see  [manage user SAML identity](index.md#manage-user-saml-identity).
 - Either the SAML response did not include an email address or the email address did not match the user's GitLab email address.
 
 The workaround is that a GitLab group Owner uses the [SAML API](../../../api/saml.md) to update the user's SAML `extern_uid`.

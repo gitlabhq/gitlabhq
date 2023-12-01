@@ -180,7 +180,7 @@ steps:
     name: ${{ steps.previous_step.outputs.name }}
 ```
 
-Therefore evaluation of expressions will done in two different kinds 
+Therefore evaluation of expressions will done in two different kinds
 of context. One as a GitLab CI Step and one as a step definition.
 
 ### Step Inputs
@@ -309,7 +309,7 @@ A provision is made for passing complex structures to steps, which
 is to serialize them as JSON (see Inputs above). In this way the actual
 step to be run can be merely a parameter to step running in container.
 So the outer step is a `docker/run` step with a command that executes
-`step-runner` with a `steps` input parameter. The `docker/run` step will 
+`step-runner` with a `steps` input parameter. The `docker/run` step will
 run the container and then extract the output files from the container
 and re-emit them to the outer steps.
 

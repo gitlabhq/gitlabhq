@@ -182,7 +182,6 @@ options:
   - p_ci_templates_terraform_module_base
   - p_ci_templates_terraform_module
   - p_ci_templates_pages_zola
-  - p_ci_templates_diffblue_cover
 distribution:
 - ce
 - ee

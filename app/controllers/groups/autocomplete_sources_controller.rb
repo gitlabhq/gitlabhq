@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Groups::AutocompleteSourcesController < Groups::ApplicationController
+  include AutocompleteSources::ExpiresIn
+
   feature_category :groups_and_projects, [:members]
   feature_category :team_planning, [:issues, :labels, :milestones, :commands]
   feature_category :code_review_workflow, [:merge_requests]
@@ -8,11 +10,6 @@ class Groups::AutocompleteSourcesController < Groups::ApplicationController
   urgency :low, [:issues, :labels, :milestones, :commands, :merge_requests, :members]
 
   def members
-    if Feature.enabled?(:cache_autocomplete_sources_members, current_user)
-      # Cache the response on the frontend
-      expires_in 3.minutes
-    end
-
     render json: ::Groups::ParticipantsService.new(@group, current_user).execute(target)
   end
 

@@ -88,8 +88,7 @@ To prepare the new server:
       ```
 
 1. Disable periodic background jobs:
-   1. On the left sidebar, select **Search or go to**.
-   1. Select **Admin Area**.
+   1. On the left sidebar, at the bottom, select **Admin Area**.
    1. On the left sidebar, select **Monitoring > Background Jobs**.
    1. Under the Sidekiq dashboard, select **Cron** tab and then
       **Disable All**.

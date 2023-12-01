@@ -2062,11 +2062,48 @@ describe('DiffsStoreActions', () => {
 
   describe('toggleFileCommentForm', () => {
     it('commits TOGGLE_FILE_COMMENT_FORM', () => {
+      const file = getDiffFileMock();
       return testAction(
         diffActions.toggleFileCommentForm,
-        'path',
-        {},
-        [{ type: types.TOGGLE_FILE_COMMENT_FORM, payload: 'path' }],
+        file.file_path,
+        {
+          diffFiles: [file],
+        },
+        [
+          { type: types.TOGGLE_FILE_COMMENT_FORM, payload: file.file_path },
+          {
+            type: types.SET_FILE_COLLAPSED,
+            payload: { filePath: file.file_path, collapsed: false },
+          },
+        ],
+        [],
+      );
+    });
+
+    it('always opens if file is collapsed', () => {
+      const file = {
+        ...getDiffFileMock(),
+        viewer: {
+          ...getDiffFileMock().viewer,
+          manuallyCollapsed: true,
+        },
+      };
+      return testAction(
+        diffActions.toggleFileCommentForm,
+        file.file_path,
+        {
+          diffFiles: [file],
+        },
+        [
+          {
+            type: types.SET_FILE_COMMENT_FORM,
+            payload: { filePath: file.file_path, expanded: true },
+          },
+          {
+            type: types.SET_FILE_COLLAPSED,
+            payload: { filePath: file.file_path, collapsed: false },
+          },
+        ],
         [],
       );
     });

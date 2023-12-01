@@ -105,8 +105,7 @@ To change who can create subgroups on a group:
   1. Select a role from **Roles allowed to create subgroups**.
   1. Select **Save changes**.
 - As an administrator:
-  1. On the left sidebar, select **Search or go to**.
-  1. Select **Admin Area**.
+  1. On the left sidebar, at the bottom, select **Admin Area**.
   1. On the left sidebar, select **Overview > Groups**.
   1. In the group's row select **Edit**.
   1. Select a role from **Allowed to create subgroups**.

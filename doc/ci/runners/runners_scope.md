@@ -602,8 +602,7 @@ To determine which runners need to be upgraded:
      1. On the left sidebar, select **Search or go to** and find your group.
      1. Select **Build > Runners**.
    - For the instance:
-     1. On the left sidebar, select **Search or go to**.
-     1. Select **Admin Area**.
+     1. On the left sidebar, at the bottom, select **Admin Area**.
      1. Select **CI/CD > Runners**.
 
 1. Above the list of runners, view the status:

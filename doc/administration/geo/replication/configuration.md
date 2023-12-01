@@ -217,8 +217,7 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
    ```
 
 1. Navigate to the Primary Node GitLab Instance:
-   1. On the left sidebar, select **Search or go to**.
-   1. Select **Admin Area**.
+   1. On the left sidebar, at the bottom, select **Admin Area**.
    1. On the left sidebar, select **Geo > Sites**.
    1. Select **Add site**.
    ![Add secondary site](img/adding_a_secondary_v15_8.png)

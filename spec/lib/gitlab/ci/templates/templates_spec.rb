@@ -20,7 +20,6 @@ RSpec.describe 'CI YML Templates' do
 
   context 'that support autodevops' do
     exceptions = [
-      'Diffblue-Cover.gitlab-ci.yml',       # no auto-devops
       'Security/DAST.gitlab-ci.yml',        # DAST stage is defined inside AutoDevops yml
       'Security/DAST-API.gitlab-ci.yml',    # no auto-devops
       'Security/API-Fuzzing.gitlab-ci.yml', # no auto-devops
