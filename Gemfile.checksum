@@ -37,7 +37,7 @@
 {"name":"aws-eventstream","version":"1.3.0","platform":"ruby","checksum":"f1434cc03ab2248756eb02cfa45e900e59a061d7fbdc4a9fd82a5dd23d796d3f"},
 {"name":"aws-partitions","version":"1.761.0","platform":"ruby","checksum":"291e444e1edfc92c5521a6dbdd1236ccc3f122b3520163b2be6ec5b6ef350ef2"},
 {"name":"aws-sdk-cloudformation","version":"1.41.0","platform":"ruby","checksum":"31e47539719734413671edf9b1a31f8673fbf9688549f50c41affabbcb1c6b26"},
-{"name":"aws-sdk-core","version":"3.189.0","platform":"ruby","checksum":"a2b5d55c2f3827c8e453a228b011ac5c0074a09c301e289774151225114c7ecf"},
+{"name":"aws-sdk-core","version":"3.190.0","platform":"ruby","checksum":"a3455fb3fc1691dd5331282ff16cb0b2ef136a5b63ed68b77e9fda447ea7cfa6"},
 {"name":"aws-sdk-kms","version":"1.64.0","platform":"ruby","checksum":"40de596c95047bfc6e1aacea24f3df6241aa716b6f7ce08ac4c5f7e3120395ad"},
 {"name":"aws-sdk-s3","version":"1.141.0","platform":"ruby","checksum":"cadb88497af6736e86a4a1fc8eb42333fb27ae85901686334252c50862bdd02e"},
 {"name":"aws-sigv4","version":"1.8.0","platform":"ruby","checksum":"84dd99768b91b93b63d1d8e53ee837cfd06ab402812772a7899a78f9f9117cbc"},

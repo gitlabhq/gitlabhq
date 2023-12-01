@@ -12,12 +12,12 @@ class IssuePresenter < Gitlab::View::Presenter::Delegated
     issue.subscribed?(current_user, issue.project)
   end
 
-  def project_emails_disabled?
-    issue.project.emails_disabled?
+  def parent_emails_disabled?
+    issue.resource_parent.emails_disabled?
   end
 
-  def project_emails_enabled?
-    issue.project.emails_enabled?
+  def parent_emails_enabled?
+    issue.resource_parent.emails_enabled?
   end
 
   delegator_override :service_desk_reply_to

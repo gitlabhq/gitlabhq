@@ -20,5 +20,9 @@ module Types
     value 'KEY_RESULT', value: 'key_result',
                         description: 'Key Result issue type. Available only when feature flag `okrs_mvc` is enabled.',
                         alpha: { milestone: '15.7' }
+    value 'EPIC', value: 'epic',
+                  description: 'Epic issue type. ' \
+                               'Available only when feature flag `namespace_level_work_items` is enabled.',
+                  alpha: { milestone: '16.7' }
   end
 end

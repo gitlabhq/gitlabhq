@@ -39,16 +39,26 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
     end
 
     context 'when banned user has the same international dial code and phone number' do
-      before do
-        create(:phone_number_validation, user: banned_user)
+      context 'and the matching record has not been verified' do
+        before do
+          create(:phone_number_validation, user: banned_user)
+        end
+
+        it { is_expected.to eq(false) }
       end
 
-      it { is_expected.to eq(true) }
+      context 'and the matching record has been verified' do
+        before do
+          create(:phone_number_validation, :validated, user: banned_user)
+        end
+
+        it { is_expected.to eq(true) }
+      end
     end
 
     context 'when banned user has the same international dial code and phone number, but different country code' do
       before do
-        create(:phone_number_validation, user: banned_user, country: 'CA')
+        create(:phone_number_validation, :validated, user: banned_user, country: 'CA')
       end
 
       it { is_expected.to eq(true) }
@@ -56,7 +66,7 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
 
     context 'when banned user does not have the same international dial code' do
       before do
-        create(:phone_number_validation, user: banned_user, international_dial_code: 61)
+        create(:phone_number_validation, :validated, user: banned_user, international_dial_code: 61)
       end
 
       it { is_expected.to eq(false) }
@@ -64,7 +74,7 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
 
     context 'when banned user does not have the same phone number' do
       before do
-        create(:phone_number_validation, user: banned_user, phone_number: '666')
+        create(:phone_number_validation, :validated, user: banned_user, phone_number: '666')
       end
 
       it { is_expected.to eq(false) }
@@ -72,7 +82,7 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
 
     context 'when not-banned user has the same international dial code and phone number' do
       before do
-        create(:phone_number_validation, user: user)
+        create(:phone_number_validation, :validated, user: user)
       end
 
       it { is_expected.to eq(false) }

@@ -33,6 +33,11 @@ export default {
       required: false,
       default: false,
     },
+    showCommentForm: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -58,6 +63,16 @@ export default {
       return !this.isEditing
         ? 'gl-relative gl-display-flex gl-align-items-flex-start gl-flex-nowrap'
         : '';
+    },
+  },
+  watch: {
+    showCommentForm: {
+      immediate: true,
+      handler(focus) {
+        if (focus) {
+          this.isEditing = true;
+        }
+      },
     },
   },
   methods: {

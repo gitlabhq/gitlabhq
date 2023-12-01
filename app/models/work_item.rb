@@ -23,7 +23,6 @@ class WorkItem < Issue
     foreign_key: :work_item_id, source: :work_item
 
   scope :inc_relations_for_permission_check, -> { includes(:author, project: :project_feature) }
-  scope :in_namespaces, ->(namespaces) { where(namespace: namespaces) }
 
   scope :with_confidentiality_check, ->(user) {
     confidential_query = <<~SQL

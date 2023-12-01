@@ -65,9 +65,9 @@ full report available in the **Pipeline** details view.
 > - [Inline annotation added](https://gitlab.com/gitlab-org/gitlab/-/issues/2526) and [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284140) in GitLab 14.1.
 
 Code Quality results display in the merge request **Changes** view. Lines containing Code Quality
-issues are marked by an indicator beside the gutter. Hover over the marker for details of the issue.
+issues are marked by a symbol beside the gutter. Select the symbol to see the list of issues, then select an issue to see its details.
 
-![Code Quality MR diff report](img//code_quality_mr_diff_report_v15_7.png)
+![Code Quality Inline Indicator](img/code_quality_inline_indicator_v16_7.png)
 
 ### Pipeline details view **(PREMIUM ALL)**
 

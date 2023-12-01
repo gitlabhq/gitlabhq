@@ -380,6 +380,16 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
   end
 
+  describe '.in_namespaces' do
+    let(:group) { create(:group) }
+    let!(:group_work_item) { create(:issue, :group_level, namespace: group) }
+    let!(:project_work_item) { create(:issue, project: reusable_project) }
+
+    subject { described_class.in_namespaces(group) }
+
+    it { is_expected.to contain_exactly(group_work_item) }
+  end
+
   describe '.with_issue_type' do
     let_it_be(:issue) { create(:issue, project: reusable_project) }
     let_it_be(:incident) { create(:incident, project: reusable_project) }

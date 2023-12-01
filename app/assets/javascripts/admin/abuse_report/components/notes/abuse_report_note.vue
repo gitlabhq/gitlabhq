@@ -5,6 +5,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
 import NoteBody from './abuse_report_note_body.vue';
+import AbuseReportNoteActions from './abuse_report_note_actions.vue';
 
 export default {
   name: 'AbuseReportNote',
@@ -17,6 +18,7 @@ export default {
     TimelineEntryItem,
     NoteHeader,
     NoteBody,
+    AbuseReportNoteActions,
   },
   props: {
     abuseReportId: {
@@ -26,6 +28,11 @@ export default {
     note: {
       type: Object,
       required: true,
+    },
+    showReplyButton: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -37,6 +44,11 @@ export default {
     },
     authorId() {
       return getIdFromGraphQLId(this.author.id);
+    },
+  },
+  methods: {
+    startReplying() {
+      this.$emit('startReplying');
     },
   },
 };
@@ -70,6 +82,12 @@ export default {
           >
             <span v-if="note.createdAt" class="d-none d-sm-inline">&middot;</span>
           </note-header>
+          <div class="gl-display-inline-flex">
+            <abuse-report-note-actions
+              :show-reply-button="showReplyButton"
+              @startReplying="startReplying"
+            />
+          </div>
         </div>
 
         <div class="timeline-discussion-body">

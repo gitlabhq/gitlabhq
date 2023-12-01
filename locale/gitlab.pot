@@ -43191,6 +43191,9 @@ msgstr ""
 msgid "SecurityOrchestration|%{fileName} loading failed. Please try again."
 msgstr ""
 
+msgid "SecurityOrchestration|%{frameworkName} has %{projectLength} %{projects}"
+msgstr ""
+
 msgid "SecurityOrchestration|%{licenses} and %{lastLicense}"
 msgstr ""
 
@@ -43291,6 +43294,9 @@ msgid "SecurityOrchestration|Clear all"
 msgstr ""
 
 msgid "SecurityOrchestration|Compliance Framework ID(s) can only be set for group policies"
+msgstr ""
+
+msgid "SecurityOrchestration|Compliance framework has no projects"
 msgstr ""
 
 msgid "SecurityOrchestration|Create more robust vulnerability rules and apply them to all your projects."

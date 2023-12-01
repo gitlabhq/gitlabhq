@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe API::ProjectEvents, feature_category: :user_profile do
-  let(:user) { create(:user) }
-  let(:non_member) { create(:user) }
-  let(:private_project) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
-  let(:closed_issue) { create(:closed_issue, project: private_project, author: user) }
-  let!(:closed_issue_event) { create(:event, project: private_project, author: user, target: closed_issue, action: :closed, created_at: Date.new(2016, 12, 30)) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:non_member) { create(:user) }
+  let_it_be(:private_project) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
+  let_it_be(:closed_issue) { create(:closed_issue, project: private_project, author: user) }
+  let_it_be(:closed_issue_event) { create(:closed_issue_event, project: private_project, author: user, target: closed_issue, created_at: Date.new(2016, 12, 30)) }
 
   describe 'GET /projects/:id/events' do
     context 'when unauthenticated ' do
@@ -27,11 +27,11 @@ RSpec.describe API::ProjectEvents, feature_category: :user_profile do
     end
 
     context 'with inaccessible events' do
-      let(:public_project) { create(:project, :public, creator_id: user.id, namespace: user.namespace) }
-      let(:confidential_issue) { create(:closed_issue, confidential: true, project: public_project, author: user) }
-      let!(:confidential_event) { create(:event, project: public_project, author: user, target: confidential_issue, action: :closed) }
-      let(:public_issue) { create(:closed_issue, project: public_project, author: user) }
-      let!(:public_event) { create(:event, project: public_project, author: user, target: public_issue, action: :closed) }
+      let_it_be(:public_project) { create(:project, :public, creator_id: user.id, namespace: user.namespace) }
+      let_it_be(:confidential_issue) { create(:closed_issue, :confidential, project: public_project, author: user) }
+      let_it_be(:confidential_event) { create(:closed_issue_event, project: public_project, author: user, target: confidential_issue) }
+      let_it_be(:public_issue) { create(:closed_issue, project: public_project, author: user) }
+      let_it_be(:public_event) { create(:closed_issue_event, project: public_project, author: user, target: public_issue) }
 
       it 'returns only accessible events' do
         get api("/projects/#{public_project.id}/events", non_member)
@@ -124,23 +124,34 @@ RSpec.describe API::ProjectEvents, feature_category: :user_profile do
     end
 
     context 'when exists some events' do
-      let(:merge_request1) { create(:merge_request, :closed, author: user, assignees: [user], source_project: private_project, title: 'Test') }
-      let(:merge_request2) { create(:merge_request, :closed, author: user, assignees: [user], source_project: private_project, title: 'Test') }
+      let_it_be(:merge_request1) { create(:closed_merge_request, author: user, assignees: [user], source_project: private_project) }
+      let_it_be(:merge_request2) { create(:closed_merge_request, author: user, assignees: [user], source_project: private_project) }
+
+      let_it_be(:token) { create(:personal_access_token, user: user) }
 
       before do
         create_event(merge_request1)
       end
 
       it 'avoids N+1 queries' do
-        control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-          get api("/projects/#{private_project.id}/events", user), params: { target_type: :merge_request }
-        end.count
+        # Warmup, e.g. users#last_activity_on
+        get api("/projects/#{private_project.id}/events", personal_access_token: token), params: { target_type: :merge_request }
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          get api("/projects/#{private_project.id}/events", personal_access_token: token), params: { target_type: :merge_request }
+        end
 
         create_event(merge_request2)
 
         expect do
-          get api("/projects/#{private_project.id}/events", user), params: { target_type: :merge_request }
-        end.not_to exceed_all_query_limit(control_count)
+          get api("/projects/#{private_project.id}/events", personal_access_token: token), params: { target_type: :merge_request }
+        end.to issue_same_number_of_queries_as(control).with_threshold(1)
+        # The extra threshold is because we need to fetch `project` for the 2nd
+        # event. This is because in `app/policies/issuable_policy.rb`, we fetch
+        # the `project` for the `target` for the `event`. It is non-trivial to
+        # re-use the original `project` object from `lib/api/project_events.rb`
+        #
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/432823
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers

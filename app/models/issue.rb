@@ -132,15 +132,15 @@ class Issue < ApplicationRecord
   validate :due_date_after_start_date
   validate :parent_link_confidentiality
 
-  alias_method :issuing_parent, :project
-  alias_attribute :issuing_parent_id, :project_id
-
   alias_attribute :external_author, :service_desk_reply_to
 
   pg_full_text_searchable columns: [{ name: 'title', weight: 'A' }, { name: 'description', weight: 'B' }]
 
+  scope :in_namespaces, ->(namespaces) { where(namespace: namespaces) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
   scope :not_in_projects, ->(project_ids) { where.not(project_id: project_ids) }
+
+  scope :non_archived, -> { left_joins(:project).where(project_id: nil).or(where(projects: { archived: false })) }
 
   scope :with_due_date, -> { where.not(due_date: nil) }
   scope :without_due_date, -> { where(due_date: nil) }
@@ -731,6 +731,11 @@ class Issue < ApplicationRecord
 
   def resource_parent
     project || namespace
+  end
+  alias_method :issuing_parent, :resource_parent
+
+  def issuing_parent_id
+    project_id.presence || namespace_id
   end
 
   # Persisted records will always have a work_item_type. This method is useful

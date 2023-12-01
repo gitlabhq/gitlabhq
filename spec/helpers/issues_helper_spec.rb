@@ -303,6 +303,7 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
       allow(helper).to receive(:current_user).and_return(current_user)
       allow(helper).to receive(:image_path).and_return('#')
       allow(helper).to receive(:url_for).and_return('#')
+      stub_feature_flags(issue_date_filter: false)
 
       expected = {
         autocomplete_award_emojis_path: autocomplete_award_emojis_path,
@@ -311,6 +312,7 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
         dashboard_milestones_path: dashboard_milestones_path(format: :json),
         empty_state_with_filter_svg_path: '#',
         empty_state_without_filter_svg_path: '#',
+        has_issue_date_filter_feature: 'false',
         initial_sort: current_user&.user_preference&.issues_sort,
         is_public_visibility_restricted: Gitlab::CurrentSettings.restricted_visibility_levels ? 'false' : '',
         is_signed_in: current_user.present?.to_s,

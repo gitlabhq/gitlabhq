@@ -19,6 +19,7 @@ describe('Abuse Report Add Note', () => {
   let wrapper;
 
   const mockAbuseReportId = mockAbuseReport.report.globalId;
+  const mockDiscussionId = 'gid://gitlab/Discussion/9c7228e06fb0339a3d1440fcda960acfd8baa43a';
 
   const mutationSuccessHandler = jest.fn().mockResolvedValue(createAbuseReportNoteResponse);
 
@@ -35,6 +36,7 @@ describe('Abuse Report Add Note', () => {
     abuseReportId = mockAbuseReportId,
     discussionId = '',
     isNewDiscussion = true,
+    showCommentForm = false,
   } = {}) => {
     wrapper = shallowMountExtended(AbuseReportAddNote, {
       apolloProvider: createMockApollo([[createNoteMutation, mutationHandler]]),
@@ -42,6 +44,7 @@ describe('Abuse Report Add Note', () => {
         abuseReportId,
         discussionId,
         isNewDiscussion,
+        showCommentForm,
       },
     });
   };
@@ -194,13 +197,28 @@ describe('Abuse Report Add Note', () => {
   describe('Replying to a comment', () => {
     beforeEach(() => {
       createComponent({
-        discussionId: 'gid://gitlab/Discussion/9c7228e06fb0339a3d1440fcda960acfd8baa43a',
+        discussionId: mockDiscussionId,
         isNewDiscussion: false,
+        showCommentForm: false,
       });
+    });
+
+    it('should not show the comment form', () => {
+      expect(findAbuseReportCommentForm().exists()).toBe(false);
     });
 
     it('should show comment form when reply textarea is clicked on', async () => {
       await findReplyTextarea().trigger('click');
+
+      expect(findAbuseReportCommentForm().exists()).toBe(true);
+    });
+
+    it('should show comment form if `showCommentForm` is true', () => {
+      createComponent({
+        discussionId: mockDiscussionId,
+        isNewDiscussion: false,
+        showCommentForm: true,
+      });
 
       expect(findAbuseReportCommentForm().exists()).toBe(true);
     });

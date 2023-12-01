@@ -7,20 +7,7 @@ type: howto
 
 # Undo options in Git **(FREE ALL)**
 
-[Nothing in Git is deleted](https://git-scm.com/book/en/v2/Git-Internals-Maintenance-and-Data-Recovery),
-so when you work in Git, you can undo your work.
-
-All version control systems have options for undoing work. However,
-because of the de-centralized nature of Git, these options are multiplied.
-The actions you take are based on the
-[stage of development](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository)
-you are in.
-
-For more information about working with Git and GitLab:
-
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Learn why [North Western Mutual chose GitLab](https://youtu.be/kPNMyxKRRoM) for their enterprise source code management.
-- Learn how to [get started with Git](https://about.gitlab.com/resources/whitepaper-moving-to-git/).
-- For more advanced examples, refer to the [Git book](https://git-scm.com/book/en/v2).
+Git provides options for undoing changes. The method for undoing a change depends on whether the change is unstaged, staged, committed, or pushed.
 
 ## When you can undo changes
 

@@ -63,6 +63,25 @@ RSpec.shared_context 'WorkItemsFinder context' do
     )
   end
 
+  let_it_be(:group_level_item) do
+    create(
+      :work_item,
+      :epic,
+      namespace: group,
+      author: user
+    )
+  end
+
+  let_it_be(:group_level_confidential_item) do
+    create(
+      :work_item,
+      :confidential,
+      :epic,
+      namespace: group,
+      author: user2
+    )
+  end
+
   let_it_be(:award_emoji1) { create(:award_emoji, name: 'thumbsup', user: user, awardable: item1) }
   let_it_be(:award_emoji2) { create(:award_emoji, name: 'thumbsup', user: user2, awardable: item2) }
   let_it_be(:award_emoji3) { create(:award_emoji, name: 'thumbsdown', user: user, awardable: item3) }

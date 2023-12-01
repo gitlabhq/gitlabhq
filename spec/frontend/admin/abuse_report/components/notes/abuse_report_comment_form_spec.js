@@ -80,7 +80,7 @@ describe('Abuse Report Comment Form', () => {
       expect(findMarkdownEditor().props('value')).toBe('draft comment');
     });
 
-    it('should pass an empty string if both draft & initialValue are empty', () => {
+    it('should pass an empty string if both draft and initialValue are empty', () => {
       jest.spyOn(autosave, 'getDraft').mockImplementation(() => '');
       createComponent({ initialValue: '' });
 

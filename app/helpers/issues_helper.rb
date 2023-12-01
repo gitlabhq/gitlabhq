@@ -166,7 +166,7 @@ module IssuesHelper
       jira_integration_path: help_page_url('integration/jira/issues', anchor: 'view-jira-issues'),
       rss_path: url_for(safe_params.merge(rss_url_options)),
       sign_in_path: new_user_session_path,
-      has_issue_date_filter_feature: Feature.enabled?(:issue_date_filter, namespace).to_s
+      has_issue_date_filter_feature: Feature.enabled?(:issue_date_filter, current_user).to_s
     }
   end
 
@@ -218,6 +218,7 @@ module IssuesHelper
       dashboard_milestones_path: dashboard_milestones_path(format: :json),
       empty_state_with_filter_svg_path: image_path('illustrations/empty-state/empty-issues-md.svg'),
       empty_state_without_filter_svg_path: image_path('illustrations/issue-dashboard_results-without-filter.svg'),
+      has_issue_date_filter_feature: Feature.enabled?(:issue_date_filter, current_user).to_s,
       initial_sort: current_user&.user_preference&.issues_sort,
       is_public_visibility_restricted:
         Gitlab::CurrentSettings.restricted_visibility_levels&.include?(Gitlab::VisibilityLevel::PUBLIC).to_s,
