@@ -106,8 +106,7 @@ for the organization.
 You will now manually create the users for your organization. These are test
 users. To create the first test user, Alex Smith:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select **New user**.
 1. Complete the required fields:

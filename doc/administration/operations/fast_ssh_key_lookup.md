@@ -121,8 +121,7 @@ users as long as a large file exists.
 
 To disable writes to the `authorized_keys` file:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, select **Settings > Network**.
 1. Expand **Performance optimization**.
 1. Clear the **Use authorized_keys file to authenticate SSH keys** checkbox.

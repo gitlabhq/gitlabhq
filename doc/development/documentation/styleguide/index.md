@@ -1009,8 +1009,7 @@ To create a group:
 To open the Admin Area:
 
 ```markdown
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 ```
 
 To open the **Your work** menu item:

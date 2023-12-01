@@ -323,8 +323,7 @@ This message might indicate that you must add or remove a domain from your domai
 
 To implement this workaround:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings** > **General**.
 1. Expand **Sign-up restrictions**.
 1. Add or remove a domain as appropriate to **Allowed domains for sign-ups** and **Denied domains for sign-ups**.

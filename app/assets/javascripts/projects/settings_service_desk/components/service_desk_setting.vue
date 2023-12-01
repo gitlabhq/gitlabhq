@@ -132,12 +132,12 @@ export default {
       return this.serviceDeskEmail && this.serviceDeskEmail !== this.incomingEmail;
     },
     emailSuffixHelpUrl() {
-      return helpPagePath('user/project/service_desk.html', {
+      return helpPagePath('user/project/service_desk/configure.html', {
         anchor: 'configure-a-suffix-for-service-desk-alias-email',
       });
     },
     serviceDeskEmailAddressHelpUrl() {
-      return helpPagePath('user/project/service_desk.html', {
+      return helpPagePath('user/project/service_desk/configure.html', {
         anchor: 'use-an-additional-service-desk-alias-email',
       });
     },

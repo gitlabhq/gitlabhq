@@ -88,7 +88,7 @@ export default {
       placement="right"
       searchable
       size="small"
-      class="comment-template-dropdown gl-mr-3"
+      class="comment-template-dropdown gl-mr-2"
       positioning-strategy="fixed"
       :searching="$apollo.queries.savedReplies.loading"
       @shown="fetchCommentTemplates"

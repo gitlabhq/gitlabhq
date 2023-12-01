@@ -66,8 +66,7 @@ Administrators can look up a project's hashed path from its name or ID using:
 
 To look up a project's hash path in the Admin Area:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, select **Overview > Projects** and select the project.
 1. Locate the **Relative path** field. The value is similar to:
 
@@ -205,8 +204,7 @@ LFS objects are also [S3-compatible](lfs/index.md#storing-lfs-objects-in-remote-
 
 After you configure multiple repository storages, you can choose where new repositories are stored:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, select **Settings > Repository** and expand the **Repository storage**
    section.
 1. Enter values in the **Storage nodes for new repositories** fields.

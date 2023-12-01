@@ -1211,10 +1211,10 @@
   dependencies:
     "@floating-ui/core" "^1.2.6"
 
-"@gitlab/application-sdk-browser@^0.2.10":
-  version "0.2.10"
-  resolved "https://registry.yarnpkg.com/@gitlab/application-sdk-browser/-/application-sdk-browser-0.2.10.tgz#d569f1d931680b16b26e5d7f151381479dde2ac4"
-  integrity sha512-4WkjaInONtHstlKkOPU8wnJK6kasFUuhc4JyJtvaGiM9qmFOgYTvUM76Ru9N0f48YsSPw1ndVi14tzSfe8mSMg==
+"@gitlab/application-sdk-browser@^0.2.11":
+  version "0.2.11"
+  resolved "https://registry.yarnpkg.com/@gitlab/application-sdk-browser/-/application-sdk-browser-0.2.11.tgz#f061f6aed5b75927b2150b5021a77e7c602675b6"
+  integrity sha512-ThPgw7waDoF7tqlkYlTmPwLCe1h5qa3QuXwsNEVma4abdeuxxW3vwOPlRdZaUgZ0tmoSMefYgeUdjZQ/huqZ+w==
   dependencies:
     "@snowplow/browser-plugin-client-hints" "^3.9.0"
     "@snowplow/browser-plugin-error-tracking" "^3.9.0"

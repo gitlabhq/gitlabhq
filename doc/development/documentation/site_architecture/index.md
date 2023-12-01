@@ -61,7 +61,7 @@ Then you can use one of these approaches:
   [to the global navigation](global_nav.md#add-a-navigation-entry), but keep the rest
   of the documentation in the external repository. The landing page is indexed and
   searchable on <https://docs.gitlab.com>, but the rest of the documentation is not.
-  For example, the [GitLab Workflow extension for VS Code](../../../user/project/repository/vscode.md).
+  For example, the [GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/index.md).
   We do not encourage the use of [pages with lists of links](../topic_types/index.md#pages-and-topics-to-avoid),
   so only use this option if the recommended options are not feasible.
 

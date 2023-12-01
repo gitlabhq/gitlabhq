@@ -140,7 +140,7 @@ export default {
 
 <template>
   <div>
-    <gl-table :fields="fields" :items="items" class="gl-mt-5" :busy="loading" show-empty>
+    <gl-table :fields="fields" :items="items" :busy="loading" show-empty>
       <template #table-busy>
         <gl-loading-icon size="lg" class="gl-my-5" />
       </template>

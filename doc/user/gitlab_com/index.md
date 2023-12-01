@@ -390,7 +390,7 @@ user confirmation, user sign in, and password reset.
 [User and IP rate limits](../../administration/settings/user_and_ip_rate_limits.md#response-headers)
 includes a list of the headers responded to blocked requests.
 
-See [Protected Paths](../admin_area/settings/protected_paths.md) for more details.
+See [Protected Paths](../../administration/settings/protected_paths.md) for more details.
 
 ### IP blocks
 

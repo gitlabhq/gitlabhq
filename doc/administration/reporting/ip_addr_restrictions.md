@@ -19,8 +19,7 @@ unique IP addresses. Therefore, the IP addresses per user limit should take into
 
 ## Configure IP address restrictions
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Reporting**.
 1. Expand **Spam and Anti-bot Protection**.
 1. Update the IP address restrictions settings:

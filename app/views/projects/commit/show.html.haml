@@ -6,6 +6,7 @@
 - page_title        "#{@commit.title} (#{@commit.short_id})", _('Commits')
 - page_description  @commit.description
 - add_page_specific_style 'page_bundles/pipelines'
+- add_page_specific_style 'page_bundles/notes'
 
 .container-fluid{ class: [container_class] }
   = render "commit_box"

@@ -16,7 +16,7 @@ You can define approval rules:
 
 - [As project defaults](#add-an-approval-rule).
 - [Per merge request](#edit-or-override-merge-request-approval-rules).
-- [At the instance level](../../../admin_area/merge_requests_approvals.md)
+- [At the instance level](../../../../administration/admin_area.md)
 
 If you don't define a [default approval rule](#add-an-approval-rule),
 any user can approve a merge request. Even if you don't define a rule, you can still

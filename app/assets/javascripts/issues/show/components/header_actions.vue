@@ -320,7 +320,7 @@ export default {
         :loading="isToggleStateButtonLoading"
         placement="right"
       >
-        <template v-if="showMovedSidebarOptions">
+        <template v-if="showMovedSidebarOptions && !glFeatures.notificationsTodosButtons">
           <sidebar-subscriptions-widget
             :iid="String(iid)"
             :full-path="fullPath"

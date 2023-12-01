@@ -15,7 +15,6 @@ import {
   fetchJobLog,
   startPollingJobLog,
   stopPollingJobLog,
-  receiveJobLogSuccess,
   receiveJobLogError,
   toggleCollapsibleLine,
   requestJobsForStage,
@@ -27,10 +26,14 @@ import {
   toggleSidebar,
   receiveTestSummarySuccess,
 } from '~/ci/job_details/store/actions';
+import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
+
 import * as types from '~/ci/job_details/store/mutation_types';
 import state from '~/ci/job_details/store/state';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+
+jest.mock('~/lib/utils/scroll_utils');
 
 describe('Job State actions', () => {
   let mockedState;
@@ -212,42 +215,39 @@ describe('Job State actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestJobLog, receiveJobLogSuccess and stopPollingJobLog when job is complete', () => {
-        mock.onGet(`${TEST_HOST}/endpoint/trace.json`).replyOnce(HTTP_STATUS_OK, {
-          html: 'I, [2018-08-17T22:57:45.707325 #1841]  INFO -- :',
-          complete: true,
+      let jobLogPayload;
+
+      beforeEach(() => {
+        isScrolledToBottom.mockReturnValue(false);
+      });
+
+      describe('when job is complete', () => {
+        beforeEach(() => {
+          jobLogPayload = {
+            html: 'I, [2018-08-17T22:57:45.707325 #1841]  INFO -- :',
+            complete: true,
+          };
+
+          mock.onGet(`${TEST_HOST}/endpoint/trace.json`).replyOnce(HTTP_STATUS_OK, jobLogPayload);
         });
 
-        return testAction(
-          fetchJobLog,
-          null,
-          mockedState,
-          [],
-          [
-            {
-              type: 'toggleScrollisInBottom',
-              payload: true,
-            },
-            {
-              payload: {
-                html: 'I, [2018-08-17T22:57:45.707325 #1841]  INFO -- :',
-                complete: true,
+        it('commits RECEIVE_JOB_LOG_SUCCESS, dispatches stopPollingJobLog and requestTestSummary', () => {
+          return testAction(
+            fetchJobLog,
+            null,
+            mockedState,
+            [
+              {
+                type: types.RECEIVE_JOB_LOG_SUCCESS,
+                payload: jobLogPayload,
               },
-              type: 'receiveJobLogSuccess',
-            },
-            {
-              type: 'stopPollingJobLog',
-            },
-            {
-              type: 'requestTestSummary',
-            },
-          ],
-        );
+            ],
+            [{ type: 'stopPollingJobLog' }, { type: 'requestTestSummary' }],
+          );
+        });
       });
 
       describe('when job is incomplete', () => {
-        let jobLogPayload;
-
         beforeEach(() => {
           jobLogPayload = {
             html: 'I, [2018-08-17T22:57:45.707325 #1841]  INFO -- :',
@@ -262,12 +262,13 @@ describe('Job State actions', () => {
             fetchJobLog,
             null,
             mockedState,
-            [],
             [
-              { type: 'toggleScrollisInBottom', payload: true },
-              { type: 'receiveJobLogSuccess', payload: jobLogPayload },
-              { type: 'startPollingJobLog' },
+              {
+                type: types.RECEIVE_JOB_LOG_SUCCESS,
+                payload: jobLogPayload,
+              },
             ],
+            [{ type: 'startPollingJobLog' }],
           );
         });
 
@@ -278,10 +279,44 @@ describe('Job State actions', () => {
             fetchJobLog,
             null,
             mockedState,
-            [],
             [
-              { type: 'toggleScrollisInBottom', payload: true },
-              { type: 'receiveJobLogSuccess', payload: jobLogPayload },
+              {
+                type: types.RECEIVE_JOB_LOG_SUCCESS,
+                payload: jobLogPayload,
+              },
+            ],
+            [],
+          );
+        });
+      });
+
+      describe('when user scrolled to the bottom', () => {
+        beforeEach(() => {
+          isScrolledToBottom.mockReturnValue(true);
+
+          jobLogPayload = {
+            html: 'I, [2018-08-17T22:57:45.707325 #1841]  INFO -- :',
+            complete: true,
+          };
+
+          mock.onGet(`${TEST_HOST}/endpoint/trace.json`).replyOnce(HTTP_STATUS_OK, jobLogPayload);
+        });
+
+        it('should auto scroll to bottom by dispatching scrollBottom', () => {
+          return testAction(
+            fetchJobLog,
+            null,
+            mockedState,
+            [
+              {
+                type: types.RECEIVE_JOB_LOG_SUCCESS,
+                payload: jobLogPayload,
+              },
+            ],
+            [
+              { type: 'stopPollingJobLog' },
+              { type: 'requestTestSummary' },
+              { type: 'scrollBottom' },
             ],
           );
         });
@@ -390,18 +425,6 @@ describe('Job State actions', () => {
         [],
       );
       expect(window.clearTimeout).toHaveBeenCalledWith(jobLogTimeout);
-    });
-  });
-
-  describe('receiveJobLogSuccess', () => {
-    it('should commit RECEIVE_JOB_LOG_SUCCESS mutation', () => {
-      return testAction(
-        receiveJobLogSuccess,
-        'hello world',
-        mockedState,
-        [{ type: types.RECEIVE_JOB_LOG_SUCCESS, payload: 'hello world' }],
-        [],
-      );
     });
   });
 

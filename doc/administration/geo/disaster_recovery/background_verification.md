@@ -27,8 +27,7 @@ the site more time before scheduling a planned failover.
 
 On the **primary** site:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, select **Geo > Sites**.
 1. Expand **Verification information** tab for that site to view automatic checksumming
    status for repositories and wikis. Successes are shown in green, pending work
@@ -38,8 +37,7 @@ On the **primary** site:
 
 On the **secondary** site:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, select **Geo > Sites**.
 1. Expand **Verification information** tab for that site to view automatic checksumming
    status for repositories and wikis. Successes are shown in green, pending work
@@ -67,8 +65,7 @@ increase load and vice versa.
 
 On the **primary** site:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, select **Geo > Sites**.
 1. Select **Edit** for the **primary** site to customize the minimum
    re-verification interval:

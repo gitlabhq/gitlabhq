@@ -16,9 +16,6 @@ export default () => ({
   isScrollBottomDisabled: true,
   isScrollTopDisabled: true,
 
-  // Used to check if we should keep the automatic scroll
-  isScrolledToBottomBeforeReceivingJobLog: true,
-
   jobLog: [],
   isJobLogComplete: false,
   jobLogSize: 0,

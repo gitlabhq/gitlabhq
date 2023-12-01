@@ -19,8 +19,7 @@ View and resolve spam logs to moderate user activity in your instance.
 
 To view spam logs:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Spam Logs**.
 1. Optional. To resolve a spam log, select a log and then select **Remove user**, **Block user**, **Remove log**, or **Trust user**.
 

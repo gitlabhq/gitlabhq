@@ -56,8 +56,7 @@ Additionally, users can be set as external users using:
 By default, new users are not set as external users. This behavior can be changed
 by an administrator:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Account and limit** section.
 

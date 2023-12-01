@@ -1,6 +1,6 @@
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import AccessorUtilities from '~/lib/utils/accessor';
-import { FREQUENT_ITEMS, FIFTEEN_MINUTES_IN_MS } from '~/frequent_items/constants';
+import { FREQUENT_ITEMS, FIFTEEN_MINUTES_IN_MS } from '~/super_sidebar/constants';
 import axios from '~/lib/utils/axios_utils';
 
 /**

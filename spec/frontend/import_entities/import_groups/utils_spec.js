@@ -5,7 +5,7 @@ const FINISHED_STATUSES = [STATUSES.FINISHED, STATUSES.FAILED, STATUSES.TIMEOUT]
 const OTHER_STATUSES = Object.values(STATUSES).filter(
   (status) => !FINISHED_STATUSES.includes(status),
 );
-describe('gitlab migration status utils', () => {
+describe('Direct transfer status utils', () => {
   describe('isFinished', () => {
     it.each(FINISHED_STATUSES.map((s) => [s]))(
       'reports group as finished when import status is %s',

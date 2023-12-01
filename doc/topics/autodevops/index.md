@@ -164,8 +164,7 @@ Prerequisites:
 
 To enable Auto DevOps for your instance:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select the **Default to Auto DevOps pipeline** checkbox.
@@ -220,7 +219,7 @@ installation pods at runtime.
 
 ## Related topics
 
-- [Continuous methodologies](../../ci/introduction/index.md)
+- [Continuous methodologies](../../ci/index.md)
 - [Docker](https://docs.docker.com)
 - [GitLab Runner](https://docs.gitlab.com/runner/)
 - [Helm](https://helm.sh/docs/)

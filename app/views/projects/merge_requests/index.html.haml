@@ -7,6 +7,7 @@
 - new_merge_request_email = @project.new_issuable_address(current_user, 'merge_request')
 - add_page_specific_style 'page_bundles/issuable_list'
 - add_page_specific_style 'page_bundles/merge_request'
+- add_page_specific_style 'page_bundles/notes'
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{@project.name} merge requests")

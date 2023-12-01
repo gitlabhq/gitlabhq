@@ -621,8 +621,7 @@ Prerequisites:
 
 To enable import and export for a group:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. In the **Import sources** section, select the checkboxes for the sources you want.
@@ -664,7 +663,7 @@ NOTE:
 The maximum import file size can be set by the administrator, default is `0` (unlimited).
 As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the
 [Application settings API](../../../api/settings.md#change-application-settings) or the
-[Admin Area](../../admin_area/settings/account_and_limit_settings.md).
+[Admin Area](../../../administration/settings/account_and_limit_settings.md).
 Default [modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to 0 in GitLab 13.8.
 
 ### Rate limits

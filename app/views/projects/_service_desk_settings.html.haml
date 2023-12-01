@@ -4,7 +4,7 @@
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Service Desk')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    - link_start = "<a href='#{help_page_path('user/project/service_desk')}' target='_blank' rel='noopener noreferrer'>".html_safe
+    - link_start = "<a href='#{help_page_path('user/project/service_desk/index')}' target='_blank' rel='noopener noreferrer'>".html_safe
     %p.gl-text-secondary= _('Enable and disable Service Desk. Some additional configuration might be required. %{link_start}Learn more%{link_end}.').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
   .settings-content
     - if ::Gitlab::ServiceDesk.supported?

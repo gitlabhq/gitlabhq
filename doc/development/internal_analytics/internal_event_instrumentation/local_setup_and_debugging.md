@@ -54,8 +54,7 @@ On GitLab.com events are sent to a collector configured by GitLab. By default, s
 
 You can configure your self-managed GitLab instance to use a custom Snowplow collector.
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Snowplow**.
 1. Select **Enable Snowplow tracking** and enter your Snowplow configuration information. For example:

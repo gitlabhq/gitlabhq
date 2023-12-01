@@ -14,7 +14,7 @@ for in this list, you should search the documentation.
 
 ## Troubleshooting guides
 
-- [SSL](ssl.md)
+- [SSL](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting.html)
 - [Geo](../geo/replication/troubleshooting.md)
 - [SAML](../../user/group/saml_sso/troubleshooting.md)
 - [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html)
@@ -47,7 +47,7 @@ who are aware of the risks.
 - [Troubleshooting Kubernetes](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html)
 - [Troubleshooting PostgreSQL](postgresql.md)
 - [Guide to test environments](test_environments.md) (for Support Engineers)
-- [Troubleshooting SSL](ssl.md)
+- [Troubleshooting SSL](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting.html)
 - Related links:
   - [Repairing and recovering broken Git repositories](https://git.seveas.net/repairing-and-recovering-broken-git-repositories.html)
   - [Testing with OpenSSL](https://www.feistyduck.com/library/openssl-cookbook/online/testing-with-openssl/index.html)

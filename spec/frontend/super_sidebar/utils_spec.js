@@ -4,10 +4,10 @@ import { getTopFrequentItems, trackContextAccess, ariaCurrent } from '~/super_si
 import axios from '~/lib/utils/axios_utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import AccessorUtilities from '~/lib/utils/accessor';
-import { FREQUENT_ITEMS, FIFTEEN_MINUTES_IN_MS } from '~/frequent_items/constants';
+import { FREQUENT_ITEMS, FIFTEEN_MINUTES_IN_MS } from '~/super_sidebar/constants';
 import { HTTP_STATUS_OK, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import waitForPromises from 'helpers/wait_for_promises';
-import { unsortedFrequentItems, sortedFrequentItems } from '../frequent_items/mock_data';
+import { unsortedFrequentItems, sortedFrequentItems } from './mock_data';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
 

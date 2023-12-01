@@ -10,7 +10,7 @@ type: index, reference
 Choose and manage the subscription that's right for you and your organization.
 
 - [Choose a subscription](choosing_subscription.md)
-- [Compare self-managed to SaaS](../install/migrate/compare_sm_to_saas.md)
+- [Compare self-managed to SaaS](choosing_subscription.md)
 - [GitLab SaaS](gitlab_com/index.md)
 - [GitLab self-managed](self_managed/index.md)
 - [GitLab Dedicated](gitlab_dedicated/index.md)

@@ -17,5 +17,4 @@ Use **Settings** to control settings across the instance.
 To access the **Admin Area**:
 
 1. Sign in to your GitLab instance as an administrator.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.

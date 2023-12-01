@@ -225,8 +225,7 @@ field contains no data:
 
 To resolve this:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, go to **Settings > General**.
 1. Expand both of the following:
    - **Account and limit**.

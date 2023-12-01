@@ -9020,6 +9020,12 @@ msgstr ""
 msgid "BulkImport|Destination"
 msgstr ""
 
+msgid "BulkImport|Direct transfer"
+msgstr ""
+
+msgid "BulkImport|Direct transfer history"
+msgstr ""
+
 msgid "BulkImport|Direct transfer maximum download file size (MiB)"
 msgstr ""
 
@@ -9027,9 +9033,6 @@ msgid "BulkImport|Filter by source group"
 msgstr ""
 
 msgid "BulkImport|Following data will not be migrated: %{bullets} Contact system administrator of %{host} to upgrade GitLab if you need this data in your migration"
-msgstr ""
-
-msgid "BulkImport|GitLab Migration history"
 msgstr ""
 
 msgid "BulkImport|Group import disabled on source or destination instance. Ask an administrator to enable it on both instances and try again."
@@ -9050,7 +9053,7 @@ msgstr ""
 msgid "BulkImport|Import failed: Destination cannot be a subgroup of the source group. Change the destination and try again."
 msgstr ""
 
-msgid "BulkImport|Import groups from GitLab"
+msgid "BulkImport|Import groups by direct transfer"
 msgstr ""
 
 msgid "BulkImport|Import is finished. Pick another name for re-import"
@@ -9069,6 +9072,9 @@ msgid "BulkImport|Importing the group failed."
 msgstr ""
 
 msgid "BulkImport|Invalid source URL. Enter only the base URL of the source GitLab instance."
+msgstr ""
+
+msgid "BulkImport|Items that failed to be imported for %{id}"
 msgstr ""
 
 msgid "BulkImport|Last imported to %{link}"
@@ -9125,7 +9131,7 @@ msgstr ""
 msgid "BulkImport|Source group"
 msgstr ""
 
-msgid "BulkImport|Template / File-based import / GitLab Migration"
+msgid "BulkImport|Template / File-based import / Direct transfer"
 msgstr ""
 
 msgid "BulkImport|Unsupported GitLab version. Minimum supported version is '%{version}'."
@@ -23492,30 +23498,6 @@ msgstr ""
 msgid "Groups are the best way to manage projects and members."
 msgstr ""
 
-msgid "GroupsDropdown|Frequently visited"
-msgstr ""
-
-msgid "GroupsDropdown|Groups you visit often will appear here"
-msgstr ""
-
-msgid "GroupsDropdown|Loading groups"
-msgstr ""
-
-msgid "GroupsDropdown|Search your groups"
-msgstr ""
-
-msgid "GroupsDropdown|Something went wrong on our end."
-msgstr ""
-
-msgid "GroupsDropdown|Sorry, no groups matched your search"
-msgstr ""
-
-msgid "GroupsDropdown|This feature requires browser localStorage support"
-msgstr ""
-
-msgid "GroupsDropdown|Toggle edit mode"
-msgstr ""
-
 msgid "GroupsEmptyState|A group is a collection of several projects"
 msgstr ""
 
@@ -24725,9 +24707,6 @@ msgstr ""
 msgid "Import group from file"
 msgstr ""
 
-msgid "Import groups"
-msgstr ""
-
 msgid "Import history"
 msgstr ""
 
@@ -24904,10 +24883,10 @@ msgstr ""
 msgid "Import|An error occurred while fetching import details."
 msgstr ""
 
-msgid "Import|GitHub import details"
+msgid "Import|Failures for %{id}"
 msgstr ""
 
-msgid "Import|GitLab Migration details"
+msgid "Import|GitHub import details"
 msgstr ""
 
 msgid "Import|Maximum decompressed file size for archives from imports (MiB)"
@@ -38363,30 +38342,6 @@ msgid "Projects with this topic"
 msgstr ""
 
 msgid "Projects with write access"
-msgstr ""
-
-msgid "ProjectsDropdown|Frequently visited"
-msgstr ""
-
-msgid "ProjectsDropdown|Loading projects"
-msgstr ""
-
-msgid "ProjectsDropdown|Projects you visit often will appear here"
-msgstr ""
-
-msgid "ProjectsDropdown|Search your projects"
-msgstr ""
-
-msgid "ProjectsDropdown|Something went wrong on our end."
-msgstr ""
-
-msgid "ProjectsDropdown|Sorry, no projects matched your search"
-msgstr ""
-
-msgid "ProjectsDropdown|This feature requires browser localStorage support"
-msgstr ""
-
-msgid "ProjectsDropdown|Toggle edit mode"
 msgstr ""
 
 msgid "ProjectsNew|Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository."

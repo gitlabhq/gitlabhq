@@ -88,7 +88,6 @@ export default {
       'isJobLogSizeVisible',
       'isScrollBottomDisabled',
       'isScrollTopDisabled',
-      'isScrolledToBottomBeforeReceivingJobLog',
       'hasError',
       'selectedStage',
     ]),

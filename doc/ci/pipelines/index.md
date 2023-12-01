@@ -126,7 +126,7 @@ you can filter the pipeline list by:
 pipeline column to display the pipeline ID or the pipeline IID.
 
 If you use VS Code to edit your GitLab CI/CD configuration, the
-[GitLab Workflow VS Code extension](../../user/project/repository/vscode.md) helps you
+[GitLab Workflow VS Code extension](../../editor_extensions/visual_studio_code/index.md) helps you
 [validate your configuration](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#validate-gitlab-ci-configuration)
 and [view your pipeline status](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#information-about-your-branch-pipelines-mr-closing-issue).
 

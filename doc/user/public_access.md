@@ -35,7 +35,7 @@ For internal projects, **any authenticated user**, including users with the Gues
 
 Only internal members can view internal content.
 
-[External users](admin_area/external_users.md) cannot clone the project.
+[External users](../administration/external_users.md) cannot clone the project.
 
 Internal groups can have internal or private subgroups.
 

@@ -17,7 +17,7 @@
         %code= @project.service_desk_address
 
     %span= s_("ServiceDesk|Issues created from Service Desk emails will appear here. Each comment becomes part of the email conversation.")
-    = link_to _('Learn more.'), help_page_path('user/project/service_desk')
+    = link_to _('Learn more.'), help_page_path('user/project/service_desk/index')
 
     - if can_edit_project_settings && !service_desk_enabled
       .gl-mt-3

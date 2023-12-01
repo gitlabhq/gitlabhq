@@ -37,8 +37,7 @@ Prorated charges are not possible without a quarterly usage report.
 View the amount of users in your instance to determine if they exceed the amount
 paid for in your subscription.
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Users**.
 
 The lists of users are displayed.
@@ -218,8 +217,7 @@ Example of a license sync request:
 
 You can manually synchronize your subscription details at any time.
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Subscription**.
 1. In the **Subscription details** section, select **Sync subscription details**.
 
@@ -229,8 +227,7 @@ A job is queued. When the job finishes, the subscription details are updated.
 
 If you are an administrator, you can view the status of your subscription:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Subscription**.
 
 The **Subscription** page includes the following details:
@@ -254,8 +251,7 @@ It also displays the following information:
 
 If you are an administrator, you can export your license usage into a CSV:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Subscription**.
 1. In the upper-right corner, select **Export license usage file**.
 

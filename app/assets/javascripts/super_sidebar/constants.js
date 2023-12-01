@@ -57,3 +57,15 @@ export const DROPDOWN_Y_OFFSET = 4;
 export const NAV_ITEM_LINK_ACTIVE_CLASS = 'gl-bg-t-gray-a-08';
 
 export const IMPERSONATING_OFFSET = 34;
+
+// Frequent items constants
+export const FREQUENT_ITEMS = {
+  MAX_COUNT: 20,
+  ELIGIBLE_FREQUENCY: 3,
+};
+
+export const FIFTEEN_MINUTES_IN_MS = 900000;
+
+export const STORAGE_KEY = {
+  projects: 'frequent-projects',
+};

@@ -591,11 +591,11 @@ export default {
 <template>
   <div>
     <div
-      class="gl-display-flex gl-align-items-center gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1"
+      class="gl-display-flex gl-align-items-center gl-border-solid gl-border-gray-100 gl-border-0 gl-border-b-1"
     >
-      <h1 class="gl-my-0 gl-py-4 gl-font-size-h1gl-display-flex">
-        <img :src="$options.gitlabLogo" class="gl-w-6 gl-h-6 gl-mb-2 gl-display-inline gl-mr-2" />
-        {{ s__('BulkImport|Import groups from GitLab') }}
+      <h1 class="gl-font-size-h1 gl-my-0 gl-py-4 gl-display-flex gl-align-items-center gl-gap-3">
+        <img :src="$options.gitlabLogo" class="gl-w-6 gl-h-6" />
+        <span>{{ s__('BulkImport|Import groups by direct transfer') }}</span>
       </h1>
       <gl-link :href="historyPath" class="gl-ml-auto">{{ s__('BulkImport|History') }}</gl-link>
     </div>

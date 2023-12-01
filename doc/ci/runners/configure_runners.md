@@ -940,8 +940,7 @@ Prerequisites:
 
 To automatically rotate runner authentication tokens:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**
 1. Set a **Runners expiration** time for runners, leave empty for no expiration.

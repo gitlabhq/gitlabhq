@@ -36,8 +36,7 @@ On GitLab.com, there is a seven day delay between a user deleting their own acco
 
 As an administrator, to delete a user account:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Users**.
 1. Select a user.
 1. Under the **Account** tab, select:

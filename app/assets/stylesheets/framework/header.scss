@@ -249,10 +249,6 @@
     font-size: 10px;
   }
 
-  .frequent-items-item-select-holder {
-    display: inline;
-  }
-
   .impersonation i {
     color: $red-500;
   }
@@ -520,16 +516,6 @@
       @include gl-border-l-solid;
       @include gl-border-gray-100;
     }
-  }
-}
-
-.top-nav-container-view {
-  .gl-dropdown & .gl-search-box-by-type {
-    @include gl-m-0;
-  }
-
-  .frequent-items-list-item-container > a:hover {
-    background-color: $nav-active-bg !important;
   }
 }
 

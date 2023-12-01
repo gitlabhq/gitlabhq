@@ -29,8 +29,7 @@ Prerequisites:
 
 To manage instance-level default settings for a project integration:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Integrations**.
 1. Select an integration.
 1. Complete the fields.
@@ -71,8 +70,7 @@ Prerequisites:
 
 To remove an instance-level default setting:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Integrations**.
 1. Select an integration.
 1. Select **Reset** and confirm.
@@ -89,8 +87,7 @@ Prerequisites:
 
 To view projects in your instance that [use custom settings](../../user/project/integrations/index.md#use-custom-settings-for-a-project-or-group-integration):
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Integrations**.
 1. Select an integration.
 1. Select the **Projects using custom settings** tab.

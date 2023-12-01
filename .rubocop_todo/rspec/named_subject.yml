@@ -1612,7 +1612,6 @@ RSpec/NamedSubject:
     - 'spec/helpers/hooks_helper_spec.rb'
     - 'spec/helpers/integrations_helper_spec.rb'
     - 'spec/helpers/jira_connect_helper_spec.rb'
-    - 'spec/helpers/json_helper_spec.rb'
     - 'spec/helpers/labels_helper_spec.rb'
     - 'spec/helpers/listbox_helper_spec.rb'
     - 'spec/helpers/markup_helper_spec.rb'

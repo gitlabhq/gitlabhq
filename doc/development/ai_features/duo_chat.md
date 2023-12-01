@@ -119,6 +119,7 @@ The following CI jobs for GitLab project run the rspecs tagged with `real_ai_req
    The job runs the QA evaluation tests in
    `ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb`.
    The job is optionally triggered and allowed to fail.
+   Read about [GitLab Duo Chat QA Evaluation Test](#gitlab-duo-chat-qa-evaluation-test).
 
 - `rspec-ee unit gitlab-duo-chat-qa-fast`:
   The job runs a single QA evaluation test from `ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb`.
@@ -139,6 +140,64 @@ Because the CI jobs need to run on MR branches, GCP credentials cannot be added 
 and must be added as a regular CI variable.
 For security, the GCP credentials and the associated project added to
 GitLab project's CI must not be able to access any production infrastructure and sandboxed.
+
+### GitLab Duo Chat QA Evaluation Test
+
+Evaluation of a natural language generation (NLG) system such as
+GitLab Duo Chat is a rapidly evolving area with many unanswered questions and ambiguities.
+
+A practical working assumption is LLMs can generate a reasonable answer when given a clear question and a context.
+With the assumption, we are exploring using LLMs as evaluators
+to determine the correctness of a sample of questions
+to track the overall accuracy of GitLab Duo Chat's responses and detect regressions in the feature.
+
+For the discussions related to the topic,
+see [the merge request](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/431)
+and [the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/427251).
+
+The current QA evaluation test consists of the following components.
+
+#### Epic and issue fixtures
+
+The fixtures are the replicas of the _public_ issues and epics from projects and groups _owned by_ GitLab.
+The internal notes were excluded when they were sampled. The fixtures have been commited into the canonical `gitlab` repository.
+See [the snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/3613745) used to create the fixtures.
+
+#### RSpec and helpers
+
+1. [The RSpec file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb)
+  and the included helpers invoke the Chat service, an internal interface with the question.
+
+1. After collecting the Chat service's answer,
+  the answer is injected into a prompt, also known as an "evaluation prompt", that instructs
+  a LLM to grade the correctness of the answer based on the question and a context.
+  The context is simply a JSON serialization of the issue or epic being asked about in each question.
+
+1. The evaluation prompt is sent to two LLMs, Claude and Vertex.
+
+1. The evaluation responses of the LLMs are saved as JSON files.
+
+1. For each question, RSpec will regex-match for `CORRECT` or `INCORRECT`.
+
+#### Collection and tracking of QA evaluations via CI/CD automation
+
+The `gitlab` project's CI configurations have been setup to
+run the RSpec,
+collect the evaluation response as artifacts
+and execute [a reporter script](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/duo_chat/reporter.rb)
+that automates collection and tracking of evaluations.
+
+When `rspec-ee unit gitlab-duo-chat-qa` job runs in a pipeline for a merge request,
+the reporter script uses the evaluations saved as CI artifacts
+to generate a Markdown report and posts it as a note in the merge request.
+
+When `rspec-ee unit gitlab-duo-chat-qa` is run in a pipeline for a commit on `master` branch,
+the reporter script instead
+posts the generated report as an issue,
+saves the evaluations artfacts as a snippet,
+and updates the tracking issue in
+[`gitlab-org/ai-powered/ai-framework/qa-evaluation#1`](https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation/-/issues/1)
+in the project [`gitlab-org/ai-powered/ai-framework/qa-evaluation`](https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation).
 
 ## GraphQL Subscription
 

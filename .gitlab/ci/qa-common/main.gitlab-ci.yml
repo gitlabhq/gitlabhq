@@ -5,7 +5,7 @@ workflow:
   name: $PIPELINE_NAME
 
 include:
-  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@7.13.1"
+  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@7.13.2"
     inputs:
       job_name: "e2e-test-report"
       job_stage: "report"

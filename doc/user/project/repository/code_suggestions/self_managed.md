@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# Code Suggestions on self-managed GitLab **(PREMIUM SELF BETA)**
+# Code Suggestions on self-managed GitLab **(SELF BETA)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10653) in GitLab 16.1 as [Beta](../../../../policy/experiment-beta-support.md#beta) on self-managed GitLab.
 > - [Introduced support for Google Vertex AI Codey APIs](https://gitlab.com/groups/gitlab-org/-/epics/10562) in GitLab 16.1.
@@ -15,17 +15,18 @@ type: index, reference
 Write code more efficiently by using generative AI to suggest code while you're developing.
 
 GitLab Duo Code Suggestions are available on GitLab Enterprise Edition.
-Cloud licensing is required for Premium and Ultimate subscription tiers.
 
 Code Suggestions are not available for GitLab Community Edition.
 
-WARNING:
-In GitLab 16.3 and later, only Premium and Ultimate customers can participate in the free trial of Code Suggestions on self-managed GitLab.
+> In GitLab 16.3 and later, to participate in the free trial of Code Suggestions on self-managed GitLab, you must:
+>
+> - Be a Premium or Ultimate customer.
+> - Have activated cloud licensing.
 
 Usage of Code Suggestions is governed by the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
 Learn about [data usage when using Code Suggestions](index.md#code-suggestions-data-usage).
 
-## Enable Code Suggestions on self-managed GitLab **(FREE SELF)**
+## Enable Code Suggestions on self-managed GitLab
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10653) in GitLab 16.1 as [Beta](../../../../policy/experiment-beta-support.md#beta).
 
@@ -36,7 +37,7 @@ When you enable Code Suggestions for your self-managed instance, you:
 
 How you enable Code Suggestions differs depending on your version of GitLab.
 
-### GitLab 16.3 and later
+### GitLab 16.3 and later **(PREMIUM)**
 
 Prerequisites:
 
@@ -46,8 +47,7 @@ Prerequisites:
 
 To enable Code Suggestions for your self-managed GitLab instance:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Code Suggestions** and select **Turn on Code Suggestions for this instance**.
    In GitLab 16.3, you do not need to enter anything into the **Personal access token** field.
@@ -95,8 +95,7 @@ To enable Code Suggestions for your GitLab SaaS account:
 
 To enable Code Suggestions for your self-managed GitLab instance:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Code Suggestions** and:
    - Select **Turn on Code Suggestions for this instance**.
@@ -130,7 +129,7 @@ the server is configured to allow outbound connections, including the
 
 In GitLab 16.3 and later, GitLab is enforcing the cloud licensing requirement for Code Suggestions:
 
-- The Premium and Ultimate subscription tiers support cloud Licensing.
+- The Premium and Ultimate subscription tiers support cloud licensing.
 - GitLab Free does not have cloud licensing support.
 
 If you have a GitLab Free subscription and upgrade to GitLab 16.3 or later,

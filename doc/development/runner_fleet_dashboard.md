@@ -33,8 +33,7 @@ Prerequisites:
 
 To view the runner fleet dashboard:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Runners**.
 1. Click **Fleet dashboard**.
 

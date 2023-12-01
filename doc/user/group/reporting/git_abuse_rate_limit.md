@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. On GitLab.com, this feature is available.
 
-This is the group-level documentation. For self-managed instances, see the [administration documentation](../../admin_area/reporting/git_abuse_rate_limit.md).
+This is the group-level documentation. For self-managed instances, see the [administration documentation](../../../administration/reporting/git_abuse_rate_limit.md).
 
 Git abuse rate limiting is a feature to automatically ban users who download, clone, pull, fetch, or fork more than a specified number of repositories of a group in a given time frame. Banned users cannot access the top-level group or any of its non-public subgroups via HTTP or SSH. The rate limit also applies to users who authenticate with [personal](../../../user/profile/personal_access_tokens.md) or [group access tokens](../../../user/group/settings/group_access_tokens.md), as well as [CI/CD job tokens](../../../ci/jobs/ci_job_token.md). Access to unrelated groups is unaffected.
 

@@ -77,8 +77,7 @@ Prerequisites:
 
 - You must be an administrator for the self-managed instance you are creating the custom role in.
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Roles and Permissions**.
 1. From the top dropdown list, select the group you want to create a custom role in.
 1. Select **Add new role**.

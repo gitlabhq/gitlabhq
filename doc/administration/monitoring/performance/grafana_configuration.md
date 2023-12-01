@@ -34,8 +34,7 @@ see the [GitLab Grafana dashboards](https://gitlab.com/gitlab-org/grafana-dashbo
 After setting up Grafana, you can enable a link to access it from the
 GitLab sidebar:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, select **Settings > Metrics and profiling**
    and expand **Metrics - Grafana**.
 1. Select the **Add a link to Grafana** checkbox.

@@ -13,6 +13,21 @@ module Packages
       project.packages.installable
     end
 
+    # /!\ This function doesn't check user permissions
+    # at the package level.
+    def packages_for(user, within_group:)
+      return ::Packages::Package.none unless within_group
+      return ::Packages::Package.none unless Ability.allowed?(user, :read_group, within_group)
+
+      projects = if user.is_a?(DeployToken)
+                   user.accessible_projects
+                 else
+                   within_group.all_projects
+                 end
+
+      ::Packages::Package.for_projects(projects).installable
+    end
+
     def packages_visible_to_user(user, within_group:, with_package_registry_enabled: false)
       return ::Packages::Package.none unless within_group
       return ::Packages::Package.none unless Ability.allowed?(user, :read_group, within_group)

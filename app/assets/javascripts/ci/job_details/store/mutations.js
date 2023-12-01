@@ -111,11 +111,6 @@ export default {
   [types.TOGGLE_SCROLL_ANIMATION](state, toggle) {
     state.isScrollingDown = toggle;
   },
-
-  [types.TOGGLE_IS_SCROLL_IN_BOTTOM_BEFORE_UPDATING_JOB_LOG](state, toggle) {
-    state.isScrolledToBottomBeforeReceivingJobLog = toggle;
-  },
-
   [types.REQUEST_JOBS_FOR_STAGE](state, stage = {}) {
     state.isLoadingJobs = true;
     state.selectedStage = stage.name;

@@ -233,14 +233,11 @@ export default {
 
 <template>
   <div>
-    <div
-      class="gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1 gl-display-flex gl-align-items-center"
-    >
-      <h1 class="gl-my-0 gl-py-4 gl-font-size-h1">
-        <img :src="$options.gitlabLogo" class="gl-w-6 gl-h-6 gl-mb-2 gl-display-inline gl-mr-2" />
-        {{ s__('BulkImport|GitLab Migration history') }}
-      </h1>
-    </div>
+    <h1 class="gl-font-size-h1 gl-my-0 gl-py-4 gl-display-flex gl-align-items-center gl-gap-3">
+      <img :src="$options.gitlabLogo" class="gl-w-6 gl-h-6" />
+      <span>{{ s__('BulkImport|Direct transfer history') }}</span>
+    </h1>
+
     <gl-loading-icon v-if="loading" size="lg" class="gl-mt-5" />
     <gl-empty-state
       v-else-if="!hasHistoryItems"

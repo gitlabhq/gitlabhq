@@ -25,8 +25,7 @@ You can send email notifications once every 10 minutes.
 
 To send an email:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Users**.
 1. In the upper-right corner, select **Send email to users** (**{mail}**).
 1. Complete the fields. The email body supports only plain text and does not support HTML, Markdown, or other rich text formats.

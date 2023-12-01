@@ -46,7 +46,7 @@ Prerequisites:
 - If you are a **SaaS** user, you must enable Code Suggestions for:
   - [The top-level group](../../../group/manage.md#enable-code-suggestions) (you must have the Owner role for that group).
   - [Your own account](../../../profile/preferences.md#enable-code-suggestions).
-  - If you are a **self-managed** user, you must enable Code Suggestions [for your instance](self_managed.md#enable-code-suggestions-on-self-managed-gitlab). How you enable Code Suggestions differs depending on your version of GitLab.
+- If you are a **self-managed** user, you must enable Code Suggestions [for your instance](self_managed.md#enable-code-suggestions-on-self-managed-gitlab). How you enable Code Suggestions differs depending on your version of GitLab.
 
 To use Code Suggestions:
 

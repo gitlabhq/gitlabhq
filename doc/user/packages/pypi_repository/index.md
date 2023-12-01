@@ -205,7 +205,7 @@ more than once, a `400 Bad Request` error occurs.
 In [GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/233413),
 when a PyPI package is not found in the package registry, the request is forwarded to [pypi.org](https://pypi.org/).
 
-Administrators can disable this behavior in the [Continuous Integration settings](../../admin_area/settings/continuous_integration.md).
+Administrators can disable this behavior in the [Continuous Integration settings](../../../administration/settings/continuous_integration.md).
 
 WARNING:
 When you use the `--index-url` option, do not specify the port if it is a default

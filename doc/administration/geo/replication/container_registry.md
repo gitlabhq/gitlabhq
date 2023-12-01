@@ -166,8 +166,7 @@ For each application and Sidekiq node on the **secondary** site:
 
 To verify container registry replication is working, on the **secondary** site:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, select **Geo > Nodes**.
    The initial replication, or "backfill", is probably still in progress.
 

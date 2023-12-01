@@ -20,22 +20,10 @@ export default {
     },
   },
   computed: {
-    ...mapState([
-      'jobLogEndpoint',
-      'jobLog',
-      'isJobLogComplete',
-      'isScrolledToBottomBeforeReceivingJobLog',
-    ]),
+    ...mapState(['jobLogEndpoint', 'jobLog', 'isJobLogComplete']),
     highlightedLines() {
       return this.searchResults.map((result) => result.lineNumber);
     },
-  },
-  updated() {
-    this.$nextTick(() => {
-      if (!window.location.hash) {
-        this.handleScrollDown();
-      }
-    });
   },
   mounted() {
     if (window.location.hash) {
@@ -56,20 +44,6 @@ export default {
     ...mapActions(['toggleCollapsibleLine', 'scrollBottom']),
     handleOnClickCollapsibleLine(section) {
       this.toggleCollapsibleLine(section);
-    },
-    /**
-     * The job log is sent in HTML, which means we need to use `v-html` to render it
-     * Using the updated hook with $nextTick is not enough to wait for the DOM to be updated
-     * in this case because it runs before `v-html` has finished running, since there's no
-     * Vue binding.
-     * In order to scroll the page down after `v-html` has finished, we need to use setTimeout
-     */
-    handleScrollDown() {
-      if (this.isScrolledToBottomBeforeReceivingJobLog) {
-        setTimeout(() => {
-          this.scrollBottom();
-        }, 0);
-      }
     },
     isHighlighted({ lineNumber }) {
       return this.highlightedLines.includes(lineNumber);

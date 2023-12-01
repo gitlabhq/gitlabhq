@@ -107,10 +107,10 @@ your merge request template with their values:
 ### Set instance-level description templates **(PREMIUM SELF)**
 
 You can set a description template at the **instance level** for issues
-and merge requests by using an [instance template repository](../admin_area/settings/instance_template_repository.md).
+and merge requests by using an [instance template repository](../../administration/settings/instance_template_repository.md).
 You can also use the instance template repository for file templates.
 
-You might also be interested in [project templates](../admin_area/custom_project_templates.md)
+You might also be interested in [project templates](../../administration/custom_project_templates.md)
 that you can use when creating a new project in the instance.
 
 ### Set group-level description templates **(PREMIUM ALL)**

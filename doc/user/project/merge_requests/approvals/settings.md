@@ -57,7 +57,7 @@ this setting, unless you configure one of these options:
 - [Prevent overrides of default approvals](#prevent-editing-approval-rules-in-merge-requests) at
   the project level.
 - *(Self-managed instances only)* Prevent overrides of default approvals
-  [at the instance level](../../../admin_area/merge_requests_approvals.md). When configured
+  [at the instance level](../../../../administration/admin_area.md). When configured
   at the instance level, you can't edit this setting at the project or individual
   merge request levels.
 
@@ -68,7 +68,7 @@ this setting, unless you configure one of these options:
 > - [Feature flag `keep_merge_commits_for_approvals`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131778) removed in GitLab 16.5. This check now includes merge commits.
 
 By default, users who commit to a merge request can still approve it. At both
-the project level or [instance level](../../../admin_area/merge_requests_approvals.md),
+the project level or [instance level](../../../../administration/admin_area.md),
 you can prevent committers from approving merge requests that are partially
 their own. To do this:
 
@@ -76,7 +76,7 @@ their own. To do this:
 1. In the **Merge request approvals** section, scroll to **Approval settings** and
    select **Prevent approvals by users who add commits**.
    If this checkbox is cleared, an administrator has disabled it
-   [at the instance level](../../../admin_area/merge_requests_approvals.md), and
+   [at the instance level](../../../../administration/admin_area.md), and
    it can't be changed at the project level.
 1. Select **Save changes**.
 
@@ -168,7 +168,7 @@ To do this:
 
 You can also enforce merge request approval settings:
 
-- At the [instance level](../../../admin_area/merge_requests_approvals.md), which apply to all groups
+- At the [instance level](../../../../administration/admin_area.md), which apply to all groups
   on an instance and, therefore, all projects.
 - On a [top-level group](../../../group/manage.md#group-merge-request-approval-settings), which apply to all subgroups
   and projects.
@@ -178,6 +178,6 @@ that inherited them.
 
 ## Related topics
 
-- [Instance-level merge request approval settings](../../../admin_area/merge_requests_approvals.md)
+- [Instance-level merge request approval settings](../../../../administration/admin_area.md)
 - [Compliance center](../../../compliance/compliance_center/index.md)
 - [Merge request approvals API](../../../../api/merge_request_approvals.md)

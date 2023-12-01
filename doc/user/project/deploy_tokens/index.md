@@ -38,7 +38,7 @@ it. Expiry occurs at midnight UTC on that date.
 
 WARNING:
 You cannot use new or existing deploy tokens for Git operations and package registry operations if
-[external authorization](../../admin_area/settings/external_authorization.md) is enabled.
+[external authorization](../../../administration/settings/external_authorization.md) is enabled.
 
 ## Scope
 

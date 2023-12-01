@@ -20,7 +20,7 @@ you run in Slack is run by your linked GitLab user.
 Prerequisites:
 
 - You must have the [appropriate permissions to add apps to your Slack workspace](https://slack.com/help/articles/202035138-Add-apps-to-your-Slack-workspace).
-- On self-managed GitLab, an administrator must [enable the integration](../../admin_area/settings/slack_app.md).
+- On self-managed GitLab, an administrator must [enable the integration](../../../administration/settings/slack_app.md).
 
 In GitLab 15.0 and later, the GitLab for Slack app uses
 [granular permissions](https://medium.com/slack-developer-blog/more-precision-less-restrictions-a3550006f9c3).

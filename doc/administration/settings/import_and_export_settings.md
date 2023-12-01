@@ -15,8 +15,7 @@ Before you can import projects from other systems, you must enable the
 [import source](../../user/gitlab_com/index.md#default-import-sources) for that system.
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Import and export settings** section.
 1. Select each of **Import sources** to allow.
@@ -28,8 +27,7 @@ To enable the export of
 [projects and their data](../../user/project/settings/import_export.md#export-a-project-and-its-data):
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Import and export settings** section.
 1. Scroll to **Project export**.
@@ -51,8 +49,7 @@ Migration of groups and projects by direct transfer is disabled by default.
 To enable migration of groups and projects by direct transfer:
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Import and export settings** section.
 1. Scroll to **Allow migrating GitLab groups and projects by direct transfer**.
@@ -69,8 +66,7 @@ The same setting
 
 To modify the maximum file size for exports in GitLab:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**, then expand **Import and export settings**.
 1. Increase or decrease by changing the value in **Maximum export size (MiB)**.
 
@@ -80,8 +76,7 @@ To modify the maximum file size for exports in GitLab:
 
 To modify the maximum file size for imports in GitLab:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Import and export settings**.
 1. Increase or decrease by changing the value in **Maximum import size (MiB)**.
@@ -103,8 +98,7 @@ By default, the maximum remote file size for imports from external object storag
 
 To modify this setting:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Import and export settings**.
 1. Increase or decrease by changing the value in **Maximum import remote file size (MiB)**. Set to `0` to set no file size limit.
@@ -117,8 +111,7 @@ By default, the maximum download file size for imports by direct transfer is 5 G
 
 To modify this setting:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Import and export settings**.
 1. Increase or decrease by changing the value in **Direct transfer maximum download file size (MiB)**. Set to `0` to set no download file size limit.
@@ -141,8 +134,7 @@ Decompressed archive size validation failed.
 
 To modify this setting:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Import and export settings**.
 1. Set another value for **Maximum decompressed file size for archives from imports (MiB)**.
@@ -155,8 +147,7 @@ When you [import a project](../../user/project/settings/import_export.md), you c
 
 To modify the maximum decompressed file size for imports in GitLab:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Import and export settings**.
 1. Set another value for **Timeout for decompressing archived files (seconds)**.

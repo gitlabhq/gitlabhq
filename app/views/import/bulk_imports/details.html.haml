@@ -1,5 +1,8 @@
 - add_to_breadcrumbs _('New group'), new_group_path
 - add_to_breadcrumbs _('Import group'), new_group_path(anchor: 'import-group-pane')
-- page_title s_('Import|GitLab Migration details')
+- add_to_breadcrumbs s_('BulkImport|Direct transfer history'), history_import_bulk_imports_path
+- if params[:id].present?
+  - add_to_breadcrumbs params[:id], history_import_bulk_imports_path(bulk_import_id: params[:id])
+- page_title format(s_('Import|Failures for %{id}'), id: params[:entity_id])
 
 .js-bulk-import-details

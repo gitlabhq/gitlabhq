@@ -96,7 +96,7 @@ prompted to open Xcode.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220957) in GitLab 13.10.
 
 All projects can be cloned into Visual Studio Code from the GitLab user interface, but you
-can also install the [GitLab Workflow VS Code extension](vscode.md) to clone from
+can also install the [GitLab Workflow VS Code extension](../../../editor_extensions/visual_studio_code/index.md) to clone from
 Visual Studio Code:
 
 - From the GitLab interface:
@@ -106,7 +106,7 @@ Visual Studio Code:
   1. Select a folder to clone the project into.
 
      After Visual Studio Code clones your project, it opens the folder.
-- From Visual Studio Code, with the [extension](vscode.md) installed, use the
+- From Visual Studio Code, with the [extension](../../../editor_extensions/visual_studio_code/index.md) installed, use the
   extension's [`Git: Clone` command](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#clone-gitlab-projects).
 
 ### Clone and open in IntelliJ IDEA
@@ -253,7 +253,7 @@ updated, at most, every 15 minutes. The file size includes repository files, art
 
 The size can differ slightly from one instance to another due to compression, housekeeping, and other factors.
 
-Administrators can set a [repository size limit](../../admin_area/settings/account_and_limit_settings.md).
+Administrators can set a [repository size limit](../../../administration/settings/account_and_limit_settings.md).
 [GitLab sets the size limits for GitLab.com](../../gitlab_com/index.md#account-and-limit-settings).
 
 ## Repository contributor statistics
@@ -298,7 +298,7 @@ because they can't follow redirects:
 
 ## Related topics
 
-- [GitLab Workflow VS Code extension](vscode.md)
+- [GitLab Workflow VS Code extension](../../../editor_extensions/visual_studio_code/index.md)
 - [Lock files and prevent change conflicts](../file_lock.md)
 - [Repository API](../../../api/repositories.md)
 - [Find files](file_finder.md)

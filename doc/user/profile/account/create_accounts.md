@@ -18,7 +18,7 @@ You can create users:
 
 Prerequisites:
 
-- [Sign-up must be enabled](../../admin_area/settings/sign_up_restrictions.md).
+- [Sign-up must be enabled](../../../administration/settings/sign_up_restrictions.md).
 
 Users can create their own accounts by either:
 
@@ -33,8 +33,7 @@ Prerequisites:
 
 To create a user manually:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Users**.
 1. Select **New user**.
 1. Complete the required fields, such as name, username, and email.

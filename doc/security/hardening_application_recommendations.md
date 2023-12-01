@@ -14,8 +14,7 @@ web interface.
 
 ## System hooks
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, select **System Hooks**.
 
 In a typical hardened environment, internal information is not transmitted or stored
@@ -33,8 +32,7 @@ encouraged for communications through system hooks.
 
 ## Push rules
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, select **Push Rules**.
 
 Ensure that the following items are selected:
@@ -48,8 +46,7 @@ The adjustments help limit pushes to established and authorized users.
 
 ## Deploy keys
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, select **Deploy Keys**.
 
 Public deploy keys at are used to give read or read/write access to
@@ -61,8 +58,7 @@ the documentation on [deploy keys](../user/project/deploy_keys/index.md) and
 
 ## General
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 
 Hardening adjustments can be made in 4 sections.
@@ -180,8 +176,7 @@ For more detailed information, see
 
 ## Integrations
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, select **Settings > Integrations**.
 
 In general, as long as administrators control and monitor usage, integrations
@@ -192,8 +187,7 @@ process or authenticated user.
 
 ## Metrics and profiling
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
 
 The main focus for hardening is **Usage statistics**:
@@ -210,8 +204,7 @@ help you make an informed decision, see
 
 ## Network
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, select **Settings > Network**.
 
 For any setting that enables rate limiting, make sure it is selected. Default values

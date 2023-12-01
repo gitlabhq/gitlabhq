@@ -11,8 +11,6 @@ To make changes to multiple files, see [Web IDE](../web_ide/index.md).
 
 Your [primary email address](../../profile/index.md#change-the-email-displayed-on-your-commits)
 is used by default for any change you commit with the Web Editor.
-When you create or edit a file in the Web Editor, you can use the same
-[keyboard shortcuts](../../shortcuts.md#web-ide) for the Web IDE.
 
 ## Create a file
 

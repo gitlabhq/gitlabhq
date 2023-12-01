@@ -2427,7 +2427,6 @@ RSpec/FeatureCategory:
     - 'spec/helpers/invite_members_helper_spec.rb'
     - 'spec/helpers/issuables_description_templates_helper_spec.rb'
     - 'spec/helpers/issues_helper_spec.rb'
-    - 'spec/helpers/json_helper_spec.rb'
     - 'spec/helpers/keyset_helper_spec.rb'
     - 'spec/helpers/labels_helper_spec.rb'
     - 'spec/helpers/lazy_image_tag_helper_spec.rb'

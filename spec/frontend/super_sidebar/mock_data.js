@@ -305,3 +305,32 @@ export const cachedFrequentGroups = JSON.stringify([
     frequency: 3,
   },
 ]);
+
+export const unsortedFrequentItems = [
+  { id: 1, frequency: 12, lastAccessedOn: 1491400843391 },
+  { id: 2, frequency: 14, lastAccessedOn: 1488240890738 },
+  { id: 3, frequency: 44, lastAccessedOn: 1497675908472 },
+  { id: 4, frequency: 8, lastAccessedOn: 1497979281815 },
+  { id: 5, frequency: 34, lastAccessedOn: 1488089211943 },
+  { id: 6, frequency: 14, lastAccessedOn: 1493517292488 },
+  { id: 7, frequency: 42, lastAccessedOn: 1486815299875 },
+  { id: 8, frequency: 33, lastAccessedOn: 1500762279114 },
+  { id: 10, frequency: 46, lastAccessedOn: 1483251641543 },
+];
+
+/**
+ * This const has a specific order which tests authenticity
+ * of `getTopFrequentItems` method so
+ * DO NOT change order of items in this const.
+ */
+export const sortedFrequentItems = [
+  { id: 10, frequency: 46, lastAccessedOn: 1483251641543 },
+  { id: 3, frequency: 44, lastAccessedOn: 1497675908472 },
+  { id: 7, frequency: 42, lastAccessedOn: 1486815299875 },
+  { id: 5, frequency: 34, lastAccessedOn: 1488089211943 },
+  { id: 8, frequency: 33, lastAccessedOn: 1500762279114 },
+  { id: 6, frequency: 14, lastAccessedOn: 1493517292488 },
+  { id: 2, frequency: 14, lastAccessedOn: 1488240890738 },
+  { id: 1, frequency: 12, lastAccessedOn: 1491400843391 },
+  { id: 4, frequency: 8, lastAccessedOn: 1497979281815 },
+];

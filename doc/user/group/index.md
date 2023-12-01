@@ -286,7 +286,7 @@ Members that are not automatically added are displayed on the **Invited** tab.
 This tab includes users who:
 
 - Have not yet accepted the invitation.
-- Are waiting for [approval from an administrator](../admin_area/moderate_users.md).
+- Are waiting for [approval from an administrator](../../administration/moderate_users.md).
 - [Exceed the group user cap](manage.md#user-cap-for-groups).
 
 ## Remove a member from the group

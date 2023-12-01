@@ -271,7 +271,7 @@ npm deprecate @scope/package ""
 
 When an npm package is not found in the package registry, the request is forwarded to [npmjs.com](https://www.npmjs.com/). The forward is performed by sending an HTTP redirect back to the requesting client.
 
-Administrators can disable this behavior in the [Continuous Integration settings](../../admin_area/settings/continuous_integration.md).
+Administrators can disable this behavior in the [Continuous Integration settings](../../../administration/settings/continuous_integration.md).
 
 Group owners can disable this behavior in the group Packages and Registries settings.
 

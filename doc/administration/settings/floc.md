@@ -22,8 +22,7 @@ Permissions-Policy: interest-cohort=()
 
 To enable it:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Federated Learning of Cohorts (FLoC)**.
 1. Select the **Participate in FLoC** checkbox.

@@ -26,8 +26,7 @@ Because the same commands are shared by `git-upload-pack`, `git pull`, and `git 
 
 `Git operations using SSH` is enabled by default. Defaults to 600 per user per minute.
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Network**.
 1. Expand **Git SSH operations rate limit**.
 1. Enter a value for **Maximum number of Git operations per minute**.

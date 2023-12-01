@@ -322,7 +322,7 @@ User cap doesn’t consider whether users are billable or not (e.g., Free Guest 
 
 Use group file templates to share a set of templates for common file
 types with every project in a group. It is analogous to the
-[instance template repository](../admin_area/settings/instance_template_repository.md).
+[instance template repository](../../administration/settings/instance_template_repository.md).
 The selected project should follow the same naming conventions as
 are documented on that page.
 

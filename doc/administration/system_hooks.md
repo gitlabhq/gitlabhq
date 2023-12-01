@@ -53,8 +53,7 @@ For push and tag events, the same structure and deprecations are followed as [pr
 
 To create a system hook:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. On the left sidebar, select **System Hooks**.
 1. Select **Add new webhook**.
 1. Provide the **URL** and **Secret Token**.
