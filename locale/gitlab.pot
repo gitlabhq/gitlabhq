@@ -27779,10 +27779,19 @@ msgstr ""
 msgid "KubernetesDashboard|Agents"
 msgstr ""
 
+msgid "KubernetesDashboard|Annotations"
+msgstr ""
+
 msgid "KubernetesDashboard|Dashboard"
 msgstr ""
 
 msgid "KubernetesDashboard|Failed"
+msgstr ""
+
+msgid "KubernetesDashboard|Kind"
+msgstr ""
+
+msgid "KubernetesDashboard|Labels"
 msgstr ""
 
 msgid "KubernetesDashboard|Name"
@@ -27792,6 +27801,9 @@ msgid "KubernetesDashboard|Namespace"
 msgstr ""
 
 msgid "KubernetesDashboard|Pending"
+msgstr ""
+
+msgid "KubernetesDashboard|Pod"
 msgstr ""
 
 msgid "KubernetesDashboard|Pods"

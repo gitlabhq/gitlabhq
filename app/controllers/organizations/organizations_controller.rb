@@ -4,7 +4,7 @@ module Organizations
   class OrganizationsController < ApplicationController
     feature_category :cell
 
-    skip_before_action :authenticate_user!, except: [:index, :new]
+    skip_before_action :authenticate_user!, except: [:index, :new, :users]
 
     def index; end
 
@@ -21,7 +21,7 @@ module Organizations
     end
 
     def users
-      authorize_read_organization!
+      authorize_read_organization_user!
     end
   end
 end

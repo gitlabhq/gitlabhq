@@ -680,12 +680,12 @@ Do not use **foo** in product documentation. You can use it in our API and contr
 ## fork
 
 A **fork** is a project that was created from a **upstream project** by using the
-[forking process](../../../topics/git/terminology.md#fork).
+forking process.
 
 The **upstream project** (also known as the **source project**) and the **fork** have a **fork relationship** and are
 **linked**.
 
-If the [**fork relationship** is removed](../../../user/project/repository/forking_workflow.md#unlink-a-fork), the
+If the **fork relationship** is removed, the
 **fork** is **unlinked** from the **upstream project**.
 
 ## future tense

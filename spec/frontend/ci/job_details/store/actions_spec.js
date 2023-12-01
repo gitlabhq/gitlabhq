@@ -25,6 +25,7 @@ import {
   showSidebar,
   toggleSidebar,
   receiveTestSummarySuccess,
+  requestTestSummary,
 } from '~/ci/job_details/store/actions';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 
@@ -32,6 +33,7 @@ import * as types from '~/ci/job_details/store/mutation_types';
 import state from '~/ci/job_details/store/state';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { testSummaryData } from 'jest/ci/jobs_mock_data';
 
 jest.mock('~/lib/utils/scroll_utils');
 
@@ -553,6 +555,49 @@ describe('Job State actions', () => {
         [{ type: types.RECEIVE_TEST_SUMMARY_SUCCESS, payload: { total: {}, test_suites: [] } }],
         [],
       );
+    });
+  });
+
+  describe('requestTestSummary', () => {
+    let mock;
+
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+    });
+
+    afterEach(() => {
+      mock.restore();
+      stopPolling();
+      clearEtagPoll();
+    });
+
+    describe('success', () => {
+      it('dispatches receiveTestSummarySuccess', () => {
+        mockedState.testReportSummaryUrl = `${TEST_HOST}/test_report_summary.json`;
+
+        mock
+          .onGet(`${TEST_HOST}/test_report_summary.json`)
+          .replyOnce(HTTP_STATUS_OK, testSummaryData);
+
+        return testAction(
+          requestTestSummary,
+          null,
+          mockedState,
+          [{ type: types.RECEIVE_TEST_SUMMARY_COMPLETE }],
+          [
+            {
+              payload: testSummaryData,
+              type: 'receiveTestSummarySuccess',
+            },
+          ],
+        );
+      });
+    });
+
+    describe('without testReportSummaryUrl', () => {
+      it('does not dispatch any actions or mutations', () => {
+        return testAction(requestTestSummary, null, mockedState, [], []);
+      });
     });
   });
 });

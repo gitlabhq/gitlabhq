@@ -4,6 +4,8 @@ query getK8sDashboardPods($configuration: LocalConfiguration) {
       name
       namespace
       creationTimestamp
+      labels
+      annotations
     }
     status {
       phase

@@ -19,7 +19,9 @@ POST /code_suggestions/tokens
 ```
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/code_suggestions/tokens"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/code_suggestions/tokens"
 ```
 
 Example response:
@@ -54,7 +56,10 @@ POST /code_suggestions/completions
 Requests to this endpoint are proxied directly to the [model gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#completions). The documentation for the endpoint is currently the SSoT for named parameters.
 
 ```shell
-curl --request POST --header "Authorization: Bearer <YOUR_ACCESS_TOKEN>" --data "<JSON_BODY>" https://gitlab.example.com/api/v4/code_suggestions/completions
+curl --request POST \
+  --header "Authorization: Bearer <YOUR_ACCESS_TOKEN>" \
+  --data "<JSON_BODY>" \
+  --url "https://gitlab.example.com/api/v4/code_suggestions/completions"
 ```
 
 Example body:

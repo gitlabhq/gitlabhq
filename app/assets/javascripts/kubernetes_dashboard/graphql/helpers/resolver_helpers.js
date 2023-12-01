@@ -60,7 +60,15 @@ export const getK8sPods = ({
         watchPods({ client, query, configuration, namespace });
       }
 
-      return res?.items || [];
+      const data = res?.items || [];
+      return data?.map((item) => {
+        if (item.metadata) {
+          const metadata = { ...item.metadata, annotations: item.metadata?.annotations || {} };
+          return { status: item.status, metadata };
+        }
+
+        return { status: item.status };
+      });
     })
     .catch(async (err) => {
       try {

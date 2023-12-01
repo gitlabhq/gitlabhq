@@ -88,7 +88,8 @@ GET /issues?state=opened
 | `with_labels_details`           | boolean       | no         | If `true`, the response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. The `description_html` attribute was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) in GitLab 12.7|
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/issues"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/issues"
 ```
 
 Example response:
@@ -316,7 +317,8 @@ GET /groups/:id/issues?state=opened
 | `with_labels_details` | boolean        | no         | If `true`, the response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. The `description_html` attribute was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) in GitLab 12.7 |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/4/issues"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/4/issues"
 ```
 
 Example response:
@@ -519,7 +521,8 @@ GET /projects/:id/issues?state=opened
 | `with_labels_details` | boolean        | no         | If `true`, the response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. `description_html` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) in GitLab 12.7 |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/4/issues"
 ```
 
 Example response:
@@ -685,7 +688,8 @@ GET /issues/:id
 | `id`        | integer | yes      | The ID of the issue                  |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/issues/41"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/issues/41"
 ```
 
 Example response:
@@ -850,7 +854,8 @@ GET /projects/:id/issues/:issue_iid
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues/41"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/4/issues/41"
 ```
 
 Example response:
@@ -1022,7 +1027,9 @@ POST /projects/:id/issues
 | `weight` **(PREMIUM ALL)**                    | integer        | no       | The weight of the issue. Valid values are greater than or equal to 0. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues?title=Issues%20with%20auth&labels=bug"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/4/issues?title=Issues%20with%20auth&labels=bug"
 ```
 
 Example response:
@@ -1192,7 +1199,9 @@ PUT /projects/:id/issues/:issue_iid
 | `weight` **(PREMIUM ALL)** | integer | no | The weight of the issue. Valid values are greater than or equal to 0. 0                                                                    |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues/85?state_event=close"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/4/issues/85?state_event=close"
 ```
 
 Example response:
@@ -1330,7 +1339,9 @@ DELETE /projects/:id/issues/:issue_iid
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues/85"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/4/issues/85"
 ```
 
 ## Reorder an issue
@@ -1351,7 +1362,9 @@ PUT /projects/:id/issues/:issue_iid/reorder
 | `move_before_id` | integer | no | The global ID of a project's issue that should be placed before this issue |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues/85/reorder?move_after_id=51&move_before_id=92"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/4/issues/85/reorder?move_after_id=51&move_before_id=92"
 ```
 
 ## Move an issue
@@ -1374,7 +1387,9 @@ POST /projects/:id/issues/:issue_iid/move
 | `to_project_id` | integer | yes      | The ID of the new project            |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" --form to_project_id=5 "https://gitlab.example.com/api/v4/projects/4/issues/85/move"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --form to_project_id=5 \
+  --url "https://gitlab.example.com/api/v4/projects/4/issues/85/move"
 ```
 
 Example response:
@@ -1522,7 +1537,8 @@ POST /projects/:id/issues/:issue_iid/clone
 
 ```shell
 curl --request POST \
---header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/1/clone?with_notes=true&to_project_id=6"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/1/clone?with_notes=true&to_project_id=6"
 ```
 
 Example response:
@@ -1626,7 +1642,9 @@ POST /projects/:id/issues/:issue_iid/subscribe
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/93/subscribe"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/93/subscribe"
 ```
 
 Example response:
@@ -1769,7 +1787,9 @@ POST /projects/:id/issues/:issue_iid/unsubscribe
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/93/unsubscribe"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/93/unsubscribe"
 ```
 
 Example response:
@@ -1843,7 +1863,9 @@ POST /projects/:id/issues/:issue_iid/todo
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/93/todo"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/93/todo"
 ```
 
 Example response:
@@ -1967,7 +1989,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/notes?body=Lets%20promote%20this%20to%20an%20epic%0A%0A%2Fpromote"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/11/notes?body=Lets%20promote%20this%20to%20an%20epic%0A%0A%2Fpromote"
 ```
 
 Example response:
@@ -2015,7 +2039,9 @@ POST /projects/:id/issues/:issue_iid/time_estimate
 | `issue_iid` | integer | yes      | The internal ID of a project's issue     |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/93/time_estimate?duration=3h30m"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/93/time_estimate?duration=3h30m"
 ```
 
 Example response:
@@ -2043,7 +2069,9 @@ POST /projects/:id/issues/:issue_iid/reset_time_estimate
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/93/reset_time_estimate"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/93/reset_time_estimate"
 ```
 
 Example response:
@@ -2073,7 +2101,9 @@ POST /projects/:id/issues/:issue_iid/add_spent_time
 | `summary`   | string  | no       | A summary of how the time was spent  |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/93/add_spent_time?duration=1h"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/93/add_spent_time?duration=1h"
 ```
 
 Example response:
@@ -2101,7 +2131,9 @@ POST /projects/:id/issues/:issue_iid/reset_spent_time
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/93/reset_spent_time"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/93/reset_spent_time"
 ```
 
 Example response:
@@ -2130,7 +2162,8 @@ GET /projects/:id/issues/:issue_iid/time_stats
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/93/time_stats"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/93/time_stats"
 ```
 
 Example response:
@@ -2161,7 +2194,8 @@ GET /projects/:id/issues/:issue_iid/related_merge_requests
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/issues/11/related_merge_requests"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/issues/11/related_merge_requests"
 ```
 
 Example response:
@@ -2321,7 +2355,8 @@ GET /projects/:id/issues/:issue_iid/closed_by
 | `issue_iid` | integer        | yes      | The internal ID of a project issue |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/issues/11/closed_by"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/issues/11/closed_by"
 ```
 
 Example response:
@@ -2398,7 +2433,8 @@ GET /projects/:id/issues/:issue_iid/participants
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/93/participants"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  -url "https://gitlab.example.com/api/v4/projects/5/issues/93/participants"
 ```
 
 Example response:
@@ -2442,7 +2478,8 @@ GET /projects/:id/issues/:issue_iid/user_agent_detail
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/93/user_agent_detail"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/93/user_agent_detail"
 ```
 
 Example response:
@@ -2477,8 +2514,11 @@ POST /projects/:id/issues/:issue_iid/metric_images
 | `url_text` | string | no      | A description of the image or URL |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" --form 'file=@/path/to/file.png' \
---form 'url=http://example.com' --form 'url_text=Example website' "https://gitlab.example.com/api/v4/projects/5/issues/93/metric_images"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --form 'file=@/path/to/file.png' \
+  --form 'url=http://example.com' \
+  --form 'url_text=Example website' \
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/93/metric_images"
 ```
 
 Example response:
@@ -2508,7 +2548,8 @@ GET /projects/:id/issues/:issue_iid/metric_images
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/93/metric_images"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  -url "https://gitlab.example.com/api/v4/projects/5/issues/93/metric_images"
 ```
 
 Example response:
@@ -2549,7 +2590,11 @@ PUT /projects/:id/issues/:issue_iid/metric_images/:image_id
 | `url_text` | string | no      | A description of the image or URL |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" --request PUT  --form 'url=http://example.com' --form 'url_text=Example website' "https://gitlab.example.com/api/v4/projects/5/issues/93/metric_images/1"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --request PUT \
+  --form 'url=http://example.com' \
+  --form 'url_text=Example website' \
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/93/metric_images/1"
 ```
 
 Example response:
@@ -2580,7 +2625,9 @@ DELETE /projects/:id/issues/:issue_iid/metric_images/:image_id
 | `image_id` | integer | yes      | The ID of the image |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" --request DELETE "https://gitlab.example.com/api/v4/projects/5/issues/93/metric_images/1"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --request DELETE \
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/93/metric_images/1"
 ```
 
 Can return the following status codes:

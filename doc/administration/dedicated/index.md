@@ -60,7 +60,7 @@ It can take up to 3 hours to create the GitLab Dedicated tenant. When the setup 
 Available scheduled maintenance windows, performed outside standard working hours:
 
 - APAC: Wednesday 1 PM - 5 PM UTC
-- EU: Tuesday 1 AM - 5 AM UTC
+- EMEA: Tuesday 1 AM - 5 AM UTC
 - AMER Option 1: Tuesday 7 AM - 11 AM UTC
 - AMER Option 2: Sunday 9 PM - Monday 1 AM UTC
 

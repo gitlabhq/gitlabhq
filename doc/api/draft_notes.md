@@ -161,7 +161,8 @@ PUT /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id
 | `position[y]`                            | float             | no          | For `image` diff notes, Y coordinate. |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/5"
 ```
 
@@ -180,7 +181,8 @@ DELETE /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_i
 | `merge_request_iid` | integer           | yes        | The IID of a project merge request.
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/5"
 ```
 
@@ -199,7 +201,8 @@ PUT /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id/p
 | `merge_request_iid` | integer           | yes        | The IID of a project merge request.
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/5/publish"
 ```
 
@@ -217,6 +220,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/draft_notes/bulk_publish
 | `merge_request_iid` | integer           | yes      | The IID of a project merge request. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/bulk_publish"
 ```

@@ -282,7 +282,7 @@ export const triggerManualJob = ({ state }, variables) => {
 };
 
 export const requestTestSummary = ({ state, commit, dispatch }) => {
-  if (!state.testSummaryComplete) {
+  if (!state.testSummaryComplete && state.testReportSummaryUrl?.length) {
     axios
       .get(state.testReportSummaryUrl)
       .then(({ data }) => {

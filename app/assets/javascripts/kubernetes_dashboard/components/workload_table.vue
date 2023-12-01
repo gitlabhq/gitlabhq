@@ -40,6 +40,11 @@ export default {
       });
     },
   },
+  methods: {
+    selectItem(item) {
+      this.$emit('select-item', item);
+    },
+  },
   PAGE_SIZE,
   WORKLOAD_STATUS_BADGE_VARIANTS,
   TABLE_CELL_CLASSES: 'gl-p-2',
@@ -53,8 +58,11 @@ export default {
       :fields="tableFields"
       :per-page="$options.PAGE_SIZE"
       :current-page="currentPage"
+      tbody-tr-class="gl-hover-cursor-pointer"
       stacked="md"
       bordered
+      hover
+      @row-clicked="selectItem"
     >
       <template #cell(status)="{ item: { status } }">
         <gl-badge

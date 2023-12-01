@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project forking workflow **(FREE ALL)**
+# Forks **(FREE ALL)**
 
 Whenever possible, it's recommended to work in a common Git repository and use
 branching strategies to manage your work. However,

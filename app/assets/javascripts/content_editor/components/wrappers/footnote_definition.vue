@@ -18,8 +18,8 @@ export default {
 <template>
   <node-view-wrapper class="gl-display-flex gl-font-sm" as="div">
     <span
+      :contenteditable="false"
       data-testid="footnote-label"
-      contenteditable="false"
       class="gl-display-inline-flex gl-mr-2"
       dir="auto"
       >{{ node.attrs.label }}:</span

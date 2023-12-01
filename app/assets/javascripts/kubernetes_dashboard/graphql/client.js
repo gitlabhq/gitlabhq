@@ -17,6 +17,8 @@ export const apolloProvider = () => {
         name: null,
         namespace: null,
         creationTimestamp: null,
+        labels: null,
+        annotations: null,
       },
       status: {
         phase: null,

@@ -39,29 +39,62 @@ For more details, see [Undo options](numerous_undo_possibilities_in_git/index.md
 
 ### Git reset sample workflow
 
-1. Edit file again `edit_this_file.rb`.
-1. Check status.
-1. Add and commit with wrong message.
-1. Check log.
-1. Amend commit.
-1. Check log.
-1. Soft reset.
-1. Check log.
-1. Pull for updates.
-1. Push changes.
+The following is a common Git reset workflow:
 
-```shell
-# Change file edit_this_file.rb
-git status
-git commit -am "kjkfjkg"
-git log
-git commit --amend -m "New comment added"
-git log
-git reset --soft HEAD^
-git log
-git pull origin master
-git push origin master
-```
+1. Edit a file.
+1. Check the status of the branch:
+
+   ```shell
+   git status
+   ```
+
+1. Commit the changes to the branch with a wrong commit message:
+
+   ```shell
+   git commit -am "kjkfjkg"
+   ```
+
+1. Check the Git log:
+
+   ```shell
+   git log
+   ```
+
+1. Amend the commit with the correct commit message:
+
+   ```shell
+   git commit --amend -m "New comment added"
+   ```
+
+1. Check the Git log again:
+
+   ```shell
+   git log
+   ```
+
+1. Soft reset the branch:
+
+   ```shell
+   git reset --soft HEAD^
+   ```
+
+1. Check the Git log again:
+
+   ```shell
+   git log
+   ```
+
+1. Pull updates for the branch from the remote:
+
+   ```shell
+   git pull origin <branch>
+   ```
+
+1. Push changes for the branch to the remote:
+
+   ```shell
+   git push origin <branch>
+   ```
 
 ## Undo commits with a new replacement commit
 

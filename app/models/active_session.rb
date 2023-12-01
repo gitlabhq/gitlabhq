@@ -330,9 +330,10 @@ class ActiveSession
         next if entry
 
         pipeline.srem?(lookup_key, session_id)
-        removed << session_id
       end
     end
+
+    removed.concat(session_ids_and_entries.select { |_, v| v.nil? }.keys)
 
     session_ids_and_entries.values.compact
   end

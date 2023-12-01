@@ -27,7 +27,7 @@ module Gitlab
             fields = Gitlab::MarkdownCache::Redis::Store.bulk_read(objects)
 
             objects.each do |object|
-              fields[object.cache_key].value.each do |field_name, value|
+              fields[object.cache_key].each do |field_name, value|
                 object.write_markdown_field(field_name, value)
               end
             end

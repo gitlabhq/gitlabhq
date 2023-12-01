@@ -1,15 +1,15 @@
 <script>
-import { GlBadge, GlLink, GlLoadingIcon, GlModal, GlSprintf, GlToggle } from '@gitlab/ui';
+import { GlLink, GlLoadingIcon, GlModal, GlSprintf, GlToggle } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
+import BetaBadge from '~/vue_shared/components/badges/beta_badge.vue';
 import getCiCatalogSettingsQuery from '../graphql/queries/get_ci_catalog_settings.query.graphql';
 import catalogResourcesCreate from '../graphql/mutations/catalog_resources_create.mutation.graphql';
 import catalogResourcesDestroy from '../graphql/mutations/catalog_resources_destroy.mutation.graphql';
 
 const i18n = {
-  badgeText: __('Experiment'),
   catalogResourceQueryError: s__(
     'CiCatalog|There was a problem fetching the CI/CD Catalog setting.',
   ),
@@ -52,7 +52,7 @@ const releasesHelpPath = helpPagePath('user/project/releases/release_cicd_exampl
 
 export default {
   components: {
-    GlBadge,
+    BetaBadge,
     GlLink,
     GlLoadingIcon,
     GlModal,
@@ -154,11 +154,11 @@ export default {
   <div>
     <gl-loading-icon v-if="isLoading" />
     <div v-else data-testid="ci-catalog-settings">
-      <div>
-        <label class="gl-mb-1 gl-mr-2">
+      <div class="gl-display-flex">
+        <label class="gl-mb-1 gl-mr-3">
           {{ $options.i18n.ciCatalogLabel }}
         </label>
-        <gl-badge size="sm" variant="neutral"> {{ $options.i18n.badgeText }} </gl-badge>
+        <beta-badge size="sm" />
       </div>
       <gl-sprintf :message="$options.i18n.ciCatalogHelpText">
         <template #link="{ content }">

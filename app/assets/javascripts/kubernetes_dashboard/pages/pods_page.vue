@@ -1,4 +1,5 @@
 <script>
+import { s__ } from '~/locale';
 import { getAge } from '../helpers/k8s_integration_helper';
 import WorkloadLayout from '../components/workload_layout.vue';
 import k8sPodsQuery from '../graphql/queries/k8s_dashboard_pods.query.graphql';
@@ -31,6 +32,9 @@ export default {
               namespace: pod.metadata?.namespace,
               status: pod.status.phase,
               age: getAge(pod.metadata?.creationTimestamp),
+              labels: pod.metadata?.labels,
+              annotations: pod.metadata?.annotations,
+              kind: s__('KubernetesDashboard|Pod'),
             };
           }) || []
         );

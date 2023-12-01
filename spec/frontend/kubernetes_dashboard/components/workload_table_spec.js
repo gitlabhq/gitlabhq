@@ -81,6 +81,14 @@ describe('Workload table component', () => {
       expect(findAllRows()).toHaveLength(mockPodsTableItems.length);
     });
 
+    it('emits an event on row click', () => {
+      mockPodsTableItems.forEach((data, index) => {
+        findRow(index).trigger('click');
+
+        expect(wrapper.emitted('select-item')[index]).toEqual([data]);
+      });
+    });
+
     it('renders correct data for each row', () => {
       mockPodsTableItems.forEach((data, index) => {
         expect(findRow(index).text()).toContain(data.name);

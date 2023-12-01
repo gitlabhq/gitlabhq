@@ -4,6 +4,8 @@ const runningPod = {
     name: 'pod-1',
     namespace: 'default',
     creationTimestamp: '2023-07-31T11:50:17Z',
+    labels: { key: 'value' },
+    annotations: { annotation: 'text', another: 'text' },
   },
 };
 const pendingPod = {
@@ -12,6 +14,8 @@ const pendingPod = {
     name: 'pod-2',
     namespace: 'new-namespace',
     creationTimestamp: '2023-11-21T11:50:59Z',
+    labels: {},
+    annotations: {},
   },
 };
 const succeededPod = {
@@ -20,6 +24,8 @@ const succeededPod = {
     name: 'pod-3',
     namespace: 'default',
     creationTimestamp: '2023-07-31T11:50:17Z',
+    labels: {},
+    annotations: {},
   },
 };
 const failedPod = {
@@ -28,6 +34,8 @@ const failedPod = {
     name: 'pod-4',
     namespace: 'default',
     creationTimestamp: '2023-11-21T11:50:59Z',
+    labels: {},
+    annotations: {},
   },
 };
 
@@ -58,35 +66,53 @@ export const mockPodsTableItems = [
     namespace: 'default',
     status: 'Running',
     age: '114d',
+    labels: { key: 'value' },
+    annotations: { annotation: 'text', another: 'text' },
+    kind: 'Pod',
   },
   {
     name: 'pod-1',
     namespace: 'default',
     status: 'Running',
     age: '114d',
+    labels: {},
+    annotations: {},
+    kind: 'Pod',
   },
   {
     name: 'pod-2',
     namespace: 'new-namespace',
     status: 'Pending',
     age: '1d',
+    labels: {},
+    annotations: {},
+    kind: 'Pod',
   },
   {
     name: 'pod-3',
     namespace: 'default',
     status: 'Succeeded',
     age: '114d',
+    labels: {},
+    annotations: {},
+    kind: 'Pod',
   },
   {
     name: 'pod-4',
     namespace: 'default',
     status: 'Failed',
     age: '1d',
+    labels: {},
+    annotations: {},
+    kind: 'Pod',
   },
   {
     name: 'pod-4',
     namespace: 'default',
     status: 'Failed',
     age: '1d',
+    labels: {},
+    annotations: {},
+    kind: 'Pod',
   },
 ];

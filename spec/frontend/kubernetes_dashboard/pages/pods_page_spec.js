@@ -70,11 +70,11 @@ describe('Kubernetes dashboard pods page', () => {
       expect(findWorkloadLayout().props('stats')).toEqual(mockPodStats);
     });
 
-    it('sets correct table items  object for the WorkloadLayout', async () => {
+    it('sets correct table items object for the WorkloadLayout', async () => {
       createWrapper();
       await waitForPromises();
 
-      expect(findWorkloadLayout().props('items')).toEqual(mockPodsTableItems);
+      expect(findWorkloadLayout().props('items')).toMatchObject(mockPodsTableItems);
     });
   });
 

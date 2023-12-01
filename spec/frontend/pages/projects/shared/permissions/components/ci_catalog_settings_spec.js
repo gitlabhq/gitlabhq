@@ -1,12 +1,13 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlBadge, GlLoadingIcon, GlModal, GlSprintf, GlToggle } from '@gitlab/ui';
+import { GlLoadingIcon, GlModal, GlSprintf, GlToggle } from '@gitlab/ui';
 
 import { createAlert } from '~/alert';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 
+import BetaBadge from '~/vue_shared/components/badges/beta_badge.vue';
 import catalogResourcesCreate from '~/pages/projects/shared/permissions/graphql/mutations/catalog_resources_create.mutation.graphql';
 import catalogResourcesDestroy from '~/pages/projects/shared/permissions/graphql/mutations/catalog_resources_destroy.mutation.graphql';
 import getCiCatalogSettingsQuery from '~/pages/projects/shared/permissions/graphql/queries/get_ci_catalog_settings.query.graphql';
@@ -54,7 +55,7 @@ describe('CiCatalogSettings', () => {
   };
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findBadge = () => wrapper.findComponent(GlBadge);
+  const findBadge = () => wrapper.findComponent(BetaBadge);
   const findModal = () => wrapper.findComponent(GlModal);
   const findToggle = () => wrapper.findComponent(GlToggle);
   const findCiCatalogSettings = () => wrapper.findByTestId('ci-catalog-settings');
@@ -108,7 +109,7 @@ describe('CiCatalogSettings', () => {
       expect(findCiCatalogSettings().exists()).toBe(true);
     });
 
-    it('renders the experiment badge', () => {
+    it('renders the beta badge', () => {
       expect(findBadge().exists()).toBe(true);
     });
 

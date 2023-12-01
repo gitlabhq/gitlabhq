@@ -97,6 +97,7 @@ describe('content/components/wrappers/code_block', () => {
     const label = wrapper.findByTestId('frontmatter-label');
 
     expect(label.text()).toEqual('frontmatter:yaml');
+    expect(label.attributes('contenteditable')).toBe('false');
     expect(label.classes()).toEqual(['gl-absolute', 'gl-top-0', 'gl-right-3']);
   });
 
@@ -128,6 +129,9 @@ describe('content/components/wrappers/code_block', () => {
       await nextTick();
 
       expect(wrapper.find('img').attributes('src')).toBe('url/to/some/diagram');
+      expect(wrapper.findByTestId('sandbox-preview').attributes('contenteditable')).toBe(
+        String(false),
+      );
 
       jest.spyOn(tiptapEditor, 'isActive').mockReturnValue(false);
 
@@ -214,6 +218,9 @@ describe('content/components/wrappers/code_block', () => {
     });
 
     it('shows a code suggestion block', () => {
+      expect(wrapper.findByTestId('code-suggestion-box').attributes('contenteditable')).toBe(
+        'false',
+      );
       expect(findCodeSuggestionBoxText()).toContain('Suggested change From line 5 to 5');
       expect(findCodeDeleted()).toMatchInlineSnapshot(`
         <code

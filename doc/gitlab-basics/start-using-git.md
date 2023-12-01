@@ -223,7 +223,7 @@ To add a remote to your local copy:
    git remote add origin git@gitlab.com:username/projectpath.git
    ```
 
-After you've done that, you can [stage your files](#add-and-commit-local-changes) and [upload them to GitLab](#send-changes-to-gitlabcom).
+After you've done that, you can [stage your files](#add-and-commit-local-changes) and [upload them to GitLab](#send-changes-to-gitlab).
 
 #### View your remote repositories
 
@@ -355,7 +355,7 @@ As a shortcut, you can add all local changes to staging and commit them with one
 git commit -a -m "COMMENT TO DESCRIBE THE INTENTION OF THE COMMIT"
 ```
 
-### Send changes to GitLab.com
+### Send changes to GitLab
 
 To push all local changes to the remote repository:
 
@@ -439,7 +439,7 @@ changes from the original repository. It is common to call this remote repositor
 
 You can now use the `upstream` as a [`<remote>` to `pull` new updates](#download-the-latest-changes-in-the-project)
 from the original repository, and use the `origin`
-to [push local changes](#send-changes-to-gitlabcom) and create merge requests.
+to [push local changes](#send-changes-to-gitlab) and create merge requests.
 
 <!-- ## Troubleshooting
 
