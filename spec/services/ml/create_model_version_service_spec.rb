@@ -25,4 +25,41 @@ RSpec.describe ::Ml::CreateModelVersionService, feature_category: :mlops do
       expect(model.reload.latest_version.version).to eq('4.0.0')
     end
   end
+
+  context 'when a version is created' do
+    it 'creates a package' do
+      expect { service }.to change { Ml::ModelVersion.count }.by(1).and change {
+                                                                          Packages::MlModel::Package.count
+                                                                        }.by(1)
+      expect(model.reload.latest_version.package.name).to eq(model.name)
+      expect(model.latest_version.package.version).to eq(model.latest_version.version)
+    end
+  end
+
+  context 'when a version is created and the package already exists' do
+    it 'does not creates a package' do
+      next_version = Ml::IncrementVersionService.new(model.latest_version.try(:version)).execute
+      create(:ml_model_package, name: model.name, version: next_version, project: model.project)
+
+      expect { service }.to change { Ml::ModelVersion.count }.by(1).and not_change {
+                                                                          Packages::MlModel::Package.count
+                                                                        }
+      expect(model.reload.latest_version.package.name).to eq(model.name)
+      expect(model.latest_version.package.version).to eq(model.latest_version.version)
+    end
+  end
+
+  context 'when a version is created and an existing package supplied' do
+    it 'does not creates a package' do
+      next_version = Ml::IncrementVersionService.new(model.latest_version.try(:version)).execute
+      package = create(:ml_model_package, name: model.name, version: next_version, project: model.project)
+      service = described_class.new(model, { package: package })
+
+      expect { service.execute }.to change { Ml::ModelVersion.count }.by(1).and not_change {
+                                                                                  Packages::MlModel::Package.count
+                                                                                }
+      expect(model.reload.latest_version.package.name).to eq(model.name)
+      expect(model.latest_version.package.version).to eq(model.latest_version.version)
+    end
+  end
 end

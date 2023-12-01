@@ -42,6 +42,16 @@ module Gitlab
         options[:straight] = @straight
         Gitlab::Git::Diff.between(@repository, @head.id, @base.id, options, *paths)
       end
+
+      def generated_files
+        return Set.new unless @base && @head
+
+        changed_paths = @repository
+          .find_changed_paths([Gitlab::Git::DiffTree.new(@base.id, @head.id)])
+          .map(&:path)
+
+        @repository.detect_generated_files(@base.id, changed_paths)
+      end
     end
   end
 end

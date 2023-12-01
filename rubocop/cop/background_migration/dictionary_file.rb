@@ -3,6 +3,8 @@
 require_relative '../../migration_helpers'
 require_relative '../../batched_background_migrations_dictionary'
 
+URL_PATTERN = %r{\Ahttps://gitlab\.com/gitlab-org/gitlab/-/merge_requests/\d+\z}
+
 module RuboCop
   module Cop
     module BackgroundMigration
@@ -11,6 +13,7 @@ module RuboCop
         include MigrationHelpers
 
         MSG = {
+          invalid_url: "Invalid `%{key}` url for the dictionary. Please use the following format: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/XXX",
           missing_key: "Mandatory key '%{key}' is missing from the dictionary. Please add with an appropriate value.",
           missing_dictionary: <<-MESSAGE.delete("\n").squeeze(' ').strip
             Missing %{file_name}.
@@ -49,6 +52,10 @@ module RuboCop
 
         private
 
+        def valid_url?(url)
+          url.match?(URL_PATTERN)
+        end
+
         def dictionary_file?(migration_class_name)
           File.exist?(dictionary_file_path(migration_class_name))
         end
@@ -67,6 +74,8 @@ module RuboCop
           return [:missing_key, { key: :finalize_after }] unless bbm_dictionary.finalize_after.present?
 
           return [:missing_key, { key: :introduced_by_url }] unless bbm_dictionary.introduced_by_url.present?
+
+          return [:invalid_url, { key: :introduced_by_url }] unless valid_url?(bbm_dictionary.introduced_by_url)
         end
 
         def rails_root

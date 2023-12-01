@@ -518,6 +518,27 @@ RSpec.describe Ability do
   end
 
   describe '.allowed?' do
+    context "when used with 'read_namespace'" do
+      subject(:allowed?) { described_class.allowed?(nil, 'read_namespace') }
+
+      before do
+        allow(Gitlab::AppLogger).to receive(:info)
+      end
+
+      it 'logs the usage', :aggregate_failures do
+        allowed?
+
+        expect(Gitlab::AppLogger).to have_received(:info) do |args|
+          expect(args[:message]).to eq('Ability is in use')
+          expect(args[:ability]).to eq(:read_namespace)
+          expect(args[:caller_locations].first).to(
+            match(%r{spec/models/ability_spec.rb})
+          )
+          expect(args[:caller_locations].length).to eq(5)
+        end
+      end
+    end
+
     context 'when used with :read_namespace' do
       subject(:allowed?) { described_class.allowed?(nil, :read_namespace) }
 
@@ -532,7 +553,7 @@ RSpec.describe Ability do
           expect(args[:message]).to eq('Ability is in use')
           expect(args[:ability]).to eq(:read_namespace)
           expect(args[:caller_locations].first).to(
-            match(%r{/spec/models/ability_spec.rb:\d+:in `block \(4 levels\) in <top \(required\)>})
+            match(%r{spec/models/ability_spec.rb})
           )
           expect(args[:caller_locations].length).to eq(5)
         end

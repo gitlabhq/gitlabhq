@@ -24,9 +24,7 @@ snippets disabled. These features
 
 To connect to an external repository:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **View all my projects**.
-1. Select **New project**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Run CI/CD for external repository**.
 1. Select **GitHub** or **Repository by URL**.
 1. Complete the fields.

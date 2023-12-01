@@ -28,7 +28,7 @@ swap:
   e-mail: "email"
   emojis: "emoji"
   ex: "for example"
-  file name: "filename"
+  filename: "file name"
   filesystem: "file system"
   info: "information"
   installation from source: self-compiled installation

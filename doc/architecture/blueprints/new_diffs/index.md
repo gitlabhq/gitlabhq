@@ -289,7 +289,7 @@ Each file table should include a short summary of changes that will read out:
 The summary of the table content can be placed either within `<caption>` element, or before the table within an element referred as `aria-describedby`.
 See <abbr>WAI</abbr> (Web Accessibility Initiative) for more information on both approaches:
 
-- [Nesting summary inside the <caption> element](https://www.w3.org/WAI/tutorials/tables/caption-summary/#nesting-summary-inside-the-caption-element)
+- [Nesting summary inside the `<caption>` element](https://www.w3.org/WAI/tutorials/tables/caption-summary/#nesting-summary-inside-the-caption-element)
 - [Using aria-describedby to provide a table summary](https://www.w3.org/WAI/tutorials/tables/caption-summary/#using-aria-describedby-to-provide-a-table-summary)
 
 However, if such a structure will compromise other functional aspects of displaying a diff,

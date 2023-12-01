@@ -2812,4 +2812,69 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       subject { repository.get_file_attributes(rev, paths, attrs) }
     end
   end
+
+  describe '#detect_generated_files' do
+    let(:project) do
+      create(:project, :custom_repo, files: {
+        '.gitattributes' => gitattr_content,
+        'file1.txt' => 'first file',
+        'file2.txt' => 'second file'
+      })
+    end
+
+    let(:repository) { project.repository.raw }
+    let(:rev) { 'master' }
+    let(:paths) { ['file1.txt', 'file2.txt'] }
+
+    subject(:generated_files) { repository.detect_generated_files(rev, paths) }
+
+    context 'when the linguist-generated attribute is used' do
+      let(:gitattr_content) { "*.txt text\nfile1.txt linguist-generated\n" }
+
+      it 'returns generated files only' do
+        expect(generated_files).to contain_exactly('file1.txt')
+      end
+    end
+
+    context 'when the gitlab-generated attribute is used' do
+      let(:gitattr_content) { "*.txt text\nfile1.txt gitlab-generated\n" }
+
+      it 'returns generated files only' do
+        expect(generated_files).to contain_exactly('file1.txt')
+      end
+    end
+
+    context 'when both linguist-generated and gitlab-generated attribute are used' do
+      let(:gitattr_content) { "*.txt text\nfile1.txt linguist-generated gitlab-generated\n" }
+
+      it 'returns generated files only' do
+        expect(generated_files).to contain_exactly('file1.txt')
+      end
+    end
+
+    context 'when the all files are generated' do
+      let(:gitattr_content) { "*.txt gitlab-generated\n" }
+
+      it 'returns all generated files' do
+        expect(generated_files).to eq paths.to_set
+      end
+    end
+
+    context 'when empty paths are given' do
+      let(:paths) { [] }
+      let(:gitattr_content) { "*.txt gitlab-generated\n" }
+
+      it 'returns an empty set' do
+        expect(generated_files).to eq Set.new
+      end
+    end
+
+    context 'when no generated overrides are used' do
+      let(:gitattr_content) { "*.txt text\n" }
+
+      it 'returns an empty set' do
+        expect(generated_files).to eq Set.new
+      end
+    end
+  end
 end

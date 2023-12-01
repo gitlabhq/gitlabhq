@@ -56,7 +56,11 @@ module Import
       session[:auth_on_failure_path] = "#{new_project_path}#import_project"
       oauth_client.auth_code.authorize_url(
         redirect_uri: callback_import_url,
-        scope: 'repo, user, user:email',
+        # read:org only required for collaborator import, which is optional,
+        # but at the time of this OAuth request we do not know which optional
+        # configuration the user will select because the options are only shown
+        # after authenticating
+        scope: 'repo, read:org',
         state: state
       )
     end

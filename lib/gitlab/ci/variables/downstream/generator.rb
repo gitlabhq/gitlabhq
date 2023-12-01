@@ -33,6 +33,7 @@ module Gitlab
             # The order of this list refers to the priority of the variables
             # The variables added later takes priority.
             downstream_yaml_variables +
+              downstream_pipeline_dotenv_variables +
               downstream_pipeline_variables +
               downstream_pipeline_schedule_variables
           end
@@ -55,6 +56,13 @@ module Gitlab
 
             pipeline_schedule_variables = bridge.pipeline_schedule_variables.to_a
             build_downstream_variables_from(pipeline_schedule_variables)
+          end
+
+          def downstream_pipeline_dotenv_variables
+            return [] unless bridge.forward_pipeline_variables?
+
+            pipeline_dotenv_variables = bridge.dependency_variables.to_a
+            build_downstream_variables_from(pipeline_dotenv_variables)
           end
 
           def build_downstream_variables_from(variables)

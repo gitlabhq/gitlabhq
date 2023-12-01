@@ -3,10 +3,13 @@
 require "spec_helper"
 
 RSpec.describe Gitlab::Git::Compare, feature_category: :source_code_management do
-  let_it_be(:repository) { create(:project, :repository).repository.raw }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:repository) { project.repository.raw }
 
-  let(:compare) { described_class.new(repository, SeedRepo::BigCommit::ID, SeedRepo::Commit::ID, straight: false) }
-  let(:compare_straight) { described_class.new(repository, SeedRepo::BigCommit::ID, SeedRepo::Commit::ID, straight: true) }
+  let(:compare) { described_class.new(repository, base, head, straight: false) }
+  let(:compare_straight) { described_class.new(repository, base, head, straight: true) }
+  let(:base) { SeedRepo::BigCommit::ID }
+  let(:head) { SeedRepo::Commit::ID }
 
   describe '#commits' do
     subject do
@@ -108,5 +111,104 @@ RSpec.describe Gitlab::Git::Compare, feature_category: :source_code_management d
 
     it { is_expected.to include('files/ruby/popen.rb') }
     it { is_expected.not_to include('LICENSE') }
+  end
+
+  describe '#generated_files' do
+    subject(:generated_files) { compare.generated_files }
+
+    context 'with a detected generated file' do
+      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:repository) { project.repository.raw }
+      let_it_be(:branch) { 'generated-file-test' }
+      let_it_be(:base) do
+        project
+          .repository
+          .create_file(
+            project.creator,
+            '.gitattributes',
+            "*.txt gitlab-generated\n",
+            branch_name: branch,
+            message: 'Add .gitattributes file')
+      end
+
+      let_it_be(:head) do
+        project
+          .repository
+          .create_file(
+            project.creator,
+            'file1.rb',
+            "some content\n",
+            branch_name: branch,
+            message: 'Add file1')
+        project
+          .repository
+          .create_file(
+            project.creator,
+            'file1.txt',
+            "some content\n",
+            branch_name: branch,
+            message: 'Add file2')
+      end
+
+      it 'sets the diff as generated' do
+        expect(generated_files).to eq Set.new(['file1.txt'])
+      end
+
+      context 'when base is nil' do
+        let(:base) { nil }
+
+        it 'does not try to detect generated files' do
+          expect(repository).not_to receive(:detect_generated_files)
+          expect(repository).not_to receive(:find_changed_paths)
+          expect(generated_files).to eq Set.new
+        end
+      end
+
+      context 'when head is nil' do
+        let(:head) { nil }
+
+        it 'does not try to detect generated files' do
+          expect(repository).not_to receive(:detect_generated_files)
+          expect(repository).not_to receive(:find_changed_paths)
+          expect(generated_files).to eq Set.new
+        end
+      end
+    end
+
+    context 'with updated .gitattributes in the HEAD' do
+      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:repository) { project.repository.raw }
+      let_it_be(:branch) { 'generated-file-test' }
+      let_it_be(:head) do
+        project
+          .repository
+          .create_file(
+            project.creator,
+            '.gitattributes',
+            "*.txt gitlab-generated\n",
+            branch_name: branch,
+            message: 'Add .gitattributes file')
+        project
+          .repository
+          .create_file(
+            project.creator,
+            'file1.rb',
+            "some content\n",
+            branch_name: branch,
+            message: 'Add file1')
+        project
+          .repository
+          .create_file(
+            project.creator,
+            'file1.txt',
+            "some content\n",
+            branch_name: branch,
+            message: 'Add file2')
+      end
+
+      it 'does not set any files as generated' do
+        expect(generated_files).to eq Set.new
+      end
+    end
   end
 end

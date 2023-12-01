@@ -1,9 +1,15 @@
 import Reference from '~/content_editor/extensions/reference';
+import ReferenceLabel from '~/content_editor/extensions/reference_label';
 import AssetResolver from '~/content_editor/services/asset_resolver';
 import {
   RESOLVED_ISSUE_HTML,
   RESOLVED_MERGE_REQUEST_HTML,
   RESOLVED_EPIC_HTML,
+  RESOLVED_LABEL_HTML,
+  RESOLVED_SNIPPET_HTML,
+  RESOLVED_MILESTONE_HTML,
+  RESOLVED_USER_HTML,
+  RESOLVED_VULNERABILITY_HTML,
 } from '../test_constants';
 import {
   createTestEditor,
@@ -17,6 +23,7 @@ describe('content_editor/extensions/reference', () => {
   let doc;
   let p;
   let reference;
+  let referenceLabel;
   let renderMarkdown;
   let assetResolver;
 
@@ -25,33 +32,54 @@ describe('content_editor/extensions/reference', () => {
     assetResolver = new AssetResolver({ renderMarkdown });
 
     tiptapEditor = createTestEditor({
-      extensions: [Reference.configure({ assetResolver })],
+      extensions: [Reference.configure({ assetResolver }), ReferenceLabel],
     });
 
     ({
-      builders: { doc, p, reference },
+      builders: { doc, p, reference, referenceLabel },
     } = createDocBuilder({
       tiptapEditor,
       names: {
         reference: { nodeType: Reference.name },
+        referenceLabel: { nodeType: ReferenceLabel.name },
       },
     }));
   });
 
   describe('when typing a valid reference input rule', () => {
-    const buildExpectedDoc = (href, originalText, referenceType, text) =>
+    const buildExpectedDoc = (href, originalText, referenceType, text = originalText) =>
       doc(p(reference({ className: null, href, originalText, referenceType, text }), ' '));
 
+    const buildExpectedDocForLabel = (href, originalText, text, color) =>
+      doc(
+        p(
+          referenceLabel({
+            className: null,
+            referenceType: 'label',
+            href,
+            originalText,
+            text,
+            color,
+          }),
+          ' ',
+        ),
+      );
+
     it.each`
-      inputRuleText | mockReferenceHtml              | expectedDoc
-      ${'#1 '}      | ${RESOLVED_ISSUE_HTML}         | ${() => buildExpectedDoc('/gitlab-org/gitlab/-/issues/1', '#1', 'issue', '#1 (closed)')}
-      ${'#1+ '}     | ${RESOLVED_ISSUE_HTML}         | ${() => buildExpectedDoc('/gitlab-org/gitlab/-/issues/1', '#1+', 'issue', '500 error on MR approvers edit page (#1 - closed)')}
-      ${'#1+s '}    | ${RESOLVED_ISSUE_HTML}         | ${() => buildExpectedDoc('/gitlab-org/gitlab/-/issues/1', '#1+s', 'issue', '500 error on MR approvers edit page (#1 - closed) • Unassigned')}
-      ${'!1 '}      | ${RESOLVED_MERGE_REQUEST_HTML} | ${() => buildExpectedDoc('/gitlab-org/gitlab/-/merge_requests/1', '!1', 'merge_request', '!1 (merged)')}
-      ${'!1+ '}     | ${RESOLVED_MERGE_REQUEST_HTML} | ${() => buildExpectedDoc('/gitlab-org/gitlab/-/merge_requests/1', '!1+', 'merge_request', 'Enhance the LDAP group synchronization (!1 - merged)')}
-      ${'!1+s '}    | ${RESOLVED_MERGE_REQUEST_HTML} | ${() => buildExpectedDoc('/gitlab-org/gitlab/-/merge_requests/1', '!1+s', 'merge_request', 'Enhance the LDAP group synchronization (!1 - merged) • John Doe')}
-      ${'&1 '}      | ${RESOLVED_EPIC_HTML}          | ${() => buildExpectedDoc('/groups/gitlab-org/-/epics/1', '&1', 'epic', '&1')}
-      ${'&1+ '}     | ${RESOLVED_EPIC_HTML}          | ${() => buildExpectedDoc('/groups/gitlab-org/-/epics/1', '&1+', 'epic', 'Approvals in merge request list (&1)')}
+      inputRuleText          | mockReferenceHtml              | expectedDoc
+      ${'#1'}                | ${RESOLVED_ISSUE_HTML}         | ${() => buildExpectedDoc('/gitlab-org/gitlab/-/issues/1', '#1', 'issue', '#1 (closed)')}
+      ${'#1+'}               | ${RESOLVED_ISSUE_HTML}         | ${() => buildExpectedDoc('/gitlab-org/gitlab/-/issues/1', '#1+', 'issue', '500 error on MR approvers edit page (#1 - closed)')}
+      ${'#1+s'}              | ${RESOLVED_ISSUE_HTML}         | ${() => buildExpectedDoc('/gitlab-org/gitlab/-/issues/1', '#1+s', 'issue', '500 error on MR approvers edit page (#1 - closed) • Unassigned')}
+      ${'!1'}                | ${RESOLVED_MERGE_REQUEST_HTML} | ${() => buildExpectedDoc('/gitlab-org/gitlab/-/merge_requests/1', '!1', 'merge_request', '!1 (merged)')}
+      ${'!1+'}               | ${RESOLVED_MERGE_REQUEST_HTML} | ${() => buildExpectedDoc('/gitlab-org/gitlab/-/merge_requests/1', '!1+', 'merge_request', 'Enhance the LDAP group synchronization (!1 - merged)')}
+      ${'!1+s'}              | ${RESOLVED_MERGE_REQUEST_HTML} | ${() => buildExpectedDoc('/gitlab-org/gitlab/-/merge_requests/1', '!1+s', 'merge_request', 'Enhance the LDAP group synchronization (!1 - merged) • John Doe')}
+      ${'&1'}                | ${RESOLVED_EPIC_HTML}          | ${() => buildExpectedDoc('/groups/gitlab-org/-/epics/1', '&1', 'epic', '&1')}
+      ${'&1+'}               | ${RESOLVED_EPIC_HTML}          | ${() => buildExpectedDoc('/groups/gitlab-org/-/epics/1', '&1+', 'epic', 'Approvals in merge request list (&1)')}
+      ${'@root'}             | ${RESOLVED_USER_HTML}          | ${() => buildExpectedDoc('/root', '@root', 'user')}
+      ${'~Aquanix'}          | ${RESOLVED_LABEL_HTML}         | ${() => buildExpectedDocForLabel('/gitlab-org/gitlab-shell/-/issues?label_name=Aquanix', '~Aquanix', 'Aquanix', 'rgb(230, 84, 49)')}
+      ${'%v4.0'}             | ${RESOLVED_MILESTONE_HTML}     | ${() => buildExpectedDoc('/gitlab-org/gitlab-shell/-/milestones/5', '%v4.0', 'milestone')}
+      ${'$25'}               | ${RESOLVED_SNIPPET_HTML}       | ${() => buildExpectedDoc('/gitlab-org/gitlab-shell/-/snippets/25', '$25', 'snippet')}
+      ${'[vulnerability:1]'} | ${RESOLVED_VULNERABILITY_HTML} | ${() => buildExpectedDoc('/gitlab-org/gitlab-shell/-/security/vulnerabilities/1', '[vulnerability:1]', 'vulnerability')}
     `(
       'replaces the input rule ($inputRuleText) with a reference node',
       async ({ inputRuleText, mockReferenceHtml, expectedDoc }) => {
@@ -61,8 +89,8 @@ describe('content_editor/extensions/reference', () => {
           action() {
             renderMarkdown.mockResolvedValueOnce(mockReferenceHtml);
 
-            tiptapEditor.commands.insertContent({ type: 'text', text: inputRuleText });
-            triggerNodeInputRule({ tiptapEditor, inputRuleText });
+            tiptapEditor.commands.insertContent({ type: 'text', text: `${inputRuleText} ` });
+            triggerNodeInputRule({ tiptapEditor, inputRuleText: `${inputRuleText} ` });
           },
         });
 

@@ -65,7 +65,9 @@ Example response:
     "parent_ids": [
       "6104942438c14ec7bd21c6cd5bd995272b3faff6"
     ],
-    "web_url": "https://gitlab.example.com/janedoe/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746"
+    "web_url": "https://gitlab.example.com/janedoe/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746",
+    "trailers": {},
+    "extended_trailers": {}
   },
   {
     "id": "6104942438c14ec7bd21c6cd5bd995272b3faff6",
@@ -76,11 +78,13 @@ Example response:
     "committer_name": "ExampleName",
     "committer_email": "user@example.com",
     "created_at": "2021-09-20T09:06:12.201+00:00",
-    "message": "Sanitize for network graph",
+    "message": "Sanitize for network graph\nCc: John Doe <johndoe@gitlab.com>\nCc: Jane Doe <janedoe@gitlab.com>",
     "parent_ids": [
       "ae1d9fb46aa2b07ee9836d49862ec4e2c46fbbba"
     ],
-    "web_url": "https://gitlab.example.com/janedoe/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746"
+    "web_url": "https://gitlab.example.com/janedoe/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746",
+    "trailers": { "Cc": "Jane Doe <janedoe@gitlab.com>" },
+    "extended_trailers": { "Cc": ["John Doe <johndoe@gitlab.com>", "Jane Doe <janedoe@gitlab.com>"] }
   }
 ]
 ```

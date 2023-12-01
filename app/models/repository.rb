@@ -1278,15 +1278,6 @@ class Repository
       .map(&:to_h)
   end
 
-  def filter_generated_files(revision, paths)
-    # NOTE: We should still support linguist-generated override for GitHub compatibility,
-    # but `gitlab-*` prefixed overrides would give us a better control moving forward.
-    generated_files = get_file_attributes(revision, paths, %w[gitlab-generated linguist-generated])
-      .pluck(:path)
-
-    paths - generated_files
-  end
-
   def object_format
     return unless exists?
 

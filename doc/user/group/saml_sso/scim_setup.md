@@ -19,6 +19,8 @@ When SCIM is enabled for a GitLab group, membership of that group is synchronize
 The [internal GitLab group SCIM API](../../../development/internal_api/index.md#group-scim-api) implements part of [the RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
 Identity providers can use the [internal GitLab group SCIM API](../../../development/internal_api/index.md#group-scim-api) to develop a SCIM app.
 
+To set up SCIM on GitLab self-managed, see [Configure SCIM for self-managed GitLab instances](../../../administration/settings/scim_setup.md).
+
 ## Configure GitLab
 
 Prerequisites:

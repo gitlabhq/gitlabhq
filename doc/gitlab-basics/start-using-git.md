@@ -62,13 +62,13 @@ If your computer doesn't recognize `git` as a command, you must [install Git](..
 ## Configure Git
 
 To start using Git from your computer, you must enter your credentials
-to identify yourself as the author of your work. The username and email address
+to identify yourself as the author of your work. The full name and email address
 should match the ones you use in GitLab.
 
-1. In your shell, add your user name:
+1. In your shell, add your full name:
 
    ```shell
-   git config --global user.name "your_username"
+   git config --global user.name "John Doe"
    ```
 
 1. Add your email address:

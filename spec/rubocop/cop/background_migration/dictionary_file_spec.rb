@@ -134,7 +134,7 @@ RSpec.describe RuboCop::Cop::BackgroundMigration::DictionaryFile, feature_catego
         end
 
         context 'with dictionary file' do
-          let(:introduced_by_url) { 'https://test_url' }
+          let(:introduced_by_url) { 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132639' }
           let(:finalize_after) { '20230507160251' }
 
           before do
@@ -155,6 +155,25 @@ RSpec.describe RuboCop::Cop::BackgroundMigration::DictionaryFile, feature_catego
           context 'without finalize_after' do
             it_behaves_like 'migration with missing dictionary keys offense', :finalize_after do
               let(:finalize_after) { nil }
+            end
+          end
+
+          context 'when the `introduced_by_url` is not correct' do
+            let(:introduced_by_url) { 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132639/invalid' }
+
+            it 'throws offense on having a correct url' do
+              expect_offense(<<~RUBY)
+                class QueueMyMigration < Gitlab::Database::Migration[2.1]
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{format('Invalid `introduced_by_url` url for the dictionary. Please use the following format: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/XXX')}
+                  def up
+                    queue_batched_background_migration(
+                      'MyMigration',
+                      :users,
+                      :id
+                    )
+                  end
+                end
+              RUBY
             end
           end
 

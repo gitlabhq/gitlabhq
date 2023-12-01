@@ -313,13 +313,13 @@ ensure-job-added:
         exit 1
       fi
 
-# If we are tagging a release with a specific convention ("v" + number) and all
-# previous checks succeeded, we proceed with creating a release automatically.
+# If we are tagging a release with a semantic version and all previous checks succeeded,
+# we proceed with creating a release automatically.
 create-release:
   stage: release
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   rules:
-    - if: $CI_COMMIT_TAG =~ /^v\d+/
+    - if: $CI_COMMIT_TAG =~ /\d+/
   script: echo "Creating release $CI_COMMIT_TAG"
   release:
     tag_name: $CI_COMMIT_TAG

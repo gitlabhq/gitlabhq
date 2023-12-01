@@ -1207,6 +1207,7 @@ module Gitlab
           gitaly_repository_client
             .get_file_attributes(revision, file_paths, attributes)
             .attribute_infos
+            .map(&:to_h)
         end
       end
 
@@ -1215,6 +1216,16 @@ module Gitlab
           gitaly_repository_client.object_format.format
         end
       end
+
+      # rubocop: disable CodeReuse/ActiveRecord -- not an active record operation
+      def detect_generated_files(revision, paths)
+        return Set.new if paths.blank?
+
+        get_file_attributes(revision, paths, Gitlab::Git::ATTRIBUTE_OVERRIDES[:generated])
+          .pluck(:path)
+          .to_set
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       private
 

@@ -520,15 +520,15 @@ Code Quality functionality can be extended by using Code Climate
 For example, to use the [SonarJava analyzer](https://docs.codeclimate.com/docs/sonar-java):
 
 1. Add a file named `.codeclimate.yml` to the root of your repository
-1. Add to the `.codeclimate.yml` the [enablement code](https://docs.codeclimate.com/docs/sonar-java#enable-the-plugin)
-  for the plugin to the root of your repository:
+1. Add the [enablement code](https://docs.codeclimate.com/docs/sonar-java#enable-the-plugin)
+   for the plugin to the root of your repository to the `.codeclimate.yml` file:
 
-  ```yaml
-  version: "2"
-  plugins:
-    sonar-java:
-      enabled: true
-  ```
+   ```yaml
+   version: "2"
+   plugins:
+     sonar-java:
+       enabled: true
+   ```
 
 This adds SonarJava to the `plugins:` section of the
 [default `.codeclimate.yml`](https://gitlab.com/gitlab-org/ci-cd/codequality/-/blob/master/codeclimate_defaults/.codeclimate.yml.template)

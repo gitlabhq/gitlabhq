@@ -27,10 +27,11 @@ export default class AssetResolver {
     if (!a.length) return {};
 
     return {
-      href: a[0].getAttribute('href'),
-      text: a[0].textContent,
-      expandedText: a[1].textContent,
-      fullyExpandedText: a[2].textContent,
+      href: a[0]?.getAttribute('href'),
+      text: a[0]?.textContent,
+      expandedText: a[1]?.textContent,
+      fullyExpandedText: a[2]?.textContent,
+      backgroundColor: a[0]?.firstElementChild?.style.backgroundColor,
     };
   });
 

@@ -7,19 +7,38 @@ module Ml
       @version = params[:version]
       @package = params[:package]
       @description = params[:description]
+      @user = params[:user]
     end
 
     def execute
-      @version ||= Ml::IncrementVersionService.new(@model.latest_version.try(:version)).execute
+      ApplicationRecord.transaction do
+        @version ||= Ml::IncrementVersionService.new(@model.latest_version.try(:version)).execute
 
-      model_version = Ml::ModelVersion.find_or_create!(@model, @version, @package, @description)
+        package = @package || find_or_create_package(@model.name, @version)
 
-      model_version.candidate = ::Ml::CreateCandidateService.new(
-        @model.default_experiment,
-        { model_version: model_version }
-      ).execute
+        model_version = Ml::ModelVersion.create!(model: @model, project: @model.project, version: @version,
+          package: package, description: @description)
 
-      model_version
+        model_version.candidate = ::Ml::CreateCandidateService.new(
+          @model.default_experiment,
+          { model_version: model_version }
+        ).execute
+
+        model_version
+      end
+    end
+
+    private
+
+    def find_or_create_package(model_name, model_version)
+      package_params = {
+        name: model_name,
+        version: model_version
+      }
+
+      ::Packages::MlModel::FindOrCreatePackageService
+        .new(@model.project, @user, package_params)
+        .execute
     end
   end
 end

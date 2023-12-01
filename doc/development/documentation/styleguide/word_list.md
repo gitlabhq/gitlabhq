@@ -294,9 +294,18 @@ Use **check out** as a verb. For the Git command, use `checkout`.
 - Use `git checkout` to check out a branch locally.
 - Check out the files you want to edit.
 
+## CI, CD
+
+When talking about GitLab features, use **CI/CD**. Do not use **CI** or **CD** alone.
+
 ## CI/CD
 
-CI/CD is always uppercase. No need to spell it out on first use.
+**CI/CD** is always uppercase. No need to spell it out on first use.
+
+You can omit **CI/CD** when the context is clear, especially after the first use. For example:
+
+- Test your code in a **CI/CD pipeline**. Configure the **pipeline** to run for merge requests.
+- Store the value in a **CI/CD variable**. Set the **variable** to masked.
 
 ## CI/CD minutes
 
@@ -650,6 +659,12 @@ of the fields at once. For example:
 1. Complete the fields.
 
 Learn more about [documenting multiple fields at once](index.md#documenting-multiple-fields-at-once).
+
+## file name
+
+Use two words for **file name**.
+
+([Vale](../testing.md#vale) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
 
 ## filter
 
