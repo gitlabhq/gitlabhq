@@ -5,8 +5,6 @@ module Gitlab
     module Variables
       module Downstream
         class Generator
-          include Gitlab::Utils::StrongMemoize
-
           Context = Struct.new(:all_bridge_variables, :expand_file_refs, keyword_init: true)
 
           def initialize(bridge)

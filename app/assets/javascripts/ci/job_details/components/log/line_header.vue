@@ -24,6 +24,11 @@ export default {
       type: String,
       required: true,
     },
+    hideDuration: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     duration: {
       type: String,
       required: false,
@@ -77,6 +82,6 @@ export default {
       :class="content.style"
       >{{ content.text }}</span
     >
-    <duration-badge v-if="duration" :duration="duration" />
+    <duration-badge v-if="duration && !hideDuration" :duration="duration" />
   </div>
 </template>

@@ -17,6 +17,7 @@ export default () => ({
   isScrollTopDisabled: true,
 
   jobLog: [],
+  jobLogSections: {},
   isJobLogComplete: false,
   jobLogSize: 0,
   isJobLogSizeVisible: false,

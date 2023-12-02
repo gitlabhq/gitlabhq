@@ -13,6 +13,18 @@ export const buildWatchPath = ({ resource, api = 'api/v1', namespace = '' }) => 
   return namespace ? `/${api}/namespaces/${namespace}/${resource}` : `/${api}/${resource}`;
 };
 
+const mapWorkloadItem = (item) => {
+  if (item.metadata) {
+    const metadata = {
+      ...item.metadata,
+      annotations: item.metadata?.annotations || {},
+      labels: item.metadata?.labels || {},
+    };
+    return { status: item.status, metadata };
+  }
+  return { status: item.status };
+};
+
 export const watchPods = ({ client, query, configuration, namespace }) => {
   const path = buildWatchPath({ resource: 'pods', namespace });
   const config = new Configuration(configuration);
@@ -24,9 +36,7 @@ export const watchPods = ({ client, query, configuration, namespace }) => {
       let result = [];
 
       watcher.on(EVENT_DATA, (data) => {
-        result = data.map((item) => {
-          return { status: { phase: item.status.phase } };
-        });
+        result = data.map(mapWorkloadItem);
 
         client.writeQuery({
           query,
@@ -61,14 +71,7 @@ export const getK8sPods = ({
       }
 
       const data = res?.items || [];
-      return data?.map((item) => {
-        if (item.metadata) {
-          const metadata = { ...item.metadata, annotations: item.metadata?.annotations || {} };
-          return { status: item.status, metadata };
-        }
-
-        return { status: item.status };
-      });
+      return data.map(mapWorkloadItem);
     })
     .catch(async (err) => {
       try {

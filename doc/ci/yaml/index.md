@@ -3633,7 +3633,7 @@ Use `retry:when` with `retry:max` to retry jobs for only specific failure cases.
 - `archived_failure`: Retry if the job is archived and can't be run.
 - `unmet_prerequisites`: Retry if the job failed to complete prerequisite tasks.
 - `scheduler_failure`: Retry if the scheduler failed to assign the job to a runner.
-- `data_integrity_failure`: Retry if there is a structural integrity problem detected.
+- `data_integrity_failure`: Retry if there is an unknown job problem.
 
 **Example of `retry:when`** (single failure type):
 

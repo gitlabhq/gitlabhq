@@ -1497,7 +1497,7 @@
         },
         {
           "const": "data_integrity_failure",
-          "description": "Retry if there is a structural integrity problem detected."
+          "description": "Retry if there is an unknown job problem."
         }
       ]
     },

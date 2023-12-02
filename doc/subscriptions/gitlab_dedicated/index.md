@@ -127,7 +127,8 @@ The following GitLab application features are not available:
 - GitLab-managed runners (hosted runners)
 - GitLab AI capabilities (Refer to our [direction page](https://about.gitlab.com/direction/saas-platforms/dedicated/#supporting-ai-features-on-gitlab-dedicated) for more information)
 - Features other than [available features](#available-features) that must be configured outside of the GitLab user interface
-- [Feature Flags](../../administration/feature_flags.md) and functionality behind them
+- Interacting with GitLab [Feature Flags](../../administration/feature_flags.md)
+- Any functionality or feature behind a Feature Flag that is toggled `off` by default
 
 The following features will not be supported:
 

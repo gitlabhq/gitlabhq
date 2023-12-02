@@ -14,7 +14,7 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     archived_failure: 'The job is archived and cannot be run',
     unmet_prerequisites: 'The job failed to complete prerequisite tasks',
     scheduler_failure: 'The scheduler failed to assign job to the runner, please try again or contact system administrator',
-    data_integrity_failure: 'There has been a structural integrity problem detected, please contact system administrator',
+    data_integrity_failure: 'There has been an unknown job problem, please contact your system administrator with the job ID to review the logs',
     forward_deployment_failure: 'The deployment job is older than the previously succeeded deployment job, and therefore cannot be run',
     pipeline_loop_detected: 'This job could not be executed because it would create infinitely looping pipelines',
     insufficient_upstream_permissions: 'This job could not be executed because of insufficient permissions to track the upstream project.',

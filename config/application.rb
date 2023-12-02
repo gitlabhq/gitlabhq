@@ -362,7 +362,6 @@ module Gitlab
     config.assets.precompile << "page_bundles/work_items.css"
     config.assets.precompile << "page_bundles/xterm.css"
     config.assets.precompile << "page_bundles/labels.css"
-    config.assets.precompile << "page_bundles/notes.css"
     config.assets.precompile << "lazy_bundles/cropper.css"
     config.assets.precompile << "lazy_bundles/gridstack.css"
     config.assets.precompile << "performance_bar.css"

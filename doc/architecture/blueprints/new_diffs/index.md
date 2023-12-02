@@ -124,6 +124,94 @@ To measure our success, we need to set meaningful metrics. These metrics should 
 
 ### Front end
 
+#### High-level implementation
+
+<!--
+This section should contain enough information that the specifics of your
+change are understandable. This may include API specs (though not always
+required) or even code snippets. If there's any ambiguity about HOW your
+proposal will be implemented, this is the place to discuss them.
+
+If you are not sure how many implementation details you should include in the
+blueprint, the rule of thumb here is to provide enough context for people to
+understand the proposal. As you move forward with the implementation, you may
+need to add more implementation details to the blueprint, as those may become
+an important context for important technical decisions made along the way. A
+blueprint is also a register of such technical decisions. If a technical
+decision requires additional context before it can be made, you probably should
+document this context in a blueprint. If it is a small technical decision that
+can be made in a merge request by an author and a maintainer, you probably do
+not need to document it here. The impact a technical decision will have is
+another helpful information - if a technical decision is very impactful,
+documenting it, along with associated implementation details, is advisable.
+
+If it's helpful to include workflow diagrams or any other related images.
+Diagrams authored in GitLab flavored markdown are preferred. In cases where
+that is not feasible, images should be placed under `images/` in the same
+directory as the `index.md` for the proposal.
+-->
+
+#### HTML structure
+
+The HTML structure of a diff should have support for assistive technology.
+For this reason, a table could be a preferred solution as it allows to indicate
+logical relationship between the presented data and is easier to navigate for
+screen reader users with keyboard. Labeled columns will make sure that information
+such as line numbers can be associated with the edited piece of code.
+
+Possible structure could include:
+
+```html
+<table>
+  <caption class="gl-sr-only">Changes for file index.js. 10 lines changed: 5 deleted, 5 added.</caption>
+  <tr hidden>
+    <th>Original line number: </th>
+    <th>Diff line number: </th>
+    <th>Line change:</th>
+  </tr>
+  <tr>
+    <td>1234</td>
+    <td></td>
+    <td>.tree-time-ago ,</td>
+  </tr>
+  […]
+</table>
+```
+
+See [WAI tutorial on tables](https://www.w3.org/WAI/tutorials/tables) for
+more implementation guidelines.
+
+Each file table should include a short summary of changes that will read out:
+
+- total number of lines changed,
+- number of added lines,
+- number of removed lines.
+
+The summary of the table content can be placed either within `<caption>` element, or before the table within an element referred as `aria-describedby`.
+See <abbr>WAI</abbr> (Web Accessibility Initiative) for more information on both approaches:
+
+- [Nesting summary inside the `<caption>` element](https://www.w3.org/WAI/tutorials/tables/caption-summary/#nesting-summary-inside-the-caption-element)
+- [Using `aria-describedby` to provide a table summary](https://www.w3.org/WAI/tutorials/tables/caption-summary/#using-aria-describedby-to-provide-a-table-summary)
+
+However, if such a structure will compromise other functional aspects of displaying a diff,
+more generic elements together with ARIA support can be used.
+
+#### Visual indicators
+
+It is important that each visual indicator should have a screen reader text
+denoting the meaning of that indicator. When needed, use `gl-sr-only` or `gl-sr-only-focusable`
+class to make the element accessible by screen readers, but not by sighted users.
+
+Some of the visual indicators that require alternatives for assistive technology are:
+
+- `+` or red highlighting to be read as `added`
+- `-` or green highlighting to be read as `removed`
+
+### Front end (Design A)
+
+NOTE:
+This draft proposal suggests one potential front end architecture which may not be chosen.
+
 Ideally, we would meet our definition of done and our accountability metrics on our first try.
 We also need to continue to stay within those boundaries as we move forward. To ensure this,
 we need to design an application architecture that:
@@ -224,87 +312,6 @@ end
 
     Network --> Socket --> API --> unk
 ```
-
-<!--
-This section should contain enough information that the specifics of your
-change are understandable. This may include API specs (though not always
-required) or even code snippets. If there's any ambiguity about HOW your
-proposal will be implemented, this is the place to discuss them.
-
-If you are not sure how many implementation details you should include in the
-blueprint, the rule of thumb here is to provide enough context for people to
-understand the proposal. As you move forward with the implementation, you may
-need to add more implementation details to the blueprint, as those may become
-an important context for important technical decisions made along the way. A
-blueprint is also a register of such technical decisions. If a technical
-decision requires additional context before it can be made, you probably should
-document this context in a blueprint. If it is a small technical decision that
-can be made in a merge request by an author and a maintainer, you probably do
-not need to document it here. The impact a technical decision will have is
-another helpful information - if a technical decision is very impactful,
-documenting it, along with associated implementation details, is advisable.
-
-If it's helpful to include workflow diagrams or any other related images.
-Diagrams authored in GitLab flavored markdown are preferred. In cases where
-that is not feasible, images should be placed under `images/` in the same
-directory as the `index.md` for the proposal.
--->
-
-#### HTML structure
-
-The HTML structure of a diff should have support for assistive technology.
-For this reason, a table could be a preferred solution as it allows to indicate
-logical relationship between the presented data and is easier to navigate for
-screen reader users with keyboard. Labeled columns will make sure that information
-such as line numbers can be associated with the edited piece of code.
-
-Possible structure could include:
-
-```html
-<table>
-  <caption class="gl-sr-only">Changes for file index.js. 10 lines changed: 5 deleted, 5 added.</caption>
-  <tr hidden>
-    <th>Original line number: </th>
-    <th>Diff line number: </th>
-    <th>Line change:</th>
-  </tr>
-  <tr>
-    <td>1234</td>
-    <td></td>
-    <td>.tree-time-ago ,</td>
-  </tr>
-  […]
-</table>
-```
-
-See [WAI tutorial on tables](https://www.w3.org/WAI/tutorials/tables) for
-more implementation guidelines.
-
-Each file table should include a short summary of changes that will read out:
-
-- total number of lines changed,
-- number of added lines,
-- number of removed lines.
-
-The summary of the table content can be placed either within `<caption>` element, or before the table within an element referred as `aria-describedby`.
-See <abbr>WAI</abbr> (Web Accessibility Initiative) for more information on both approaches:
-
-- [Nesting summary inside the `<caption>` element](https://www.w3.org/WAI/tutorials/tables/caption-summary/#nesting-summary-inside-the-caption-element)
-- [Using aria-describedby to provide a table summary](https://www.w3.org/WAI/tutorials/tables/caption-summary/#using-aria-describedby-to-provide-a-table-summary)
-
-However, if such a structure will compromise other functional aspects of displaying a diff,
-more generic elements together with ARIA support can be used.
-
-#### Visual indicators
-
-It is important that each visual indicator should have a screen reader text
-denoting the meaning of that indicator. When needed, use `gl-sr-only` or `gl-sr-only-focusable`
-class to make the element accessible by screen readers, but not by sighted users.
-
-Some of the visual indicators that require alternatives for assistive technology are:
-
-- `+` or red highlighting to be read as `added`
-- `-` or green highlighting to be read as `removed`
 
 ## Alternative Solutions
 

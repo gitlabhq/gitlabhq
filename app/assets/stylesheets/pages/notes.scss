@@ -1,7 +1,3 @@
-@import 'mixins_and_variables_and_functions';
-@import 'framework/notes';
-@import 'framework/buttons';
-
 $avatar-icon-size: 2rem;
 $avatar-m-top: 0.5rem;
 $avatar-m-ratio: 2;
@@ -989,7 +985,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
 .disabled-comment {
   background-color: $gray-light;
-  border-radius: $gl-border-radius-base;
+  border-radius: $border-radius-base;
   border: 1px solid $border-gray-normal;
   color: $note-disabled-comment-color;
   padding: $gl-padding-8 0;

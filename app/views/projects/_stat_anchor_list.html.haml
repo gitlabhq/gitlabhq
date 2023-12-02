@@ -3,7 +3,7 @@
 
 - return unless anchors.any?
 
-%ul.nav.gl-gap-2
+%ul.nav.gl-row-gap-2.gl-column-gap-5
   - anchors.each do |anchor|
     %li.nav-item
       = link_to_if(anchor.link, anchor.label, anchor.link, stat_anchor_attrs(anchor)) do

@@ -1,6 +1,5 @@
-import Vue from 'vue';
 import * as types from './mutation_types';
-import { logLinesParser, updateIncrementalJobLog } from './utils';
+import { logLinesParser } from './utils';
 
 export default {
   [types.SET_JOB_LOG_OPTIONS](state, options = {}) {
@@ -22,15 +21,27 @@ export default {
     }
 
     if (log.append) {
-      state.jobLog = log.lines ? updateIncrementalJobLog(log.lines, state.jobLog) : state.jobLog;
+      if (log.lines) {
+        const { sections, lines } = logLinesParser(log.lines, {
+          currentLines: state.jobLog,
+          currentSections: state.jobLogSections,
+        });
 
+        state.jobLog = lines;
+        state.jobLogSections = sections;
+      }
       state.jobLogSize += log.size;
     } else {
       // When the job still does not have a log
       // the job log response will not have a defined
       // html or size. We keep the old value otherwise these
       // will be set to `null`
-      state.jobLog = log.lines ? logLinesParser(log.lines, [], window.location.hash) : state.jobLog;
+      if (log.lines) {
+        const { sections, lines } = logLinesParser(log.lines, {}, window.location.hash);
+
+        state.jobLog = lines;
+        state.jobLogSections = sections;
+      }
 
       state.jobLogSize = log.size || state.jobLogSize;
     }
@@ -64,7 +75,9 @@ export default {
    * @param {Object} section
    */
   [types.TOGGLE_COLLAPSIBLE_LINE](state, section) {
-    Vue.set(section, 'isClosed', !section.isClosed);
+    if (state.jobLogSections[section]) {
+      state.jobLogSections[section].isClosed = !state.jobLogSections[section].isClosed;
+    }
   },
 
   [types.REQUEST_JOB](state) {

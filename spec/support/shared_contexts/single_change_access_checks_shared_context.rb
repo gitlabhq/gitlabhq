@@ -21,7 +21,7 @@ RSpec.shared_context 'change access checks context' do
     )
   end
 
-  subject { described_class.new(change_access) }
+  subject(:change_check) { described_class.new(change_access) }
 
   before do
     project.add_developer(user)

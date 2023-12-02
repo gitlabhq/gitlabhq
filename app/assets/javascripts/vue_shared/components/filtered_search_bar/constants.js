@@ -68,6 +68,7 @@ export const TOKEN_TITLE_CONFIDENTIAL = __('Confidential');
 export const TOKEN_TITLE_CONTACT = s__('Crm|Contact');
 export const TOKEN_TITLE_GROUP = __('Group');
 export const TOKEN_TITLE_LABEL = __('Label');
+export const TOKEN_TITLE_PROJECT = __('Project');
 export const TOKEN_TITLE_MILESTONE = __('Milestone');
 export const TOKEN_TITLE_MY_REACTION = __('My-Reaction');
 export const TOKEN_TITLE_ORGANIZATION = s__('Crm|Organization');
@@ -93,6 +94,7 @@ export const TOKEN_TYPE_EPIC = 'epic';
 // this is in the shared constants. Until we have not decoupled the EE filtered search bar
 // from the CE component, we need to keep this in the CE code.
 // https://gitlab.com/gitlab-org/gitlab/-/issues/377838
+export const TOKEN_TYPE_PROJECT = 'project';
 export const TOKEN_TYPE_HEALTH = 'health';
 export const TOKEN_TYPE_ITERATION = 'iteration';
 export const TOKEN_TYPE_LABEL = 'label';

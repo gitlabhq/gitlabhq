@@ -6690,9 +6690,6 @@ msgstr ""
 msgid "AsanaService|User Personal Access Token. User must have access to the task. All comments are attributed to this user."
 msgstr ""
 
-msgid "Ask GitLab Duo"
-msgstr ""
-
 msgid "Ask a maintainer to check the import status for more details."
 msgstr ""
 
@@ -47784,21 +47781,12 @@ msgstr ""
 msgid "TanukiBot|Give feedback"
 msgstr ""
 
-msgid "TanukiBot|How to use GitLab"
-msgstr ""
-
 msgid "TanukiBot|Source"
 msgid_plural "TanukiBot|Sources"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "TanukiBot|The issue, epic, or code you're viewing"
-msgstr ""
-
 msgid "TanukiBot|There was an error communicating with GitLab Duo Chat. Please try again later."
-msgstr ""
-
-msgid "TanukiBot|Use AI to answer questions about things like:"
 msgstr ""
 
 msgid "TanukiBot|What is a fork?"
@@ -49016,6 +49004,9 @@ msgid "There was a problem fetching project tags."
 msgstr ""
 
 msgid "There was a problem fetching project users."
+msgstr ""
+
+msgid "There was a problem fetching projects."
 msgstr ""
 
 msgid "There was a problem fetching recent groups."

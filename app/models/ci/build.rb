@@ -960,7 +960,7 @@ module Ci
       job_artifacts.all_reports
     end
 
-    # Consider this object to have a structural integrity problems
+    # Consider this object to have an unknown job problem
     def doom!
       transaction do
         now = Time.current

@@ -1588,7 +1588,6 @@ RSpec/ContextWording:
     - 'spec/lib/gitlab/checks/lfs_integrity_spec.rb'
     - 'spec/lib/gitlab/checks/push_file_count_check_spec.rb'
     - 'spec/lib/gitlab/checks/snippet_check_spec.rb'
-    - 'spec/lib/gitlab/checks/tag_check_spec.rb'
     - 'spec/lib/gitlab/ci/ansi2html_spec.rb'
     - 'spec/lib/gitlab/ci/ansi2json/style_spec.rb'
     - 'spec/lib/gitlab/ci/ansi2json_spec.rb'

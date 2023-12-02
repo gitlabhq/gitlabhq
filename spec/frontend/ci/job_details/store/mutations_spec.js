@@ -113,7 +113,7 @@ describe('Jobs Store Mutations', () => {
           it('sets the parsed log', () => {
             mutations[types.RECEIVE_JOB_LOG_SUCCESS](stateCopy, mockLog);
 
-            expect(utils.logLinesParser).toHaveBeenCalledWith(mockLog.lines, [], '');
+            expect(utils.logLinesParser).toHaveBeenCalledWith(mockLog.lines, {}, '');
 
             expect(stateCopy.jobLog).toEqual([
               {
@@ -133,7 +133,7 @@ describe('Jobs Store Mutations', () => {
           it('sets the parsed log', () => {
             mutations[types.RECEIVE_JOB_LOG_SUCCESS](stateCopy, mockLog);
 
-            expect(utils.logLinesParser).toHaveBeenCalledWith(mockLog.lines, [], '#L1');
+            expect(utils.logLinesParser).toHaveBeenCalledWith(mockLog.lines, {}, '#L1');
 
             expect(stateCopy.jobLog).toEqual([
               {
@@ -214,9 +214,17 @@ describe('Jobs Store Mutations', () => {
 
   describe('TOGGLE_COLLAPSIBLE_LINE', () => {
     it('toggles the `isClosed` property of the provided object', () => {
-      const section = { isClosed: true };
-      mutations[types.TOGGLE_COLLAPSIBLE_LINE](stateCopy, section);
-      expect(section.isClosed).toEqual(false);
+      stateCopy.jobLogSections = {
+        'step-script': { isClosed: true },
+      };
+
+      mutations[types.TOGGLE_COLLAPSIBLE_LINE](stateCopy, 'step-script');
+
+      expect(stateCopy.jobLogSections['step-script'].isClosed).toEqual(false);
+
+      mutations[types.TOGGLE_COLLAPSIBLE_LINE](stateCopy, 'step-script');
+
+      expect(stateCopy.jobLogSections['step-script'].isClosed).toEqual(true);
     });
   });
 

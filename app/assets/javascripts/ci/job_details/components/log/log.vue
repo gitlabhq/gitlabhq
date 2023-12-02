@@ -4,12 +4,12 @@
 import { mapState, mapActions } from 'vuex';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
-import CollapsibleLogSection from './collapsible_section.vue';
 import LogLine from './line.vue';
+import LogLineHeader from './line_header.vue';
 
 export default {
   components: {
-    CollapsibleLogSection,
+    LogLineHeader,
     LogLine,
   },
   props: {
@@ -20,7 +20,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['jobLogEndpoint', 'jobLog', 'isJobLogComplete']),
+    ...mapState(['jobLogEndpoint', 'jobLog', 'jobLogSections', 'isJobLogComplete']),
     highlightedLines() {
       return this.searchResults.map((result) => result.lineNumber);
     },
@@ -45,6 +45,20 @@ export default {
     handleOnClickCollapsibleLine(section) {
       this.toggleCollapsibleLine(section);
     },
+    isLineVisible(line) {
+      const { lineNumber, section } = line;
+
+      if (!section) {
+        // lines outside of sections can't be collapsed
+        return true;
+      }
+
+      return !Object.values(this.jobLogSections).find(
+        ({ isClosed, startLineNumber, endLineNumber }) => {
+          return isClosed && lineNumber > startLineNumber && lineNumber <= endLineNumber;
+        },
+      );
+    },
     isHighlighted({ lineNumber }) {
       return this.highlightedLines.includes(lineNumber);
     },
@@ -53,22 +67,27 @@ export default {
 </script>
 <template>
   <code class="job-log d-block" data-testid="job-log-content">
-    <template v-for="(section, index) in jobLog">
-      <collapsible-log-section
-        v-if="section.isHeader"
-        :key="`collapsible-${index}`"
-        :section="section"
-        :job-log-endpoint="jobLogEndpoint"
-        :search-results="searchResults"
-        @onClickCollapsibleLine="handleOnClickCollapsibleLine"
-      />
-      <log-line
-        v-else
-        :key="section.offset"
-        :line="section"
-        :path="jobLogEndpoint"
-        :is-highlighted="isHighlighted(section)"
-      />
+    <template v-for="line in jobLog">
+      <template v-if="isLineVisible(line)">
+        <log-line-header
+          v-if="line.isHeader"
+          :key="line.offset"
+          :line="line"
+          :path="jobLogEndpoint"
+          :is-closed="jobLogSections[line.section].isClosed"
+          :duration="jobLogSections[line.section].duration"
+          :hide-duration="jobLogSections[line.section].hideDuration"
+          :is-highlighted="isHighlighted(line)"
+          @toggleLine="handleOnClickCollapsibleLine(line.section)"
+        />
+        <log-line
+          v-else
+          :key="line.offset"
+          :line="line"
+          :path="jobLogEndpoint"
+          :is-highlighted="isHighlighted(line)"
+        />
+      </template>
     </template>
 
     <div v-if="!isJobLogComplete" class="js-log-animation loader-animation pt-3 pl-3">

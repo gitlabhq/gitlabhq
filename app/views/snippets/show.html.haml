@@ -9,7 +9,6 @@
   - add_to_breadcrumbs _("Snippets"), explore_snippets_path
 - breadcrumb_title @snippet.to_reference
 - page_title "#{@snippet.title} (#{@snippet.to_reference})", _("Snippets")
-- add_page_specific_style 'page_bundles/notes'
 - content_for :prefetch_asset_tags do
   - webpack_preload_asset_tag('monaco', prefetch: true)
 

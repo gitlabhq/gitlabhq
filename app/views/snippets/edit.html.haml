@@ -1,6 +1,5 @@
 - breadcrumb_title _("Edit Snippet")
 - page_title _("Edit"), "#{@snippet.title} (#{@snippet.to_reference})", _("Snippets")
-- add_page_specific_style 'page_bundles/notes'
 - content_for :prefetch_asset_tags do
   - webpack_preload_asset_tag('monaco')
 

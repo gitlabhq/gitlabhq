@@ -2,10 +2,6 @@
 - site_name = _('GitLab')
 - omit_og = sign_in_with_redirect?
 
--# This is a temporary place for the page specific style migrations to be included on all pages like page_specific_files
-- if Feature.disabled?(:page_specific_styles, current_user)
-  - add_page_specific_style('page_bundles/notes')
-
 %head{ omit_og ? { } : { prefix: "og: http://ogp.me/ns#" } }
   %meta{ charset: "utf-8" }
   %meta{ 'http-equiv' => 'X-UA-Compatible', content: 'IE=edge' }
