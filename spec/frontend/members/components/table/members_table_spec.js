@@ -1,4 +1,4 @@
-import { GlBadge, GlPagination, GlTable } from '@gitlab/ui';
+import { GlPagination, GlTable } from '@gitlab/ui';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
@@ -11,7 +11,7 @@ import MemberAvatar from '~/members/components/table/member_avatar.vue';
 import MemberSource from '~/members/components/table/member_source.vue';
 import MemberActivity from '~/members/components/table/member_activity.vue';
 import MembersTable from '~/members/components/table/members_table.vue';
-import RoleDropdown from '~/members/components/table/role_dropdown.vue';
+import MaxRole from '~/members/components/table/max_role.vue';
 import {
   MEMBER_TYPES,
   MEMBER_STATE_CREATED,
@@ -74,7 +74,7 @@ describe('MembersTable', () => {
         'member-source',
         'created-at',
         'member-actions',
-        'role-dropdown',
+        'max-role',
         'remove-group-link-modal',
         'remove-member-modal',
         'expiration-datepicker',
@@ -110,7 +110,7 @@ describe('MembersTable', () => {
       ${'source'}     | ${'Source'}     | ${memberMock}      | ${MemberSource}
       ${'invited'}    | ${'Invited'}    | ${invite}          | ${CreatedAt}
       ${'requested'}  | ${'Requested'}  | ${accessRequest}   | ${CreatedAt}
-      ${'maxRole'}    | ${'Max role'}   | ${memberCanUpdate} | ${RoleDropdown}
+      ${'maxRole'}    | ${'Max role'}   | ${memberCanUpdate} | ${MaxRole}
       ${'expiration'} | ${'Expiration'} | ${memberMock}      | ${ExpirationDatepicker}
       ${'activity'}   | ${'Activity'}   | ${memberMock}      | ${MemberActivity}
     `('renders the $label field', ({ field, label, member, expectedComponent }) => {
@@ -271,16 +271,6 @@ describe('MembersTable', () => {
       createComponent();
 
       expect(wrapper.findByText('No members found').exists()).toBe(true);
-    });
-  });
-
-  describe('when member can not be updated', () => {
-    it('renders badge in "Max role" field', () => {
-      createComponent({ members: [memberMock], tableFields: ['maxRole'] });
-
-      expect(
-        wrapper.find(`[data-label="Max role"][role="cell"]`).findComponent(GlBadge).text(),
-      ).toBe(memberMock.accessLevel.stringValue);
     });
   });
 

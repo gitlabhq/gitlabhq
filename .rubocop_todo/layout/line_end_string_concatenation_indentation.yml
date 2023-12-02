@@ -155,7 +155,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'lib/gitlab/auth.rb'
     - 'lib/gitlab/background_migration/populate_operation_visibility_permissions_from_operations.rb'
     - 'lib/gitlab/changelog/config.rb'
-    - 'lib/gitlab/checks/tag_check.rb'
     - 'lib/gitlab/ci/parsers/security/validators/schema_validator.rb'
     - 'lib/gitlab/ci/pipeline/chain/populate.rb'
     - 'lib/gitlab/ci/pipeline/seed/build.rb'

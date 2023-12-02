@@ -37,28 +37,21 @@ describe('Vuex members actions', () => {
 
     describe('updateMemberRole', () => {
       const memberId = members[0].id;
-      const accessLevel = { integerValue: 30, memberRoleId: 90 };
+      const accessLevel = 30;
+      const memberRoleId = 90;
 
-      const payload = {
-        memberId,
-        accessLevel,
-      };
+      const payload = { memberId, accessLevel, memberRoleId };
 
       describe('successful request', () => {
-        it(`commits ${types.RECEIVE_MEMBER_ROLE_SUCCESS} mutation`, async () => {
+        it(`updates member role`, async () => {
           mock.onPut().replyOnce(HTTP_STATUS_OK);
 
-          await testAction(updateMemberRole, payload, state, [
-            {
-              type: types.RECEIVE_MEMBER_ROLE_SUCCESS,
-              payload,
-            },
-          ]);
+          await testAction(updateMemberRole, payload, state, []);
 
           expect(mock.history.put[0].url).toBe('/groups/foo-bar/-/group_members/238');
           expect(mockedRequestFormatter).toHaveBeenCalledWith({
-            accessLevel: accessLevel.integerValue,
-            memberRoleId: accessLevel.memberRoleId,
+            accessLevel,
+            memberRoleId,
           });
         });
       });

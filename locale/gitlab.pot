@@ -29632,6 +29632,9 @@ msgstr ""
 msgid "MemberRole|%{requirement} has to be enabled in order to enable %{permission}."
 msgstr ""
 
+msgid "MemberRole|Custom permissions:"
+msgstr ""
+
 msgid "MemberRole|can't be changed"
 msgstr ""
 

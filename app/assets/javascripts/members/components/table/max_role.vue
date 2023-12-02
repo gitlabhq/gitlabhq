@@ -1,5 +1,5 @@
 <script>
-import { GlCollapsibleListbox } from '@gitlab/ui';
+import { GlBadge, GlCollapsibleListbox } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
@@ -9,11 +9,12 @@ import { roleDropdownItems, initialSelectedRole } from 'ee_else_ce/members/utils
 import { s__ } from '~/locale';
 
 export default {
-  name: 'RoleDropdown',
   components: {
     GlCollapsibleListbox,
+    GlBadge,
     LdapDropdownFooter: () =>
       import('ee_component/members/components/action_dropdowns/ldap_dropdown_footer.vue'),
+    CustomPermissions: () => import('ee_component/members/components/table/custom_permissions.vue'),
   },
   inject: ['namespace', 'group'],
   props: {
@@ -27,37 +28,40 @@ export default {
     },
   },
   data() {
+    const accessLevelOptions = roleDropdownItems(this.member);
     return {
-      isDesktop: false,
+      accessLevelOptions,
       busy: false,
-      selectedRole: null,
+      customPermissions: this.member.customPermissions ?? [],
+      isDesktop: false,
+      memberRoleId: this.member.accessLevel.memberRoleId ?? null,
+      selectedRole: initialSelectedRole(accessLevelOptions.flatten, this.member),
     };
   },
   computed: {
     disabled() {
       return this.permissions.canOverride && !this.member.isOverridden;
     },
-    dropdownItems() {
-      return roleDropdownItems(this.member);
-    },
-  },
-  created() {
-    this.selectedRole = initialSelectedRole(this.dropdownItems.flatten, this.member);
   },
   mounted() {
     this.isDesktop = bp.isDesktop();
   },
   methods: {
     ...mapActions({
-      updateMemberRole(dispatch, payload) {
-        return dispatch(`${this.namespace}/updateMemberRole`, payload);
+      updateMemberRole(dispatch, { memberId, accessLevel, memberRoleId }) {
+        return dispatch(`${this.namespace}/updateMemberRole`, {
+          memberId,
+          accessLevel,
+          memberRoleId,
+        });
       },
     }),
     async handleSelect(value) {
       this.busy = true;
 
-      const newRole = this.dropdownItems.flatten.find((item) => item.value === value);
+      const newRole = this.accessLevelOptions.flatten.find((item) => item.value === value);
       const previousRole = this.selectedRole;
+      const previousMemberRoleId = this.memberRoleId;
 
       try {
         const confirmed = await guestOverageConfirmAction({
@@ -74,18 +78,18 @@ export default {
         }
 
         this.selectedRole = value;
+        this.memberRoleId = newRole.memberRoleId;
 
         await this.updateMemberRole({
           memberId: this.member.id,
-          accessLevel: {
-            integerValue: newRole.accessLevel,
-            memberRoleId: newRole.memberRoleId,
-          },
+          accessLevel: newRole.accessLevel,
+          memberRoleId: newRole.memberRoleId,
         });
 
         this.$toast.show(s__('Members|Role updated successfully.'));
       } catch (error) {
         this.selectedRole = previousRole;
+        this.memberRoleId = previousMemberRoleId;
         Sentry.captureException(error);
       } finally {
         this.busy = false;
@@ -96,25 +100,35 @@ export default {
 </script>
 
 <template>
-  <gl-collapsible-listbox
-    :placement="isDesktop ? 'left' : 'right'"
-    :toggle-text="member.accessLevel.stringValue"
-    :header-text="__('Change role')"
-    :disabled="disabled"
-    :loading="busy"
-    data-qa-selector="access_level_dropdown"
-    :items="dropdownItems.formatted"
-    :selected="selectedRole"
-    @select="handleSelect"
-  >
-    <template #list-item="{ item }">
-      <span data-qa-selector="access_level_link">{{ item.text }}</span>
-    </template>
-    <template #footer>
-      <ldap-dropdown-footer
-        v-if="permissions.canOverride && member.isOverridden"
-        :member-id="member.id"
-      />
-    </template>
-  </gl-collapsible-listbox>
+  <div>
+    <gl-collapsible-listbox
+      v-if="permissions.canUpdate"
+      :placement="isDesktop ? 'left' : 'right'"
+      :header-text="__('Change role')"
+      :disabled="disabled"
+      :loading="busy"
+      data-qa-selector="access_level_dropdown"
+      :items="accessLevelOptions.formatted"
+      :selected="selectedRole"
+      @select="handleSelect"
+    >
+      <template #list-item="{ item }">
+        <span data-qa-selector="access_level_link">{{ item.text }}</span>
+      </template>
+      <template #footer>
+        <ldap-dropdown-footer
+          v-if="permissions.canOverride && member.isOverridden"
+          :member-id="member.id"
+        />
+      </template>
+    </gl-collapsible-listbox>
+
+    <gl-badge v-else>{{ member.accessLevel.stringValue }}</gl-badge>
+
+    <custom-permissions
+      v-if="memberRoleId !== null"
+      :member-role-id="memberRoleId"
+      :custom-permissions="customPermissions"
+    />
+  </div>
 </template>

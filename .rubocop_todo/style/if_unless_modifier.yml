@@ -730,7 +730,6 @@ Style/IfUnlessModifier:
     - 'lib/gitlab/checks/matching_merge_request.rb'
     - 'lib/gitlab/checks/push_check.rb'
     - 'lib/gitlab/checks/push_file_count_check.rb'
-    - 'lib/gitlab/checks/tag_check.rb'
     - 'lib/gitlab/ci/ansi2html.rb'
     - 'lib/gitlab/ci/ansi2json/converter.rb'
     - 'lib/gitlab/ci/ansi2json/style.rb'

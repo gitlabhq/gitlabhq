@@ -2,6 +2,8 @@ import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
 import { parseDataAttributes } from '~/members/utils';
 import { MEMBER_TYPES } from 'ee_else_ce/members/constants';
 import MembersTabs from './components/members_tabs.vue';
@@ -13,6 +15,7 @@ export const initMembersApp = (el, options) => {
   }
 
   Vue.use(Vuex);
+  Vue.use(VueApollo);
   Vue.use(GlToast);
 
   const {
@@ -61,6 +64,7 @@ export const initMembersApp = (el, options) => {
     el,
     components: { MembersTabs },
     store,
+    apolloProvider: new VueApollo({ defaultClient: createDefaultClient() }),
     provide: {
       currentUserId: gon.current_user_id || null,
       sourceId,

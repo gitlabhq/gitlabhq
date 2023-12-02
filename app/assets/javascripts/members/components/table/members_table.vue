@@ -31,7 +31,7 @@ import MemberActions from './member_actions.vue';
 import MemberAvatar from './member_avatar.vue';
 import MemberSource from './member_source.vue';
 import MemberActivity from './member_activity.vue';
-import RoleDropdown from './role_dropdown.vue';
+import MaxRole from './max_role.vue';
 
 export default {
   name: 'MembersTable',
@@ -44,7 +44,7 @@ export default {
     MembersTableCell,
     MemberSource,
     MemberActions,
-    RoleDropdown,
+    MaxRole,
     RemoveGroupLinkModal,
     RemoveMemberModal,
     ExpirationDatepicker,
@@ -292,8 +292,7 @@ export default {
 
       <template #cell(maxRole)="{ item: member }">
         <members-table-cell #default="{ permissions }" :member="member">
-          <role-dropdown v-if="permissions.canUpdate" :permissions="permissions" :member="member" />
-          <gl-badge v-else>{{ member.accessLevel.stringValue }}</gl-badge>
+          <max-role :permissions="permissions" :member="member" />
         </members-table-cell>
       </template>
 

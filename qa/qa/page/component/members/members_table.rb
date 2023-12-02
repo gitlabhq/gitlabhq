@@ -21,7 +21,7 @@ module QA
               element :member_row
             end
 
-            base.view 'app/assets/javascripts/members/components/table/role_dropdown.vue' do
+            base.view 'app/assets/javascripts/members/components/table/max_role.vue' do
               element :access_level_dropdown
               element :access_level_link
             end
