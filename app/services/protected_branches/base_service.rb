@@ -18,8 +18,19 @@ module ProtectedBranches
 
     def refresh_cache
       CacheService.new(@project_or_group, @current_user, @params).refresh
+      refresh_cache_for_groups_projects
     rescue StandardError => e
       Gitlab::ErrorTracking.track_exception(e)
+    end
+
+    private
+
+    def refresh_cache_for_groups_projects
+      return unless @project_or_group.is_a?(Group)
+
+      @project_or_group.all_projects.find_each do |project|
+        CacheService.new(project, @current_user, @params).refresh
+      end
     end
   end
 end

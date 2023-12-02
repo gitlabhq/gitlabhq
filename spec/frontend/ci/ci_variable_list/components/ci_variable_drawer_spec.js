@@ -1,6 +1,16 @@
 import { nextTick } from 'vue';
-import { GlDrawer, GlFormCombobox, GlFormInput, GlFormSelect, GlModal } from '@gitlab/ui';
+import {
+  GlDrawer,
+  GlFormCombobox,
+  GlFormGroup,
+  GlFormInput,
+  GlFormSelect,
+  GlLink,
+  GlModal,
+  GlSprintf,
+} from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import CiEnvironmentsDropdown from '~/ci/ci_variable_list/components/ci_environments_dropdown.vue';
 import CiVariableDrawer from '~/ci/ci_variable_list/components/ci_variable_drawer.vue';
 import { awsTokenList } from '~/ci/ci_variable_list/components/ci_variable_autocomplete_tokens';
@@ -76,6 +86,7 @@ describe('CI Variable Drawer', () => {
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findEnvironmentScopeDropdown = () => wrapper.findComponent(CiEnvironmentsDropdown);
   const findExpandedCheckbox = () => wrapper.findByTestId('ci-variable-expanded-checkbox');
+  const findFlagsDocsLink = () => wrapper.findByTestId('ci-variable-flags-docs-link');
   const findKeyField = () => wrapper.findComponent(GlFormCombobox);
   const findMaskedCheckbox = () => wrapper.findByTestId('ci-variable-masked-checkbox');
   const findProtectedCheckbox = () => wrapper.findByTestId('ci-variable-protected-checkbox');
@@ -83,6 +94,26 @@ describe('CI Variable Drawer', () => {
   const findValueLabel = () => wrapper.findByTestId('ci-variable-value-label');
   const findTitle = () => findDrawer().find('h2');
   const findTypeDropdown = () => wrapper.findComponent(GlFormSelect);
+  const findVariablesPrecedenceDocsLink = () =>
+    wrapper.findByTestId('ci-variable-precedence-docs-link');
+
+  describe('template', () => {
+    beforeEach(() => {
+      createComponent({ stubs: { GlFormGroup, GlLink, GlSprintf } });
+    });
+
+    it('renders docs link for variables precendece', () => {
+      expect(findVariablesPrecedenceDocsLink().attributes('href')).toBe(
+        helpPagePath('ci/variables/index', { anchor: 'cicd-variable-precedence' }),
+      );
+    });
+
+    it('renders docs link for flags', () => {
+      expect(findFlagsDocsLink().attributes('href')).toBe(
+        helpPagePath('ci/variables/index', { anchor: 'define-a-cicd-variable-in-the-ui' }),
+      );
+    });
+  });
 
   describe('validations', () => {
     describe('type dropdown', () => {
@@ -265,12 +296,22 @@ describe('CI Variable Drawer', () => {
         expect(findKeyField().props('tokenList')).toBe(awsTokenList);
       });
 
-      it('cannot submit with empty key', async () => {
-        expect(findConfirmBtn().attributes('disabled')).toBeDefined();
+      const keyFeedbackMessage = "A variable key can only contain letters, numbers, and '_'.";
+      describe.each`
+        key                      | feedbackMessage       | submitButtonDisabledState
+        ${'validKey123'}         | ${''}                 | ${undefined}
+        ${'VALID_KEY'}           | ${''}                 | ${undefined}
+        ${''}                    | ${''}                 | ${'true'}
+        ${'invalid!!key'}        | ${keyFeedbackMessage} | ${'true'}
+        ${'key with whitespace'} | ${keyFeedbackMessage} | ${'true'}
+        ${'multiline\nkey'}      | ${keyFeedbackMessage} | ${'true'}
+      `('key validation', ({ key, feedbackMessage, submitButtonDisabledState }) => {
+        it(`validates key ${key} correctly`, async () => {
+          await findKeyField().vm.$emit('input', key);
 
-        await findKeyField().vm.$emit('input', 'NEW_VARIABLE');
-
-        expect(findConfirmBtn().attributes('disabled')).toBeUndefined();
+          expect(findConfirmBtn().attributes('disabled')).toBe(submitButtonDisabledState);
+          expect(wrapper.text()).toContain(feedbackMessage);
+        });
       });
     });
 

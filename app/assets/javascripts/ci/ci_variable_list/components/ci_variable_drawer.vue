@@ -38,6 +38,7 @@ import CiEnvironmentsDropdown from './ci_environments_dropdown.vue';
 import { awsTokenList } from './ci_variable_autocomplete_tokens';
 
 const trackingMixin = Tracking.mixin({ label: DRAWER_EVENT_LABEL });
+const KEY_REGEX = /^\w+$/;
 
 export const i18n = {
   addVariable: s__('CiVariables|Add variable'),
@@ -52,6 +53,10 @@ export const i18n = {
   flags: __('Flags'),
   flagsLinkTitle: FLAG_LINK_TITLE,
   key: __('Key'),
+  keyFeedback: s__("CiVariables|A variable key can only contain letters, numbers, and '_'."),
+  keyHelpText: s__(
+    'CiVariables|You can use CI/CD variables with the same name in different places, but the variables might overwrite each other. %{linkStart}What is the order of precedence for variables?%{linkEnd}',
+  ),
   maskedField: s__('CiVariables|Mask variable'),
   maskedDescription: s__(
     'CiVariables|Variable will be masked in job logs. Requires values to meet regular expression requirements.',
@@ -157,7 +162,7 @@ export default {
       return regex.test(this.variable.value);
     },
     canSubmit() {
-      return this.variable.key.length > 0 && this.isValueValid;
+      return this.variable.key.length > 0 && this.isKeyValid && this.isValueValid;
     },
     getDrawerHeaderHeight() {
       return getContentWrapperHeight();
@@ -167,6 +172,9 @@ export default {
     },
     isExpanded() {
       return !this.variable.raw;
+    },
+    isKeyValid() {
+      return KEY_REGEX.test(this.variable.key);
     },
     isMaskedReqsMet() {
       return !this.variable.masked || this.isValueMasked;
@@ -320,6 +328,9 @@ export default {
   flagLink: helpPagePath('ci/variables/index', {
     anchor: 'define-a-cicd-variable-in-the-ui',
   }),
+  variablesPrecedenceLink: helpPagePath('ci/variables/index', {
+    anchor: 'cicd-variable-precedence',
+  }),
   i18n,
   variableOptions,
   deleteModal: {
@@ -413,6 +424,7 @@ export default {
               class="gl-display-flex"
               :title="$options.i18n.flagsLinkTitle"
               :href="$options.flagLink"
+              data-testid="ci-variable-flags-docs-link"
               target="_blank"
             >
               <gl-icon name="question-o" :size="14" />
@@ -451,6 +463,23 @@ export default {
         class="gl-border-none gl-pb-0! gl-mb-n5"
         data-testid="ci-variable-key"
       />
+      <p
+        v-if="variable.key.length > 0 && !isKeyValid"
+        class="gl-pt-3! gl-pb-0! gl-mb-0 gl-text-red-500 gl-border-none"
+      >
+        {{ $options.i18n.keyFeedback }}
+      </p>
+      <p class="gl-pt-3! gl-pb-0! gl-mb-0 gl-text-secondary gl-border-none">
+        <gl-sprintf :message="$options.i18n.keyHelpText">
+          <template #link="{ content }"
+            ><gl-link
+              :href="$options.variablesPrecedenceLink"
+              data-testid="ci-variable-precedence-docs-link"
+              >{{ content }}</gl-link
+            >
+          </template>
+        </gl-sprintf>
+      </p>
       <gl-form-group
         :label="$options.i18n.value"
         label-for="ci-variable-value"

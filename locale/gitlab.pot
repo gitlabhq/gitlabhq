@@ -10523,6 +10523,9 @@ msgstr ""
 msgid "CiStatusText|Warning"
 msgstr ""
 
+msgid "CiVariables|A variable key can only contain letters, numbers, and '_'."
+msgstr ""
+
 msgid "CiVariables|Add variable"
 msgstr ""
 
@@ -10653,6 +10656,9 @@ msgid "CiVariables|Variables specified here are %{boldStart}expanded%{boldEnd} a
 msgstr ""
 
 msgid "CiVariables|Variables store information, like passwords and secret keys, that you can use in job scripts. Each %{entity} can define a maximum of %{limit} variables."
+msgstr ""
+
+msgid "CiVariables|You can use CI/CD variables with the same name in different places, but the variables might overwrite each other. %{linkStart}What is the order of precedence for variables?%{linkEnd}"
 msgstr ""
 
 msgid "CiVariables|You have reached the maximum number of variables available. To add new variables, you must reduce the number of defined variables."

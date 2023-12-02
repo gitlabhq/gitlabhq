@@ -16,6 +16,8 @@ RSpec.describe ProtectedBranches::CreateService, feature_category: :compliance_m
 
     describe '#execute' do
       let(:name) { 'master' }
+      let(:group_cache_service_double) { instance_double(ProtectedBranches::CacheService) }
+      let(:project_cache_service_double) { instance_double(ProtectedBranches::CacheService) }
 
       it 'creates a new protected branch' do
         expect { service.execute }.to change(ProtectedBranch, :count).by(1)
@@ -24,8 +26,12 @@ RSpec.describe ProtectedBranches::CreateService, feature_category: :compliance_m
       end
 
       it 'refreshes the cache' do
-        expect_next_instance_of(ProtectedBranches::CacheService) do |cache_service|
-          expect(cache_service).to receive(:refresh)
+        expect(ProtectedBranches::CacheService).to receive(:new).with(entity, user, params).and_return(group_cache_service_double)
+        expect(group_cache_service_double).to receive(:refresh)
+
+        if entity.is_a?(Group)
+          expect(ProtectedBranches::CacheService).to receive(:new).with(project, user, params).and_return(project_cache_service_double)
+          expect(project_cache_service_double).to receive(:refresh)
         end
 
         service.execute
@@ -58,14 +64,14 @@ RSpec.describe ProtectedBranches::CreateService, feature_category: :compliance_m
 
   context 'with entity project' do
     let_it_be_with_reload(:entity) { create(:project) }
-
     let(:user) { entity.first_owner }
 
     it_behaves_like 'execute with entity'
   end
 
   context 'with entity group' do
-    let_it_be_with_reload(:entity) { create(:group) }
+    let_it_be_with_reload(:project) { create(:project, :in_group) }
+    let_it_be_with_reload(:entity) { project.group }
     let_it_be_with_reload(:user) { create(:user) }
 
     before do
