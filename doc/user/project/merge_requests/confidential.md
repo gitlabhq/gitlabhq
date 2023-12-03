@@ -45,8 +45,9 @@ Prerequisites:
 
 To create a confidential merge request:
 
-1. Go to the confidential issue's page. Scroll below the issue description and
-   select **Create confidential merge request**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Issues** and find the issue you want to create a merge request for.
+1. Scroll below the issue description, and select **Create confidential merge request**.
 1. Select the item that meets your needs:
    - *To create both a branch and a merge request,* select
      **Create confidential merge request and branch**. Your merge request will

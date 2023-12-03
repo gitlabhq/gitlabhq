@@ -24,7 +24,8 @@ in our development documentation.
 
 To view the diff of changes included in a merge request:
 
-1. Go to your merge request.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Merge requests** and find your merge request.
 1. Below the merge request title, select **Changes**.
 1. If the merge request changes many files, you can jump directly to a specific file:
    1. Select **Show file browser** (**{file-tree}**) or press <kbd>F</kbd> to display the file tree.
@@ -44,7 +45,9 @@ so it [applies to all merge requests](#in-all-merge-requests-show-only-one-file-
 
 To temporarily change your viewing preferences for a specific merge request:
 
-1. Go to your merge request, and below the merge request title, select **Changes**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Merge requests** and find your merge request.
+1. Below the merge request title, select **Changes**.
 1. Select **Preferences** (**{settings}**).
 1. Select or clear the **Show one file at a time** checkbox.
 
@@ -70,7 +73,9 @@ merge requests. To view other changed files, either:
 
 You can view the changes inline:
 
-1. Go to your merge request, and below the title, select **Changes**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Merge requests** and find your merge request.
+1. Below the title, select **Changes**.
 1. Select **Preferences** (**{settings}**).
 1. In the **Compare changes** area, select **Inline**.
 
@@ -83,7 +88,9 @@ The changes are displayed after the original text.
 Depending on the length of the changes in your merge request, you may find it
 easier to view the changes inline, or side-by-side:
 
-1. Go to your merge request, and below the title, select **Changes**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Merge requests** and find your merge request.
+1. Below the title, select **Changes**.
 1. Select **Preferences** (**{settings}**).
 1. In the **Compare changes** area, select **Side-by-side**.
 
@@ -95,14 +102,18 @@ The changes are displayed across from one another.
 
 When reviewing code changes, you can hide inline comments:
 
-1. Go to your merge request, and below the title, select **Changes**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Merge requests** and find your merge request.
+1. Below the title, select **Changes**.
 1. Scroll to the file that contains the comments you want to hide.
 1. Scroll to the line the comment is attached to, and select **Collapse** (**{collapse}**):
    ![collapse a comment](img/collapse-comment_v14_8.png)
 
 To expand inline comments and show them again:
 
-1. Go to your merge request, and below the title, select **Changes**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Merge requests** and find your merge request.
+1. Below the title, select **Changes**.
 1. Scroll to the file that contains the collapsed comments you want to show.
 1. Scroll to the line the comment is attached to, and select the user avatar:
    ![expand a comment](img/expand-comment_v14_8.png)
@@ -112,7 +123,9 @@ To expand inline comments and show them again:
 Whitespace changes can make it more difficult to see the substantive changes in
 a merge request. You can choose to hide or show whitespace changes:
 
-1. Go to your merge request, and below the title, select **Changes**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Merge requests** and find your merge request.
+1. Below the title, select **Changes**.
 1. Before the list of changed files, select **Preferences** (**{settings}**).
 1. Select or clear the **Show whitespace changes** checkbox:
 
@@ -126,7 +139,9 @@ a merge request. You can choose to hide or show whitespace changes:
 When reviewing a merge request with many files multiple times, you can ignore files
 you've already reviewed. To hide files that haven't changed since your last review:
 
-1. Go to your merge request, and below the title, select **Changes**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Merge requests** and find your merge request.
+1. Below the title, select **Changes**.
 1. In the file's header, select the **Viewed** checkbox.
 
 Files marked as viewed are not shown to you again unless either:
