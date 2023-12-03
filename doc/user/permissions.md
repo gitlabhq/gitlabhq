@@ -438,8 +438,8 @@ For more information, see
 
 Users with the Minimal Access role do not:
 
-- Count as licensed seats on self-managed Ultimate subscriptions or any GitLab.com subscriptions.
 - Automatically have access to projects and subgroups in that root group.
+- Count as licensed seats on self-managed Ultimate subscriptions or any GitLab.com subscriptions, provided the user has no other role anywhere in the instance or in the GitLab SaaS namespace.
 
 Owners must explicitly add these users to the specific subgroups and
 projects.

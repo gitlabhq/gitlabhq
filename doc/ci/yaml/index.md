@@ -2513,8 +2513,8 @@ job2:
 **Related topics**:
 
 - [Run your CI/CD jobs in Docker containers](../docker/using_docker_images.md).
-- [How runner pull policies work](https://docs.gitlab.com/runner/executors/docker.html#how-pull-policies-work).
-- [Using multiple pull policies](https://docs.gitlab.com/runner/executors/docker.html#using-multiple-pull-policies).
+- [Configure how runners pull images](https://docs.gitlab.com/runner/executors/docker.html#configure-how-runners-pull-images).
+- [Set multiple pull policies](https://docs.gitlab.com/runner/executors/docker.html#set-multiple-pull-policies).
 
 ### `inherit`
 
@@ -4361,8 +4361,8 @@ job2:
 **Related topics**:
 
 - [Run your CI/CD jobs in Docker containers](../docker/using_docker_images.md).
-- [How runner pull policies work](https://docs.gitlab.com/runner/executors/docker.html#how-pull-policies-work).
-- [Using multiple pull policies](https://docs.gitlab.com/runner/executors/docker.html#using-multiple-pull-policies).
+- [Configure how runners pull images](https://docs.gitlab.com/runner/executors/docker.html#configure-how-runners-pull-images).
+- [Set multiple pull policies](https://docs.gitlab.com/runner/executors/docker.html#set-multiple-pull-policies).
 
 ### `stage`
 
