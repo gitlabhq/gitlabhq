@@ -11,7 +11,8 @@ module QA
         Runtime::ApplicationSettings.restore_application_settings(:default_branch_name)
       end
 
-      it 'sets the default branch name for a new project', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347837' do
+      it 'sets the default branch name for a new project', :reliable,
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347837' do
         project = create(:project, :with_readme, name: 'default-branch-name')
 
         # It takes a moment to create the project. We wait until we
@@ -27,7 +28,8 @@ module QA
         end
       end
 
-      it 'allows a project to be created via the CLI with a different default branch name', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347838' do
+      it 'allows a project to be created via the CLI with a different default branch name', :reliable,
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347838' do
         project_name = "default-branch-name-via-cli-#{SecureRandom.hex(8)}"
         group = create(:group)
 
