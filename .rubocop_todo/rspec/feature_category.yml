@@ -5312,7 +5312,6 @@ RSpec/FeatureCategory:
     - 'spec/tooling/lib/tooling/find_codeowners_spec.rb'
     - 'spec/tooling/lib/tooling/helm3_client_spec.rb'
     - 'spec/tooling/lib/tooling/kubernetes_client_spec.rb'
-    - 'spec/tooling/lib/tooling/parallel_rspec_runner_spec.rb'
     - 'spec/tooling/lib/tooling/test_map_generator_spec.rb'
     - 'spec/tooling/lib/tooling/test_map_packer_spec.rb'
     - 'spec/tooling/merge_request_spec.rb'

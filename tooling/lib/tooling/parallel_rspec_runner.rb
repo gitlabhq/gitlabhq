@@ -2,6 +2,8 @@
 
 require 'knapsack'
 require 'fileutils'
+require 'json'
+require_relative './helpers/duration_formatter'
 
 module Knapsack
   module Distributors
@@ -70,6 +72,9 @@ end
 # https://github.com/ArturT/knapsack/blob/v1.21.1/lib/knapsack/runners/rspec_runner.rb
 module Tooling
   class ParallelRSpecRunner
+    include Tooling::Helpers::DurationFormatter
+
+    # rubocop:disable Gitlab/Json -- standard JSON is sufficient
     def self.run(rspec_args: nil, filter_tests_file: nil)
       new(rspec_args: rspec_args, filter_tests_file: filter_tests_file).run
     end
@@ -80,10 +85,11 @@ module Tooling
     end
 
     def run
-      if ENV['KNAPSACK_RSPEC_SUITE_REPORT_PATH']
+      if ENV['GITLAB_CI'] && ENV['KNAPSACK_RSPEC_SUITE_REPORT_PATH']
+        expected_duration_report = parse_expected_duration_from_master_report
         knapsack_dir = File.dirname(ENV['KNAPSACK_RSPEC_SUITE_REPORT_PATH'])
         FileUtils.mkdir_p(knapsack_dir)
-        File.write(File.join(knapsack_dir, 'node_specs.txt'), node_tests.join("\n"))
+        File.write(File.join(knapsack_dir, 'node_specs_expected_duration.json'), JSON.dump(expected_duration_report))
       end
 
       if node_tests.empty?
@@ -99,6 +105,29 @@ module Tooling
     private
 
     attr_reader :filter_tests_file, :rspec_args
+
+    def parse_expected_duration_from_master_report
+      master_report = JSON.parse(File.read(ENV['KNAPSACK_RSPEC_SUITE_REPORT_PATH']))
+      return unless master_report
+
+      puts "Parsing expected rspec suite duration..."
+      duration_total = 0
+
+      expected_duration_report = {}
+
+      node_tests.each do |file|
+        if master_report[file]
+          duration_total += master_report[file]
+          expected_duration_report[file] = master_report[file]
+        else
+          puts "#{file} not found in master report"
+        end
+      end
+
+      puts "RSpec suite is expected to take #{readable_duration(duration_total)}."
+
+      expected_duration_report
+    end
 
     def rspec_command
       %w[bundle exec rspec].tap do |cmd|
@@ -129,5 +158,6 @@ module Tooling
           builder.filter_tests = filter_tests
         end.allocator
     end
+    # rubocop:enable Gitlab/Json
   end
 end

@@ -163,7 +163,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     before do
       stub_const('Ci::Refs::UnlockPreviousPipelinesWorker', unlock_previous_pipelines_worker_spy)
-      stub_feature_flags(ci_stop_unlock_pipelines: false)
     end
 
     shared_examples 'not unlocking pipelines' do |event:|
@@ -202,42 +201,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       it_behaves_like 'unlocking pipelines', event: :skip
       it_behaves_like 'unlocking pipelines', event: :cancel
       it_behaves_like 'unlocking pipelines', event: :block
-
-      context 'and ci_stop_unlock_pipelines is enabled' do
-        before do
-          stub_feature_flags(ci_stop_unlock_pipelines: true)
-        end
-
-        it_behaves_like 'not unlocking pipelines', event: :succeed
-        it_behaves_like 'not unlocking pipelines', event: :drop
-        it_behaves_like 'not unlocking pipelines', event: :skip
-        it_behaves_like 'not unlocking pipelines', event: :cancel
-        it_behaves_like 'not unlocking pipelines', event: :block
-      end
-
-      context 'and ci_unlock_non_successful_pipelines is disabled' do
-        before do
-          stub_feature_flags(ci_unlock_non_successful_pipelines: false)
-        end
-
-        it_behaves_like 'unlocking pipelines', event: :succeed
-        it_behaves_like 'not unlocking pipelines', event: :drop
-        it_behaves_like 'not unlocking pipelines', event: :skip
-        it_behaves_like 'not unlocking pipelines', event: :cancel
-        it_behaves_like 'not unlocking pipelines', event: :block
-
-        context 'and ci_stop_unlock_pipelines is enabled' do
-          before do
-            stub_feature_flags(ci_stop_unlock_pipelines: true)
-          end
-
-          it_behaves_like 'not unlocking pipelines', event: :succeed
-          it_behaves_like 'not unlocking pipelines', event: :drop
-          it_behaves_like 'not unlocking pipelines', event: :skip
-          it_behaves_like 'not unlocking pipelines', event: :cancel
-          it_behaves_like 'not unlocking pipelines', event: :block
-        end
-      end
     end
 
     context 'when transitioning to a non-unlockable state' do
@@ -246,14 +209,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
 
       it_behaves_like 'not unlocking pipelines', event: :run
-
-      context 'and ci_unlock_non_successful_pipelines is disabled' do
-        before do
-          stub_feature_flags(ci_unlock_non_successful_pipelines: false)
-        end
-
-        it_behaves_like 'not unlocking pipelines', event: :run
-      end
     end
   end
 

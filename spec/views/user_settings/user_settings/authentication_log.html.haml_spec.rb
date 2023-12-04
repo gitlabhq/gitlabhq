@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'profiles/audit_log' do
+RSpec.describe 'user_settings/user_settings/authentication_log', feature_category: :system_access do
   let(:user) { create(:user) }
 
   before do

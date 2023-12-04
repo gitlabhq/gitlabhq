@@ -210,6 +210,7 @@ InitializerConnections.raise_if_new_database_connection do
 
       draw :snippets
       draw :profile
+      draw :user_settings
 
       post '/mailgun/webhooks' => 'mailgun/webhooks#process_webhook'
 

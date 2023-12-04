@@ -1,14 +1,14 @@
 <script>
 import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
-import { GlColumnChart } from '@gitlab/ui/dist/charts';
+import { GlColumnChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import dateFormat from '~/lib/dateformat';
 import { getDateInPast } from '~/lib/utils/datetime_utility';
 import { __, s__, sprintf } from '~/locale';
+import { dateFormats } from '~/analytics/shared/constants';
 import CiCdAnalyticsCharts from '~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_charts.vue';
 import {
   DEFAULT,
   CHART_CONTAINER_HEIGHT,
-  CHART_DATE_FORMAT,
   INNER_CHART_HEIGHT,
   ONE_WEEK_AGO_DAYS,
   ONE_MONTH_AGO_DAYS,
@@ -51,6 +51,7 @@ export default {
   components: {
     GlAlert,
     GlColumnChart,
+    GlChartSeriesLabel,
     GlSkeletonLoader,
     StatisticsList,
     CiCdAnalyticsCharts,
@@ -67,6 +68,8 @@ export default {
       failureType: null,
       analytics: { ...defaultAnalyticsValues },
       counts: { ...defaultCountValues },
+      tooltipTitle: '',
+      tooltipContent: [],
     };
   },
   apollo: {
@@ -248,6 +251,15 @@ export default {
         ],
       };
     },
+    formatTooltipText({ value, seriesData }) {
+      this.tooltipTitle = value;
+      this.tooltipContent = seriesData.map(({ seriesId, seriesName, color, value: metric }) => ({
+        key: seriesId,
+        name: seriesName,
+        color,
+        value: metric[1],
+      }));
+    },
   },
   successColor: '#366800',
   chartContainerHeight: CHART_CONTAINER_HEIGHT,
@@ -286,9 +298,9 @@ export default {
     lastYear: __('Last year'),
   },
   get chartRanges() {
-    const today = dateFormat(new Date(), CHART_DATE_FORMAT);
+    const today = dateFormat(new Date(), dateFormats.defaultDate);
     const pastDate = (timeScale) =>
-      dateFormat(getDateInPast(new Date(), timeScale), CHART_DATE_FORMAT);
+      dateFormat(getDateInPast(new Date(), timeScale), dateFormats.defaultDate);
     return {
       lastWeekRange: sprintf(__('%{oneWeekAgo} - %{today}'), {
         oneWeekAgo: pastDate(ONE_WEEK_AGO_DAYS),
@@ -335,7 +347,25 @@ export default {
     <template v-if="!loading">
       <hr />
       <h4 class="gl-my-4">{{ __('Pipelines charts') }}</h4>
-      <ci-cd-analytics-charts :charts="areaCharts" :chart-options="$options.areaChartOptions" />
+      <ci-cd-analytics-charts
+        :charts="areaCharts"
+        :chart-options="$options.areaChartOptions"
+        :format-tooltip-text="formatTooltipText"
+      >
+        <template #tooltip-title>{{ tooltipTitle }}</template>
+        <template #tooltip-content>
+          <div
+            v-for="{ key, name, color, value } in tooltipContent"
+            :key="key"
+            class="gl-display-flex gl-justify-content-space-between"
+          >
+            <gl-chart-series-label class="gl-font-sm gl-mr-7" :color="color">
+              {{ name }}
+            </gl-chart-series-label>
+            <div class="gl-font-weight-bold">{{ value }}</div>
+          </div>
+        </template>
+      </ci-cd-analytics-charts>
     </template>
   </div>
 </template>

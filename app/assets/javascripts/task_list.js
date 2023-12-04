@@ -2,6 +2,7 @@ import $ from 'jquery';
 import 'deckar01-task_list';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
+import { TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
 import axios from './lib/utils/axios_utils';
 
 export default class TaskList {
@@ -94,7 +95,8 @@ export default class TaskList {
     const { index, checked, lineNumber, lineSource } = e.detail;
     const patchData = {};
 
-    patchData[this.dataType] = {
+    const dataType = this.dataType === TYPE_INCIDENT ? TYPE_ISSUE : this.dataType;
+    patchData[dataType] = {
       [this.fieldName]: $target.val(),
       lock_version: this.lockVersion,
       update_task: {

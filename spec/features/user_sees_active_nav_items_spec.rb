@@ -32,7 +32,7 @@ RSpec.describe 'User sees correct active nav items in the super sidebar', :js, f
 
     context 'when visiting authentication logs' do
       before do
-        visit audit_log_profile_path
+        visit user_settings_authentication_log_path
       end
 
       it 'renders the side navigation with the correct submenu set as active' do

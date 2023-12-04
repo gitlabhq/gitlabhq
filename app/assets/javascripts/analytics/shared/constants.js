@@ -14,11 +14,11 @@ export const DATE_RANGE_LIMIT = 180;
 export const DEFAULT_DATE_RANGE = 29; // 30 including current date
 export const PROJECTS_PER_PAGE = 50;
 
-const { isoDate, mediumDate } = masks;
+const { isoDate } = masks;
 export const dateFormats = {
   isoDate,
-  defaultDate: mediumDate,
-  defaultDateTime: 'mmm d, yyyy h:MMtt',
+  defaultDate: 'mmm dd, yyyy',
+  defaultDateTime: 'mmm dd, yyyy h:MMtt',
   month: 'mmmm',
 };
 

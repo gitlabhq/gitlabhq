@@ -3295,7 +3295,6 @@ Style/InlineDisableAnnotation:
     - 'spec/tooling/lib/tooling/helpers/file_handler_spec.rb'
     - 'spec/tooling/lib/tooling/helpers/predictive_tests_helper_spec.rb'
     - 'spec/tooling/lib/tooling/job_metrics_spec.rb'
-    - 'spec/tooling/lib/tooling/parallel_rspec_runner_spec.rb'
     - 'spec/tooling/lib/tooling/predictive_tests_spec.rb'
     - 'spec/uploaders/file_uploader_spec.rb'
     - 'spec/uploaders/object_storage_spec.rb'

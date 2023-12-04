@@ -583,7 +583,7 @@ RSpec/FactoryBot/AvoidCreate:
     - 'spec/views/notify/import_issues_csv_email.html.haml_spec.rb'
     - 'spec/views/notify/pipeline_failed_email.text.erb_spec.rb'
     - 'spec/views/notify/push_to_merge_request_email.text.haml_spec.rb'
-    - 'spec/views/profiles/audit_log.html.haml_spec.rb'
+    - 'spec/views/user_settings/user_settings/authentication_log.html.haml_spec.rb'
     - 'spec/views/profiles/keys/_key.html.haml_spec.rb'
     - 'spec/views/profiles/keys/_key_details.html.haml_spec.rb'
     - 'spec/views/profiles/notifications/show.html.haml_spec.rb'

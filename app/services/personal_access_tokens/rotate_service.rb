@@ -40,6 +40,12 @@ module PersonalAccessTokens
 
     attr_reader :current_user, :token
 
+    def expires_at(params)
+      return params[:expires_at] if params[:expires_at]
+
+      params[:expires_at] || EXPIRATION_PERIOD.from_now.to_date
+    end
+
     def success_response(new_token)
       ServiceResponse.success(payload: { personal_access_token: new_token })
     end
@@ -49,12 +55,11 @@ module PersonalAccessTokens
     end
 
     def create_token_params(token, params)
-      expires_at = params[:expires_at] || (Date.today + EXPIRATION_PERIOD)
       {  name: token.name,
          previous_personal_access_token_id: token.id,
          impersonation: token.impersonation,
          scopes: token.scopes,
-         expires_at: expires_at }
+         expires_at: expires_at(params) }
     end
 
     def update_bot_membership(target_user, expires_at)
@@ -64,3 +69,5 @@ module PersonalAccessTokens
     end
   end
 end
+
+PersonalAccessTokens::RotateService.prepend_mod

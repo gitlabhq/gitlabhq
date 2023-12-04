@@ -273,26 +273,6 @@ module Ci
       end
 
       after_transition any => UNLOCKABLE_STATUSES do |pipeline|
-        # This is a temporary flag that we added just in case we need to totally
-        # stop unlocking pipelines due to unexpected issues during rollout.
-        next if Feature.enabled?(:ci_stop_unlock_pipelines, pipeline.project)
-
-        next unless Feature.enabled?(:ci_unlock_non_successful_pipelines, pipeline.project)
-
-        pipeline.run_after_commit do
-          Ci::Refs::UnlockPreviousPipelinesWorker.perform_async(pipeline.ci_ref_id)
-        end
-      end
-
-      # TODO: Remove this block once we've completed roll-out of ci_unlock_non_successful_pipelines
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/428408
-      after_transition any => :success do |pipeline|
-        # This is a temporary flag that we added just in case we need to totally
-        # stop unlocking pipelines due to unexpected issues during rollout.
-        next if Feature.enabled?(:ci_stop_unlock_pipelines, pipeline.project)
-
-        next unless Feature.disabled?(:ci_unlock_non_successful_pipelines, pipeline.project)
-
         pipeline.run_after_commit do
           Ci::Refs::UnlockPreviousPipelinesWorker.perform_async(pipeline.ci_ref_id)
         end

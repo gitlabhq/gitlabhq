@@ -140,30 +140,6 @@ RSpec.describe ProfilesController, :request_store do
     end
   end
 
-  describe 'GET audit_log' do
-    let(:auth_event) { create(:authentication_event, user: user) }
-
-    it 'tracks search event', :snowplow do
-      sign_in(user)
-
-      get :audit_log
-
-      expect_snowplow_event(
-        category: 'ProfilesController',
-        action: 'search_audit_event',
-        user: user
-      )
-    end
-
-    it 'loads page correctly' do
-      sign_in(user)
-
-      get :audit_log
-
-      expect(response).to have_gitlab_http_status(:success)
-    end
-  end
-
   describe 'PUT update_username' do
     let(:namespace) { user.namespace }
     let(:gitlab_shell) { Gitlab::Shell.new }

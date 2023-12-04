@@ -1,7 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
-import { GlAreaChart } from '@gitlab/ui/dist/charts';
 import { debounce, uniq } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
@@ -12,6 +11,7 @@ import { __ } from '~/locale';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
 import { xAxisLabelFormatter, dateFormatter } from '../utils';
+import ContributorAreaChart from './contributor_area_chart.vue';
 
 const GRAPHS_PATH_REGEX = /^(.*?)\/-\/graphs/g;
 
@@ -24,9 +24,9 @@ export default {
     },
   },
   components: {
-    GlAreaChart,
     GlButton,
     GlLoadingIcon,
+    ContributorAreaChart,
     RefSelector,
   },
   props: {
@@ -249,10 +249,8 @@ export default {
       <div data-testid="contributors-charts">
         <h4 class="gl-mb-2 gl-mt-5">{{ __('Commits to') }} {{ branch }}</h4>
         <span>{{ __('Excluding merge commits. Limited to 6,000 commits.') }}</span>
-        <gl-area-chart
+        <contributor-area-chart
           class="gl-mb-5"
-          responsive
-          width="auto"
           :data="masterChartData"
           :option="masterChartOptions"
           :height="masterChartHeight"
@@ -269,9 +267,7 @@ export default {
             <p class="gl-mb-3">
               {{ n__('%d commit', '%d commits', contributor.commits) }} ({{ contributor.email }})
             </p>
-            <gl-area-chart
-              responsive
-              width="auto"
+            <contributor-area-chart
               :data="contributor.dates"
               :option="individualChartOptions"
               :height="individualChartHeight"

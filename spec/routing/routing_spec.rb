@@ -131,10 +131,6 @@ RSpec.describe ProfilesController, "routing" do
     expect(get("/-/profile/account")).to route_to('profiles/accounts#show')
   end
 
-  it "to #audit_log" do
-    expect(get("/-/profile/audit_log")).to route_to('profiles#audit_log')
-  end
-
   it "to #reset_feed_token" do
     expect(put("/-/profile/reset_feed_token")).to route_to('profiles#reset_feed_token')
   end
@@ -395,5 +391,13 @@ end
 RSpec.describe JwksController, "routing" do
   it "to #index" do
     expect(get('/-/jwks')).to route_to('jwks#index')
+  end
+end
+
+# user_settings_authentication_log GET  /-/user_settings/authentication_log(.:format) system_access/user_settings#authentication_log
+
+RSpec.describe UserSettings::UserSettingsController, 'routing', feature_category: :system_access do
+  it 'to #authentication_log' do
+    expect(get('/-/user_settings/authentication_log')).to route_to('user_settings/user_settings#authentication_log')
   end
 end
