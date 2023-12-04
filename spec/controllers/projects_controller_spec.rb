@@ -362,6 +362,25 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       end
     end
 
+    context 'when project default branch is corrupted' do
+      let_it_be(:corrupted_project) { create(:project, :small_repo, :public) }
+
+      before do
+        sign_in(user)
+
+        expect_next_instance_of(Repository) do |repository|
+          expect(repository).to receive(:root_ref).and_raise(Gitlab::Git::CommandError, 'get default branch').twice
+        end
+      end
+
+      it 'renders the missing default branch view' do
+        get :show, params: { namespace_id: corrupted_project.namespace, id: corrupted_project }
+
+        expect(response).to render_template('projects/missing_default_branch')
+        expect(response).to have_gitlab_http_status(:service_unavailable)
+      end
+    end
+
     context "rendering default project view" do
       let_it_be(:public_project) { create(:project, :public, :repository) }
 

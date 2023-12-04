@@ -79,6 +79,7 @@ export const BLAME_DATA_QUERY_RESPONSE_MOCK = {
                       titleHtml: 'Upload New File',
                       message: 'Upload New File',
                       authoredDate: '2022-10-31T10:38:30+00:00',
+                      authorName: 'Peter',
                       authorGravatar: 'path/to/gravatar',
                       webPath: '/commit/1234',
                       author: {},

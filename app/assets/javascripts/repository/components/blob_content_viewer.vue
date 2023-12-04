@@ -204,7 +204,8 @@ export default {
       return this.blobInfo.storedExternally && this.blobInfo.externalStorage === LFS_STORAGE;
     },
     isBlameEnabled() {
-      return this.glFeatures.blobBlameInfo && this.blobInfo.language === 'json'; // This feature is currently scoped to JSON files
+      // Blame information within the blob viewer is not yet supported in our fallback (HAML) viewers
+      return this.glFeatures.blobBlameInfo && !this.useFallback;
     },
   },
   watch: {
@@ -295,7 +296,14 @@ export default {
     },
     handleToggleBlame() {
       this.switchViewer(SIMPLE_BLOB_VIEWER);
-      this.showBlame = !this.showBlame;
+
+      if (this.$route?.query?.plain === '0') {
+        // If the user is not viewing plain code and clicks the blame button, we always want to show blame info
+        // For instance, when viewing the rendered version of a Markdown file
+        this.showBlame = true;
+      } else {
+        this.showBlame = !this.showBlame;
+      }
 
       const blame = this.showBlame === true ? '1' : '0';
       if (this.$route?.query?.blame === blame) return;

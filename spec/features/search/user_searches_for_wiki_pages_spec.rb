@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'User searches for wiki pages', :js, :clean_gitlab_redis_rate_limiting,
   feature_category: :global_search do
+  include ListboxHelpers
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, :wiki_repo, namespace: user.namespace) }
   let_it_be(:wiki_page) do
@@ -29,7 +30,7 @@ RSpec.describe 'User searches for wiki pages', :js, :clean_gitlab_redis_rate_lim
       wait_for_requests
 
       page.within('[data-testid="project-filter"]') do
-        click_on(project.name)
+        select_listbox_item project.name
       end
 
       fill_in('dashboard_search', with: search_term)

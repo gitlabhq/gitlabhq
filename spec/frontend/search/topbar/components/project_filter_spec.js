@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { cloneDeep } from 'lodash';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
@@ -27,6 +28,8 @@ describe('ProjectFilter', () => {
 
   const defaultProps = {
     initialData: null,
+    projectInitialJson: MOCK_PROJECT,
+    searchHandler: jest.fn(),
   };
 
   const createComponent = (initialState, props) => {
@@ -66,18 +69,6 @@ describe('ProjectFilter', () => {
   describe('events', () => {
     beforeEach(() => {
       createComponent();
-    });
-
-    describe('when @search is emitted', () => {
-      const search = 'test';
-
-      beforeEach(() => {
-        findSearchableDropdown().vm.$emit('search', search);
-      });
-
-      it('calls fetchProjects with the search paramter', () => {
-        expect(actionSpies.fetchProjects).toHaveBeenCalledWith(expect.any(Object), search);
-      });
     });
 
     describe('when @change is emitted', () => {
@@ -139,17 +130,17 @@ describe('ProjectFilter', () => {
     describe('selectedProject', () => {
       describe('when initialData is null', () => {
         beforeEach(() => {
-          createComponent();
+          createComponent({}, { projectInitialJson: ANY_OPTION });
         });
 
         it('sets selectedProject to ANY_OPTION', () => {
-          expect(wrapper.vm.selectedProject).toBe(ANY_OPTION);
+          expect(cloneDeep(wrapper.vm.selectedProject)).toStrictEqual(ANY_OPTION);
         });
       });
 
       describe('when initialData is set', () => {
         beforeEach(() => {
-          createComponent({}, { initialData: MOCK_PROJECT });
+          createComponent({ projectInitialJson: MOCK_PROJECT }, {});
         });
 
         it('sets selectedProject to the initialData', () => {
@@ -170,7 +161,12 @@ describe('ProjectFilter', () => {
       initialData ? 'has' : 'does not have'
     } an initial project`, () => {
       beforeEach(() => {
-        createComponent({ query: { ...MOCK_QUERY, nav_source: navSource } }, { initialData });
+        createComponent(
+          {
+            query: { ...MOCK_QUERY, nav_source: navSource },
+          },
+          { projectInitialJson: { ...initialData } },
+        );
       });
 
       it(`${callMethod ? 'does' : 'does not'} call setFrequentProject`, () => {

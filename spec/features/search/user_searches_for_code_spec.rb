@@ -40,7 +40,7 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
         wait_for_requests
 
         page.within('[data-testid="project-filter"]') do
-          click_on(project.name)
+          select_listbox_item(project.name)
         end
       end
 
@@ -107,6 +107,7 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
           visit(project_tree_path(project, ref_name))
 
           submit_search('gitlab-grack')
+          wait_for_requests
           select_search_scope('Code')
         end
 

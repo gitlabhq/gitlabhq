@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'User searches for merge requests', :js, :clean_gitlab_redis_rate_limiting, feature_category: :global_search do
+  include ListboxHelpers
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, namespace: user.namespace) }
   let_it_be(:merge_request1) { create(:merge_request, title: 'Merge Request Foo', source_project: project, target_project: project, created_at: 1.hour.ago) }
@@ -60,7 +61,7 @@ RSpec.describe 'User searches for merge requests', :js, :clean_gitlab_redis_rate
       wait_for_requests
 
       page.within('[data-testid="project-filter"]') do
-        click_on(project.name)
+        select_listbox_item project.name
       end
 
       search_for_mr(merge_request1.title)

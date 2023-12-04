@@ -1,38 +1,31 @@
 <script>
-import {
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownSectionHeader,
-  GlSearchBoxByType,
-  GlLoadingIcon,
-  GlIcon,
-  GlButton,
-  GlSkeletonLoader,
-  GlTooltipDirective,
-} from '@gitlab/ui';
-import { __ } from '~/locale';
+import { GlCollapsibleListbox, GlAvatar } from '@gitlab/ui';
+import { debounce } from 'lodash';
+import SafeHtml from '~/vue_shared/directives/safe_html';
+import highlight from '~/lib/utils/highlight';
+import { truncateNamespace } from '~/lib/utils/text_utility';
+import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { __, s__, n__ } from '~/locale';
 import { ANY_OPTION } from '../constants';
-import SearchableDropdownItem from './searchable_dropdown_item.vue';
 
 export default {
-  i18n: {
-    clearLabel: __('Clear'),
-    frequentlySearched: __('Frequently searched'),
-  },
   name: 'SearchableDropdown',
   components: {
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownSectionHeader,
-    GlSearchBoxByType,
-    GlLoadingIcon,
-    GlIcon,
-    GlButton,
-    GlSkeletonLoader,
-    SearchableDropdownItem,
+    GlAvatar,
+    GlCollapsibleListbox,
   },
   directives: {
-    GlTooltip: GlTooltipDirective,
+    SafeHtml,
+  },
+  i18n: {
+    frequentlySearched: __('Frequently searched'),
+    availableGroups: s__('GlobalSearch|All available groups'),
+    nothingFound: s__('GlobalSearch|Nothing found…'),
+    reset: s__('GlobalSearch|Reset'),
+    itemsFound(count) {
+      return n__('%d item found', '%d items found', count);
+    },
   },
   props: {
     headerText: {
@@ -41,11 +34,6 @@ export default {
       default: "__('Filter')",
     },
     name: {
-      type: String,
-      required: false,
-      default: 'name',
-    },
-    fullName: {
       type: String,
       required: false,
       default: 'name',
@@ -69,127 +57,167 @@ export default {
       required: false,
       default: () => [],
     },
+    searchHandler: {
+      type: Function,
+      required: true,
+    },
+    labelId: {
+      type: String,
+      required: false,
+      default: 'labelId',
+    },
   },
   data() {
     return {
       searchText: '',
       hasBeenOpened: false,
+      showableItems: [],
+      searchInProgress: false,
     };
   },
-  computed: {
-    showFrequentItems() {
-      return !this.searchText && this.frequentItems.length > 0;
+  computed: {},
+  watch: {
+    items() {
+      if (this.searchText === '') {
+        this.showableItems = this.defaultItems();
+      }
     },
   },
+  created() {
+    this.showableItems = this.defaultItems();
+  },
   methods: {
-    isSelected(selected) {
-      return selected.id === this.selectedItem.id;
+    defaultItems() {
+      const frequentItems = this.convertItemsFormat([...this.frequentItems]);
+      const nonFrequentItems = this.convertItemsFormat([
+        ...this.uniqueItems(this.items, this.frequentItems),
+      ]);
+
+      return [
+        {
+          text: '',
+          options: [
+            {
+              value: ANY_OPTION.name,
+              text: ANY_OPTION.name,
+              ...ANY_OPTION,
+            },
+          ],
+        },
+        {
+          text: this.$options.i18n.frequentlySearched,
+          options: frequentItems,
+        },
+        {
+          text: this.$options.i18n.availableGroups,
+          options: nonFrequentItems,
+        },
+      ].filter((group) => {
+        return group.options.length > 0;
+      });
+    },
+    search(search) {
+      this.searchText = search;
+      this.searchInProgress = true;
+
+      if (search !== '') {
+        debounce(() => {
+          this.searchHandler(this.searchText);
+          this.showableItems = this.convertItemsFormat([...this.items]);
+        }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS)();
+
+        return;
+      }
+
+      this.showableItems = this.defaultItems();
     },
     openDropdown() {
       if (!this.hasBeenOpened) {
         this.hasBeenOpened = true;
         this.$emit('first-open');
       }
-
-      this.$emit('search', this.searchText);
     },
     resetDropdown() {
       this.$emit('change', ANY_OPTION);
     },
-    updateDropdown(item) {
-      this.$emit('change', item);
+    convertItemsFormat(items) {
+      return items.map((item) => ({ value: item.id, text: item.full_name, ...item }));
+    },
+    truncatedNamespace(item) {
+      const itemDuplicat = { ...item };
+      const namespaceWithFallback = itemDuplicat.name_with_namespace
+        ? itemDuplicat.name_with_namespace
+        : itemDuplicat.full_name;
+
+      return truncateNamespace(namespaceWithFallback);
+    },
+    highlightedItemName(item) {
+      return highlight(item.name, item.searchText);
+    },
+    onSelectGroup(selected) {
+      if (selected === ANY_OPTION.name) {
+        this.$emit('change', ANY_OPTION);
+        return;
+      }
+
+      const flatShowableItems = [...this.frequentItems, ...this.items];
+      const newSelectedItem = flatShowableItems.find((item) => item.id === selected);
+      this.$emit('change', newSelectedItem);
+    },
+    uniqueItems(allItems, frequentItems) {
+      return allItems.filter((item) => {
+        const itemNotIdentical = frequentItems.some((fitem) => fitem.id === item.id);
+        return Boolean(!itemNotIdentical);
+      });
     },
   },
   ANY_OPTION,
+  AVATAR_SHAPE_OPTION_RECT,
 };
 </script>
 
 <template>
-  <gl-dropdown
-    class="gl-w-full"
-    menu-class="global-search-dropdown-menu"
-    toggle-class="gl-text-truncate"
+  <gl-collapsible-listbox
+    :items="showableItems"
     :header-text="headerText"
-    :right="true"
-    @show="openDropdown"
-    @shown="$refs.searchBox.focusInput()"
+    :toggle-text="selectedItem[name]"
+    :no-results-text="$options.i18n.nothingFound"
+    :selected="selectedItem.id"
+    :searching="loading"
+    :reset-button-label="$options.i18n.reset"
+    :toggle-aria-labelled-by="labelId"
+    searchable
+    block
+    @shown="openDropdown"
+    @search="search"
+    @select="onSelectGroup"
+    @reset="resetDropdown"
   >
-    <template #button-content>
-      <span class="dropdown-toggle-text gl-flex-grow-1 gl-text-truncate">
-        {{ selectedItem[name] }}
-      </span>
-      <gl-loading-icon v-if="loading" size="sm" inline class="gl-mr-3" />
-      <gl-button
-        v-if="!isSelected($options.ANY_OPTION)"
-        v-gl-tooltip
-        name="clear"
-        category="tertiary"
-        :title="$options.i18n.clearLabel"
-        :aria-label="$options.i18n.clearLabel"
-        class="gl-p-0! gl-mr-2"
-        @keydown.enter.stop="resetDropdown"
-        @click.stop="resetDropdown"
-      >
-        <gl-icon name="clear" />
-      </gl-button>
-      <gl-icon name="chevron-down" />
+    <template #search-summary-sr-only>
+      {{ $options.i18n.itemsFound(showableItems.length) }}
     </template>
-    <div class="gl-sticky gl-top-0 gl-z-index-1 gl-bg-white">
-      <gl-search-box-by-type
-        ref="searchBox"
-        v-model="searchText"
-        class="gl-m-3"
-        :debounce="500"
-        @input="openDropdown"
-      />
-      <gl-dropdown-item
-        class="gl-border-b-solid gl-border-b-gray-100 gl-border-b-1 gl-pb-2! gl-mb-2"
-        is-check-item
-        :is-checked="isSelected($options.ANY_OPTION)"
-        is-check-centered
-        @click="updateDropdown($options.ANY_OPTION)"
-      >
-        <span data-testid="item-title">{{ $options.ANY_OPTION.name }}</span>
-      </gl-dropdown-item>
-    </div>
-    <div
-      v-if="showFrequentItems"
-      class="gl-border-b-solid gl-border-b-gray-100 gl-border-b-1 gl-pb-2 gl-mb-2"
-    >
-      <gl-dropdown-section-header>{{
-        $options.i18n.frequentlySearched
-      }}</gl-dropdown-section-header>
-      <searchable-dropdown-item
-        v-for="item in frequentItems"
-        :key="item.id"
-        :item="item"
-        :selected-item="selectedItem"
-        :search-text="searchText"
-        :name="name"
-        :full-name="fullName"
-        data-testid="frequent-items"
-        @change="updateDropdown"
-      />
-    </div>
-    <div v-if="!loading">
-      <searchable-dropdown-item
-        v-for="item in items"
-        :key="item.id"
-        :item="item"
-        :selected-item="selectedItem"
-        :search-text="searchText"
-        :name="name"
-        :full-name="fullName"
-        data-testid="searchable-items"
-        @change="updateDropdown"
-      />
-    </div>
-    <div v-if="loading" class="gl-mx-4 gl-mt-3">
-      <gl-skeleton-loader :height="100">
-        <rect y="0" width="90%" height="20" rx="4" />
-        <rect y="40" width="70%" height="20" rx="4" />
-        <rect y="80" width="80%" height="20" rx="4" />
-      </gl-skeleton-loader>
-    </div>
-  </gl-dropdown>
+    <template #list-item="{ item }">
+      <div class="gl-display-flex gl-align-items-center">
+        <gl-avatar
+          :src="item.avatar_url"
+          :entity-id="item.id"
+          :entity-name="item.name"
+          :shape="$options.AVATAR_SHAPE_OPTION_RECT"
+          :size="32"
+          class="gl-mr-3"
+          aria-hidden="true"
+        />
+        <div class="gl-display-flex gl-flex-direction-column">
+          <span
+            v-safe-html="highlightedItemName(item)"
+            class="gl-font-weight-bold gl-white-space-nowrap"
+            data-testid="item-title"
+          ></span>
+          <span class="gl-font-sm gl-text-gray-700" data-testid="item-namespace">
+            {{ truncatedNamespace(item) }}</span
+          >
+        </div>
+      </div>
+    </template>
+  </gl-collapsible-listbox>
 </template>

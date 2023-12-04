@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { cloneDeep } from 'lodash';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
@@ -27,6 +28,7 @@ describe('GroupFilter', () => {
 
   const defaultProps = {
     initialData: null,
+    searchHandler: jest.fn(),
   };
 
   const createComponent = (initialState, props) => {
@@ -66,19 +68,6 @@ describe('GroupFilter', () => {
   describe('events', () => {
     beforeEach(() => {
       createComponent();
-    });
-
-    describe('when @search is emitted', () => {
-      const search = 'test';
-
-      beforeEach(() => {
-        findSearchableDropdown().vm.$emit('search', search);
-      });
-
-      it('calls fetchGroups with the search paramter', () => {
-        expect(actionSpies.fetchGroups).toHaveBeenCalledTimes(1);
-        expect(actionSpies.fetchGroups).toHaveBeenCalledWith(expect.any(Object), search);
-      });
     });
 
     describe('when @change is emitted with Any', () => {
@@ -148,11 +137,12 @@ describe('GroupFilter', () => {
 
       describe('when initialData is set', () => {
         beforeEach(() => {
-          createComponent({}, { initialData: MOCK_GROUP });
+          createComponent({}, { groupInitialJson: { ...MOCK_GROUP } });
         });
 
         it('sets selectedGroup to ANY_OPTION', () => {
-          expect(wrapper.vm.selectedGroup).toBe(MOCK_GROUP);
+          // cloneDeep to fix Property or method `nodeType` is not defined bug
+          expect(cloneDeep(wrapper.vm.selectedGroup)).toStrictEqual(MOCK_GROUP);
         });
       });
     });
@@ -169,7 +159,12 @@ describe('GroupFilter', () => {
       initialData ? 'has' : 'does not have'
     } an initial group`, () => {
       beforeEach(() => {
-        createComponent({ query: { ...MOCK_QUERY, nav_source: navSource } }, { initialData });
+        createComponent(
+          {
+            query: { ...MOCK_QUERY, nav_source: navSource },
+          },
+          { groupInitialJson: { ...initialData } },
+        );
       });
 
       it(`${callMethod ? 'does' : 'does not'} call setFrequentGroup`, () => {

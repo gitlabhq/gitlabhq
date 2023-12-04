@@ -16,15 +16,9 @@ export default {
   i18n: {
     searchPlaceholder: s__(`GlobalSearch|Search for projects, issues, etc.`),
     searchLabel: s__(`GlobalSearch|What are you searching for?`),
-    documentFetchErrorMessage: s__(
-      'GlobalSearch|There was an error fetching the "Syntax Options" document.',
-    ),
-    searchFieldLabel: s__('GlobalSearch|What are you searching for?'),
     syntaxOptionsLabel: s__('GlobalSearch|Syntax options'),
     groupFieldLabel: s__('GlobalSearch|Group'),
     projectFieldLabel: s__('GlobalSearch|Project'),
-    searchButtonLabel: s__('GlobalSearch|Search'),
-    closeButtonLabel: s__('GlobalSearch|Close'),
   },
   components: {
     GlButton,
@@ -124,17 +118,20 @@ export default {
               @submit="applyQuery"
             />
           </div>
-          <div v-if="showFilters" class="gl-mb-4 gl-lg-mb-0 gl-lg-mx-3">
-            <label class="gl-display-block gl-mb-1 gl-md-pb-2">{{
+          <div v-if="showFilters" class="gl-mb-4 gl-lg-mb-0 gl-lg-mx-3 gl-min-w-20">
+            <label id="groupfilterDropdown" class="gl-display-block gl-mb-1 gl-md-pb-2">{{
               $options.i18n.groupFieldLabel
             }}</label>
-            <group-filter :initial-data="groupInitialJson" />
+            <group-filter label-id="groupfilterDropdown" :group-initial-json="groupInitialJson" />
           </div>
-          <div v-if="showFilters" class="gl-mb-4 gl-lg-mb-0 gl-lg-ml-3">
-            <label class="gl-display-block gl-mb-1 gl-md-pb-2">{{
+          <div v-if="showFilters" class="gl-mb-4 gl-lg-mb-0 gl-lg-ml-3 gl-min-w-20">
+            <label id="projectfilterDropdown" class="gl-display-block gl-mb-1 gl-md-pb-2">{{
               $options.i18n.projectFieldLabel
             }}</label>
-            <project-filter :initial-data="projectInitialJson" />
+            <project-filter
+              label-id="projectfilterDropdown"
+              :project-initial-json="projectInitialJson"
+            />
           </div>
         </div>
       </div>

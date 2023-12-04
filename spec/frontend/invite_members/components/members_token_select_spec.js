@@ -89,22 +89,10 @@ describe('MembersTokenSelect', () => {
       wrapper = createComponent();
     });
 
-    describe('when input is focused for the first time (modal auto-focus)', () => {
-      it('does not call the API', async () => {
-        findTokenSelector().vm.$emit('focus');
-
-        await waitForPromises();
-
-        expect(UserApi.getUsers).not.toHaveBeenCalled();
-      });
-    });
-
     describe('when input is manually focused', () => {
       it('calls the API and sets dropdown items as request result', async () => {
         const tokenSelector = findTokenSelector();
 
-        tokenSelector.vm.$emit('focus');
-        tokenSelector.vm.$emit('blur');
         tokenSelector.vm.$emit('focus');
 
         await waitForPromises();

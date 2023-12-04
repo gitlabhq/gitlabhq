@@ -317,6 +317,11 @@ msgid_plural "%d issues successfully imported with the label"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d item found"
+msgid_plural "%d items found"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d job"
 msgid_plural "%d jobs"
 msgstr[0] ""
@@ -22373,10 +22378,10 @@ msgstr ""
 msgid "GlobalSearch|Aggregations load error."
 msgstr ""
 
-msgid "GlobalSearch|Archived"
+msgid "GlobalSearch|All available groups"
 msgstr ""
 
-msgid "GlobalSearch|Close"
+msgid "GlobalSearch|Archived"
 msgstr ""
 
 msgid "GlobalSearch|Command palette"
@@ -22436,6 +22441,9 @@ msgstr ""
 msgid "GlobalSearch|No labels found"
 msgstr ""
 
+msgid "GlobalSearch|Nothing found…"
+msgstr ""
+
 msgid "GlobalSearch|Only first %{max_shown} of not indexed projects is shown"
 msgstr ""
 
@@ -22457,13 +22465,13 @@ msgstr ""
 msgid "GlobalSearch|Recent merge requests"
 msgstr ""
 
+msgid "GlobalSearch|Reset"
+msgstr ""
+
 msgid "GlobalSearch|Result count is over limit."
 msgstr ""
 
 msgid "GlobalSearch|Results updated. %{count} results available. Use the up and down arrow keys to navigate search results list, or ENTER to submit."
-msgstr ""
-
-msgid "GlobalSearch|Search"
 msgstr ""
 
 msgid "GlobalSearch|Search for projects, issues, etc."
@@ -22491,9 +22499,6 @@ msgid "GlobalSearch|The search term must be at least 3 characters long."
 msgstr ""
 
 msgid "GlobalSearch|There was an error fetching search autocomplete suggestions."
-msgstr ""
-
-msgid "GlobalSearch|There was an error fetching the \"Syntax Options\" document."
 msgstr ""
 
 msgid "GlobalSearch|Type %{kbdOpen}/%{kbdClose} to search"
@@ -29521,97 +29526,97 @@ msgstr ""
 msgid "MemberInviteEmail|Invitation to join the %{project_or_group} %{project_or_group_name}"
 msgstr ""
 
-msgid "MemberRoles|Actions"
-msgstr ""
-
-msgid "MemberRoles|Add new role"
-msgstr ""
-
-msgid "MemberRoles|Are you sure you want to delete this role?"
-msgstr ""
-
-msgid "MemberRoles|Base role"
-msgstr ""
-
-msgid "MemberRoles|Base role to use as template"
-msgstr ""
-
-msgid "MemberRoles|Could not fetch available permissions: %{message}"
-msgstr ""
-
-msgid "MemberRoles|Create new role"
-msgstr ""
-
-msgid "MemberRoles|Custom roles"
-msgstr ""
-
-msgid "MemberRoles|Custom roles based on %{accessLevel}"
-msgstr ""
-
-msgid "MemberRoles|Delete role"
-msgstr ""
-
-msgid "MemberRoles|Description"
-msgstr ""
-
-msgid "MemberRoles|Enter a short name."
-msgstr ""
-
-msgid "MemberRoles|Failed to create role."
-msgstr ""
-
-msgid "MemberRoles|Failed to delete the role."
-msgstr ""
-
-msgid "MemberRoles|Failed to fetch roles."
-msgstr ""
-
-msgid "MemberRoles|ID"
-msgstr ""
-
-msgid "MemberRoles|Incident manager"
-msgstr ""
-
-msgid "MemberRoles|Make sure the group is in the Ultimate tier."
-msgstr ""
-
-msgid "MemberRoles|Name"
-msgstr ""
-
-msgid "MemberRoles|No custom roles for this group"
-msgstr ""
-
-msgid "MemberRoles|Permissions"
-msgstr ""
-
-msgid "MemberRoles|Role name"
-msgstr ""
-
-msgid "MemberRoles|Role successfully created."
-msgstr ""
-
-msgid "MemberRoles|Role successfully deleted."
-msgstr ""
-
-msgid "MemberRoles|Select a standard role to add permissions."
-msgstr ""
-
-msgid "MemberRoles|Standard roles"
-msgstr ""
-
-msgid "MemberRoles|To add a new role select 'Add new role'."
-msgstr ""
-
-msgid "MemberRoles|To add a new role select a group and then 'Add new role'."
-msgstr ""
-
-msgid "MemberRoles|To delete the custom role make sure no group member has this custom role"
-msgstr ""
-
 msgid "MemberRole|%{requirement} has to be enabled in order to enable %{permission}."
 msgstr ""
 
+msgid "MemberRole|Actions"
+msgstr ""
+
+msgid "MemberRole|Add new role"
+msgstr ""
+
+msgid "MemberRole|Are you sure you want to delete this role?"
+msgstr ""
+
+msgid "MemberRole|Base role"
+msgstr ""
+
+msgid "MemberRole|Base role to use as template"
+msgstr ""
+
+msgid "MemberRole|Could not fetch available permissions: %{message}"
+msgstr ""
+
+msgid "MemberRole|Create new role"
+msgstr ""
+
 msgid "MemberRole|Custom permissions:"
+msgstr ""
+
+msgid "MemberRole|Custom roles"
+msgstr ""
+
+msgid "MemberRole|Custom roles based on %{accessLevel}"
+msgstr ""
+
+msgid "MemberRole|Delete role"
+msgstr ""
+
+msgid "MemberRole|Description"
+msgstr ""
+
+msgid "MemberRole|Enter a short name."
+msgstr ""
+
+msgid "MemberRole|Failed to create role."
+msgstr ""
+
+msgid "MemberRole|Failed to delete the role."
+msgstr ""
+
+msgid "MemberRole|Failed to fetch roles."
+msgstr ""
+
+msgid "MemberRole|ID"
+msgstr ""
+
+msgid "MemberRole|Incident manager"
+msgstr ""
+
+msgid "MemberRole|Make sure the group is in the Ultimate tier."
+msgstr ""
+
+msgid "MemberRole|Name"
+msgstr ""
+
+msgid "MemberRole|No custom roles for this group"
+msgstr ""
+
+msgid "MemberRole|Permissions"
+msgstr ""
+
+msgid "MemberRole|Role name"
+msgstr ""
+
+msgid "MemberRole|Role successfully created."
+msgstr ""
+
+msgid "MemberRole|Role successfully deleted."
+msgstr ""
+
+msgid "MemberRole|Select a standard role to add permissions."
+msgstr ""
+
+msgid "MemberRole|Standard roles"
+msgstr ""
+
+msgid "MemberRole|To add a new role select 'Add new role'."
+msgstr ""
+
+msgid "MemberRole|To add a new role select a group and then 'Add new role'."
+msgstr ""
+
+msgid "MemberRole|To delete the custom role make sure no group member has this custom role"
 msgstr ""
 
 msgid "MemberRole|can't be changed"
@@ -37466,6 +37471,12 @@ msgid "ProjectPage|Project information"
 msgstr ""
 
 msgid "ProjectPage|Project settings"
+msgstr ""
+
+msgid "ProjectPage|The default branch was not able to be found. Please contact your administrator."
+msgstr ""
+
+msgid "ProjectPage|Unable to load default branch"
 msgstr ""
 
 msgid "ProjectQualitySummary|An error occurred while trying to fetch project quality statistics"
@@ -53434,6 +53445,9 @@ msgid "Visual Studio Code (HTTPS)"
 msgstr ""
 
 msgid "Visual Studio Code (SSH)"
+msgstr ""
+
+msgid "VsdContributorCount|the ClickHouse data store is not available for this group"
 msgstr ""
 
 msgid "Vulnerabilities"

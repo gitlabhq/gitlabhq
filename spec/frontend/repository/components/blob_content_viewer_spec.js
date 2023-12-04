@@ -75,6 +75,7 @@ const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute 
     createMergeRequestIn = userPermissionsMock.createMergeRequestIn,
     isBinary,
     inject = {},
+    blobBlameInfo = true,
   } = mockData;
 
   const blobInfo = {
@@ -138,7 +139,7 @@ const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute 
         ...inject,
         glFeatures: {
           highlightJsWorker: false,
-          blobBlameInfo: true,
+          blobBlameInfo,
         },
       },
     }),
@@ -185,7 +186,7 @@ describe('Blob content viewer component', () => {
       expect(findBlobHeader().props('hideViewerSwitcher')).toEqual(false);
       expect(findBlobHeader().props('blob')).toEqual(simpleViewerMock);
       expect(findBlobHeader().props('showForkSuggestion')).toEqual(false);
-      expect(findBlobHeader().props('showBlameToggle')).toEqual(false);
+      expect(findBlobHeader().props('showBlameToggle')).toEqual(true);
       expect(findBlobHeader().props('projectPath')).toEqual(propsMock.projectPath);
       expect(findBlobHeader().props('projectId')).toEqual(projectMock.id);
       expect(mockRouterPush).not.toHaveBeenCalled();
@@ -197,15 +198,15 @@ describe('Blob content viewer component', () => {
         await nextTick();
       };
 
-      it('renders a blame toggle for JSON files', async () => {
-        await createComponent({ blob: { ...simpleViewerMock, language: 'json' } });
+      it('renders a blame toggle', async () => {
+        await createComponent({ blob: simpleViewerMock });
 
         expect(findBlobHeader().props('showBlameToggle')).toEqual(true);
       });
 
       it('adds blame param to the URL and passes `showBlame` to the SourceViewer', async () => {
         loadViewer.mockReturnValueOnce(SourceViewerNew);
-        await createComponent({ blob: { ...simpleViewerMock, language: 'json' } });
+        await createComponent({ blob: simpleViewerMock });
 
         await triggerBlame();
 
@@ -216,6 +217,25 @@ describe('Blob content viewer component', () => {
 
         expect(mockRouterPush).toHaveBeenCalledWith({ query: { blame: '0' } });
         expect(findSourceViewerNew().props('showBlame')).toBe(false);
+      });
+
+      describe('blobBlameInfo feature flag disabled', () => {
+        it('does not render a blame toggle', async () => {
+          await createComponent({ blob: simpleViewerMock, blobBlameInfo: false });
+
+          expect(findBlobHeader().props('showBlameToggle')).toEqual(false);
+        });
+      });
+
+      describe('when viewing rich content', () => {
+        it('always shows the blame when clicking on the blame button', async () => {
+          loadViewer.mockReturnValueOnce(SourceViewerNew);
+          const query = { plain: '0', blame: '1' };
+          await createComponent({ blob: simpleViewerMock }, shallowMount, { query });
+          await triggerBlame();
+
+          expect(findSourceViewerNew().props('showBlame')).toBe(true);
+        });
       });
     });
 
@@ -260,6 +280,7 @@ describe('Blob content viewer component', () => {
 
         expect(mockAxios.history.get).toHaveLength(1);
         expect(mockAxios.history.get[0].url).toBe(legacyViewerUrl);
+        expect(findBlobHeader().props('showBlameToggle')).toEqual(false);
       });
 
       it('loads a legacy viewer when a viewer component is not available', async () => {

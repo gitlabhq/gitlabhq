@@ -67,8 +67,6 @@ export default {
       originalInput: '',
       users: [],
       selectedTokens: [],
-      hasBeenFocused: false,
-      hideDropdownWithNoItems: true,
     };
   },
   computed: {
@@ -124,7 +122,6 @@ export default {
   },
   methods: {
     handleTextInput(inputQuery) {
-      this.hideDropdownWithNoItems = false;
       this.originalInput = inputQuery;
       this.query = inputQuery.trim();
       this.loading = true;
@@ -161,18 +158,10 @@ export default {
     handleInput() {
       this.$emit('input', this.selectedTokens);
     },
-    handleBlur() {
-      this.hideDropdownWithNoItems = false;
-    },
     handleFocus() {
-      // The modal auto-focuses on the input when opened.
-      // This prevents the dropdown from opening when the modal opens.
-      if (this.hasBeenFocused) {
-        this.loading = true;
-        this.retrieveUsers();
-      }
-
-      this.hasBeenFocused = true;
+      // Search for users when focused on the input
+      this.loading = true;
+      this.retrieveUsers();
     },
     handleTokenRemove(value) {
       if (this.selectedTokens.length) {
@@ -208,11 +197,9 @@ export default {
     :dropdown-items="users"
     :loading="loading"
     :allow-user-defined-tokens="emailIsValid"
-    :hide-dropdown-with-no-items="hideDropdownWithNoItems"
     :placeholder="placeholderText"
     :aria-labelledby="ariaLabelledby"
     :text-input-attrs="textInputAttrs"
-    @blur="handleBlur"
     @text-input="handleTextInput"
     @input="handleInput"
     @focus="handleFocus"

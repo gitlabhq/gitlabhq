@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'User uses search filters', :js, feature_category: :global_search do
+  include ListboxHelpers
   let(:group) { create(:group) }
   let!(:group_project) { create(:project, group: group) }
   let(:project) { create(:project, namespace: user.namespace) }
@@ -23,7 +24,7 @@ RSpec.describe 'User uses search filters', :js, feature_category: :global_search
       wait_for_requests
 
       page.within('[data-testid="group-filter"]') do
-        click_on(group.name)
+        select_listbox_item group.name
       end
 
       expect(find('[data-testid="group-filter"]')).to have_content(group.name)
@@ -33,7 +34,7 @@ RSpec.describe 'User uses search filters', :js, feature_category: :global_search
       wait_for_requests
 
       page.within('[data-testid="project-filter"]') do
-        click_on(group_project.name)
+        select_listbox_item group_project.name
       end
 
       expect(find('[data-testid="project-filter"]')).to have_content(group_project.name)
@@ -46,12 +47,17 @@ RSpec.describe 'User uses search filters', :js, feature_category: :global_search
 
       describe 'clear filter button' do
         it 'removes Group and Project filters' do
-          find('[data-testid="group-filter"] [data-testid="clear-icon"]').click
+          page.within '[data-testid="group-filter"]' do
+            toggle_listbox
+            wait_for_requests
 
-          wait_for_requests
+            find('[data-testid="listbox-reset-button"]').click
 
-          expect(page).to have_current_path(search_path, ignore_query: true) do |uri|
-            uri.normalized_query(:sorted) == "scope=blobs&search=test"
+            wait_for_requests
+
+            expect(page).to have_current_path(search_path, ignore_query: true) do |uri|
+              uri.normalized_query(:sorted) == "scope=blobs&search=test"
+            end
           end
         end
       end
@@ -67,7 +73,7 @@ RSpec.describe 'User uses search filters', :js, feature_category: :global_search
       wait_for_requests
 
       page.within('[data-testid="project-filter"]') do
-        click_on(project.name)
+        select_listbox_item project.name
       end
 
       expect(find('[data-testid="project-filter"]')).to have_content(project.name)
@@ -82,11 +88,17 @@ RSpec.describe 'User uses search filters', :js, feature_category: :global_search
 
       describe 'clear filter button' do
         it 'removes Project filters' do
-          find('[data-testid="project-filter"] [data-testid="clear-icon"]').click
-          wait_for_requests
+          page.within '[data-testid="project-filter"]' do
+            toggle_listbox
+            wait_for_requests
 
-          expect(page).to have_current_path(search_path, ignore_query: true) do |uri|
-            uri.normalized_query(:sorted) == "scope=blobs&search=test"
+            find('[data-testid="listbox-reset-button"]').click
+
+            wait_for_requests
+
+            expect(page).to have_current_path(search_path, ignore_query: true) do |uri|
+              uri.normalized_query(:sorted) == "scope=blobs&search=test"
+            end
           end
         end
       end

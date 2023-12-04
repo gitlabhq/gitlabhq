@@ -14,6 +14,7 @@ query getBlameData($fullPath: ID!, $filePath: String!, $fromLine: Int, $toLine: 
               span
               commit {
                 id
+                authorName
                 titleHtml
                 message
                 authoredDate

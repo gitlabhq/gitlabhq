@@ -32,7 +32,7 @@
           left: !useTransform && direction !== 'vertical' ? `${view.position}px` : null,
         } : null"
         class="vue-recycle-scroller__item-view"
-        :class="{ hover: hoverKey === view.nr.key }"
+        :class="{ hover: hoverKey === view.nr.key, 'will-change-transform': useTransform }"
         @mouseenter="hoverKey = view.nr.key"
         @mouseleave="hoverKey = null"
       >
@@ -670,6 +670,9 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.will-change-transform {
   will-change: transform;
 }
 

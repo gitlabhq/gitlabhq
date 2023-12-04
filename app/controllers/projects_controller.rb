@@ -397,6 +397,7 @@ class ProjectsController < Projects::ApplicationController
 
     if can?(current_user, :read_code, @project)
       return render 'projects/no_repo' unless @project.repository_exists?
+      return render 'projects/missing_default_branch', status: :service_unavailable if @ref == ''
 
       render 'projects/empty' if @project.empty_repo?
     else
@@ -553,6 +554,9 @@ class ProjectsController < Projects::ApplicationController
   # Override get_id from ExtractsPath in this case is just the root of the default branch.
   def get_id
     project.repository.root_ref
+  rescue Gitlab::Git::CommandError
+    # Empty string is intentional and prevent the @ref reload
+    ''
   end
 
   def build_canonical_path(project)

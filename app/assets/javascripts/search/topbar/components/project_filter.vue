@@ -1,4 +1,5 @@
 <script>
+import { isEmpty } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
@@ -11,27 +12,46 @@ export default {
     SearchableDropdown,
   },
   props: {
-    initialData: {
+    projectInitialJson: {
       type: Object,
       required: false,
       default: () => null,
     },
+    labelId: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  data() {
+    return {
+      search: '',
+    };
   },
   computed: {
     ...mapState(['query', 'projects', 'fetchingProjects']),
     ...mapGetters(['frequentProjects', 'currentScope']),
     selectedProject() {
-      return this.initialData ? this.initialData : ANY_OPTION;
+      return isEmpty(this.projectInitialJson) ? ANY_OPTION : this.projectInitialJson;
+    },
+  },
+  watch: {
+    search() {
+      this.debounceSearch();
     },
   },
   created() {
     // This tracks projects searched via the top nav search bar
-    if (this.query.nav_source === 'navbar' && this.initialData?.id) {
-      this.setFrequentProject(this.initialData);
+    if (this.query.nav_source === 'navbar' && this.projectInitialJson?.id) {
+      this.setFrequentProject(this.projectInitialJson);
     }
   },
   methods: {
     ...mapActions(['fetchProjects', 'setFrequentProject', 'loadFrequentProjects']),
+    firstLoad() {
+      this.loadFrequentProjects();
+      this.fetchProjects();
+    },
     handleProjectChange(project) {
       // If project.id is null we are clearing the filter and don't need to store that in LS.
       if (project.id) {
@@ -58,13 +78,13 @@ export default {
     data-testid="project-filter"
     :header-text="$options.PROJECT_DATA.headerText"
     :name="$options.PROJECT_DATA.name"
-    :full-name="$options.PROJECT_DATA.fullName"
     :loading="fetchingProjects"
     :selected-item="selectedProject"
     :items="projects"
     :frequent-items="frequentProjects"
-    @first-open="loadFrequentProjects"
-    @search="fetchProjects"
+    :search-handler="fetchProjects"
+    :label-id="labelId"
+    @first-open="firstLoad"
     @change="handleProjectChange"
   />
 </template>

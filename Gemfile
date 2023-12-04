@@ -399,11 +399,11 @@ group :development do
 
   gem 'listen', '~> 3.7' # rubocop:todo Gemfile/MissingFeatureCategory
 
-  gem 'ruby-lsp', "~> 0.12.3", feature_category: :tooling
+  gem 'ruby-lsp', "~> 0.13.0", require: false, feature_category: :tooling
 
-  gem 'ruby-lsp-rails', "~> 0.2.7", feature_category: :tooling
+  gem 'ruby-lsp-rails', "~> 0.2.8", feature_category: :tooling
 
-  gem 'ruby-lsp-rspec', "~> 0.1.5", feature_category: :tooling
+  gem 'ruby-lsp-rspec', "~> 0.1.8", require: false, feature_category: :tooling
 end
 
 group :development, :test do

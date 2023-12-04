@@ -31,7 +31,7 @@ describe('Global Search Store Mutations', () => {
       mutations[types.RECEIVE_GROUPS_SUCCESS](state, MOCK_GROUPS);
 
       expect(state.fetchingGroups).toBe(false);
-      expect(state.groups).toBe(MOCK_GROUPS);
+      expect(state.groups).toStrictEqual(MOCK_GROUPS);
     });
   });
 
@@ -57,7 +57,7 @@ describe('Global Search Store Mutations', () => {
       mutations[types.RECEIVE_PROJECTS_SUCCESS](state, MOCK_PROJECTS);
 
       expect(state.fetchingProjects).toBe(false);
-      expect(state.projects).toBe(MOCK_PROJECTS);
+      expect(state.projects).toStrictEqual(MOCK_PROJECTS);
     });
   });
 
