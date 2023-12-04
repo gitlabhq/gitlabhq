@@ -184,10 +184,6 @@ $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function ajaxComplete
   }
 });
 
-$('.navbar-toggler').on('click', () => {
-  document.body.classList.toggle('top-nav-responsive-open');
-});
-
 /**
  * Show suppressed commit diff
  *

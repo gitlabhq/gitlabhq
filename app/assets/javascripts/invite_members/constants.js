@@ -39,7 +39,7 @@ export const MEMBERS_TO_PROJECT_DEFAULT_INTRO_TEXT = s__(
 export const MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT = s__(
   "InviteMembersModal|Congratulations on creating your project, you're almost there!",
 );
-export const MEMBERS_SEARCH_FIELD = s__('InviteMembersModal|Username or email address');
+export const MEMBERS_SEARCH_FIELD = s__('InviteMembersModal|Username, name or email address');
 export const MEMBERS_PLACEHOLDER = s__('InviteMembersModal|Select members or type email addresses');
 
 export const GROUP_MODAL_DEFAULT_TITLE = s__('InviteMembersModal|Invite a group');

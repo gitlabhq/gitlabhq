@@ -160,7 +160,7 @@ export default {
     labelSearchField() {
       return this.isEmailSignupEnabled
         ? this.$options.labels.searchField
-        : s__('InviteMembersModal|Username');
+        : s__('InviteMembersModal|Username or name');
     },
     isEmptyInvites() {
       return Boolean(this.newUsersToInvite.length);

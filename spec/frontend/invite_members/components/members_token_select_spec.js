@@ -12,6 +12,7 @@ const placeholder = 'Search for a member';
 const user1 = { id: 1, name: 'John Smith', username: 'one_1', avatar_url: '' };
 const user2 = { id: 2, name: 'Jane Doe', username: 'two_2', avatar_url: '' };
 const allUsers = [user1, user2];
+const handleEnterSpy = jest.fn();
 
 const createComponent = (props) => {
   return shallowMount(MembersTokenSelect, {
@@ -22,7 +23,11 @@ const createComponent = (props) => {
       ...props,
     },
     stubs: {
-      GlTokenSelector: stubComponent(GlTokenSelector),
+      GlTokenSelector: stubComponent(GlTokenSelector, {
+        methods: {
+          handleEnter: handleEnterSpy,
+        },
+      }),
     },
   });
 };
@@ -172,6 +177,14 @@ describe('MembersTokenSelect', () => {
             expect(tokenSelector.props('allowUserDefinedTokens')).toBe(false);
           });
         });
+      });
+
+      it('allows tab to function as enter', () => {
+        tokenSelector.vm.$emit('text-input', 'username');
+
+        tokenSelector.vm.$emit('keydown', new KeyboardEvent('keydown', { key: 'Tab' }));
+
+        expect(handleEnterSpy).toHaveBeenCalled();
       });
     });
 

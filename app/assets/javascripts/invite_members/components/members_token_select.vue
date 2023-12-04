@@ -183,6 +183,12 @@ export default {
 
       this.$emit('clear');
     },
+    handleTab(event) {
+      if (this.originalInput.length > 0) {
+        event.preventDefault();
+        this.$refs.tokenSelector.handleEnter();
+      }
+    },
     hasError(token) {
       return Object.keys(this.invalidMembers).includes(memberName(token));
     },
@@ -196,6 +202,7 @@ export default {
 
 <template>
   <gl-token-selector
+    ref="tokenSelector"
     v-model="selectedTokens"
     :state="exceptionState"
     :dropdown-items="users"
@@ -210,6 +217,7 @@ export default {
     @input="handleInput"
     @focus="handleFocus"
     @token-remove="handleTokenRemove"
+    @keydown.tab="handleTab"
   >
     <template #token-content="{ token }">
       <gl-icon

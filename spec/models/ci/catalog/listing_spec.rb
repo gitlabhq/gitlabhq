@@ -185,11 +185,11 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
   end
 
   describe '#find_resource' do
+    let_it_be(:accessible_resource) { create(:ci_catalog_resource, :published, project: public_project) }
+
     subject { list.find_resource(id: id) }
 
     context 'when the resource is published and visible to the user' do
-      let_it_be(:accessible_resource) { create(:ci_catalog_resource, :published, project: public_project) }
-
       let(:id) { accessible_resource.id }
 
       it 'fetches the resource' do
@@ -200,9 +200,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
     context 'when the resource is not found' do
       let(:id) { 'not-an-id' }
 
-      it 'returns nil' do
-        is_expected.to be_nil
-      end
+      it { is_expected.to be_nil }
     end
 
     context 'when the resource is not published' do
@@ -210,9 +208,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
 
       let(:id) { draft_resource.id }
 
-      it 'returns nil' do
-        is_expected.to be_nil
-      end
+      it { is_expected.to be_nil }
     end
 
     context "when the current user cannot read code on the resource's project" do
@@ -220,8 +216,25 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
 
       let(:id) { inaccessible_resource.id }
 
-      it 'returns nil' do
-        is_expected.to be_nil
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the current user is anonymous' do
+      let(:user) { nil }
+
+      context 'when the resource is public' do
+        let(:id) { accessible_resource.id }
+
+        it 'fetches the public resource' do
+          is_expected.to eq(accessible_resource)
+        end
+      end
+
+      context 'when the resource is internal' do
+        let(:internal_resource) { create(:ci_catalog_resource, :published, project: internal_project) }
+        let(:id) { internal_resource.id }
+
+        it { is_expected.to be_nil }
       end
     end
   end

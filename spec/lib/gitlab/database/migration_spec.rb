@@ -34,6 +34,12 @@ RSpec.describe Gitlab::Database::Migration do
       # untouched.
       expect(described_class[described_class.current_version]).to be < ActiveRecord::Migration::Current
     end
+
+    it 'matches the version used by Rubocop' do
+      require 'rubocop'
+      load 'rubocop/cop/migration/versioned_migration_class.rb'
+      expect(described_class.current_version).to eq(RuboCop::Cop::Migration::VersionedMigrationClass::CURRENT_MIGRATION_VERSION)
+    end
   end
 
   describe Gitlab::Database::Migration::LockRetriesConcern do

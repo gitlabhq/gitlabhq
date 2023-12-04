@@ -2,5 +2,6 @@
 migration_job_name: BackfillMissingCiCdSettings
 description: Backfills ci_cd_settings for projects that do not have them
 feature_category: source_code_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/393502
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124921
+queued_migration_version: 20230628023103
 milestone: 16.2

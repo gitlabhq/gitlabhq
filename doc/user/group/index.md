@@ -100,6 +100,23 @@ To create a group:
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For details about groups, watch [GitLab Namespaces (users, groups and subgroups)](https://youtu.be/r0sJgjR2f5A).
 
+## Edit group name and description
+
+You can edit your group details from the group general settings.
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+To edit group details:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > General**.
+1. In the **Group name** text box, enter your group name. See the [limitations on group names](../../user/reserved_names.md).
+1. Optional. In the **Group description (optional)** text box, enter your group description.
+   The description is limited to 250 characters.
+1. Select **Save changes**.
+
 ## Remove a group
 
 > Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.

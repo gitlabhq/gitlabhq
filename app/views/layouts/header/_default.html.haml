@@ -5,18 +5,8 @@
   %a.gl-sr-only.gl-accessibility{ href: "#content-body" } Skip to content
   .container-fluid
     .header-content.js-header-content
-      .title-container.hide-when-top-nav-responsive-open.gl-transition-medium.gl-display-flex.gl-align-items-stretch.gl-pt-0.gl-mr-3
+      .title-container.gl-transition-medium.gl-display-flex.gl-align-items-stretch.gl-pt-0.gl-mr-3
         = render 'layouts/header/title'
-
-        - if current_user
-          .gl-display-none.gl-sm-display-block
-            = render "layouts/nav/top_nav"
-        - else
-          - if Gitlab.com?
-            = render 'layouts/header/marketing_links'
-          - else
-            .gl-display-none.gl-sm-display-block
-              = render "layouts/nav/top_nav"
 
       .navbar-collapse.gl-transition-medium.collapse
         %ul.nav.navbar-nav.gl-w-full.gl-align-items-center.gl-justify-content-end
@@ -89,9 +79,6 @@
               = sprite_icon('chevron-down', css_class: 'caret-down')
             .dropdown-menu.dropdown-menu-right
               = render 'layouts/header/help_dropdown'
-          - if !current_user && Gitlab.com?
-            %li.nav-item.gl-display-none.gl-sm-display-block
-              = render "layouts/nav/top_nav"
           - if header_link?(:user_dropdown)
             %li.nav-item.header-user.js-nav-user-dropdown.dropdown{ data: { testid: 'user-dropdown' }, class: ('mr-0' if has_impersonation_link) }
               = link_to current_user, class: user_dropdown_class, data: { toggle: "dropdown", track_label: "profile_dropdown", track_action: "click_dropdown", track_property: "navigation_top" } do
@@ -110,13 +97,6 @@
                   = _('Register')
             %li.nav-item{ class: 'gl-flex-grow-0! gl-flex-basis-half!' }
               = link_to _('Sign in'), new_session_path(:user, redirect_to_referer: 'yes')
-
-      %button.navbar-toggler.d-block.d-sm-none{ type: 'button', class: 'gl-border-none!', data: { testid: 'mobile_navbar_button' } }
-        %span.sr-only= _('Toggle navigation')
-        %span.more-icon.gl-px-3.gl-font-sm.gl-font-weight-bold
-          %span.gl-pr-2= _('Menu')
-          = sprite_icon('hamburger', size: 16)
-        = sprite_icon('close', size: 12, css_class: 'close-icon')
 
 - if display_whats_new?
   #whats-new-app{ data: { version_digest: whats_new_version_digest } }

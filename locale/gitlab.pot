@@ -15514,6 +15514,9 @@ msgstr ""
 msgid "DastProfiles|Could not update the site profile. Please try again."
 msgstr ""
 
+msgid "DastProfiles|Crawl timeout"
+msgstr ""
+
 msgid "DastProfiles|DAST profile library"
 msgstr ""
 
@@ -15691,9 +15694,6 @@ msgstr ""
 msgid "DastProfiles|Site type"
 msgstr ""
 
-msgid "DastProfiles|Spider timeout"
-msgstr ""
-
 msgid "DastProfiles|Submit button"
 msgstr ""
 
@@ -15706,7 +15706,7 @@ msgstr ""
 msgid "DastProfiles|Target timeout"
 msgstr ""
 
-msgid "DastProfiles|The maximum number of minutes allowed for the spider to traverse the site."
+msgid "DastProfiles|The maximum number of minutes allowed for the crawler to traverse the site."
 msgstr ""
 
 msgid "DastProfiles|The maximum number of seconds allowed for the site under test to respond to a request."
@@ -20398,6 +20398,9 @@ msgid "Failed to update framework"
 msgstr ""
 
 msgid "Failed to update issue status"
+msgstr ""
+
+msgid "Failed to update organization"
 msgstr ""
 
 msgid "Failed to update the Canary Ingress."
@@ -26139,10 +26142,10 @@ msgstr ""
 msgid "InviteMembersModal|To invite new users to this top-level group, you must remove existing users. You can still add existing users from the top-level group, including any subgroups and projects."
 msgstr ""
 
-msgid "InviteMembersModal|Username"
+msgid "InviteMembersModal|Username or name"
 msgstr ""
 
-msgid "InviteMembersModal|Username or email address"
+msgid "InviteMembersModal|Username, name or email address"
 msgstr ""
 
 msgid "InviteMembersModal|You only have space for %{count} more %{members} in %{name}"
@@ -27233,7 +27236,7 @@ msgstr ""
 msgid "JiraService|Use custom transitions"
 msgstr ""
 
-msgid "JiraService|Use regular expression to match Jira issue keys."
+msgid "JiraService|Use regular expression to match Jira issue keys. The regular expression must follow the %{link_start}RE2 syntax%{link_end}. If empty, the default behavior is used."
 msgstr ""
 
 msgid "JiraService|Using Jira for issue tracking?"
@@ -28822,37 +28825,13 @@ msgstr ""
 msgid "Locks the discussion."
 msgstr ""
 
-msgid "LoggedOutMarketingHeader|About GitLab"
-msgstr ""
-
 msgid "LoggedOutMarketingHeader|Contact Sales"
 msgstr ""
 
 msgid "LoggedOutMarketingHeader|Explore GitLab"
 msgstr ""
 
-msgid "LoggedOutMarketingHeader|Get started"
-msgstr ""
-
-msgid "LoggedOutMarketingHeader|GitLab Learn"
-msgstr ""
-
-msgid "LoggedOutMarketingHeader|GitLab docs"
-msgstr ""
-
-msgid "LoggedOutMarketingHeader|GitLab: the DevOps platform"
-msgstr ""
-
-msgid "LoggedOutMarketingHeader|How GitLab compares"
-msgstr ""
-
-msgid "LoggedOutMarketingHeader|Install GitLab"
-msgstr ""
-
 msgid "LoggedOutMarketingHeader|Pricing"
-msgstr ""
-
-msgid "LoggedOutMarketingHeader|Talk to an expert"
 msgstr ""
 
 msgid "LoggedOutMarketingHeader|Why GitLab"
@@ -50707,9 +50686,6 @@ msgstr ""
 msgid "Toggle keyboard shortcuts help dialog"
 msgstr ""
 
-msgid "Toggle navigation"
-msgstr ""
-
 msgid "Toggle project select"
 msgstr ""
 
@@ -55855,6 +55831,9 @@ msgid "You have insufficient permissions to set customer relations contacts for 
 msgstr ""
 
 msgid "You have insufficient permissions to update an on-call schedule for this project"
+msgstr ""
+
+msgid "You have insufficient permissions to update the organization"
 msgstr ""
 
 msgid "You have insufficient permissions to update this HTTP integration"

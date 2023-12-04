@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable BackgroundMigration/DictionaryFile
+# rubocop:disable BackgroundMigration/DictionaryFile -- MigrateEvidencesForVulnerabilityFindings is rescheduled
 
 class RescheduleEvidencesHandlingUnicode < Gitlab::Database::Migration[2.1]
   restrict_gitlab_migration gitlab_schema: :gitlab_main

@@ -4,5 +4,6 @@ Odescription: |
   Deletes orphaned scan finding and license scanning approval rules
   that could have been created with project import.
 feature_category: security_policy_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/415925
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127212
+queued_migration_version: 20230721095222
 milestone: 16.5

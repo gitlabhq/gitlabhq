@@ -107,6 +107,7 @@ module Types
     mount_mutation Mutations::Notes::RepositionImageDiffNote
     mount_mutation Mutations::Notes::Destroy
     mount_mutation Mutations::Organizations::Create, alpha: { milestone: '16.6' }
+    mount_mutation Mutations::Organizations::Update, alpha: { milestone: '16.7' }
     mount_mutation Mutations::Projects::SyncFork, calls_gitaly: true, alpha: { milestone: '15.9' }
     mount_mutation Mutations::Projects::Star, alpha: { milestone: '16.7' }
     mount_mutation Mutations::Releases::Create

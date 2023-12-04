@@ -170,3 +170,13 @@ func makeRequest(t *testing.T, fixturePath string, httpHeaders map[string]string
 
 	return resp
 }
+
+func TestSendFileResponseWriterFlushable(t *testing.T) {
+	rw := httptest.NewRecorder()
+	sfrw := sendFileResponseWriter{rw: rw}
+	rc := http.NewResponseController(&sfrw)
+
+	err := rc.Flush()
+	require.NoError(t, err, "the underlying response writer is not flushable")
+	require.True(t, rw.Flushed)
+}

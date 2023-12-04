@@ -1,6 +1,6 @@
 - if show_super_sidebar?
   - @left_sidebar = true
-.layout-page.hide-when-top-nav-responsive-open{ class: page_with_sidebar_class }
+.layout-page{ class: page_with_sidebar_class }
   - if show_super_sidebar?
     -# Render the parent group sidebar while creating a new subgroup/project, see GroupsController#new.
     - group = @parent_group || @group
@@ -50,5 +50,3 @@
     = yield :after_content
     -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab-cn/-/issues/81)
     = render_if_exists "shared/footer/global_footer"
-
-= render "layouts/nav/top_nav_responsive", class: 'layout-page' if !show_super_sidebar? || !current_user

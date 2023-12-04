@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Packages', feature_category: :groups_and_projects do
+RSpec.describe 'Packages', feature_category: :package_registry do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
 

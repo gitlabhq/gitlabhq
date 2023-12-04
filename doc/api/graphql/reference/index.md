@@ -120,6 +120,16 @@ This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
 `before: String`, `after: String`, `first: Int`, `last: Int`.
 
+### `Query.auditEventsInstanceAmazonS3Configurations`
+
+Instance-level Amazon S3 configurations for audit events.
+
+Returns [`InstanceAmazonS3ConfigurationTypeConnection`](#instanceamazons3configurationtypeconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
 ### `Query.boardList`
 
 Find an issue board list.
@@ -5806,7 +5816,33 @@ Input type: `OrganizationCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationorganizationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationorganizationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationorganizationcreateorganization"></a>`organization` | [`Organization`](#organization) | Organization created. |
+| <a id="mutationorganizationcreateorganization"></a>`organization` | [`Organization`](#organization) | Organization after mutation. |
+
+### `Mutation.organizationUpdate`
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `OrganizationUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationorganizationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationorganizationupdatedescription"></a>`description` | [`String`](#string) | Description of the organization. |
+| <a id="mutationorganizationupdateid"></a>`id` | [`OrganizationsOrganizationID!`](#organizationsorganizationid) | ID of the organization to mutate. |
+| <a id="mutationorganizationupdatename"></a>`name` | [`String`](#string) | Name for the organization. |
+| <a id="mutationorganizationupdatepath"></a>`path` | [`String`](#string) | Path for the organization. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationorganizationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationorganizationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationorganizationupdateorganization"></a>`organization` | [`Organization`](#organization) | Organization after mutation. |
 
 ### `Mutation.pagesMarkOnboardingComplete`
 
@@ -10996,6 +11032,29 @@ The edge type for [`InheritedCiVariable`](#inheritedcivariable).
 | ---- | ---- | ----------- |
 | <a id="inheritedcivariableedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="inheritedcivariableedgenode"></a>`node` | [`InheritedCiVariable`](#inheritedcivariable) | The item at the end of the edge. |
+
+#### `InstanceAmazonS3ConfigurationTypeConnection`
+
+The connection type for [`InstanceAmazonS3ConfigurationType`](#instanceamazons3configurationtype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="instanceamazons3configurationtypeconnectionedges"></a>`edges` | [`[InstanceAmazonS3ConfigurationTypeEdge]`](#instanceamazons3configurationtypeedge) | A list of edges. |
+| <a id="instanceamazons3configurationtypeconnectionnodes"></a>`nodes` | [`[InstanceAmazonS3ConfigurationType]`](#instanceamazons3configurationtype) | A list of nodes. |
+| <a id="instanceamazons3configurationtypeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `InstanceAmazonS3ConfigurationTypeEdge`
+
+The edge type for [`InstanceAmazonS3ConfigurationType`](#instanceamazons3configurationtype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="instanceamazons3configurationtypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="instanceamazons3configurationtypeedgenode"></a>`node` | [`InstanceAmazonS3ConfigurationType`](#instanceamazons3configurationtype) | The item at the end of the edge. |
 
 #### `InstanceExternalAuditEventDestinationConnection`
 

@@ -34,6 +34,8 @@ module Integrations
 
     SNOWPLOW_EVENT_CATEGORY = name
 
+    RE2_SYNTAX_DOC_URL = 'https://github.com/google/re2/wiki/Syntax'
+
     validates :url, public_url: true, presence: true, if: :activated?
     validates :api_url, public_url: true, allow_blank: true
     validates :username, presence: true, if: ->(object) {
@@ -110,7 +112,15 @@ module Integrations
       section: SECTION_TYPE_CONFIGURATION,
       required: false,
       title: -> { s_('JiraService|Jira issue regex') },
-      help: -> { s_('JiraService|Use regular expression to match Jira issue keys.') }
+      help: -> do
+        format(ERB::Util.html_escape(
+          s_("JiraService|Use regular expression to match Jira issue keys. The regular expression must follow the " \
+             "%{link_start}RE2 syntax%{link_end}. If empty, the default behavior is used.")),
+          link_start: format('<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe,
+            url: RE2_SYNTAX_DOC_URL),
+          link_end: '</a>'.html_safe
+        )
+      end
 
     field :jira_issue_prefix,
       section: SECTION_TYPE_CONFIGURATION,

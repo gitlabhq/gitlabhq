@@ -101,7 +101,7 @@ export ANTHROPIC_API_KEY='<key>' # can use dev value of Gitlab::CurrentSettings
 export VERTEX_AI_CREDENTIALS='<vertex-ai-credentials>' # can set as dev value of Gitlab::CurrentSettings.vertex_ai_credentials
 export VERTEX_AI_PROJECT='<vertex-project-name>' # can use dev value of Gitlab::CurrentSettings.vertex_ai_project
 
-REAL_AI_REQUEST=1 bundle exec rspec ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_real_requests_spec.rb
+REAL_AI_REQUEST=1 bundle exec rspec ee/spec/lib/gitlab/llm/completions/chat_real_requests_spec.rb
 ```
 
 When you need to update the test questions that require documentation embeddings,
@@ -112,7 +112,7 @@ make sure a new fixture is generated and committed together with the change.
 The following CI jobs for GitLab project run the rspecs tagged with `real_ai_request`:
 
 - `rspec-ee unit gitlab-duo-chat-zeroshot`:
-   the job runs `ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_real_requests_spec.rb`.
+   the job runs `ee/spec/lib/gitlab/llm/completions/chat_real_requests_spec.rb`.
    The job is optionally triggered and allowed to fail.
 
 - `rspec-ee unit gitlab-duo-chat-qa`:

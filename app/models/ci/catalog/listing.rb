@@ -35,7 +35,7 @@ module Ci
 
         return unless resource.present?
         return unless resource.published?
-        return unless current_user.can?(:read_code, resource.project)
+        return unless Ability.allowed?(current_user, :read_code, resource.project)
 
         resource
       end

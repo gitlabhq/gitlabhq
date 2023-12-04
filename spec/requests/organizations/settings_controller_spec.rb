@@ -46,7 +46,7 @@ RSpec.describe Organizations::SettingsController, feature_category: :cell do
           create :organization_user, organization: organization, user: user
         end
 
-        it_behaves_like 'organization - not found response'
+        it_behaves_like 'organization - successful response'
         it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
       end
     end

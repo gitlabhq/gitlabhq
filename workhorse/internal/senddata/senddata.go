@@ -104,3 +104,8 @@ func (s *sendDataResponseWriter) tryInject() bool {
 func (s *sendDataResponseWriter) flush() {
 	s.WriteHeader(http.StatusOK)
 }
+
+// Unwrap lets http.ResponseController get the underlying http.ResponseWriter.
+func (s *sendDataResponseWriter) Unwrap() http.ResponseWriter {
+	return s.rw
+}

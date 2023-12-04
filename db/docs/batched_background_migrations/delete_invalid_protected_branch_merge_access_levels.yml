@@ -2,6 +2,6 @@
 migration_job_name: DeleteInvalidProtectedBranchMergeAccessLevels
 description: Remove rows from protected_branch_merge_access_levels for groups that do not have project_group_links to the project for the associated protected branch
 feature_category: source_code_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/427486
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134337
 milestone: 16.6
 queued_migration_version: 20231016173129

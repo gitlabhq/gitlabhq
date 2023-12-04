@@ -158,7 +158,11 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 	w.WriteHeader(resp.StatusCode)
 
 	defer resp.Body.Close()
-	n, err := io.Copy(w, resp.Body)
+
+	// Flushes the response right after it received.
+	// Important for streaming responses, where content delivered in chunks.
+	// Without flushing the body gets buffered by the HTTP server's internal buffer.
+	n, err := io.Copy(newFlushingResponseWriter(w), resp.Body)
 	sendURLBytes.Add(float64(n))
 
 	if err != nil {
@@ -189,4 +193,26 @@ func newClient(params entryParams) *http.Client {
 	}
 
 	return client
+}
+
+func newFlushingResponseWriter(w http.ResponseWriter) *httpFlushingResponseWriter {
+	return &httpFlushingResponseWriter{
+		ResponseWriter: w,
+		controller:     http.NewResponseController(w),
+	}
+}
+
+type httpFlushingResponseWriter struct {
+	http.ResponseWriter
+	controller *http.ResponseController
+}
+
+// Write flushes the response once its written
+func (h *httpFlushingResponseWriter) Write(data []byte) (int, error) {
+	n, err := h.ResponseWriter.Write(data)
+	if err != nil {
+		return n, err
+	}
+
+	return n, h.controller.Flush()
 }

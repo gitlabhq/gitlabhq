@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop: disable BackgroundMigration/DictionaryFile
+# rubocop:disable BackgroundMigration/DictionaryFile -- MigrateLinksForVulnerabilityFindings is rescheduled
 
 class RescheduleMigrationForLinksFromMetadata < Gitlab::Database::Migration[2.1]
   MIGRATION = 'MigrateLinksForVulnerabilityFindings'
@@ -29,4 +29,4 @@ class RescheduleMigrationForLinksFromMetadata < Gitlab::Database::Migration[2.1]
     delete_batched_background_migration(MIGRATION, :vulnerability_occurrences, :id, [])
   end
 end
-# rubocop: enable BackgroundMigration/DictionaryFile
+# rubocop:enable BackgroundMigration/DictionaryFile

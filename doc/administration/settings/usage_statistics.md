@@ -74,6 +74,7 @@ In the following table, you can see:
 | [Сross-project pipelines with artifacts dependencies](../../ci/yaml/index.md#needsproject) | GitLab 16.7 and later |
 | [Feature flag related issues](../../operations/feature_flags.md#feature-flag-related-issues) | GitLab 16.7 and later |
 | [Merged results pipelines](../../ci/pipelines/merged_results_pipelines.md) | GitLab 16.7 and later |
+| [CI/CD for external repositories](../../ci/ci_cd_for_external_repos/index.md) | GitLab 16.7 and later |
 | [CI/CD for GitHub](../../ci/ci_cd_for_external_repos/github_integration.md) | GitLab 16.7 and later |
 
 ### Enable registration features

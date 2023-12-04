@@ -104,25 +104,6 @@
       }
     }
 
-    .navbar-toggler {
-      position: relative;
-      right: -10px;
-      border-radius: 0;
-      min-width: 45px;
-      padding: 0;
-      margin: $gl-padding-8 $gl-padding-8 $gl-padding-8 0;
-      font-size: 14px;
-      text-align: center;
-      color: currentColor;
-
-      &:hover,
-      &:focus,
-      &.active {
-        color: currentColor;
-        background-color: transparent;
-      }
-    }
-
     .navbar-nav {
       @include media-breakpoint-down(xs) {
         display: flex;
@@ -219,12 +200,6 @@
       &:focus {
         @include gl-focus($focus-ring: $focus-ring-dark);
       }
-    }
-
-    .top-nav-toggle,
-    > button {
-      background: transparent;
-      border: 0;
     }
 
     &.line-separator {
@@ -519,12 +494,6 @@
   }
 }
 
-.top-nav-toggle {
-  .dropdown-chevron {
-    top: 0;
-  }
-}
-
 .top-nav-menu-item {
   &.active,
   &:hover {
@@ -533,39 +502,6 @@
 
   .gl-icon {
     color: inherit !important;
-  }
-}
-
-.top-nav-responsive {
-  @include gl-display-none;
-}
-
-.top-nav-responsive-open {
-  .more-icon {
-    display: none;
-  }
-
-  .close-icon {
-    display: block;
-    margin: auto;
-  }
-
-  @include media-breakpoint-down(xs) {
-    .navbar-collapse {
-      display: flex;
-    }
-
-    .hide-when-top-nav-responsive-open {
-      display: none !important;
-    }
-
-    .top-nav-responsive {
-      @include gl-display-block;
-    }
-
-    .navbar-gitlab .header-content .title-container {
-      flex: 0;
-    }
   }
 }
 

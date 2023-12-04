@@ -15,7 +15,7 @@ To create a blank project:
 1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
-   - In the **Project name** field, enter the name of your project. The name must start with a lowercase or uppercase letter (`a-zA-Z`), digit (`0-9`), emoji, or underscore (`_`). It can also contain dots (`.`), pluses (`+`), dashes (`-`), or spaces.
+   - In the **Project name** field, enter the name of your project. See the [limitations on project names](../../user/reserved_names.md).
    - In the **Project slug** field, enter the path to your project. The GitLab instance uses the
      slug as the URL path to the project. To change the slug, first enter the project name,
      then change the slug.
@@ -52,7 +52,7 @@ To create a project from a built-in template:
    - In the **Project slug** field, enter the path to your project. The GitLab instance uses the
      slug as the URL path to the project. To change the slug, first enter the project name,
      then change the slug.
-   - In the **Project description (optional)** field, enter the description of your project's dashboard.
+   - In the **Project description (optional)** field, enter the description of your project's dashboard. The description is limited to 250 characters.
    - To modify the project's [viewing and access rights](../public_access.md) for users,
      change the **Visibility Level**.
 1. Select **Create project**.
@@ -82,7 +82,7 @@ Custom project templates are available at:
    - In the **Project slug** field, enter the path to your project. The GitLab instance uses the
      slug as the URL path to the project. To change the slug, first enter the project name,
      then change the slug.
-   - The description of your project's dashboard in the **Project description (optional)** field.
+   - The description of your project's dashboard in the **Project description (optional)** field. The description is limited to 250 characters.
    - To modify the project's [viewing and access rights](../public_access.md) for users,
      change the **Visibility Level**.
 1. Select **Create project**.
@@ -107,7 +107,7 @@ To create a project from the HIPAA Audit Protocol template:
    - In the **Project slug** field, enter the path to your project. The GitLab instance uses the
      slug as the URL path to the project. To change the slug, first enter the project name,
      then change the slug.
-   - In the **Project description (optional)** field, enter the description of your project's dashboard.
+   - In the **Project description (optional)** field, enter the description of your project's dashboard. The description is limited to 250 characters.
    - To modify the project's [viewing and access rights](../public_access.md) for users,
      change the **Visibility Level**.
 1. Select **Create project**.

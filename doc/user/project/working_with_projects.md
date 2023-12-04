@@ -60,8 +60,8 @@ Prerequisites:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
-1. In the **Project name** text box, enter your project name.
-1. In the **Project description** text box, enter your project description.
+1. In the **Project name** text box, enter your project name. See the [limitations on project names](../../user/reserved_names.md).
+1. In the **Project description** text box, enter your project description. The description is limited to 250 characters.
 1. Under **Project avatar**, to change your project avatar, select **Choose file**.
 
 ## Star a project
