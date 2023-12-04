@@ -13,6 +13,7 @@ query projectWorkItems(
         id
         iid
         title
+        confidential
       }
     }
     workItemsByIid: workItems(iid: $iid, types: $types) @include(if: $isNumber) {
@@ -20,6 +21,7 @@ query projectWorkItems(
         id
         iid
         title
+        confidential
       }
     }
   }

@@ -133,6 +133,33 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
           expect(find('[data-testid="links-child"]')).to have_content(task.title)
         end
       end
+
+      context 'with confidential issue' do
+        let_it_be_with_reload(:issue) { create(:issue, :confidential, project: project) }
+        let_it_be(:task) { create(:work_item, :confidential, :task, project: project) }
+
+        it 'adds an existing child task', :aggregate_failures do
+          page.within('[data-testid="work-item-links"]') do
+            click_button 'Add'
+            click_button 'Existing task'
+
+            expect(page).to have_button('Add task', disabled: true)
+            find('[data-testid="work-item-token-select-input"]').set(task.title)
+            wait_for_all_requests
+            click_button task.title
+
+            expect(page).to have_button('Add task', disabled: false)
+
+            send_keys :escape
+
+            click_button('Add task')
+
+            wait_for_all_requests
+
+            expect(find('[data-testid="links-child"]')).to have_content(task.title)
+          end
+        end
+      end
     end
 
     context 'in work item metadata' do
