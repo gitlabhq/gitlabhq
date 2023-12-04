@@ -182,8 +182,6 @@ The jobs are separated into stages:
   - Jobs suffixed with `-sast` run static analysis on the current code to check for potential
     security issues, and are allowed to fail ([Auto SAST](../stages.md#auto-sast))
   - The `secret-detection` job checks for leaked secrets and is allowed to fail ([Auto Secret Detection](../stages.md#auto-secret-detection))
-  - The `license_scanning` job is deprecated and does not produce any results. It is allowed to fail
-    ([Auto License Compliance](../stages.md#auto-license-compliance-deprecated))
 
 - **Review** - Pipelines on the default branch include this stage with a `dast_environment_deploy` job.
   For more information, see [Dynamic Application Security Testing (DAST)](../../../user/application_security/dast/index.md).

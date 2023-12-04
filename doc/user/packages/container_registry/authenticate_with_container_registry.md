@@ -6,11 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Authenticate with the container registry **(FREE ALL)**
 
-<!--- start_remove The following content will be removed on remove_date: '2023-11-22' -->
-WARNING:
-In GitLab 16.0 and later, [external authorization](../../../administration/settings/external_authorization.md) prevents personal access tokens and deploy tokens from accessing container and package registries and affects all users who use these tokens to access the registries. You can disable external authorization if you want to use personal access tokens and deploy tokens with the container or package registries.
-<!--- end_remove -->
-
 To authenticate with the container registry, you can use a:
 
 - [Personal access token](../../profile/personal_access_tokens.md).

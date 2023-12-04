@@ -43,11 +43,6 @@ For information on how to create and upload a package, view the GitLab documenta
 
 ## Authenticate with the registry
 
-<!--- start_remove The following content will be removed on remove_date: '2023-11-22' -->
-WARNING:
-In GitLab 16.0 and later, [external authorization](../../../administration/settings/external_authorization.md) prevents personal access tokens and deploy tokens from accessing container and package registries and affects all users who use these tokens to access the registries. You can disable external authorization if you want to use personal access tokens and deploy tokens with the container or package registries.
-<!--- end_remove -->
-
 Authentication depends on the package manager being used. For more information, see the docs on the
 specific package format you want to use.
 

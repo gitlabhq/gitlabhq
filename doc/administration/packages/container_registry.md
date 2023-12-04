@@ -647,11 +647,6 @@ you can pull from the container registry, but you cannot push.
 
 > The default configuration for the storage driver is scheduled to be [changed](https://gitlab.com/gitlab-org/container-registry/-/issues/854) in GitLab 16.0.
 
-<!--- start_remove The following content will be removed on remove_date: '2023-10-22' -->
-WARNING:
-The default configuration for the storage driver is scheduled to be [changed](https://gitlab.com/gitlab-org/container-registry/-/issues/854) in GitLab 16.0. The storage driver will use `/` as the default root directory. You can add `trimlegacyrootprefix: false` to your current configuration now to avoid any disruptions. For more information, see the [container registry configuration](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/upstream-differences.md#azure-storage-driver) documentation.
-<!--- end_remove -->
-
 When moving from an existing file system or another object storage provider to Azure Object Storage, you must configure the registry to use the standard root directory.
 Configure it by setting [`trimlegacyrootprefix: true`](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/upstream-differences.md#azure-storage-driver) in the Azure storage driver section of the registry configuration.
 Without this configuration, the Azure storage driver uses `//` instead of `/` as the first section of the root path, rendering the migrated images inaccessible.

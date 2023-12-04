@@ -286,17 +286,6 @@ concatenate them into a single file. Use either:
 - A combination of both (`junit: [rspec.xml, test-results/TEST-*.xml]`).
 - Directories are not supported(`junit: test-results`, `junit: test-results/**`).
 
-<!--- start_remove The following content will be removed on remove_date: '2023-11-22' -->
-
-## `artifacts:reports:license_scanning` **(ULTIMATE ALL)**
-
-The license scanning report was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387561)
-in GitLab 15.9 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/421363) in GitLab 16.3.
-You should instead migrate to use [License approval policies](../../user/compliance/license_approval_policies.md) and
-the [new method of license scanning](../../user/compliance/license_scanning_of_cyclonedx_files/index.md).
-
-<!--- end_remove -->
-
 ## `artifacts:reports:load_performance` **(PREMIUM ALL)**
 
 The `load_performance` report collects [Load Performance Testing metrics](../testing/load_performance_testing.md).
