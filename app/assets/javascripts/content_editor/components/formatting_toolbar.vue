@@ -3,6 +3,7 @@ import CommentTemplatesDropdown from '~/vue_shared/components/markdown/comment_t
 import { __, sprintf } from '~/locale';
 import { getModifierKey } from '~/constants';
 import trackUIControl from '../services/track_ui_control';
+import HeaderDivider from '../../vue_shared/components/markdown/header_divider.vue';
 import ToolbarButton from './toolbar_button.vue';
 import ToolbarAttachmentButton from './toolbar_attachment_button.vue';
 import ToolbarTableButton from './toolbar_table_button.vue';
@@ -17,6 +18,7 @@ export default {
     ToolbarAttachmentButton,
     ToolbarMoreDropdown,
     CommentTemplatesDropdown,
+    HeaderDivider,
   },
   inject: {
     newCommentTemplatePath: { default: null },
@@ -76,21 +78,27 @@ export default {
     class="gl-w-full gl-display-flex gl-align-items-center gl-flex-wrap gl-border-b gl-border-gray-100 gl-px-3 gl-rounded-top-base gl-justify-content-space-between"
     data-testid="formatting-toolbar"
   >
-    <div class="gl-py-3 gl-display-flex gl-flex-wrap">
-      <toolbar-text-style-dropdown
-        data-testid="text-styles"
-        @execute="trackToolbarControlExecution"
-      />
-      <toolbar-button
-        v-if="codeSuggestionsEnabled"
-        data-testid="code-suggestion"
-        content-type="codeSuggestion"
-        icon-name="doc-code"
-        editor-command="insertCodeSuggestion"
-        :label="__('Insert suggestion')"
-        :show-active-state="false"
-        @execute="trackToolbarControlExecution"
-      />
+    <div class="gl-py-3 gl-w-full gl-display-flex gl-align-items-flex-start">
+      <div class="gl-display-flex">
+        <toolbar-text-style-dropdown
+          data-testid="text-styles"
+          @execute="trackToolbarControlExecution"
+        />
+        <header-divider />
+      </div>
+      <div v-if="codeSuggestionsEnabled" class="gl-display-flex">
+        <toolbar-button
+          v-if="codeSuggestionsEnabled"
+          data-testid="code-suggestion"
+          content-type="codeSuggestion"
+          icon-name="doc-code"
+          editor-command="insertCodeSuggestion"
+          :label="__('Insert suggestion')"
+          :show-active-state="false"
+          @execute="trackToolbarControlExecution"
+        />
+        <header-divider />
+      </div>
       <toolbar-button
         data-testid="bold"
         content-type="bold"
@@ -107,14 +115,17 @@ export default {
         :label="i18n.italic"
         @execute="trackToolbarControlExecution"
       />
-      <toolbar-button
-        data-testid="strike"
-        content-type="strike"
-        icon-name="strikethrough"
-        editor-command="toggleStrike"
-        :label="i18n.strike"
-        @execute="trackToolbarControlExecution"
-      />
+      <div class="gl-display-flex">
+        <toolbar-button
+          data-testid="strike"
+          content-type="strike"
+          icon-name="strikethrough"
+          editor-command="toggleStrike"
+          :label="i18n.strike"
+          @execute="trackToolbarControlExecution"
+        />
+        <header-divider />
+      </div>
       <toolbar-button
         data-testid="blockquote"
         content-type="blockquote"
@@ -157,32 +168,38 @@ export default {
         :label="i18n.numberedList"
         @execute="trackToolbarControlExecution"
       />
-      <toolbar-button
-        data-testid="task-list"
-        content-type="taskList"
-        icon-name="list-task"
-        class="gl-display-none gl-sm-display-inline"
-        editor-command="toggleTaskList"
-        :label="i18n.taskList"
-        @execute="trackToolbarControlExecution"
-      />
+      <div class="gl-display-flex">
+        <toolbar-button
+          data-testid="task-list"
+          content-type="taskList"
+          icon-name="list-task"
+          class="gl-display-none gl-sm-display-inline"
+          editor-command="toggleTaskList"
+          :label="i18n.taskList"
+          @execute="trackToolbarControlExecution"
+        />
+        <header-divider />
+      </div>
       <toolbar-table-button data-testid="table" @execute="trackToolbarControlExecution" />
-      <toolbar-attachment-button
-        v-if="!hideAttachmentButton"
-        data-testid="attachment"
-        @execute="trackToolbarControlExecution"
-      />
-      <!-- TODO Add icon and trigger functionality from here -->
-      <toolbar-button
-        v-if="supportsQuickActions"
-        data-testid="quick-actions"
-        content-type="quickAction"
-        icon-name="quick-actions"
-        class="gl-display-none gl-sm-display-inline"
-        editor-command="insertQuickAction"
-        :label="__('Add a quick action')"
-        @execute="trackToolbarControlExecution"
-      />
+      <div class="gl-display-flex">
+        <toolbar-attachment-button
+          v-if="!hideAttachmentButton"
+          data-testid="attachment"
+          @execute="trackToolbarControlExecution"
+        />
+        <!-- TODO Add icon and trigger functionality from here -->
+        <toolbar-button
+          v-if="supportsQuickActions"
+          data-testid="quick-actions"
+          content-type="quickAction"
+          icon-name="quick-actions"
+          class="gl-display-none gl-sm-display-inline"
+          editor-command="insertQuickAction"
+          :label="__('Add a quick action')"
+          @execute="trackToolbarControlExecution"
+        />
+        <header-divider v-if="newCommentTemplatePath" />
+      </div>
       <comment-templates-dropdown
         v-if="newCommentTemplatePath"
         :new-comment-template-path="newCommentTemplatePath"

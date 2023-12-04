@@ -112,6 +112,8 @@ describe('DiffRow', () => {
   });
 
   const getCommentButton = (side) => wrapper.find(`[data-testid="${side}-comment-button"]`);
+  const findRightCommentButton = () => wrapper.find('[data-testid="right-comment-button"]');
+  const findLeftCommentButton = () => wrapper.find('[data-testid="left-comment-button"]');
 
   describe.each`
     side
@@ -135,6 +137,10 @@ describe('DiffRow', () => {
 
       it('renders', () => {
         wrapper = createWrapper({ props: { line, inline: false } });
+        expect(findRightCommentButton().attributes('draggable')).toBe('true');
+        expect(findLeftCommentButton().attributes('draggable')).toBe(
+          side === 'left' ? 'true' : 'false',
+        );
         expect(getCommentButton(side).exists()).toBe(true);
       });
 

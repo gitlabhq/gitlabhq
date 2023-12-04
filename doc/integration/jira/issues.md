@@ -67,12 +67,16 @@ Jira issue can't be merged. The merge request displays the message
 
 You can configure custom rules for how GitLab matches Jira issue keys by defining:
 
-- [A regex pattern](#use-regular-expression)
-- [A prefix](#use-a-prefix)
+- [A regex pattern](#define-a-regex-pattern)
+- [A prefix](#define-a-prefix)
 
-When you do not configure custom rules, the [default behavior](https://gitlab.com/gitlab-org/gitlab/-/blob/9b062706ac6203f0fa897a9baf5c8e9be1876c74/lib/gitlab/regex.rb#L245) is used.
+When you do not configure custom rules, the
+[default behavior](https://gitlab.com/gitlab-org/gitlab/-/blob/9b062706ac6203f0fa897a9baf5c8e9be1876c74/lib/gitlab/regex.rb#L245) is used.
 
-### Use regular expression
+### Define a regex pattern
+
+You can use a regular expression (regex) to match Jira issue keys.
+The regex pattern must follow the [RE2 syntax](https://github.com/google/re2/wiki/Syntax).
 
 To define a regex pattern for Jira issue keys:
 
@@ -83,14 +87,14 @@ To define a regex pattern for Jira issue keys:
 1. In the **Jira issue regex** text box, enter a regex pattern.
 1. Select **Save changes**.
 
-The regular expression must follow the [RE2 syntax](https://github.com/google/re2/wiki/Syntax).
+For more information, see the
+[Atlassian documentation](https://confluence.atlassian.com/adminjiraserver073/changing-the-project-key-format-861253229.html).
 
-For more information, see the [Atlassian documentation](https://confluence.atlassian.com/adminjiraserver073/changing-the-project-key-format-861253229.html).
+### Define a prefix
 
-### Use a prefix
-
-You can define a prefix for GitLab to match Jira issue keys. For example, if your Jira issue ID is `ALPHA-1`
-and you've set a `JIRA#` prefix, GitLab matches `JIRA#ALPHA-1` rather than `ALPHA-1`.
+You can use a prefix to match Jira issue keys.
+For example, if your Jira issue key is `ALPHA-1` and you define a `JIRA#` prefix,
+GitLab matches `JIRA#ALPHA-1` rather than `ALPHA-1`.
 
 To define a prefix for Jira issue keys:
 

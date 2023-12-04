@@ -58,8 +58,8 @@ To configure your project settings in GitLab:
    - To [transition Jira issues automatically](../../user/project/issues/managing_issues.md#closing-issues-automatically) in GitLab,
    select the **Enable Jira transitions** checkbox.
 1. In the **Jira issue matching** section:
-   - For **Jira issue regex**, [enter a regex pattern](issues.md#use-regular-expression).
-   - For **Jira issue prefix**, [enter a prefix](issues.md#use-a-prefix).
+   - For **Jira issue regex**, [enter a regex pattern](issues.md#define-a-regex-pattern).
+   - For **Jira issue prefix**, [enter a prefix](issues.md#define-a-prefix).
 1. In the **Issues** section:
    - To [view Jira issues](issues.md#view-jira-issues) in GitLab, select the **Enable Jira issues** checkbox and
    enter a Jira project key. You can only view issues from a single Jira project in a GitLab project.

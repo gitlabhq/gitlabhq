@@ -220,8 +220,11 @@ considered equivalent to rebasing.
 
 To rebase a merge request's branch without triggering a CI/CD pipeline, select
 **Rebase without pipeline** from the merge request reports section.
-This option is available when fast-forward merge is not possible but a conflict-free
-rebase is possible.
+
+This option is:
+
+- Available when fast-forward merge is not possible but a conflict-free rebase is possible.
+- Not available when the **Pipelines must succeed** option is enabled.
 
 Rebasing without a CI/CD pipeline saves resources in projects with a semi-linear
 workflow that requires frequent rebases.

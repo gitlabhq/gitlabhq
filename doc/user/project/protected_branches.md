@@ -363,6 +363,10 @@ Thus, they can skip merge request approval rules, Code Owners included.
 The permission to merge or push to protected branches defines
 whether or not a user can run CI/CD pipelines and execute actions on jobs.
 
+Because [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md) run on the source
+branch, a pipeline isn't created if the user opening a merge request does not have permission to merge
+or push to the source branch.
+
 See [Security on protected branches](../../ci/pipelines/index.md#pipeline-security-on-protected-branches)
 for details about the pipelines security model.
 

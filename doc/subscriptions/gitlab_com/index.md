@@ -468,6 +468,20 @@ To confirm the available storage, go to your group, and then select
 The **Purchased storage available** total is incremented by the amount purchased. All locked
 projects are unlocked and their excess usage is deducted from the additional storage.
 
+## Enterprise Agile Planning
+
+GitLab Enterprise Agile Planning is an add-on that helps bring non-technical users into the same
+DevSecOps platform where engineers build, test, secure, and deploy code.
+The add-on enables cross-team collaboration between developers and non-developers without having to
+purchase full GitLab licenses for non-engineering team members.
+With Enterprise Agile Planning seats, non-engineering team members can participate in planning
+workflows, measure software delivery velocity and impact with Value Stream Analytics, and use
+executive dashboards to drive organizational visibility.
+
+### Purchase additional Enterprise Agile Planning seats
+
+Please contact your [GitLab sales representative](https://about.gitlab.com/sales/) for more information.
+
 ## Contact Support
 
 Learn more about:

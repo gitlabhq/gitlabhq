@@ -3,7 +3,7 @@
 exports[`content_editor/components/toolbar_button displays tertiary, medium button with a provided label and icon 1`] = `
 <b-button-stub
   aria-label="Bold"
-  class="btn-default-tertiary btn-icon gl-button gl-mr-3"
+  class="btn-default-tertiary btn-icon gl-button gl-mr-2"
   size="sm"
   tag="button"
   title="Bold"
