@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-# See https://docs.gitlab.com/ee/development/migration_style_guide.html
-# for more information on how to write migrations for GitLab.
-
 class AddObjectiveAndKeyresultToWorkItemTypes < Gitlab::Database::Migration[2.0]
   # Added the following statements as per https://docs.gitlab.com/ee/development/database/migrations_for_multiple_databases.html
   disable_ddl_transaction!

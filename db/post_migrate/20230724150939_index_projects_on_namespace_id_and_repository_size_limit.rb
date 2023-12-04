@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-# See https://docs.gitlab.com/ee/development/migration_style_guide.html
-# for more information on how to write migrations for GitLab.
-
 class IndexProjectsOnNamespaceIdAndRepositorySizeLimit < Gitlab::Database::Migration[2.1]
   INDEX_NAME = "index_projects_on_namespace_id_and_repository_size_limit"
 

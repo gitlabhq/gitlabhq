@@ -72,6 +72,26 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :request_store, featur
       end
     end
 
+    context 'when encountering connection exceptions within process' do
+      before do
+        redis_store_class.with do |redis|
+          allow(redis._client).to receive(:write).and_call_original
+        end
+      end
+
+      it 'counts connection exceptions' do
+        redis_store_class.with do |redis|
+          expect(redis._client).to receive(:write).with([:get, 'foobar']).and_raise(::Redis::ConnectionError)
+        end
+
+        expect(instrumentation_class).to receive(:log_exception).with(instance_of(Redis::ConnectionError)).and_call_original
+        expect(instrumentation_class).to receive(:instance_count_connection_exception)
+                                             .with(instance_of(Redis::ConnectionError)).and_call_original
+
+        redis_store_class.with { |redis| redis.call(:get, 'foobar') }
+      end
+    end
+
     context 'when encountering exceptions' do
       where(:case_name, :exception, :exception_counter) do
         'generic exception' | Redis::CommandError                                 | :instance_count_exception

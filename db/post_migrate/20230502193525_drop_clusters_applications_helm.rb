@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-# See https://docs.gitlab.com/ee/development/migration_style_guide.html
-# for more information on how to write migrations for GitLab.
-
 class DropClustersApplicationsHelm < Gitlab::Database::Migration[2.1]
   def up
     drop_table :clusters_applications_helm

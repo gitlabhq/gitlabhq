@@ -670,6 +670,53 @@ The following process has been configured to make dependencies more evident whil
   whether they got finished by looking up the `finalized_by` key in the
   [BBM dictionary](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/generators/batched_background_migration/templates/batched_background_migration_dictionary.template).
 
+Example:
+
+```ruby
+   class QueueBackfillRoutesNamespaceId < Gitlab::Database::Migration[2.1]
+     MIGRATION = 'BackfillRouteNamespaceId'
+....
+     restrict_gitlab_migration gitlab_schema: :gitlab_main
+
+     def up
+       queue_batched_background_migration(
+        ...
+         queued_migration_version: '20231113120650',
+        ...
+       )
+     end
+...
+   end
+   ```
+
+  ```ruby
+   class NewQueueBackfillRoutesNamespaceId < Gitlab::Database::Migration[2.1]
+     MIGRATION = 'NewBackfillRouteNamespaceId'
+     DELAY_INTERVAL = 2.minutes
+     BATCH_SIZE = 1000
+     SUB_BATCH_SIZE = 100
+     DEPENDENT_BATCHED_BACKGROUND_MIGRATIONS = ["20231113120650"]
+
+     restrict_gitlab_migration gitlab_schema: :gitlab_main
+
+     def up
+       queue_batched_background_migration(
+         MIGRATION,
+         :routes,
+         :id,
+         job_interval: DELAY_INTERVAL,
+         queued_migration_version: '20241213120651',
+         batch_size: BATCH_SIZE,
+         sub_batch_size: SUB_BATCH_SIZE
+       )
+     end
+
+     def down
+       delete_batched_background_migration(MIGRATION, :routes, :id, [])
+     end
+   end
+   ```
+
 #### Notes
 
 - `BackgroundMigration::DictionaryFile` cop ensures the presence of `finalize_after` and `introduced_by_url` keys in the

@@ -2,7 +2,7 @@
 
 class AddIndexToViolationsOnTargetProjId < Gitlab::Database::Migration[2.1]
   TABLE_NAME = 'merge_requests_compliance_violations'
-  # Use funciton based naming as suggested in docs:
+  # Use function based naming as suggested in docs:
   # https://docs.gitlab.com/ee/development/migration_style_guide.html#truncate-long-index-names
   INDEX_NAME = 'i_compliance_violations_for_export'
 

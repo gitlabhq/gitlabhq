@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-# See https://docs.gitlab.com/ee/development/migration_style_guide.html
-# for more information on how to write migrations for GitLab.
-
 class RemoveAtlassianRefreshTokenConstraint < Gitlab::Database::Migration[2.1]
   CONSTRAINT_NAME = 'atlassian_identities_refresh_token_length_constraint'
 

@@ -28,6 +28,23 @@ module Gitlab
         result
       end
 
+      def ensure_connected
+        super do
+          instrument_reconnection_errors do
+            yield
+          end
+        end
+      end
+
+      def instrument_reconnection_errors
+        yield
+      rescue ::Redis::BaseConnectionError => ex
+        instrumentation_class.log_exception(ex)
+        instrumentation_class.instance_count_connection_exception(ex)
+
+        raise ex
+      end
+
       # That's required so it knows which GitLab Redis instance
       # it's interacting with in order to categorize accordingly.
       #

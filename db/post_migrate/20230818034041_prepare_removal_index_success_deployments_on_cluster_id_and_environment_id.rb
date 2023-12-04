@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-# See https://docs.gitlab.com/ee/development/migration_style_guide.html
-# for more information on how to write migrations for GitLab.
-
 class PrepareRemovalIndexSuccessDeploymentsOnClusterIdAndEnvironmentId < Gitlab::Database::Migration[2.1]
   INDEX_NAME = 'index_successful_deployments_on_cluster_id_and_environment_id'
 

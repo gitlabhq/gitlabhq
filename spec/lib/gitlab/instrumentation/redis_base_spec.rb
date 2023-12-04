@@ -222,4 +222,18 @@ RSpec.describe Gitlab::Instrumentation::RedisBase, :request_store do
       instrumentation_class_a.log_exception(StandardError.new)
     end
   end
+
+  describe '.instance_count_connection_exception' do
+    before do
+      # initialise connection_exception_counter
+      instrumentation_class_a.instance_count_connection_exception(StandardError.new)
+    end
+
+    it 'counts connection exception' do
+      expect(instrumentation_class_a.instance_variable_get(:@connection_exception_counter)).to receive(:increment)
+        .with({ storage: instrumentation_class_a.storage_key, exception: 'Redis::ConnectionError' })
+
+      instrumentation_class_a.instance_count_connection_exception(Redis::ConnectionError.new)
+    end
+  end
 end
