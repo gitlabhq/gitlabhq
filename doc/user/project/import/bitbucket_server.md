@@ -6,30 +6,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Import your project from Bitbucket Server **(FREE ALL)**
 
-> Support for pull request approval imports [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135256) in GitLab 16.7.
+> - Ability to re-import projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23905) in GitLab 15.9.
+> - Ability to import reviewers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416611) in GitLab 16.3.
+> - Support for pull request approval imports [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135256) in GitLab 16.7.
+
+Import your projects from Bitbucket Server to GitLab.
 
 NOTE:
 This process is different than [importing from Bitbucket Cloud](bitbucket.md).
 
-From Bitbucket Server, you can import:
-
-- Repository description
-- Git repository data
-- Pull requests
-- Pull request comments
-- Pull request approvals
-
-When importing, repository public access is retained. If a repository is private in Bitbucket, it's
-created as private in GitLab as well.
-
-## Import your Bitbucket repositories
-
-> - Ability to re-import projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23905) in GitLab 15.9.
-> - Ability to import reviewers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416611) in GitLab 16.3.
-
-You can import Bitbucket repositories to GitLab.
-
-### Prerequisites
+## Prerequisites
 
 > Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 
@@ -37,8 +23,9 @@ You can import Bitbucket repositories to GitLab.
   must be enabled. If not enabled, ask your GitLab administrator to enable it. The Bitbucket Server import source is enabled
   by default on GitLab.com.
 - At least the Maintainer role on the destination group to import to.
+- Bitbucket Server authentication token with administrator access.
 
-### Import repositories
+## Import repositories
 
 To import your Bitbucket repositories:
 
@@ -53,7 +40,26 @@ To import your Bitbucket repositories:
    - For the first time: Select **Import**.
    - Again: Select **Re-import**. Specify a new name and select **Re-import** again. Re-importing creates a new copy of the source project.
 
-### Items that are not imported
+## Items that are imported
+
+- Repository description
+- Git repository data
+- Pull requests
+- Pull request comments, reviewers, approvals, and merge events
+- LFS objects
+
+When importing, repository public access is retained. If a repository is private in Bitbucket, it's
+created as private in GitLab as well.
+
+When closed or merged pull requests are imported, commit SHAs that do not exist in the repository are fetched from the Bitbucket server
+to make sure pull requests have commits tied to them:
+
+- Source commit SHAs are saved with references in the format `refs/merge-requests/<iid>/head`.
+- Target commit SHAs are saved with references in the format `refs/keep-around/<SHA>`.
+
+If the source commit does not exist in the repository, a commit containing the SHA in the commit message is used instead.
+
+## Items that are not imported
 
 The following items aren't imported:
 
@@ -61,7 +67,7 @@ The following items aren't imported:
 - Task lists
 - Emoji reactions
 
-### Items that are imported but changed
+## Items that are imported but changed
 
 The following items are changed when they are imported:
 
@@ -69,17 +75,12 @@ The following items are changed when they are imported:
   inserted as comments in the merge request.
 - Multiple threading levels are collapsed into one thread and
   quotes are added as part of the original comment.
-- Declined pull requests have unreachable commits. These pull requests show up as empty changes.
 - Project filtering doesn't support fuzzy search. Only **starts with** or **full match** strings are
   supported.
 
 ## User assignment
 
 > Importing approvals by email address or username [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23586) in GitLab 16.7.
-
-Prerequisites:
-
-- Authentication token with administrator access.
 
 When issues and pull requests are importing, the importer tries to find the author's email address
 with a confirmed email address in the GitLab user database. If no such user is available, the
@@ -132,16 +133,6 @@ for Bitbucket Cloud.
 If the project import completes but LFS objects can't be downloaded or cloned, you may be using a
 password or personal access token containing special characters. For more information, see
 [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/337769).
-
-### Pull requests are missing
-
-Importing large projects spawns a process that can consume a lot of memory. Sometimes you can see messages such as `Sidekiq worker RSS out of range` in the
-[Sidekiq logs](../../../administration/logs/index.md#sidekiq-logs). This can mean that MemoryKiller is interrupting the `RepositoryImportWorker` because it's using
-too much memory.
-
-To resolve this problem, temporarily increase the `SIDEKIQ_MEMORY_KILLER_MAX_RSS` environment variable using
-[custom environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) from the default `2000000` value to a larger value like `3000000`.
-Consider memory constraints on the system before deciding to increase `SIDEKIQ_MEMORY_KILLER_MAX_RSS`.
 
 ## Related topics
 

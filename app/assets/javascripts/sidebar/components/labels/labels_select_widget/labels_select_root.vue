@@ -52,7 +52,7 @@ export default {
       required: false,
       default: false,
     },
-    supportsLockOnMerge: {
+    enforceLockedLabelsOnMerge: {
       type: Boolean,
       required: false,
       default: false,

@@ -120,12 +120,6 @@ module StubConfiguration
       .to receive(:sentry_clientside_dsn) { clientside_dsn }
   end
 
-  def clear_sentry_settings
-    ::Sentry.get_current_scope.clear
-    ::Sentry.close
-    ::Raven.configuration = ::Raven::Configuration.new
-  end
-
   def stub_microsoft_graph_mailer_setting(messages)
     allow(Gitlab.config.microsoft_graph_mailer).to receive_messages(to_settings(messages))
   end

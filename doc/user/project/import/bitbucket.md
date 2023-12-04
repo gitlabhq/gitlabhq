@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Import your project from Bitbucket Cloud to GitLab **(FREE ALL)**
+# Import your project from Bitbucket Cloud **(FREE ALL)**
 
 > Parallel imports from Bitbucket Cloud [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412614) in GitLab 16.6 [with a flag](../../../administration/feature_flags.md) named `bitbucket_parallel_importer`. Disabled by default.
 
@@ -25,6 +25,9 @@ The Bitbucket importer can import:
 - Pull request comments
 - Milestones
 - Wiki
+- Labels
+- Milestones
+- LFS objects
 
 When importing:
 
@@ -37,11 +40,23 @@ The Bitbucket Cloud importer works only with [Bitbucket.org](https://bitbucket.o
 Server (aka Stash). If you are trying to import projects from Bitbucket Server, use
 [the Bitbucket Server importer](bitbucket_server.md).
 
-When issues/pull requests are being imported, the Bitbucket importer uses the Bitbucket nickname of
+When issues, pull requests, and comments are imported, the Bitbucket importer uses the Bitbucket nickname of
 the author/assignee and tries to find the same Bitbucket identity in GitLab. If they don't match or
 the user is not found in the GitLab database, the project creator (most of the times the current
 user that started the import process) is set as the author, but a reference on the issue about the
 original Bitbucket author is kept.
+
+For pull requests:
+
+- If the source SHA does not exist in the repository, the importer attempts to set the source commit to the merge commit SHA.
+- The merge request assignee is set to the author. Reviewers are set with usernames matching Bitbucket identities in GitLab.
+- Approvals are not imported.
+- Merge requests in GitLab can be either can be either `opened`, `closed` or `merged`.
+
+For issues:
+
+- A label is added corresponding to the type of issue on Bitbucket. Either `bug`, `enhancement`, `proposal` or `task`.
+- If the issue on Bitbucket was one of `resolved`, `invalid`, `duplicate`, `wontfix`, or `closed`, the issue is closed on GitLab.
 
 The importer creates any new namespaces (groups) if they don't exist or in
 the case the namespace is taken, the repository is imported under the user's

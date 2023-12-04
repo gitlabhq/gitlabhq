@@ -180,7 +180,7 @@ If you do not specify `target_namespace`, the project imports to your personal u
 
 Prerequisites:
 
-- For more information, see [prerequisites for Bitbucket Server importer](../user/project/import/bitbucket_server.md#import-your-bitbucket-repositories).
+- For more information, see [prerequisites for Bitbucket Server importer](../user/project/import/bitbucket_server.md).
 
 ```plaintext
 POST /import/bitbucket_server

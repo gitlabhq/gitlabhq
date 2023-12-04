@@ -100,4 +100,3 @@ message.
 
 - [Add file from the UI](../user/project/repository/index.md#add-a-file-from-the-ui)
 - [Add file from the Web IDE](../user/project/repository/web_editor.md#upload-a-file)
-- [`git add` options](../topics/git/git_add.md)
