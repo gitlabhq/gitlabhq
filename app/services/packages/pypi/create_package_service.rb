@@ -12,7 +12,7 @@ module Packages
             required_python: params[:requires_python] || '',
             metadata_version: params[:metadata_version],
             author_email: params[:author_email],
-            description: params[:description],
+            description: params[:description]&.truncate(::Packages::Pypi::Metadatum::MAX_DESCRIPTION_LENGTH),
             description_content_type: params[:description_content_type],
             summary: params[:summary],
             keywords: params[:keywords]

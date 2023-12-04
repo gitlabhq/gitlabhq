@@ -330,6 +330,19 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
       it_behaves_like 'process PyPI api request', :developer, :bad_request, true
     end
 
+    context 'with description too big' do
+      let(:description) { 'x' * ::Packages::Pypi::Metadatum::MAX_DESCRIPTION_LENGTH + 1 }
+      let(:token) { personal_access_token.token }
+      let(:user_headers) { basic_auth_header(user.username, token) }
+      let(:headers) { user_headers.merge(workhorse_headers) }
+
+      before do
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      it_behaves_like 'process PyPI api request', :developer, :created, true
+    end
+
     context 'with an invalid package' do
       let(:token) { personal_access_token.token }
       let(:user_headers) { basic_auth_header(user.username, token) }
