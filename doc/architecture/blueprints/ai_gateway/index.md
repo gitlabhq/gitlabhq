@@ -86,6 +86,14 @@ The AI Gateway communication protocol shall only expect a rudimentary envelope t
  **This means
 that all clients regardless of their versions use the same set of AI-Gateway API feature endpoints. The AI-gateway feature endpoints have to support different client versions, instead of creating multiple feature endpoints per different supported client versions**.
 
+We can however add a version to the path in case we do want to evolve
+a certain endpoint. It's not expected that we'll need to do this
+often, but having a version in the path keeps the option open. The
+benefit of this is that individual GitLab milestone releases will
+continue pointing to the endpoint version it was tested against at the
+time of release, while allowing us to iterate quickly by introducing
+new endpoint versions.
+
 We also considered gRPC as a protocol for communication between
 GitLab instances, JSON API, and gRPC differ on these items:
 
@@ -263,7 +271,7 @@ A good practise that might help support backwards compatibility is to provide bu
 For example, a rough Code Suggestions service could look like this:
 
 ```plaintext
-POST /internal/code-suggestions/completions
+POST /v3/code/completions
 ```
 
 ```json

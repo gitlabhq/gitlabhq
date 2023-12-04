@@ -502,6 +502,9 @@ To do that:
 1. Select the **Disable public access to Pages sites** checkbox.
 1. Select **Save changes**.
 
+NOTE:
+You must enable [Access Control](#access-control) first for the setting to show in the Admin Area.
+
 ### Running behind a proxy
 
 Like the rest of GitLab, Pages can be used in those environments where external

@@ -25,34 +25,7 @@ module Gitlab
 
       date_interval = "INTERVAL '#{@contributor_time_instance.utc_offset} seconds'"
 
-      if Feature.enabled?(:contributions_calendar_refactoring, contributor)
-        return contributions_between(start_time, end_time).count_by_dates(date_interval)
-      end
-
-      # TODO: Remove after feature flag `contributions_calendar_refactoring` is rolled out
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/429648
-      # rubocop: disable CodeReuse/ActiveRecord -- will be removed
-      # Can't use Event.contributions here because we need to check 3 different
-      # project_features for the (currently) 4 different contribution types
-      repo_events = events_created_between(start_time, end_time, :repository)
-        .where(action: :pushed)
-      issue_events = events_created_between(start_time, end_time, :issues)
-        .where(action: [:created, :closed], target_type: %w[Issue WorkItem])
-      mr_events = events_created_between(start_time, end_time, :merge_requests)
-        .where(action: [:merged, :created, :closed], target_type: "MergeRequest")
-      note_events = events_created_between(start_time, end_time, :merge_requests)
-        .where(action: :commented)
-
-      events = Event
-        .select("date(created_at + #{date_interval}) AS date", 'COUNT(*) AS num_events')
-        .from_union([repo_events, issue_events, mr_events, note_events], remove_duplicates: false)
-        .group(:date)
-        .map(&:attributes)
-      # rubocop: enable CodeReuse/ActiveRecord
-
-      events.each_with_object(Hash.new { |h, k| h[k] = 0 }) do |event, activities|
-        activities[event["date"]] += event["num_events"]
-      end
+      contributions_between(start_time, end_time).count_by_dates(date_interval)
     end
 
     def events_by_date(date)
@@ -60,18 +33,7 @@ module Gitlab
 
       date_in_time_zone = date.in_time_zone(@contributor_time_instance.time_zone)
 
-      if Feature.enabled?(:contributions_calendar_refactoring, contributor)
-        return contributions_between(date_in_time_zone.beginning_of_day, date_in_time_zone.end_of_day).with_associations
-      end
-
-      # TODO: Remove after feature flag `contributions_calendar_refactoring` is rolled out
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/429648
-      # rubocop: disable CodeReuse/ActiveRecord -- will be removed
-      Event.contributions.where(author_id: contributor.id)
-        .where(created_at: date_in_time_zone.beginning_of_day..date_in_time_zone.end_of_day)
-        .where(project_id: projects)
-        .with_associations
-      # rubocop: enable CodeReuse/ActiveRecord
+      contributions_between(date_in_time_zone.beginning_of_day, date_in_time_zone.end_of_day).with_associations
     end
 
     private
@@ -139,31 +101,5 @@ module Gitlab
     def contribution_events(start_time, end_time)
       contributor.events.created_between(start_time, end_time)
     end
-
-    # TODO: Remove after feature flag `contributions_calendar_refactoring` is rolled out
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/429648
-    # rubocop: disable CodeReuse/ActiveRecord -- will be removed
-    def events_created_between(start_time, end_time, feature)
-      # no need to check feature access of current user, if the contributor opted-in
-      # to show all private events anyway - otherwise they would get filtered out again
-      authed_projects = if contributor.include_private_contributions?
-                          contributed_project_ids
-                        else
-                          ProjectFeature
-                            .with_feature_available_for_user(feature, current_user)
-                            .where(project_id: contributed_project_ids)
-                            .reorder(nil)
-                            .select(:project_id)
-                        end
-
-      Event.reorder(nil)
-        .select(:created_at)
-        .where(
-          author_id: contributor.id,
-          created_at: start_time..end_time,
-          events: { project_id: authed_projects }
-        )
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

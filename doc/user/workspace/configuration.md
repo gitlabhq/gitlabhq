@@ -30,12 +30,7 @@ which you can customize to meet the specific needs of each project.
   that controller accessible over a domain. For example, point `*.workspaces.example.dev`
   and `workspaces.example.dev` to the load balancer exposed by the Ingress controller.
   - [Install `gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy#installation-instructions).
-  - [Install the GitLab agent](../clusters/agent/install/index.md).
-- Configure [remote development settings for the GitLab agent](gitlab_agent_configuration.md).
-
-  You can use any agent defined under the root group of your project,
-  provided that remote development is properly configured for that agent.
-
+  - [Install](../clusters/agent/install/index.md) and [configure](gitlab_agent_configuration.md) the GitLab agent.
 - You must have at least the Developer role in the root group.
 - In each project you want to use this feature for, create a [devfile](index.md#devfile):
   1. On the left sidebar, select **Search or go to** and find your project.

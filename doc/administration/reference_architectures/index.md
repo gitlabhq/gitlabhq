@@ -73,7 +73,7 @@ load of what each architecture has been tested against under the "Testing Method
 comparing those values with what load you are expecting against your existing GitLab environment to help select the right Reference Architecture
 size.
 
-Load is given in terms of Requests per Section (RPS) for each endpoint type (API, Web, Git). This information on your existing infrastructure
+Load is given in terms of Requests per Second (RPS) for each endpoint type (API, Web, Git). This information on your existing infrastructure
 can typically be surfaced by most reputable monitoring solutions or in some other ways such as load balancer metrics. For example, on existing GitLab environments,
 [Prometheus metrics](../monitoring/prometheus/gitlab_metrics.md) such as `gitlab_transaction_duration_seconds` can be used to see this data.
 

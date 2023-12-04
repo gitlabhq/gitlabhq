@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shared do
   using RSpec::Parameterized::TableSyntax
 
-  let(:fake_response) { [200, { 'Content-Type' => 'text/plain' }, ['OK']] }
+  let(:fake_response_status) { 200 }
+  let(:fake_response) { [fake_response_status, { 'Content-Type' => 'text/plain' }, ['OK']] }
   let(:fake_app) { ->(_) { fake_response } }
   let(:middleware) { described_class.new(fake_app) }
 
@@ -31,8 +32,11 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
                 .and_call_original
         expect(::Gitlab::AppLogger)
           .to receive(:warn)
-                .with({ class_name: described_class.name, duration_ms: instance_of(Float) })
-                .and_call_original
+                .with({
+                  class_name: described_class.name,
+                  duration_ms: instance_of(Float),
+                  status: fake_response_status
+                }).and_call_original
 
         expect(subject).to eq(fake_response)
       end
@@ -61,8 +65,11 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
           .not_to receive(:check_path_traversal!)
         expect(::Gitlab::AppLogger)
           .to receive(:warn)
-                .with({ class_name: described_class.name, duration_ms: instance_of(Float) })
-                .and_call_original
+                .with({
+                  class_name: described_class.name,
+                  duration_ms: instance_of(Float),
+                  status: fake_response_status
+                }).and_call_original
 
         expect(subject).to eq(fake_response)
       end
@@ -99,7 +106,8 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
                   duration_ms: instance_of(Float),
                   message: described_class::PATH_TRAVERSAL_MESSAGE,
                   fullpath: fullpath,
-                  method: method.upcase
+                  method: method.upcase,
+                  status: fake_response_status
                 }).and_call_original
 
         expect(subject).to eq(fake_response)
@@ -124,7 +132,8 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
                     class_name: described_class.name,
                     message: described_class::PATH_TRAVERSAL_MESSAGE,
                     fullpath: fullpath,
-                    method: method.upcase
+                    method: method.upcase,
+                    status: fake_response_status
                   }).and_call_original
 
           expect(subject).to eq(fake_response)

@@ -1660,17 +1660,17 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     end
 
     context 'with plaintext token only' do
-      let(:token) { '' }
+      let(:plaintext_token) { Devise.friendly_token(20) }
 
-      it 'ignores the plaintext token' do
+      it 'encrypts the plaintext token' do
         subject
 
-        described_class.update_all(static_objects_external_storage_auth_token: 'Test')
+        described_class.update!(static_objects_external_storage_auth_token: plaintext_token)
 
         setting.reload
         expect(setting[:static_objects_external_storage_auth_token]).to be_nil
-        expect(setting[:static_objects_external_storage_auth_token_encrypted]).to be_nil
-        expect(setting.static_objects_external_storage_auth_token).to be_nil
+        expect(setting[:static_objects_external_storage_auth_token_encrypted]).not_to be_nil
+        expect(setting.static_objects_external_storage_auth_token).to eq(plaintext_token)
       end
     end
   end

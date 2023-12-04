@@ -11873,7 +11873,6 @@ CREATE TABLE application_settings (
     snowplow_enabled boolean DEFAULT false NOT NULL,
     snowplow_collector_hostname character varying,
     snowplow_cookie_domain character varying,
-    web_ide_clientside_preview_enabled boolean DEFAULT false NOT NULL,
     user_show_add_ssh_key_message boolean DEFAULT true NOT NULL,
     custom_project_templates_group_id integer,
     usage_stats_set_by_user_id integer,
@@ -11890,8 +11889,6 @@ CREATE TABLE application_settings (
     lets_encrypt_notification_email character varying,
     lets_encrypt_terms_of_service_accepted boolean DEFAULT false NOT NULL,
     geo_node_allowed_ips character varying DEFAULT '0.0.0.0/0, ::/0'::character varying,
-    elasticsearch_shards integer DEFAULT 5 NOT NULL,
-    elasticsearch_replicas integer DEFAULT 1 NOT NULL,
     encrypted_lets_encrypt_private_key text,
     encrypted_lets_encrypt_private_key_iv text,
     required_instance_ci_template character varying,
@@ -11912,7 +11909,6 @@ CREATE TABLE application_settings (
     encrypted_asset_proxy_secret_key text,
     encrypted_asset_proxy_secret_key_iv character varying,
     static_objects_external_storage_url character varying(255),
-    static_objects_external_storage_auth_token character varying(255),
     max_personal_access_token_lifetime integer,
     throttle_protected_paths_enabled boolean DEFAULT false NOT NULL,
     throttle_protected_paths_requests_per_period integer DEFAULT 10 NOT NULL,
@@ -34198,7 +34194,7 @@ CREATE INDEX index_projects_on_namespace_id_and_id ON projects USING btree (name
 
 CREATE INDEX index_projects_on_namespace_id_and_repository_size_limit ON projects USING btree (namespace_id, repository_size_limit);
 
-CREATE INDEX index_projects_on_organization_id ON projects USING btree (organization_id);
+CREATE INDEX index_projects_on_organization_id_and_id ON projects USING btree (organization_id, id);
 
 CREATE INDEX index_projects_on_path_trigram ON projects USING gin (path gin_trgm_ops);
 

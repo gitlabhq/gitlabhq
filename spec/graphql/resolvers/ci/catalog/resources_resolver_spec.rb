@@ -12,7 +12,7 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
     create(:project, :public, name: 'public', description: 'Test', namespace: namespace)
   end
 
-  let_it_be(:internal_project) { create(:project, :internal, :private, name: 'internal') }
+  let_it_be(:internal_project) { create(:project, :internal, name: 'internal') }
   let_it_be(:private_resource) { create(:ci_catalog_resource, :published, project: private_namespace_project) }
   let_it_be(:private_resource_2) { create(:ci_catalog_resource, project: private_namespace_project_2) }
   let_it_be(:public_resource) { create(:ci_catalog_resource, :published, project: public_namespace_project) }
@@ -40,7 +40,7 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
     context 'with an authorized user' do
       before_all do
         namespace.add_reporter(user)
-        internal_project.add_owner(user)
+        internal_project.add_reporter(user)
       end
 
       context 'when the project path argument is provided' do
@@ -83,13 +83,14 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
         context 'when the scope argument is :namespaces' do
           let(:scope) { 'NAMESPACES' }
 
-          it 'returns only internal and public projects of the namespaces the user is a member of' do
+          it 'returns projects of the namespaces the user is a member of' do
             namespace = create(:namespace, owner: user)
             internal_public_project = create(:project, :internal, name: 'internal public', namespace: namespace)
             create(:ci_catalog_resource, :published, project: internal_public_project)
 
-            expect(result.items.count).to be(2)
-            expect(result.items.pluck(:name)).to contain_exactly('public', 'internal public')
+            expect(result.items.count).to be(4)
+            expect(result.items.pluck(:name)).to contain_exactly('public', 'internal public', 'internal',
+              'z private test')
           end
         end
 
@@ -115,7 +116,9 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
       end
     end
 
-    context 'when the current user cannot read the namespace catalog' do
+    context 'when the user is anonymous' do
+      let_it_be(:user) { nil }
+
       it 'returns only public projects' do
         expect(result.items.count).to be(1)
         expect(result.items.pluck(:name)).to contain_exactly('public')

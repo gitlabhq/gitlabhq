@@ -32,20 +32,24 @@ module Gitlab
       end
 
       def call(env)
-        if Feature.enabled?(:check_path_traversal_middleware, Feature.current_request)
-          log_params = {}
+        return @app.call(env) unless Feature.enabled?(:check_path_traversal_middleware, Feature.current_request)
 
-          execution_time = measure_execution_time do
-            request = ::Rack::Request.new(env.dup)
-            check(request, log_params) unless excluded?(request)
-          end
+        log_params = {}
 
-          log_params[:duration_ms] = execution_time.round(5) if execution_time
+        execution_time = measure_execution_time do
+          request = ::Rack::Request.new(env.dup)
+          check(request, log_params) unless excluded?(request)
+        end
+        log_params[:duration_ms] = execution_time.round(5) if execution_time
 
-          log(log_params) unless log_params.empty?
+        result = @app.call(env)
+
+        unless log_params.empty?
+          log_params[:status] = result.first
+          log(log_params)
         end
 
-        @app.call(env)
+        result
       end
 
       private

@@ -63,64 +63,48 @@ RSpec.describe Gitlab::ContributionsCalendar, feature_category: :user_profile do
   end
 
   describe '#activity_dates', :aggregate_failures do
-    shared_examples_for 'returns a hash of date => count' do
-      specify do
-        create_event(public_project, last_week)
-        create_event(public_project, last_week)
-        create_event(public_project, today)
-        work_item_event = create_event(private_project, today, 0, :created, :work_item)
+    it 'returns a hash of date => count' do
+      create_event(public_project, last_week)
+      create_event(public_project, last_week)
+      create_event(public_project, today)
+      work_item_event = create_event(private_project, today, 0, :created, :work_item)
 
-        # make sure the target is a work item as we want to include those in the count
-        expect(work_item_event.target_type).to eq('WorkItem')
-        expect(calendar(contributor).activity_dates).to eq(last_week => 2, today => 2)
-      end
+      # make sure the target is a work item as we want to include those in the count
+      expect(work_item_event.target_type).to eq('WorkItem')
+      expect(calendar(contributor).activity_dates).to eq(last_week => 2, today => 2)
     end
 
-    shared_examples 'private contribution events' do
-      context "when the user has opted-in for private contributions" do
-        before do
-          contributor.update_column(:include_private_contributions, true)
-        end
-
-        it "shows private and public events to all users" do
-          create_event(private_project, today)
-          create_event(public_project, today)
-
-          expect(calendar.activity_dates[today]).to eq(2)
-          expect(calendar(user).activity_dates[today]).to eq(2)
-          expect(calendar(contributor).activity_dates[today]).to eq(2)
-        end
-
-        # tests for bug https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74826
-        it "still counts correct with feature access levels set to private" do
-          create_event(private_project, today)
-
-          private_project.project_feature.update_attribute(:issues_access_level, ProjectFeature::PRIVATE)
-          private_project.project_feature.update_attribute(:repository_access_level, ProjectFeature::PRIVATE)
-          private_project.project_feature.update_attribute(:merge_requests_access_level, ProjectFeature::PRIVATE)
-
-          expect(calendar.activity_dates[today]).to eq(1)
-          expect(calendar(user).activity_dates[today]).to eq(1)
-          expect(calendar(contributor).activity_dates[today]).to eq(1)
-        end
-
-        it "does not fail if there are no contributed projects" do
-          expect(calendar.activity_dates[today]).to eq(nil)
-        end
-      end
-    end
-
-    context 'when contributions_calendar_refactoring feature flag is disabled' do
+    context "when the user has opted-in for private contributions" do
       before do
-        stub_feature_flags(contributions_calendar_refactoring: false)
+        contributor.update_column(:include_private_contributions, true)
       end
 
-      it_behaves_like 'returns a hash of date => count'
-      include_examples 'private contribution events'
-    end
+      it "shows private and public events to all users" do
+        create_event(private_project, today)
+        create_event(public_project, today)
 
-    it_behaves_like 'returns a hash of date => count'
-    include_examples 'private contribution events'
+        expect(calendar.activity_dates[today]).to eq(2)
+        expect(calendar(user).activity_dates[today]).to eq(2)
+        expect(calendar(contributor).activity_dates[today]).to eq(2)
+      end
+
+      # tests for bug https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74826
+      it "still counts correct with feature access levels set to private" do
+        create_event(private_project, today)
+
+        private_project.project_feature.update_attribute(:issues_access_level, ProjectFeature::PRIVATE)
+        private_project.project_feature.update_attribute(:repository_access_level, ProjectFeature::PRIVATE)
+        private_project.project_feature.update_attribute(:merge_requests_access_level, ProjectFeature::PRIVATE)
+
+        expect(calendar.activity_dates[today]).to eq(1)
+        expect(calendar(user).activity_dates[today]).to eq(1)
+        expect(calendar(contributor).activity_dates[today]).to eq(1)
+      end
+
+      it "does not fail if there are no contributed projects" do
+        expect(calendar.activity_dates[today]).to eq(nil)
+      end
+    end
 
     it "counts the diff notes on merge request" do
       create_event(public_project, today, 0, :commented, :diff_note_on_merge_request)
@@ -224,22 +208,6 @@ RSpec.describe Gitlab::ContributionsCalendar, feature_category: :user_profile do
 
       expect(calendar.events_by_date(today)).to contain_exactly(e1)
       expect(calendar(contributor).events_by_date(today)).to contain_exactly(e1, e2, e3)
-    end
-
-    context 'when contributions_calendar_refactoring feature flag is disabled' do
-      before do
-        stub_feature_flags(contributions_calendar_refactoring: false)
-      end
-
-      it "only shows private events to authorized users" do
-        e1 = create_event(public_project, today)
-        e2 = create_event(private_project, today)
-        e3 = create_event(public_project_with_private_issues, today, 0, :created, :issue)
-        create_event(public_project, last_week)
-
-        expect(calendar.events_by_date(today)).to contain_exactly(e1, e3)
-        expect(calendar(contributor).events_by_date(today)).to contain_exactly(e1, e2, e3)
-      end
     end
 
     it "includes diff notes on merge request" do

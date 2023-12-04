@@ -952,8 +952,7 @@ If you want to run the Geo tracking database on a single node, see [Configure th
 A production-ready and secure setup for the tracking PostgreSQL DB requires at least three Consul nodes: two
 Patroni nodes, and one PgBouncer node on the secondary site.
 
-Because of [issue 6587](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6587), Consul can't track multiple
-services, so these must be different than the nodes used for the Standby Cluster database.
+Consul can track multiple services, so you can choose to reuse the nodes used for the Standby Cluster database, though the instructions below do not show how to combine configurations when reusing Consul nodes.
 
 Be sure to use [password credentials](../../postgresql/replication_and_failover.md#database-authorization-for-patroni)
 and other database best practices.

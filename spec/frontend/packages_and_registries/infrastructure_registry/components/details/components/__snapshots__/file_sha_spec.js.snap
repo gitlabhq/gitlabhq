@@ -2,9 +2,9 @@
 
 exports[`FileSha renders 1`] = `
 <div
-  class="gl-align-items-center gl-border-b-1 gl-border-b-solid gl-border-gray-100 gl-display-flex gl-font-monospace gl-font-sm gl-py-2 gl-word-break-all"
+  class="gl-align-items-top gl-border-b-1 gl-border-b-solid gl-border-gray-100 gl-display-flex gl-font-monospace gl-font-sm gl-py-2 gl-word-break-all"
 >
-  <span>
+  <div>
     <div
       class="gl-px-4"
     >
@@ -23,6 +23,6 @@ exports[`FileSha renders 1`] = `
         variant="default"
       />
     </div>
-  </span>
+  </div>
 </div>
 `;

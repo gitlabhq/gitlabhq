@@ -60,7 +60,7 @@ module Ci
 
       def by_scope(relation, scope)
         if scope == :namespaces && Feature.enabled?(:ci_guard_for_catalog_resource_scope, current_user)
-          relation.merge(Project.public_and_internal_only.visible_to_user(current_user))
+          relation.merge(Project.visible_to_user(current_user))
         else
           relation.merge(Project.public_or_visible_to_user(current_user))
         end

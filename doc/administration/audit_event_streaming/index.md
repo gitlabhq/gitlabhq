@@ -49,7 +49,7 @@ To add streaming destinations to a top-level group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Audit events**.
-1. On the main area, select **Streams** tab.
+1. On the main area, select the **Streams** tab.
 1. Select **Add streaming destination** and select **HTTP endpoint** to show the section for adding destinations.
 1. In the **Name** and **Destination URL** fields, add a destination name and URL.
 1. Optional. Locate the **Custom HTTP headers** table.
@@ -68,7 +68,7 @@ To list the streaming destinations for a top-level group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Audit events**.
-1. On the main area, select **Streams** tab.
+1. On the main area, select the **Streams** tab.
 1. Select the stream to expand it and see all the custom HTTP headers.
 
 #### Update an HTTP destination
@@ -81,7 +81,7 @@ To update a streaming destination's name:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Audit events**.
-1. On the main area, select **Streams** tab.
+1. On the main area, select the **Streams** tab.
 1. Select the stream to expand.
 1. In the **Name** fields, add a destination name to update.
 1. Select **Save** to update the streaming destination.
@@ -90,7 +90,7 @@ To update a streaming destination's custom HTTP headers:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Audit events**.
-1. On the main area, select **Streams** tab.
+1. On the main area, select the **Streams** tab.
 1. Select the stream to expand.
 1. Locate the **Custom HTTP headers** table.
 1. Locate the header that you wish to update.
@@ -146,7 +146,7 @@ To list streaming destinations and see the verification tokens:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Audit events**.
-1. On the main area, select the **Streams**.
+1. On the main area, select the **Streams** tab.
 1. Select the stream to expand.
 1. Locate the **Verification token** input.
 
@@ -204,7 +204,7 @@ To add Google Cloud Logging streaming destinations to a top-level group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Audit events**.
-1. On the main area, select **Streams** tab.
+1. On the main area, select the **Streams** tab.
 1. Select **Add streaming destination** and select **Google Cloud Logging** to show the section for adding destinations.
 1. Enter a random string to use as a name for the new destination.
 1. Enter the Google project ID, Google client email, and Google private key from previously-created Google Cloud service account key to add to the new destination.
@@ -221,7 +221,7 @@ To list Google Cloud Logging streaming destinations for a top-level group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Audit events**.
-1. On the main area, select **Streams** tab.
+1. On the main area, select the **Streams** tab.
 1. Select the Google Cloud Logging stream to expand and see all the fields.
 
 #### Update a Google Cloud Logging destination
@@ -236,7 +236,7 @@ To update Google Cloud Logging streaming destinations to a top-level group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Audit events**.
-1. On the main area, select **Streams** tab.
+1. On the main area, select the **Streams** tab.
 1. Select the Google Cloud Logging stream to expand.
 1. Enter a random string to use as a name for the destination.
 1. Enter the Google project ID and Google client email from previously-created Google Cloud service account key to update the destination.
@@ -284,7 +284,7 @@ To add AWS S3 streaming destinations to a top-level group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Audit events**.
-1. On the main area, select **Streams** tab.
+1. On the main area, select the **Streams** tab.
 1. Select **Add streaming destination** and select **AWS S3** to show the section for adding destinations.
 1. Enter a random string to use as a name for the new destination.
 1. Enter the Access Key ID, Secret Access Key, Bucket Name, and AWS Region from previously-created AWS access key and bucket to add to the new destination.
@@ -300,7 +300,7 @@ To list AWS S3 streaming destinations for a top-level group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Audit events**.
-1. On the main area, select **Streams** tab.
+1. On the main area, select the **Streams** tab.
 1. Select the AWS S3 stream to expand and see all the fields.
 
 #### Update a AWS S3 destination
@@ -313,7 +313,7 @@ To update AWS S3 streaming destinations to a top-level group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Audit events**.
-1. On the main area, select **Streams** tab.
+1. On the main area, select the **Streams** tab.
 1. Select the AWS S3 stream to expand.
 1. Enter a random string to use as a name for the destination.
 1. Enter the Access Key ID, Secret Access Key, Bucket Name, and AWS Region from previously-created AWS access key and bucket to update the destination.
@@ -358,8 +358,8 @@ Prerequisites:
 To add a streaming destination for an instance:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Monitoring > Audit Events**.
-1. On the main area, select **Streams** tab.
+1. Select **Monitoring > Audit Events**.
+1. On the main area, select the **Streams** tab.
 1. Select **Add streaming destination** and select **HTTP endpoint** to show the section for adding destinations.
 1. In the **Name** and **Destination URL** fields, add a destination name and URL.
 1. Optional. To add custom HTTP headers, select **Add header** to create a new name and value pair, and input their values. Repeat this step for as many name and value pairs are required. You can add up to 20 headers per streaming destination.
@@ -377,8 +377,8 @@ Prerequisites:
 To list the streaming destinations for an instance:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Monitoring > Audit Events**.
-1. On the main area, select **Streams** tab.
+1. Select **Monitoring > Audit Events**.
+1. On the main area, select the **Streams** tab.
 1. Select the stream to expand it and see all the custom HTTP headers.
 
 #### Update an HTTP destination
@@ -390,8 +390,8 @@ Prerequisites:
 To update a instance streaming destination's name:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Monitoring > Audit Events**.
-1. On the main area, select **Streams** tab.
+1. Select **Monitoring > Audit Events**.
+1. On the main area, select the **Streams** tab.
 1. Select the stream to expand.
 1. In the **Name** fields, add a destination name to update.
 1. Select **Save** to update the streaming destination.
@@ -399,8 +399,8 @@ To update a instance streaming destination's name:
 To update a instance streaming destination's custom HTTP headers:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Monitoring > Audit Events**.
-1. On the main area, select **Streams** tab.
+1. Select **Monitoring > Audit Events**.
+1. On the main area, select the **Streams** tab.
 1. Select the stream to expand.
 1. Locate the **Custom HTTP headers** table.
 1. Locate the header that you wish to update.
@@ -421,7 +421,7 @@ Prerequisites:
 To delete the streaming destinations for an instance:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Monitoring > Audit Events**.
+1. Select **Monitoring > Audit Events**.
 1. On the main area, select the **Streams** tab.
 1. Select the stream to expand.
 1. Select **Delete destination**.
@@ -430,7 +430,7 @@ To delete the streaming destinations for an instance:
 To delete only the custom HTTP headers for a streaming destination:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Monitoring > Audit Events**.
+1. Select **Monitoring > Audit Events**.
 1. On the main area, select the **Streams** tab.
 1. To the right of the item, **Edit** (**{pencil}**).
 1. Locate the **Custom HTTP headers** table.
@@ -457,7 +457,7 @@ Prerequisites:
 To list streaming destinations for an instance and see the verification tokens:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Monitoring > Audit Events**.
+1. Select **Monitoring > Audit Events**.
 1. On the main area, select the **Streams** tab.
 1. View the verification token on the right side of each item.
 
@@ -473,7 +473,7 @@ A streaming destination that has an event type filter set has a **filtered** (**
 To update a streaming destination's event filters:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Monitoring > Audit Events**.
+1. Select **Monitoring > Audit Events**.
 1. On the main area, select the **Streams** tab.
 1. Select the stream to expand.
 1. Locate the **Filter by audit event type** dropdown list.
@@ -514,8 +514,8 @@ Prerequisites:
 To add Google Cloud Logging streaming destinations to an instance:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Monitoring > Audit Events**.
-1. On the main area, select **Streams** tab.
+1. Select **Monitoring > Audit Events**.
+1. On the main area, select the **Streams** tab.
 1. Select **Add streaming destination** and select **Google Cloud Logging** to show the section for adding destinations.
 1. Enter a random string to use as a name for the new destination.
 1. Enter the Google project ID, Google client email, and Google private key from previously-created Google Cloud service account key to add to the new destination.
@@ -531,8 +531,8 @@ Prerequisites:
 To list Google Cloud Logging streaming destinations for an instance:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Monitoring > Audit Events**.
-1. On the main area, select **Streams** tab.
+1. Select **Monitoring > Audit Events**.
+1. On the main area, select the **Streams** tab.
 1. Select the Google Cloud Logging stream to expand and see all the fields.
 
 #### Update a Google Cloud Logging destination
@@ -544,8 +544,8 @@ Prerequisites:
 To update Google Cloud Logging streaming destinations to an instance:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Monitoring > Audit Events**.
-1. On the main area, select **Streams** tab.
+1. Select **Monitoring > Audit Events**.
+1. On the main area, select the **Streams** tab.
 1. Select the Google Cloud Logging stream to expand.
 1. Enter a random string to use as a name for the destination.
 1. Enter the Google project ID and Google client email from previously-created Google Cloud service account key to update the destination.
@@ -562,8 +562,8 @@ Prerequisites:
 To delete Google Cloud Logging streaming destinations to an instance:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Monitoring > Audit Events**.
-1. On the main area, select **Streams** tab.
+1. Select **Monitoring > Audit Events**.
+1. On the main area, select the **Streams** tab.
 1. Select the Google Cloud Logging stream to expand.
 1. Select **Delete destination**.
 1. Confirm by selecting **Delete destination** in the dialog.

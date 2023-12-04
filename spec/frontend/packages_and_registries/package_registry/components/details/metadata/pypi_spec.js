@@ -21,14 +21,20 @@ describe('Package Additional Metadata', () => {
   };
 
   const findPypiRequiredPython = () => wrapper.findByTestId('pypi-required-python');
+  const findPypiAuthorEmail = () => wrapper.findByTestId('pypi-author-email');
+  const findPypiSummary = () => wrapper.findByTestId('pypi-summary');
+  const findPypiKeywords = () => wrapper.findByTestId('pypi-keywords');
 
   beforeEach(() => {
     mountComponent();
   });
 
   it.each`
-    name                      | finderFunction            | text                        | icon
-    ${'pypi-required-python'} | ${findPypiRequiredPython} | ${'Required Python: 1.0.0'} | ${'information-o'}
+    name                      | finderFunction            | text                                                      | icon
+    ${'pypi-required-python'} | ${findPypiRequiredPython} | ${'Required Python: 1.0.0'}                               | ${'information-o'}
+    ${'pypi-author-email'}    | ${findPypiAuthorEmail}    | ${'Author email: "C. Schultz" <cschultz@example.com>'}    | ${'mail'}
+    ${'pypi-summary'}         | ${findPypiSummary}        | ${'Summary: A module for collecting votes from beagles.'} | ${'doc-text'}
+    ${'pypi-keywords'}        | ${findPypiKeywords}       | ${'Keywords: dog,puppy,voting,election'}                  | ${'doc-text'}
   `('$name element', ({ finderFunction, text, icon }) => {
     const element = finderFunction();
     expect(element.exists()).toBe(true);

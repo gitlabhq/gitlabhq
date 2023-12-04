@@ -6,6 +6,7 @@ require 'sidekiq/cron/web'
 InitializerConnections.raise_if_new_database_connection do
   Rails.application.routes.draw do
     concern :access_requestable do
+      get :request_access, on: :collection
       post :request_access, on: :collection
       post :approve_access_request, on: :member
     end

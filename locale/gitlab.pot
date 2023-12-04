@@ -33966,6 +33966,9 @@ msgstr ""
 msgid "PackageRegistry|App name: %{name}"
 msgstr ""
 
+msgid "PackageRegistry|Author email: %{authorEmail}"
+msgstr ""
+
 msgid "PackageRegistry|Built by pipeline %{link} triggered %{datetime} by %{author}"
 msgstr ""
 
@@ -34176,6 +34179,9 @@ msgstr ""
 msgid "PackageRegistry|Invalid Package: failed metadata extraction"
 msgstr ""
 
+msgid "PackageRegistry|Keywords: %{keywords}"
+msgstr ""
+
 msgid "PackageRegistry|Last downloaded %{dateTime}"
 msgstr ""
 
@@ -34341,6 +34347,9 @@ msgid "PackageRegistry|Sorry, your filter produced no results"
 msgstr ""
 
 msgid "PackageRegistry|Source project located at %{link}"
+msgstr ""
+
+msgid "PackageRegistry|Summary: %{summary}"
 msgstr ""
 
 msgid "PackageRegistry|Target SHA: %{sha}"

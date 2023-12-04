@@ -9,6 +9,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
 > - Made generally available in GitLab 16.6.
 
+Use inputs to increase the flexibility of CI/CD configuration files that are designed
+to be reused.
+
+Inputs can use CI/CD variables, but have the same [variable limitations as the `include` keyword](includes.md#use-variables-with-include).
+
 ## Define input parameters with `spec:inputs`
 
 Use `spec:inputs` to define input parameters for CI/CD configuration intended to be added
