@@ -19,8 +19,7 @@
     %ul.content-list{ class: 'gl-px-3!' }
       - @projects.each do |project|
         %li.project-row.gl-align-items-center{ class: 'gl-display-flex!' }
-          .avatar-container.rect-avatar.s40.gl-flex-shrink-0
-            = project_icon(project, alt: '', class: 'avatar project-avatar s40', width: 40, height: 40)
+          = render Pajamas::AvatarComponent.new(project, alt: project.name, size: 48, class: 'gl-flex-shrink-0 gl-mr-5')
           .gl-min-w-0.gl-flex-grow-1
             .title
               = link_to project_path(project), class: 'js-prefetch-document' do

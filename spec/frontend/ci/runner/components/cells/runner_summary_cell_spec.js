@@ -4,6 +4,7 @@ import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_help
 import RunnerSummaryCell from '~/ci/runner/components/cells/runner_summary_cell.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import RunnerCreatedAt from '~/ci/runner/components/runner_created_at.vue';
+import RunnerJobCount from '~/ci/runner/components/runner_job_count.vue';
 import RunnerManagersBadge from '~/ci/runner/components/runner_managers_badge.vue';
 import RunnerTags from '~/ci/runner/components/runner_tags.vue';
 import RunnerSummaryField from '~/ci/runner/components/cells/runner_summary_field.vue';
@@ -157,23 +158,9 @@ describe('RunnerTypeCell', () => {
   });
 
   it('Displays job count', () => {
-    expect(findRunnerSummaryField('pipeline').text()).toContain(`${mockRunner.jobCount}`);
-  });
-
-  it('Formats large job counts', () => {
-    createComponent({
-      runner: { jobCount: 1000 },
-    });
-
-    expect(findRunnerSummaryField('pipeline').text()).toContain('1,000');
-  });
-
-  it('Formats large job counts with a plus symbol', () => {
-    createComponent({
-      runner: { jobCount: 1001 },
-    });
-
-    expect(findRunnerSummaryField('pipeline').text()).toContain('1,000+');
+    expect(
+      findRunnerSummaryField('pipeline').findComponent(RunnerJobCount).props('runner'),
+    ).toEqual(mockRunner);
   });
 
   it('Displays creation info', () => {

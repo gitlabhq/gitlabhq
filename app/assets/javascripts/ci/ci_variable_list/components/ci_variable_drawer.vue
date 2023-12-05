@@ -491,11 +491,11 @@ export default {
         <gl-form-textarea
           id="ci-variable-value"
           v-model="variable.value"
+          :spellcheck="false"
           class="gl-border-none gl-font-monospace!"
           rows="3"
           max-rows="10"
           data-testid="ci-variable-value"
-          spellcheck="false"
         />
         <p
           v-if="variable.raw"

@@ -50,12 +50,14 @@ import {
 } from '~/ci/runner/constants';
 import groupRunnersQuery from 'ee_else_ce/ci/runner/graphql/list/group_runners.query.graphql';
 import groupRunnersCountQuery from 'ee_else_ce/ci/runner/graphql/list/group_runners_count.query.graphql';
+import runnerJobCountQuery from '~/ci/runner/graphql/list/runner_job_count.query.graphql';
 import GroupRunnersApp from '~/ci/runner/group_runners/group_runners_app.vue';
 import { captureException } from '~/ci/runner/sentry_utils';
 import {
   groupRunnersData,
   groupRunnersDataPaginated,
   groupRunnersCountData,
+  runnerJobCountData,
   onlineContactTimeoutSecs,
   staleTimeoutSecs,
   mockRegistrationToken,
@@ -72,6 +74,7 @@ const mockGroupRunnersCount = mockGroupRunnersEdges.length;
 
 const mockGroupRunnersHandler = jest.fn();
 const mockGroupRunnersCountHandler = jest.fn();
+const mockRunnerJobCountHandler = jest.fn();
 
 jest.mock('~/alert');
 jest.mock('~/ci/runner/sentry_utils');
@@ -108,6 +111,7 @@ describe('GroupRunnersApp', () => {
     const handlers = [
       [groupRunnersQuery, mockGroupRunnersHandler],
       [groupRunnersCountQuery, mockGroupRunnersCountHandler],
+      [runnerJobCountQuery, mockRunnerJobCountHandler],
     ];
 
     wrapper = mountFn(GroupRunnersApp, {
@@ -138,11 +142,13 @@ describe('GroupRunnersApp', () => {
   beforeEach(() => {
     mockGroupRunnersHandler.mockResolvedValue(groupRunnersData);
     mockGroupRunnersCountHandler.mockResolvedValue(groupRunnersCountData);
+    mockRunnerJobCountHandler.mockResolvedValue(runnerJobCountData);
   });
 
   afterEach(() => {
     mockGroupRunnersHandler.mockReset();
     mockGroupRunnersCountHandler.mockReset();
+    mockRunnerJobCountHandler.mockReset();
   });
 
   it('shows the runner tabs with a runner count for each type', async () => {

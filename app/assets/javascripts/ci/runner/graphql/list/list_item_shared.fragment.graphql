@@ -8,7 +8,6 @@ fragment ListItemShared on CiRunner {
   version
   paused
   locked
-  jobCount
   tagList
   createdAt
   createdBy {

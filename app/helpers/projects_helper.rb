@@ -789,7 +789,7 @@ module ProjectsHelper
     push_to_schema_breadcrumb(project_name, project_path(project))
 
     link_to project_path(project) do
-      icon = project_icon(project, alt: project_name, class: 'avatar-tile', width: 15, height: 15) if project.avatar_url && !Rails.env.test?
+      icon = render Pajamas::AvatarComponent.new(project, alt: project.name, size: 16, class: 'avatar-tile') if project.avatar_url && !Rails.env.test?
       [icon, content_tag("span", project_name, class: "breadcrumb-item-text js-breadcrumb-item-text")].join.html_safe
     end
   end

@@ -5,8 +5,7 @@
 %header.project-home-panel.js-show-on-project-root.gl-mt-5{ class: [("empty-project" if empty_repo)] }
   .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-flex-direction-column.gl-md-flex-direction-row.gl-gap-5
     .home-panel-title-row.gl-display-flex.gl-align-items-center
-      %div{ class: 'avatar-container rect-avatar s64 home-panel-avatar gl-flex-shrink-0 gl-w-11 gl-h-11 gl-mr-3! float-none' }
-        = project_icon(@project, alt: @project.name, class: 'avatar avatar-tile s64', width: 64, height: 64, itemprop: 'image')
+      = render Pajamas::AvatarComponent.new(@project, alt: @project.name, class: 'gl-flex-shrink-0 gl-mr-3', size: 64, avatar_options: { itemprop: 'image' })
       %div
         %h1.home-panel-title.gl-font-size-h1.gl-mt-3.gl-mb-2.gl-display-flex.gl-word-break-word{ data: { testid: 'project-name-content' }, itemprop: 'name' }
           = @project.name

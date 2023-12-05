@@ -7,7 +7,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
 
   let_it_be(:user) { create(:user) }
 
-  describe '#project_icon, #group_icon, #topic_icon' do
+  describe '#group_icon, #topic_icon' do
     shared_examples 'resource with a default avatar' do |source_type|
       it 'returns a default avatar div' do
         expect(public_send("#{source_type}_icon", *helper_args))
@@ -27,37 +27,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
         allow(resource).to receive(:avatar_url).and_raise(error_class)
       end
 
-      it 'handles Gitaly exception gracefully' do
-        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
-          an_instance_of(error_class), source_type: 'Project', source_id: resource.id
-        )
-        expect { project_icon(resource) }.not_to raise_error
-      end
-
       it_behaves_like 'resource with a default avatar', 'project'
-    end
-
-    context 'when providing a project' do
-      let(:helper_args) { [resource] }
-      let(:resource) { create(:project, name: 'foo') }
-
-      it_behaves_like 'resource with a default avatar', 'project'
-
-      it_behaves_like 'resource with a custom avatar', 'project' do
-        let(:resource) { create(:project, :public, avatar: File.open(uploaded_image_temp_path)) }
-      end
-
-      context 'when Gitaly is unavailable' do
-        let(:error_class) { GRPC::Unavailable }
-
-        include_examples 'Gitaly exception handling'
-      end
-
-      context 'when Gitaly request is taking too long' do
-        let(:error_class) { GRPC::DeadlineExceeded }
-
-        include_examples 'Gitaly exception handling'
-      end
     end
 
     context 'when providing a group' do

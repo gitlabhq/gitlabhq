@@ -31918,6 +31918,8 @@ CREATE INDEX index_bulk_import_batch_trackers_on_tracker_id_and_updated_at ON bu
 
 CREATE INDEX index_bulk_import_configurations_on_bulk_import_id ON bulk_import_configurations USING btree (bulk_import_id);
 
+CREATE INDEX index_bulk_import_entities_for_stale_status ON bulk_import_entities USING btree (updated_at, id) WHERE (status = ANY (ARRAY[0, 1]));
+
 CREATE INDEX index_bulk_import_entities_on_bulk_import_id_and_status ON bulk_import_entities USING btree (bulk_import_id, status);
 
 CREATE INDEX index_bulk_import_entities_on_namespace_id ON bulk_import_entities USING btree (namespace_id);

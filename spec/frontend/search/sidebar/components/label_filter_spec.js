@@ -85,11 +85,6 @@ describe('GlobalSearchSidebarLabelFilter', () => {
 
     wrapper = mountExtended(LabelFilter, {
       store,
-      provide: {
-        glFeatures: {
-          searchIssueLabelAggregation: true,
-        },
-      },
     });
   };
 

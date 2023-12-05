@@ -725,6 +725,20 @@ If you do access the internal container registry API and use the original tag de
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### JWT `/-/jwks` instance endpoint is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.7</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/221031).
+</div>
+
+With the [deprecation of old JSON web token versions](https://docs.gitlab.com/ee/update/deprecations.html?removal_milestone=17.0#old-versions-of-json-web-tokens-are-deprecated) in GitLab 17.0, the associated `/-/jwks` endpoint which is an alias for `/oauth/discovery/keys` is no longer necessary and will be removed. Please replace any uses of `/-/jwks` with `/oauth/discovery/keys`, for example change `https://gitlab.example.com/-/jwks` to `https://gitlab.example.com/oauth/discovery/keys`.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Legacy Geo Prometheus metrics
 
 <div class="deprecation-notes">

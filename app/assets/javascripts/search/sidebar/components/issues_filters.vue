@@ -36,7 +36,6 @@ export default {
     showLabelFilter() {
       return (
         Object.values(labelFilterData.scopes).includes(this.currentScope) &&
-        this.glFeatures.searchIssueLabelAggregation &&
         this.searchType === SEARCH_TYPE_ADVANCED
       );
     },

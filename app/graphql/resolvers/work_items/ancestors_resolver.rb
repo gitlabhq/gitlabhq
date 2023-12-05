@@ -46,7 +46,11 @@ module Resolvers
         return unless projects.any?
 
         ::Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects, current_user).execute
-        ::Preloaders::GroupPolicyPreloader.new(projects.filter_map(&:namespace), current_user).execute
+
+        if group_namespaces.any?
+          ::Preloaders::GroupPolicyPreloader.new(projects.filter_map(&:namespace), current_user).execute
+        end
+
         ActiveRecord::Associations::Preloader.new(records: projects, associations: [:namespace]).call
       end
 

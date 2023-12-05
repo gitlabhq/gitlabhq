@@ -974,6 +974,31 @@ const data = store.readQuery({
 
 Read more about the `@connection` directive in [Apollo's documentation](https://www.apollographql.com/docs/react/caching/advanced-topics/#the-connection-directive).
 
+### Batching similar queries
+
+By default, the Apollo client sends one HTTP request from the browser per query. You can choose to
+batch several queries in a single outgoing request and lower the number of requests by defining a
+[batchKey](https://www.apollographql.com/docs/react/api/link/apollo-link-batch-http/#batchkey).
+
+This can be helpful when a query is called multiple times from the same component but you
+want to update the UI once. In this example we use the component name as the key:
+
+```javascript
+export default {
+  name: 'MyComponent'
+  apollo: {
+    user: {
+      query: QUERY_IMPORT,
+      context: {
+        batchKey: 'MyComponent',
+      },
+    }
+  },
+};
+```
+
+The batch key can be the name of the component.
+
 #### Polling and Performance
 
 While the Apollo client has support for simple polling, for performance reasons, our [ETag-based caching](../polling.md) is preferred to hitting the database each time.

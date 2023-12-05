@@ -149,7 +149,8 @@ export default {
   >
     <span
       v-if="displayActionsDropdown"
-      contenteditable="false"
+      :contenteditable="false"
+      data-testid="actions-dropdown"
       class="gl-absolute gl-right-0 gl-top-0 gl-pr-1 gl-pt-1"
     >
       <gl-disclosure-dropdown

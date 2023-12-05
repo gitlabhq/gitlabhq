@@ -19,7 +19,7 @@ describe('GlobalSearch IssuesFilters', () => {
     currentScope: () => 'issues',
   };
 
-  const createComponent = ({ initialState = {}, searchIssueLabelAggregation = true } = {}) => {
+  const createComponent = ({ initialState = {} } = {}) => {
     const store = new Vuex.Store({
       state: {
         urlQuery: MOCK_QUERY,
@@ -31,11 +31,6 @@ describe('GlobalSearch IssuesFilters', () => {
 
     wrapper = shallowMount(IssuesFilters, {
       store,
-      provide: {
-        glFeatures: {
-          searchIssueLabelAggregation,
-        },
-      },
     });
   };
 
@@ -44,15 +39,9 @@ describe('GlobalSearch IssuesFilters', () => {
   const findLabelFilter = () => wrapper.findComponent(LabelFilter);
   const findArchivedFilter = () => wrapper.findComponent(ArchivedFilter);
 
-  describe.each`
-    description                                       | searchIssueLabelAggregation
-    ${'Renders correctly with Label Filter disabled'} | ${false}
-    ${'Renders correctly with Label Filter enabled'}  | ${true}
-  `('$description', ({ searchIssueLabelAggregation }) => {
+  describe('Renders filters correctly with advanced search', () => {
     beforeEach(() => {
-      createComponent({
-        searchIssueLabelAggregation,
-      });
+      createComponent();
     });
 
     it('renders StatusFilter', () => {
@@ -67,8 +56,8 @@ describe('GlobalSearch IssuesFilters', () => {
       expect(findArchivedFilter().exists()).toBe(true);
     });
 
-    it(`renders correctly LabelFilter when searchIssueLabelAggregation is ${searchIssueLabelAggregation}`, () => {
-      expect(findLabelFilter().exists()).toBe(searchIssueLabelAggregation);
+    it('renders correctly LabelFilter', () => {
+      expect(findLabelFilter().exists()).toBe(true);
     });
   });
 

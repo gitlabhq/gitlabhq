@@ -165,6 +165,9 @@ describe('content/components/wrappers/table_cell_base', () => {
 
       it('does not allow adding a row before the header', () => {
         expect(findDropdown().text()).not.toContain('Insert row before');
+        expect(wrapper.findByTestId('actions-dropdown').attributes('contenteditable')).toBe(
+          'false',
+        );
       });
 
       it('does not allow removing the header row', async () => {

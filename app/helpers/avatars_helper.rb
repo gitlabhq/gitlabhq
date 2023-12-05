@@ -3,10 +3,6 @@
 module AvatarsHelper
   DEFAULT_AVATAR_PATH = 'no_avatar.png'
 
-  def project_icon(project, options = {})
-    source_icon(project, options)
-  end
-
   def group_icon(group, options = {})
     source_icon(group, options)
   end
