@@ -28,6 +28,7 @@ import workItemNoteCreatedSubscription from '~/work_items/graphql/notes/work_ite
 import workItemNoteUpdatedSubscription from '~/work_items/graphql/notes/work_item_note_updated.subscription.graphql';
 import workItemNoteDeletedSubscription from '~/work_items/graphql/notes/work_item_note_deleted.subscription.graphql';
 import deleteNoteMutation from '../graphql/notes/delete_work_item_notes.mutation.graphql';
+import groupWorkItemNotesByIidQuery from '../graphql/notes/group_work_item_notes_by_iid.query.graphql';
 import workItemNotesByIidQuery from '../graphql/notes/work_item_notes_by_iid.query.graphql';
 import WorkItemAddNote from './notes/work_item_add_note.vue';
 
@@ -46,6 +47,7 @@ export default {
     WorkItemNotesActivityHeader,
     WorkItemHistoryOnlyFilterNote,
   },
+  inject: ['isGroup'],
   props: {
     fullPath: {
       type: String,
@@ -169,7 +171,9 @@ export default {
   },
   apollo: {
     workItemNotes: {
-      query: workItemNotesByIidQuery,
+      query() {
+        return this.isGroup ? groupWorkItemNotesByIidQuery : workItemNotesByIidQuery;
+      },
       variables() {
         return {
           fullPath: this.fullPath,

@@ -380,6 +380,18 @@ Use **compute minutes** instead of these (or similar) terms:
 
 For more information, see [epic 2150](https://gitlab.com/groups/gitlab-com/-/epics/2150).
 
+## configuration
+
+When you update a collection of settings, call it a **configuration**.
+
+## configure
+
+Use **configure** after a feature or product has been [set up](#setup-set-up).
+For example:
+
+1. Set up your installation.
+1. Configure your installation.
+
 ## confirmation dialog
 
 Use **confirmation dialog** to describe the dialog that asks you to confirm an action. For example:
@@ -1335,6 +1347,10 @@ see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-
 Use **Premium**, in uppercase, for the subscription tier.  When you refer to **Premium**
 in the context of other subscription tiers, follow [the subscription tier](#subscription-tier) guidance.
 
+## preferences
+
+Use **preferences** to describe user-specific, system-level settings like theme and layout.
+
 ## prerequisites
 
 Use **prerequisites** when documenting the tasks that must be completed or the conditions that must be met before a user can complete a task. Do not use **requirements**.
@@ -1555,6 +1571,17 @@ Use **setup** as a noun, and **set up** as a verb. For example:
 
 - Your remote office setup is amazing.
 - To set up your remote office correctly, consider the ergonomics of your work area.
+
+Do not confuse **set up** with [**configure**](#configure).
+**Set up** implies that it's the first time you've done something. For example:
+
+1. Set up your installation.
+1. Configure your installation.
+
+## settings
+
+A **setting** changes the default behavior of the product. A **setting** consists of a key/value pair,
+typically represented by a label with one or more options.
 
 ## sign in, sign-in
 

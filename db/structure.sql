@@ -531,15 +531,6 @@ RETURN NULL;
 END
 $$;
 
-CREATE FUNCTION trigger_07bc3c48f407() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."pipeline_id_convert_to_bigint" := NEW."pipeline_id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION trigger_10ee1357e825() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -14721,7 +14712,6 @@ ALTER SEQUENCE ci_sources_projects_id_seq OWNED BY ci_sources_projects.id;
 
 CREATE TABLE ci_stages (
     project_id integer,
-    pipeline_id_convert_to_bigint integer,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     name character varying,
@@ -32344,14 +32334,6 @@ CREATE UNIQUE INDEX index_ci_stages_on_pipeline_id_and_name ON ci_stages USING b
 
 CREATE INDEX index_ci_stages_on_pipeline_id_and_position ON ci_stages USING btree (pipeline_id, "position");
 
-CREATE INDEX index_ci_stages_on_pipeline_id_convert_to_bigint ON ci_stages USING btree (pipeline_id_convert_to_bigint);
-
-CREATE INDEX index_ci_stages_on_pipeline_id_convert_to_bigint_and_id ON ci_stages USING btree (pipeline_id_convert_to_bigint, id) WHERE (status = ANY (ARRAY[0, 1, 2, 8, 9, 10]));
-
-CREATE UNIQUE INDEX index_ci_stages_on_pipeline_id_convert_to_bigint_and_name ON ci_stages USING btree (pipeline_id_convert_to_bigint, name);
-
-CREATE INDEX index_ci_stages_on_pipeline_id_convert_to_bigint_and_position ON ci_stages USING btree (pipeline_id_convert_to_bigint, "position");
-
 CREATE INDEX index_ci_stages_on_project_id ON ci_stages USING btree (project_id);
 
 CREATE INDEX index_ci_subscriptions_projects_author_id ON ci_subscriptions_projects USING btree (author_id);
@@ -37036,8 +37018,6 @@ CREATE TRIGGER push_rules_loose_fk_trigger AFTER DELETE ON push_rules REFERENCIN
 
 CREATE TRIGGER tags_loose_fk_trigger AFTER DELETE ON tags REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
-CREATE TRIGGER trigger_07bc3c48f407 BEFORE INSERT OR UPDATE ON ci_stages FOR EACH ROW EXECUTE FUNCTION trigger_07bc3c48f407();
-
 CREATE TRIGGER trigger_10ee1357e825 BEFORE INSERT OR UPDATE ON p_ci_builds FOR EACH ROW EXECUTE FUNCTION trigger_10ee1357e825();
 
 CREATE TRIGGER trigger_b2d852e1e2cb BEFORE INSERT OR UPDATE ON ci_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_b2d852e1e2cb();
@@ -37952,9 +37932,6 @@ ALTER TABLE ONLY timelogs
 
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_c4b1c1f66e FOREIGN KEY (repository_deleted_event_id) REFERENCES geo_repository_deleted_events(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ci_stages
-    ADD CONSTRAINT fk_c5ddde695f FOREIGN KEY (pipeline_id_convert_to_bigint) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_c63cbf6c25 FOREIGN KEY (closed_by_id) REFERENCES users(id) ON DELETE SET NULL;

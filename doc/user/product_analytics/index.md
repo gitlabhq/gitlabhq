@@ -24,7 +24,6 @@ To leave feedback about Product Analytics bugs or functionality:
 
 - Comment on [issue 391970](https://gitlab.com/gitlab-org/gitlab/-/issues/391970).
 - Create an issue with the `group::product analytics` label.
-- [Schedule a call](https://calendly.com/jheimbuck/30-minute-call) with the team.
 
 ## How product analytics works
 

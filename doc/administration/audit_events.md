@@ -37,7 +37,7 @@ Audit events can be viewed at the group, project, instance, and sign-in level. E
 To view a group's audit events:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Secure > Audit events**.
+1. Select **Secure > Audit events**.
 1. Filter the audit events by the member of the project (user) who performed the action and date range.
 
 Group audit events can also be accessed using the [Group Audit Events API](../api/audit_events.md#group-audit-events). Group audit event queries are limited to a maximum of 30 days.
@@ -45,7 +45,7 @@ Group audit events can also be accessed using the [Group Audit Events API](../ap
 ### Project audit events
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Secure > Audit events**.
+1. Select **Secure > Audit events**.
 1. Filter the audit events by the member of the project (user) who performed the action and date range.
 
 Project audit events can also be accessed using the [Project Audit Events API](../api/audit_events.md#project-audit-events). Project audit event queries are limited to a maximum of 30 days.
@@ -56,7 +56,7 @@ You can view audit events from user actions across an entire GitLab instance.
 To view instance audit events:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Monitoring > Audit Events**.
+1. Select **Monitoring > Audit Events**.
 1. Filter by the following:
    - Member of the project (user) who performed the action
    - Group
@@ -82,7 +82,7 @@ You can export the current view (including filters) of your instance audit event
 CSV(comma-separated values) file. To export the instance audit events to CSV:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Monitoring > Audit Events**.
+1. Select **Monitoring > Audit Events**.
 1. Select the available search filters.
 1. Select **Export as CSV**.
 

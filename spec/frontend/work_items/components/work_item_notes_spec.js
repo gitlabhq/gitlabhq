@@ -10,6 +10,7 @@ import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
 import WorkItemAddNote from '~/work_items/components/notes/work_item_add_note.vue';
 import WorkItemNotesActivityHeader from '~/work_items/components/notes/work_item_notes_activity_header.vue';
+import groupWorkItemNotesByIidQuery from '~/work_items/graphql/notes/group_work_item_notes_by_iid.query.graphql';
 import workItemNotesByIidQuery from '~/work_items/graphql/notes/work_item_notes_by_iid.query.graphql';
 import deleteWorkItemNoteMutation from '~/work_items/graphql/notes/delete_work_item_notes.mutation.graphql';
 import workItemNoteCreatedSubscription from '~/work_items/graphql/notes/work_item_note_created.subscription.graphql';
@@ -63,6 +64,9 @@ describe('WorkItemNotes component', () => {
   const findWorkItemCommentNoteAtIndex = (index) => findAllWorkItemCommentNotes().at(index);
   const findDeleteNoteModal = () => wrapper.findComponent(GlModal);
 
+  const groupWorkItemNotesQueryHandler = jest
+    .fn()
+    .mockResolvedValue(mockWorkItemNotesByIidResponse);
   const workItemNotesQueryHandler = jest.fn().mockResolvedValue(mockWorkItemNotesByIidResponse);
   const workItemMoreNotesQueryHandler = jest.fn().mockResolvedValue(mockMoreWorkItemNotesResponse);
   const workItemNotesWithCommentsQueryHandler = jest
@@ -87,17 +91,22 @@ describe('WorkItemNotes component', () => {
     workItemIid = mockWorkItemIid,
     defaultWorkItemNotesQueryHandler = workItemNotesQueryHandler,
     deleteWINoteMutationHandler = deleteWorkItemNoteMutationSuccessHandler,
+    isGroup = false,
     isModal = false,
     isWorkItemConfidential = false,
   } = {}) => {
     wrapper = shallowMount(WorkItemNotes, {
       apolloProvider: createMockApollo([
         [workItemNotesByIidQuery, defaultWorkItemNotesQueryHandler],
+        [groupWorkItemNotesByIidQuery, groupWorkItemNotesQueryHandler],
         [deleteWorkItemNoteMutation, deleteWINoteMutationHandler],
         [workItemNoteCreatedSubscription, notesCreateSubscriptionHandler],
         [workItemNoteUpdatedSubscription, notesUpdateSubscriptionHandler],
         [workItemNoteDeletedSubscription, notesDeleteSubscriptionHandler],
       ]),
+      provide: {
+        isGroup,
+      },
       propsData: {
         fullPath: 'test-path',
         workItemId,
@@ -353,5 +362,23 @@ describe('WorkItemNotes component', () => {
     await waitForPromises();
 
     expect(findWorkItemCommentNoteAtIndex(0).props('isWorkItemConfidential')).toBe(true);
+  });
+
+  describe('when project context', () => {
+    it('calls the project work item query', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(workItemNotesQueryHandler).toHaveBeenCalled();
+    });
+  });
+
+  describe('when group context', () => {
+    it('calls the group work item query', async () => {
+      createComponent({ isGroup: true });
+      await waitForPromises();
+
+      expect(groupWorkItemNotesQueryHandler).toHaveBeenCalled();
+    });
   });
 });

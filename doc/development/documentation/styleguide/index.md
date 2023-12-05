@@ -1010,7 +1010,10 @@ To open the Admin Area:
 
 ```markdown
 1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > CI/CD**.
 ```
+
+You do not need to repeat `On the left sidebar` in your second step.
 
 To open the **Your work** menu item:
 

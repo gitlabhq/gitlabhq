@@ -8,6 +8,7 @@ export default {
   components: {
     AwardsList,
   },
+  inject: ['isGroup'],
   props: {
     fullPath: {
       type: String,
@@ -73,6 +74,7 @@ export default {
             note: this.note,
             name,
             fullPath: this.fullPath,
+            isGroup: this.isGroup,
             workItemIid: this.workItemIid,
           }),
         });

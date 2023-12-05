@@ -6,6 +6,7 @@ import {
   getDateInPast,
   getCurrentUtcDate,
   nWeeksBefore,
+  nYearsBefore,
 } from '~/lib/utils/datetime_utility';
 import { s__, __, sprintf, n__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -250,4 +251,44 @@ export const METRICS_POPOVER_CONTENT = {
       'ValueStreamAnalytics|Percentage of deployments that cause an incident in production.',
     ),
   },
+};
+
+export const USAGE_OVERVIEW_NO_DATA_ERROR = s__(
+  'ValueStreamAnalytics|Failed to load usage overview data',
+);
+
+export const USAGE_OVERVIEW_DEFAULT_DATE_RANGE = {
+  endDate: TODAY,
+  startDate: nYearsBefore(TODAY, 1),
+};
+
+export const USAGE_OVERVIEW_IDENTIFIER_GROUPS = 'groups';
+export const USAGE_OVERVIEW_IDENTIFIER_PROJECTS = 'projects';
+export const USAGE_OVERVIEW_IDENTIFIER_ISSUES = 'issues';
+export const USAGE_OVERVIEW_IDENTIFIER_MERGE_REQUESTS = 'merge_requests';
+export const USAGE_OVERVIEW_IDENTIFIER_PIPELINES = 'pipelines';
+
+// Defines the constants used for querying the API as well as the order they appear
+export const USAGE_OVERVIEW_METADATA = {
+  [USAGE_OVERVIEW_IDENTIFIER_GROUPS]: { options: { title: __('Groups'), titleIcon: 'group' } },
+  [USAGE_OVERVIEW_IDENTIFIER_PROJECTS]: {
+    options: { title: __('Projects'), titleIcon: 'project' },
+  },
+  [USAGE_OVERVIEW_IDENTIFIER_ISSUES]: {
+    options: { title: __('Issues'), titleIcon: 'issues' },
+  },
+  [USAGE_OVERVIEW_IDENTIFIER_MERGE_REQUESTS]: {
+    options: { title: __('Merge requests'), titleIcon: 'merge-request' },
+  },
+  [USAGE_OVERVIEW_IDENTIFIER_PIPELINES]: {
+    options: { title: __('Pipelines'), titleIcon: 'pipeline' },
+  },
+};
+
+export const USAGE_OVERVIEW_QUERY_INCLUDE_KEYS = {
+  [USAGE_OVERVIEW_IDENTIFIER_GROUPS]: 'includeGroups',
+  [USAGE_OVERVIEW_IDENTIFIER_PROJECTS]: 'includeProjects',
+  [USAGE_OVERVIEW_IDENTIFIER_ISSUES]: 'includeIssues',
+  [USAGE_OVERVIEW_IDENTIFIER_MERGE_REQUESTS]: 'includeMergeRequests',
+  [USAGE_OVERVIEW_IDENTIFIER_PIPELINES]: 'includePipelines',
 };

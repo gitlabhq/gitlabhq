@@ -53029,6 +53029,9 @@ msgstr ""
 msgid "ValueStreamAnalytics|Edit Value Stream: %{name}"
 msgstr ""
 
+msgid "ValueStreamAnalytics|Failed to load usage overview data"
+msgstr ""
+
 msgid "ValueStreamAnalytics|Go to docs"
 msgstr ""
 

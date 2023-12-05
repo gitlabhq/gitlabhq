@@ -42,10 +42,6 @@ ci_stages:
     - index_ci_stages_on_pipeline_id
   index_ci_stages_on_pipeline_id_and_position:
     - index_ci_stages_on_pipeline_id
-  index_ci_stages_on_pipeline_id_convert_to_bigint_and_name:
-    - index_ci_stages_on_pipeline_id_convert_to_bigint
-  index_ci_stages_on_pipeline_id_convert_to_bigint_and_position:
-    - index_ci_stages_on_pipeline_id_convert_to_bigint
 dast_site_tokens:
   index_dast_site_token_on_project_id_and_url:
     - index_dast_site_tokens_on_project_id

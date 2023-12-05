@@ -64,6 +64,7 @@ describe('Work Item Note Actions', () => {
         projectName,
       },
       provide: {
+        isGroup: false,
         glFeatures: {
           workItemsMvc2: true,
         },
