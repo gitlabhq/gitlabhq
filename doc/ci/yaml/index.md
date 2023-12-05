@@ -452,6 +452,9 @@ start. Jobs in the current stage are not stopped and continue to run.
 
 Use [`workflow`](workflow.md) to control pipeline behavior.
 
+You can use some [predefined CI/CD variables](../variables/predefined_variables.md) in
+`workflow` configuration, but not variables that are only defined when jobs start.
+
 **Related topics**:
 
 - [`workflow: rules` examples](workflow.md#workflow-rules-examples)

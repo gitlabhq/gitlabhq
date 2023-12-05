@@ -168,9 +168,14 @@ module QA
             create_item("New File...", file_name)
           end
 
-          def commit_and_push(file_name)
+          def commit_and_push_to_new_branch(file_name)
             commit_toggle(file_name)
             push_to_new_branch
+          end
+
+          def commit_and_push_to_existing_branch(file_name)
+            commit_toggle(file_name)
+            push_to_existing_branch
           end
 
           def commit_toggle(message)

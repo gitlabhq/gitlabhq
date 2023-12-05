@@ -7,7 +7,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { organizations as nodes, pageInfo, pageInfoEmpty } from '~/organizations/mock_data';
-import organizationsQuery from '~/organizations/index/graphql/organizations.query.graphql';
+import organizationsQuery from '~/organizations/shared/graphql/queries/organizations.query.graphql';
 import OrganizationsIndexApp from '~/organizations/index/components/app.vue';
 import OrganizationsView from '~/organizations/index/components/organizations_view.vue';
 import { MOCK_NEW_ORG_URL } from '../mock_data';

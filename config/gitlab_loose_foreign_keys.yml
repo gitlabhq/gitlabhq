@@ -227,6 +227,10 @@ deployments:
   - table: clusters
     column: cluster_id
     on_delete: async_nullify
+events:
+  - table: users
+    column: author_id
+    on_delete: async_delete
 external_pull_requests:
   - table: projects
     column: project_id

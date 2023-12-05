@@ -1,19 +1,15 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "../fragments/organization.fragment.graphql"
+
 query getCurrentUserOrganizations($first: Int, $last: Int, $before: String, $after: String) {
   currentUser {
     id
     organizations(first: $first, last: $last, before: $before, after: $after) {
       nodes {
-        id
-        name
-        descriptionHtml
-        avatarUrl
-        webUrl
+        ...Organization
       }
       pageInfo {
-        endCursor
-        hasNextPage
-        hasPreviousPage
-        startCursor
+        ...PageInfo
       }
     }
   }

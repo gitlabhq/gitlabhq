@@ -14,6 +14,8 @@ module API
         module PublicEndpoints
           extend ActiveSupport::Concern
 
+          SHA256_REGEX = /SHA256:([a-f0-9]{64})/i
+
           included do
             # https://docs.microsoft.com/en-us/nuget/api/service-index
             desc 'The NuGet V3 Feed Service Index' do
@@ -43,6 +45,56 @@ module API
               ]
               tags %w[nuget_packages]
             end
+
+            namespace :symbolfiles do
+              after_validation do
+                not_found! if Feature.disabled?(:nuget_symbolfiles_endpoint, project_or_group_without_auth)
+              end
+
+              desc 'The NuGet Symbol File Download Endpoint' do
+                detail 'This feature was introduced in GitLab 16.7'
+                success code: 200
+                failure [
+                  { code: 400, message: 'Bad Request' },
+                  { code: 404, message: 'Not Found' }
+                ]
+                headers Symbolchecksum: {
+                  type: String,
+                  desc: 'The SHA256 checksums of the symbol file',
+                  required: true
+                }
+                tags %w[nuget_packages]
+              end
+              params do
+                requires :file_name, allow_blank: false, type: String, desc: 'The symbol file name',
+                  regexp: API::NO_SLASH_URL_PART_REGEX, documentation: { example: 'mynugetpkg.pdb' }
+                requires :signature, allow_blank: false, type: String, desc: 'The symbol file signature',
+                  regexp: API::NO_SLASH_URL_PART_REGEX,
+                  documentation: { example: 'k813f89485474661234z7109cve5709eFFFFFFFF' }
+                requires :same_file_name, same_as: :file_name
+              end
+              get '*file_name/*signature/*same_file_name', format: false, urgency: :low do
+                bad_request!('Missing checksum header') if headers['Symbolchecksum'].blank?
+
+                project_or_group_without_auth
+
+                # upcase the age part of the signature in case we received it in lowercase:
+                # https://github.com/dotnet/symstore/blob/main/docs/specs/SSQP_Key_Conventions.md#key-formatting-basic-rules
+                signature = declared_params[:signature].sub(/.{8}\z/, &:upcase)
+                checksums = headers['Symbolchecksum'].scan(SHA256_REGEX).flatten
+
+                symbol = ::Packages::Nuget::Symbol
+                  .with_signature(signature)
+                  .with_file_name(declared_params[:file_name])
+                  .with_file_sha256(checksums)
+                  .first
+
+                not_found!('Symbol') unless symbol
+
+                present_carrierwave_file!(symbol.file)
+              end
+            end
+
             namespace '/v2' do
               get format: :xml, urgency: :low do
                 env['api.format'] = :xml

@@ -272,6 +272,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   describe 'Product Analytics tracking' do
     let(:app_id) { 'foobar' }
     let(:url) { 'http://localhost:4000' }
+    let(:sdk_client) { instance_double('GitlabSDK::Client') }
 
     before do
       described_class.clear_memoization(:gitlab_sdk_client)
@@ -293,13 +294,16 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     context 'when internal_events_for_product_analytics FF is enabled' do
       before do
         stub_feature_flags(internal_events_for_product_analytics: true)
+
+        allow(GitlabSDK::Client)
+          .to receive(:new)
+          .with(app_id: app_id, host: url)
+          .and_return(sdk_client)
       end
 
       it 'calls Product Analytics Ruby SDK', :aggregate_failures do
-        expect_next_instance_of(GitlabSDK::Client) do |sdk_client|
-          expect(sdk_client).to receive(:identify).with(user.id)
-          expect(sdk_client).to receive(:track).with(event_name)
-        end
+        expect(sdk_client).to receive(:identify).with(user.id)
+        expect(sdk_client).to receive(:track).with(event_name, nil)
 
         track_event
       end

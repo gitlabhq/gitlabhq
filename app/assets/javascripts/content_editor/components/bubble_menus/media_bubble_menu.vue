@@ -238,7 +238,6 @@ export default {
           name="content_editor_image"
           :accept="$options.acceptedMimes[mediaType]"
           class="gl-display-none"
-          data-qa-selector="file_upload_field"
           @change="onFileSelect"
         />
         <gl-link

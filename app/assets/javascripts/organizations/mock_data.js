@@ -6,7 +6,7 @@
 
 export const organizations = [
   {
-    id: 'gid://gitlab/Organization/1',
+    id: 'gid://gitlab/Organizations::Organization/1',
     name: 'My First Organization',
     descriptionHtml:
       '<p>This is where an organization can be explained in <strong>detail</strong></p>',
@@ -15,7 +15,7 @@ export const organizations = [
     __typename: 'Organization',
   },
   {
-    id: 'gid://gitlab/Organization/2',
+    id: 'gid://gitlab/Organizations::Organization/2',
     name: 'Vegetation Co.',
     descriptionHtml:
       '<p> Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolt   Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt<script>alert(1)</script></p>',
@@ -24,7 +24,7 @@ export const organizations = [
     __typename: 'Organization',
   },
   {
-    id: 'gid://gitlab/Organization/3',
+    id: 'gid://gitlab/Organizations::Organization/3',
     name: 'Dude where is my car?',
     descriptionHtml: null,
     avatarUrl: null,
@@ -316,6 +316,7 @@ export const pageInfo = {
   hasNextPage: true,
   hasPreviousPage: true,
   startCursor: 'eyJpZCI6IjEwNzIifQ',
+  __typename: 'PageInfo',
 };
 
 export const pageInfoOnePage = {
@@ -323,6 +324,7 @@ export const pageInfoOnePage = {
   hasNextPage: false,
   hasPreviousPage: false,
   startCursor: 'eyJpZCI6IjEwNzIifQ',
+  __typename: 'PageInfo',
 };
 
 export const pageInfoEmpty = {
@@ -330,4 +332,5 @@ export const pageInfoEmpty = {
   hasNextPage: false,
   hasPreviousPage: false,
   startCursor: null,
+  __typename: 'PageInfo',
 };

@@ -45,6 +45,43 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
 
       it { is_expected.to contain_exactly(stale_symbol) }
     end
+
+    describe '.with_signature' do
+      subject(:with_signature) { described_class.with_signature(signature) }
+
+      let_it_be(:signature) { 'signature' }
+      let_it_be(:symbol) { create(:nuget_symbol, signature: signature) }
+
+      it 'returns symbols with the given signature' do
+        expect(with_signature).to eq([symbol])
+      end
+    end
+
+    describe '.with_file_name' do
+      subject(:with_file_name) { described_class.with_file_name(file_name) }
+
+      let_it_be(:file_name) { 'file_name' }
+      let_it_be(:symbol) { create(:nuget_symbol) }
+
+      before do
+        symbol.update_column(:file, file_name)
+      end
+
+      it 'returns symbols with the given file_name' do
+        expect(with_file_name).to eq([symbol])
+      end
+    end
+
+    describe '.with_file_sha256' do
+      subject(:with_file_sha256) { described_class.with_file_sha256(checksums) }
+
+      let_it_be(:checksums) { OpenSSL::Digest.hexdigest('SHA256', 'checksums') }
+      let_it_be(:symbol) { create(:nuget_symbol, file_sha256: checksums) }
+
+      it 'returns symbols with the given checksums' do
+        expect(with_file_sha256).to eq([symbol])
+      end
+    end
   end
 
   describe 'callbacks' do

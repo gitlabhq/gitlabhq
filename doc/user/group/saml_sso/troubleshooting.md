@@ -366,10 +366,10 @@ This error appears when the SAML response does not contain the user's email addr
 </Attribute>
 ```
 
-Attribute names starting with phrases such as `http://schemas.microsoft.com/ws/2008/06/identity/claims/` like in the following example are not supported. Remove this type of attribute name from the SAML response on the IDP side.
+Attribute names starting with phrases such as `http://schemas.xmlsoap.org/ws/2005/05/identity/claims` and `http://schemas.microsoft.com/ws/2008/06/identity/claims/` are supported.
 
 ```xml
-<Attribute Name="http://schemas.microsoft.com/ws/2008/06/identity/claims/email">
+<Attribute Name="http://schemas.microsoft.com/ws/2008/06/identity/claims/emailaddress">
   <AttributeValue>user@domain.com‹/AttributeValue>
 </Attribute>
 ```

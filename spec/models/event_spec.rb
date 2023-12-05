@@ -1176,4 +1176,11 @@ RSpec.describe Event, feature_category: :user_profile do
 
     event
   end
+
+  context 'with loose foreign key on events.author_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let_it_be(:parent) { create(:user) }
+      let_it_be(:model) { create(:event, author: parent) }
+    end
+  end
 end

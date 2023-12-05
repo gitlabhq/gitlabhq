@@ -223,7 +223,6 @@ export default {
               ref="fileUpload"
               type="file"
               class="hidden"
-              data-qa-selector="file_upload_field"
               @change="uploadSecureFile"
             />
           </div>

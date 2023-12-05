@@ -12,7 +12,7 @@ $options = {
 }
 
 OptionParser.new do |opts|
-  opts.banner = "Usage: #{$0} [options] <filters...>"
+  opts.banner = "Usage: #{$0} [options] <regexp filters...>"
 
   opts.on("-c", "--cross-schema", "Show only cross-schema foreign keys") do |v|
     $options[:cross_schema] = v
@@ -94,11 +94,11 @@ def has_lfk?(definition)
   end
 end
 
-def matching_filter?(definition, filters)
+def foreign_key_matching?(definition, filters)
   filters.all? do |filter|
-    definition.from_table.include?(filter) ||
-      definition.to_table.include?(filter) ||
-      definition.column.include?(filter)
+    definition.from_table.match?(filter) ||
+      definition.to_table.match?(filter) ||
+      definition.column.match?(filter)
   end
 end
 
@@ -291,7 +291,7 @@ puts
 puts "Generating Loose Foreign Key for given filters: #{ARGV}"
 
 all_foreign_keys.each_with_index do |definition, idx|
-  next unless matching_filter?(definition, ARGV)
+  next unless foreign_key_matching?(definition, ARGV.map { |arg| Regexp.new(arg) })
 
   puts "Matched: #{idx} (#{definition.from_table}, #{definition.to_table}, #{definition.column})"
 

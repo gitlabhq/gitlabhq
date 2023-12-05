@@ -110,7 +110,7 @@ module Tooling
       master_report = JSON.parse(File.read(ENV['KNAPSACK_RSPEC_SUITE_REPORT_PATH']))
       return unless master_report
 
-      puts "Parsing expected rspec suite duration..."
+      Knapsack.logger.info "Parsing expected rspec suite duration..."
       duration_total = 0
 
       expected_duration_report = {}
@@ -120,11 +120,11 @@ module Tooling
           duration_total += master_report[file]
           expected_duration_report[file] = master_report[file]
         else
-          puts "#{file} not found in master report"
+          Knapsack.logger.info "#{file} not found in master report"
         end
       end
 
-      puts "RSpec suite is expected to take #{readable_duration(duration_total)}."
+      Knapsack.logger.info "RSpec suite is expected to take #{readable_duration(duration_total)}."
 
       expected_duration_report
     end

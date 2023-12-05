@@ -13,180 +13,180 @@ require 'test_file_finder'
 tests = [
   {
     explanation: 'EE code should map to respective spec',
-    source: 'ee/app/controllers/admin/licenses_controller.rb',
+    changed_file: 'ee/app/controllers/admin/licenses_controller.rb',
     expected: ['ee/spec/controllers/admin/licenses_controller_spec.rb']
   },
 
   {
     explanation: 'FOSS code should map to respective spec',
-    source: 'app/finders/admin/projects_finder.rb',
+    changed_file: 'app/finders/admin/projects_finder.rb',
     expected: ['spec/finders/admin/projects_finder_spec.rb']
   },
 
   {
     explanation: 'EE extension should map to its EE extension spec and its FOSS class spec',
-    source: 'ee/app/finders/ee/projects_finder.rb',
+    changed_file: 'ee/app/finders/ee/projects_finder.rb',
     expected: ['ee/spec/finders/ee/projects_finder_spec.rb', 'spec/finders/projects_finder_spec.rb']
   },
 
   {
     explanation: 'EE lib should map to respective spec.',
-    source: 'ee/lib/world.rb',
+    changed_file: 'ee/lib/world.rb',
     expected: ['ee/spec/lib/world_spec.rb']
   },
 
   {
     explanation: 'FOSS lib should map to respective spec',
-    source: 'lib/gitaly/server.rb',
+    changed_file: 'lib/gitaly/server.rb',
     expected: ['spec/lib/gitaly/server_spec.rb']
   },
 
   {
     explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/368628',
-    source: 'lib/gitlab/usage_data_counters/wiki_page_counter.rb',
+    changed_file: 'lib/gitlab/usage_data_counters/wiki_page_counter.rb',
     expected: ['spec/lib/gitlab/usage_data_spec.rb', 'spec/lib/gitlab/usage_data_counters/wiki_page_counter_spec.rb']
   },
   {
     explanation: 'EE usage counters map to usage data spec',
-    source: 'ee/lib/gitlab/usage_data_counters/licenses_list.rb',
+    changed_file: 'ee/lib/gitlab/usage_data_counters/licenses_list.rb',
     expected: ['ee/spec/lib/gitlab/usage_data_counters/licenses_list_spec.rb', 'spec/lib/gitlab/usage_data_spec.rb']
   },
 
   {
     explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/54#note_1160811638',
-    source: 'lib/gitlab/ci/config/base.rb',
+    changed_file: 'lib/gitlab/ci/config/base.rb',
     expected: ['spec/lib/gitlab/ci/yaml_processor_spec.rb']
   },
 
   {
     explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/54#note_1160811638',
-    source: 'ee/lib/gitlab/ci/config/base.rb',
+    changed_file: 'ee/lib/gitlab/ci/config/base.rb',
     expected: ['spec/lib/gitlab/ci/yaml_processor_spec.rb', 'ee/spec/lib/gitlab/ci/yaml_processor_spec.rb']
   },
 
   {
     explanation: 'Tooling should map to respective spec',
-    source: 'tooling/danger/specs/project_factory_suggestion.rb',
+    changed_file: 'tooling/danger/specs/project_factory_suggestion.rb',
     expected: ['spec/tooling/danger/specs/project_factory_suggestion_spec.rb']
   },
 
   {
     explanation: 'Map RuboCop related files to respective specs',
-    source: 'rubocop/cop/gettext/static_identifier.rb',
+    changed_file: 'rubocop/cop/gettext/static_identifier.rb',
     expected: ['spec/rubocop/cop/gettext/static_identifier_spec.rb']
   },
 
   {
     explanation: 'Initializers should map to respective spec',
-    source: 'config/initializers/action_mailer_hooks.rb',
+    changed_file: 'config/initializers/action_mailer_hooks.rb',
     expected: ['spec/initializers/action_mailer_hooks_spec.rb']
   },
 
   {
     explanation: 'DB structure should map to schema spec',
-    source: 'db/structure.sql',
+    changed_file: 'db/structure.sql',
     expected: ['spec/db/schema_spec.rb']
   },
 
   {
     explanation: 'Migration should map to its non-timestamped spec',
-    source: 'db/migrate/20221011062254_sync_new_amount_used_for_ci_project_monthly_usages.rb',
+    changed_file: 'db/migrate/20221011062254_sync_new_amount_used_for_ci_project_monthly_usages.rb',
     expected: ['spec/migrations/sync_new_amount_used_for_ci_project_monthly_usages_spec.rb']
   },
   # rubocop:disable Layout/LineLength
   {
     explanation: 'Migration should map to its timestamped spec',
-    source: 'db/post_migrate/20230105172120_sync_new_amount_used_with_amount_used_on_ci_namespace_monthly_usages_table.rb',
+    changed_file: 'db/post_migrate/20230105172120_sync_new_amount_used_with_amount_used_on_ci_namespace_monthly_usages_table.rb',
     expected: ['spec/migrations/20230105172120_sync_new_amount_used_with_amount_used_on_ci_namespace_monthly_usages_table_spec.rb']
   },
   # rubocop:enable Layout/LineLength
   {
     explanation: 'FOSS views should map to respective spec',
-    source: 'app/views/admin/dashboard/index.html.haml',
+    changed_file: 'app/views/admin/dashboard/index.html.haml',
     expected: ['spec/views/admin/dashboard/index.html.haml_spec.rb']
   },
 
   {
     explanation: 'EE views should map to respective spec',
-    source: 'ee/app/views/subscriptions/new.html.haml',
+    changed_file: 'ee/app/views/subscriptions/new.html.haml',
     expected: ['ee/spec/views/subscriptions/new.html.haml_spec.rb']
   },
 
   {
     explanation: 'FOSS spec code should map to itself',
-    source: 'spec/models/issue_spec.rb',
+    changed_file: 'spec/models/issue_spec.rb',
     expected: ['spec/models/issue_spec.rb']
   },
 
   {
     explanation: 'EE spec code should map to itself',
-    source: 'ee/spec/models/ee/user_spec.rb',
+    changed_file: 'ee/spec/models/ee/user_spec.rb',
     expected: ['ee/spec/models/ee/user_spec.rb', 'spec/models/user_spec.rb']
   },
 
   {
     explanation: 'EE extension spec should map to itself and the FOSS class spec',
-    source: 'ee/spec/services/ee/notification_service_spec.rb',
+    changed_file: 'ee/spec/services/ee/notification_service_spec.rb',
     expected: ['ee/spec/services/ee/notification_service_spec.rb', 'spec/services/notification_service_spec.rb']
   },
 
   {
     explanation: 'FOSS factory should map to factories spec',
-    source: 'spec/factories/users.rb',
+    changed_file: 'spec/factories/users.rb',
     expected: ['ee/spec/models/factories_spec.rb']
   },
 
   {
     explanation: 'EE factory should map to factories spec',
-    source: 'ee/spec/factories/users.rb',
+    changed_file: 'ee/spec/factories/users.rb',
     expected: ['ee/spec/models/factories_spec.rb']
   },
 
   {
     explanation: 'Whats New should map to its respective spec',
-    source: 'data/whats_new/202101140001_13_08.yml',
+    changed_file: 'data/whats_new/202101140001_13_08.yml',
     expected: ['spec/lib/release_highlights/validator_spec.rb']
   },
 
   {
     explanation: 'The documentation index page is used in this haml_lint spec',
-    source: 'doc/index.md',
+    changed_file: 'doc/index.md',
     expected: ['spec/haml_lint/linter/documentation_links_spec.rb']
   },
 
   {
     explanation: 'Spec for FOSS sidekiq worker',
-    source: 'app/workers/new_worker.rb',
+    changed_file: 'app/workers/new_worker.rb',
     expected: ['spec/workers/every_sidekiq_worker_spec.rb']
   },
 
   {
     explanation: 'Spec for EE sidekiq worker',
-    source: 'ee/app/workers/new_worker.rb',
+    changed_file: 'ee/app/workers/new_worker.rb',
     expected: ['spec/workers/every_sidekiq_worker_spec.rb']
   },
 
   {
     explanation: 'FOSS mailer previews',
-    source: 'app/mailers/previews/foo.rb',
+    changed_file: 'app/mailers/previews/foo.rb',
     expected: ['spec/mailers/previews_spec.rb']
   },
 
   {
     explanation: 'EE mailer previews',
-    source: 'ee/app/mailers/previews/foo.rb',
+    changed_file: 'ee/app/mailers/previews/foo.rb',
     expected: ['spec/mailers/previews_spec.rb']
   },
 
   {
     explanation: 'EE mailer extension previews',
-    source: 'ee/app/mailers/previews/license_mailer_preview.rb',
+    changed_file: 'ee/app/mailers/previews/license_mailer_preview.rb',
     expected: ['spec/mailers/previews_spec.rb']
   },
 
   {
     explanation: 'GLFM spec and config files for CE and EE should map to respective markdown snapshot specs',
-    source: 'glfm_specification/foo',
+    changed_file: 'glfm_specification/foo',
     expected: ['spec/requests/api/markdown_snapshot_spec.rb', 'ee/spec/requests/api/markdown_snapshot_spec.rb']
   },
 
@@ -194,46 +194,46 @@ tests = [
     explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/287#note_1192008962',
     # Note: The metrics seem to be changed every year or so, so this test will fail once a year or so.
     #       You will need to change the metric below for another metric present in the project.
-    source: 'ee/config/metrics/counts_all/20221114065035_delete_merge_request.yml',
+    changed_file: 'ee/config/metrics/counts_all/20221114065035_delete_merge_request.yml',
     expected: ['ee/spec/config/metrics/every_metric_definition_spec.rb']
   },
 
   {
     explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/146',
-    source: 'config/feature_categories.yml',
+    changed_file: 'config/feature_categories.yml',
     expected: ['spec/db/docs_spec.rb', 'ee/spec/lib/ee/gitlab/database/docs/docs_spec.rb']
   },
 
   {
     explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/1360',
-    source: 'vendor/project_templates/gitbook.tar.gz',
+    changed_file: 'vendor/project_templates/gitbook.tar.gz',
     expected: ['spec/lib/gitlab/project_template_spec.rb']
   },
 
   {
     explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/1683#note_1385966977',
-    source: 'app/finders/members_finder.rb',
+    changed_file: 'app/finders/members_finder.rb',
     expected: ['spec/finders/members_finder_spec.rb', 'spec/graphql/types/project_member_relation_enum_spec.rb']
   },
 
   {
     explanation: 'Map FOSS rake tasks',
-    source: 'lib/tasks/import.rake',
+    changed_file: 'lib/tasks/import.rake',
     expected: ['spec/tasks/import_rake_spec.rb']
   },
   {
     explanation: 'Map EE rake tasks',
-    source: 'ee/lib/tasks/geo.rake',
+    changed_file: 'ee/lib/tasks/geo.rake',
     expected: ['ee/spec/tasks/geo_rake_spec.rb']
   },
   {
     explanation: 'Map controllers to request specs',
-    source: 'app/controllers/admin/abuse_reports_controller.rb',
+    changed_file: 'app/controllers/admin/abuse_reports_controller.rb',
     expected: ['spec/requests/admin/abuse_reports_controller_spec.rb']
   },
   {
     explanation: 'Map EE controllers to controller and request specs',
-    source: 'ee/app/controllers/users_controller.rb',
+    changed_file: 'ee/app/controllers/users_controller.rb',
     expected: [
       'ee/spec/controllers/users_controller_spec.rb',
       'ee/spec/requests/users_controller_spec.rb'
@@ -242,16 +242,16 @@ tests = [
 ]
 
 class MappingTest
-  def initialize(explanation:, source:, expected:, strategy:)
+  def initialize(explanation:, changed_file:, expected:, strategy:)
     @explanation = explanation
-    @source = source
+    @changed_file = changed_file
     @strategy = strategy
     @expected_set = Set.new(expected)
     @actual_set = Set.new(actual)
   end
 
   def passed?
-    expected_set.eql?(actual_set)
+    expected_set == actual_set
   end
 
   def failed?
@@ -261,24 +261,25 @@ class MappingTest
   def failure_message
     <<~MESSAGE
       #{explanation}:
-          Source #{source}
-        Expected #{expected_set.to_a}
-          Actual #{actual_set.to_a}
+      Changed file #{changed_file}
+          Expected #{expected_set.to_a}
+            Actual #{actual_set.to_a}
     MESSAGE
   end
 
   private
 
-  attr_reader :explanation, :source, :expected_set, :actual_set, :mapping
+  attr_reader :explanation, :changed_file, :expected_set, :actual_set, :mapping
 
   def actual
-    tff = TestFileFinder::FileFinder.new(paths: [source])
+    tff = TestFileFinder::FileFinder.new(paths: [changed_file])
     tff.use @strategy
     tff.test_files
   end
 end
 
-strategy = TestFileFinder::MappingStrategies::PatternMatching.load('tests.yml')
+mapping_file = 'tests.yml'
+strategy = TestFileFinder::MappingStrategies::PatternMatching.load(mapping_file)
 results = tests.map { |test| MappingTest.new(strategy: strategy, **test) }
 
 failed_tests = results.select(&:failed?)
@@ -288,6 +289,20 @@ if failed_tests.any?
 
     #{failed_tests.map(&:failure_message).join("\n")}
   MESSAGE
+
+  exit 1
+end
+
+bad_sources = YAML.load_file(mapping_file)['mapping'].filter_map do |map|
+  map['source'].match(/(?<!\\)\.\w+\z/)&.string
+end
+
+if bad_sources.any?
+  puts "Suspicious metacharacter detected. Are these correct?"
+
+  bad_sources.each do |bad|
+    puts "  #{bad} => Did you mean: #{bad.sub(/(\.\w+)\z/, '\\\\\1')}"
+  end
 
   exit 1
 end

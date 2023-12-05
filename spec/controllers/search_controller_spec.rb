@@ -583,12 +583,14 @@ RSpec.describe SearchController, feature_category: :global_search do
           expect(payload[:metadata]['meta.search.type']).to eq('basic')
           expect(payload[:metadata]['meta.search.level']).to eq('global')
           expect(payload[:metadata]['meta.search.filters.language']).to eq('ruby')
+          expect(payload[:metadata]['meta.search.page']).to eq('2')
         end
 
         get :show, params: {
           scope: 'issues',
           search: 'hello world',
           group_id: '123',
+          page: '2',
           project_id: '456',
           project_ids: %w[456 789],
           confidential: true,

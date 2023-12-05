@@ -431,7 +431,7 @@ $scroll-scrim-height: 2.25rem;
     margin-bottom: -$scroll-scrim-height;
 
     .top-scrim {
-      background: linear-gradient(180deg, var(--sidebar-background, $gray-10) 0%, $transparent-rgba 100%);
+      background: linear-gradient(180deg, var(--super-sidebar-bg, $gray-10) 0%, $transparent-rgba 100%);
     }
   }
 
@@ -440,7 +440,7 @@ $scroll-scrim-height: 2.25rem;
     margin-top: -$scroll-scrim-height;
 
     .bottom-scrim {
-      background: linear-gradient(180deg, $transparent-rgba 0%, var(--sidebar-background, $gray-10));
+      background: linear-gradient(180deg, $transparent-rgba 0%, var(--super-sidebar-bg, $gray-10));
     }
   }
 

@@ -3,7 +3,7 @@ import { GlButton } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { DEFAULT_PER_PAGE } from '~/api';
-import organizationsQuery from '../graphql/organizations.query.graphql';
+import organizationsQuery from '../../shared/graphql/queries/organizations.query.graphql';
 import OrganizationsView from './organizations_view.vue';
 
 export default {

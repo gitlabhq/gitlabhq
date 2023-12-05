@@ -19,7 +19,6 @@ RSpec.describe Tooling::ParallelRSpecRunner, feature_category: :tooling do # rub
 
     before do
       allow(Knapsack::AllocatorBuilder).to receive(:new).and_return(allocator_builder)
-      allow(Knapsack.logger).to receive(:info)
     end
 
     after do
@@ -35,6 +34,10 @@ RSpec.describe Tooling::ParallelRSpecRunner, feature_category: :tooling do # rub
 
     shared_examples 'runs node tests' do
       let(:rspec_args) { nil }
+
+      before do
+        allow(Knapsack.logger).to receive(:info)
+      end
 
       it 'runs rspec with tests allocated for this node' do
         expect(allocator_builder).to receive(:filter_tests=).with(filter_tests)
@@ -124,10 +127,14 @@ RSpec.describe Tooling::ParallelRSpecRunner, feature_category: :tooling do # rub
         end
 
         it 'does not parse expected rspec report' do
-          expect($stdout).not_to receive(:puts).with('Parsing expected rspec suite duration...')
+          expected_output = <<~MARKDOWN.chomp
+            Running command: bundle exec rspec -- 01_spec.rb 03_spec.rb
+
+          MARKDOWN
+
           expect(File).not_to receive(:write).with(expected_report_file_path, expected_report_content)
 
-          runner.run
+          expect { runner.run }.to output(expected_output).to_stdout
         end
       end
 
@@ -141,6 +148,7 @@ RSpec.describe Tooling::ParallelRSpecRunner, feature_category: :tooling do # rub
             Parsing expected rspec suite duration...
             03_spec.rb not found in master report
             RSpec suite is expected to take 1 minute 5 seconds.
+            Running command: bundle exec rspec -- 01_spec.rb 03_spec.rb
 
           MARKDOWN
 

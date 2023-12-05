@@ -674,7 +674,7 @@ Learn more about [documenting multiple fields at once](index.md#documenting-mult
 
 ## file name
 
-Use two words for **file name**.
+Use two words for **file name**. When using file name as a variable, use `<file_name>`.
 
 ([Vale](../testing.md#vale) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
 

@@ -23819,6 +23819,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectdetailedimportstatus"></a>`detailedImportStatus` | [`DetailedImportStatus`](#detailedimportstatus) | Detailed import status of the project. |
 | <a id="projectdora"></a>`dora` | [`Dora`](#dora) | Project's DORA metrics. |
 | <a id="projectflowmetrics"></a>`flowMetrics` **{warning-solid}** | [`ProjectValueStreamAnalyticsFlowMetrics`](#projectvaluestreamanalyticsflowmetrics) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Flow metrics for value stream analytics. |
+| <a id="projectforkingaccesslevel"></a>`forkingAccessLevel` | [`ProjectFeatureAccess`](#projectfeatureaccess) | Access level required for forking access. |
 | <a id="projectforkscount"></a>`forksCount` | [`Int!`](#int) | Number of times the project has been forked. |
 | <a id="projectfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. |
 | <a id="projectgrafanaintegration"></a>`grafanaIntegration` | [`GrafanaIntegration`](#grafanaintegration) | Grafana integration details for the project. |
@@ -23829,6 +23830,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectimportstatus"></a>`importStatus` | [`String`](#string) | Status of import background job of the project. |
 | <a id="projectincidentmanagementtimelineeventtags"></a>`incidentManagementTimelineEventTags` | [`[TimelineEventTagType!]`](#timelineeventtagtype) | Timeline event tags for the project. |
 | <a id="projectiscatalogresource"></a>`isCatalogResource` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Indicates if a project is a catalog resource. |
+| <a id="projectissuesaccesslevel"></a>`issuesAccessLevel` | [`ProjectFeatureAccess`](#projectfeatureaccess) | Access level required for issues access. |
 | <a id="projectissuesenabled"></a>`issuesEnabled` | [`Boolean`](#boolean) | Indicates if Issues are enabled for the current user. |
 | <a id="projectjiraimportstatus"></a>`jiraImportStatus` | [`String`](#string) | Status of Jira import background job of the project. |
 | <a id="projectjiraimports"></a>`jiraImports` | [`JiraImportConnection`](#jiraimportconnection) | Jira imports into the project. (see [Connections](#connections)) |
@@ -23837,6 +23839,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectlastactivityat"></a>`lastActivityAt` | [`Time`](#time) | Timestamp of the project last activity. |
 | <a id="projectlfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if the project has Large File Storage (LFS) enabled. |
 | <a id="projectmergecommittemplate"></a>`mergeCommitTemplate` | [`String`](#string) | Template used to create merge commit message in merge requests. |
+| <a id="projectmergerequestsaccesslevel"></a>`mergeRequestsAccessLevel` | [`ProjectFeatureAccess`](#projectfeatureaccess) | Access level required for merge requests access. |
 | <a id="projectmergerequestsdisablecommittersapproval"></a>`mergeRequestsDisableCommittersApproval` | [`Boolean!`](#boolean) | Indicates that committers of the given merge request cannot approve. |
 | <a id="projectmergerequestsenabled"></a>`mergeRequestsEnabled` | [`Boolean`](#boolean) | Indicates if Merge Requests are enabled for the current user. |
 | <a id="projectmergerequestsffonlyenabled"></a>`mergeRequestsFfOnlyEnabled` | [`Boolean`](#boolean) | Indicates if no merge commits should be created and all merges should instead be fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded. |
@@ -23847,6 +23850,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectonlyallowmergeifallstatuscheckspassed"></a>`onlyAllowMergeIfAllStatusChecksPassed` | [`Boolean`](#boolean) | Indicates that merges of merge requests should be blocked unless all status checks have passed. |
 | <a id="projectonlyallowmergeifpipelinesucceeds"></a>`onlyAllowMergeIfPipelineSucceeds` | [`Boolean`](#boolean) | Indicates if merge requests of the project can only be merged with successful jobs. |
 | <a id="projectopenissuescount"></a>`openIssuesCount` | [`Int`](#int) | Number of open issues for the project. |
+| <a id="projectopenmergerequestscount"></a>`openMergeRequestsCount` | [`Int`](#int) | Number of open merge requests for the project. |
 | <a id="projectpackagescleanuppolicy"></a>`packagesCleanupPolicy` | [`PackagesCleanupPolicy`](#packagescleanuppolicy) | Packages cleanup policy for the project. |
 | <a id="projectpackagesprotectionrules"></a>`packagesProtectionRules` | [`PackagesProtectionRuleConnection`](#packagesprotectionruleconnection) | Packages protection rules for the project. (see [Connections](#connections)) |
 | <a id="projectpath"></a>`path` | [`String!`](#string) | Path of the project. |
@@ -25372,6 +25376,17 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="projectdatatransferegressnodes"></a>`egressNodes` | [`EgressNodeConnection`](#egressnodeconnection) | Data nodes. (see [Connections](#connections)) |
 | <a id="projectdatatransfertotalegress"></a>`totalEgress` | [`BigInt`](#bigint) | Total egress for that project in that period of time. |
+
+### `ProjectFeatureAccess`
+
+Represents the access level required by the user to access a project feature.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectfeatureaccessintegervalue"></a>`integerValue` | [`Int`](#int) | Integer representation of access level. |
+| <a id="projectfeatureaccessstringvalue"></a>`stringValue` | [`ProjectFeatureAccessLevel`](#projectfeatureaccesslevel) | String representation of access level. |
 
 ### `ProjectMember`
 
@@ -30739,6 +30754,16 @@ Current state of the product analytics stack.
 | <a id="productanalyticsstatecreate_instance"></a>`CREATE_INSTANCE` | Stack has not been created yet. |
 | <a id="productanalyticsstateloading_instance"></a>`LOADING_INSTANCE` | Stack is currently initializing. |
 | <a id="productanalyticsstatewaiting_for_events"></a>`WAITING_FOR_EVENTS` | Stack is waiting for events from users. |
+
+### `ProjectFeatureAccessLevel`
+
+Access level of a project feature.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="projectfeatureaccessleveldisabled"></a>`DISABLED` | Not enabled for anyone. |
+| <a id="projectfeatureaccesslevelenabled"></a>`ENABLED` | Enabled for everyone able to access the project. |
+| <a id="projectfeatureaccesslevelprivate"></a>`PRIVATE` | Enabled only for team members. |
 
 ### `ProjectMemberRelation`
 

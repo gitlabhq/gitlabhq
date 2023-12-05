@@ -26,6 +26,9 @@ module Packages
 
       scope :stale, -> { where(package_id: nil) }
       scope :pending_destruction, -> { stale.default }
+      scope :with_file_name, ->(file_name) { where(file: file_name) }
+      scope :with_signature, ->(signature) { where(signature: signature) }
+      scope :with_file_sha256, ->(checksums) { where(file_sha256: checksums) }
 
       private
 

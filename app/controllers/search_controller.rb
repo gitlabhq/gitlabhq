@@ -191,21 +191,28 @@ class SearchController < ApplicationController
 
     # Merging to :metadata will ensure these are logged as top level keys
     payload[:metadata] ||= {}
-    payload[:metadata]['meta.search.group_id'] = params[:group_id]
-    payload[:metadata]['meta.search.project_id'] = params[:project_id]
-    payload[:metadata]['meta.search.scope'] = params[:scope] || @scope
-    payload[:metadata]['meta.search.filters.confidential'] = params[:confidential]
-    payload[:metadata]['meta.search.filters.state'] = params[:state]
-    payload[:metadata]['meta.search.force_search_results'] = params[:force_search_results]
-    payload[:metadata]['meta.search.project_ids'] = params[:project_ids]
-    payload[:metadata]['meta.search.filters.language'] = params[:language]
-    payload[:metadata]['meta.search.type'] = @search_type if @search_type.present?
-    payload[:metadata]['meta.search.level'] = @search_level if @search_level.present?
-    payload[:metadata][:global_search_duration_s] = @global_search_duration_s if @global_search_duration_s.present?
+    payload[:metadata].merge!(payload_metadata)
 
     if search_service.abuse_detected?
       payload[:metadata]['abuse.confidence'] = Gitlab::Abuse.confidence(:certain)
       payload[:metadata]['abuse.messages'] = search_service.abuse_messages
+    end
+  end
+
+  def payload_metadata
+    {}.tap do |metadata|
+      metadata['meta.search.group_id'] = params[:group_id]
+      metadata['meta.search.project_id'] = params[:project_id]
+      metadata['meta.search.scope'] = params[:scope] || @scope
+      metadata['meta.search.page'] = params[:page] || '1'
+      metadata['meta.search.filters.confidential'] = params[:confidential]
+      metadata['meta.search.filters.state'] = params[:state]
+      metadata['meta.search.force_search_results'] = params[:force_search_results]
+      metadata['meta.search.project_ids'] = params[:project_ids]
+      metadata['meta.search.filters.language'] = params[:language]
+      metadata['meta.search.type'] = @search_type if @search_type.present?
+      metadata['meta.search.level'] = @search_level if @search_level.present?
+      metadata[:global_search_duration_s] = @global_search_duration_s if @global_search_duration_s.present?
     end
   end
 

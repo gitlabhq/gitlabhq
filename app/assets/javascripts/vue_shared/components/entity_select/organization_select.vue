@@ -1,10 +1,11 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import getCurrentUserOrganizationsClientQuery from '~/organizations/index/graphql/organizations_client.query.graphql';
+import getCurrentUserOrganizationsQuery from '~/organizations/shared/graphql/queries/organizations.query.graphql';
 import getOrganizationQuery from '~/organizations/shared/graphql/queries/organization.query.graphql';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_ORGANIZATION } from '~/graphql_shared/constants';
+import { TYPE_ORGANIZATION } from '~/graphql_shared/constants';
+import { DEFAULT_PER_PAGE } from '~/api';
 import {
   ORGANIZATION_TOGGLE_TEXT,
   ORGANIZATION_HEADER_TEXT,
@@ -62,31 +63,43 @@ export default {
   data() {
     return {
       errorMessage: '',
+      endCursor: null,
     };
   },
   methods: {
-    async fetchOrganizations() {
+    async fetchOrganizations(search, page = 1) {
+      if (page === 1) {
+        this.endCursor = null;
+      }
+
       try {
         const {
           data: {
             currentUser: {
-              organizations: { nodes },
+              organizations: { nodes, pageInfo },
             },
           },
         } = await this.$apollo.query({
-          query: getCurrentUserOrganizationsClientQuery,
-          // TODO: implement search support - https://gitlab.com/gitlab-org/gitlab/-/issues/429999.
+          query: getCurrentUserOrganizationsQuery,
+          // TODO: implement search support - https://gitlab.com/gitlab-org/gitlab/-/issues/433954.
+          variables: { after: this.endCursor, first: DEFAULT_PER_PAGE },
         });
+
+        this.endCursor = pageInfo.endCursor;
 
         return {
           items: nodes.map((organization) => ({
             text: organization.name,
             value: getIdFromGraphQLId(organization.id),
           })),
-          // TODO: implement pagination - https://gitlab.com/gitlab-org/gitlab/-/issues/429999.
-          totalPages: 1,
+          // `EntitySelect` expects a `totalPages` key but GraphQL requests don't provide this data
+          // because it uses keyset pagination. Since the dropdown uses infinite scroll it
+          // only needs to know if there is a next page. We pass `page + 1` if there is a next page,
+          // otherwise we just set this to the current page.
+          totalPages: pageInfo.hasNextPage ? page + 1 : page,
         };
       } catch (error) {
+        this.endCursor = null;
         this.handleError({ message: FETCH_ORGANIZATIONS_ERROR, error });
 
         return { items: [], totalPages: 0 };
@@ -100,7 +113,7 @@ export default {
           },
         } = await this.$apollo.query({
           query: getOrganizationQuery,
-          variables: { id: convertToGraphQLId(TYPENAME_ORGANIZATION, id) },
+          variables: { id: convertToGraphQLId(TYPE_ORGANIZATION, id) },
         });
 
         return name;

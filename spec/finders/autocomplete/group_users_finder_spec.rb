@@ -11,13 +11,9 @@ RSpec.describe Autocomplete::GroupUsersFinder, feature_category: :team_planning 
   let_it_be(:group_project) { create(:project, namespace: group) }
   let_it_be(:subgroup_project) { create(:project, namespace: subgroup) }
 
-  let(:members_relation) { false }
-
-  let(:finder) { described_class.new(group: group, members_relation: members_relation) }
+  let(:finder) { described_class.new(group: group) }
 
   describe '#execute' do
-    subject { finder.execute }
-
     context 'with group members' do
       let_it_be(:parent_group_member) { create(:user).tap { |u| parent_group.add_developer(u) } }
       let_it_be(:group_member) { create(:user).tap { |u| group.add_developer(u) } }
@@ -32,17 +28,6 @@ RSpec.describe Autocomplete::GroupUsersFinder, feature_category: :team_planning 
           group_member,
           subgroup_member
         )
-      end
-
-      context 'when requesting members_relation' do
-        let(:members_relation) { true }
-        let(:expected_members) do
-          [parent_group_member, group_member, subgroup_member].map do |user|
-            Member.where(user: user).select(:id, :user_id).first
-          end
-        end
-
-        it { is_expected.to match_array(expected_members) }
       end
     end
 

@@ -419,6 +419,12 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
     end
   end
 
+  describe 'GET /api/v4/projects/:id/packages/nuget/symbolfiles/*file_name/*signature/*file_name' do
+    it_behaves_like 'nuget symbol file endpoint' do
+      let(:url) { "/projects/#{target.id}/packages/nuget/symbolfiles/#{filename}/#{signature}/#{filename}" }
+    end
+  end
+
   def update_visibility_to(visibility)
     project.update!(visibility_level: visibility)
   end

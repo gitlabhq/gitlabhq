@@ -42,7 +42,7 @@ mapping:
     test: 'spec/initializers/%s_spec.rb'
 
   # DB structure should map to schema spec
-  - source: 'db/structure.sql'
+  - source: 'db/structure\.sql'
     test: 'spec/db/schema_spec.rb'
 
   # Migration should map to either timestamped or non-timestamped spec
@@ -72,11 +72,11 @@ mapping:
     test: 'ee/spec/models/factories_spec.rb'
 
   # Whats New should map to its respective spec
-  - source: 'data/whats_new/\w*.yml'
+  - source: 'data/whats_new/\w*\.yml'
     test: 'spec/lib/release_highlights/validator_spec.rb'
 
   # The documentation index page is used in this haml_lint spec
-  - source: 'doc/index.md'
+  - source: 'doc/index\.md'
     test: 'spec/haml_lint/linter/documentation_links_spec.rb'
 
   - source: '(ee/)?app/workers/.+\.rb'
@@ -97,11 +97,11 @@ mapping:
   # Note: We only have those tests for ee, even though we have non-ee metrics.
   #
   # See https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/287#note_1192008962
-  - source: 'ee/config/metrics/.*.yml'
+  - source: 'ee/config/metrics/.*\.yml'
     test: 'ee/spec/config/metrics/every_metric_definition_spec.rb'
 
   # See https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/146
-  - source: 'config/feature_categories.yml'
+  - source: 'config/feature_categories\.yml'
     test:
       - 'spec/db/docs_spec.rb'
       - 'ee/spec/lib/ee/gitlab/database/docs/docs_spec.rb'
@@ -111,7 +111,7 @@ mapping:
     test: 'spec/lib/gitlab/project_template_spec.rb'
 
   # See https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/1683#note_1385966977
-  - source: 'app/finders/members_finder.rb'
+  - source: 'app/finders/members_finder\.rb'
     test: 'spec/graphql/types/project_member_relation_enum_spec.rb'
-  - source: 'app/finders/group_members_finder.rb'
+  - source: 'app/finders/group_members_finder\.rb'
     test: 'spec/graphql/types/group_member_relation_enum_spec.rb'

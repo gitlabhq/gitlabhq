@@ -1,4 +1,5 @@
 import { GlKeysetPagination } from '@gitlab/ui';
+import { omit } from 'lodash';
 import { shallowMount } from '@vue/test-utils';
 import OrganizationsList from '~/organizations/index/components/organizations_list.vue';
 import OrganizationsListItem from '~/organizations/index/components/organizations_list_item.vue';
@@ -52,7 +53,7 @@ describe('OrganizationsList', () => {
       });
 
       it('renders pagination', () => {
-        expect(findPagination().props()).toMatchObject(pageInfo);
+        expect(findPagination().props()).toMatchObject(omit(pageInfo, '__typename'));
       });
 
       describe('when `GlKeysetPagination` emits `next` event', () => {

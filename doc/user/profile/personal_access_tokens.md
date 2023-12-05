@@ -143,9 +143,9 @@ Personal access tokens expire on the date you define, at midnight, 00:00 AM UTC.
   [maximum allowed lifetime for the token](../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens).
   If the maximum allowed lifetime is not set, the default expiry date is 365 days from the date of creation.
 
-### Service Accounts
+### Create a service account personal access token with no expiry date
 
-You can [create a personal access token for a service account](../../api/groups.md#create-personal-access-token-for-service-account-user) with no expiry date.
+You can [create a personal access token for a service account](../../api/groups.md#create-personal-access-token-for-service-account-user) with no expiry date. These personal access tokens never expire, unlike non-service account personal access tokens.
 
 NOTE:
 Allowing personal access tokens for service accounts to be created with no expiry date only affects tokens created after you change this setting. It does not affect existing tokens.

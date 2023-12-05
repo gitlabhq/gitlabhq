@@ -1,0 +1,7 @@
+fragment Organization on Organization {
+  id
+  name
+  descriptionHtml
+  avatarUrl
+  webUrl
+}

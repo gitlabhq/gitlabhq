@@ -119,9 +119,9 @@ To match foreign key (FK), write one or many filters to match against FROM/TO/CO
 - scripts/decomposition/generate-loose-foreign-key dast_site_profiles_pipelines
 ```
 
-The command accepts a list of filters to match from, to, or column for the purpose of the foreign key generation.
-For example, run this to swap all foreign keys for `ci_job_token_project_scope_links` for the
-decomposed database:
+The command accepts a list of regular expressions to match from, to, or column
+for the purpose of the foreign key generation. For example, run this to swap
+all foreign keys for `ci_job_token_project_scope_links` for the decomposed database:
 
 ```shell
 scripts/decomposition/generate-loose-foreign-key -c ci_job_token_project_scope_links
@@ -131,6 +131,15 @@ To swap only the `source_project_id` of `ci_job_token_project_scope_links` for t
 
 ```shell
 scripts/decomposition/generate-loose-foreign-key -c ci_job_token_project_scope_links source_project_id
+```
+
+To match the exact name of a table or columns, you can make use of the regular expressions
+position anchors `^` and `$`. For example, this command matches only the
+foreign keys on the `events` table only, but not on the table
+`incident_management_timeline_events`.
+
+```shell
+scripts/decomposition/generate-loose-foreign-key -n ^events$
 ```
 
 To swap all the foreign keys (all having `_id` appended), but not create a new branch (only commit

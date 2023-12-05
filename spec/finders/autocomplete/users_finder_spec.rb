@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Autocomplete::UsersFinder, feature_category: :team_planning do
+RSpec.describe Autocomplete::UsersFinder do
   # TODO update when multiple owners are possible in projects
   # https://gitlab.com/gitlab-org/gitlab/-/issues/21432
 
@@ -20,10 +20,6 @@ RSpec.describe Autocomplete::UsersFinder, feature_category: :team_planning do
     let_it_be(:group) { nil }
 
     subject { described_class.new(params: params, current_user: current_user, project: project, group: group).execute.to_a }
-
-    before do
-      stub_feature_flags(group_users_autocomplete_using_batch_reduction: false)
-    end
 
     context 'when current_user not passed or nil' do
       let(:current_user) { nil }
@@ -85,86 +81,6 @@ RSpec.describe Autocomplete::UsersFinder, feature_category: :team_planning do
           expect(subject).to contain_exactly(user1)
         end
       end
-
-      context 'when querying the users with cross joins disabled' do
-        before do
-          stub_const("#{described_class.name}::BATCH_SIZE", 5)
-          stub_const("#{described_class.name}::LIMIT", 3)
-          stub_feature_flags(group_users_autocomplete_using_batch_reduction: true)
-        end
-
-        # Testing the 0 batches case
-        context 'when the group has no matching users' do
-          let(:params) { { search: 'non_matching_query' } }
-
-          it { is_expected.to eq([]) }
-        end
-
-        context 'when the group is smaller than the batch size' do
-          let(:params) { { search: 'zzz' } }
-          let_it_be(:user2) { create(:user, name: 'zzz', username: 'zzz_john_doe') }
-
-          before do
-            group.add_developer(user2)
-          end
-
-          specify do
-            expect_next_instance_of(described_class) do |instance|
-              expect(instance).to receive(:users_relation).once.and_call_original
-            end
-
-            # order is important. user2 comes first because it matches the username
-            is_expected.to eq([user2, user1])
-          end
-        end
-
-        context 'when the group has more users than the batch size' do
-          let_it_be(:users_a) do
-            build_list(:user, 2) do |record, i|
-              record.assign_attributes({ name: "Oliver Doe #{i}", username: "oliver_#{i}" })
-              record.save!
-            end
-          end
-
-          let_it_be(:users_b) do
-            build_list(:user, 4) do |record, i|
-              record.assign_attributes({ name: "Peter Doe #{i}", username: "peter_#{i}" })
-              record.save!
-            end
-          end
-
-          let_it_be(:user2) { create(:user, name: 'John Foobar', username: 'john_foobar') }
-          let_it_be(:user3) { create(:user, name: 'Johanna Doe', username: 'johanna_doe') }
-          let_it_be(:user4) { create(:user, name: 'Oliver Foobar', username: 'oliver_foobar') }
-          let_it_be(:non_member) { create(:user, name: 'Johanna Doe', username: 'johanna_doe_2') }
-
-          before do
-            group.members.delete_all
-            group.add_members(users_a, GroupMember::DEVELOPER)
-            group.add_members(users_b, GroupMember::DEVELOPER)
-            group.add_members([user2, user3, user4], GroupMember::DEVELOPER)
-          end
-
-          context 'when the query matches several users that span over different batches' do
-            let(:params) { { search: 'Oliver' } }
-
-            specify do
-              # the relation is called once per batch (2 batches), and once at the end to reduce the batches
-              expect_next_instance_of(described_class) do |instance|
-                expect(instance).to receive(:users_relation).exactly(3).times.and_call_original
-              end
-
-              is_expected.to eq(users_a + [user4])
-            end
-          end
-
-          context 'when the query matches only one user' do
-            let(:params) { { search: 'johanna_doe' } }
-
-            it { is_expected.to eq([user3]) }
-          end
-        end
-      end
     end
 
     context 'when passed a subgroup' do
@@ -186,33 +102,6 @@ RSpec.describe Autocomplete::UsersFinder, feature_category: :team_planning do
           child_user,
           child_project_user
         )
-      end
-
-      context 'when querying the users with cross joins disabled' do
-        let(:params) { { search: 'zzz' } }
-        let_it_be(:user2) { create(:user, name: 'John Doe', username: 'zzz1') }
-        let_it_be(:user3) { create(:user, name: 'John Doe', username: 'zzz2') }
-        let_it_be(:user4) { create(:user, name: 'John Doe', username: 'zzz3') }
-
-        before do
-          stub_const("#{described_class.name}::BATCH_SIZE", 3)
-          stub_const("#{described_class.name}::LIMIT", 2)
-          stub_feature_flags(group_users_autocomplete_using_batch_reduction: true)
-          GroupMember.delete_all
-          ProjectMember.delete_all
-          group.add_members([user2, user3, user4], GroupMember::DEVELOPER)
-          parent.add_members([user2, user3, user4], GroupMember::DEVELOPER)
-          grandparent.add_members([user2, user3, user4], GroupMember::DEVELOPER)
-        end
-
-        it 'deduplicates the user_ids in batches to reduce database queries' do
-          expect_next_instance_of(described_class) do |instance|
-            expect(instance).to receive(:users_relation).once.and_call_original
-          end
-
-          # order is important. user2 comes first because it matches the username
-          is_expected.to eq([user2, user3])
-        end
       end
     end
 

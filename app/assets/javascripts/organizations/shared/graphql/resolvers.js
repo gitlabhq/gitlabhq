@@ -24,15 +24,6 @@ export default {
       };
     },
   },
-  UserCore: {
-    organizations: async () => {
-      await simulateLoading();
-
-      return {
-        nodes: organizations,
-      };
-    },
-  },
   Mutation: {
     updateOrganization: async () => {
       // Simulate API loading

@@ -9,7 +9,6 @@ module Autocomplete
     # consistent and removes the need for implementing keyset pagination to
     # ensure good performance.
     LIMIT = 20
-    BATCH_SIZE = 1000
 
     attr_reader :current_user, :project, :group, :search,
       :author_id, :todo_filter, :todo_state_filter,
@@ -63,19 +62,7 @@ module Autocomplete
       # When changing the order of these method calls, make sure that
       # reorder_by_name() is called _before_ optionally_search(), otherwise
       # reorder_by_name will break the ORDER BY applied in optionally_search().
-      if project
-        project.authorized_users.union_with_user(author_id).merge(users_relation)
-      elsif group
-        find_group_users(group)
-      elsif current_user
-        users_relation
-      else
-        User.none
-      end.to_a
-    end
-
-    def users_relation
-      User
+      find_users
         .where(state: states)
         .non_internal
         .reorder_by_name
@@ -86,6 +73,7 @@ module Autocomplete
           todo_state: todo_state_filter
         )
         .limit(LIMIT)
+        .to_a
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -97,28 +85,15 @@ module Autocomplete
       author_id.present? && current_user
     end
 
-    def find_group_users(group)
-      if Feature.enabled?(:group_users_autocomplete_using_batch_reduction, current_user)
-        members_relation = ::Autocomplete::GroupUsersFinder.new(group: group, members_relation: true).execute # rubocop: disable CodeReuse/Finder
-
-        user_relations = []
-        members_relation.distinct_each_batch(column: :user_id, of: BATCH_SIZE) do |relation|
-          user_relations << users_relation.id_in(relation.pluck_user_ids)
-        end
-
-        # When there is more than 1 batch, we need to apply users_relation again on
-        # the top results per-batch so that we return results in the correct order.
-        if user_relations.empty?
-          User.none
-        elsif user_relations.one?
-          user_relations.first
-        else
-          # We pluck the ids per batch so that we don't send an unbounded number of ids in one query
-          user_ids = user_relations.flat_map(&:pluck_primary_key)
-          users_relation.id_in(user_ids)
-        end
+    def find_users
+      if project
+        project.authorized_users.union_with_user(author_id)
+      elsif group
+        ::Autocomplete::GroupUsersFinder.new(group: group).execute # rubocop: disable CodeReuse/Finder
+      elsif current_user
+        User.all
       else
-        ::Autocomplete::GroupUsersFinder.new(group: group).execute.merge(users_relation) # rubocop: disable CodeReuse/Finder
+        User.none
       end
     end
 
