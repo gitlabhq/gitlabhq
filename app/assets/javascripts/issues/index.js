@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import IssuableForm from 'ee_else_ce/issuable/issuable_form';
 import IssuableLabelSelector from '~/issuable/issuable_label_selector';
+import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import { initIssuableSidebar } from '~/issuable';
@@ -22,7 +23,7 @@ export function initForm() {
   new IssuableForm($('.issue-form')); // eslint-disable-line no-new
   IssuableLabelSelector();
   new LabelsSelect(); // eslint-disable-line no-new
-  new ShortcutsNavigation(); // eslint-disable-line no-new
+  addShortcutsExtension(ShortcutsNavigation);
 
   initTitleSuggestions();
   initTypePopover();
@@ -32,7 +33,7 @@ export function initForm() {
 
 export function initShow() {
   new Issue(); // eslint-disable-line no-new
-  new ShortcutsIssuable(); // eslint-disable-line no-new
+  addShortcutsExtension(ShortcutsIssuable);
   new ZenMode(); // eslint-disable-line no-new
 
   initAwardsApp(document.getElementById('js-vue-awards-block'));

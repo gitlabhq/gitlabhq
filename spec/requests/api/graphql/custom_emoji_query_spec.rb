@@ -35,14 +35,14 @@ RSpec.describe 'getting custom emoji within namespace', feature_category: :share
       expect(graphql_data['group']['customEmoji']['nodes'].first['name']).to eq(custom_emoji.name)
     end
 
-    it 'returns nil custom emoji when the custom_emoji feature flag is disabled' do
+    it 'returns empty array when the custom_emoji feature flag is disabled' do
       stub_feature_flags(custom_emoji: false)
 
       post_graphql(custom_emoji_query(group), current_user: current_user)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(graphql_data['group']).to be_present
-      expect(graphql_data['group']['customEmoji']).to be_nil
+      expect(graphql_data['group']['customEmoji']['nodes']).to eq([])
     end
 
     it 'returns nil group when unauthorised' do

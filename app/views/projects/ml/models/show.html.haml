@@ -2,4 +2,4 @@
 - breadcrumb_title @model.name
 - page_title @model.name
 
-= render(Projects::Ml::ShowMlModelComponent.new(model: @model))
+= render(Projects::Ml::ShowMlModelComponent.new(model: @model, current_user: current_user))

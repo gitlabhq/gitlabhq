@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
+import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsNetwork from '~/behaviors/shortcuts/shortcuts_network';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import Network from '../network';
@@ -44,6 +45,5 @@ initRefSwitcher();
     commit_id: $('.network-graph').attr('data-commit-id'),
   });
 
-  // eslint-disable-next-line no-new
-  new ShortcutsNetwork(networkGraph.branch_graph);
+  addShortcutsExtension(ShortcutsNetwork, networkGraph.branch_graph);
 })();

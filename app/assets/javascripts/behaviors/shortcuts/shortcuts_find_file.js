@@ -8,10 +8,8 @@ import {
 import { addStopCallback } from '~/lib/mousetrap';
 import ShortcutsNavigation from './shortcuts_navigation';
 
-export default class ShortcutsFindFile extends ShortcutsNavigation {
-  constructor(projectFindFile) {
-    super();
-
+export default class ShortcutsFindFile {
+  constructor(shortcuts, projectFindFile) {
     addStopCallback((e, element, combo) => {
       if (
         element === projectFindFile.inputElement[0] &&
@@ -28,11 +26,13 @@ export default class ShortcutsFindFile extends ShortcutsNavigation {
       return undefined;
     });
 
-    this.bindCommands([
+    shortcuts.addAll([
       [PROJECT_FILES_MOVE_SELECTION_UP, projectFindFile.selectRowUp],
       [PROJECT_FILES_MOVE_SELECTION_DOWN, projectFindFile.selectRowDown],
       [PROJECT_FILES_GO_BACK, projectFindFile.goToTree],
       [PROJECT_FILES_OPEN_SELECTION, projectFindFile.goToBlob],
     ]);
   }
+
+  static dependencies = [ShortcutsNavigation];
 }

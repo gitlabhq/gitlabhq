@@ -53,13 +53,6 @@ RSpec.describe DiscussionEntity do
       .to match_schema('entities/note_user_entity')
   end
 
-  it 'exposes the url for custom award emoji' do
-    custom_emoji = create(:custom_emoji, group: group)
-    create(:award_emoji, awardable: note, name: custom_emoji.name)
-
-    expect(subject[:notes].last[:award_emoji].first.keys).to include(:url)
-  end
-
   context 'when is LegacyDiffDiscussion' do
     let(:discussion) { create(:legacy_diff_note_on_merge_request, noteable: note.noteable, project: project).to_discussion }
 

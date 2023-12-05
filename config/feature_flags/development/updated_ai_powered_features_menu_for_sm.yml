@@ -1,0 +1,8 @@
+---
+name: updated_ai_powered_features_menu_for_sm
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138337
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/433255
+milestone: '16.7'
+type: development
+group: group::cloud connector
+default_enabled: false

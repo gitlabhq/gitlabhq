@@ -15,10 +15,12 @@ module Ml
 
       model_version = Ml::ModelVersion.find_or_create!(model, @version, @package, @description)
 
-      model_version.candidate = ::Ml::CreateCandidateService.new(
-        model.default_experiment,
-        { model_version: model_version }
-      ).execute
+      unless model_version.candidate
+        model_version.candidate = ::Ml::CreateCandidateService.new(
+          model.default_experiment,
+          { model_version: model_version }
+        ).execute
+      end
 
       model_version
     end

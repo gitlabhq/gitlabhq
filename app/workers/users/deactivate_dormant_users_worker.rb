@@ -18,8 +18,10 @@ module Users
       admin_bot = Users::Internal.admin_bot
       return unless admin_bot
 
-      deactivate_users(User.dormant, admin_bot)
-      deactivate_users(User.with_no_activity, admin_bot)
+      Gitlab::Auth::CurrentUserMode.bypass_session!(admin_bot.id) do
+        deactivate_users(User.dormant, admin_bot)
+        deactivate_users(User.with_no_activity, admin_bot)
+      end
     end
 
     private

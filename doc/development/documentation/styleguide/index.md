@@ -189,6 +189,20 @@ Words that indicate you are not writing from a customer perspective are
 [allow and enable](word_list.md#allow-enable). Try instead to use
 [you](word_list.md#you-your-yours) and to speak directly to the user.
 
+### Building trust
+
+Product documentation should be focused on providing clear, concise information,
+without the addition of sales or marketing text.
+
+- Do not use words like [easily](word_list.md#easily) or [simply](word_list.md#simply-simple).
+- Do not use marketing phrases like "This feature will save you time and money."
+
+Instead, focus on facts and achievable goals. Be specific. For example:
+
+- The build time can decrease when you use this feature.
+- You can use this feature to save time when you create a project. The API creates the file and you
+  do not need to manually intervene.
+
 ### Capitalization
 
 As a company, we tend toward lowercase.

@@ -37,6 +37,16 @@ describe('Shortcuts', () => {
     resetHTMLFixture();
   });
 
+  it('does not allow subclassing', () => {
+    const createSubclass = () => {
+      class Subclass extends Shortcuts {}
+
+      return new Subclass();
+    };
+
+    expect(createSubclass).toThrow(/cannot be subclassed/);
+  });
+
   describe('markdown shortcuts', () => {
     let shortcutElements;
 
@@ -121,12 +131,12 @@ describe('Shortcuts', () => {
     });
   });
 
-  describe('bindCommand(s)', () => {
-    it('bindCommand calls Mousetrap.bind correctly', () => {
+  describe('adding shortcuts', () => {
+    it('add calls Mousetrap.bind correctly', () => {
       const mockCommand = { defaultKeys: ['m'] };
       const mockCallback = () => {};
 
-      shortcuts.bindCommand(mockCommand, mockCallback);
+      shortcuts.add(mockCommand, mockCallback);
 
       expect(Mousetrap.prototype.bind).toHaveBeenCalledTimes(1);
       const [callArguments] = Mousetrap.prototype.bind.mock.calls;
@@ -134,13 +144,13 @@ describe('Shortcuts', () => {
       expect(callArguments[1]).toBe(mockCallback);
     });
 
-    it('bindCommands calls Mousetrap.bind correctly', () => {
+    it('addAll calls Mousetrap.bind correctly', () => {
       const mockCommandsAndCallbacks = [
         [{ defaultKeys: ['1'] }, () => {}],
         [{ defaultKeys: ['2'] }, () => {}],
       ];
 
-      shortcuts.bindCommands(mockCommandsAndCallbacks);
+      shortcuts.addAll(mockCommandsAndCallbacks);
 
       expect(Mousetrap.prototype.bind).toHaveBeenCalledTimes(mockCommandsAndCallbacks.length);
       const { calls } = Mousetrap.prototype.bind.mock;
@@ -149,6 +159,109 @@ describe('Shortcuts', () => {
         expect(calls[i][0]).toEqual(mockCommand.defaultKeys);
         expect(calls[i][1]).toBe(mockCallback);
       });
+    });
+  });
+
+  describe('addExtension', () => {
+    it('instantiates the given extension', () => {
+      const MockExtension = jest.fn();
+
+      const returnValue = shortcuts.addExtension(MockExtension, ['foo']);
+
+      expect(MockExtension).toHaveBeenCalledTimes(1);
+      expect(MockExtension).toHaveBeenCalledWith(shortcuts, 'foo');
+      expect(returnValue).toBe(MockExtension.mock.instances[0]);
+    });
+
+    it('instantiates declared dependencies', () => {
+      const MockDependency = jest.fn();
+      const MockExtension = jest.fn();
+
+      MockExtension.dependencies = [MockDependency];
+
+      const returnValue = shortcuts.addExtension(MockExtension, ['foo']);
+
+      expect(MockDependency).toHaveBeenCalledTimes(1);
+      expect(MockDependency.mock.instances).toHaveLength(1);
+      expect(MockDependency).toHaveBeenCalledWith(shortcuts);
+
+      expect(returnValue).toBe(MockExtension.mock.instances[0]);
+    });
+
+    it('does not instantiate an extension more than once', () => {
+      const MockExtension = jest.fn();
+
+      const returnValue = shortcuts.addExtension(MockExtension, ['foo']);
+      const secondReturnValue = shortcuts.addExtension(MockExtension, ['bar']);
+
+      expect(MockExtension).toHaveBeenCalledTimes(1);
+      expect(MockExtension).toHaveBeenCalledWith(shortcuts, 'foo');
+      expect(returnValue).toBe(MockExtension.mock.instances[0]);
+      expect(secondReturnValue).toBe(MockExtension.mock.instances[0]);
+    });
+
+    it('allows extensions to redundantly depend on Shortcuts', () => {
+      const MockExtension = jest.fn();
+      MockExtension.dependencies = [Shortcuts];
+
+      shortcuts.addExtension(MockExtension);
+
+      expect(MockExtension).toHaveBeenCalledTimes(1);
+      expect(MockExtension).toHaveBeenCalledWith(shortcuts);
+
+      // Ensure it wasn't instantiated
+      expect(shortcuts.extensions.has(Shortcuts)).toBe(false);
+    });
+
+    it('allows extensions to incorrectly depend on themselves', () => {
+      const A = jest.fn();
+      A.dependencies = [A];
+      shortcuts.addExtension(A);
+      expect(A).toHaveBeenCalledTimes(1);
+      expect(A).toHaveBeenCalledWith(shortcuts);
+    });
+
+    it('handles extensions with circular dependencies', () => {
+      const A = jest.fn();
+      const B = jest.fn();
+      const C = jest.fn();
+
+      A.dependencies = [B];
+      B.dependencies = [C];
+      C.dependencies = [A];
+
+      shortcuts.addExtension(A);
+
+      expect(A).toHaveBeenCalledTimes(1);
+      expect(B).toHaveBeenCalledTimes(1);
+      expect(C).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles complex (diamond) dependency graphs', () => {
+      const X = jest.fn();
+      const A = jest.fn();
+      const C = jest.fn();
+      const D = jest.fn();
+      const E = jest.fn();
+
+      // Form this dependency graph:
+      //
+      // X ───► A ───► C
+      // │             ▲
+      // └────► D ─────┘
+      //        │
+      //        └────► E
+      X.dependencies = [A, D];
+      A.dependencies = [C];
+      D.dependencies = [C, E];
+
+      shortcuts.addExtension(X);
+
+      expect(X).toHaveBeenCalledTimes(1);
+      expect(A).toHaveBeenCalledTimes(1);
+      expect(C).toHaveBeenCalledTimes(1);
+      expect(D).toHaveBeenCalledTimes(1);
+      expect(E).toHaveBeenCalledTimes(1);
     });
   });
 });

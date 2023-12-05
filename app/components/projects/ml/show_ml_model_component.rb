@@ -3,10 +3,11 @@
 module Projects
   module Ml
     class ShowMlModelComponent < ViewComponent::Base
-      attr_reader :model
+      attr_reader :model, :current_user
 
-      def initialize(model:)
+      def initialize(model:, current_user:)
         @model = model.present
+        @current_user = current_user
       end
 
       private
@@ -35,7 +36,8 @@ module Projects
           version: model_version.version,
           description: model_version.description,
           project_path: project_path(model_version.project),
-          package_id: model_version.package_id
+          package_id: model_version.package_id,
+          **::Ml::CandidateDetailsPresenter.new(model_version.candidate, current_user).present
         }
       end
     end

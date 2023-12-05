@@ -13442,6 +13442,29 @@ The edge type for [`UserCore`](#usercore).
 | <a id="usercoreedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="usercoreedgenode"></a>`node` | [`UserCore`](#usercore) | The item at the end of the edge. |
 
+#### `ValueStreamConnection`
+
+The connection type for [`ValueStream`](#valuestream).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreamconnectionedges"></a>`edges` | [`[ValueStreamEdge]`](#valuestreamedge) | A list of edges. |
+| <a id="valuestreamconnectionnodes"></a>`nodes` | [`[ValueStream]`](#valuestream) | A list of nodes. |
+| <a id="valuestreamconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ValueStreamEdge`
+
+The edge type for [`ValueStream`](#valuestream).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreamedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="valuestreamedgenode"></a>`node` | [`ValueStream`](#valuestream) | The item at the end of the edge. |
+
 #### `VulnerabilitiesCountByDayConnection`
 
 The connection type for [`VulnerabilitiesCountByDay`](#vulnerabilitiescountbyday).
@@ -15980,7 +16003,7 @@ Represents a degradation on the compared codequality report.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="codequalityreportscomparerreportdegradationdescription"></a>`description` | [`String!`](#string) | Description of the code quality degradation. |
-| <a id="codequalityreportscomparerreportdegradationenginename"></a>`engineName` | [`String!`](#string) | Code quality plugin that reported the degradation. |
+| <a id="codequalityreportscomparerreportdegradationenginename"></a>`engineName` | [`String`](#string) | Code quality plugin that reported the degradation. |
 | <a id="codequalityreportscomparerreportdegradationfilepath"></a>`filePath` | [`String!`](#string) | Relative path to the file containing the code quality degradation. |
 | <a id="codequalityreportscomparerreportdegradationfingerprint"></a>`fingerprint` | [`String!`](#string) | Unique fingerprint to identify the code quality degradation. For example, an MD5 hash. |
 | <a id="codequalityreportscomparerreportdegradationline"></a>`line` | [`Int!`](#int) | Line on which the code quality degradation occurred. |
@@ -18978,7 +19001,6 @@ GPG signature for a signed commit.
 | <a id="groupcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the group. |
 | <a id="groupcontainslockedprojects"></a>`containsLockedProjects` | [`Boolean!`](#boolean) | Includes at least one project where the repository size exceeds the limit. This only applies to namespaces under Project limit enforcement. |
 | <a id="groupcrossprojectpipelineavailable"></a>`crossProjectPipelineAvailable` | [`Boolean!`](#boolean) | Indicates if the cross_project_pipeline feature is available for the namespace. |
-| <a id="groupcustomemoji"></a>`customEmoji` **{warning-solid}** | [`CustomEmojiConnection`](#customemojiconnection) | **Introduced** in 13.6. This feature is an Experiment. It can be changed or removed at any time. Custom emoji within this namespace. |
 | <a id="groupdependencyproxyblobcount"></a>`dependencyProxyBlobCount` | [`Int!`](#int) | Number of dependency proxy blobs cached in the group. |
 | <a id="groupdependencyproxyblobs"></a>`dependencyProxyBlobs` | [`DependencyProxyBlobConnection`](#dependencyproxyblobconnection) | Dependency Proxy blobs. (see [Connections](#connections)) |
 | <a id="groupdependencyproxyimagecount"></a>`dependencyProxyImageCount` | [`Int!`](#int) | Number of dependency proxy images cached in the group. |
@@ -19027,6 +19049,7 @@ GPG signature for a signed commit.
 | <a id="grouptotalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. This only applies to namespaces under Project limit enforcement. |
 | <a id="grouptwofactorgraceperiod"></a>`twoFactorGracePeriod` | [`Int`](#int) | Time before two-factor authentication is enforced. |
 | <a id="groupuserpermissions"></a>`userPermissions` | [`GroupPermissions!`](#grouppermissions) | Permissions for the current user on the resource. |
+| <a id="groupvaluestreams"></a>`valueStreams` | [`ValueStreamConnection`](#valuestreamconnection) | Value streams available to the group. (see [Connections](#connections)) |
 | <a id="groupvisibility"></a>`visibility` | [`String`](#string) | Visibility of the namespace. |
 | <a id="groupvulnerabilityscanners"></a>`vulnerabilityScanners` | [`VulnerabilityScannerConnection`](#vulnerabilityscannerconnection) | Vulnerability scanners reported on the project vulnerabilities of the group and its subgroups. (see [Connections](#connections)) |
 | <a id="groupweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the group. |
@@ -19269,6 +19292,26 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="groupcontributionsfrom"></a>`from` | [`ISO8601Date!`](#iso8601date) | Start date of the reporting time range. |
 | <a id="groupcontributionsto"></a>`to` | [`ISO8601Date!`](#iso8601date) | End date of the reporting time range. The end date must be within 93 days after the start date. |
+
+##### `Group.customEmoji`
+
+Custom emoji in this namespace.
+
+WARNING:
+**Introduced** in 13.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`CustomEmojiConnection`](#customemojiconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupcustomemojiincludeancestorgroups"></a>`includeAncestorGroups` | [`Boolean`](#boolean) | Includes custom emoji from parent groups. |
 
 ##### `Group.customizableDashboardVisualizations`
 
@@ -23891,6 +23934,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projecttrackingkey"></a>`trackingKey` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.0. This feature is an Experiment. It can be changed or removed at any time. Tracking key assigned to the project. |
 | <a id="projectuseraccessauthorizedagents"></a>`userAccessAuthorizedAgents` | [`ClusterAgentAuthorizationUserAccessConnection`](#clusteragentauthorizationuseraccessconnection) | Authorized cluster agents for the project through user_access keyword. (see [Connections](#connections)) |
 | <a id="projectuserpermissions"></a>`userPermissions` | [`ProjectPermissions!`](#projectpermissions) | Permissions for the current user on the resource. |
+| <a id="projectvaluestreams"></a>`valueStreams` | [`ValueStreamConnection`](#valuestreamconnection) | Value streams available to the project. (see [Connections](#connections)) |
 | <a id="projectvisibility"></a>`visibility` | [`String`](#string) | Visibility of the project. |
 | <a id="projectvulnerabilityimages"></a>`vulnerabilityImages` | [`VulnerabilityContainerImageConnection`](#vulnerabilitycontainerimageconnection) | Container images reported on the project vulnerabilities. (see [Connections](#connections)) |
 | <a id="projectvulnerabilityscanners"></a>`vulnerabilityScanners` | [`VulnerabilityScannerConnection`](#vulnerabilityscannerconnection) | Vulnerability scanners reported on the project vulnerabilities. (see [Connections](#connections)) |
@@ -27608,6 +27652,7 @@ fields relate to interactions between the two entities.
 | <a id="valuestreamname"></a>`name` | [`String!`](#string) | Name of the value stream. |
 | <a id="valuestreamnamespace"></a>`namespace` | [`Namespace!`](#namespace) | Namespace the value stream belongs to. |
 | <a id="valuestreamproject"></a>`project` **{warning-solid}** | [`Project`](#project) | **Introduced** in 15.6. This feature is an Experiment. It can be changed or removed at any time. Project the value stream belongs to, returns empty if it belongs to a group. |
+| <a id="valuestreamstages"></a>`stages` | [`[ValueStreamStage!]`](#valuestreamstage) | Value Stream stages. |
 
 ### `ValueStreamAnalyticsMetric`
 
@@ -27643,6 +27688,20 @@ Represents a recorded measurement (object count) for the requested group.
 | <a id="valuestreammetriclinktypelabel"></a>`label` | [`String!`](#string) | Label for the link. |
 | <a id="valuestreammetriclinktypename"></a>`name` | [`String!`](#string) | Name of the link group. |
 | <a id="valuestreammetriclinktypeurl"></a>`url` | [`String!`](#string) | Drill-down URL. |
+
+### `ValueStreamStage`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreamstagecustom"></a>`custom` | [`Boolean!`](#boolean) | Whether the stage is customized. |
+| <a id="valuestreamstageendeventidentifier"></a>`endEventIdentifier` | [`ValueStreamStageEvent!`](#valuestreamstageevent) | End event identifier. |
+| <a id="valuestreamstageendeventlabel"></a>`endEventLabel` | [`Label`](#label) | Label associated with end event. |
+| <a id="valuestreamstagehidden"></a>`hidden` | [`Boolean!`](#boolean) | Whether the stage is hidden. |
+| <a id="valuestreamstagename"></a>`name` | [`String!`](#string) | Name of the stage. |
+| <a id="valuestreamstagestarteventidentifier"></a>`startEventIdentifier` | [`ValueStreamStageEvent!`](#valuestreamstageevent) | Start event identifier. |
+| <a id="valuestreamstagestarteventlabel"></a>`startEventLabel` | [`Label`](#label) | Label associated with start event. |
 
 ### `VulnerabilitiesCountByDay`
 

@@ -1917,6 +1917,18 @@ msgstr ""
 msgid "AI-generated summary"
 msgstr ""
 
+msgid "AIPoweredSM|AI-powered features"
+msgstr ""
+
+msgid "AIPoweredSM|By enabling this feature, you agree to the %{terms_link_start}GitLab Testing Agreement%{link_end}."
+msgstr ""
+
+msgid "AIPoweredSM|Enable %{link_start}AI-powered features%{link_end} for this instance."
+msgstr ""
+
+msgid "AIPoweredSM|Enable Experiment and Beta AI-powered features"
+msgstr ""
+
 msgid "AISummary|Generates a summary of all comments"
 msgstr ""
 
@@ -11934,6 +11946,12 @@ msgid "CodeSuggestionsSM|By enabling this feature, you agree to the %{terms_link
 msgstr ""
 
 msgid "CodeSuggestionsSM|Code Suggestions"
+msgstr ""
+
+msgid "CodeSuggestionsSM|Code Suggestions %{beta}"
+msgstr ""
+
+msgid "CodeSuggestionsSM|Enable Code Suggestions for this instance"
 msgstr ""
 
 msgid "CodeSuggestionsSM|Enable Code Suggestions for this instance %{beta}"
@@ -30859,6 +30877,9 @@ msgid "MlModelRegistry|Model performance"
 msgstr ""
 
 msgid "MlModelRegistry|Model registry"
+msgstr ""
+
+msgid "MlModelRegistry|No description provided"
 msgstr ""
 
 msgid "MlModelRegistry|No logged metadata"

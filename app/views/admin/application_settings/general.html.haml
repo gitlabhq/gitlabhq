@@ -120,4 +120,7 @@
 = render_if_exists 'admin/application_settings/add_license'
 = render 'admin/application_settings/jira_connect'
 = render 'admin/application_settings/slack'
-= render_if_exists 'admin/application_settings/ai_access'
+- if Feature.enabled?(:updated_ai_powered_features_menu_for_sm)
+  = render_if_exists 'admin/application_settings/ai_powered'
+- else
+  = render_if_exists 'admin/application_settings/ai_access'

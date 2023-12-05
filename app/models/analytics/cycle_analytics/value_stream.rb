@@ -42,8 +42,11 @@ module Analytics
         namespace.project
       end
 
-      def at_group_level?
-        project.nil?
+      def to_global_id
+        return super if persisted?
+
+        # Returns default name as id for built in value stream at FOSS level
+        name
       end
 
       private

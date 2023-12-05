@@ -8,6 +8,10 @@ FactoryBot.define do
     project { model.project }
     description { 'Some description' }
 
+    candidate do
+      association :ml_candidates, experiment: model.default_experiment, project: project, model_version: instance
+    end
+
     trait :with_package do
       package do
         association :ml_model_package, name: model.name, version: version, project: project

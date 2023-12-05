@@ -63,11 +63,17 @@ function getToolbarBtnToShortcutsMap($textarea) {
 
 export default class Shortcuts {
   constructor() {
+    if (process.env.NODE_ENV !== 'production' && this.constructor !== Shortcuts) {
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      throw new Error('Shortcuts cannot be subclassed.');
+    }
+
+    this.extensions = new Map();
     this.onToggleHelp = this.onToggleHelp.bind(this);
     this.helpModalElement = null;
     this.helpModalVueInstance = null;
 
-    this.bindCommands([
+    this.addAll([
       [TOGGLE_KEYBOARD_SHORTCUTS_DIALOG, this.onToggleHelp],
       [START_SEARCH, Shortcuts.focusSearch],
       [FOCUS_FILTER_BAR, this.focusFilter.bind(this)],
@@ -94,20 +100,72 @@ export default class Shortcuts {
 
     const findFileURL = document.body.dataset.findFile;
     if (typeof findFileURL !== 'undefined' && findFileURL !== null) {
-      this.bindCommand(GO_TO_PROJECT_FIND_FILE, () => {
+      this.add(GO_TO_PROJECT_FIND_FILE, () => {
         visitUrl(findFileURL);
       });
     }
 
-    const shortcutsModalTriggerEvent = 'click.shortcutsModalTrigger';
-    // eslint-disable-next-line @gitlab/no-global-event-off
-    $(document)
-      .off(shortcutsModalTriggerEvent)
-      .on(shortcutsModalTriggerEvent, '.js-shortcuts-modal-trigger', this.onToggleHelp);
+    $(document).on('click', '.js-shortcuts-modal-trigger', this.onToggleHelp);
 
     if (shouldDisableShortcuts()) {
       disableShortcuts();
     }
+  }
+
+  /**
+   * Instantiate a legacy shortcut extension class.
+   *
+   * NOTE: The preferred approach for adding shortcuts is described in
+   * https://docs.gitlab.com/ee/development/fe_guide/keyboard_shortcuts.html.
+   * This method is only for existing legacy shortcut classes.
+   *
+   * A shortcut extension class packages up several shortcuts and behaviors for
+   * a page or set of pages. They are considered legacy because they usually do
+   * not follow modern best practices. For instance, they may hook into the UI
+   * in brittle ways, e.g.. querySelectors.
+   *
+   * Extension classes can declare dependencies on other shortcut extension
+   * classes by listing them in a static `dependencies` property. This is
+   * essentially a reimplementation of the previous subclassing approach, but
+   * with idempotency: a shortcut extension class can now only be added at most
+   * one time.
+   *
+   * Extension classes are instantiated and given the Shortcuts singleton
+   * instance as their first argument. If the class constructor needs
+   * additional arguments, pass them via the second argument as an array.
+   *
+   * See https://gitlab.com/gitlab-org/gitlab/-/issues/392845 for more context.
+   *
+   * @param {Function} Extension The extension class to add/instantiate.
+   * @param {Array} [args] A list of additional args to pass to the extension
+   *     class constructor.
+   * @param {Set} [extensionsCurrentlyLoading] For internal use only. Do not
+   *     use.
+   * @returns The instantiated shortcut extension class.
+   */
+  addExtension(Extension, args = [], extensionsCurrentlyLoading = new Set()) {
+    extensionsCurrentlyLoading.add(Extension);
+
+    let instance = this.extensions.get(Extension);
+    if (!instance) {
+      for (const Dep of Extension.dependencies ?? []) {
+        if (extensionsCurrentlyLoading.has(Dep) || Dep === Shortcuts) {
+          // We've encountered a circular dependency, so stop recursing.
+          // eslint-disable-next-line no-continue
+          continue;
+        }
+
+        extensionsCurrentlyLoading.add(Dep);
+
+        this.addExtension(Dep, [], extensionsCurrentlyLoading);
+      }
+
+      instance = new Extension(this, ...args);
+      this.extensions.set(Extension, instance);
+    }
+
+    extensionsCurrentlyLoading.delete(Extension);
+    return instance;
   }
 
   /**
@@ -120,7 +178,7 @@ export default class Shortcuts {
    * @returns {void}
    */
   // eslint-disable-next-line class-methods-use-this
-  bindCommand(command, callback) {
+  add(command, callback) {
     Mousetrap.bind(keysFor(command), callback);
   }
 
@@ -132,8 +190,8 @@ export default class Shortcuts {
    *     command/callback pairs.
    * @returns {void}
    */
-  bindCommands(commandsAndCallbacks) {
-    commandsAndCallbacks.forEach((commandAndCallback) => this.bindCommand(...commandAndCallback));
+  addAll(commandsAndCallbacks) {
+    commandsAndCallbacks.forEach((commandAndCallback) => this.add(...commandAndCallback));
   }
 
   onToggleHelp(e) {

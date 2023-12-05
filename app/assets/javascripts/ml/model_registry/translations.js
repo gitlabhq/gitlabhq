@@ -15,6 +15,8 @@ export const NO_MODELS_LABEL = s__('MlModelRegistry|No models registered in this
 export const modelsCountLabel = (modelCount) =>
   n__('MlModelRegistry|%d model', 'MlModelRegistry|%d models', modelCount);
 
+export const DESCRIPTION_LABEL = __('Description');
+export const NO_DESCRIPTION_PROVIDED_LABEL = s__('MlModelRegistry|No description provided');
 export const INFO_LABEL = s__('MlModelRegistry|Info');
 export const ID_LABEL = s__('MlModelRegistry|ID');
 export const MLFLOW_ID_LABEL = s__('MlModelRegistry|MLflow run ID');

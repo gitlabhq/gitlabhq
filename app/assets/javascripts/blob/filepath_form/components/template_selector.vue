@@ -149,7 +149,6 @@ export default {
       block
       class="gl-font-regular"
       data-testid="template-selector"
-      data-qa-selector="template_selector"
       :toggle-text="dropdownToggleText"
       :search-placeholder="$options.i18n.searchPlaceholder"
       :items="dropdownItems"

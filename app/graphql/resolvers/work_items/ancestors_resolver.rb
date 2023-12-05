@@ -38,6 +38,8 @@ module Resolvers
       end
 
       def preload_resource_parents(work_items)
+        return unless current_user
+
         projects = work_items.filter_map(&:project)
         namespaces = work_items.filter_map(&:namespace)
         group_namespaces = namespaces.select { |n| n.type == ::Group.sti_name }

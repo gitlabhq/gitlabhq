@@ -30,14 +30,11 @@ describe('ShortcutsIssuable', () => {
         </div>`,
       );
       document.querySelector('.js-new-note-form').classList.add('js-main-target-form');
-
-      window.shortcut = new ShortcutsIssuable(true);
     });
 
     afterEach(() => {
       $(FORM_SELECTOR).remove();
 
-      delete window.shortcut;
       resetHTMLFixture();
     });
 
@@ -54,6 +51,15 @@ describe('ShortcutsIssuable', () => {
         return documentFragment;
       });
     };
+
+    it('sets up commands on instantiation', () => {
+      const mockShortcutsInstance = { addAll: jest.fn() };
+
+      // eslint-disable-next-line no-new
+      new ShortcutsIssuable(mockShortcutsInstance);
+
+      expect(mockShortcutsInstance.addAll).toHaveBeenCalled();
+    });
 
     describe('with empty selection', () => {
       it('does not return an error', () => {

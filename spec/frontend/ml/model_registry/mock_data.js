@@ -56,12 +56,18 @@ export const makeModel = ({ latestVersion } = { latestVersion: LATEST_VERSION })
 
 export const MODEL = makeModel();
 
-export const makeModelVersion = ({ version = '1.2.3', model = MODEL, packageId = 12 } = {}) => ({
+export const makeModelVersion = ({
+  version = '1.2.3',
+  model = MODEL,
+  packageId = 12,
+  description = 'Model version description',
+} = {}) => ({
   version,
   model,
   packageId,
-  description: 'Model version description',
+  description,
   projectPath: 'path/to/project',
+  candidate: newCandidate(),
 });
 
 export const MODEL_VERSION = makeModelVersion();

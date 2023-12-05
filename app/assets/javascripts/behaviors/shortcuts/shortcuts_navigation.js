@@ -21,13 +21,10 @@ import {
   PROJECT_FILES_GO_TO_COMPARE,
   NEW_ISSUE,
 } from './keybindings';
-import Shortcuts from './shortcuts';
 
-export default class ShortcutsNavigation extends Shortcuts {
-  constructor() {
-    super();
-
-    this.bindCommands([
+export default class ShortcutsNavigation {
+  constructor(shortcuts) {
+    shortcuts.addAll([
       [GO_TO_PROJECT_OVERVIEW, () => findAndFollowLink('.shortcuts-project')],
       [GO_TO_PROJECT_ACTIVITY_FEED, () => findAndFollowLink('.shortcuts-project-activity')],
       [GO_TO_PROJECT_RELEASES, () => findAndFollowLink('.shortcuts-deployments-releases')],

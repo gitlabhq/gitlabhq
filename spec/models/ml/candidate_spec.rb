@@ -38,8 +38,8 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
 
   describe 'validation' do
     let_it_be(:model) { create(:ml_models, project: candidate.project) }
-    let_it_be(:model_version1) { create(:ml_model_versions, model: model) }
-    let_it_be(:model_version2) { create(:ml_model_versions, model: model) }
+    let_it_be(:model_version1) { create(:ml_model_versions, model: model, candidate: nil) }
+    let_it_be(:model_version2) { create(:ml_model_versions, model: model, candidate: nil) }
     let_it_be(:validation_candidate) do
       create(:ml_candidates, model_version: model_version1, project: candidate.project)
     end

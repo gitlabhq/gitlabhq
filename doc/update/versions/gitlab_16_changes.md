@@ -102,9 +102,9 @@ Specific information applies to installations using Geo:
   **Affected releases**:
 
   | Affected minor releases | Affected patch releases | Fixed in |
-  | ------ | ------ | ------ |
-  | 16.4   | All    | None   |
-  | 16.5   | All    | None   |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.4                    | 16.4.0 - 16.4.2         | 16.4.3   |
+  | 16.5                    | 16.5.0 - 16.5.1         | 16.5.2   |
 
 - After [Group Wiki](../../user/project/wiki/group.md) verification was added in GitLab 16.3, missing Group Wiki repositories are being incorrectly flagged as failing verification. This issue is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these Group Wiki repositories.
 
@@ -232,9 +232,9 @@ Specific information applies to installations using Geo:
   **Affected releases**:
 
   | Affected minor releases | Affected patch releases | Fixed in |
-  | ------ | ------ | ------ |
-  | 16.4   | All    | None   |
-  | 16.5   | All    | None   |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.4                    | 16.4.0 - 16.4.2         | 16.4.3   |
+  | 16.5                    | 16.5.0 - 16.5.1         | 16.5.2   |
 
 - An [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/419370) with sync states getting stuck in pending state results in replication being stuck indefinitely for impacted items leading to risk of data loss in the event of a failover. This mostly impact repository syncs but can also can also affect container registry syncs. You are advised to upgrade to a fixed version to avoid risk of data loss.
 

@@ -3,11 +3,14 @@
 require "spec_helper"
 
 RSpec.describe Projects::Ml::ShowMlModelComponent, type: :component, feature_category: :mlops do
-  let_it_be(:project) { build_stubbed(:project) }
-  let_it_be(:model1) { build_stubbed(:ml_models, :with_latest_version_and_package, project: project) }
+  let_it_be(:project) { create(:project) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- build_stubbed breaks because it doesn't create iids properly.
+  let_it_be(:model1) { create(:ml_models, :with_latest_version_and_package, project: project) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- build_stubbed breaks because it doesn't create iids properly.
+
+  let_it_be(:experiment) { model1.default_experiment }
+  let_it_be(:candidate) { model1.latest_version.candidate }
 
   subject(:component) do
-    described_class.new(model: model1)
+    described_class.new(model: model1, current_user: model1.user)
   end
 
   describe 'rendered' do
@@ -28,7 +31,22 @@ RSpec.describe Projects::Ml::ShowMlModelComponent, type: :component, feature_cat
             'version' => model1.latest_version.version,
             'description' => model1.latest_version.description,
             'projectPath' => "/#{project.full_path}",
-            'packageId' => model1.latest_version.package_id
+            'packageId' => model1.latest_version.package_id,
+            'candidate' => {
+              'info' => {
+                'iid' => candidate.iid,
+                'eid' => candidate.eid,
+                'pathToArtifact' => nil,
+                'experimentName' => candidate.experiment.name,
+                'pathToExperiment' => "/#{project.full_path}/-/ml/experiments/#{experiment.iid}",
+                'status' => 'running',
+                'path' => "/#{project.full_path}/-/ml/candidates/#{candidate.iid}",
+                'ciJob' => nil
+              },
+              'metrics' => [],
+              'params' => [],
+              'metadata' => []
+            }
           },
           'versionCount' => 1
         }

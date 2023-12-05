@@ -7,7 +7,6 @@ import {
   getShaFromUrl,
 } from '~/lib/utils/url_utility';
 import { updateRefPortionOfTitle } from '~/repository/utils/title';
-import Shortcuts from './shortcuts';
 
 const defaults = {
   fileBlobPermalinkUrl: null,
@@ -19,15 +18,14 @@ function eventHasModifierKeys(event) {
   return event.ctrlKey || event.metaKey || event.shiftKey;
 }
 
-export default class ShortcutsBlob extends Shortcuts {
-  constructor(opts) {
+export default class ShortcutsBlob {
+  constructor(shortcuts, opts) {
     const options = { ...defaults, ...opts };
-    super();
     this.options = options;
 
     this.shortcircuitPermalinkButton();
 
-    this.bindCommand(PROJECT_FILES_GO_TO_PERMALINK, this.moveToFilePermalink.bind(this));
+    shortcuts.add(PROJECT_FILES_GO_TO_PERMALINK, this.moveToFilePermalink.bind(this));
   }
 
   moveToFilePermalink() {

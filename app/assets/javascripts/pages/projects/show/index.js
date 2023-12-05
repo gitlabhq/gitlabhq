@@ -1,3 +1,4 @@
+import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import initClustersDeprecationAlert from '~/projects/clusters_deprecation_alert';
 import leaveByUrl from '~/namespaces/leave_by_url';
@@ -38,7 +39,7 @@ leaveByUrl('project');
 
 initVueNotificationsDropdown();
 
-new ShortcutsNavigation(); // eslint-disable-line no-new
+addShortcutsExtension(ShortcutsNavigation);
 
 initUploadFileTrigger();
 initClustersDeprecationAlert();

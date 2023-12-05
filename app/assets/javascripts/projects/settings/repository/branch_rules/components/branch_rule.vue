@@ -12,8 +12,8 @@ export const i18n = {
   statusChecks: s__('BranchRules|%{total} status %{subject}'),
   approvalRules: s__('BranchRules|%{total} approval %{subject}'),
   matchingBranches: s__('BranchRules|%{total} matching %{subject}'),
-  pushAccessLevels: s__('BranchRules|Allowed to merge'),
-  mergeAccessLevels: s__('BranchRules|Allowed to push and merge'),
+  pushAccessLevels: s__('BranchRules|Allowed to push and merge'),
+  mergeAccessLevels: s__('BranchRules|Allowed to merge'),
 };
 
 export default {

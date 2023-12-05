@@ -26,6 +26,11 @@ module Types
           null: true,
           description: 'Project the value stream belongs to, returns empty if it belongs to a group.',
           alpha: { milestone: '15.6' }
+
+        field :stages,
+          null: true,
+          resolver: Resolvers::Analytics::CycleAnalytics::StagesResolver,
+          description: 'Value Stream stages.'
       end
     end
   end

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ::Ml::CreateCandidateService, feature_category: :mlops do
   describe '#execute' do
-    let_it_be(:model_version) { create(:ml_model_versions) }
+    let_it_be(:model_version) { create(:ml_model_versions, candidate: nil) }
     let_it_be(:experiment) { create(:ml_experiments, project: model_version.project) }
 
     let(:params) { {} }

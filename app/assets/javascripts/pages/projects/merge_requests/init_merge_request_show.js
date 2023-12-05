@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { s__ } from '~/locale';
+import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 import { initPipelineCountListener } from '~/commit/pipelines/utils';
 import { initIssuableSidebar } from '~/issuable';
@@ -18,7 +19,7 @@ import getStateQuery from './queries/get_state.query.graphql';
 export default function initMergeRequestShow(store) {
   new ZenMode(); // eslint-disable-line no-new
   initPipelineCountListener(document.querySelector('#commit-pipeline-table-view'));
-  new ShortcutsIssuable(true); // eslint-disable-line no-new
+  addShortcutsExtension(ShortcutsIssuable);
   initSourcegraph();
   initIssuableSidebar();
   initAwardsApp(document.getElementById('js-vue-awards-block'));

@@ -8,6 +8,7 @@ import blobControlsQuery from '~/repository/queries/blob_controls.query.graphql'
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createRouter from '~/repository/router';
 import { updateElementsVisibility } from '~/repository/utils/dom';
+import { resetShortcutsForTests } from '~/behaviors/shortcuts';
 import ShortcutsBlob from '~/behaviors/shortcuts/shortcuts_blob';
 import BlobLinePermalinkUpdater from '~/blob/blob_line_permalink_updater';
 import { blobControlsDataMock, refMock } from '../mock_data';
@@ -31,6 +32,8 @@ const createComponent = async () => {
   router.replace({ name: 'blobPath', params: { path: '/some/file.js' } });
 
   mockResolver = jest.fn().mockResolvedValue({ data: { project } });
+
+  await resetShortcutsForTests();
 
   wrapper = shallowMountExtended(BlobControls, {
     router,

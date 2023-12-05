@@ -3,12 +3,20 @@
 require "spec_helper"
 
 RSpec.describe Projects::Ml::ShowMlModelVersionComponent, type: :component, feature_category: :mlops do
-  let_it_be(:project) { build_stubbed(:project) }
-  let_it_be(:model) { build_stubbed(:ml_models, project: project) }
-  let_it_be(:version) { build_stubbed(:ml_model_versions, :with_package, model: model, description: 'abc') }
+  let_it_be(:project) { create(:project) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- build_stubbed breaks because it doesn't create iids properly.
+  let_it_be(:user) { project.owner }
+  let_it_be(:model) { create(:ml_models, project: project) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- build_stubbed breaks because it doesn't create iids properly.
+  let_it_be(:experiment) { model.default_experiment }
+  let_it_be(:candidate) do
+    create(:ml_candidates, :with_artifact, experiment: experiment, user: user, project: project) # rubocop:disable RSpec/FactoryBot/AvoidCreate -- build_stubbed breaks because it doesn't create iids properly.
+  end
+
+  let_it_be(:version) do
+    build_stubbed(:ml_model_versions, :with_package, model: model, candidate: candidate, description: 'abc')
+  end
 
   subject(:component) do
-    described_class.new(model_version: version)
+    described_class.new(model_version: version, current_user: user)
   end
 
   describe 'rendered' do
@@ -30,6 +38,21 @@ RSpec.describe Projects::Ml::ShowMlModelVersionComponent, type: :component, feat
           'model' => {
             'name' => model.name,
             'path' => "/#{project.full_path}/-/ml/models/#{model.id}"
+          },
+          'candidate' => {
+            'info' => {
+              'iid' => candidate.iid,
+              'eid' => candidate.eid,
+              'pathToArtifact' => "/#{project.full_path}/-/packages/#{candidate.artifact.id}",
+              'experimentName' => candidate.experiment.name,
+              'pathToExperiment' => "/#{project.full_path}/-/ml/experiments/#{experiment.iid}",
+              'status' => 'running',
+              'path' => "/#{project.full_path}/-/ml/candidates/#{candidate.iid}",
+              'ciJob' => nil
+            },
+            'metrics' => [],
+            'params' => [],
+            'metadata' => []
           }
         }
       })

@@ -48,4 +48,45 @@ RSpec.describe CustomEmoji do
       expect(emoji.errors.messages).to eq(file: ["is blocked: Only allowed schemes are http, https"])
     end
   end
+
+  describe '#for_resource' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:custom_emoji) { create(:custom_emoji, namespace: group) }
+
+    context 'when custom_emoji feature flag is disabled' do
+      before do
+        stub_feature_flags(custom_emoji: false)
+      end
+
+      it { expect(described_class.for_resource(group)).to eq([]) }
+    end
+
+    context 'when group is nil' do
+      let_it_be(:group) { nil }
+
+      it { expect(described_class.for_resource(group)).to eq([]) }
+    end
+
+    context 'when resource is a project' do
+      let_it_be(:project) { create(:project) }
+
+      it { expect(described_class.for_resource(project)).to eq([]) }
+    end
+
+    it { expect(described_class.for_resource(group)).to eq([custom_emoji]) }
+  end
+
+  describe '#for_namespaces' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:custom_emoji) { create(:custom_emoji, namespace: group, name: 'parrot') }
+
+    it { expect(described_class.for_namespaces([group.id])).to eq([custom_emoji]) }
+
+    context 'with subgroup' do
+      let_it_be(:subgroup) { create(:group, parent: group) }
+      let_it_be(:subgroup_emoji) { create(:custom_emoji, namespace: subgroup, name: 'parrot') }
+
+      it { expect(described_class.for_namespaces([subgroup.id, group.id])).to eq([subgroup_emoji]) }
+    end
+  end
 end

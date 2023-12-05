@@ -6,9 +6,9 @@ import installGlEmojiElement from './gl_emoji';
 import initCopyAsGFM from './markdown/copy_as_gfm';
 import './quick_submit';
 import './requires_input';
-import initPageShortcuts from './shortcuts';
 import { initToastMessages } from './toasts';
 import { initGlobalAlerts } from './global_alerts';
+import './shortcuts';
 import './toggler_behavior';
 import './preview_markdown';
 
@@ -17,7 +17,6 @@ installGlEmojiElement();
 initCopyAsGFM();
 initCopyToClipboard();
 
-initPageShortcuts();
 initCollapseSidebarOnWindowResize();
 
 initToastMessages();

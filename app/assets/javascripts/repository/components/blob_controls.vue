@@ -4,6 +4,7 @@ import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import getRefMixin from '~/repository/mixins/get_ref';
 import initSourcegraph from '~/sourcegraph';
+import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsBlob from '~/behaviors/shortcuts/shortcuts_blob';
 import BlobLinePermalinkUpdater from '~/blob/blob_line_permalink_updater';
 import { updateElementsVisibility } from '../utils/dom';
@@ -105,8 +106,7 @@ export default {
       );
       const fileBlobPermalinkUrl =
         fileBlobPermalinkUrlElement && fileBlobPermalinkUrlElement.getAttribute('href');
-      // eslint-disable-next-line no-new
-      new ShortcutsBlob({
+      addShortcutsExtension(ShortcutsBlob, {
         fileBlobPermalinkUrl,
         fileBlobPermalinkUrlElement,
       });
