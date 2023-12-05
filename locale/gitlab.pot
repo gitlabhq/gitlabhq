@@ -3182,9 +3182,6 @@ msgstr ""
 msgid "Adjust how frequently the GitLab UI polls for updates."
 msgstr ""
 
-msgid "Admin"
-msgstr ""
-
 msgid "Admin Area"
 msgstr ""
 
@@ -22657,9 +22654,6 @@ msgstr ""
 msgid "Go to previous unresolved thread"
 msgstr ""
 
-msgid "Go to primary site"
-msgstr ""
-
 msgid "Go to project"
 msgstr ""
 
@@ -28351,9 +28345,6 @@ msgstr ""
 msgid "Leave"
 msgstr ""
 
-msgid "Leave admin mode"
-msgstr ""
-
 msgid "Leave edit mode? All unsaved changes will be lost."
 msgstr ""
 
@@ -28948,9 +28939,6 @@ msgid "Mailgun HTTP webhook signing key"
 msgstr ""
 
 msgid "Mailgun events"
-msgstr ""
-
-msgid "Main menu"
 msgstr ""
 
 msgid "Maintainer"
@@ -50793,15 +50781,6 @@ msgstr ""
 msgid "Tool"
 msgstr ""
 
-msgid "TopNav|Explore"
-msgstr ""
-
-msgid "TopNav|Switch to"
-msgstr ""
-
-msgid "TopNav|Your dashboards"
-msgstr ""
-
 msgid "Topic %{source_topic} was successfully merged into topic %{target_topic}."
 msgstr ""
 
@@ -53272,13 +53251,7 @@ msgstr ""
 msgid "View all environments."
 msgstr ""
 
-msgid "View all groups"
-msgstr ""
-
 msgid "View all issues"
-msgstr ""
-
-msgid "View all projects"
 msgstr ""
 
 msgid "View blame"

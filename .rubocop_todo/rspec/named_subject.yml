@@ -1617,7 +1617,6 @@ RSpec/NamedSubject:
     - 'spec/helpers/markup_helper_spec.rb'
     - 'spec/helpers/merge_requests_helper_spec.rb'
     - 'spec/helpers/namespaces_helper_spec.rb'
-    - 'spec/helpers/nav/top_nav_helper_spec.rb'
     - 'spec/helpers/nav_helper_spec.rb'
     - 'spec/helpers/operations_helper_spec.rb'
     - 'spec/helpers/page_layout_helper_spec.rb'

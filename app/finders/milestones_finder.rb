@@ -96,7 +96,7 @@ class MilestonesFinder
   end
 
   def by_iids(items)
-    return items unless params[:iids].present? && !params[:include_parent_milestones]
+    return items unless params[:iids].present? && !params[:include_ancestors]
 
     items.by_iid(params[:iids])
   end

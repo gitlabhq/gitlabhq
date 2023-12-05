@@ -180,18 +180,19 @@
   background-color: $builds-log-bg;
 }
 
-.log-line {
+.job-log-line {
   padding: 1px $gl-padding-8 1px $job-log-line-padding;
   min-height: $gl-line-height-20;
 }
 
-.line-number {
+.job-log-line-number {
   color: $gray-500;
-  padding: 0 $gl-padding-8;
+  padding: 0 1em 0 $gl-padding-8;
   min-width: $job-line-number-width;
   margin-left: -$job-line-number-margin;
-  padding-right: 1em;
   user-select: none;
+  display: inline-block;
+  text-align: right;
 
   &:hover,
   &:active,
@@ -201,7 +202,11 @@
   }
 }
 
-.collapsible-line {
+.job-log-line-header {
+  display: flex;
+  position: relative;
+  align-items: flex-start;
+
   &:hover {
     background-color: rgba($white, 0.2);
   }

@@ -8,6 +8,8 @@ import CatalogListSkeletonLoader from '../list/catalog_list_skeleton_loader.vue'
 import CatalogHeader from '../list/catalog_header.vue';
 import EmptyState from '../list/empty_state.vue';
 import getCatalogResources from '../../graphql/queries/get_ci_catalog_resources.query.graphql';
+import getCurrentPage from '../../graphql/queries/client/get_current_page.query.graphql';
+import updateCurrentPageMutation from '../../graphql/mutations/client/update_current_page.mutation.graphql';
 
 export default {
   components: {
@@ -46,6 +48,12 @@ export default {
         createAlert({ message: e.message || this.$options.i18n.fetchError, variant: 'danger' });
       },
     },
+    currentPage: {
+      query: getCurrentPage,
+      update(data) {
+        return data?.page?.current || 1;
+      },
+    },
   },
   computed: {
     hasResources() {
@@ -72,7 +80,7 @@ export default {
           },
         });
 
-        this.currentPage -= 1;
+        this.decrementPage();
       } catch (e) {
         // Ensure that the current query is properly stoped if an error occurs.
         this.$apollo.queries.catalogResources.stop();
@@ -87,13 +95,27 @@ export default {
           },
         });
 
-        this.currentPage += 1;
+        this.incrementPage();
       } catch (e) {
         // Ensure that the current query is properly stoped if an error occurs.
         this.$apollo.queries.catalogResources.stop();
 
         createAlert({ message: e?.message || this.$options.i18n.fetchError, variant: 'danger' });
       }
+    },
+    updatePageCount(pageNumber) {
+      this.$apollo.mutate({
+        mutation: updateCurrentPageMutation,
+        variables: {
+          pageNumber,
+        },
+      });
+    },
+    decrementPage() {
+      this.updatePageCount(this.currentPage - 1);
+    },
+    incrementPage() {
+      this.updatePageCount(this.currentPage + 1);
     },
     onUpdateSearchTerm(searchTerm) {
       this.searchTerm = !searchTerm.length ? null : searchTerm;
@@ -109,7 +131,7 @@ export default {
       });
     },
     resetPageCount() {
-      this.currentPage = 1;
+      this.updatePageCount(1);
     },
   },
   i18n: {

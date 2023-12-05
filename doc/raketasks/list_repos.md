@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # List repository directories Rake task (deprecated) **(FREE SELF)**
 
 WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/384361) in GitLab 16.4 and is planned for removal in 17.0.
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/384361) in GitLab 16.7 and is planned for removal in 17.0.
 [If migrating GitLab, use backup and restore](../administration/operations/moving_repositories.md#recommended-approach-in-all-cases)
 instead.
 

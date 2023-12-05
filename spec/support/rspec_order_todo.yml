@@ -4846,7 +4846,6 @@
 - './spec/helpers/merge_requests_helper_spec.rb'
 - './spec/helpers/namespaces_helper_spec.rb'
 - './spec/helpers/nav/new_dropdown_helper_spec.rb'
-- './spec/helpers/nav/top_nav_helper_spec.rb'
 - './spec/helpers/notes_helper_spec.rb'
 - './spec/helpers/notifications_helper_spec.rb'
 - './spec/helpers/notify_helper_spec.rb'

@@ -99,7 +99,6 @@ RSpec/ReturnFromStub:
     - 'spec/helpers/explore_helper_spec.rb'
     - 'spec/helpers/groups_helper_spec.rb'
     - 'spec/helpers/issues_helper_spec.rb'
-    - 'spec/helpers/nav/top_nav_helper_spec.rb'
     - 'spec/helpers/nav_helper_spec.rb'
     - 'spec/helpers/operations_helper_spec.rb'
     - 'spec/helpers/projects_helper_spec.rb'

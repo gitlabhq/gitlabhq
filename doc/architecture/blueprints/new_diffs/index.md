@@ -207,10 +207,25 @@ Some of the visual indicators that require alternatives for assistive technology
 - `+` or red highlighting to be read as `added`
 - `-` or green highlighting to be read as `removed`
 
+## Alternative Solutions
+
+<!--
+It might be a good idea to include a list of alternative solutions or paths considered, although it is not required. Include pros and cons for
+each alternative solution/path.
+
+"Do nothing" and its pros and cons could be included in the list too.
+-->
+
+## Proposed changes
+
+These changes (indicated by an arbitrary name like "Design A") suggest a proposed final path forward for this blueprint, but have not yet been accepted as the authoritative content.
+
+- Mark the highest hierarchical heading with your design name. If you are changing multiple headings at the same level, make sure to mark them all with the same name. This will create a high-level table of contents that is easier to reason about.
+
 ### Front end (Design A)
 
 NOTE:
-This draft proposal suggests one potential front end architecture which may not be chosen.
+This draft proposal suggests one potential front end architecture which may not be chosen. It is not necessarily mutually exclusive with other proposed designs.
 
 Ideally, we would meet our definition of done and our accountability metrics on our first try.
 We also need to continue to stay within those boundaries as we move forward. To ensure this,
@@ -232,6 +247,9 @@ we need to design an application architecture that:
     - Data access and network access.
 
 #### High-level implementation
+
+NOTE:
+This draft proposal suggests one potential front end architecture which may not be chosen. It is not necessarily mutually exclusive with other proposed designs.
 
 (See [New Diffs: Technical Architecture Design](https://gitlab.com/gitlab-org/gitlab/-/issues/431276) for nicer visuals of this chart)
 
@@ -313,11 +331,17 @@ end
     Network --> Socket --> API --> unk
 ```
 
-## Alternative Solutions
+### Metrics (Design B)
 
-<!--
-It might be a good idea to include a list of alternative solutions or paths considered, although it is not required. Include pros and cons for
-each alternative solution/path.
+NOTE:
+This draft proposal suggests one potential front end architecture which may not be chosen. It is not necessarily mutually exclusive with other proposed designs.
 
-"Do nothing" and its pros and cons could be included in the list too.
--->
+1. _(no change)_
+1. _(no change)_
+1. _(no change)_
+1. _(no change)_
+1. _(no change)_
+1. When rendering diffs on the server:
+    - The total server-rendered count should not exceed 5 files.
+    - It should not try to render empty diffs. (It should render at least 1 file.)
+    - The total lines of diff code rendered should not exceed 1000 lines.

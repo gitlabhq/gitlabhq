@@ -351,7 +351,6 @@ Style/InlineDisableAnnotation:
     - 'app/helpers/issuables_helper.rb'
     - 'app/helpers/lazy_image_tag_helper.rb'
     - 'app/helpers/namespaces_helper.rb'
-    - 'app/helpers/nav/top_nav_helper.rb'
     - 'app/helpers/page_layout_helper.rb'
     - 'app/helpers/routing/projects_helper.rb'
     - 'app/helpers/routing/pseudonymization_helper.rb'

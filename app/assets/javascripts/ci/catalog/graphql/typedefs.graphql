@@ -1,0 +1,11 @@
+type CatalogPage {
+  current: Int
+}
+
+extend type Query {
+  page: CatalogPage
+}
+
+extend type Mutation {
+  updateCurrentPage(pageNumber: Int!): CatalogPage
+}

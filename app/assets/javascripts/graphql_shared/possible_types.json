@@ -207,6 +207,7 @@
   "WorkItemWidgetDefinition": [
     "WorkItemWidgetDefinitionAssignees",
     "WorkItemWidgetDefinitionGeneric",
+    "WorkItemWidgetDefinitionHierarchy",
     "WorkItemWidgetDefinitionLabels"
   ]
 }

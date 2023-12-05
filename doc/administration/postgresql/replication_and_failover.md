@@ -898,6 +898,12 @@ Stopping or restarting the Patroni service on the leader node triggers an automa
 
 ### Manual failover procedure for Patroni
 
+WARNING:
+In GitLab 16.5 and earlier, PgBouncer nodes do not automatically fail over alongside
+Patroni nodes. PgBouncer services
+[must be restarted manually](#pgbouncer-errors-error-running-command-gitlabctlerrorsexecutionerror-and-error-database-gitlabhq_production-is-not-paused)
+for a successful switchover.
+
 While Patroni supports automatic failover, you also have the ability to perform
 a manual one, where you have two slightly different options:
 
@@ -920,7 +926,7 @@ For further details on this subject, see the
 
 #### Geo secondary site considerations
 
-When a Geo secondary site is replicating from a primary site that uses `Patroni` and `PgBouncer`, [replicating through PgBouncer is not supported](https://github.com/pgbouncer/pgbouncer/issues/382#issuecomment-517911529). The secondary *must* replicate directly from the leader node in the `Patroni` cluster. When there is an automatic or manual failover in the `Patroni` cluster, you can manually re-point your secondary site to replicate from the new leader with:
+When a Geo secondary site is replicating from a primary site that uses `Patroni` and `PgBouncer`, [replicating through PgBouncer is not supported](https://github.com/pgbouncer/pgbouncer/issues/382#issuecomment-517911529). The secondary _must_ replicate directly from the leader node in the `Patroni` cluster. When there is an automatic or manual failover in the `Patroni` cluster, you can manually re-point your secondary site to replicate from the new leader with:
 
 ```shell
 sudo gitlab-ctl replicate-geo-database --host=<new_leader_ip> --replication-slot=<slot_name>
@@ -957,7 +963,7 @@ For further details, see [Patroni documentation on this subject](https://patroni
 ### Switching from repmgr to Patroni
 
 WARNING:
-Switching from repmgr to Patroni is straightforward, the other way around is *not*. Rolling back from Patroni to repmgr can be complicated and may involve deletion of data directory. If you need to do that, contact GitLab support.
+Switching from repmgr to Patroni is straightforward, the other way around is _not_. Rolling back from Patroni to repmgr can be complicated and may involve deletion of data directory. If you need to do that, contact GitLab support.
 
 You can switch an exiting database cluster to use Patroni instead of repmgr with the following steps:
 
@@ -1011,7 +1017,7 @@ Here are a few key facts that you must consider before upgrading PostgreSQL:
   GitLab deployment is down for the duration of database upgrade or, at least, as long as your leader
   node is upgraded. This can be **a significant downtime depending on the size of your database**.
 
-- Upgrading PostgreSQL creates a new data directory with a new control data. From the perspective of Petroni, this is a new cluster that needs to be bootstrapped again. Therefore, as part of the upgrade procedure, the cluster state (stored in Consul) is wiped out. After the upgrade is complete, Patroni bootstraps a new cluster. **This changes your _cluster ID_**.
+- Upgrading PostgreSQL creates a new data directory with a new control data. From the perspective of Patroni, this is a new cluster that needs to be bootstrapped again. Therefore, as part of the upgrade procedure, the cluster state (stored in Consul) is wiped out. After the upgrade is complete, Patroni bootstraps a new cluster. **This changes your _cluster ID_**.
 
 - The procedures for upgrading leader and replicas are not the same. That is why it is important to use the right procedure on each node.
 
@@ -1311,14 +1317,23 @@ postgresql['trust_auth_cidr_addresses'] = %w(123.123.123.123/32 <other_cidrs>)
 
 ### PgBouncer errors `Error running command: GitlabCtl::Errors::ExecutionError` and `ERROR: database gitlabhq_production is not paused`
 
-In versions of GitLab prior to 16.5.0, the automatic failover of PgBouncer does not
-happen after a Patroni switchover. GitLab failed to detect a paused database, then
-attempted to `RESUME` a not-paused database:
+Due to a [known issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8166) that
+affects versions of GitLab prior to 16.5.0, the automatic failover of PgBouncer nodes does not
+happen after a [Patroni switchover](#manual-failover-procedure-for-patroni). In this
+example, GitLab failed to detect a paused database, then attempted to `RESUME` a
+not-paused database:
 
 ```plaintext
 INFO -- : Running: gitlab-ctl pgb-notify --pg-database gitlabhq_production --newhost database7.example.com --user pgbouncer --hostuser gitlab-consul
 ERROR -- : STDERR: Error running command: GitlabCtl::Errors::ExecutionError
 ERROR -- : STDERR: ERROR: ERROR:  database gitlabhq_production is not paused
+```
+
+To ensure a [Patroni switchover](#manual-failover-procedure-for-patroni) succeeds,
+you must manually restart the PgBouncer service on all PgBouncer nodes with this command:
+
+```shell
+gitlab-ctl restart pgbouncer
 ```
 
 ### Reinitialize a replica

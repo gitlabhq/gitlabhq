@@ -1937,7 +1937,7 @@ class Project < ApplicationRecord
     repository = project_repository || build_project_repository
     repository.update!(shard_name: repository_storage, disk_path: disk_path)
 
-    cleanup if replicate_object_pool_on_move_ff_enabled?
+    cleanup
   end
 
   def create_repository(force: false, default_branch: nil, object_format: nil)
@@ -2760,7 +2760,6 @@ class Project < ApplicationRecord
 
   # After repository is moved from shard to shard, disconnect it from the previous object pool and connect to the new pool
   def swap_pool_repository!
-    return unless replicate_object_pool_on_move_ff_enabled?
     return unless repository_exists?
 
     old_pool_repository = pool_repository
@@ -2775,7 +2774,7 @@ class Project < ApplicationRecord
 
   def link_pool_repository
     return unless pool_repository
-    return if (pool_repository.shard_name != repository.shard) && replicate_object_pool_on_move_ff_enabled?
+    return if pool_repository.shard_name != repository.shard
 
     pool_repository.link_repository(repository)
   end
@@ -3461,10 +3460,6 @@ class Project < ApplicationRecord
 
   def runners_token_prefix
     RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
-  end
-
-  def replicate_object_pool_on_move_ff_enabled?
-    Feature.enabled?(:replicate_object_pool_on_move, self)
   end
 
   def pool_repository_shard_matches_repository?(pool)

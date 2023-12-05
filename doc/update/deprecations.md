@@ -766,6 +766,23 @@ The table below lists the deprecated metrics and their respective replacements. 
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### List repository directories Rake task
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.7</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/384361).
+</div>
+
+The `gitlab-rake gitlab:list_repos` Rake task does not work and will be removed in GitLab 17.0.
+If you're migrating GitLab, use
+[backup and restore](https://docs.gitlab.com/ee/administration/operations/moving_repositories.html#recommended-approach-in-all-cases)
+instead.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Maintainer role providing the ability to change Package settings using GraphQL API
 
 <div class="deprecation-notes">

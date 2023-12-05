@@ -11,7 +11,8 @@ import CatalogSearch from '~/ci/catalog/components/list/catalog_search.vue';
 import CiResourcesList from '~/ci/catalog/components/list/ci_resources_list.vue';
 import CatalogListSkeletonLoader from '~/ci/catalog/components/list/catalog_list_skeleton_loader.vue';
 import EmptyState from '~/ci/catalog/components/list/empty_state.vue';
-import { cacheConfig } from '~/ci/catalog/graphql/settings';
+import { cacheConfig, resolvers } from '~/ci/catalog/graphql/settings';
+import typeDefs from '~/ci/catalog/graphql/typedefs.graphql';
 import ciResourcesPage from '~/ci/catalog/components/pages/ci_resources_page.vue';
 
 import getCatalogResources from '~/ci/catalog/graphql/queries/get_ci_catalog_resources.query.graphql';
@@ -29,7 +30,7 @@ describe('CiResourcesPage', () => {
 
   const createComponent = () => {
     const handlers = [[getCatalogResources, catalogResourcesResponse]];
-    const mockApollo = createMockApollo(handlers, {}, cacheConfig);
+    const mockApollo = createMockApollo(handlers, resolvers, { cacheConfig, typeDefs });
 
     wrapper = shallowMountExtended(ciResourcesPage, {
       apolloProvider: mockApollo,
@@ -217,7 +218,7 @@ describe('CiResourcesPage', () => {
   });
 
   describe('pages count', () => {
-    describe('when the fetchMore call suceeds', () => {
+    describe('when the fetchMore call succeeds', () => {
       beforeEach(async () => {
         catalogResourcesResponse.mockResolvedValue(catalogResponseBody);
 

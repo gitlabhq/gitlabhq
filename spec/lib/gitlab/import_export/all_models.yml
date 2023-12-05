@@ -76,6 +76,8 @@ work_item_type:
 - work_items
 - widget_definitions
 - enabled_widget_definitions
+- child_restrictions
+- allowed_child_types_by_name
 events:
 - author
 - project

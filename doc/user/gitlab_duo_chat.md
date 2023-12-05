@@ -2,7 +2,6 @@
 stage: AI-powered
 group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: index, reference
 ---
 
 # Answer questions with GitLab Duo Chat **(ULTIMATE SAAS BETA)**

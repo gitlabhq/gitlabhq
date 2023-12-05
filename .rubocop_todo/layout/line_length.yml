@@ -230,7 +230,6 @@ Layout/LineLength:
     - 'app/helpers/merge_requests_helper.rb'
     - 'app/helpers/mirror_helper.rb'
     - 'app/helpers/nav/new_dropdown_helper.rb'
-    - 'app/helpers/nav/top_nav_helper.rb'
     - 'app/helpers/nav_helper.rb'
     - 'app/helpers/notify_helper.rb'
     - 'app/helpers/operations_helper.rb'

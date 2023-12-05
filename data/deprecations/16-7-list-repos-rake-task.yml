@@ -1,0 +1,12 @@
+- title: "List repository directories Rake task"
+  removal_milestone: "17.0"
+  announcement_milestone: "16.7"
+  breaking_change: true
+  reporter: mkozono
+  stage: enablement
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/384361
+  body: |
+    The `gitlab-rake gitlab:list_repos` Rake task does not work and will be removed in GitLab 17.0.
+    If you're migrating GitLab, use
+    [backup and restore](https://docs.gitlab.com/ee/administration/operations/moving_repositories.html#recommended-approach-in-all-cases)
+    instead.

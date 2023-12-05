@@ -215,29 +215,6 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
             expect(object_pool_double).to have_received(:link).with(project.repository.raw)
           end
 
-          context 'when feature flag replicate_object_pool_on_move is disabled' do
-            before do
-              stub_feature_flags(replicate_object_pool_on_move: false)
-            end
-
-            it 'just moves the repository without the object pool' do
-              result = subject.execute
-              expect(result).to be_success
-
-              project.reload.cleanup
-
-              new_pool_repository = project.pool_repository
-
-              expect(new_pool_repository).to eq(pool_repository)
-              expect(new_pool_repository.shard).to eq(shard_default)
-              expect(new_pool_repository.state).to eq('ready')
-              expect(new_pool_repository.source_project).to eq(project)
-
-              expect(object_pool_repository_double).not_to have_received(:replicate)
-              expect(object_pool_double).not_to have_received(:link)
-            end
-          end
-
           context 'when new shard has a repository pool' do
             let!(:new_pool_repository) { create(:pool_repository, :ready, shard: shard_to, source_project: project) }
 

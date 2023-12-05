@@ -1,5 +1,4 @@
 ---
-type: reference
 description: "Automatic Let's Encrypt SSL certificates for GitLab Pages."
 stage: Plan
 group: Knowledge

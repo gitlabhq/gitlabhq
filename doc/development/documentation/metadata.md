@@ -43,11 +43,6 @@ The following metadata is optional and is not actively maintained.
 - `searchbar`: Set to `false` to not include the search bar in the page header.
 - `toc`: Set to `false` to not include the "On this page" navigation.
 
-## Deprecated metadata
-
-The `type` metadata parameter is deprecated but still exists in documentation
-pages. You can remove the `type` metadata parameter and its values.
-
 ## Batch updates for TW metadata
 
 The [`CODEOWNERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/CODEOWNERS)

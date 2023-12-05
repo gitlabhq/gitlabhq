@@ -51,8 +51,8 @@ describe('Job Log', () => {
   });
 
   const findLineNumbers = () => wrapper.findAllComponents(LineNumber).wrappers.map((w) => w.text());
-  const findCollapsibleLine = () => wrapper.findComponent(LogLineHeader);
-  const findAllCollapsibleLines = () => wrapper.findAllComponents(LogLineHeader);
+  const findLineHeader = () => wrapper.findComponent(LogLineHeader);
+  const findAllLineHeaders = () => wrapper.findAllComponents(LogLineHeader);
 
   describe('line numbers', () => {
     beforeEach(() => {
@@ -74,18 +74,16 @@ describe('Job Log', () => {
     });
 
     it('renders a clickable header section', () => {
-      expect(findCollapsibleLine().attributes('role')).toBe('button');
+      expect(findLineHeader().attributes('role')).toBe('button');
     });
 
     it('renders an icon with the open state', () => {
-      expect(findCollapsibleLine().find('[data-testid="chevron-lg-down-icon"]').exists()).toBe(
-        true,
-      );
+      expect(findLineHeader().find('[data-testid="chevron-lg-down-icon"]').exists()).toBe(true);
     });
 
     describe('on click header section', () => {
       it('calls toggleCollapsibleLine', () => {
-        findCollapsibleLine().trigger('click');
+        findLineHeader().trigger('click');
 
         expect(toggleCollapsibleLineMock).toHaveBeenCalled();
       });
@@ -93,16 +91,16 @@ describe('Job Log', () => {
 
     describe('duration', () => {
       it('shows duration', () => {
-        expect(findCollapsibleLine().props('duration')).toBe('00:00');
-        expect(findCollapsibleLine().props('hideDuration')).toBe(false);
+        expect(findLineHeader().props('duration')).toBe('00:00');
+        expect(findLineHeader().props('hideDuration')).toBe(false);
       });
 
       it('hides duration', () => {
         state.jobLogSections['resolve-secrets'].hideDuration = true;
         createComponent();
 
-        expect(findCollapsibleLine().props('duration')).toBe('00:00');
-        expect(findCollapsibleLine().props('hideDuration')).toBe(true);
+        expect(findLineHeader().props('duration')).toBe('00:00');
+        expect(findLineHeader().props('hideDuration')).toBe(true);
       });
     });
 
@@ -187,8 +185,8 @@ describe('Job Log', () => {
 
         createComponent({ searchResults: mockSearchResults });
 
-        expect(findAllCollapsibleLines().at(0).props('isHighlighted')).toBe(true);
-        expect(findAllCollapsibleLines().at(1).props('isHighlighted')).toBe(false);
+        expect(findAllLineHeaders().at(0).props('isHighlighted')).toBe(true);
+        expect(findAllLineHeaders().at(1).props('isHighlighted')).toBe(false);
       });
     });
   });

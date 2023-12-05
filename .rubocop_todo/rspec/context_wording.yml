@@ -1418,7 +1418,6 @@ RSpec/ContextWording:
     - 'spec/helpers/listbox_helper_spec.rb'
     - 'spec/helpers/markup_helper_spec.rb'
     - 'spec/helpers/members_helper_spec.rb'
-    - 'spec/helpers/nav/top_nav_helper_spec.rb'
     - 'spec/helpers/nav_helper_spec.rb'
     - 'spec/helpers/notes_helper_spec.rb'
     - 'spec/helpers/operations_helper_spec.rb'

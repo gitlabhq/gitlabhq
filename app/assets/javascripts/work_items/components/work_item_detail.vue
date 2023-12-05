@@ -178,9 +178,6 @@ export default {
     canAssignUnassignUser() {
       return this.workItemAssignees && this.canSetWorkItemMetadata;
     },
-    projectFullPath() {
-      return this.workItem.namespace?.fullPath;
-    },
     workItemsMvc2Enabled() {
       return this.glFeatures.workItemsMvc2;
     },
@@ -450,7 +447,7 @@ export default {
               v-if="showWorkItemCurrentUserTodos"
               :work-item-id="workItem.id"
               :work-item-iid="workItemIid"
-              :work-item-fullpath="projectFullPath"
+              :work-item-fullpath="fullPath"
               :current-user-todos="currentUserTodos"
               @error="updateError = $event"
             />
@@ -546,7 +543,7 @@ export default {
             <work-item-award-emoji
               v-if="workItemAwardEmoji"
               :work-item-id="workItem.id"
-              :work-item-fullpath="projectFullPath"
+              :work-item-fullpath="fullPath"
               :award-emoji="workItemAwardEmoji.awardEmoji"
               :work-item-iid="workItemIid"
               @error="updateError = $event"
@@ -569,7 +566,7 @@ export default {
               v-if="showWorkItemLinkedItems"
               :work-item-id="workItem.id"
               :work-item-iid="workItemIid"
-              :work-item-full-path="projectFullPath"
+              :work-item-full-path="fullPath"
               :work-item-type="workItem.workItemType.name"
               @showModal="openInModal"
             />

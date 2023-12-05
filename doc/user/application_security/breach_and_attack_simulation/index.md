@@ -2,7 +2,6 @@
 stage: Secure
 group: Incubation
 info: Breach and Attack Simulation is a GitLab Incubation Engineering program. No technical writer assigned to this group.
-type: reference, howto
 ---
 
 # Breach and Attack Simulation **(ULTIMATE ALL)**

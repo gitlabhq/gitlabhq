@@ -3,7 +3,6 @@ stage: Plan
 group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Test cases in GitLab can help your teams create testing scenarios in their existing development platform.
-type: reference
 ---
 
 # Test cases **(ULTIMATE ALL)**

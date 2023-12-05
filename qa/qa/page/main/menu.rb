@@ -43,13 +43,6 @@ module QA
           element :menu_item_link
         end
 
-        view 'app/helpers/nav/top_nav_helper.rb' do
-          element :admin_area_link
-          element :projects_dropdown
-          element :groups_dropdown
-          element :menu_item_link
-        end
-
         view 'app/views/layouts/header/_new_dropdown.html.haml' do
           element 'new-menu-toggle'
         end

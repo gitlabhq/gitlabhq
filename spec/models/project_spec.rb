@@ -3081,23 +3081,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
           expect(project.repository).not_to eq(previous_repository)
         end
-
-        context 'when "replicate_object_pool_on_move" FF is disabled' do
-          before do
-            stub_feature_flags(replicate_object_pool_on_move: false)
-          end
-
-          it 'does not update  a memoized repository value' do
-            previous_repository = project.repository
-
-            allow(project).to receive(:disk_path).and_return('fancy/new/path')
-            allow(project).to receive(:repository_storage).and_return('foo')
-
-            project.track_project_repository
-
-            expect(project.repository).to eq(previous_repository)
-          end
-        end
       end
     end
 
@@ -6950,14 +6933,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect { swap_pool_repository! }.to change { project.reload.pool_repository }.from(pool1).to(pool2)
     end
 
-    context 'when feature flag replicate_object_pool_on_move is disabled' do
-      before do
-        stub_feature_flags(replicate_object_pool_on_move: false)
-      end
-
-      it_behaves_like 'no pool repository swap'
-    end
-
     context 'when repository does not exist' do
       let(:project) { build(:project) }
 
@@ -7051,18 +7026,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         expect(pool).not_to receive(:link_repository)
 
         subject
-      end
-
-      context 'when feature flag replicate_object_pool_on_move is disabled' do
-        before do
-          stub_feature_flags(replicate_object_pool_on_move: false)
-        end
-
-        it 'links pool repository to project repository' do
-          expect(pool).to receive(:link_repository).with(project.repository)
-
-          subject
-        end
       end
     end
   end

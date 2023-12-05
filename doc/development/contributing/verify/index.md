@@ -1,5 +1,4 @@
 ---
-type: reference, dev
 stage: Verify
 group: Pipeline Execution
 ---

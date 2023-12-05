@@ -4,7 +4,6 @@ Metrics/CyclomaticComplexity:
     - 'app/controllers/admin/application_settings_controller.rb'
     - 'app/finders/deployments_finder.rb'
     - 'app/helpers/button_helper.rb'
-    - 'app/helpers/nav/top_nav_helper.rb'
     - 'app/models/concerns/issuable.rb'
     - 'app/services/projects/create_service.rb'
     - 'ee/app/controllers/ee/groups_controller.rb'

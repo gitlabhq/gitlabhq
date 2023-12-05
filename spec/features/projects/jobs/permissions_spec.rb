@@ -89,7 +89,10 @@ RSpec.describe 'Project Jobs Permissions', feature_category: :groups_and_project
         it_behaves_like 'recent job page details responds with status', 200 do
           it 'renders job details', :js do
             expect(page).to have_content(job.name)
-            expect(page).to have_css '.log-line'
+
+            within_testid('job-log-content') do
+              expect(page).to have_content('Job succeeded')
+            end
           end
         end
 

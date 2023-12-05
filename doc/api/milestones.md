@@ -30,11 +30,12 @@ Parameters:
 | Attribute                         | Type   | Required | Description |
 | ----------------------------      | ------ | -------- | ----------- |
 | `id`                              | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `iids[]`                          | integer array | no | Return only the milestones having the given `iid` (Note: ignored if `include_parent_milestones` is set as `true`) |
+| `iids[]`                          | integer array | no | Return only the milestones having the given `iid`. Ignored if `include_ancestors` is `true`.  |
 | `state`                           | string | no | Return only `active` or `closed` milestones |
 | `title`                           | string | no | Return only the milestones having the given `title` |
 | `search`                          | string | no | Return only milestones with a title or description matching the provided string |
-| `include_parent_milestones`       | boolean | no | Include group milestones from parent group and its ancestors. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196066) in GitLab 13.4 |
+| `include_parent_milestones`       | boolean | no | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/433298) in GitLab 16.7. Use `include_ancestors` instead. |
+| `include_ancestors`               | boolean | no | Include milestones from all parent groups. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196066) in GitLab 13.4. |
 | `updated_before`                  | datetime | no | Return only milestones updated before the given datetime. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Introduced in GitLab 15.10 |
 | `updated_after`                   | datetime | no | Return only milestones updated after the given datetime. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Introduced in GitLab 15.10 |
 

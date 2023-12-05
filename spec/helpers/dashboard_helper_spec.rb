@@ -10,20 +10,6 @@ RSpec.describe DashboardHelper do
     allow(helper).to receive(:can?) { true }
   end
 
-  describe '#dashboard_nav_links' do
-    it 'has all the expected links by default' do
-      menu_items = [:projects, :groups, :activity, :milestones, :snippets]
-
-      expect(helper.dashboard_nav_links).to include(*menu_items)
-    end
-
-    it 'does not contain cross project elements when the user cannot read cross project' do
-      expect(helper).to receive(:can?).with(user, :read_cross_project) { false }
-
-      expect(helper.dashboard_nav_links).not_to include(:activity, :milestones)
-    end
-  end
-
   describe '#feature_entry' do
     shared_examples "a feature is enabled" do
       it { is_expected.to include('<p aria-label="Demo: status on">') }

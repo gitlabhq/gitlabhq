@@ -24,4 +24,23 @@ RSpec.describe Projects::TagsController, feature_category: :source_code_manageme
       end
     end
   end
+
+  describe '#show' do
+    let_it_be(:project) { create(:project, :repository, :public) }
+    let_it_be(:user) { create(:user) }
+
+    before do
+      sign_in(user)
+    end
+
+    context 'with x509 signature' do
+      let(:tag_name) { 'v1.1.1' }
+
+      it 'displays a signature badge' do
+        get project_tags_path(project, id: tag_name)
+
+        expect(response.body).to include('Unverified')
+      end
+    end
+  end
 end

@@ -18,10 +18,11 @@ module API
           optional :iids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The IIDs of the milestones'
           optional :title, type: String, desc: 'The title of the milestones'
           optional :search, type: String, desc: 'The search criteria for the title or description of the milestone'
-          optional :include_parent_milestones, type: Grape::API::Boolean, default: false,
-                                               desc: 'Include group milestones from parent and its ancestors'
+          optional :include_parent_milestones, type: Grape::API::Boolean, desc: 'Deprecated: see `include_ancestors`'
+          optional :include_ancestors, type: Grape::API::Boolean, desc: 'Include milestones from all parent groups'
           optional :updated_before, type: DateTime, desc: 'Return milestones updated before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
           optional :updated_after, type: DateTime, desc: 'Return milestones updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+          mutually_exclusive :include_ancestors, :include_parent_milestones
           use :pagination
         end
 
@@ -35,6 +36,13 @@ module API
         end
 
         def list_milestones_for(parent)
+          if params.include?(:include_parent_milestones)
+            params[:include_ancestors] = params.delete(:include_parent_milestones)
+          else
+            # include_ancestors should default to false
+            params[:include_ancestors] ||= false
+          end
+
           milestones = MilestonesFinder.new(
             params.merge(parent_finder_params(parent))
           ).execute
@@ -82,7 +90,7 @@ module API
         end
 
         def parent_finder_params(parent)
-          include_parent = params[:include_parent_milestones].present?
+          include_parent = params[:include_ancestors].present?
 
           if parent.is_a?(Project)
             { project_ids: parent.id, group_ids: (include_parent ? project_group_ids(parent) : nil) }

@@ -10,14 +10,6 @@ RSpec.describe ExploreHelper do
     allow(helper).to receive(:can?) { true }
   end
 
-  describe '#explore_nav_links' do
-    it 'has all the expected links by default' do
-      menu_items = [:projects, :groups, :topics, :snippets]
-
-      expect(helper.explore_nav_links).to contain_exactly(*menu_items)
-    end
-  end
-
   describe '#public_visibility_restricted?' do
     it 'delegates to Gitlab::VisibilityLevel' do
       expect(Gitlab::VisibilityLevel).to receive(:public_visibility_restricted?).and_call_original

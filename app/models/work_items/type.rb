@@ -9,6 +9,11 @@ module WorkItems
     self.table_name = 'work_item_types'
 
     include CacheMarkdownField
+    include ReactiveCaching
+
+    self.reactive_cache_work_type = :no_dependency
+    self.reactive_cache_refresh_interval = 10.minutes
+    self.reactive_cache_lifetime = 1.hour
 
     # type name is used in restrictions DB seeder to assure restrictions for
     # default types are pre-filled
@@ -53,8 +58,14 @@ module WorkItems
     has_many :widget_definitions, foreign_key: :work_item_type_id, inverse_of: :work_item_type
     has_many :enabled_widget_definitions, -> { where(disabled: false) }, foreign_key: :work_item_type_id,
       inverse_of: :work_item_type, class_name: 'WorkItems::WidgetDefinition'
+    has_many :child_restrictions, class_name: 'WorkItems::HierarchyRestriction', foreign_key: :parent_type_id,
+      inverse_of: :parent_type
+    has_many :allowed_child_types_by_name, -> { order_by_name_asc },
+      through: :child_restrictions, class_name: 'WorkItems::Type',
+      foreign_key: :child_type_id, source: :child_type
 
     before_validation :strip_whitespace
+    after_save :clear_reactive_cache!
 
     # TODO: review validation rules
     # https://gitlab.com/gitlab-org/gitlab/-/issues/336919
@@ -99,6 +110,16 @@ module WorkItems
 
     def default_issue?
       name == WorkItems::Type::TYPE_NAMES[:issue]
+    end
+
+    def calculate_reactive_cache
+      allowed_child_types_by_name
+    end
+
+    def allowed_child_types(cache: false)
+      cached_data = cache ? with_reactive_cache { |query_data| query_data } : nil
+
+      cached_data || allowed_child_types_by_name
     end
 
     private

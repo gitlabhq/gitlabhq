@@ -20,6 +20,12 @@ RSpec.describe Types::WorkItems::WidgetDefinitionInterface, feature_category: :t
       it { is_expected.to eq(Types::WorkItems::WidgetDefinitions::AssigneesType) }
     end
 
+    context 'for hierarchy widget' do
+      let(:object) { WorkItems::Widgets::Hierarchy }
+
+      it { is_expected.to eq(Types::WorkItems::WidgetDefinitions::HierarchyType) }
+    end
+
     context 'for other widgets' do
       let(:object) { WorkItems::Widgets::Description }
 

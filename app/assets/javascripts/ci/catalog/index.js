@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { cacheConfig, resolvers } from '~/ci/catalog/graphql/settings';
+import typeDefs from '~/ci/catalog/graphql/typedefs.graphql';
 
 import GlobalCatalog from './global_catalog.vue';
 import CiResourcesPage from './components/pages/ci_resources_page.vue';
@@ -19,7 +20,7 @@ export const initCatalog = (selector = '#js-ci-cd-catalog') => {
   Vue.use(VueApollo);
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(resolvers, cacheConfig),
+    defaultClient: createDefaultClient(resolvers, { cacheConfig, typeDefs }),
   });
 
   return new Vue({

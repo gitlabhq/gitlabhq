@@ -182,9 +182,9 @@ RSpec.describe MilestonesFinder do
         expect(result).to contain_exactly(milestone_2, milestone_3, milestone_4)
       end
 
-      context 'when include_parent_milestones is true' do
+      context 'when include_ancestors is true' do
         it 'ignores the iid filter' do
-          params[:include_parent_milestones] = true
+          params[:include_ancestors] = true
 
           expect(result).to contain_exactly(milestone_1, milestone_2, milestone_3, milestone_4)
         end

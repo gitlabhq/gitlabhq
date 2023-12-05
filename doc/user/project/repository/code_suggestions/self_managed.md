@@ -2,7 +2,6 @@
 stage: Create
 group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: index, reference
 ---
 
 # Code Suggestions on self-managed GitLab **(SELF BETA)**

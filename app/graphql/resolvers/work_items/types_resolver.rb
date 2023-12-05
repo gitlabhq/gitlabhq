@@ -30,6 +30,12 @@ module Resolvers
           widget_definitions: :enabled_widget_definitions
         }
       end
+
+      def nested_preloads
+        {
+          widget_definitions: { allowed_child_types: :allowed_child_types_by_name }
+        }
+      end
     end
   end
 end
