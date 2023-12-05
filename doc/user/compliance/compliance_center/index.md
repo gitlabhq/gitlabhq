@@ -188,8 +188,8 @@ To export a report of merge request compliance violations for projects in a grou
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
-1. On the page, select the **Violations** tab.
-1. On the Violations tab, select the **Export full report as CSV** action in the top right corner
+1. Select the **Export** action in the top right corner
+1. Select **Export violations report**
 
 A report is compiled and delivered to your email inbox as an attachment.
 
@@ -235,7 +235,8 @@ To generate the Chain of Custody report:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
-1. Select **List of all merge commits**.
+1. Select the **Export** action in the top right corner
+1. Select **Export chain of custody report**
 
 Depending on your version of GitLab, the Chain of Custody report is either sent through email or available for download.
 
@@ -251,9 +252,9 @@ To generate a commit-specific Chain of Custody report:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
-1. At the top of the compliance report, to the right of **List of all commits**, select the down arrow
-   (**{chevron-lg-down}**).
-1. Enter the commit SHA, and then select **Export commit custody report**.
+1. Select the **Export** action in the top right corner
+1. Select **Export custody report of a specific commit**
+1. Enter the commit SHA, and then select **Export custody report**.
 
 Depending on your version of GitLab, the Chain of Custody report is either sent through email or available for download.
 
@@ -358,8 +359,8 @@ To export a report of compliance frameworks on projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
-1. On the page, select the **Projects** tab.
-1. On the Frameworks tab, select the **Export as CSV** action in the top right corner
+1. Select the **Export** action in the top right corner
+1. Select **Export list of project frameworks**
 
 A report is compiled and delivered to your email inbox as an attachment.
 

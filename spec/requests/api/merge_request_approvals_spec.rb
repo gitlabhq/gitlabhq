@@ -8,8 +8,6 @@ RSpec.describe API::MergeRequestApprovals, feature_category: :source_code_manage
   let_it_be(:bot) { create(:user, :project_bot) }
   let_it_be(:project) { create(:project, :public, :repository, creator: user, namespace: user.namespace) }
   let_it_be(:approver) { create :user }
-  let_it_be(:group) { create :group }
-
   let(:merge_request) { create(:merge_request, :simple, author: user, source_project: project) }
 
   describe 'GET :id/merge_requests/:merge_request_iid/approvals' do

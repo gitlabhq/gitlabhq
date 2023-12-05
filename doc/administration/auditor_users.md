@@ -35,7 +35,7 @@ To create a new user account with auditor access (or change an existing user):
 To create a user account with auditor access:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Overview > Users**.
+1. Select **Overview > Users**.
 1. Create a new user or edit an existing one. Set **Access Level** to **Auditor**.
 1. If you created a user, select **Create user**. For an existing user, select **Save changes**.
 

@@ -189,7 +189,7 @@ You might experience a `fatal: the remote end hung up unexpectedly` error when a
 - The same large repository in parallel.
 
 You can attempt to mitigate this issue by increasing the default negotiation timeout values. For more information, see
-[Configure negotiation timeouts](../../../../administration/gitaly/configure_gitaly.md#configure-negotiation-timeouts).
+[Configure the negotiation timeouts](../../../../administration/settings/gitaly_timeouts.md#configure-the-negotiation-timeouts).
 
 ## Optimize your repository
 
