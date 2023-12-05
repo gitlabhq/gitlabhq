@@ -982,7 +982,7 @@ Parameters for multiline comments only:
 
 A line code is of the form `<SHA>_<old>_<new>`, like this: `adc83b19e793491b1c6ea0fd8b46cd9f32e292fc_5_5`
 
-- `<SHA>` is the SHA1 hash of the filename.
+- `<SHA>` is the SHA1 hash of the file name.
 - `<old>` is the line number before the change.
 - `<new>` is the line number after the change.
 

@@ -93,7 +93,7 @@ Provide feedback on this experimental feature in [issue 408994](https://gitlab.c
 **Data usage**: When you use this feature, the following data is sent to the large language model referenced above:
 
 - Contents of the file
-- The filename
+- The file name
 
 ## Generate suggested tests in merge requests
 
@@ -118,4 +118,4 @@ Feedback on this experimental feature can be provided in [issue 408995](https://
 **Data usage**: When you use this feature, the following data is sent to the large language model referenced above:
 
 - Contents of the file
-- The filename
+- The file name

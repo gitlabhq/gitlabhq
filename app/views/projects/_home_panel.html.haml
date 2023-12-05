@@ -5,24 +5,18 @@
 %header.project-home-panel.js-show-on-project-root.gl-mt-5{ class: [("empty-project" if empty_repo)] }
   .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-flex-direction-column.gl-md-flex-direction-row.gl-gap-5
     .home-panel-title-row.gl-display-flex.gl-align-items-center
-      = render Pajamas::AvatarComponent.new(@project, alt: @project.name, class: 'gl-flex-shrink-0 gl-mr-3', size: 64, avatar_options: { itemprop: 'image' })
-      %div
-        %h1.home-panel-title.gl-font-size-h1.gl-mt-3.gl-mb-2.gl-display-flex.gl-word-break-word{ data: { testid: 'project-name-content' }, itemprop: 'name' }
+      = render Pajamas::AvatarComponent.new(@project, alt: @project.name, class: 'gl-flex-shrink-0 gl-mr-3', size: 48, avatar_options: { itemprop: 'image' })
+      .gl-ml-2
+        %h1.home-panel-title.gl-font-size-h-display.gl-mt-3.gl-mb-2.gl-display-flex.gl-align-items-center.gl-flex-wrap.gl-gap-3.gl-word-break-word{ data: { testid: 'project-name-content' }, itemprop: 'name' }
           = @project.name
-          = visibility_level_content(@project, css_class: 'visibility-icon gl-text-secondary gl-mx-2', icon_css_class: 'icon')
-          = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: @project, additional_classes: 'gl-align-self-center gl-mx-2'
+          = visibility_level_content(@project, css_class: 'visibility-icon gl-text-secondary', icon_css_class: 'icon')
+          = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: @project, additional_classes: 'gl-align-self-center'
           - if @project.catalog_resource
-            = render partial: 'shared/ci_catalog_badge', locals: { href: explore_catalog_path(@project.catalog_resource), css_class: 'gl-mx-2' }
+            = render partial: 'shared/ci_catalog_badge', locals: { href: explore_catalog_path(@project.catalog_resource), css_class: 'gl-mx-0' }
           - if @project.group
             = render_if_exists 'shared/tier_badge', source: @project, namespace_to_track: @project.namespace
-        .home-panel-metadata.gl-font-sm.gl-text-secondary.gl-font-base.gl-font-weight-normal.gl-line-height-normal{ data: { testid: 'project-id-content' }, itemprop: 'identifier' }
-          - if can?(current_user, :read_project, @project)
-            %span.gl-display-inline-block.gl-vertical-align-middle
-              = s_('ProjectPage|Project ID: %{project_id}') % { project_id: @project.id }
-              = clipboard_button(title: s_('ProjectPage|Copy project ID'), text: @project.id)
-          - if current_user
-            %span.gl-ml-3.gl-mb-3
-              = render 'shared/members/access_request_links', source: @project
+        .gl-text-secondary
+          = render_if_exists "projects/home_mirror"
 
     .project-repo-buttons.gl-display-flex.gl-justify-content-md-end.gl-align-items-center.gl-flex-wrap.gl-gap-3
       - if current_user
@@ -33,6 +27,7 @@
 
       = render 'projects/buttons/star'
       = render 'projects/buttons/fork'
+      = render 'shared/groups_projects_more_actions_dropdown', source: @project
 
   - if ff_reorg_disabled
     - if can?(current_user, :read_code, @project)

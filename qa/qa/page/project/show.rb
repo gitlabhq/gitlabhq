@@ -32,7 +32,6 @@ module QA
 
         view 'app/views/projects/_home_panel.html.haml' do
           element 'project-name-content'
-          element 'project-id-content'
         end
 
         view 'app/views/projects/_sidebar.html.haml' do

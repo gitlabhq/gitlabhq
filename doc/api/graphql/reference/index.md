@@ -9115,6 +9115,29 @@ The edge type for [`CiCatalogResourceVersion`](#cicatalogresourceversion).
 | <a id="cicatalogresourceversionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cicatalogresourceversionedgenode"></a>`node` | [`CiCatalogResourceVersion`](#cicatalogresourceversion) | The item at the end of the edge. |
 
+#### `CiCatalogResourcesComponentConnection`
+
+The connection type for [`CiCatalogResourcesComponent`](#cicatalogresourcescomponent).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourcescomponentconnectionedges"></a>`edges` | [`[CiCatalogResourcesComponentEdge]`](#cicatalogresourcescomponentedge) | A list of edges. |
+| <a id="cicatalogresourcescomponentconnectionnodes"></a>`nodes` | [`[CiCatalogResourcesComponent]`](#cicatalogresourcescomponent) | A list of nodes. |
+| <a id="cicatalogresourcescomponentconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiCatalogResourcesComponentEdge`
+
+The edge type for [`CiCatalogResourcesComponent`](#cicatalogresourcescomponent).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourcescomponentedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cicatalogresourcescomponentedgenode"></a>`node` | [`CiCatalogResourcesComponent`](#cicatalogresourcescomponent) | The item at the end of the edge. |
+
 #### `CiConfigGroupConnection`
 
 The connection type for [`CiConfigGroup`](#ciconfiggroup).
@@ -15309,11 +15332,33 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="cicatalogresourceversionauthor"></a>`author` **{warning-solid}** | [`UserCore`](#usercore) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. User that created the version. |
 | <a id="cicatalogresourceversioncommit"></a>`commit` **{warning-solid}** | [`Commit`](#commit) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Commit associated with the version. |
+| <a id="cicatalogresourceversioncomponents"></a>`components` **{warning-solid}** | [`CiCatalogResourcesComponentConnection`](#cicatalogresourcescomponentconnection) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Components belonging to the catalog resource. |
 | <a id="cicatalogresourceversioncreatedat"></a>`createdAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Timestamp of when the version was created. |
 | <a id="cicatalogresourceversionid"></a>`id` **{warning-solid}** | [`CiCatalogResourcesVersionID!`](#cicatalogresourcesversionid) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Global ID of the version. |
 | <a id="cicatalogresourceversionreleasedat"></a>`releasedAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Timestamp of when the version was released. |
 | <a id="cicatalogresourceversiontagname"></a>`tagName` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Name of the tag associated with the version. |
 | <a id="cicatalogresourceversiontagpath"></a>`tagPath` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Relative web path to the tag associated with the version. |
+
+### `CiCatalogResourcesComponent`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourcescomponentid"></a>`id` **{warning-solid}** | [`CiCatalogResourcesComponentID!`](#cicatalogresourcescomponentid) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. ID of the component. |
+| <a id="cicatalogresourcescomponentinputs"></a>`inputs` **{warning-solid}** | [`[CiCatalogResourcesComponentsInput!]`](#cicatalogresourcescomponentsinput) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Inputs for the component. |
+| <a id="cicatalogresourcescomponentname"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Name of the component. |
+| <a id="cicatalogresourcescomponentpath"></a>`path` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Path used to include the component. |
+
+### `CiCatalogResourcesComponentsInput`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourcescomponentsinputdefault"></a>`default` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Default value for the input. |
+| <a id="cicatalogresourcescomponentsinputname"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Name of the input. |
+| <a id="cicatalogresourcescomponentsinputrequired"></a>`required` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Indicates if an input is required. |
 
 ### `CiConfig`
 
@@ -31752,6 +31797,12 @@ An example `CiBuildID` is: `"gid://gitlab/Ci::Build/1"`.
 A `CiCatalogResourceID` is a global ID. It is encoded as a string.
 
 An example `CiCatalogResourceID` is: `"gid://gitlab/Ci::Catalog::Resource/1"`.
+
+### `CiCatalogResourcesComponentID`
+
+A `CiCatalogResourcesComponentID` is a global ID. It is encoded as a string.
+
+An example `CiCatalogResourcesComponentID` is: `"gid://gitlab/Ci::Catalog::Resources::Component/1"`.
 
 ### `CiCatalogResourcesVersionID`
 

@@ -96,7 +96,7 @@ To back up the Git repositories:
    sudo gitlab-backup create SKIP=db
    ```
 
-   The resulting tar file will include only the Git repositories and some metadata. Blobs such as uploads, artifacts, and LFS do not need to be explicitly skipped, because the command does not back up object storage by default. The tar file will be created in the [`/var/opt/gitlab/backups` directory](https://docs.gitlab.com/omnibus/settings/backups.html#creating-an-application-backup) and [the filename will end in `_gitlab_backup.tar`](backup_gitlab.md#backup-timestamp).
+   The resulting tar file will include only the Git repositories and some metadata. Blobs such as uploads, artifacts, and LFS do not need to be explicitly skipped, because the command does not back up object storage by default. The tar file will be created in the [`/var/opt/gitlab/backups` directory](https://docs.gitlab.com/omnibus/settings/backups.html#creating-an-application-backup) and [the file name will end in `_gitlab_backup.tar`](backup_gitlab.md#backup-timestamp).
 
    Since we configured uploading backups to remote cloud storage, the tar file will be uploaded to the remote region and deleted from disk.
 

@@ -50,7 +50,7 @@ default value. The default value depends on the GitLab version.
 Network latency for Gitaly Cluster should ideally be measurable in single-digit milliseconds. Latency is particularly
 important for:
 
-- Gitaly node health checks. Nodes must be able to respond 1 second or faster.
+- Gitaly node health checks. Nodes must be able to respond within 1 second.
 - Reference transactions that enforce [strong consistency](index.md#strong-consistency). Lower latencies mean Gitaly
   nodes can agree on changes faster.
 

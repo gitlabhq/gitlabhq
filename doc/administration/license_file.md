@@ -44,7 +44,7 @@ If you have a license, you can also import it when you install GitLab.
 
 - For self-compiled installations:
   - Place the `Gitlab.gitlab-license` file in the `config/` directory.
-  - To specify a custom location and filename for the license, set the
+  - To specify a custom location and file name for the license, set the
     `GITLAB_LICENSE_FILE` environment variable with the path to the file:
 
     ```shell
@@ -53,7 +53,7 @@ If you have a license, you can also import it when you install GitLab.
 
 - For Linux package installations:
   - Place the `Gitlab.gitlab-license` file in the `/etc/gitlab/` directory.
-  - To specify a custom location and filename for the license, add this entry to `gitlab.rb`:
+  - To specify a custom location and file name for the license, add this entry to `gitlab.rb`:
 
     ```ruby
     gitlab_rails['initial_license_file'] = "/path/to/license/file"

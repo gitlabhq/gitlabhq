@@ -9,19 +9,6 @@ module Gitlab
     # extractor = Gitlab::QuickActions::Extractor.new([:open, :assign, :labels])
     # ```
     class Extractor
-      CODE_REGEX = %r{
-        (?<code>
-          # Code blocks:
-          # ```
-          # Anything, including `/cmd arg` which are ignored by this filter
-          # ```
-
-          ^```
-          .+?
-          \n```$
-        )
-      }mix
-
       INLINE_CODE_REGEX = %r{
         (?<inline_code>
           # Inline code on separate rows:
@@ -46,23 +33,7 @@ module Gitlab
         )
       }mix
 
-      QUOTE_BLOCK_REGEX = %r{
-        (?<html>
-          # Quote block:
-          # >>>
-          # Anything, including `/cmd arg` which are ignored by this filter
-          # >>>
-
-          ^>>>
-          .+?
-          \n>>>$
-        )
-      }mix
-
       EXCLUSION_REGEX = %r{#{INLINE_CODE_REGEX} | #{HTML_BLOCK_REGEX}}mix
-      EXCLUSION_REGEX_ORG = %r{
-        #{CODE_REGEX} | #{INLINE_CODE_REGEX} | #{HTML_BLOCK_REGEX} | #{QUOTE_BLOCK_REGEX}
-      }mix
 
       attr_reader :command_definitions, :keep_actions
 
@@ -93,16 +64,10 @@ module Gitlab
       # commands = extractor.extract_commands(msg) #=> [['labels', '~foo ~"bar baz"']]
       # msg #=> "hello\n/labels ~foo ~"bar baz"\n\nworld"
       # ```
-      # TODO: target is only needed for feature flag
-      def extract_commands(content, only: nil, target: nil)
+      def extract_commands(content, only: nil)
         return [content, []] unless content
 
-        actor = target&.project&.group if target.respond_to?(:project)
-        if Feature.enabled?(:quick_action_refactor, actor)
-          perform_regex(content, only: only)
-        else
-          perform_regex_org(content, only: only)
-        end
+        perform_regex(content, only: only)
       end
 
       # Encloses quick action commands into code span markdown
@@ -112,13 +77,7 @@ module Gitlab
       def redact_commands(content)
         return "" unless content
 
-        # TODO: we don't have an actor at this point, so just check the global
-        #       feature flag.
-        content, _ = if Feature.enabled?(:quick_action_refactor)
-                       perform_regex(content, redact: true)
-                     else
-                       perform_regex_org(content, redact: true)
-                     end
+        content, _ = perform_regex(content, redact: true)
 
         content
       end
@@ -171,27 +130,6 @@ module Gitlab
         [content.rstrip, commands.reject(&:empty?)]
       end
 
-      def perform_regex_org(content, only: nil, redact: false)
-        names     = command_names(limit_to_commands: only).map(&:to_s)
-        sub_names = substitution_names.map(&:to_s)
-        commands  = []
-        content   = content.dup
-        content.delete!("\r")
-
-        content.gsub!(commands_regex(names: names, sub_names: sub_names, use_org_regex: true)) do
-          command, output = if $~[:substitution]
-                              process_substitutions($~)
-                            else
-                              process_commands($~, redact)
-                            end
-
-          commands << command
-          output
-        end
-
-        [content.rstrip, commands.reject(&:empty?)]
-      end
-
       def process_commands(matched_text, redact)
         output = matched_text[0]
         command = []
@@ -235,10 +173,9 @@ module Gitlab
       # It looks something like:
       #
       #   /^\/(?<cmd>close|reopen|...)(?:( |$))(?<arg>[^\/\n]*)(?:\n|$)/
-      def commands_regex(names:, sub_names:, use_org_regex: false)
-        names += ['use_org_regex'] if use_org_regex
+      def commands_regex(names:, sub_names:)
         @commands_regex[names] ||= %r{
-            #{use_org_regex ? EXCLUSION_REGEX_ORG : EXCLUSION_REGEX}
+            #{EXCLUSION_REGEX}
           |
             (?:
               # Command such as:

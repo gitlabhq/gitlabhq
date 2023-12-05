@@ -15,7 +15,10 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
       description: 'A simple component',
       namespace: namespace,
       star_count: 1,
-      files: { 'README.md' => '[link](README.md)' }
+      files: {
+        'README.md' => '[link](README.md)',
+        'templates/secret-detection.yml' => "spec:\n inputs:\n  website:\n---\nimage: alpine_1"
+      }
     )
   end
 
@@ -33,10 +36,12 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
 
   subject(:post_query) { post_graphql(query, current_user: user) }
 
+  before_all do
+    namespace.add_developer(user)
+  end
+
   context 'when the current user has permission to read the namespace catalog' do
     it 'returns the resource with the expected data' do
-      namespace.add_developer(user)
-
       post_query
 
       expect(graphql_data_at(:ciCatalogResource)).to match(
@@ -63,15 +68,94 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
     end
   end
 
+  describe 'components' do
+    let(:query) do
+      <<~GQL
+        query {
+          ciCatalogResource(id: "#{resource.to_global_id}") {
+            id
+            versions {
+              nodes {
+                id
+                components {
+                  nodes {
+                    id
+                    name
+                    path
+                    inputs {
+                      name
+                      default
+                      required
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      GQL
+    end
+
+    context 'when the catalog resource has components' do
+      let_it_be(:inputs) do
+        {
+          website: nil,
+          environment: {
+            default: 'test'
+          },
+          tags: {
+            type: 'array'
+          }
+        }
+      end
+
+      let_it_be(:version) do
+        create(:release, :with_catalog_resource_version, project: project).catalog_resource_version
+      end
+
+      let_it_be(:components) do
+        create_list(:ci_catalog_resource_component, 2, version: version, inputs: inputs, path: 'templates/comp.yml')
+      end
+
+      it 'returns the resource with the component data' do
+        post_query
+
+        expect(graphql_data_at(:ciCatalogResource)).to match(a_graphql_entity_for(resource))
+
+        expect(graphql_data_at(:ciCatalogResource, :versions, :nodes, :components, :nodes)).to contain_exactly(
+          a_graphql_entity_for(
+            components.first,
+            name: components.first.name,
+            path: components.first.path,
+            inputs: [
+              a_graphql_entity_for(
+                name: 'tags',
+                default: nil,
+                required: true
+              ),
+              a_graphql_entity_for(
+                name: 'website',
+                default: nil,
+                required: true
+              ),
+              a_graphql_entity_for(
+                name: 'environment',
+                default: 'test',
+                required: false
+              )
+            ]
+          ),
+          a_graphql_entity_for(
+            components.last,
+            name: components.last.name,
+            path: components.last.path
+          )
+        )
+      end
+    end
+  end
+
   describe 'versions' do
-    before_all do
-      namespace.add_developer(user)
-    end
-
-    before do
-      stub_licensed_features(ci_namespace_catalog: true)
-    end
-
     let(:query) do
       <<~GQL
         query {
@@ -146,14 +230,6 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
   end
 
   describe 'latestVersion' do
-    before_all do
-      namespace.add_developer(user)
-    end
-
-    before do
-      stub_licensed_features(ci_namespace_catalog: true)
-    end
-
     let(:query) do
       <<~GQL
         query {
@@ -219,14 +295,6 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
   end
 
   describe 'rootNamespace' do
-    before_all do
-      namespace.add_developer(user)
-    end
-
-    before do
-      stub_licensed_features(ci_namespace_catalog: true)
-    end
-
     let(:query) do
       <<~GQL
         query {
@@ -255,10 +323,6 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
   end
 
   describe 'openIssuesCount' do
-    before do
-      stub_licensed_features(ci_namespace_catalog: true)
-    end
-
     context 'when open_issue_count is requested' do
       let(:query) do
         <<~GQL
@@ -274,8 +338,6 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
         create(:issue, :opened, project: project)
         create(:issue, :opened, project: project)
 
-        namespace.add_developer(user)
-
         post_query
 
         expect(graphql_data_at(:ciCatalogResource)).to match(
@@ -287,8 +349,6 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
 
       context 'when open_issue_count is zero' do
         it 'returns zero' do
-          namespace.add_developer(user)
-
           post_query
 
           expect(graphql_data_at(:ciCatalogResource)).to match(
@@ -302,10 +362,6 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
   end
 
   describe 'openMergeRequestsCount' do
-    before do
-      stub_licensed_features(ci_namespace_catalog: true)
-    end
-
     context 'when merge_requests_count is requested' do
       let(:query) do
         <<~GQL
@@ -320,8 +376,6 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
       it 'returns the correct count' do
         create(:merge_request, :opened, source_project: project)
 
-        namespace.add_developer(user)
-
         post_query
 
         expect(graphql_data_at(:ciCatalogResource)).to match(
@@ -333,8 +387,6 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
 
       context 'when open merge_requests_count is zero' do
         it 'returns zero' do
-          namespace.add_developer(user)
-
           post_query
 
           expect(graphql_data_at(:ciCatalogResource)).to match(

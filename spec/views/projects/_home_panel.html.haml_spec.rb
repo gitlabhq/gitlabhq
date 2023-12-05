@@ -148,38 +148,6 @@ RSpec.describe 'projects/_home_panel' do
     end
   end
 
-  context 'project id' do
-    let(:project) { create(:project) }
-    let(:user) { create(:user) }
-
-    before do
-      assign(:project, project)
-
-      allow(view).to receive(:current_user).and_return(user)
-      allow(project).to receive(:license_anchor_data).and_return(false)
-    end
-
-    context 'user can read project' do
-      it 'is shown' do
-        allow(view).to receive(:can?).with(user, :read_project, project).and_return(true)
-
-        render
-
-        expect(rendered).to have_content("Project ID: #{project.id}")
-      end
-    end
-
-    context 'user cannot read project' do
-      it 'is not shown' do
-        allow(view).to receive(:can?).with(user, :read_project, project).and_return(false)
-
-        render
-
-        expect(rendered).not_to have_content("Project ID: #{project.id}")
-      end
-    end
-  end
-
   context 'forks' do
     let(:source_project) { create(:project, :repository) }
     let(:project) { fork_project(source_project) }

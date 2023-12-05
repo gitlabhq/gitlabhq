@@ -228,12 +228,8 @@ RSpec.describe ProjectPresenter do
     let_it_be(:project) { create(:project, :empty_repo) }
 
     describe '#storage_anchor_data' do
-      it 'returns storage data' do
-        expect(presenter.storage_anchor_data).to have_attributes(
-          is_link: true,
-          label: a_string_including('0 B'),
-          link: nil
-        )
+      it 'does not return storage data' do
+        expect(presenter.storage_anchor_data).to be_nil
       end
     end
 
@@ -282,12 +278,8 @@ RSpec.describe ProjectPresenter do
     let(:presenter) { described_class.new(project, current_user: user) }
 
     describe '#storage_anchor_data' do
-      it 'returns storage data without usage quotas link for non-admin users' do
-        expect(presenter.storage_anchor_data).to have_attributes(
-          is_link: true,
-          label: a_string_including('0 B'),
-          link: nil
-        )
+      it 'does not return storage data for non-admin users' do
+        expect(presenter.storage_anchor_data).to be(nil)
       end
 
       it 'returns storage data with usage quotas link for admin users' do

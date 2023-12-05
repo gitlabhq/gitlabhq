@@ -17,11 +17,11 @@
         = markdown_field(group, :description)
 
   .stats.gl-text-gray-500.gl-flex-shrink-0
-    %span.gl-ml-5
-      = sprite_icon('bookmark', css_class: 'gl-vertical-align-text-bottom')
+    %span.gl-ml-5.has-tooltip{ title: _('Projects') }
+      = sprite_icon('project', css_class: 'gl-vertical-align-text-bottom')
       = number_with_delimiter(group.projects.non_archived.count)
 
-    %span.gl-ml-5
+    %span.gl-ml-5.has-tooltip{ title: _('Users') }
       = sprite_icon('users', css_class: 'gl-vertical-align-text-bottom')
       = number_with_delimiter(group.users.count)
 

@@ -576,7 +576,7 @@ To determine the primary node of a repository:
     Praefect node:
 
     ```shell
-    curl localhost:9652/metrics | grep gitaly_praefect_primaries`
+    curl localhost:9652/metrics | grep gitaly_praefect_primaries
     ```
 
 ### View repository metadata

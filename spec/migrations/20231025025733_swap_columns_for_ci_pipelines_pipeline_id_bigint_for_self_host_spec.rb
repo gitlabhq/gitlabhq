@@ -33,6 +33,20 @@ RSpec.describe SwapColumnsForCiPipelinesPipelineIdBigintForSelfHost, feature_cat
       end
     end
 
+    after do
+      if connection.foreign_key_exists?(:ci_pipelines, name: :fk_4_auto_canceled_by_id)
+        connection.execute(
+          'ALTER TABLE "ci_pipelines" RENAME CONSTRAINT "fk_4_auto_canceled_by_id" TO "fk_262d4c2d19"'
+        )
+      end
+
+      if connection.foreign_key_exists?(:ci_pipelines, name: :fk_4_auto_canceled_by_id_convert_to_bigint)
+        connection.execute(
+          'ALTER TABLE "ci_pipelines" RENAME CONSTRAINT "fk_4_auto_canceled_by_id_convert_to_bigint" TO "fk_67e4288f3a"'
+        )
+      end
+    end
+
     it 'swaps the foreign key properly' do
       disable_migrations_output do
         recorder = ActiveRecord::QueryRecorder.new { migrate! }

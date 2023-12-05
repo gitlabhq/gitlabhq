@@ -23044,10 +23044,13 @@ msgstr ""
 msgid "GroupImport|Unable to process group import file"
 msgstr ""
 
-msgid "GroupPage|Copy group ID"
+msgid "GroupPage|Copy group ID: %{id}"
 msgstr ""
 
-msgid "GroupPage|Group ID: %{group_id}"
+msgid "GroupPage|Group ID copied to clipboard."
+msgstr ""
+
+msgid "GroupPage|Group ID: %{id}"
 msgstr ""
 
 msgid "GroupRoadmap|%{dateWord} – No end date"
@@ -37491,10 +37494,13 @@ msgstr ""
 msgid "ProjectOverview|You must sign in to star a project"
 msgstr ""
 
-msgid "ProjectPage|Copy project ID"
+msgid "ProjectPage|Copy project ID: %{id}"
 msgstr ""
 
-msgid "ProjectPage|Project ID: %{project_id}"
+msgid "ProjectPage|Project ID copied to clipboard."
+msgstr ""
+
+msgid "ProjectPage|Project ID: %{id}"
 msgstr ""
 
 msgid "ProjectPage|Project information"

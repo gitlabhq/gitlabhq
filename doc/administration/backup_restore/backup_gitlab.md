@@ -291,7 +291,7 @@ Deleting old backups... [SKIPPING]
 ### Backup timestamp
 
 The backup archive is saved in `backup_path`, which is specified in the
-`config/gitlab.yml` file. The default path is `/var/opt/gitlab/backups`. The filename is `[TIMESTAMP]_gitlab_backup.tar`,
+`config/gitlab.yml` file. The default path is `/var/opt/gitlab/backups`. The file name is `[TIMESTAMP]_gitlab_backup.tar`,
 where `TIMESTAMP` identifies the time at which each backup was created, plus
 the GitLab version. The timestamp is needed if you need to restore GitLab and
 multiple backups are available.
@@ -327,15 +327,15 @@ To use the `copy` strategy instead of the default streaming strategy, specify
 sudo gitlab-backup create STRATEGY=copy
 ```
 
-#### Backup filename
+#### Backup file name
 
 WARNING:
-If you use a custom backup filename, you can't
+If you use a custom backup file name, you can't
 [limit the lifetime of the backups](#limit-backup-lifetime-for-local-files-prune-old-backups).
 
 By default, a backup file is created according to the specification in the
 previous [Backup timestamp](#backup-timestamp) section. You can, however,
-override the `[TIMESTAMP]` portion of the filename by setting the `BACKUP`
+override the `[TIMESTAMP]` portion of the file name by setting the `BACKUP`
 environment variable. For example:
 
 ```shell
@@ -359,7 +359,7 @@ Caveats:
 
 - The compression command is used in a pipeline, so your custom command must output to `stdout`.
 - If you specify a command that is not packaged with GitLab, then you must install it yourself.
-- The resultant filenames will still end in `.gz`.
+- The resultant file names will still end in `.gz`.
 - The default decompression command, used during restore, is `gzip -cd`. Therefore if you override the compression command to use a format that cannot be decompressed by `gzip -cd`, you must override the decompression command during restore.
 
 ##### Default compression: Gzip with fastest method
@@ -440,7 +440,7 @@ sudo gitlab-backup restore DECOMPRESS_CMD="zstd --decompress --stdout"
 
 To ensure the generated archive is transferable by rsync, you can set the `GZIP_RSYNCABLE=yes`
 option. This sets the `--rsyncable` option to `gzip`, which is useful only in
-combination with setting [the Backup filename option](#backup-filename).
+combination with setting [the Backup file name option](#backup-file-name).
 
 The `--rsyncable` option in `gzip` isn't guaranteed to be available
 on all distributions. To verify that it's available in your distribution, run
@@ -615,8 +615,8 @@ to create an incremental backup from:
 
 - In GitLab 14.9 and 14.10, use the `BACKUP=<timestamp_of_backup>` option to choose the backup to use. The chosen previous backup is overwritten.
 - In GitLab 15.0 and later, use the `PREVIOUS_BACKUP=<timestamp_of_backup>` option to choose the backup to use. By default, a backup file is created
-  as documented in the [Backup timestamp](#backup-timestamp) section. You can override the `[TIMESTAMP]` portion of the filename by setting the
-  [`BACKUP` environment variable](#backup-filename).
+  as documented in the [Backup timestamp](#backup-timestamp) section. You can override the `[TIMESTAMP]` portion of the file name by setting the
+  [`BACKUP` environment variable](#backup-file-name).
 
 To create an incremental backup, run:
 
@@ -1208,7 +1208,7 @@ When troubleshooting backup problems, however, replace `CRON=1` with `--trace` t
 #### Limit backup lifetime for local files (prune old backups)
 
 WARNING:
-The process described in this section doesn't work if you used a [custom filename](#backup-filename)
+The process described in this section doesn't work if you used a [custom file name](#backup-file-name)
 for your backups.
 
 To prevent regular backups from using all your disk space, you may want to set a limited lifetime
@@ -1770,16 +1770,16 @@ During backup, you can get the `File name too long` error ([issue #354984](https
 Problem: <class 'OSError: [Errno 36] File name too long:
 ```
 
-This problem stops the backup script from completing. To fix this problem, you must truncate the filenames causing the problem. A maximum of 246 characters, including the file extension, is permitted.
+This problem stops the backup script from completing. To fix this problem, you must truncate the file names causing the problem. A maximum of 246 characters, including the file extension, is permitted.
 
 WARNING:
 The steps in this section can potentially lead to **data loss**. All steps must be followed strictly in the order given.
 Consider opening a [Support Request](https://support.gitlab.com/hc/en-us/requests/new) if you're a Premium or Ultimate customer.
 
-Truncating filenames to resolve the error involves:
+Truncating file names to resolve the error involves:
 
 - Cleaning up remote uploaded files that aren't tracked in the database.
-- Truncating the filenames in the database.
+- Truncating the file names in the database.
 - Rerunning the backup task.
 
 #### Clean up remote uploaded files
@@ -1803,15 +1803,15 @@ To fix these files, you must clean up all remote uploaded files that are in the 
    bundle exec rake gitlab:cleanup:remote_upload_files RAILS_ENV=production DRY_RUN=false
    ```
 
-#### Truncate the filenames referenced by the database
+#### Truncate the file names referenced by the database
 
-You must truncate the files referenced by the database that are causing the problem. The filenames referenced by the database are stored:
+You must truncate the files referenced by the database that are causing the problem. The file names referenced by the database are stored:
 
 - In the `uploads` table.
 - In the references found. Any reference found from other database tables and columns.
 - On the file system.
 
-Truncate the filenames in the `uploads` table:
+Truncate the file names in the `uploads` table:
 
 1. Enter the database console:
 
@@ -1839,9 +1839,9 @@ Truncate the filenames in the `uploads` table:
    sudo -u git -H bundle exec rails dbconsole -e production
    ```
 
-1. Search the `uploads` table for filenames longer than 246 characters:
+1. Search the `uploads` table for file names longer than 246 characters:
 
-   The following query selects the `uploads` records with filenames longer than 246 characters in batches of 0 to 10000. This improves the performance on large GitLab instances with tables having thousand of records.
+   The following query selects the `uploads` records with file names longer than 246 characters in batches of 0 to 10000. This improves the performance on large GitLab instances with tables having thousand of records.
 
       ```sql
       CREATE TEMP TABLE uploads_with_long_filenames AS
@@ -1892,7 +1892,7 @@ Truncate the filenames in the `uploads` table:
 
    After you validate the batch results, you must change the batch size (`row_id`) using the following sequence of numbers (10000 to 20000). Repeat this process until you reach the last record in the `uploads` table.
 
-1. Rename the files found in the `uploads` table from long filenames to new truncated filenames. The following query rolls back the update so you can check the results safely in a transaction wrapper:
+1. Rename the files found in the `uploads` table from long file names to new truncated file names. The following query rolls back the update so you can check the results safely in a transaction wrapper:
 
    ```sql
    CREATE TEMP TABLE uploads_with_long_filenames AS
@@ -1927,7 +1927,7 @@ Truncate the filenames in the `uploads` table:
 
    After you validate the batch update results, you must change the batch size (`row_id`) using the following sequence of numbers (10000 to 20000). Repeat this process until you reach the last record in the `uploads` table.
 
-1. Validate that the new filenames from the previous query are the expected ones. If you are sure you want to truncate the records found in the previous step to 246 characters, run the following:
+1. Validate that the new file names from the previous query are the expected ones. If you are sure you want to truncate the records found in the previous step to 246 characters, run the following:
 
    WARNING:
    The following action is **irreversible**.
@@ -1959,9 +1959,9 @@ Truncate the filenames in the `uploads` table:
 
    After you finish the batch update, you must change the batch size (`updatable_uploads.row_id`) using the following sequence of numbers (10000 to 20000). Repeat this process until you reach the last record in the `uploads` table.
 
-Truncate the filenames in the references found:
+Truncate the file names in the references found:
 
-1. Check if those records are referenced somewhere. One way to do this is to dump the database and search for the parent directory name and filename:
+1. Check if those records are referenced somewhere. One way to do this is to dump the database and search for the parent directory name and file name:
 
    1. To dump your database, you can use the following command as an example:
 
@@ -1969,15 +1969,15 @@ Truncate the filenames in the references found:
       pg_dump -h /var/opt/gitlab/postgresql/ -d gitlabhq_production > gitlab-dump.tmp
       ```
 
-   1. Then you can search for the references using the `grep` command. Combining the parent directory and the filename can be a good idea. For example:
+   1. Then you can search for the references using the `grep` command. Combining the parent directory and the file name can be a good idea. For example:
 
       ```shell
       grep public/alongfilenamehere.txt gitlab-dump.tmp
       ```
 
-1. Replace those long filenames using the new filenames obtained from querying the `uploads` table.
+1. Replace those long file names using the new file names obtained from querying the `uploads` table.
 
-Truncate the filenames on the file system. You must manually rename the files in your file system to the new filenames obtained from querying the `uploads` table.
+Truncate the file names on the file system. You must manually rename the files in your file system to the new file names obtained from querying the `uploads` table.
 
 #### Re-run the backup task
 

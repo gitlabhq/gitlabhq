@@ -24,7 +24,7 @@ include use cases targeted for parsing GitLab log files.
 ## Parsing Logs
 
 The examples listed below address their respective log files by
-their relative Linux package installation paths and default filenames.
+their relative Linux package installation paths and default file names.
 Find the respective full paths in the [GitLab logs sections](../logs/index.md#production_jsonlog).
 
 ### General Commands

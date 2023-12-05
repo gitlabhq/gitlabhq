@@ -17,10 +17,10 @@
   .project-page-layout
     .project-page-layout-content.gl-mt-5
       .project-buttons.gl-mb-5{ data: { testid: 'quick-actions-container' } }
-        .project-clone-holder.d-block.d-md-none
+        .project-clone-holder.d-block.d-sm-none
           = render "shared/mobile_clone_panel"
 
-        .project-clone-holder.gl-display-none.gl-md-display-flex.gl-justify-content-end.gl-w-full.gl-mt-2
+        .project-clone-holder.gl-display-none.gl-sm-display-flex.gl-justify-content-end.gl-w-full.gl-mt-2
           = render "projects/buttons/code", ref: @ref
 
       = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-new-card-body gl-bg-gray-10 gl-p-5' }) do |c|
@@ -93,10 +93,10 @@
       = _('You can get started by cloning the repository or start adding files to it with one of the following options.')
 
   .project-buttons{ data: { testid: 'quick-actions-container' } }
-    .project-clone-holder.d-block.d-md-none.gl-mt-3.gl-mr-3
+    .project-clone-holder.d-block.d-sm-none.gl-mt-3.gl-mr-3
       = render "shared/mobile_clone_panel"
 
-    .project-clone-holder.d-none.d-md-inline-block.gl-mb-3.gl-mr-3.float-left
+    .project-clone-holder.d-none.d-sm-inline-block.gl-mb-3.gl-mr-3.float-left
       = render "projects/buttons/code", ref: @ref
     = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons, project_buttons: true
 

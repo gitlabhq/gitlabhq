@@ -128,7 +128,7 @@ Supported attributes:
 | Attribute       | Type           | Required | Description |
 |-----------------|----------------|----------|-------------|
 | `project_id`    | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
-| `name`          | string         | Yes      | The name of the file being uploaded. The filename must be unique in the project. |
+| `name`          | string         | Yes      | The name of the file being uploaded. The file name must be unique in the project. |
 | `file`          | file           | Yes      | The file being uploaded (5 MB limit). |
 
 Example request:

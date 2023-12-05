@@ -126,26 +126,6 @@ If you set an out of range value, GitLab automatically adjusts it to the default
 Badges can be added to a project by Maintainers or Owners, and are visible on the project's overview page.
 If you find that you have to add the same badges to several projects, you may want to add them at the [group level](#group-badges).
 
-### Add a badge to a project
-
-To add a new badge to a project:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
-1. Expand **Badges**.
-1. Select **Add badge**.
-1. Under **Link**, enter the URL that the badges should point to.
-1. Under **Badge image URL**, enter the URL of the image that should be displayed.
-1. Select **Add badge**.
-
-After adding a badge to a project, you can see the badge in the list below the form.
-
-### Edit or delete a project badge
-
-To edit a badge, select **Edit** (**{pencil}**).
-
-To delete a badge, select **Delete** (**{remove}**).
-
 ### Example project badge: Pipeline Status
 
 A common project badge presents the GitLab CI pipeline status.
@@ -177,26 +157,26 @@ If you need individual badges for each project, either:
 - Add the badge at the [project level](#project-badges).
 - Use [placeholders](#placeholders).
 
-### Add a badge to a group
+## View badges
 
-To add a new badge to a group:
+To view badges available in a project or group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Settings > General**.
 1. Expand **Badges**.
-1. Under "Link", enter the URL that the badges should point to and under
-   "Badge image URL" the URL of the image that should be displayed.
+
+## Add a badge
+
+To add a new badge to a project or group:
+
+1. On the left sidebar, select **Search or go to** and find your project or group.
+1. Select **Settings > General**.
+1. Expand **Badges**.
 1. Select **Add badge**.
-
-After adding a badge to a group, you can see it in the list below the form.
-
-### Edit or delete a group badge
-
-To edit a badge, select **Edit** (**{pencil}**).
-
-To delete a badge, select **Delete** (**{remove}**).
-
-Badges associated with a group can be edited or deleted only at the [group level](#group-badges).
+1. In the **Name** text box, enter the name of your badge.
+1. In the **Link** text box, enter the URL that the badges should point to.
+1. In the **Badge image URL** text box, enter the URL of the image you want to display for the badge.
+1. Select **Add badge**.
 
 ## View the URL of pipeline badges
 
@@ -283,6 +263,31 @@ To add a new badge with a custom image to a group or project:
 To learn how to use custom images generated through a pipeline, see the documentation on
 [accessing the latest job artifacts by URL](../../ci/jobs/job_artifacts.md#from-a-url).
 
+## Edit a badge
+
+To edit a badge in a project or group:
+
+1. On the left sidebar, select **Search or go to** and find your project or group.
+1. Select **Settings > General**.
+1. Expand **Badges**.
+1. Next to the badge you want to edit, select **Edit** (**{pencil}**).
+1. Edit the **Name**, **Link**, or **Badge image URL**.
+1. Select **Save changes**.
+
+## Delete a badge
+
+To delete a badge in a project or group:
+
+1. On the left sidebar, select **Search or go to** and find your project or group.
+1. Select **Settings > General**.
+1. Expand **Badges**.
+1. Next to the badge you want to delete, select **Delete** (**{remove}**).
+1. On the confirmation dialog, select **Delete badge**.
+1. Select **Save changes**.
+
+NOTE:
+Badges associated with a group can be edited or deleted only at the [group level](#group-badges).
+
 ## Placeholders
 
 Both the URL a badge points to and the image URL can contain placeholders,
@@ -302,9 +307,3 @@ Placeholders allow badges to expose otherwise-private information, such as the
 default branch or commit SHA when the project is configured to have a private
 repository. This behavior is intentional, as badges are intended to be used publicly. Avoid
 using these placeholders if the information is sensitive.
-
-## Configure badges through the API
-
-You can also configure badges via the GitLab API. As in the settings, there is
-a distinction between endpoints for badges at the
-[project level](../../api/project_badges.md) and [group level](../../api/group_badges.md).

@@ -3,24 +3,16 @@
 - emails_disabled = @group.emails_disabled?
 
 .group-home-panel
-  .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-flex-direction-column.gl-md-flex-direction-row.gl-gap-3.gl-my-5
-    .home-panel-title-row.gl-display-flex.gl-align-items-center
-      .avatar-container.rect-avatar.s64.home-panel-avatar.gl-flex-shrink-0.float-none{ class: 'gl-mr-3!' }
-        = render Pajamas::AvatarComponent.new(@group, alt: @group.name, size: 64, avatar_options: { itemprop: 'logo' })
+  .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-sm-flex-direction-column.gl-md-flex-direction-row.gl-gap-3.gl-my-5
+    .home-panel-title-row.gl-display-flex
+      .avatar-container.rect-avatar.s48.home-panel-avatar.gl-flex-shrink-0.float-none{ class: 'gl-mr-3!' }
+        = render Pajamas::AvatarComponent.new(@group, alt: @group.name, size: 48, avatar_options: { itemprop: 'logo' })
       %div
-        %h1.home-panel-title.gl-font-size-h1.gl-mt-3.gl-mb-2.gl-display-flex.gl-word-break-word{ itemprop: 'name' }
+        %h1.home-panel-title.gl-font-size-h-display.gl-mt-3.gl-mb-2.gl-ml-2.gl-display-flex.gl-align-items-center.gl-flex-wrap.gl-gap-3.gl-word-break-word{ itemprop: 'name' }
           = @group.name
-          %span.visibility-icon.gl-text-secondary.has-tooltip.gl-ml-2{ data: { container: 'body' }, title: visibility_icon_description(@group) }
-            = visibility_level_icon(@group.visibility_level, options: {class: 'icon'})
+          %span.visibility-icon.gl-text-secondary.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
+            = visibility_level_icon(@group.visibility_level, options: { class: 'icon' })
           = render_if_exists 'shared/tier_badge', source: @group, namespace_to_track: @group
-        .home-panel-metadata.gl-text-secondary.gl-font-base.gl-font-weight-normal.gl-line-height-normal{ data: { qa_selector: 'group_id_content' }, itemprop: 'identifier' }
-          - if can?(current_user, :read_group, @group)
-            %span.gl-display-inline-block.gl-vertical-align-middle
-              = s_("GroupPage|Group ID: %{group_id}") % { group_id: @group.id }
-              = clipboard_button(title: s_('GroupPage|Copy group ID'), text: @group.id)
-          - if current_user
-            %span.gl-ml-3.gl-mb-3
-              = render 'shared/members/access_request_links', source: @group
 
     - if current_user
       .home-panel-buttons.gl-display-flex.gl-justify-content-md-end.gl-align-items-center.gl-flex-wrap.gl-gap-3{ data: { testid: 'group-buttons' } }
@@ -37,6 +29,8 @@
           .gl-sm-w-auto.gl-w-full
             = render Pajamas::ButtonComponent.new(href: new_project_path(namespace_id: @group.id), variant: :confirm, button_options: { data: { testid: 'new-project-button' }, class: 'gl-sm-w-auto gl-w-full' }) do
               = _('New project')
+
+        = render 'shared/groups_projects_more_actions_dropdown', source: @group
 
   - if @group.description.present?
     .group-home-desc.mt-1

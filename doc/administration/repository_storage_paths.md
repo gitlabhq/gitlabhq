@@ -179,7 +179,7 @@ Files stored in an S3-compatible endpoint can have the same advantages as
 #### Avatars
 
 Each file is stored in a directory that matches the `id` assigned to it in the database. The
-filename is always `avatar.png` for user avatars. When an avatar is replaced, the `Upload` model is
+file name is always `avatar.png` for user avatars. When an avatar is replaced, the `Upload` model is
 destroyed and a new one takes place with a different `id`.
 
 #### CI/CD artifacts

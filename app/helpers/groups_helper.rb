@@ -218,6 +218,31 @@ module GroupsHelper
     GroupMember.access_level_roles.select { |_k, v| v <= max_access_level }
   end
 
+  def groups_projects_more_actions_dropdown_data(source)
+    model_name = source.model_name.to_s.downcase
+    dropdown_data = {
+      is_group: source.is_a?(Group).to_s,
+      id: source.id
+    }
+
+    return dropdown_data unless current_user
+
+    if can?(current_user, :"destroy_#{model_name}_member", source.members.find_by(user_id: current_user.id)) # rubocop: disable CodeReuse/ActiveRecord -- we need to fetch it
+      dropdown_data[:leave_path] = polymorphic_path([:leave, source, :members])
+      dropdown_data[:leave_confirm_message] = leave_confirmation_message(source)
+    elsif source.requesters.find_by(user_id: current_user.id) # rubocop: disable CodeReuse/ActiveRecord -- we need to fetch it
+      requester = source.requesters.find_by(user_id: current_user.id) # rubocop: disable CodeReuse/ActiveRecord -- we need to fetch it
+      if can?(current_user, :withdraw_member_access_request, requester)
+        dropdown_data[:withdraw_path] = polymorphic_path([:leave, source, :members])
+        dropdown_data[:withdraw_confirm_message] = remove_member_message(requester)
+      end
+    elsif source.request_access_enabled && can?(current_user, :request_access, source)
+      dropdown_data[:request_access_path] = polymorphic_path([:request_access, source, :members])
+    end
+
+    dropdown_data
+  end
+
   private
 
   def group_title_link(group, hidable: false, show_avatar: false, for_dropdown: false)

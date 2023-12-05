@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'user reads pipeline status', :js, feature_category: :groups_and_projects do
+RSpec.describe 'user reads pipeline status', :js, feature_category: :continuous_integration do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:v110_pipeline) { create_pipeline('v1.1.0', 'success') }

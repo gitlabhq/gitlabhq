@@ -209,8 +209,7 @@ These files can either be plain text or have the extension of a
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19515) in GitLab 12.6.
 
-GitLab can render OpenAPI specification files. The filename
-must include `openapi` or `swagger` and the extension must be `yaml`,
+GitLab can render OpenAPI specification files. The file name must include `openapi` or `swagger` and the extension must be `yaml`,
 `yml`, or `json`. The following examples are all correct:
 
 - `openapi.yml`

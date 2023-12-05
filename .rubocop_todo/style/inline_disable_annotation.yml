@@ -2113,7 +2113,6 @@ Style/InlineDisableAnnotation:
     - 'ee/spec/models/vulnerabilities/read_spec.rb'
     - 'ee/spec/policies/group_policy_spec.rb'
     - 'ee/spec/presenters/approval_rule_presenter_spec.rb'
-    - 'ee/spec/presenters/ee/project_presenter_spec.rb'
     - 'ee/spec/presenters/ee/projects/import_export/project_export_presenter_spec.rb'
     - 'ee/spec/presenters/member_presenter_spec.rb'
     - 'ee/spec/requests/api/conan_project_packages_spec.rb'

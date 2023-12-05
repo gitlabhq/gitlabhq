@@ -971,7 +971,7 @@ By default, the cache storage directory is set to a subdirectory of the first Gi
 defined in the configuration file.
 
 Multiple Gitaly processes can use the same directory for cache storage. Each Gitaly process
-uses a unique random string as part of the cache filenames it creates. This means:
+uses a unique random string as part of the cache file names it creates. This means:
 
 - They do not collide.
 - They do not reuse another process's files.

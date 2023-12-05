@@ -42,7 +42,7 @@ module QuickActions
       @updates = {}
       @execution_message = {}
 
-      content, commands = extractor.extract_commands(content, only: only, target: quick_action_target)
+      content, commands = extractor.extract_commands(content, only: only)
       extract_updates(commands)
 
       [content, @updates, execution_messages_for(commands), command_names(commands)]
@@ -56,7 +56,7 @@ module QuickActions
 
       @quick_action_target = quick_action_target
 
-      content, commands = extractor(keep_actions).extract_commands(content, target: quick_action_target)
+      content, commands = extractor(keep_actions).extract_commands(content)
       commands = explain_commands(commands)
       [content, commands]
     end

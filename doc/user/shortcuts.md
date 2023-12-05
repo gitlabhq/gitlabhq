@@ -77,7 +77,7 @@ relatively quickly to work, and they take you to another page in the project.
 | <kbd>g</kbd> + <kbd>n</kbd> | Go to the [repository graph](#repository-graph) page (**Code > Repository graph**). |
 | <kbd>g</kbd> + <kbd>d</kbd> | Go to repository charts (**Analyze > Repository analytics**). |
 | <kbd>g</kbd> + <kbd>i</kbd> | Go to the project issues list (**Plan > Issues**). |
-| <kbd>i</kbd>                | Go to the New Issue page (**Pan > Issues**, select **New issue** ). |
+| <kbd>i</kbd>                | Go to the New Issue page (**Plan > Issues**, select **New issue** ). |
 | <kbd>g</kbd> + <kbd>b</kbd> | Go to the project issue boards list (**Plan > Issue boards**). |
 | <kbd>g</kbd> + <kbd>m</kbd> | Go to the project [merge requests](project/merge_requests/index.md) list (**Code > Merge requests**). |
 | <kbd>g</kbd> + <kbd>p</kbd> | Go to the CI/CD pipelines list (**Build > Pipelines**). |

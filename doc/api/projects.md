@@ -2940,7 +2940,7 @@ POST /projects/:id/push_rule
 | `commit_message_negative_regex`         | string         | No | No commit message is allowed to match this, for example `ssh\:\/\/`. |
 | `commit_message_regex`                  | string         | No | All commit messages must match this, for example `Fixed \d+\..*`. |
 | `deny_delete_tag`                       | boolean        | No | Deny deleting a tag. |
-| `file_name_regex`                       | string         | No | All committed filenames must **not** match this, for example `(jar|exe)$`. |
+| `file_name_regex`                       | string         | No | All committed file names must **not** match this, for example `(jar|exe)$`. |
 | `max_file_size`                         | integer        | No | Maximum file size (MB). |
 | `member_check`                          | boolean        | No | Restrict commits by author (email) to existing GitLab users. |
 | `prevent_secrets`                       | boolean        | No | GitLab rejects any files that are likely to contain secrets. |
@@ -2964,7 +2964,7 @@ PUT /projects/:id/push_rule
 | `commit_message_negative_regex`         | string         | No | No commit message is allowed to match this, for example `ssh\:\/\/`. |
 | `commit_message_regex`                  | string         | No | All commit messages must match this, for example `Fixed \d+\..*`. |
 | `deny_delete_tag`                       | boolean        | No | Deny deleting a tag. |
-| `file_name_regex`                       | string         | No | All committed filenames must **not** match this, for example `(jar|exe)$`. |
+| `file_name_regex`                       | string         | No | All committed file names must **not** match this, for example `(jar|exe)$`. |
 | `max_file_size`                         | integer        | No | Maximum file size (MB). |
 | `member_check`                          | boolean        | No | Restrict commits by author (email) to existing GitLab users. |
 | `prevent_secrets`                       | boolean        | No | GitLab rejects any files that are likely to contain secrets. |

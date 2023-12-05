@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter do
+RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter, feature_category: :importers do
   let(:client) { double }
 
   let_it_be(:project) { create(:project, :import_started, import_source: 'http://somegithub.com') }
@@ -187,6 +187,19 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
       it "doesn't process this event" do
         subject.mark_as_imported(issue_event)
 
+        counter = 0
+        subject.each_object_to_import { counter += 1 }
+        expect(counter).to eq 0
+      end
+    end
+
+    context 'when event is not supported' do
+      let(:issue_event) do
+        struct = Struct.new(:id, :event, :created_at, :issue, keyword_init: true)
+        struct.new(id: 1, event: 'not_supported_event', created_at: '2022-04-26 18:30:53 UTC')
+      end
+
+      it "doesn't process this event" do
         counter = 0
         subject.each_object_to_import { counter += 1 }
         expect(counter).to eq 0

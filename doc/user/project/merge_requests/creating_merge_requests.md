@@ -189,8 +189,7 @@ A merge request is created.
 ### Add attachments when creating a merge request by email
 
 You can add commits to a merge request by adding
-patches as attachments to the email. All attachments with a filename
-ending in `.patch` are considered patches and are processed
+patches as attachments to the email. All attachments with a file name ending in `.patch` are considered patches and are processed
 ordered by name.
 
 The combined size of the patches can be 2 MB.

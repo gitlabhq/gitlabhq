@@ -8,16 +8,21 @@ RSpec.describe 'Projects > Members > Member leaves project', feature_category: :
 
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, :with_namespace_settings) }
+  let(:more_actions_dropdown) do
+    find('[data-testid="groups-projects-more-actions-dropdown"] .gl-new-dropdown-custom-toggle')
+  end
 
   before do
     project.add_developer(user)
     sign_in(user)
   end
 
-  it 'user leaves project' do
+  it 'user leaves project', :js do
     visit project_path(project)
 
+    more_actions_dropdown.click
     click_link 'Leave project'
+    accept_gl_confirm(button_text: 'Leave project')
 
     expect(page).to have_current_path(dashboard_projects_path, ignore_query: true)
     expect(project.users.exists?(user.id)).to be_falsey

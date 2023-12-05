@@ -961,7 +961,7 @@ Reports that go over the 20 MB limit aren't loaded. Affected reports:
 ### Maximum file size indexed
 
 You can set a limit on the content of repository files that are indexed in
-Elasticsearch. Any files larger than this limit only index the filename.
+Elasticsearch. Any files larger than this limit only index the file name.
 The file content is neither indexed nor searchable.
 
 Setting a limit helps reduce the memory usage of the indexing processes and

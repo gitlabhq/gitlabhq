@@ -35,6 +35,10 @@ module Types
             description: 'Commit associated with the version.',
             alpha: { milestone: '16.7' }
 
+          field :components, Types::Ci::Catalog::Resources::ComponentType.connection_type, null: true,
+            description: 'Components belonging to the catalog resource.',
+            alpha: { milestone: '16.7' }
+
           def author
             Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.author_id).find
           end

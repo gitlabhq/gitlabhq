@@ -106,7 +106,7 @@ export default {
 </script>
 
 <template>
-  <gl-loading-icon v-if="isLoading" size="lg" color="dark" class="m-auto" />
+  <gl-loading-icon v-if="isLoading" size="md" color="dark" class="m-auto" />
   <commit-info v-else-if="commit" :commit="commit">
     <div
       class="commit-actions gl-display-flex gl-flex-align gl-align-items-center gl-flex-direction-row"

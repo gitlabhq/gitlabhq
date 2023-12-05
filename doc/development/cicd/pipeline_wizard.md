@@ -133,8 +133,7 @@ is planned to add the ability to create a MR from here.
   should be committed to
 - `default-branch` (required): The branch that will be pre-selected during
   the commit step. This can be changed by the user.
-- `default-filename` (optional, default: `.gitlab-ci.yml`): The Filename
-  to be used for the file. This can be overridden in the template file.
+- `default-filename` (optional, default: `.gitlab-ci.yml`): The file name to be used for the file. This can be overridden in the template file.
 
 ### Events
 

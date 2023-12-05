@@ -406,18 +406,6 @@
   }
 
   @include media-breakpoint-down(md) {
-    .avatar-container {
-      @include avatar-size(40px, 10px);
-      min-height: 40px;
-      min-width: 40px;
-
-      .identicon.s64 {
-        font-size: 16px;
-      }
-    }
-  }
-
-  @include media-breakpoint-down(md) {
     .updated-note {
       @include gl-mt-3;
       @include gl-text-right;

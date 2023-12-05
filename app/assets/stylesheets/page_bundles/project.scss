@@ -7,34 +7,12 @@
 
   .home-panel-title {
     .icon {
-      vertical-align: -1px;
+      vertical-align: 1px;
     }
 
     .home-panel-topic-list {
       .icon {
         top: 3px;
-      }
-    }
-  }
-
-  .home-panel-title-row {
-    @include media-breakpoint-down(sm) {
-      .home-panel-avatar {
-        width: $home-panel-avatar-mobile-size;
-        height: $home-panel-avatar-mobile-size;
-        flex-basis: $home-panel-avatar-mobile-size;
-
-        .avatar {
-          font-size: 20px;
-          line-height: 46px;
-        }
-      }
-
-      .home-panel-title {
-        margin-top: 4px;
-        margin-bottom: 2px;
-        font-size: $gl-font-size;
-        line-height: $gl-font-size-large;
       }
     }
   }

@@ -49,7 +49,7 @@ To set server hooks for a repository:
       example, if the script is in Ruby the shebang is probably `#!/usr/bin/env ruby`.
 
       - To create a single server hook, create a file with a name that matches the hook type. For example, for a
-        `pre-receive` server hook, the filename should be `pre-receive` with no extension.
+        `pre-receive` server hook, the file name should be `pre-receive` with no extension.
       - To create many server hooks, create a directory for the hooks that matches the hook type. For example, for a
         `pre-receive` server hook, the directory name should be `pre-receive.d`. Put the files for the hook in that
         directory.
@@ -84,7 +84,7 @@ To create server hooks for a repository:
 1. On the file system, create a new directory in the correct location called `custom_hooks`.
 1. In the new `custom_hooks` directory:
    - To create a single server hook, create a file with a name that matches the hook type. For example, for a
-     `pre-receive` server hook, the filename should be `pre-receive` with no extension.
+     `pre-receive` server hook, the file name should be `pre-receive` with no extension.
    - To create many server hooks, create a directory for the hooks that matches the hook type. For example, for a
      `pre-receive` server hook, the directory name should be `pre-receive.d`. Put the files for the hook in that directory.
 1. **Make the server hook files executable** and ensure that they are owned by the Git user.
@@ -155,7 +155,7 @@ To create a global server hook for all repositories:
 1. Make the hook file executable, ensure that it's owned by the Git user, and ensure it does not match the backup file
    pattern (`*~`).
 
-If the server hook code is properly implemented, it should execute when the Git hook is next triggered. Hooks are executed in alphabetical order by filename in the hook type
+If the server hook code is properly implemented, it should execute when the Git hook is next triggered. Hooks are executed in alphabetical order by file name in the hook type
 subdirectories.
 
 ## Remove server hooks for a repository

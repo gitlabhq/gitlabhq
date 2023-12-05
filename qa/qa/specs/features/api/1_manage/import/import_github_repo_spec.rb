@@ -31,7 +31,7 @@ module QA
           stats = imported_project.project_import_status.dig(:stats, :imported)
           expect(stats).to eq(
             issue: 1,
-            issue_event: 16,
+            issue_event: 10,
             pull_request: 1,
             pull_request_review: 2,
             pull_request_review_request: 1,

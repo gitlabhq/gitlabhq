@@ -22,7 +22,7 @@
     .project-page-layout-sidebar.js-show-on-project-root.gl-mt-5
       = render "sidebar"
 
-    .project-page-layout-content.gl-mt-5
+    .project-page-layout-content
       - if can?(current_user, :read_code, @project) && @project.repository_languages.present?
         - add_page_startup_graphql_call('repository/path_last_commit', { projectPath: @project.full_path, ref: current_ref, path: current_route_path || "" })
 

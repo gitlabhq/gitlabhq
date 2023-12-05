@@ -171,12 +171,12 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def storage_anchor_data
-    can_show_quota = can?(current_user, :admin_project, project) && !empty_repo?
+    return unless can?(current_user, :admin_project, project) && !empty_repo?
 
     AnchorData.new(
       true,
       statistic_icon('disk') + storage_anchor_text,
-      can_show_quota ? project_usage_quotas_path(project) : nil
+      project_usage_quotas_path(project)
     )
   end
 

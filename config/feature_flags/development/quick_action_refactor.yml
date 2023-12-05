@@ -1,8 +1,0 @@
----
-name: quick_action_refactor
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130782
-rollout_issue_url:
-milestone: '16.7'
-type: development
-group: group::project management
-default_enabled: false

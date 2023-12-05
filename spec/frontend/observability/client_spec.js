@@ -18,6 +18,7 @@ describe('buildClient', () => {
   const servicesUrl = 'https://example.com/services';
   const operationsUrl = 'https://example.com/services/$SERVICE_NAME$/operations';
   const metricsUrl = 'https://example.com/metrics';
+  const metricsSearchUrl = 'https://example.com/metrics/search';
   const FETCHING_TRACES_ERROR = 'traces are missing/invalid in the response';
 
   const apiConfig = {
@@ -26,6 +27,7 @@ describe('buildClient', () => {
     servicesUrl,
     operationsUrl,
     metricsUrl,
+    metricsSearchUrl,
   };
 
   const getQueryParam = () => decodeURIComponent(axios.get.mock.calls[0][1].params.toString());
@@ -529,6 +531,42 @@ describe('buildClient', () => {
 
       await expect(client.fetchMetrics()).rejects.toThrow(FETCHING_METRICS_ERROR);
       expectErrorToBeReported(new Error(FETCHING_METRICS_ERROR));
+    });
+  });
+
+  describe('fetchMetric', () => {
+    it('fetches the metric from the API', async () => {
+      const data = { results: [] };
+      axiosMock.onGet(metricsSearchUrl).reply(200, data);
+
+      const result = await client.fetchMetric('name', 'type');
+
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(axios.get).toHaveBeenCalledWith(metricsSearchUrl, {
+        withCredentials: true,
+        params: new URLSearchParams({ mname: 'name', mtype: 'type' }),
+      });
+      expect(result).toEqual(data.results);
+    });
+
+    it('rejects if results is missing from the response', async () => {
+      axiosMock.onGet(metricsSearchUrl).reply(200, {});
+      const e = 'metrics are missing/invalid in the response';
+
+      await expect(client.fetchMetric('name', 'type')).rejects.toThrow(e);
+      expectErrorToBeReported(new Error(e));
+    });
+
+    it('rejects if metric name is missing', async () => {
+      const e = 'fetchMetric() - metric name is required.';
+      await expect(client.fetchMetric()).rejects.toThrow(e);
+      expectErrorToBeReported(new Error(e));
+    });
+
+    it('rejects if metric type is missing', async () => {
+      const e = 'fetchMetric() - metric type is required.';
+      await expect(client.fetchMetric('name')).rejects.toThrow(e);
+      expectErrorToBeReported(new Error(e));
     });
   });
 });

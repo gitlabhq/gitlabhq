@@ -355,17 +355,6 @@ RSpec.describe Gitlab::QuickActions::Extractor, feature_category: :team_planning
       end
     end
 
-    context 'when quick_action_refactor feature flag is off' do
-      it 'does extract commands in HTML comments' do
-        stub_feature_flags(quick_action_refactor: false)
-
-        msg = "<!--\n/assign @user\n-->"
-        _, commands = extractor.extract_commands(msg)
-
-        expect(commands).to match_array [['assign', '@user']]
-      end
-    end
-
     it 'limits to passed commands when they are passed' do
       msg = <<~MSG.strip
       Hello, we should only extract the commands passed
@@ -407,17 +396,6 @@ RSpec.describe Gitlab::QuickActions::Extractor, feature_category: :team_planning
     with_them do
       it 'encloses quick actions with code span markdown' do
         expect(extractor.redact_commands(text)).to eq(expected)
-      end
-    end
-
-    context 'when quick_action_refactor feature flag is off' do
-      it 'does extract commands in HTML comments' do
-        stub_feature_flags(quick_action_refactor: false)
-
-        msg = "<!--\n/assign @user\n-->"
-        expected = "<!--\n`/assign @user`\n-->"
-
-        expect(extractor.redact_commands(msg)).to eq(expected)
       end
     end
   end
