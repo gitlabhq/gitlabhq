@@ -12,7 +12,7 @@ export default {
     GlTableLite,
   },
   props: {
-    resourceId: {
+    resourcePath: {
       type: String,
       required: true,
     },
@@ -27,7 +27,7 @@ export default {
       query: getCiCatalogResourceComponents,
       variables() {
         return {
-          id: this.resourceId,
+          fullPath: this.resourcePath,
         };
       },
       update(data) {

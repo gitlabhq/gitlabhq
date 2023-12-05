@@ -11,13 +11,17 @@ export const cacheConfig = {
           ciCatalogResource(_, { args, toReference }) {
             return toReference({
               __typename: 'CiCatalogResource',
-              id: args.id,
+              // Webpath is the fullpath with a leading slash
+              webPath: `/${args.fullPath}`,
             });
           },
           ciCatalogResources: {
             keyArgs: false,
           },
         },
+      },
+      CiCatalogResource: {
+        keyFields: ['webPath'],
       },
     },
   },

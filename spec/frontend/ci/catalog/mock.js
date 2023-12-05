@@ -305,7 +305,7 @@ export const catalogSharedDataMock = {
         releasedAt: Date.now(),
         author: { id: 1, webUrl: 'profile/1', name: 'username' },
       },
-      webPath: 'path/to/project',
+      webPath: '/path/to/project',
     },
   },
 };
@@ -315,6 +315,7 @@ export const catalogAdditionalDetailsMock = {
     ciCatalogResource: {
       __typename: 'CiCatalogResource',
       id: `gid://gitlab/CiCatalogResource/1`,
+      webPath: '/twitter/project',
       openIssuesCount: 4,
       openMergeRequestsCount: 10,
       readmeHtml: '<h1>Hello world</h1>',
@@ -386,6 +387,7 @@ export const mockComponents = {
     ciCatalogResource: {
       __typename: 'CiCatalogResource',
       id: `gid://gitlab/CiCatalogResource/1`,
+      webPath: 'twitter/project-1',
       components: {
         ...componentsMockData,
       },
@@ -398,6 +400,7 @@ export const mockComponentsEmpty = {
     ciCatalogResource: {
       __typename: 'CiCatalogResource',
       id: `gid://gitlab/CiCatalogResource/1`,
+      webPath: 'twitter/project-1',
       components: [],
     },
   },

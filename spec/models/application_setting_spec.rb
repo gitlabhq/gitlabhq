@@ -1323,17 +1323,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         expect(subject.errors.messages[:default_group_visibility].first).to eq("cannot be set to a restricted visibility level")
         expect(subject.errors.messages[:default_project_visibility].first).to eq("cannot be set to a restricted visibility level")
       end
-
-      context 'when prevent_visibility_restriction FF is disabled' do
-        before do
-          stub_feature_flags(prevent_visibility_restriction: false)
-        end
-
-        it { is_expected.to allow_value(10).for(:default_group_visibility) }
-        it { is_expected.to allow_value(10).for(:default_project_visibility) }
-        it { is_expected.to allow_value(20).for(:default_group_visibility) }
-        it { is_expected.to allow_value(20).for(:default_project_visibility) }
-      end
     end
 
     describe 'sentry_clientside_traces_sample_rate' do

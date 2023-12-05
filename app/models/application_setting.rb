@@ -994,10 +994,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   end
 
   def should_prevent_visibility_restriction?
-    Feature.enabled?(:prevent_visibility_restriction) &&
-      (default_project_visibility_changed? ||
-        default_group_visibility_changed? ||
-        restricted_visibility_levels_changed?)
+    default_project_visibility_changed? ||
+      default_group_visibility_changed? ||
+      restricted_visibility_levels_changed?
   end
 end
 

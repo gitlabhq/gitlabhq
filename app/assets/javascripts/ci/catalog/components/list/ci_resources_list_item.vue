@@ -34,11 +34,17 @@ export default {
     authorProfileUrl() {
       return this.latestVersion.author.webUrl;
     },
-    detailsPageHref() {
+    resourceId() {
+      return cleanLeadingSeparator(this.resource.webPath);
+    },
+    detailsPageResolved() {
       return this.$router.resolve({
         name: CI_RESOURCE_DETAILS_PAGE_NAME,
-        params: { id: this.entityId },
-      }).href;
+        params: { id: this.resourceId },
+      });
+    },
+    detailsPageHref() {
+      return decodeURIComponent(this.detailsPageResolved.href);
     },
     entityId() {
       return getIdFromGraphQLId(this.resource.id);
@@ -79,10 +85,8 @@ export default {
       // open a new tab.
       e.preventDefault();
 
-      this.$router.push({
-        name: CI_RESOURCE_DETAILS_PAGE_NAME,
-        params: { id: this.entityId },
-      });
+      // Push to the decoded URL to avoid all the / being encoded
+      this.$router.push({ path: decodeURIComponent(this.resourceId) });
     },
   },
 };

@@ -154,3 +154,106 @@ cookies manually with JavaScript.
 By default, every project in a group shares the same domain, for example, `group.gitlab.io`. This means that cookies are also shared for all projects in a group.
 
 To ensure each project uses different cookies, enable the Pages [unique domains](introduction.md#enable-unique-domains) feature for your project.
+
+## Create multiple deployments **(PREMIUM ALL EXPERIMENT)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [Experiment](../../../policy/experiment-beta-support.md) [with a flag](../../feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+an administrator can [enable the feature flag](../../../administration/feature_flags.md) named
+`pages_multiple_versions_setting`. On GitLab.com, this feature is not available. This feature is not ready for production use.
+
+Use the [`pages.path_prefix`](../../../ci/yaml/index.md#pagespagespath_prefix) CI/CD option to configure a prefix for the GitLab Pages URL. A prefix allows you
+to differentiate between multiple GitLab Pages deployments.
+
+Multiple GitLab Pages deployments (pages created with a `path_prefix`) count toward your [storage](../../../user/usage_quotas.md) usage.
+
+### Enable multiple deployments
+
+To enable multiple GitLab Pages deployments:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Deploy > Pages**.
+1. Select **Use multiple versions**.
+
+### Path clash
+
+`pages.path_prefix` can take dynamic values from [CI/CD variables](../../../ci/variables/index.md)
+that can create pages deployments which could clash with existing paths in your site.
+For example, given an existing GitLab Pages site with the following paths:
+
+```plaintext
+/index.html
+/documents/index.html
+```
+
+If a `pages.path_prefix` is `documents`, that version will override the existing path.
+In other words, `https://namespace.gitlab.io/project/documents/index.html` will point to the
+`/index.html` on the `documents` deployment of the site, instead of `documents/index.html` of the
+`main` deployment of the site.
+
+Mixing [CI/CD variables](../../../ci/variables/index.md) with other strings can reduce the path clash
+possibility. For example:
+
+```yaml
+pages:
+  stage: deploy
+  script:
+    - echo "Pages accessible through ${CI_PAGES_URL}/${PAGES_PREFIX}"
+  variables:
+    PAGES_PREFIX: ""  # No prefix by default (master)
+  pages:
+    path_prefix: "$PAGES_PREFIX"
+  artifacts:
+    paths:
+    - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH  # Run on default branch (with default PAGES_PREFIX)
+    - if: $CI_COMMIT_BRANCH == "staging"  # Run on master (with default PAGES_PREFIX)
+      variables:
+        PAGES_PREFIX: '_stg'  # Prefix with _stg for the staging branch
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"  # Conditionally change the prefix for Merge Requests
+      when: manual  # Run pages manually on Merge Requests
+      variables:
+        PAGES_PREFIX: 'mr$CI_MERGE_REQUEST_IID' # Prefix with the mr<iid>, like `mr123`
+```
+
+Some other examples of mixing [variables](../../../ci/variables/index.md) with strings for dynamic prefixes:
+
+- `pages.path_prefix: '__$CI_COMMIT_REF_SLUG'`: Branch or tag name prefixed with `__`, like `__branch-name`.
+- `pages.path_prefix: '-${CI_MERGE_REQUEST_IID}-'`: Merge request number prefixed and suffixed with `-`, like `-123-`.
+
+### Use multiple deployments to create pages environments
+
+You can use multiple GitLap Pages deployments to create a new [environment](../../../ci/environments/index.md).
+For example:
+
+```yaml
+pages:
+  stage: deploy
+  script:
+    - echo "Pages accessible through ${CI_PAGES_URL}/${PAGES_PREFIX}"
+  variables:
+    PAGES_PREFIX: "" # no prefix by default (master)
+  pages:
+    path_prefix: "$PAGES_PREFIX"
+  environment:
+    name: "Pages ${PAGES_PREFIX}"
+    url: "${CI_PAGES_URL}/${PAGES_PREFIX}"
+  artifacts:
+    paths:
+    - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == "staging" # ensure to run on master (with default PAGES_PREFIX)
+      variables:
+        PAGES_PREFIX: '_stg' # prefix with _stg for the staging branch
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" # conditionally change the prefix on Merge Requests
+      when: manual # run pages manually on Merge Requests
+      variables:
+        PAGES_PREFIX: 'mr$CI_MERGE_REQUEST_IID' # prefix with the mr<iid>, like `mr123`
+```
+
+With this configuration, users will have the access to each GitLab Pages deployment through the UI.
+When using [environments](../../../ci/environments/index.md) for pages, all pages environments are
+listed on the project environment list.

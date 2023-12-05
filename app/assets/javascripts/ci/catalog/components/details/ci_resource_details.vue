@@ -14,7 +14,7 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
-    resourceId: {
+    resourcePath: {
       type: String,
       required: true,
     },
@@ -31,10 +31,10 @@ export default {
 <template>
   <gl-tabs>
     <gl-tab :title="$options.i18n.tabs.readme" lazy>
-      <ci-resource-readme :resource-id="resourceId" />
+      <ci-resource-readme :resource-path="resourcePath" />
     </gl-tab>
     <gl-tab v-if="glFeatures.ciCatalogComponentsTab" :title="$options.i18n.tabs.components" lazy>
-      <ci-resource-components :resource-id="resourceId"
+      <ci-resource-components :resource-path="resourcePath"
     /></gl-tab>
   </gl-tabs>
 </template>

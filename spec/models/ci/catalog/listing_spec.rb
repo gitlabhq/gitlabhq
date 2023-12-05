@@ -186,55 +186,78 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
 
   describe '#find_resource' do
     let_it_be(:accessible_resource) { create(:ci_catalog_resource, :published, project: public_project) }
+    let_it_be(:inaccessible_resource) { create(:ci_catalog_resource, :published, project: project_noaccess) }
+    let_it_be(:draft_resource) { create(:ci_catalog_resource, project: public_namespace_project, state: :draft) }
 
-    subject { list.find_resource(id: id) }
+    context 'when using the ID argument' do
+      subject { list.find_resource(id: id) }
 
-    context 'when the resource is published and visible to the user' do
-      let(:id) { accessible_resource.id }
-
-      it 'fetches the resource' do
-        is_expected.to eq(accessible_resource)
-      end
-    end
-
-    context 'when the resource is not found' do
-      let(:id) { 'not-an-id' }
-
-      it { is_expected.to be_nil }
-    end
-
-    context 'when the resource is not published' do
-      let_it_be(:draft_resource) { create(:ci_catalog_resource, project: public_namespace_project, state: :draft) }
-
-      let(:id) { draft_resource.id }
-
-      it { is_expected.to be_nil }
-    end
-
-    context "when the current user cannot read code on the resource's project" do
-      let_it_be(:inaccessible_resource) { create(:ci_catalog_resource, :published, project: project_noaccess) }
-
-      let(:id) { inaccessible_resource.id }
-
-      it { is_expected.to be_nil }
-    end
-
-    context 'when the current user is anonymous' do
-      let(:user) { nil }
-
-      context 'when the resource is public' do
+      context 'when the resource is published and visible to the user' do
         let(:id) { accessible_resource.id }
 
-        it 'fetches the public resource' do
+        it 'fetches the resource' do
           is_expected.to eq(accessible_resource)
         end
       end
 
-      context 'when the resource is internal' do
-        let(:internal_resource) { create(:ci_catalog_resource, :published, project: internal_project) }
-        let(:id) { internal_resource.id }
+      context 'when the resource is not found' do
+        let(:id) { 'not-an-id' }
 
-        it { is_expected.to be_nil }
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
+      end
+
+      context 'when the resource is not published' do
+        let(:id) { draft_resource.id }
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
+      end
+
+      context "when the current user cannot read code on the resource's project" do
+        let(:id) { inaccessible_resource.id }
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
+      end
+    end
+
+    context 'when using the full_path argument' do
+      subject { list.find_resource(full_path: full_path) }
+
+      context 'when the resource is published and visible to the user' do
+        let(:full_path) { accessible_resource.project.full_path }
+
+        it 'fetches the resource' do
+          is_expected.to eq(accessible_resource)
+        end
+      end
+
+      context 'when the resource is not found' do
+        let(:full_path) { 'not-a-path' }
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
+      end
+
+      context 'when the resource is not published' do
+        let(:full_path) { draft_resource.project.full_path }
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
+      end
+
+      context "when the current user cannot read code on the resource's project" do
+        let(:full_path) { inaccessible_resource.project.full_path }
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
       end
     end
   end

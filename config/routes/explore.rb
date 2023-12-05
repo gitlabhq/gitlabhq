@@ -11,7 +11,10 @@ namespace :explore do
   end
 
   resources :groups, only: [:index]
-  resources :catalog, only: [:index, :show], constraints: { id: /\d+/ }
+  scope :catalog do
+    get '/' => 'catalog#index', as: :catalog_index
+    get '/*full_path' => 'catalog#show', as: :catalog
+  end
   resources :snippets, only: [:index]
   root to: 'projects#index'
 end

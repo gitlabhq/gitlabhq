@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group Issue Boards', :js, feature_category: :groups_and_projects do
+RSpec.describe 'Group Issue Boards', :js, feature_category: :team_planning do
   include BoardHelpers
 
   let(:group)            { create(:group) }

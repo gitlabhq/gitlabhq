@@ -30,8 +30,8 @@ module Ci
         end
       end
 
-      def find_resource(id:)
-        resource = Ci::Catalog::Resource.find_by_id(id)
+      def find_resource(id: nil, full_path: nil)
+        resource = id ? Ci::Catalog::Resource.find_by_id(id) : Project.find_by_full_path(full_path)&.catalog_resource
 
         return unless resource.present?
         return unless resource.published?

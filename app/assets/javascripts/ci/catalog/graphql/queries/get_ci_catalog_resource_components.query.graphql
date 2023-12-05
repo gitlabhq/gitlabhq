@@ -1,6 +1,7 @@
-query getCiCatalogResourceComponents($id: CiCatalogResourceID!) {
-  ciCatalogResource(id: $id) {
+query getCiCatalogResourceComponents($fullPath: ID!) {
+  ciCatalogResource(fullPath: $fullPath) {
     id
+    webPath
     components @client {
       nodes {
         id

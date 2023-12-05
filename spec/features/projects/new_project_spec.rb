@@ -79,21 +79,13 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
       expect(page).to have_content 'Other visibility settings have been disabled by the administrator.'
     end
 
-    context 'with prevent_visibility_restriction feature flag off' do
-      before do
-        stub_feature_flags(prevent_visibility_restriction: false)
-      end
+    it 'shows a message if all levels are restricted' do
+      stub_application_setting(restricted_visibility_levels: Gitlab::VisibilityLevel.values)
 
-      it 'shows a message if all levels are restricted' do
-        Gitlab::CurrentSettings.update!(
-          restricted_visibility_levels: Gitlab::VisibilityLevel.values
-        )
+      visit new_project_path
+      click_link 'Create blank project'
 
-        visit new_project_path
-        click_link 'Create blank project'
-
-        expect(page).to have_content 'Visibility settings have been disabled by the administrator.'
-      end
+      expect(page).to have_content 'Visibility settings have been disabled by the administrator.'
     end
   end
 

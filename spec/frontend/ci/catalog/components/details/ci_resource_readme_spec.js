@@ -23,12 +23,13 @@ describe('CiResourceReadme', () => {
     data: {
       ciCatalogResource: {
         id: resourceId,
+        webPath: 'twitter/project-1',
         readmeHtml,
       },
     },
   };
 
-  const defaultProps = { resourceId };
+  const defaultProps = { resourcePath: readmeMockData.data.ciCatalogResource.webPath };
 
   const createComponent = ({ props = {} } = {}) => {
     const handlers = [[getCiCatalogResourceReadme, mockReadmeResponse]];

@@ -5260,6 +5260,7 @@ Input type: `MemberRoleCreateInput`
 | <a id="mutationmemberrolecreategrouppath"></a>`groupPath` | [`ID!`](#id) | Group the member role to mutate is in. |
 | <a id="mutationmemberrolecreatemanageprojectaccesstokens"></a>`manageProjectAccessTokens` | [`Boolean`](#boolean) | Permission to admin project access tokens. |
 | <a id="mutationmemberrolecreatename"></a>`name` | [`String`](#string) | Name of the member role. |
+| <a id="mutationmemberrolecreatepermissions"></a>`permissions` **{warning-solid}** | [`[String!]`](#string) | **Deprecated:** This feature is an Experiment. It can be changed or removed at any time. Introduced in 16.7. |
 | <a id="mutationmemberrolecreatereadcode"></a>`readCode` | [`Boolean`](#boolean) | Permission to read code. |
 | <a id="mutationmemberrolecreatereaddependency"></a>`readDependency` | [`Boolean`](#boolean) | Permission to read dependency. |
 | <a id="mutationmemberrolecreatereadvulnerability"></a>`readVulnerability` | [`Boolean`](#boolean) | Permission to read vulnerability. |

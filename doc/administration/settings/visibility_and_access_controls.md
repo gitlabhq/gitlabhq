@@ -166,6 +166,7 @@ For more details on group visibility, see
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124649) in GitLab 16.3 to prevent restricting default project and group visibility, [with a flag](../feature_flags.md) named `prevent_visibility_restriction`. Disabled by default.
 > - `prevent_visibility_restriction` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131203) by default in GitLab 16.4.
+> - The flag `prevent_visibility_restriction` was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/433280) in GitLab 16.7.
 
 When restricting visibility levels, consider how these restrictions interact
 with permissions for subgroups and projects that inherit their visibility from

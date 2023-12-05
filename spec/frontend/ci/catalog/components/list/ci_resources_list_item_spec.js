@@ -2,10 +2,10 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { GlAvatar, GlBadge, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { createRouter } from '~/ci/catalog/router/index';
 import CiResourcesListItem from '~/ci/catalog/components/list/ci_resources_list_item.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { CI_RESOURCE_DETAILS_PAGE_NAME } from '~/ci/catalog/router/constants';
 import { catalogSinglePageResponse } from '../../mock';
 
 Vue.use(VueRouter);
@@ -70,9 +70,7 @@ describe('CiResourcesListItem', () => {
 
     it('renders the resource name and link', () => {
       expect(findResourceName().exists()).toBe(true);
-      expect(findResourceName().attributes().href).toBe(
-        `/${getIdFromGraphQLId(defaultProps.resource.id)}`,
-      );
+      expect(findResourceName().attributes().href).toBe(defaultProps.resource.webPath);
     });
 
     it('renders the resource version badge', () => {
@@ -128,10 +126,7 @@ describe('CiResourcesListItem', () => {
         await findResourceName().vm.$emit('click', defaultEvent);
 
         expect(routerPush).toHaveBeenCalledWith({
-          name: CI_RESOURCE_DETAILS_PAGE_NAME,
-          params: {
-            id: getIdFromGraphQLId(resource.id),
-          },
+          path: cleanLeadingSeparator(resource.webPath),
         });
       });
     });
@@ -160,12 +155,7 @@ describe('CiResourcesListItem', () => {
     });
 
     it('navigates to the details page', () => {
-      expect(routerPush).toHaveBeenCalledWith({
-        name: CI_RESOURCE_DETAILS_PAGE_NAME,
-        params: {
-          id: getIdFromGraphQLId(resource.id),
-        },
-      });
+      expect(routerPush).toHaveBeenCalledWith({ path: cleanLeadingSeparator(resource.webPath) });
     });
   });
 

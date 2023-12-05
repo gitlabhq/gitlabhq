@@ -19,7 +19,7 @@ RSpec.describe Explore::CatalogController, feature_category: :pipeline_compositi
       if action == :index
         explore_catalog_index_path
       else
-        explore_catalog_path(id: catalog_resource.id)
+        explore_catalog_path(catalog_resource)
       end
     end
 
@@ -55,7 +55,7 @@ RSpec.describe Explore::CatalogController, feature_category: :pipeline_compositi
       it 'responds with 404' do
         catalog_resource = create(:ci_catalog_resource, state: :draft)
 
-        get explore_catalog_path(id: catalog_resource.id)
+        get explore_catalog_path(catalog_resource)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

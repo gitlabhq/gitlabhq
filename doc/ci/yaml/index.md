@@ -3161,6 +3161,41 @@ This example uses [Eleventy](https://www.11ty.dev) to generate a static website 
 output the generated HTML files into a the `dist/` directory. This directory is exported
 as an artifact and published with GitLab Pages.
 
+#### `pages:pages.path_prefix` **(PREMIUM ALL EXPERIMENT)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [Experiment](../../policy/experiment-beta-support.md) [with a flag](../../user/feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+an administrator can [enable the feature flag](../../administration/feature_flags.md) named
+`pages_multiple_versions_setting`. On GitLab.com, this feature is not available. This feature is not ready for production use.
+
+Use `pages.path_prefix` to configure a path prefix for [multiple deployments](../../user/project/pages/index.md#create-multiple-deployments) of GitLab Pages.
+
+**Keyword type**: Job keyword. You can use it only as part of a `pages` job.
+
+**Possible inputs**:
+
+- A string with valid [URL characters](https://www.ietf.org/rfc/rfc1738.txt).
+- [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+- A combination of both.
+
+**Example of `pages.path_prefix`**:
+
+```yaml
+pages:
+  stage: deploy
+  script:
+    - echo "Pages accessible through ${CI_PAGES_URL}/${CI_COMMIT_BRANCH}"
+  pages:
+    path_prefix: "$CI_COMMIT_BRANCH"
+  artifacts:
+    paths:
+    - public
+```
+
+In this example, a different pages deployment is created for each branch.
+
 ### `parallel`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336576) in GitLab 15.9, the maximum value for `parallel` is increased from 50 to 200.

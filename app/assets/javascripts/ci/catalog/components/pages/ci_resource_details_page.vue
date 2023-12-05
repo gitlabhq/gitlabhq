@@ -2,8 +2,7 @@
 import { GlEmptyState } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { CI_CATALOG_RESOURCE_TYPE } from '../../graphql/settings';
+import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import getCatalogCiResourceDetails from '../../graphql/queries/get_ci_catalog_resource_details.query.graphql';
 import getCatalogCiResourceSharedData from '../../graphql/queries/get_ci_catalog_resource_shared_data.query.graphql';
 import CiResourceDetails from '../details/ci_resource_details.vue';
@@ -28,7 +27,7 @@ export default {
       query: getCatalogCiResourceSharedData,
       variables() {
         return {
-          id: this.graphQLId,
+          fullPath: this.cleanFullPath,
         };
       },
       update(data) {
@@ -43,7 +42,7 @@ export default {
       query: getCatalogCiResourceDetails,
       variables() {
         return {
-          id: this.graphQLId,
+          fullPath: this.cleanFullPath,
         };
       },
       update(data) {
@@ -56,8 +55,8 @@ export default {
     },
   },
   computed: {
-    graphQLId() {
-      return convertToGraphQLId(CI_CATALOG_RESOURCE_TYPE, this.$route.params.id);
+    cleanFullPath() {
+      return cleanLeadingSeparator(this.$route.params.id);
     },
     isLoadingDetails() {
       return this.$apollo.queries.resourceAdditionalDetails.loading;
@@ -103,7 +102,7 @@ export default {
         :pipeline-status="pipelineStatus"
         :resource="resourceSharedData"
       />
-      <ci-resource-details :resource-id="graphQLId" />
+      <ci-resource-details :resource-path="cleanFullPath" />
     </div>
   </div>
 </template>

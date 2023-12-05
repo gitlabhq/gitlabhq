@@ -16495,9 +16495,6 @@ msgstr ""
 msgid "Dependency Scanning"
 msgstr ""
 
-msgid "Dependency chains are not supported"
-msgstr ""
-
 msgid "Dependency list"
 msgstr ""
 
@@ -58108,6 +58105,9 @@ msgid "must be inside the fork network"
 msgstr ""
 
 msgid "must be less than the limit of %{tag_limit} tags"
+msgstr ""
+
+msgid "must be one of: %{values}"
 msgstr ""
 
 msgid "must be owned by the user's enterprise group"

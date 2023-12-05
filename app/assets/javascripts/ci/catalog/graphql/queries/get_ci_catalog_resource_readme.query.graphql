@@ -1,6 +1,7 @@
-query getCiCatalogResourceReadme($id: CiCatalogResourceID!) {
-  ciCatalogResource(id: $id) {
+query getCiCatalogResourceReadme($fullPath: ID!) {
+  ciCatalogResource(fullPath: $fullPath) {
     id
+    webPath
     readmeHtml
   }
 }

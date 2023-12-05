@@ -7,6 +7,9 @@ type: reference, concepts
 
 # Merge request dependencies **(PREMIUM ALL)**
 
+> - Support for complex merge dependencies [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11393) in GitLab 16.6 [with a flag](../../../administration/feature_flags.md) named `remove_mr_blocking_constraints`. Disabled by default.
+> - Support for complex merge dependencies [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136775) in GitLab 16.7. Feature flag `remove_mr_blocking_constraints` removed.
+
 A single feature can span several merge requests, spread out across multiple projects,
 and the order in which the work merges can be significant. Use merge request dependencies
 when it's important to merge work in a specific order. Some examples:
@@ -47,6 +50,26 @@ Merge request dependencies are a **PREMIUM** feature, but this restriction is
 enforced only for the dependent merge request. A merge request in a **PREMIUM**
 project can depend on a merge request in a **FREE** project, but a merge request
 in a **FREE** project cannot be marked as dependent.
+
+## Nested dependencies
+
+Indirect, nested dependencies are supported in GitLab 16.7 and later.
+A single merge request can be blocked by up to 10 merge requests, and,
+in turn, can block up to 10 merge requests. In this example, `myfriend/library!10`
+depends on `herfriend/another-lib!1`, which in turn depends on `mycorp/example!100`:
+
+```mermaid
+graph LR;
+    A[myfriend/library!10]-->|depends on| B[herfriend/another-lib!1]
+    B-->|depends on| C[mycorp/example!100]
+```
+
+Nested dependencies do not display in the GitLab UI, but UI support has
+been proposed in [epic 5308](https://gitlab.com/groups/gitlab-org/-/epics/5308).
+
+NOTE:
+A merge request can't be made dependent on itself (self-referential), but
+it's possible to create circular dependencies.
 
 ## View dependencies for a merge request
 
@@ -142,32 +165,3 @@ No API support exists for managing dependencies. For more information, read
 
 Dependencies are not preserved when projects are imported or exported. For more
 information, read [issue #12549](https://gitlab.com/gitlab-org/gitlab/-/issues/12549).
-
-### Complex merge order dependencies are unsupported
-
-- Support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11393) in GitLab 16.6 [with a flag](../../../administration/feature_flags.md) named `remove_mr_blocking_constraints`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `remove_mr_blocking_constraints`.
-On GitLab.com, this feature is available.
-
-If you attempt to create an indirect, nested dependency, GitLab shows the error message:
-
-- Dependencies failed to save: Dependency chains are not supported
-
-GitLab supports direct dependencies between merge requests, but does not support
-[indirect (nested) dependencies](https://gitlab.com/gitlab-org/gitlab/-/issues/11393).
-
-Acceptable dependency patterns include:
-
-- A single merge request can directly depend on a single merge request.
-- A single merge request can directly depend on multiple merge requests.
-- Multiple merge requests can directly depend on a single merge request.
-
-The indirect, nested dependency between `myfriend/library!10` and `mycorp/example!100` shown in this example is not supported:
-
-```mermaid
-graph LR;
-    A[myfriend/library!10]-->|depends on| B[herfriend/another-lib!1]
-    B-->|depends on| C[mycorp/example!100]
-```

@@ -544,6 +544,23 @@ module Gitlab
             expect(subject.workflow_name).to be_nil
           end
         end
+
+        context 'with auto_cancel' do
+          let(:config) do
+            <<-YML
+              workflow:
+                auto_cancel:
+                  on_new_commit: interruptible
+
+              hello:
+                script: echo world
+            YML
+          end
+
+          it 'parses the workflow:auto_cancel as workflow_auto_cancel' do
+            expect(subject.workflow_auto_cancel).to eq(on_new_commit: 'interruptible')
+          end
+        end
       end
 
       describe '#warnings' do

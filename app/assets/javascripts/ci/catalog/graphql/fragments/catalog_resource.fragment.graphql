@@ -1,5 +1,6 @@
 fragment CatalogResourceFields on CiCatalogResource {
   id
+  webPath
   icon
   name
   description
@@ -15,5 +16,4 @@ fragment CatalogResourceFields on CiCatalogResource {
       webUrl
     }
   }
-  webPath
 }

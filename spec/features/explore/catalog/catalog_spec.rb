@@ -114,11 +114,11 @@ RSpec.describe 'CI/CD Catalog', :js, feature_category: :pipeline_composition do
     let_it_be(:project) { create(:project, :repository, namespace: namespace) }
 
     before do
-      visit explore_catalog_path(id: new_ci_resource["id"])
+      visit explore_catalog_path(new_ci_resource)
     end
 
     context 'when the resource is published' do
-      let_it_be(:new_ci_resource) { create(:ci_catalog_resource, :published, project: project) }
+      let(:new_ci_resource) { create(:ci_catalog_resource, :published, project: project) }
 
       it 'navigates to the details page' do
         expect(page).to have_content('Go to the project')
@@ -126,7 +126,7 @@ RSpec.describe 'CI/CD Catalog', :js, feature_category: :pipeline_composition do
     end
 
     context 'when the resource is not published' do
-      let_it_be(:new_ci_resource) { create(:ci_catalog_resource, project: project, state: :draft) }
+      let(:new_ci_resource) { create(:ci_catalog_resource, project: project, state: :draft) }
 
       it 'returns a 404' do
         expect(page).to have_title('Not Found')

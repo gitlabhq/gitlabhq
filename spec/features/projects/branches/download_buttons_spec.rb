@@ -50,6 +50,11 @@ RSpec.describe 'Download buttons in branches page', feature_category: :groups_an
 
         expect(page).to have_link build.name, href: href
       end
+
+      it 'passes axe automated accessibility testing', :js do
+        find_by_testid('download-source-code-button').click
+        expect(page).to be_axe_clean.within('.project-action-button')
+      end
     end
   end
 end

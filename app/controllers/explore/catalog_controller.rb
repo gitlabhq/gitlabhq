@@ -23,7 +23,7 @@ module Explore
     end
 
     def catalog_resource
-      ::Ci::Catalog::Listing.new(current_user).find_resource(id: params[:id])
+      ::Ci::Catalog::Listing.new(current_user).find_resource(full_path: params[:full_path])
     end
   end
 end

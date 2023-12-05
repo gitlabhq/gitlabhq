@@ -1,8 +1,0 @@
----
-name: remove_mr_blocking_constraints
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133897
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/429428
-milestone: '16.6'
-type: development
-group: group::code review
-default_enabled: false

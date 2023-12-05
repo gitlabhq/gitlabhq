@@ -100,6 +100,10 @@ module Gitlab
         root.workflow_entry.name
       end
 
+      def workflow_auto_cancel
+        root.workflow_entry.auto_cancel_value
+      end
+
       def normalized_jobs
         @normalized_jobs ||= Ci::Config::Normalizer.new(jobs).normalize_jobs
       end

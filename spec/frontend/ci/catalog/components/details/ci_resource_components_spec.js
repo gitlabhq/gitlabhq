@@ -19,9 +19,9 @@ describe('CiResourceComponents', () => {
 
   const components = mockComponents.data.ciCatalogResource.components.nodes;
 
-  const resourceId = 'gid://gitlab/Ci::Catalog::Resource/1';
+  const resourcePath = 'twitter/project-1';
 
-  const defaultProps = { resourceId };
+  const defaultProps = { resourcePath };
 
   const createComponent = async () => {
     const handlers = [[getCiCatalogcomponentComponents, mockComponentsResponse]];
