@@ -105,7 +105,7 @@ most control over each change:
    git switch my-feature-branch
    ```
 
-1. [Rebase your branch](../../../topics/git/git_rebase.md#regular-rebase) against the
+1. [Rebase your branch](../../../topics/git/git_rebase.md#rebase-by-using-git) against the
    target branch (here, `main`) so Git prompts you with the conflicts:
 
    ```shell
@@ -150,7 +150,7 @@ most control over each change:
    running `git rebase`.
    After you run `git rebase --continue`, you cannot abort the rebase.
 
-1. [Force-push](../../../topics/git/git_rebase.md#force-push) the changes to your
+1. [Force-push](../../../topics/git/git_rebase.md#force-pushing) the changes to your
    remote branch.
 
 ## Merge commit strategy

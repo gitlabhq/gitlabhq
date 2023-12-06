@@ -326,7 +326,6 @@ table {
 
 .discussion-reply-holder {
   .reply-placeholder-text-field {
-    @include gl-font-monospace;
     border-radius: $gl-border-radius-base;
     width: 100%;
     resize: none;

@@ -65,6 +65,8 @@ PATH
   remote: gems/gitlab-secret_detection
   specs:
     gitlab-secret_detection (0.1.0)
+      re2 (~> 2.4)
+      toml-rb (~> 2.2)
 
 PATH
   remote: gems/gitlab-utils

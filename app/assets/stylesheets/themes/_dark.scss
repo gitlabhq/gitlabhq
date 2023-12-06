@@ -8,19 +8,6 @@ $gray-dark: darken($gray-100, 2);
 $gray-darker: darken($gray-200, 2);
 $gray-darkest: $gray-700;
 
-// $data-viz blue shades required for $calendar-activity-colors
-$data-viz-blue-50: #2a2b59;
-$data-viz-blue-100: #303470;
-$data-viz-blue-200: #374291;
-$data-viz-blue-300: #3f51ae;
-$data-viz-blue-400: #4e65cd;
-$data-viz-blue-500: #617ae2;
-$data-viz-blue-600: #7992f5;
-$data-viz-blue-700: #97acff;
-$data-viz-blue-800: #b7c6ff;
-$data-viz-blue-900: #d2dcff;
-$data-viz-blue-950: #e9ebff;
-
 // Some of the other $t-gray-a variables are used
 // for borders and some other places, so we cannot override
 // them. These are used only for box shadows so we can
@@ -29,8 +16,6 @@ $t-gray-a-24: rgba($gray-10, 0.24);
 
 $black-normal: $gray-900;
 $white-dark: $gray-100;
-
-$theme-indigo-50: #1a1a40;
 
 $border-color: #4f4f4f;
 

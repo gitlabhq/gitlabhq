@@ -369,7 +369,7 @@ git push origin main
 ```
 
 Sometimes Git does not allow you to push to a repository. Instead,
-you must [force an update](../topics/git/git_rebase.md#force-push).
+you must [force an update](../topics/git/git_rebase.md#force-pushing).
 
 ### Delete all changes in the branch
 

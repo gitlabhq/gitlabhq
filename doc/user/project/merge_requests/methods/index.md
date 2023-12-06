@@ -198,7 +198,7 @@ In these merge methods, you can merge only when your source branch is up-to-date
 If a fast-forward merge is not possible but a conflict-free rebase is possible,
 GitLab provides:
 
-- The [`/rebase` quick action](../../../../topics/git/git_rebase.md#from-the-gitlab-ui).
+- The [`/rebase` quick action](../../../../topics/git/git_rebase.md#rebase-from-the-ui).
 - The option to select **Rebase** in the user interface.
 
 You must rebase the source branch locally before a fast-forward merge if both

@@ -138,6 +138,7 @@ module Types
     mount_mutation Mutations::DesignManagement::Update
     mount_mutation Mutations::ContainerExpirationPolicies::Update
     mount_mutation Mutations::ContainerRegistry::Protection::Rule::Create, alpha: { milestone: '16.6' }
+    mount_mutation Mutations::ContainerRegistry::Protection::Rule::Delete, alpha: { milestone: '16.7' }
     mount_mutation Mutations::ContainerRepositories::Destroy
     mount_mutation Mutations::ContainerRepositories::DestroyTags
     mount_mutation Mutations::Ci::Catalog::Resources::Create, alpha: { milestone: '15.11' }

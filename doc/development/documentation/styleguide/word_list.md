@@ -700,6 +700,11 @@ The **upstream project** (also known as the **source project**) and the **fork**
 If the **fork relationship** is removed, the
 **fork** is **unlinked** from the **upstream project**.
 
+## full screen
+
+Use two words for **full screen**.
+([Vale](../testing.md#vale) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
+
 ## future tense
 
 When possible, use present tense instead of future tense. For example, use **after you execute this command, GitLab displays the result** instead of **after you execute this command, GitLab will display the result**. ([Vale](../testing.md#vale) rule: [`FutureTense.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FutureTense.yml))

@@ -8,7 +8,7 @@ import AbuseReportCommentForm from './abuse_report_comment_form.vue';
 export default {
   name: 'AbuseReportAddNote',
   i18n: {
-    reply: __('Reply'),
+    reply: __('Reply…'),
     replyToComment: __('Reply to comment'),
     commentError: __('Your comment could not be submitted because %{reason}.'),
     genericError: __(
@@ -139,7 +139,7 @@ export default {
             v-else
             ref="textarea"
             rows="1"
-            class="reply-placeholder-text-field gl-font-regular!"
+            class="reply-placeholder-text-field"
             data-testid="abuse-report-note-reply-textarea"
             :placeholder="$options.i18n.reply"
             :aria-label="$options.i18n.replyToComment"

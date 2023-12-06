@@ -51,3 +51,73 @@ For more information, see [working-tree-encoding](https://git-scm.com/docs/gitat
 The `.gitattributes` file can be used to define which language to use when
 syntax highlighting files and diffs. For more information, see
 [Syntax highlighting](highlighting.md).
+
+## Custom merge drivers
+
+> Ability to configure custom merge drivers through GitLab introduced in GitLab 15.10.
+
+You can define [custom merge drivers](https://git-scm.com/docs/gitattributes#_defining_a_custom_merge_driver)
+in a GitLab configuration file, then use the custom merge drivers in a Git
+`.gitattributes` file.
+
+You might configure a custom merge driver, for example, if there are certain
+files that should be ignored during a merge such as build files and configuration files.
+
+### Configure a custom merge driver
+
+The following example illustrates how to define and use a custom merge driver in
+GitLab.
+
+How to configure a custom merge driver depends on the type of installation.
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb`.
+1. Add configuration similar to the following:
+
+   ```ruby
+   gitaly['configuration'] = {
+     # ...
+     git: {
+       # ...
+       config: [
+         # ...
+         { key: "merge.foo.driver", value: "true" },
+       ],
+     },
+   }
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. Edit `gitaly.toml`.
+1. Add configuration similar to the following:
+
+   ```toml
+   [[git.config]]
+   key = "merge.foo.driver"
+   value = "true"
+   ```
+
+::EndTabs
+
+In this example, during a merge, Git uses the `driver` value as the command to execute. In
+this case, because we are using [`true`](https://man7.org/linux/man-pages/man1/true.1.html)
+with no arguments, it always returns a non-zero return code. This means that for
+the files specified in `.gitattributes`, merges do nothing.
+
+To use your own merge driver, replace the value in `driver` to point to an
+executable. For more details on how this command is invoked, please see the Git
+documentation on [custom merge drivers](https://git-scm.com/docs/gitattributes#_defining_a_custom_merge_driver).
+
+### Use `.gitattributes` to set files custom merge driver applies to
+
+In a `.gitattributes` file, you can set the paths of files you want to use with the custom merge driver. For example:
+
+```plaintext
+config/* merge=foo
+```
+
+In this case, every file under the `config/` folder uses the custom merge driver called `foo` defined in the GitLab configuration.

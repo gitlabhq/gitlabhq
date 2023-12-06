@@ -1,0 +1,49 @@
+# This file contains a subset of rules pulled from the original source file.
+# Original Source: https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/gitleaks.toml
+# Reference: https://gitlab.com/gitlab-org/gitlab/-/issues/427011
+title = "gitleaks config"
+
+[[rules]]
+id = "gitlab_personal_access_token"
+description = "GitLab Personal Access Token"
+regex = '''glpat-[0-9a-zA-Z_\-]{20}'''
+tags = ["gitlab", "revocation_type"]
+keywords = [
+    "glpat",
+]
+
+[[rules]]
+id = "gitlab_pipeline_trigger_token"
+description = "GitLab Pipeline Trigger Token"
+regex = '''glptt-[0-9a-zA-Z_\-]{20}'''
+tags = ["gitlab"]
+keywords = [
+    "glptt",
+]
+
+[[rules]]
+id = "gitlab_runner_registration_token"
+description = "GitLab Runner Registration Token"
+regex = '''GR1348941[0-9a-zA-Z_\-]{20}'''
+tags = ["gitlab"]
+keywords = [
+    "GR1348941",
+]
+
+[[rules]]
+id = "gitlab_runner_auth_token"
+description = "GitLab Runner Authentication Token"
+regex = '''glrt-[0-9a-zA-Z_\-]{20}'''
+tags = ["gitlab"]
+keywords = [
+    "glrt",
+]
+
+[[rules]]
+id = "gitlab_feed_token"
+description = "GitLab Feed Token"
+regex = '''glft-[0-9a-zA-Z_\-]{20}'''
+tags = ["gitlab"]
+keywords = [
+    "glft",
+]

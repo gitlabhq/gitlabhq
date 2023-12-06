@@ -223,7 +223,8 @@ RSpec.shared_examples "redis_shared_examples" do
       end
 
       it 'instantiates a connection pool with size 5' do
-        expect(ConnectionPool).to receive(:new).with(size: 5).and_call_original
+        expect(ConnectionPool).to receive(:new)
+          .with(size: 5, name: described_class.store_name.underscore).and_call_original
 
         described_class.with { |_redis_shared_example| true }
       end
@@ -236,7 +237,8 @@ RSpec.shared_examples "redis_shared_examples" do
       end
 
       it 'instantiates a connection pool with a size based on the concurrency of the worker' do
-        expect(ConnectionPool).to receive(:new).with(size: 18 + 5).and_call_original
+        expect(ConnectionPool).to receive(:new)
+          .with(size: 18 + 5, name: described_class.store_name.underscore).and_call_original
 
         described_class.with { |_redis_shared_example| true }
       end

@@ -65,7 +65,7 @@ module NotesHelper
     content_tag(
       :textarea,
       rows: 1,
-      placeholder: _('Reply...'),
+      placeholder: _('Reply…'),
       'aria-label': _('Reply to comment'),
       class: 'reply-placeholder-text-field js-discussion-reply-button',
       data: {

@@ -3,6 +3,7 @@
 module BitbucketServer
   class Connection
     include ActionView::Helpers::SanitizeHelper
+    include BitbucketServer::RetryWithDelay
 
     DEFAULT_API_VERSION = '1.0'
     SEPARATOR = '/'
@@ -31,10 +32,13 @@ module BitbucketServer
     end
 
     def get(path, extra_query = {})
-      response = Gitlab::HTTP.get(build_url(path),
-                                  basic_auth: auth,
-                                  headers: accept_headers,
-                                  query: extra_query)
+      response = if Feature.enabled?(:bitbucket_server_importer_exponential_backoff)
+                   retry_with_delay do
+                     Gitlab::HTTP.get(build_url(path), basic_auth: auth, headers: accept_headers, query: extra_query)
+                   end
+                 else
+                   Gitlab::HTTP.get(build_url(path), basic_auth: auth, headers: accept_headers, query: extra_query)
+                 end
 
       check_errors!(response)
 
@@ -44,10 +48,13 @@ module BitbucketServer
     end
 
     def post(path, body)
-      response = Gitlab::HTTP.post(build_url(path),
-                                   basic_auth: auth,
-                                   headers: post_headers,
-                                   body: body)
+      response = if Feature.enabled?(:bitbucket_server_importer_exponential_backoff)
+                   retry_with_delay do
+                     Gitlab::HTTP.post(build_url(path), basic_auth: auth, headers: post_headers, body: body)
+                   end
+                 else
+                   Gitlab::HTTP.post(build_url(path), basic_auth: auth, headers: post_headers, body: body)
+                 end
 
       check_errors!(response)
 
@@ -63,10 +70,13 @@ module BitbucketServer
     def delete(resource, path, body)
       url = delete_url(resource, path)
 
-      response = Gitlab::HTTP.delete(url,
-                                     basic_auth: auth,
-                                     headers: post_headers,
-                                     body: body)
+      response = if Feature.enabled?(:bitbucket_server_importer_exponential_backoff)
+                   retry_with_delay do
+                     Gitlab::HTTP.delete(url, basic_auth: auth, headers: post_headers, body: body)
+                   end
+                 else
+                   Gitlab::HTTP.delete(url, basic_auth: auth, headers: post_headers, body: body)
+                 end
 
       check_errors!(response)
 
@@ -120,6 +130,10 @@ module BitbucketServer
       else
         build_url(path)
       end
+    end
+
+    def logger
+      Gitlab::BitbucketServerImport::Logger
     end
   end
 end

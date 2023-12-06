@@ -177,6 +177,8 @@ The following metrics are available:
 | `gitlab_ci_queue_iteration_duration_seconds` | Histogram | 16.3 | Time it takes to find a build in CI/CD queue |
 | `gitlab_ci_queue_retrieval_duration_seconds` | Histogram | 16.3 | Time it takes to execute a SQL query to retrieve builds queue |
 | `gitlab_ci_queue_active_runners_total` | Histogram | 16.3 | The amount of active runners that can process queue in a project |
+| `gitlab_connection_pool_size` | Gauge | 16.7 | Size of connection pool |
+| `gitlab_connection_pool_available_count` | Gauge | 16.7 | Number of available connections in the pool |
 
 ## Metrics controlled by a feature flag
 

@@ -82,6 +82,7 @@
 
 .right-sidebar.build-sidebar {
   padding: 0;
+  top: $calc-application-header-height;
 
   @include media-breakpoint-up(lg) {
     @include gl-border-l-0;
@@ -92,9 +93,7 @@
   }
 
   .sidebar-container {
-    @include gl-sticky;
-    top: #{$top-bar-height - 1px};
-    max-height: calc(100vh - #{$top-bar-height - 1px} - var(--performance-bar-height));
+    max-height: 100%;
     overflow-y: scroll;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;

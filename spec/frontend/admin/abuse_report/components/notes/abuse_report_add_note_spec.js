@@ -118,7 +118,7 @@ describe('Abuse Report Add Note', () => {
       expect(findReplyTextarea().exists()).toBe(true);
       expect(findReplyTextarea().attributes()).toMatchObject({
         rows: '1',
-        placeholder: 'Reply',
+        placeholder: 'Reply…',
         'aria-label': 'Reply to comment',
       });
     });

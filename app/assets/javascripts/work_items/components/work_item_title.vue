@@ -42,6 +42,11 @@ export default {
       required: false,
       default: false,
     },
+    useH1: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
   },
   computed: {
     tracking() {
@@ -101,5 +106,10 @@ export default {
 </script>
 
 <template>
-  <item-title :title="workItemTitle" :disabled="!canUpdate" @title-changed="updateTitle" />
+  <item-title
+    :title="workItemTitle"
+    :disabled="!canUpdate"
+    :use-h1="useH1"
+    @title-changed="updateTitle"
+  />
 </template>

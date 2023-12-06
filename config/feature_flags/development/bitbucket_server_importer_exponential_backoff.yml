@@ -1,0 +1,8 @@
+---
+name: bitbucket_server_importer_exponential_backoff
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137974
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/432974
+milestone: '16.7'
+type: development
+group: group::import and integrate
+default_enabled: false

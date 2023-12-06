@@ -30,6 +30,7 @@ swap:
   ex: "for example"
   filename: "file name"
   filesystem: "file system"
+  fullscreen: "full screen"
   info: "information"
   installation from source: self-compiled installation
   installations from source: self-compiled installations

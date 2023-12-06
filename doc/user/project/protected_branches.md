@@ -267,7 +267,7 @@ Deploy keys are not available in the **Allowed to merge** dropdown list.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15611) in GitLab 13.10 [with a flag](../../administration/feature_flags.md) named `allow_force_push_to_protected_branches`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/323431) in GitLab 14.0. Feature flag `allow_force_push_to_protected_branches` removed.
 
-You can allow [force pushes](../../topics/git/git_rebase.md#force-push) to
+You can allow [force pushes](../../topics/git/git_rebase.md#force-pushing) to
 protected branches.
 
 To protect a new branch and enable force push:

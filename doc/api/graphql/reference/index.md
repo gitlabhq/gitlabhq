@@ -3241,6 +3241,31 @@ Input type: `DeleteAnnotationInput`
 | <a id="mutationdeleteannotationclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdeleteannotationerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.deleteContainerRegistryProtectionRule`
+
+Deletes a container registry protection rule. Available only when feature flag `container_registry_protected_containers` is enabled.
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `DeleteContainerRegistryProtectionRuleInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdeletecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdeletecontainerregistryprotectionruleid"></a>`id` | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | Global ID of the container registry protection rule to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdeletecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdeletecontainerregistryprotectionrulecontainerregistryprotectionrule"></a>`containerRegistryProtectionRule` | [`ContainerRegistryProtectionRule`](#containerregistryprotectionrule) | Container registry protection rule that was deleted successfully. |
+| <a id="mutationdeletecontainerregistryprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.deletePackagesProtectionRule`
 
 Deletes a protection rule for packages. Available only when feature flag `packages_protected_packages` is enabled.

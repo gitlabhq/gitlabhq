@@ -9,7 +9,8 @@ import {
 describe('Work Item Note Activity Header', () => {
   let wrapper;
 
-  const findActivityLabelHeading = () => wrapper.find('h3');
+  const findActivityLabelH2Heading = () => wrapper.find('h2');
+  const findActivityLabelH3Heading = () => wrapper.find('h3');
   const findActivityFilterDropdown = () => wrapper.findByTestId('work-item-filter');
   const findActivitySortDropdown = () => wrapper.findByTestId('work-item-sort');
 
@@ -18,6 +19,7 @@ describe('Work Item Note Activity Header', () => {
     sortOrder = ASC,
     workItemType = 'Task',
     discussionFilter = WORK_ITEM_NOTES_FILTER_ALL_NOTES,
+    useH2 = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemNotesActivityHeader, {
       propsData: {
@@ -25,6 +27,7 @@ describe('Work Item Note Activity Header', () => {
         sortOrder,
         workItemType,
         discussionFilter,
+        useH2,
       },
     });
   };
@@ -34,7 +37,18 @@ describe('Work Item Note Activity Header', () => {
   });
 
   it('Should have the Activity label', () => {
-    expect(findActivityLabelHeading().text()).toBe(WorkItemNotesActivityHeader.i18n.activityLabel);
+    expect(findActivityLabelH3Heading().text()).toBe(
+      WorkItemNotesActivityHeader.i18n.activityLabel,
+    );
+  });
+
+  it('Should render an H2 instead of an H3 if useH2 is true', () => {
+    createComponent();
+    expect(findActivityLabelH3Heading().exists()).toBe(true);
+    expect(findActivityLabelH2Heading().exists()).toBe(false);
+    createComponent({ useH2: true });
+    expect(findActivityLabelH2Heading().exists()).toBe(true);
+    expect(findActivityLabelH3Heading().exists()).toBe(false);
   });
 
   it('Should have Activity filtering dropdown', () => {

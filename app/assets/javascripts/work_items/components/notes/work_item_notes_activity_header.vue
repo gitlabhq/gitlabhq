@@ -36,6 +36,16 @@ export default {
       default: WORK_ITEM_NOTES_FILTER_ALL_NOTES,
       required: false,
     },
+    useH2: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+  },
+  computed: {
+    headerClasses() {
+      return this.useH2 ? 'gl-font-size-h1 gl-m-0' : 'gl-font-base gl-m-0';
+    },
   },
   methods: {
     changeNotesSortOrder(direction) {
@@ -58,7 +68,9 @@ export default {
   <div
     class="gl-display-flex gl-justify-content-space-between gl-flex-wrap gl-pb-3 gl-align-items-center"
   >
-    <h3 class="gl-font-base gl-m-0">{{ $options.i18n.activityLabel }}</h3>
+    <component :is="useH2 ? 'h2' : 'h3'" :class="headerClasses">{{
+      $options.i18n.activityLabel
+    }}</component>
     <div class="gl-display-flex gl-gap-3">
       <work-item-activity-sort-filter
         :work-item-type="workItemType"

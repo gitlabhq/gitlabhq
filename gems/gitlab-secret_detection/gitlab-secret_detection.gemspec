@@ -24,11 +24,14 @@ Gem::Specification.new do |spec|
   spec.files = Dir['lib/**/*.rb']
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "gitlab-styles", "~> 10.1.0"
+  spec.add_runtime_dependency "re2", "~> 2.4"
+  spec.add_runtime_dependency "toml-rb", "~> 2.2"
+
+  spec.add_development_dependency "gitlab-styles", "~> 11.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rspec-benchmark", "~> 0.6.0"
   spec.add_development_dependency "rspec-parameterized", "~> 1.0"
-  spec.add_development_dependency "rubocop", "~> 1.50"
+  spec.add_development_dependency "rubocop", "~> 1.57"
   spec.add_development_dependency "rubocop-rails", "<= 2.20" # https://github.com/rubocop/rubocop-rails/issues/1173
   spec.add_development_dependency "rubocop-rspec", "~> 2.22"
 end

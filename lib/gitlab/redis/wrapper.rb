@@ -30,7 +30,7 @@ module Gitlab
         end
 
         def pool
-          @pool ||= ConnectionPool.new(size: pool_size) { redis }
+          @pool ||= ConnectionPool.new(size: pool_size, name: store_name.underscore) { redis }
         end
 
         def pool_size

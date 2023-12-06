@@ -85,7 +85,7 @@ export default {
 };
 </script>
 <template>
-  <aside class="right-sidebar build-sidebar" data-offset-top="101" data-spy="affix">
+  <aside class="right-sidebar build-sidebar">
     <div class="sidebar-container">
       <div class="blocks-container gl-p-4 gl-pt-0">
         <sidebar-header

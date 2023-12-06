@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BitbucketServer::Client do
+RSpec.describe BitbucketServer::Client, feature_category: :importers do
   let(:base_uri) { 'https://test:7990/stash/' }
   let(:options) { { base_uri: base_uri, user: 'bitbucket', password: 'mypassword' } }
   let(:project) { 'SOME-PROJECT' }

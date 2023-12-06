@@ -39,7 +39,7 @@
       = render Pajamas::ToggleComponent.new(classes: 'js-force-push-toggle',
         label: s_("ProtectedBranch|Allowed to force push"),
         label_position: :hidden) do
-        - force_push_docs_url = help_page_url('topics/git/git_rebase', anchor: 'force-push')
+        - force_push_docs_url = help_page_url('topics/git/git_rebase', anchor: 'force-pushing')
         - force_push_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: force_push_docs_url }
         = (s_("ProtectedBranch|Allow all users with push access to %{tag_start}force push%{tag_end}.") % { tag_start: force_push_link_start, tag_end: '</a>' }).html_safe
   = render_if_exists 'protected_branches/ee/code_owner_approval_form', f: f, protected_branch_entity: protected_branch_entity

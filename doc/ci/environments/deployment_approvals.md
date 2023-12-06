@@ -215,11 +215,7 @@ The approval status details are shown:
 
 ## View blocked deployments
 
-Use the UI or API to review the status of your deployments, including whether a deployment is blocked.
-
-::Tabs
-
-:::TabTitle With the UI
+Review the status of your deployments, including whether a deployment is blocked.
 
 To view your deployments:
 
@@ -229,15 +225,8 @@ To view your deployments:
 
 A deployment with the **blocked** label is blocked.
 
-:::TabTitle With the API
-
-To view your deployments:
-
-- Using the [deployments API](../../api/deployments.md#get-a-specific-deployment), get a specific deployment, or a list of all deployments in a project.
-
+To view your deployments, you can also [use the API](../../api/deployments.md#get-a-specific-deployment).
 The `status` field indicates whether a deployment is blocked.
-
-::EndTabs
 
 ## Related topics
 

@@ -40277,9 +40277,6 @@ msgstr ""
 msgid "Reply to this email directly or %{view_it_on_gitlab}."
 msgstr ""
 
-msgid "Reply..."
-msgstr ""
-
 msgid "Reply…"
 msgstr ""
 
@@ -51539,6 +51536,9 @@ msgid "Unauthorized to create a package protection rule"
 msgstr ""
 
 msgid "Unauthorized to create an environment"
+msgstr ""
+
+msgid "Unauthorized to delete a container registry protection rule"
 msgstr ""
 
 msgid "Unauthorized to delete a package protection rule"

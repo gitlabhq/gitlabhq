@@ -110,9 +110,6 @@ $t-gray-a-24: rgba($gray-950, 0.24) !default;
 
 $white-dark: darken($gray-50, 2) !default;
 
-// To do this variant right for darkmode, we need to create a variable for it.
-$indigo-900-alpha-008: rgba($theme-indigo-900, 0.08);
-
 $border-white-light: darken($white, $darken-border-factor) !default;
 $border-white-normal: darken($gray-50, $darken-border-factor) !default;
 

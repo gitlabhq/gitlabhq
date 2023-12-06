@@ -65,10 +65,6 @@
   .avatar-container {
     margin: 0 auto;
   }
-
-  li.active:not(.fly-out-top-item) > a {
-    background-color: $indigo-900-alpha-008;
-  }
 }
 
 @mixin sub-level-items-flyout {
