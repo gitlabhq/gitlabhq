@@ -15,7 +15,7 @@ module ExtractsRef
 
     class << self
       def ref_type(type)
-        return unless REF_TYPES.include?(type&.downcase)
+        return unless REF_TYPES.include?(type.to_s.downcase)
 
         type.downcase
       end

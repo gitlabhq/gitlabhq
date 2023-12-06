@@ -56,15 +56,6 @@ export default {
       required: false,
       default: null,
     },
-    terminalPath: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    projectPath: {
-      type: String,
-      required: true,
-    },
     subscriptionsMoreMinutesUrl: {
       type: String,
       required: false,
@@ -261,7 +252,6 @@ export default {
           v-if="shouldRenderSharedRunnerLimitWarning"
           :quota-used="job.runners.quota.used"
           :quota-limit="job.runners.quota.limit"
-          :project-path="projectPath"
           :subscriptions-more-minutes-url="subscriptionsMoreMinutesUrl"
         />
 

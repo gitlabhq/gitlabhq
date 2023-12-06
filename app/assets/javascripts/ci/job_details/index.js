@@ -26,7 +26,6 @@ export const initJobDetails = () => {
     subscriptionsMoreMinutesUrl,
     endpoint,
     pagePath,
-    buildStatus,
     projectPath,
     retryOutdatedJobDocsUrl,
     aiRootCauseAnalysisAvailable,
@@ -55,10 +54,6 @@ export const initJobDetails = () => {
           deploymentHelpUrl,
           runnerSettingsUrl,
           subscriptionsMoreMinutesUrl,
-          endpoint,
-          pagePath,
-          buildStatus,
-          projectPath,
         },
       });
     },

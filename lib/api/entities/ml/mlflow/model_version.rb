@@ -57,7 +57,7 @@ module API
           end
 
           def run_id
-            ""
+            object.candidate.eid
           end
 
           def status

@@ -132,15 +132,6 @@ module API
         def model
           @model ||= find_model(user_project, params[:name])
         end
-
-        def packages_url
-          path = api_v4_projects_packages_generic_package_version_path(
-            id: user_project.id, package_name: '', file_name: ''
-          )
-          path = path.delete_suffix('/package_version')
-
-          expose_url(path)
-        end
       end
     end
   end

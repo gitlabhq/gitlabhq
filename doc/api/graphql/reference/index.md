@@ -1033,6 +1033,27 @@ Returns [`WorkItem`](#workitem).
 | ---- | ---- | ----------- |
 | <a id="queryworkitemid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
 
+### `Query.workItemsByReference`
+
+Find work items by their reference.
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`WorkItemConnection`](#workitemconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryworkitemsbyreferencecontextnamespacepath"></a>`contextNamespacePath` | [`ID`](#id) | Full path of the context namespace (project or group). |
+| <a id="queryworkitemsbyreferencerefs"></a>`refs` | [`[String!]!`](#string) | Work item references. Can be either a short reference or URL. |
+
 ### `Query.workspace`
 
 Find a workspace.

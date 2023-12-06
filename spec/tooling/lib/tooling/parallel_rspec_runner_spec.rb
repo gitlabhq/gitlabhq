@@ -148,6 +148,12 @@ RSpec.describe Tooling::ParallelRSpecRunner, feature_category: :tooling do # rub
             Parsing expected rspec suite duration...
             03_spec.rb not found in master report
             RSpec suite is expected to take 1 minute 5 seconds.
+            Expected duration for tests:
+
+            {
+              "01_spec.rb": 65
+            }
+
             Running command: bundle exec rspec -- 01_spec.rb 03_spec.rb
 
           MARKDOWN

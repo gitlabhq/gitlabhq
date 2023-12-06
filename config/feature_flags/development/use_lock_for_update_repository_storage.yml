@@ -1,8 +1,0 @@
----
-name: use_lock_for_update_repository_storage
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136169
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/431198
-milestone: '16.6'
-type: development
-group: group::source code
-default_enabled: false

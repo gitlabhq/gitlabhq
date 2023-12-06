@@ -5,6 +5,8 @@ module API
     module Ml
       module Mlflow
         class RunInfo < Grape::Entity
+          include ::API::Helpers::RelatedResourcesHelpers
+
           expose :run_id
           expose :run_id, as: :run_uuid
           expose(:experiment_id) { |candidate| candidate.experiment.iid.to_s }
@@ -12,7 +14,7 @@ module API
           expose :end_time, expose_nil: false
           expose :name, as: :run_name, expose_nil: false
           expose(:status) { |candidate| candidate.status.to_s.upcase }
-          expose(:artifact_uri) { |candidate, options| "#{options[:packages_url]}#{candidate.artifact_root}" }
+          expose :artifact_uri
           expose(:lifecycle_stage) { |candidate| 'active' }
           expose(:user_id) { |candidate| candidate.user_id.to_s }
 
@@ -20,6 +22,34 @@ module API
 
           def run_id
             object.eid.to_s
+          end
+
+          def artifact_uri
+            expose_url(model_version_uri || generic_package_uri)
+          end
+
+          # Example: http://127.0.0.1:3000/api/v4/projects/20/packages/ml_models/my-model-name-4/3.0.0
+          def model_version_uri
+            return unless object.model_version_id
+
+            model_version = object.model_version
+
+            path = api_v4_projects_packages_ml_models_model_version_path(
+              id: object.project.id, model_name: model_version.model.name, model_version: '', file_name: ''
+            )
+
+            path.sub('/model_version', "/#{model_version.version}")
+          end
+
+          # Example: http://127.0.0.1:3000/api/v4/projects/20/packages/generic/ml_experiment_1/1/
+          # Note: legacy format
+          def generic_package_uri
+            path = api_v4_projects_packages_generic_package_version_path(
+              id: object.project.id, package_name: '', file_name: ''
+            )
+            path = path.delete_suffix('/package_version')
+
+            [path, object.artifact_root].join('')
           end
         end
       end

@@ -216,6 +216,13 @@ module Types
           description: 'Find machine learning models.',
           resolver: Resolvers::Ml::ModelDetailResolver
 
+    field :work_items_by_reference,
+          null: true,
+          alpha: { milestone: '16.7' },
+          description: 'Find work items by their reference.',
+          extras: [:lookahead],
+          resolver: Resolvers::WorkItemReferencesResolver
+
     def design_management
       DesignManagementObject.new(nil)
     end

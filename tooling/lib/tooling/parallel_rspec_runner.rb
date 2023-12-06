@@ -90,6 +90,9 @@ module Tooling
         knapsack_dir = File.dirname(ENV['KNAPSACK_RSPEC_SUITE_REPORT_PATH'])
         FileUtils.mkdir_p(knapsack_dir)
         File.write(File.join(knapsack_dir, 'node_specs_expected_duration.json'), JSON.dump(expected_duration_report))
+
+        Knapsack.logger.info "Expected duration for tests:\n\n"
+        Knapsack.logger.info "#{JSON.pretty_generate(expected_duration_report)}\n\n"
       end
 
       if node_tests.empty?

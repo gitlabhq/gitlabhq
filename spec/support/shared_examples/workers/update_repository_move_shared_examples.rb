@@ -96,18 +96,6 @@ RSpec.shared_examples 'an update storage move worker' do
               expect(repository_storage_move.reload).to be_failed
             end
           end
-
-          context 'when feature flag "use_lock_for_update_repository_storage" is disabled' do
-            before do
-              stub_feature_flags(use_lock_for_update_repository_storage: false)
-            end
-
-            it 'ignores lock and calls the update repository storage service' do
-              expect(service).to receive(:execute)
-
-              subject
-            end
-          end
         end
       end
     end
@@ -170,18 +158,6 @@ RSpec.shared_examples 'an update storage move worker' do
             subject
 
             expect(repository_storage_move.reload).to be_failed
-          end
-        end
-
-        context 'when feature flag "use_lock_for_update_repository_storage" is disabled' do
-          before do
-            stub_feature_flags(use_lock_for_update_repository_storage: false)
-          end
-
-          it 'ignores lock and calls the update repository storage service' do
-            expect(service).to receive(:execute)
-
-            subject
           end
         end
       end

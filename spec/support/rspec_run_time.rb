@@ -30,7 +30,8 @@ module Support
         duration = time_now - @start_time
         elapsed_time = time_now - @rspec_test_suite_start_time
 
-        output.puts "\n# Example group #{notification.group.description} took #{readable_duration(duration)}."
+        output.puts "\n# Example group #{notification.group.description} " \
+                    "(#{notification.group.metadata[:file_path]}) took #{readable_duration(duration)}."
         output.puts "# RSpec elapsed time: #{readable_duration(elapsed_time)}.\n\n"
       end
     end

@@ -32845,6 +32845,9 @@ msgstr ""
 msgid "Number of files touched"
 msgstr ""
 
+msgid "Number of references exceeds the limit. Please provide no more than %{refs_limit} references at the same time."
+msgstr ""
+
 msgid "Number of replicas"
 msgstr ""
 

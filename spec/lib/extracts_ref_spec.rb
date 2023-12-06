@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ExtractsRef do
+RSpec.describe ExtractsRef, feature_category: :source_code_management do
   include described_class
   include RepoHelpers
 
@@ -95,6 +95,12 @@ RSpec.describe ExtractsRef do
 
     context 'when ref_type is invalid' do
       let(:ref_type) { 'invalid' }
+
+      it { is_expected.to eq(nil) }
+    end
+
+    context 'when ref_type is a hash' do
+      let(:ref_type) { { 'just' => 'hash' } }
 
       it { is_expected.to eq(nil) }
     end
