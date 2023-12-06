@@ -260,12 +260,6 @@
   @media (prefers-reduced-motion: no-preference) {
     transition: left $gl-transition-duration-medium, right $gl-transition-duration-medium;
   }
-
-  .breadcrumbs-list {
-    @include media-breakpoint-down(xs) {
-      flex-wrap: nowrap;
-    }
-  }
 }
 
 .breadcrumbs {
@@ -280,59 +274,6 @@
     border-radius: 50%;
     vertical-align: sub;
   }
-
-  .text-expander {
-    margin-left: 0;
-    margin-right: 2px;
-
-    > i {
-      position: relative;
-      top: 1px;
-    }
-  }
-}
-
-.breadcrumbs-list {
-  display: flex;
-  margin-bottom: 0;
-  line-height: 16px;
-
-  @include media-breakpoint-down(xs) {
-    flex-wrap: wrap;
-  }
-
-  > li {
-    display: flex;
-    align-items: center;
-    position: relative;
-    min-width: 0;
-    padding: 2px 0;
-
-    &:not(:last-child) {
-      padding-right: 20px;
-    }
-
-    &:last-child {
-      > a {
-        font-weight: 600;
-        line-height: 16px;
-        color: $gl-text-color;
-      }
-    }
-
-    > a {
-      font-size: 12px;
-      color: currentColor;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      flex: 0 1 auto;
-    }
-
-    &:last-of-type > .breadcrumbs-list-angle {
-      display: none;
-    }
-  }
 }
 
 .breadcrumb-item-text {
@@ -341,20 +282,6 @@
   @include media-breakpoint-down(xs) {
     @include str-truncated(128px);
   }
-}
-
-.breadcrumbs-list-angle {
-  position: absolute;
-  right: 7px;
-  top: 50%;
-  color: $gl-text-color-tertiary;
-  transform: translateY(-50%);
-}
-
-.breadcrumbs-extra {
-  display: flex;
-  flex: 0 0 auto;
-  margin-left: auto;
 }
 
 @include media-breakpoint-down(xs) {

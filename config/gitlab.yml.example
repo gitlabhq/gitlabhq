@@ -1134,7 +1134,8 @@ production: &base
       #     args: {
       #       client_id: 'YOUR_AUTH0_CLIENT_ID',
       #       client_secret: 'YOUR_AUTH0_CLIENT_SECRET',
-      #       namespace: 'YOUR_AUTH0_DOMAIN' } }
+      #       domain: 'YOUR_AUTH0_DOMAIN',
+      #       scope: 'openid profile email' } }
 
   # FortiAuthenticator settings
   forti_authenticator:
@@ -1618,7 +1619,8 @@ test:
           args: {
             client_id: 'YOUR_AUTH0_CLIENT_ID',
             client_secret: 'YOUR_AUTH0_CLIENT_SECRET',
-            namespace: 'YOUR_AUTH0_DOMAIN' } }
+            domain: 'YOUR_AUTH0_DOMAIN',
+            scope: 'openid profile email' } }
       - { name: 'salesforce',
           app_id: 'YOUR_CLIENT_ID',
           app_secret: 'YOUR_CLIENT_SECRET'

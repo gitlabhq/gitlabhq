@@ -17,6 +17,8 @@ module Ci
         inverse_of: :catalog_resource
       has_many :versions, class_name: 'Ci::Catalog::Resources::Version', foreign_key: :catalog_resource_id,
         inverse_of: :catalog_resource
+      has_many :sync_events, class_name: 'Ci::Catalog::Resources::SyncEvent', foreign_key: :catalog_resource_id,
+        inverse_of: :catalog_resource
 
       scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
 
@@ -37,6 +39,14 @@ module Ci
 
       before_create :sync_with_project
 
+      class << self
+        # Used by Ci::ProcessSyncEventsService
+        def sync!(event)
+          # There may be orphaned records since this table does not enforce FKs
+          event.catalog_resource&.sync_with_project!
+        end
+      end
+
       def to_param
         full_path
       end
@@ -54,17 +64,16 @@ module Ci
         save!
       end
 
-      # Triggered in Ci::Catalog::Resources::Version and Release model callbacks.
+      # Triggered in Ci::Catalog::Resources::Version and Release model callbacks
       def update_latest_released_at!
         update!(latest_released_at: versions.latest&.released_at)
       end
 
       private
 
-      # These columns are denormalized from the `projects` table. We first sync these
-      # columns when the catalog resource record is created. Then any updates to the
-      # `projects` columns will be synced to the `catalog_resources` table by a worker
-      # (to be implemented in https://gitlab.com/gitlab-org/gitlab/-/issues/429376.)
+      # These denormalized columns are first synced when a new catalog resource is created.
+      # A PG trigger adds a SyncEvent when the associated project updates any of these columns.
+      # A worker processes the SyncEvents with Ci::ProcessSyncEventsService.
       def sync_with_project
         self.name = project.name
         self.description = project.description

@@ -186,6 +186,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
 
         resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create, :edit, :update] do
+          collection do
+            get :enabled_keys
+            get :available_project_keys
+            get :available_public_keys
+          end
+
           member do
             put :enable
             put :disable

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::DeployKeysController do
+RSpec.describe Projects::DeployKeysController, feature_category: :continuous_delivery do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
@@ -13,60 +13,94 @@ RSpec.describe Projects::DeployKeysController do
     sign_in(user)
   end
 
-  describe 'GET index' do
-    let(:params) do
-      { namespace_id: project.namespace, project_id: project }
+  describe 'GET actions' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:user) { create(:user) }
+
+    let_it_be(:accessible_project) { create(:project, :internal).tap { |p| p.add_developer(user) } }
+    let_it_be(:inaccessible_project) { create(:project, :internal) }
+    let_it_be(:project_private) { create(:project, :private) }
+
+    let_it_be(:deploy_key_for_target_project) do
+      create(:deploy_keys_project, project: project, deploy_key: create(:deploy_key))
     end
 
-    context 'when html requested' do
-      it 'redirects to project settings with the correct anchor' do
-        get :index, params: params
-
-        expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-deploy-keys-settings'))
-      end
+    let_it_be(:deploy_key_for_accessible_project) do
+      create(:deploy_keys_project, project: accessible_project, deploy_key: create(:deploy_key))
     end
 
-    context 'when json requested' do
-      let(:project2) { create(:project, :internal) }
-      let(:project_private) { create(:project, :private) }
+    let_it_be(:deploy_key_for_inaccessible_project) do
+      create(:deploy_keys_project, project: inaccessible_project, deploy_key: create(:deploy_key))
+    end
 
-      let(:deploy_key_internal) { create(:deploy_key) }
-      let(:deploy_key_actual) { create(:deploy_key) }
-      let!(:deploy_key_public) { create(:deploy_key, public: true) }
+    let_it_be(:deploy_keys_project_private) do
+      create(:deploy_keys_project, project: project_private, deploy_key: create(:another_deploy_key))
+    end
 
-      let!(:deploy_keys_project_internal) do
-        create(:deploy_keys_project, project: project2, deploy_key: deploy_key_internal)
+    let_it_be(:deploy_key_public) { create(:deploy_key, public: true) }
+
+    describe 'GET index' do
+      let(:params) do
+        { namespace_id: project.namespace, project_id: project }
       end
 
-      let!(:deploy_keys_project_actual) do
-        create(:deploy_keys_project, project: project, deploy_key: deploy_key_actual)
-      end
+      context 'when html requested' do
+        it 'redirects to project settings with the correct anchor' do
+          get :index, params: params
 
-      let!(:deploy_keys_project_private) do
-        create(:deploy_keys_project, project: project_private, deploy_key: create(:another_deploy_key))
-      end
-
-      context 'when user has access to all projects where deploy keys are used' do
-        before do
-          project2.add_developer(user)
+          expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-deploy-keys-settings'))
         end
+      end
 
+      context 'when json requested' do
         it 'returns json in a correct format' do
           get :index, params: params.merge(format: :json)
 
           expect(json_response.keys).to match_array(%w[enabled_keys available_project_keys public_keys])
-          expect(json_response['enabled_keys'].count).to eq(1)
-          expect(json_response['available_project_keys'].count).to eq(1)
-          expect(json_response['public_keys'].count).to eq(1)
+          expect(json_response['enabled_keys'].pluck('id')).to match_array(
+            [deploy_key_for_target_project.deploy_key_id]
+          )
+          expect(json_response['available_project_keys'].pluck('id')).to match_array(
+            [deploy_key_for_accessible_project.deploy_key_id]
+          )
+          expect(json_response['public_keys'].pluck('id')).to match_array([deploy_key_public.id])
         end
       end
+    end
 
-      context 'when user has no access to all projects where deploy keys are used' do
-        it 'returns json in a correct format' do
-          get :index, params: params.merge(format: :json)
+    describe 'GET enabled_keys' do
+      let(:params) do
+        { namespace_id: project.namespace, project_id: project }
+      end
 
-          expect(json_response['available_project_keys'].count).to eq(0)
-        end
+      it 'returns only enabled keys' do
+        get :enabled_keys, params: params.merge(format: :json)
+
+        expect(json_response.pluck("id")).to match_array([deploy_key_for_target_project.deploy_key_id])
+      end
+    end
+
+    describe 'GET available_project_keys' do
+      let(:params) do
+        { namespace_id: project.namespace, project_id: project }
+      end
+
+      it 'returns available project keys' do
+        get :available_project_keys, params: params.merge(format: :json)
+
+        expect(json_response.pluck("id")).to match_array([deploy_key_for_accessible_project.deploy_key_id])
+      end
+    end
+
+    describe 'GET available_public_keys' do
+      let(:params) do
+        { namespace_id: project.namespace, project_id: project }
+      end
+
+      it 'returns available public keys' do
+        get :available_public_keys, params: params.merge(format: :json)
+
+        expect(json_response.pluck("id")).to match_array([deploy_key_public.id])
       end
     end
   end

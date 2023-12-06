@@ -6404,9 +6404,6 @@ msgstr ""
 msgid "Archive project"
 msgstr ""
 
-msgid "Archive test case"
-msgstr ""
-
 msgid "Archived"
 msgstr ""
 
@@ -40179,9 +40176,6 @@ msgid "Reopen epic"
 msgstr ""
 
 msgid "Reopen milestone"
-msgstr ""
-
-msgid "Reopen test case"
 msgstr ""
 
 msgid "Reopen this %{quick_action_target}"

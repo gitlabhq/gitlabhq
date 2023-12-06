@@ -1,13 +1,17 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { getCookie, setCookie, parseBoolean } from '~/lib/utils/common_utils';
+import { __ } from '~/locale';
 
 import { USER_COLLAPSED_GUTTER_COOKIE } from '../constants';
 
 export default {
   components: {
-    GlIcon,
+    GlButton,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   data() {
     const userExpanded = !parseBoolean(getCookie(USER_COLLAPSED_GUTTER_COOKIE));
@@ -19,6 +23,20 @@ export default {
       userExpanded,
       isExpanded: userExpanded ? bp.isDesktop() : userExpanded,
     };
+  },
+  computed: {
+    toggleLabel() {
+      return this.isExpanded ? __('Collapse sidebar') : __('Expand sidebar');
+    },
+    toggleIcon() {
+      return this.isExpanded ? 'chevron-double-lg-right' : 'chevron-double-lg-left';
+    },
+    expandedToggleClass() {
+      return this.isExpanded ? 'block' : '';
+    },
+    collapsedToggleClass() {
+      return !this.isExpanded ? 'block' : '';
+    },
   },
   mounted() {
     window.addEventListener('resize', this.handleWindowResize);
@@ -59,23 +77,24 @@ export default {
     class="right-sidebar"
     aria-live="polite"
   >
-    <button
-      class="toggle-right-sidebar-button js-toggle-right-sidebar-button w-100 gl-text-decoration-none! gl-display-flex gl-outline-0!"
-      data-testid="toggle-right-sidebar-button"
-      :title="__('Toggle sidebar')"
-      @click="toggleSidebar"
-    >
-      <span v-if="isExpanded" class="collapse-text gl-flex-grow-1 gl-text-left">{{
-        __('Collapse sidebar')
-      }}</span>
-      <gl-icon v-show="isExpanded" data-testid="icon-collapse" name="chevron-double-lg-right" />
-      <gl-icon
-        v-show="!isExpanded"
-        data-testid="icon-expand"
-        name="chevron-double-lg-left"
-        class="gl-ml-2"
+    <div class="right-sidebar-header" :class="expandedToggleClass">
+      <gl-button
+        v-gl-tooltip.hover.left
+        category="tertiary"
+        size="small"
+        class="gl-float-right gutter-toggle toggle-right-sidebar-button js-toggle-right-sidebar-button gl-shadow-none!"
+        :class="collapsedToggleClass"
+        data-testid="toggle-right-sidebar-button"
+        :icon="toggleIcon"
+        :title="toggleLabel"
+        :aria-label="toggleLabel"
+        @click="toggleSidebar"
       />
-    </button>
+      <slot
+        name="right-sidebar-top-items"
+        v-bind="{ sidebarExpanded: isExpanded, toggleSidebar }"
+      ></slot>
+    </div>
     <div data-testid="sidebar-items" class="issuable-sidebar">
       <slot
         name="right-sidebar-items"

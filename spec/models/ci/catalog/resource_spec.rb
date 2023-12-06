@@ -3,7 +3,21 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
-  include_context 'when there are catalog resources with versions'
+  let_it_be(:current_user) { create(:user) }
+
+  let_it_be(:project_a) { create(:project, name: 'A') }
+  let_it_be(:project_b) { create(:project, name: 'B') }
+  let_it_be(:project_c) { create(:project, name: 'C', description: 'B') }
+
+  let_it_be_with_reload(:resource_a) do
+    create(:ci_catalog_resource, project: project_a, latest_released_at: '2023-02-01T00:00:00Z')
+  end
+
+  let_it_be(:resource_b) do
+    create(:ci_catalog_resource, project: project_b, latest_released_at: '2023-01-01T00:00:00Z')
+  end
+
+  let_it_be(:resource_c) { create(:ci_catalog_resource, project: project_c) }
 
   it { is_expected.to belong_to(:project) }
 
@@ -17,6 +31,11 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
       have_many(:versions).class_name('Ci::Catalog::Resources::Version').with_foreign_key(:catalog_resource_id))
   end
 
+  it do
+    is_expected.to(
+      have_many(:sync_events).class_name('Ci::Catalog::Resources::SyncEvent').with_foreign_key(:catalog_resource_id))
+  end
+
   it { is_expected.to delegate_method(:avatar_path).to(:project) }
   it { is_expected.to delegate_method(:star_count).to(:project) }
 
@@ -24,17 +43,17 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
 
   describe '.for_projects' do
     it 'returns catalog resources for the given project IDs' do
-      resources_for_projects = described_class.for_projects(project1.id)
+      resources_for_projects = described_class.for_projects(project_a.id)
 
-      expect(resources_for_projects).to contain_exactly(resource1)
+      expect(resources_for_projects).to contain_exactly(resource_a)
     end
   end
 
   describe '.search' do
     it 'returns catalog resources whose name or description match the search term' do
-      resources = described_class.search('Z')
+      resources = described_class.search('B')
 
-      expect(resources).to contain_exactly(resource2, resource3)
+      expect(resources).to contain_exactly(resource_b, resource_c)
     end
   end
 
@@ -42,7 +61,7 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
     it 'returns catalog resources sorted by descending created at' do
       ordered_resources = described_class.order_by_created_at_desc
 
-      expect(ordered_resources.to_a).to eq([resource3, resource2, resource1])
+      expect(ordered_resources.to_a).to eq([resource_c, resource_b, resource_a])
     end
   end
 
@@ -50,7 +69,7 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
     it 'returns catalog resources sorted by ascending created at' do
       ordered_resources = described_class.order_by_created_at_asc
 
-      expect(ordered_resources.to_a).to eq([resource1, resource2, resource3])
+      expect(ordered_resources.to_a).to eq([resource_a, resource_b, resource_c])
     end
   end
 
@@ -58,13 +77,13 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
     subject(:ordered_resources) { described_class.order_by_name_desc }
 
     it 'returns catalog resources sorted by descending name' do
-      expect(ordered_resources.pluck(:name)).to eq(%w[Z L A])
+      expect(ordered_resources.pluck(:name)).to eq(%w[C B A])
     end
 
     it 'returns catalog resources sorted by descending name with nulls last' do
-      resource1.update!(name: nil)
+      resource_a.update!(name: nil)
 
-      expect(ordered_resources.pluck(:name)).to eq(['Z', 'L', nil])
+      expect(ordered_resources.pluck(:name)).to eq(['C', 'B', nil])
     end
   end
 
@@ -72,13 +91,13 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
     subject(:ordered_resources) { described_class.order_by_name_asc }
 
     it 'returns catalog resources sorted by ascending name' do
-      expect(ordered_resources.pluck(:name)).to eq(%w[A L Z])
+      expect(ordered_resources.pluck(:name)).to eq(%w[A B C])
     end
 
     it 'returns catalog resources sorted by ascending name with nulls last' do
-      resource1.update!(name: nil)
+      resource_a.update!(name: nil)
 
-      expect(ordered_resources.pluck(:name)).to eq(['L', 'Z', nil])
+      expect(ordered_resources.pluck(:name)).to eq(['B', 'C', nil])
     end
   end
 
@@ -86,7 +105,7 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
     it 'returns catalog resources sorted by latest_released_at descending with nulls last' do
       ordered_resources = described_class.order_by_latest_released_at_desc
 
-      expect(ordered_resources).to eq([resource2, resource1, resource3])
+      expect(ordered_resources).to eq([resource_a, resource_b, resource_c])
     end
   end
 
@@ -94,35 +113,35 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
     it 'returns catalog resources sorted by latest_released_at ascending with nulls last' do
       ordered_resources = described_class.order_by_latest_released_at_asc
 
-      expect(ordered_resources).to eq([resource1, resource2, resource3])
+      expect(ordered_resources).to eq([resource_b, resource_a, resource_c])
     end
   end
 
   describe '#state' do
     it 'defaults to draft' do
-      expect(resource1.state).to eq('draft')
+      expect(resource_a.state).to eq('draft')
     end
   end
 
   describe '#publish!' do
     context 'when the catalog resource is in draft state' do
       it 'updates the state of the catalog resource to published' do
-        expect(resource1.state).to eq('draft')
+        expect(resource_a.state).to eq('draft')
 
-        resource1.publish!
+        resource_a.publish!
 
-        expect(resource1.reload.state).to eq('published')
+        expect(resource_a.reload.state).to eq('published')
       end
     end
 
     context 'when the catalog resource already has a published state' do
       it 'leaves the state as published' do
-        resource1.update!(state: :published)
-        expect(resource1.state).to eq('published')
+        resource_a.update!(state: :published)
+        expect(resource_a.state).to eq('published')
 
-        resource1.publish!
+        resource_a.publish!
 
-        expect(resource1.state).to eq('published')
+        expect(resource_a.state).to eq('published')
       end
     end
   end
@@ -130,61 +149,115 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   describe '#unpublish!' do
     context 'when the catalog resource is in published state' do
       it 'updates the state of the catalog resource to draft' do
-        resource1.update!(state: :published)
-        expect(resource1.state).to eq('published')
+        resource_a.update!(state: :published)
+        expect(resource_a.state).to eq('published')
 
-        resource1.unpublish!
+        resource_a.unpublish!
 
-        expect(resource1.reload.state).to eq('draft')
+        expect(resource_a.reload.state).to eq('draft')
       end
     end
 
     context 'when the catalog resource is already in draft state' do
       it 'leaves the state as draft' do
-        expect(resource1.state).to eq('draft')
+        expect(resource_a.state).to eq('draft')
 
-        resource1.unpublish!
+        resource_a.unpublish!
 
-        expect(resource1.reload.state).to eq('draft')
+        expect(resource_a.reload.state).to eq('draft')
       end
     end
   end
 
-  describe 'synchronizing denormalized columns with `projects` table' do
-    shared_examples 'denormalized columns of the catalog resource match the project' do
-      it do
-        resource1.reload
-        project1.reload
-
-        expect(resource1.name).to eq(project1.name)
-        expect(resource1.description).to eq(project1.description)
-        expect(resource1.visibility_level).to eq(project1.visibility_level)
-      end
-    end
+  describe 'synchronizing denormalized columns with `projects` table', :sidekiq_inline do
+    let_it_be_with_reload(:project) { create(:project, name: 'Test project', description: 'Test description') }
 
     context 'when the catalog resource is created' do
-      it 'calls sync_with_project' do
-        new_project = create(:project)
-        new_resource = build(:ci_catalog_resource, project: new_project)
+      let(:resource) { build(:ci_catalog_resource, project: project) }
 
-        expect(new_resource).to receive(:sync_with_project).once
+      it 'updates the catalog resource columns to match the project' do
+        resource.save!
+        resource.reload
 
-        new_resource.save!
+        expect(resource.name).to eq(project.name)
+        expect(resource.description).to eq(project.description)
+        expect(resource.visibility_level).to eq(project.visibility_level)
       end
-
-      it_behaves_like 'denormalized columns of the catalog resource match the project'
     end
 
-    context 'when the project attributes are updated' do
-      before_all do
-        project1.update!(
-          name: 'New name',
-          description: 'New description',
-          visibility_level: Gitlab::VisibilityLevel::INTERNAL
-        )
+    context 'when the project is updated' do
+      let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
+
+      context 'when project name is updated' do
+        it 'updates the catalog resource name to match' do
+          project.update!(name: 'New name')
+
+          expect(resource.reload.name).to eq(project.name)
+        end
       end
 
-      it_behaves_like 'denormalized columns of the catalog resource match the project'
+      context 'when project description is updated' do
+        it 'updates the catalog resource description to match' do
+          project.update!(description: 'New description')
+
+          expect(resource.reload.description).to eq(project.description)
+        end
+      end
+
+      context 'when project visibility_level is updated' do
+        it 'updates the catalog resource visibility_level to match' do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+
+          expect(resource.reload.visibility_level).to eq(project.visibility_level)
+        end
+      end
+    end
+
+    context 'when FF `ci_process_catalog_resource_sync_events` is disabled' do
+      before do
+        stub_feature_flags(ci_process_catalog_resource_sync_events: false)
+      end
+
+      context 'when the catalog resource is created' do
+        let(:resource) { build(:ci_catalog_resource, project: project) }
+
+        it 'updates the catalog resource columns to match the project' do
+          resource.save!
+          resource.reload
+
+          expect(resource.name).to eq(project.name)
+          expect(resource.description).to eq(project.description)
+          expect(resource.visibility_level).to eq(project.visibility_level)
+        end
+      end
+
+      context 'when the project is updated' do
+        let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
+
+        context 'when project name is updated' do
+          it 'updates the catalog resource name to match' do
+            project.update!(name: 'New name')
+
+            expect(resource.reload.name).to eq(project.name)
+          end
+        end
+
+        context 'when project description is updated' do
+          it 'updates the catalog resource description to match' do
+            project.update!(description: 'New description')
+
+            expect(resource.reload.description).to eq(project.description)
+          end
+        end
+
+        context 'when project visibility_level is updated' do
+          it 'updates the catalog resource visibility_level to match' do
+            project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+
+            expect(resource.reload.visibility_level).to eq(project.visibility_level)
+          end
+        end
+      end
     end
   end
 

@@ -2694,6 +2694,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: ci_catalog_resources_process_sync_events
+  :worker_name: Ci::Catalog::Resources::ProcessSyncEventsWorker
+  :feature_category: :pipeline_composition
+  :has_external_dependencies: false
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: ci_delete_objects
   :worker_name: Ci::DeleteObjectsWorker
   :feature_category: :continuous_integration

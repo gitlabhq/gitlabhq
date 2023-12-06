@@ -115,15 +115,15 @@ The following are required to run Geo:
   The following operating systems are known to ship with a current version of OpenSSH:
   - [CentOS](https://www.centos.org) 7.4 or later
   - [Ubuntu](https://ubuntu.com) 16.04 or later
-- PostgreSQL 12 or 13 with [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication)
+- [Supported PostgreSQL versions](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/database/postgresql-upgrade-cadence.html) for your GitLab releases with [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication).
   - Note,[PostgreSQL 12 is deprecated](../../update/deprecations.md#postgresql-12-deprecated) and is removed in GitLab 16.0.
-- Git 2.9 or later
-- Git-lfs 2.4.2 or later on the user side when using LFS
-- All sites must run the same GitLab version.
 - All sites must run [the same PostgreSQL versions](setup/database.md#postgresql-replication).
   - If using different operating system versions between Geo sites,
     [check OS locale data compatibility](replication/troubleshooting.md#check-os-locale-data-compatibility)
     across Geo sites to avoid silent corruption of database indexes.
+- Git 2.9 or later
+- Git-lfs 2.4.2 or later on the user side when using LFS
+- All sites must run the same GitLab version.
 - All sites must define the same [repository storages](../repository_storage_paths.md).
 
 Additionally, check the GitLab [minimum requirements](../../install/requirements.md),

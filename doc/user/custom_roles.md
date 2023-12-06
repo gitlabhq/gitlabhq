@@ -153,6 +153,9 @@ To add a user to your group with a custom role:
 
 The new member with custom role and custom permissions appears on the [group's members list](group/index.md#view-group-members).
 
+NOTE:
+Most custom roles are considered [billable users that use a seat](#billing-and-seat-usage). When you add a user to your group with a custom role, a warning is displayed if you are about to incur additional charges for having more seats than are included in your subscription.
+
 ### Change a member's custom role
 
 To change a group member's custom role:

@@ -31,6 +31,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    hideEditButton: {
+      type: Boolean,
+      required: false,
+    },
     enableAutocomplete: {
       type: Boolean,
       required: true,
@@ -166,6 +170,7 @@ export default {
           :issuable="issuable"
           :status-icon="statusIcon"
           :enable-edit="enableEdit"
+          :hide-edit-button="hideEditButton"
           :workspace-type="workspaceType"
           @edit-issuable="$emit('edit-issuable', $event)"
         >
@@ -181,12 +186,12 @@ export default {
           :task-list-update-path="taskListUpdatePath"
         />
         <slot name="secondary-content"></slot>
-        <small v-if="isUpdated" class="edited-text gl-font-sm!">
+        <small v-if="isUpdated" class="edited-text gl-font-sm! gl-text-secondary">
           {{ __('Edited') }}
           <time-ago-tooltip :time="issuable.updatedAt" tooltip-placement="bottom" />
           <span v-if="updatedBy">
             {{ __('by') }}
-            <gl-link :href="updatedBy.webUrl" class="author-link gl-font-sm!">
+            <gl-link :href="updatedBy.webUrl" class="author-link gl-font-sm! gl-text-secondary">
               <span>{{ updatedBy.name }}</span>
             </gl-link>
           </span>

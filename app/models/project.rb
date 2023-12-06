@@ -142,9 +142,8 @@ class Project < ApplicationRecord
   after_create :set_timestamps_for_create
   after_create :check_repository_absence!
 
-  # TODO: Remove this callback after background syncing is implemented. See https://gitlab.com/gitlab-org/gitlab/-/issues/429376.
-  after_update :update_catalog_resource,
-    if: -> { (saved_change_to_name? || saved_change_to_description? || saved_change_to_visibility_level?) && catalog_resource }
+  after_update :enqueue_catalog_resource_sync_event_worker,
+    if: -> { catalog_resource && (saved_change_to_name? || saved_change_to_description? || saved_change_to_visibility_level?) }
 
   before_destroy :remove_private_deploy_keys
   after_destroy :remove_exports
@@ -187,6 +186,7 @@ class Project < ApplicationRecord
   has_one :catalog_resource, class_name: 'Ci::Catalog::Resource', inverse_of: :project
   has_many :ci_components, class_name: 'Ci::Catalog::Resources::Component', inverse_of: :project
   has_many :catalog_resource_versions, class_name: 'Ci::Catalog::Resources::Version', inverse_of: :project
+  has_many :catalog_resource_sync_events, class_name: 'Ci::Catalog::Resources::SyncEvent', inverse_of: :project
 
   has_one :last_event, -> { order 'events.created_at DESC' }, class_name: 'Event'
   has_many :boards
@@ -3468,8 +3468,13 @@ class Project < ApplicationRecord
     pool_repository_shard == repository_storage
   end
 
-  def update_catalog_resource
-    catalog_resource.sync_with_project!
+  # Catalog resource SyncEvents are created by PG triggers
+  def enqueue_catalog_resource_sync_event_worker
+    catalog_resource.sync_with_project! if Feature.disabled?(:ci_process_catalog_resource_sync_events)
+
+    run_after_commit do
+      ::Ci::Catalog::Resources::SyncEvent.enqueue_worker
+    end
   end
 end
 

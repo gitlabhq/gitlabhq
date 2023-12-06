@@ -153,7 +153,10 @@ export default {
         </template>
       </markdown-field>
     </gl-form-group>
-    <div data-testid="actions" class="col-12 gl-mt-3 gl-mb-3 gl-px-0 clearfix">
+    <div
+      data-testid="actions"
+      class="col-12 gl-mt-3 gl-mb-3 gl-px-0 clearfix gl-display-flex gl-gap-3"
+    >
       <slot
         name="edit-form-actions"
         :issuable-title="title"

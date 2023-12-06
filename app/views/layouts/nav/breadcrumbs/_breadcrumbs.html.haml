@@ -2,8 +2,8 @@
 - unless @skip_current_level_breadcrumb
   - push_to_schema_breadcrumb(@breadcrumb_title, breadcrumb_title_link)
 
-%nav.breadcrumbs{ 'aria-label': _('Breadcrumbs'), data: { testid: 'breadcrumb-links' } }
-  %ul.list-unstyled.breadcrumbs-list.js-breadcrumbs-list
+%nav.breadcrumbs.gl-breadcrumbs{ 'aria-label': _('Breadcrumbs'), data: { testid: 'breadcrumb-links' } }
+  %ul.breadcrumb.gl-breadcrumb-list.js-breadcrumbs-list
     - unless hide_top_links
       = header_title
     - if @breadcrumbs_extra_links
@@ -11,8 +11,8 @@
         = breadcrumb_list_item link_to(extra[:text], extra[:link])
     = render "layouts/nav/breadcrumbs/collapsed_inline_list", location: :after
     - unless @skip_current_level_breadcrumb
-      %li{ data: { testid: 'breadcrumb-current-link' } }
-        = link_to @breadcrumb_title, breadcrumb_title_link
+      %li.gl-breadcrumb-item{ data: { testid: 'breadcrumb-current-link' } }
+        = link_to(@breadcrumb_title, breadcrumb_title_link)
   -# haml-lint:disable InlineJavaScript
   %script{ type: 'application/ld+json' }
     :plain

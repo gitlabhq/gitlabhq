@@ -25,7 +25,7 @@ RSpec.describe 'User explores projects', feature_category: :user_profile do
 
     describe 'breadcrumbs' do
       it 'has "Explore" as its root breadcrumb' do
-        within '.breadcrumbs-list li:first' do
+        within '.gl-breadcrumb-list li:first' do
           expect(page).to have_link('Explore', href: explore_root_path)
         end
       end

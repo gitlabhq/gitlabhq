@@ -21,9 +21,9 @@ Learn about [data usage when using Code Suggestions](index.md#code-suggestions-d
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121079) in GitLab 16.1 as [Beta](../../../../policy/experiment-beta-support.md#beta).
 
-You must enable Code Suggestions for both your user account and your group:
+You must enable Code Suggestions for both your user account and your top-level group:
 
-- [Enable Code Suggestions for all group members](../../../group/manage.md#enable-code-suggestions). (You must be a group owner).
+- [Enable Code Suggestions for your top-level group](../../../group/manage.md#enable-code-suggestions) (you must be a group owner).
 - [Enable Code Suggestions for your own account](../../../profile/preferences.md#enable-code-suggestions).
 
 NOTE:

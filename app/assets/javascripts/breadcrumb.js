@@ -23,11 +23,11 @@ export default () => {
     topLevelLinks.forEach((el) => addTooltipToEl(el));
 
     $expanderBtn.on('click', () => {
-      const detailItems = $('.breadcrumbs-detail-item');
+      const detailItems = $('.gl-breadcrumb-item');
       const hiddenClass = 'gl-display-none!';
 
       $.each(detailItems, (_key, item) => {
-        $(item).toggleClass(hiddenClass);
+        $(item).removeClass(hiddenClass);
       });
 
       // remove the ellipsis

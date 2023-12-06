@@ -7,8 +7,13 @@ class Namespaces::SyncEvent < ApplicationRecord
 
   belongs_to :namespace
 
+  scope :unprocessed_events, -> { all }
   scope :preload_synced_relation, -> { preload(:namespace) }
   scope :order_by_id_asc, -> { order(id: :asc) }
+
+  def self.mark_records_processed(records)
+    id_in(records).delete_all
+  end
 
   def self.enqueue_worker
     ::Namespaces::ProcessSyncEventsWorker.perform_async # rubocop:disable CodeReuse/Worker

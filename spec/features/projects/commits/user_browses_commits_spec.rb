@@ -42,8 +42,8 @@ RSpec.describe 'User browses commits', feature_category: :source_code_management
   it 'renders breadcrumbs on specific commit path' do
     visit project_commits_path(project, project.repository.root_ref + '/files/ruby/regex.rb', limit: 5)
 
-    expect(page).to have_selector('ul.breadcrumb')
-      .and have_selector('ul.breadcrumb a', count: 4)
+    expect(page).to have_selector('#content-body ul.breadcrumb')
+      .and have_selector('#content-body ul.breadcrumb a', count: 4)
   end
 
   it 'renders diff links to both the previous and current image', :js do

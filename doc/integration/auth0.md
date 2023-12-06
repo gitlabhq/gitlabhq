@@ -80,7 +80,7 @@ application.
 
 1. Replace `<your_auth0_client_id>` with the client ID from the Auth0 Console page.
 1. Replace `<your_auth0_client_secret>` with the client secret from the Auth0 Console page.
-1. Replace `<your_auth0_client_secret>` with the domain from the Auth0 Console page.
+1. Replace `<your_auth0_domain>` with the domain from the Auth0 Console page.
 1. Reconfigure or restart GitLab, depending on your installation method:
    - If you installed using the Linux package,
      [reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation).

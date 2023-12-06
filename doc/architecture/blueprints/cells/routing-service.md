@@ -65,7 +65,7 @@ For example:
 | Security      | only authorized cells can be routed to                            | high     |
 | Single domain | e.g. GitLab.com                                                   | high     |
 | Caching       | can cache routing information for performance                     | high     |
-| Low latency   | small overhead for user requests                                  | high     |
+| [50 ms of increased latency](#low-latency) |                                       | high     |
 | Path-based    | can make routing decision based on path                           | high     |
 | Complexity    | the routing service should be configuration-driven and small      | high     |
 | Stateless     | does not need database, Cells provide all routing information     | medium   |
@@ -73,6 +73,106 @@ For example:
 | Observability | can use existing observability tooling                            | low      |
 | Self-managed  | can be eventually used by [self-managed](goals.md#self-managed)   | low      |
 | Regional      | can route requests to different [regions](goals.md#regions)       | low       |
+
+### Low Latency
+
+The target latency for routing service **should be less than 50 _ms_**.
+
+Looking at the `urgency: high` request we don't have a lot of headroom on the p50.
+Adding an extra 50 _ms_ allows us to still be in or SLO on the p95 level.
+
+There is 3 primary entry points for the application; [`web`](https://gitlab.com/gitlab-com/runbooks/-/blob/5d8248314b343bef15a4c021ac33978525f809e3/services/service-catalog.yml#L492-537), [`api`](https://gitlab.com/gitlab-com/runbooks/-/blob/5d8248314b343bef15a4c021ac33978525f809e3/services/service-catalog.yml#L18-62), and [`git`](https://gitlab.com/gitlab-com/runbooks/-/blob/5d8248314b343bef15a4c021ac33978525f809e3/services/service-catalog.yml#L589-638).
+Each service is assigned a Service Level Indicator (SLI) based on latency using the [apdex](https://www.apdex.org/wp-content/uploads/2020/09/ApdexTechnicalSpecificationV11_000.pdf) standard.
+The corresponding Service Level Objectives (SLOs) for these SLIs require low latencies for large amount of requests.
+It's crucial to ensure that the addition of the routing layer in front of these services does not impact the SLIs.
+The routing layer is a proxy for these services, and we lack a comprehensive SLI monitoring system for the entire request flow (including components like the Edge network and Load Balancers) we use the SLIs for `web`, `git`, and `api` as a target.
+
+The main SLI we use is the [rails requests](../../../development/application_slis/rails_request.md).
+It has multiple `satisfied` targets (apdex) depending on the [request urgency](../../../development/application_slis/rails_request.md#how-to-adjust-the-urgency):
+
+| Urgency    | Duration in ms |
+|------------|----------------|
+| `:high`    | 250 _ms_       |
+| `:medium`  | 500 _ms_       |
+| `:default` | 1000 _ms_      |
+| `:low`     | 5000 _ms_      |
+
+#### Analysis
+
+The way we calculate the headroom we have is by using the following:
+
+```math
+\mathrm{Headroom}\ {ms} = \mathrm{Satisfied}\ {ms} - \mathrm{Duration}\ {ms}
+```
+
+**`web`**:
+
+| Target Duration | Percentile | Headroom  |
+|-----------------|------------|-----------|
+| 5000 _ms_       | p99        | 4000 _ms_ |
+| 5000 _ms_       | p95        | 4500 _ms_ |
+| 5000 _ms_       | p90        | 4600 _ms_ |
+| 5000 _ms_       | p50        | 4900 _ms_ |
+| 1000 _ms_       | p99        | 500 _ms_  |
+| 1000 _ms_       | p95        | 740 _ms_  |
+| 1000 _ms_       | p90        | 840 _ms_  |
+| 1000 _ms_       | p50        | 900 _ms_  |
+| 500 _ms_        | p99        | 0 _ms_    |
+| 500 _ms_        | p95        | 60 _ms_   |
+| 500 _ms_        | p90        | 100 _ms_  |
+| 500 _ms_        | p50        | 400 _ms_  |
+| 250 _ms_        | p99        | 140 _ms_  |
+| 250 _ms_        | p95        | 170 _ms_  |
+| 250 _ms_        | p90        | 180 _ms_  |
+| 250 _ms_        | p50        | 200 _ms_  |
+
+_Analysis was done in <https://gitlab.com/gitlab-org/gitlab/-/issues/432934#note_1667993089>_
+
+**`api`**:
+
+| Target Duration | Percentile | Headroom  |
+|-----------------|------------|-----------|
+| 5000 _ms_       | p99        | 3500 _ms_ |
+| 5000 _ms_       | p95        | 4300 _ms_ |
+| 5000 _ms_       | p90        | 4600 _ms_ |
+| 5000 _ms_       | p50        | 4900 _ms_ |
+| 1000 _ms_       | p99        | 440 _ms_  |
+| 1000 _ms_       | p95        | 750 _ms_  |
+| 1000 _ms_       | p90        | 830 _ms_  |
+| 1000 _ms_       | p50        | 950 _ms_  |
+| 500 _ms_        | p99        | 450 _ms_  |
+| 500 _ms_        | p95        | 480 _ms_  |
+| 500 _ms_        | p90        | 490 _ms_  |
+| 500 _ms_        | p50        | 490 _ms_  |
+| 250 _ms_        | p99        | 90 _ms_   |
+| 250 _ms_        | p95        | 170 _ms_  |
+| 250 _ms_        | p90        | 210 _ms_  |
+| 250 _ms_        | p50        | 230 _ms_  |
+
+_Analysis was done in <https://gitlab.com/gitlab-org/gitlab/-/issues/432934#note_1669995479>_
+
+**`git`**:
+
+| Target Duration | Percentile | Headroom  |
+|-----------------|------------|-----------|
+| 5000 _ms_       | p99        | 3760 _ms_ |
+| 5000 _ms_       | p95        | 4280 _ms_ |
+| 5000 _ms_       | p90        | 4430 _ms_ |
+| 5000 _ms_       | p50        | 4900 _ms_ |
+| 1000 _ms_       | p99        | 500 _ms_  |
+| 1000 _ms_       | p95        | 750 _ms_  |
+| 1000 _ms_       | p90        | 800 _ms_  |
+| 1000 _ms_       | p50        | 900 _ms_  |
+| 500 _ms_        | p99        | 280 _ms_  |
+| 500 _ms_        | p95        | 370 _ms_  |
+| 500 _ms_        | p90        | 400 _ms_  |
+| 500 _ms_        | p50        | 430 _ms_  |
+| 250 _ms_        | p99        | 200 _ms_  |
+| 250 _ms_        | p95        | 230 _ms_  |
+| 250 _ms_        | p90        | 240 _ms_  |
+| 250 _ms_        | p50        | 240 _ms_  |
+
+_Analysis was done in <https://gitlab.com/gitlab-org/gitlab/-/issues/432934#note_1671385680>_
 
 ## Non-Goals
 

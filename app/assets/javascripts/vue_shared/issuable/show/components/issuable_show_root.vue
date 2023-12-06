@@ -32,6 +32,11 @@ export default {
       required: false,
       default: false,
     },
+    hideEditButton: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     enableAutocomplete: {
       type: Boolean,
       required: false,
@@ -137,6 +142,7 @@ export default {
       :status-icon="statusIcon"
       :status-icon-class="statusIconClass"
       :enable-edit="enableEdit"
+      :hide-edit-button="hideEditButton"
       :enable-autocomplete="enableAutocomplete"
       :enable-autosave="enableAutosave"
       :enable-zen-mode="enableZenMode"
@@ -169,6 +175,9 @@ export default {
     </issuable-discussion>
 
     <issuable-sidebar>
+      <template #right-sidebar-top-items="{ sidebarExpanded, toggleSidebar }">
+        <slot name="right-sidebar-top-items" v-bind="{ sidebarExpanded, toggleSidebar }"></slot>
+      </template>
       <template #right-sidebar-items="{ sidebarExpanded, toggleSidebar }">
         <slot name="right-sidebar-items" v-bind="{ sidebarExpanded, toggleSidebar }"></slot>
       </template>

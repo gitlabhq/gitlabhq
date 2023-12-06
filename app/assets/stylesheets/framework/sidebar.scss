@@ -53,11 +53,20 @@
       height: $gl-padding;
     }
   }
+
+  .right-sidebar-header {
+    flex-wrap: wrap;
+  }
 }
 
 .right-sidebar-expanded {
   padding-right: 0;
   z-index: $zindex-dropdown-menu;
+
+  .right-sidebar-header {
+    padding-block: $gl-spacing-scale-4;
+    margin-left: 20px;
+  }
 
   .inline-block {
     @include gl-display-inline-block;

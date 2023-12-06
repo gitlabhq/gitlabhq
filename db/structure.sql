@@ -290,6 +290,18 @@ BEGIN
 END
 $$;
 
+CREATE FUNCTION insert_catalog_resource_sync_event() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+INSERT INTO p_catalog_resource_sync_events (catalog_resource_id, project_id)
+SELECT id, OLD.id FROM catalog_resources
+WHERE project_id = OLD.id;
+RETURN NULL;
+
+END
+$$;
+
 CREATE FUNCTION insert_into_loose_foreign_keys_deleted_records() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -906,6 +918,17 @@ CREATE TABLE p_batched_git_ref_updates_deletions (
     status smallint DEFAULT 1 NOT NULL,
     ref text NOT NULL,
     CONSTRAINT check_f322d53b92 CHECK ((char_length(ref) <= 1024))
+)
+PARTITION BY LIST (partition_id);
+
+CREATE TABLE p_catalog_resource_sync_events (
+    id bigint NOT NULL,
+    catalog_resource_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    partition_id bigint DEFAULT 1 NOT NULL,
+    status smallint DEFAULT 1 NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
 )
 PARTITION BY LIST (partition_id);
 
@@ -20069,6 +20092,15 @@ CREATE SEQUENCE p_batched_git_ref_updates_deletions_id_seq
 
 ALTER SEQUENCE p_batched_git_ref_updates_deletions_id_seq OWNED BY p_batched_git_ref_updates_deletions.id;
 
+CREATE SEQUENCE p_catalog_resource_sync_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE p_catalog_resource_sync_events_id_seq OWNED BY p_catalog_resource_sync_events.id;
+
 CREATE SEQUENCE p_ci_job_annotations_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -26906,6 +26938,8 @@ ALTER TABLE ONLY organizations ALTER COLUMN id SET DEFAULT nextval('organization
 
 ALTER TABLE ONLY p_batched_git_ref_updates_deletions ALTER COLUMN id SET DEFAULT nextval('p_batched_git_ref_updates_deletions_id_seq'::regclass);
 
+ALTER TABLE ONLY p_catalog_resource_sync_events ALTER COLUMN id SET DEFAULT nextval('p_catalog_resource_sync_events_id_seq'::regclass);
+
 ALTER TABLE ONLY p_ci_builds_metadata ALTER COLUMN id SET DEFAULT nextval('ci_builds_metadata_id_seq'::regclass);
 
 ALTER TABLE ONLY p_ci_job_annotations ALTER COLUMN id SET DEFAULT nextval('p_ci_job_annotations_id_seq'::regclass);
@@ -29264,6 +29298,9 @@ ALTER TABLE ONLY organizations
 
 ALTER TABLE ONLY p_batched_git_ref_updates_deletions
     ADD CONSTRAINT p_batched_git_ref_updates_deletions_pkey PRIMARY KEY (id, partition_id);
+
+ALTER TABLE ONLY p_catalog_resource_sync_events
+    ADD CONSTRAINT p_catalog_resource_sync_events_pkey PRIMARY KEY (id, partition_id);
 
 ALTER TABLE ONLY p_ci_finished_build_ch_sync_events
     ADD CONSTRAINT p_ci_finished_build_ch_sync_events_pkey PRIMARY KEY (build_id, partition);
@@ -33770,6 +33807,8 @@ CREATE INDEX index_organization_users_on_user_id ON organization_users USING btr
 
 CREATE UNIQUE INDEX index_organizations_on_unique_name_per_group ON customer_relations_organizations USING btree (group_id, lower(name), id);
 
+CREATE INDEX index_p_catalog_resource_sync_events_on_id_where_pending ON ONLY p_catalog_resource_sync_events USING btree (id) WHERE (status = 1);
+
 CREATE UNIQUE INDEX index_p_ci_job_annotations_on_partition_id_job_id_name ON ONLY p_ci_job_annotations USING btree (partition_id, job_id, name);
 
 CREATE INDEX index_p_ci_runner_machine_builds_on_runner_machine_id ON ONLY p_ci_runner_machine_builds USING btree (runner_machine_id);
@@ -37031,6 +37070,8 @@ CREATE TRIGGER tags_loose_fk_trigger AFTER DELETE ON tags REFERENCING OLD TABLE 
 CREATE TRIGGER trigger_10ee1357e825 BEFORE INSERT OR UPDATE ON p_ci_builds FOR EACH ROW EXECUTE FUNCTION trigger_10ee1357e825();
 
 CREATE TRIGGER trigger_b2d852e1e2cb BEFORE INSERT OR UPDATE ON ci_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_b2d852e1e2cb();
+
+CREATE TRIGGER trigger_catalog_resource_sync_event_on_project_update AFTER UPDATE ON projects FOR EACH ROW WHEN ((((old.name)::text IS DISTINCT FROM (new.name)::text) OR (old.description IS DISTINCT FROM new.description) OR (old.visibility_level IS DISTINCT FROM new.visibility_level))) EXECUTE FUNCTION insert_catalog_resource_sync_event();
 
 CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
 

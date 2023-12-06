@@ -221,7 +221,7 @@ export default {
         @click="handleRightSidebarToggleClick"
       />
     </div>
-    <div class="detail-page-header-actions gl-align-self-center gl-display-flex">
+    <div class="detail-page-header-actions gl-align-self-center gl-display-flex gl-gap-3">
       <slot name="header-actions"></slot>
     </div>
   </div>

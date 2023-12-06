@@ -50,6 +50,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_one(:catalog_resource) }
     it { is_expected.to have_many(:ci_components).class_name('Ci::Catalog::Resources::Component') }
     it { is_expected.to have_many(:catalog_resource_versions).class_name('Ci::Catalog::Resources::Version') }
+    it { is_expected.to have_many(:catalog_resource_sync_events).class_name('Ci::Catalog::Resources::SyncEvent') }
     it { is_expected.to have_one(:microsoft_teams_integration) }
     it { is_expected.to have_one(:mattermost_integration) }
     it { is_expected.to have_one(:hangouts_chat_integration) }
@@ -8937,62 +8938,68 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  # TODO: Remove/update this spec after background syncing is implemented. See https://gitlab.com/gitlab-org/gitlab/-/issues/429376.
-  describe '#update_catalog_resource' do
-    let_it_be_with_reload(:project) { create(:project, name: 'My project name', description: 'My description') }
-    let_it_be_with_reload(:resource) { create(:ci_catalog_resource, project: project) }
+  describe 'catalog resource process sync events worker' do
+    let_it_be_with_reload(:project) { create(:project, name: 'Test project', description: 'Test description') }
 
-    shared_examples 'name, description, and visibility_level of the catalog resource match the project' do
-      it do
-        expect(project).to receive(:update_catalog_resource).once.and_call_original
+    context 'when the project has a catalog resource' do
+      let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
 
-        project.save!
+      context 'when project name is updated' do
+        it 'enqueues Ci::Catalog::Resources::ProcessSyncEventsWorker' do
+          expect(Ci::Catalog::Resources::ProcessSyncEventsWorker).to receive(:perform_async).once
 
-        expect(resource.name).to eq(project.name)
-        expect(resource.description).to eq(project.description)
-        expect(resource.visibility_level).to eq(project.visibility_level)
-      end
-    end
-
-    context 'when the project name is updated' do
-      before do
-        project.name = 'My new project name'
+          project.update!(name: 'New name')
+        end
       end
 
-      it_behaves_like 'name, description, and visibility_level of the catalog resource match the project'
-    end
+      context 'when project description is updated' do
+        it 'enqueues Ci::Catalog::Resources::ProcessSyncEventsWorker' do
+          expect(Ci::Catalog::Resources::ProcessSyncEventsWorker).to receive(:perform_async).once
 
-    context 'when the project description is updated' do
-      before do
-        project.description = 'My new description'
+          project.update!(description: 'New description')
+        end
       end
 
-      it_behaves_like 'name, description, and visibility_level of the catalog resource match the project'
-    end
+      context 'when project visibility_level is updated' do
+        it 'enqueues Ci::Catalog::Resources::ProcessSyncEventsWorker' do
+          expect(Ci::Catalog::Resources::ProcessSyncEventsWorker).to receive(:perform_async).once
 
-    context 'when the project visibility_level is updated' do
-      before do
-        project.visibility_level = 10
+          project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+        end
       end
 
-      it_behaves_like 'name, description, and visibility_level of the catalog resource match the project'
-    end
+      context 'when neither the project name, description, nor visibility_level are updated' do
+        it 'does not enqueue Ci::Catalog::Resources::ProcessSyncEventsWorker' do
+          expect(Ci::Catalog::Resources::ProcessSyncEventsWorker).not_to receive(:perform_async)
 
-    context 'when neither the project name, description, nor visibility_level are updated' do
-      it 'does not call update_catalog_resource' do
-        expect(project).not_to receive(:update_catalog_resource)
+          project.update!(path: 'path')
+        end
+      end
 
-        project.update!(path: 'path')
+      context 'when FF `ci_process_catalog_resource_sync_events` is disabled' do
+        before do
+          stub_feature_flags(ci_process_catalog_resource_sync_events: false)
+        end
+
+        it 'does not enqueue Ci::Catalog::Resources::ProcessSyncEventsWorker' do
+          expect(Ci::Catalog::Resources::ProcessSyncEventsWorker).not_to receive(:perform_async)
+
+          project.update!(
+            name: 'New name',
+            description: 'New description',
+            visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+        end
       end
     end
 
     context 'when the project does not have a catalog resource' do
-      let_it_be(:project2) { create(:project) }
+      it 'does not enqueue Ci::Catalog::Resources::ProcessSyncEventsWorker' do
+        expect(Ci::Catalog::Resources::ProcessSyncEventsWorker).not_to receive(:perform_async)
 
-      it 'does not call update_catalog_resource' do
-        expect(project2).not_to receive(:update_catalog_resource)
-
-        project.update!(name: 'name')
+        project.update!(
+          name: 'New name',
+          description: 'New description',
+          visibility_level: Gitlab::VisibilityLevel::INTERNAL)
       end
     end
   end

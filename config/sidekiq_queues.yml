@@ -157,6 +157,8 @@
   - 1
 - - ci_cancel_redundant_pipelines
   - 1
+- - ci_catalog_resources_process_sync_events
+  - 1
 - - ci_delete_objects
   - 1
 - - ci_initialize_pipelines_iid_sequence

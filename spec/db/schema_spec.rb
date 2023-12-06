@@ -93,6 +93,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     oauth_applications: %w[owner_id],
     p_ci_builds: %w[erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id],
     p_batched_git_ref_updates_deletions: %w[project_id partition_id],
+    p_catalog_resource_sync_events: %w[catalog_resource_id project_id partition_id],
     p_ci_finished_build_ch_sync_events: %w[build_id],
     product_analytics_events_experimental: %w[event_id txn_id user_id],
     project_build_artifacts_size_refreshes: %w[last_job_artifact_id],

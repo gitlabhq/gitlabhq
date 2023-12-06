@@ -22,6 +22,34 @@ class Projects::DeployKeysController < Projects::ApplicationController
     end
   end
 
+  def enabled_keys
+    respond_to do |format|
+      format.json do
+        enabled_keys = find_keys(filter: :enabled_keys)
+        render json: serialize(enabled_keys)
+      end
+    end
+  end
+
+  def available_project_keys
+    respond_to do |format|
+      format.json do
+        available_project_keys = find_keys(filter: :available_project_keys)
+        render json: serialize(available_project_keys)
+      end
+    end
+  end
+
+  def available_public_keys
+    respond_to do |format|
+      format.json do
+        available_public_keys = find_keys(filter: :available_public_keys)
+
+        render json: serialize(available_public_keys)
+      end
+    end
+  end
+
   def new
     redirect_to_repository
   end
@@ -107,5 +135,18 @@ class Projects::DeployKeysController < Projects::ApplicationController
 
   def redirect_to_repository
     redirect_to_repository_settings(@project, anchor: 'js-deploy-keys-settings')
+  end
+
+  def find_keys(params)
+    DeployKeys::DeployKeysFinder.new(@project, current_user, params)
+                         .execute
+  end
+
+  def serialize(keys)
+    opts = { user: current_user, project: project }
+
+    DeployKeys::DeployKeySerializer.new
+                 .with_pagination(request, response)
+                 .represent(keys, opts)
   end
 end

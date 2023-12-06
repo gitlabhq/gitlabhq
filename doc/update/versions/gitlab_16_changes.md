@@ -16,7 +16,7 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 ## Issues to be aware of when upgrading from 15.11
 
-- [PostgreSQL 12 is not supported from v16](../../update/deprecations.md#postgresql-12-deprecated). Upgrade your PostgreSQL to at least 13.6 before upgrading to GitLab v16.0 or higher.
+- [PostgreSQL 12 is not supported starting from GitLab 16](../../update/deprecations.md#postgresql-12-deprecated). Upgrade PostgreSQL to at least version 13.6 before upgrading to GitLab 16.0 or later.
 - Some GitLab installations must upgrade to GitLab 16.0 before upgrading to any other version. For more information, see
   [Long-running user type data change](#long-running-user-type-data-change).
 - Other installations can skip 16.0, 16.1, and 16.2 as the first required stop on the upgrade path is 16.3. Review the notes for those intermediate

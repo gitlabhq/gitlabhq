@@ -12,7 +12,8 @@ Gitlab::Database::Partitioning.register_models(
     CommitStatus,
     BatchedGitRefUpdates::Deletion,
     Users::ProjectVisit,
-    Users::GroupVisit
+    Users::GroupVisit,
+    Ci::Catalog::Resources::SyncEvent
   ])
 
 if Gitlab.ee?
