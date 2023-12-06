@@ -1,4 +1,5 @@
 import { differenceInSeconds } from '~/lib/utils/datetime_utility';
+import { STATUS_TRUE, STATUS_FALSE, PHASE_PENDING, PHASE_READY, PHASE_FAILED } from '../constants';
 
 export function getAge(creationTimestamp) {
   if (!creationTimestamp) return '';
@@ -22,4 +23,15 @@ export function getAge(creationTimestamp) {
   }
 
   return ageString;
+}
+
+export function calculateDeploymentStatus(item) {
+  const [available, progressing] = item.status?.conditions ?? [];
+  if (available?.status === STATUS_TRUE) {
+    return PHASE_READY;
+  }
+  if (available?.status === STATUS_FALSE && progressing?.status !== STATUS_TRUE) {
+    return PHASE_FAILED;
+  }
+  return PHASE_PENDING;
 }

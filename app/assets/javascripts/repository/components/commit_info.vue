@@ -77,25 +77,32 @@ export default {
       :size="32"
     />
     <div class="commit-detail flex-list gl-display-flex gl-flex-grow-1 gl-min-w-0">
-      <div class="commit-content gl-w-full" data-testid="commit-content">
-        <gl-link
-          v-safe-html:[$options.safeHtmlConfig]="commit.titleHtml"
-          :href="commit.webPath"
-          :class="{ 'gl-font-style-italic': !commit.message }"
-          class="commit-row-message item-title gl-line-clamp-1"
-        />
-        <gl-button
-          v-if="commit.descriptionHtml"
-          v-gl-tooltip
-          :class="{ open: showDescription }"
-          :title="$options.i18n.toggleCommitDescription"
-          :aria-label="$options.i18n.toggleCommitDescription"
-          :selected="showDescription"
-          class="text-expander gl-vertical-align-bottom!"
-          icon="ellipsis_h"
-          @click="toggleShowDescription"
-        />
-        <div class="committer gl-pb-2">
+      <div
+        class="commit-content gl-w-full gl-display-inline-flex gl-flex-wrap gl-align-items-baseline"
+        data-testid="commit-content"
+      >
+        <div
+          class="gl-flex-basis-full gl-display-inline-flex gl-align-items-center gl-column-gap-3"
+        >
+          <gl-link
+            v-safe-html:[$options.safeHtmlConfig]="commit.titleHtml"
+            :href="commit.webPath"
+            :class="{ 'gl-font-style-italic': !commit.message }"
+            class="commit-row-message item-title gl-line-clamp-1 gl-word-break-all!"
+          />
+          <gl-button
+            v-if="commit.descriptionHtml"
+            v-gl-tooltip
+            :class="{ open: showDescription }"
+            :title="$options.i18n.toggleCommitDescription"
+            :aria-label="$options.i18n.toggleCommitDescription"
+            :selected="showDescription"
+            class="text-expander gl-ml-0!"
+            icon="ellipsis_h"
+            @click="toggleShowDescription"
+          />
+        </div>
+        <div class="committer gl-flex-basis-full">
           <gl-link
             v-if="commit.author"
             :href="commit.author.webPath"

@@ -6,6 +6,7 @@ import { mapActions } from 'vuex';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { guestOverageConfirmAction } from 'ee_else_ce/members/guest_overage_confirm_action';
 import { roleDropdownItems, initialSelectedRole } from 'ee_else_ce/members/utils';
+import { ACCESS_LEVEL_LABELS } from '~/access_level/constants';
 import { s__ } from '~/locale';
 
 export default {
@@ -65,9 +66,8 @@ export default {
 
       try {
         const confirmed = await guestOverageConfirmAction({
-          currentRoleValue: this.member.accessLevel.integerValue,
-          newRoleValue: newRole.accessLevel,
-          newRoleName: newRole.text,
+          oldAccessLevel: this.member.accessLevel.integerValue,
+          newRoleName: ACCESS_LEVEL_LABELS[newRole.accessLevel],
           newMemberRoleId: newRole.memberRoleId,
           group: this.group,
           memberId: this.member.id,

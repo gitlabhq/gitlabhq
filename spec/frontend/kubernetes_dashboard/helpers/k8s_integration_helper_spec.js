@@ -1,4 +1,7 @@
-import { getAge } from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
+import {
+  getAge,
+  calculateDeploymentStatus,
+} from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
 import { useFakeDate } from 'helpers/fake_date';
 
 describe('k8s_integration_helper', () => {
@@ -17,6 +20,36 @@ describe('k8s_integration_helper', () => {
       ${'timestamp = 1 second'}          | ${'seconds'} | ${'2023-11-23T10:09:59Z'} | ${'1s'}
     `('returns age in $measures when $condition', ({ timestamp, expected }) => {
       expect(getAge(timestamp)).toBe(expected);
+    });
+  });
+
+  describe('calculateDeploymentStatus', () => {
+    const pending = {
+      conditions: [
+        { type: 'Available', status: 'False' },
+        { type: 'Progressing', status: 'True' },
+      ],
+    };
+    const ready = {
+      conditions: [
+        { type: 'Available', status: 'True' },
+        { type: 'Progressing', status: 'False' },
+      ],
+    };
+    const failed = {
+      conditions: [
+        { type: 'Available', status: 'False' },
+        { type: 'Progressing', status: 'False' },
+      ],
+    };
+
+    it.each`
+      condition                                        | status     | expected
+      ${'Available is false and Progressing is true'}  | ${pending} | ${'Pending'}
+      ${'Available is true and Progressing is false'}  | ${ready}   | ${'Ready'}
+      ${'Available is false and Progressing is false'} | ${failed}  | ${'Failed'}
+    `('returns status as $expected when $condition', ({ status, expected }) => {
+      expect(calculateDeploymentStatus({ status })).toBe(expected);
     });
   });
 });

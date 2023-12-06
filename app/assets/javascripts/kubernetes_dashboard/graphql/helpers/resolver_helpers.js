@@ -13,7 +13,7 @@ export const buildWatchPath = ({ resource, api = 'api/v1', namespace = '' }) => 
   return namespace ? `/${api}/namespaces/${namespace}/${resource}` : `/${api}/${resource}`;
 };
 
-const mapWorkloadItem = (item) => {
+export const mapWorkloadItem = (item) => {
   if (item.metadata) {
     const metadata = {
       ...item.metadata,
@@ -25,13 +25,19 @@ const mapWorkloadItem = (item) => {
   return { status: item.status };
 };
 
-export const watchPods = ({ client, query, configuration, namespace }) => {
-  const path = buildWatchPath({ resource: 'pods', namespace });
+export const watchWorkloadItems = ({
+  client,
+  query,
+  configuration,
+  namespace,
+  watchPath,
+  queryField,
+}) => {
   const config = new Configuration(configuration);
   const watcherApi = new WatchApi(config);
 
   watcherApi
-    .subscribeToStream(path, { watch: true })
+    .subscribeToStream(watchPath, { watch: true })
     .then((watcher) => {
       let result = [];
 
@@ -41,7 +47,7 @@ export const watchPods = ({ client, query, configuration, namespace }) => {
         client.writeQuery({
           query,
           variables: { configuration, namespace },
-          data: { k8sPods: result },
+          data: { [queryField]: result },
         });
       });
     })
@@ -67,7 +73,15 @@ export const getK8sPods = ({
   return podsApi
     .then((res) => {
       if (enableWatch) {
-        watchPods({ client, query, configuration, namespace });
+        const watchPath = buildWatchPath({ resource: 'pods', namespace });
+        watchWorkloadItems({
+          client,
+          query,
+          configuration,
+          namespace,
+          watchPath,
+          queryField: 'k8sPods',
+        });
       }
 
       const data = res?.items || [];

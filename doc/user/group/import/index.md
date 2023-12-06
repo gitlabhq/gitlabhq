@@ -113,6 +113,8 @@ If you are migrating large projects and encounter problems with timeouts or dura
 
 ### Limits
 
+> Eight hour time limit on migrations [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/429867) in GitLab 16.7.
+
 Hardcoded limits apply on migration by direct transfer.
 
 | Limit       | Description                                                                                                                                                                     |
@@ -121,7 +123,6 @@ Hardcoded limits apply on migration by direct transfer.
 | 210 seconds | Maximum number of seconds to wait for decompressing an archive file.                                                                                                            |
 | 50 MB       | Maximum length an NDJSON row can have.                                                                                                                                          |
 | 5 minutes   | Maximum number of seconds until an empty export status on source instance is raised.                                                                                            |
-| 8 hours     | Time until migration times out.                                                                                                                                                 |
 
 [Configurable limits](../../../administration/settings/account_and_limit_settings.md) are also available.
 

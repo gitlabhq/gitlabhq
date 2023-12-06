@@ -18,17 +18,22 @@ RSpec.describe "GraphQL Pipeline Header", '(JavaScript fixtures)', type: :reques
     let_it_be(:pipeline) do
       create(
         :ci_pipeline,
+        :merged_result_pipeline,
         project: project,
         sha: commit.id,
         ref: 'master',
         user: user,
+        name: 'Build pipeline',
         status: :success,
         duration: 7210,
         created_at: 2.hours.ago,
         started_at: 1.hour.ago,
-        finished_at: Time.current
+        finished_at: Time.current,
+        source: :schedule
       )
     end
+
+    let_it_be(:builds) { create_list(:ci_build, 3, :success, pipeline: pipeline, ref: 'master') }
 
     it "graphql/pipelines/pipeline_header_success.json" do
       query = get_graphql_query_as_string(query_path)

@@ -34,7 +34,7 @@
 
   - if @group.description.present?
     .group-home-desc.mt-1
-      .home-panel-description
+      .home-panel-description.text-break
         .home-panel-description-markdown.read-more-container{ itemprop: 'description' }
           = markdown_field(@group, :description)
         = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'js-read-more-trigger gl-lg-display-none' }) do

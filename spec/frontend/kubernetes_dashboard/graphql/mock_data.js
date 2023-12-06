@@ -116,3 +116,110 @@ export const mockPodsTableItems = [
     kind: 'Pod',
   },
 ];
+
+const pendingDeployment = {
+  status: {
+    conditions: [
+      { type: 'Available', status: 'False' },
+      { type: 'Progressing', status: 'True' },
+    ],
+  },
+  metadata: {
+    name: 'deployment-1',
+    namespace: 'new-namespace',
+    creationTimestamp: '2023-11-21T11:50:59Z',
+    labels: {},
+    annotations: {},
+  },
+};
+const readyDeployment = {
+  status: {
+    conditions: [
+      { type: 'Available', status: 'True' },
+      { type: 'Progressing', status: 'False' },
+    ],
+  },
+  metadata: {
+    name: 'deployment-2',
+    namespace: 'default',
+    creationTimestamp: '2023-07-31T11:50:17Z',
+    labels: {},
+    annotations: {},
+  },
+};
+const failedDeployment = {
+  status: {
+    conditions: [
+      { type: 'Available', status: 'False' },
+      { type: 'Progressing', status: 'False' },
+    ],
+  },
+  metadata: {
+    name: 'deployment-3',
+    namespace: 'default',
+    creationTimestamp: '2023-11-21T11:50:59Z',
+    labels: {},
+    annotations: {},
+  },
+};
+
+export const k8sDeploymentsMock = [
+  pendingDeployment,
+  readyDeployment,
+  readyDeployment,
+  failedDeployment,
+];
+
+export const mockDeploymentsStats = [
+  {
+    title: 'Ready',
+    value: 2,
+  },
+  {
+    title: 'Failed',
+    value: 1,
+  },
+  {
+    title: 'Pending',
+    value: 1,
+  },
+];
+
+export const mockDeploymentsTableItems = [
+  {
+    name: 'deployment-1',
+    namespace: 'new-namespace',
+    status: 'Pending',
+    age: '1d',
+    labels: {},
+    annotations: {},
+    kind: 'Deployment',
+  },
+  {
+    name: 'deployment-2',
+    namespace: 'default',
+    status: 'Ready',
+    age: '114d',
+    labels: {},
+    annotations: {},
+    kind: 'Deployment',
+  },
+  {
+    name: 'deployment-2',
+    namespace: 'default',
+    status: 'Ready',
+    age: '114d',
+    labels: {},
+    annotations: {},
+    kind: 'Deployment',
+  },
+  {
+    name: 'deployment-3',
+    namespace: 'default',
+    status: 'Failed',
+    age: '1d',
+    labels: {},
+    annotations: {},
+    kind: 'Deployment',
+  },
+];

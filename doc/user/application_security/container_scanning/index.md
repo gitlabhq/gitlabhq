@@ -669,7 +669,10 @@ mirror trivy java db:
     - oras push $CI_REGISTRY_IMAGE:1 --config /dev/null:application/vnd.aquasec.trivy.config.v1+json javadb.tar.gz:application/vnd.aquasec.trivy.javadb.layer.v1.tar+gzip
 ```
 
-If the above container registry is `gitlab.example.com/trivy-java-db-mirror`, then the container scanning job should be configured in the following way:
+The vulnerability database is not a regular Docker image, so it is not possible to pull it by using `docker pull`.
+The image shows an error if you navigate to it in the GitLab UI.
+
+If the above container registry is `gitlab.example.com/trivy-java-db-mirror`, then the container scanning job should be configured in the following way. Do not add the tag `:1` at the end, it is added by `trivy`:
 
 ```yaml
 include:
@@ -677,7 +680,7 @@ include:
 
 container_scanning:
   variables:
-    CS_TRIVY_JAVA_DB: gitlab.example.com/trivy-java-db-mirror:1
+    CS_TRIVY_JAVA_DB: gitlab.example.com/trivy-java-db-mirror
 ```
 
 ## Running the standalone container scanning tool

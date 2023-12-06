@@ -26,9 +26,15 @@ import deletePipelineMutation from '../graphql/mutations/delete_pipeline.mutatio
 import retryPipelineMutation from '../graphql/mutations/retry_pipeline.mutation.graphql';
 import { getQueryHeaders } from '../graph/utils';
 import getPipelineQuery from './graphql/queries/get_pipeline_header_data.query.graphql';
-
-const DELETE_MODAL_ID = 'pipeline-delete-modal';
-const POLL_INTERVAL = 10000;
+import {
+  DELETE_MODAL_ID,
+  POLL_INTERVAL,
+  DETACHED_EVENT_TYPE,
+  AUTO_DEVOPS_SOURCE,
+  SCHEDULE_SOURCE,
+  MERGE_TRAIN_EVENT_TYPE,
+  MERGED_RESULT_EVENT_TYPE,
+} from './constants';
 
 export default {
   name: 'PipelineDetailsHeader',
@@ -129,40 +135,14 @@ export default {
     },
   },
   props: {
-    name: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    totalJobs: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    computeMinutes: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
     yamlErrors: {
       type: String,
       required: false,
       default: '',
     },
-    failureReason: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    refText: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    badges: {
-      type: Object,
-      required: false,
-      default: () => {},
+    trigger: {
+      type: Boolean,
+      required: true,
     },
   },
   apollo: {
@@ -270,7 +250,7 @@ export default {
     },
     totalJobsText() {
       return sprintf(__('%{jobs} Jobs'), {
-        jobs: this.totalJobs,
+        jobs: this.pipeline?.totalJobs || 0,
       });
     },
     triggeredText() {
@@ -314,8 +294,59 @@ export default {
 
       return cancelable && userPermissions.cancelPipeline;
     },
+    computeMinutes() {
+      return this.pipeline?.computeMinutes;
+    },
     showComputeMinutes() {
       return this.isFinished && this.computeMinutes;
+    },
+    pipelineName() {
+      return this.pipeline?.name;
+    },
+    refText() {
+      return this.pipeline?.refText;
+    },
+    triggeredByPath() {
+      return this.pipeline?.triggeredByPath;
+    },
+    mergeRequestEventType() {
+      return this.pipeline.mergeRequestEventType;
+    },
+    isMergeTrainPipeline() {
+      return this.mergeRequestEventType === MERGE_TRAIN_EVENT_TYPE;
+    },
+    isMergedResultsPipeline() {
+      return this.mergeRequestEventType === MERGED_RESULT_EVENT_TYPE;
+    },
+    isDetachedPipeline() {
+      return this.mergeRequestEventType === DETACHED_EVENT_TYPE;
+    },
+    isAutoDevopsPipeline() {
+      return this.pipeline.configSource === AUTO_DEVOPS_SOURCE;
+    },
+    isScheduledPipeline() {
+      return this.pipeline.source === SCHEDULE_SOURCE;
+    },
+    isInvalidPipeline() {
+      return Boolean(this.yamlErrors);
+    },
+    failureReason() {
+      return this.pipeline.failureReason;
+    },
+    badges() {
+      return {
+        schedule: this.isScheduledPipeline,
+        trigger: this.trigger,
+        invalid: this.isInvalidPipeline,
+        child: this.pipeline.child,
+        latest: this.pipeline.latest,
+        mergeTrainPipeline: this.isMergeTrainPipeline,
+        mergedResultsPipeline: this.isMergedResultsPipeline,
+        detached: this.isDetachedPipeline,
+        failed: Boolean(this.failureReason),
+        autoDevops: this.isAutoDevopsPipeline,
+        stuck: this.pipeline.stuck,
+      };
     },
   },
   methods: {
@@ -406,7 +437,9 @@ export default {
     <gl-loading-icon v-if="loading" class="gl-text-left" size="lg" />
     <div v-else class="gl-display-flex gl-justify-content-space-between gl-flex-wrap">
       <div>
-        <h3 v-if="name" class="gl-mt-0 gl-mb-3" data-testid="pipeline-name">{{ name }}</h3>
+        <h3 v-if="pipelineName" class="gl-mt-0 gl-mb-3" data-testid="pipeline-name">
+          {{ pipelineName }}
+        </h3>
         <h3 v-else class="gl-mt-0 gl-mb-3" data-testid="pipeline-commit-title">
           {{ commitTitle }}
         </h3>
@@ -483,7 +516,7 @@ export default {
             >
               <gl-sprintf :message="$options.i18n.childBadgeText">
                 <template #link="{ content }">
-                  <gl-link :href="paths.triggeredByPath" target="_blank">
+                  <gl-link :href="triggeredByPath" target="_blank">
                     {{ content }}
                   </gl-link>
                 </template>

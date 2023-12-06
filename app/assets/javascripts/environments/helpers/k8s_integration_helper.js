@@ -1,4 +1,6 @@
-import { CLUSTER_AGENT_ERROR_MESSAGES, STATUS_TRUE, STATUS_FALSE } from '../constants';
+import { calculateDeploymentStatus } from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
+import { PHASE_READY, PHASE_FAILED } from '~/kubernetes_dashboard/constants';
+import { CLUSTER_AGENT_ERROR_MESSAGES } from '../constants';
 
 export function generateServicePortsString(ports) {
   if (!ports?.length) return '';
@@ -17,13 +19,18 @@ export function getDeploymentsStatuses(items) {
   const pending = [];
 
   items.forEach((item) => {
-    const [available, progressing] = item.status?.conditions ?? [];
-    if (available?.status === STATUS_TRUE) {
-      ready.push(item);
-    } else if (available?.status === STATUS_FALSE && progressing?.status !== STATUS_TRUE) {
-      failed.push(item);
-    } else {
-      pending.push(item);
+    const status = calculateDeploymentStatus(item);
+
+    switch (status) {
+      case PHASE_READY:
+        ready.push(item);
+        break;
+      case PHASE_FAILED:
+        failed.push(item);
+        break;
+      default:
+        pending.push(item);
+        break;
     }
   });
 

@@ -2,6 +2,7 @@ import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import typeDefs from '~/environments/graphql/typedefs.graphql';
 import k8sPodsQuery from './queries/k8s_dashboard_pods.query.graphql';
+import k8sDeploymentsQuery from './queries/k8s_dashboard_deployments.query.graphql';
 import { resolvers } from './resolvers';
 
 export const apolloProvider = () => {
@@ -22,6 +23,22 @@ export const apolloProvider = () => {
       },
       status: {
         phase: null,
+      },
+    },
+  });
+
+  cache.writeQuery({
+    query: k8sDeploymentsQuery,
+    data: {
+      metadata: {
+        name: null,
+        namespace: null,
+        creationTimestamp: null,
+        labels: null,
+        annotations: null,
+      },
+      status: {
+        conditions: null,
       },
     },
   });

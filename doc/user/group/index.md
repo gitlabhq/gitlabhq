@@ -114,7 +114,7 @@ To edit group details:
 1. Select **Settings > General**.
 1. In the **Group name** text box, enter your group name. See the [limitations on group names](../../user/reserved_names.md).
 1. Optional. In the **Group description (optional)** text box, enter your group description.
-   The description is limited to 250 characters.
+   The description is limited to 500 characters.
 1. Select **Save changes**.
 
 ## Remove a group

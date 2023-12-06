@@ -222,8 +222,9 @@ window.
 To have a change considered for an upcoming weekly maintenance window, all required information
 must be submitted in full two business days before the start of the window.
 
-If there is insufficient time to complete a configuration change during the weekly maintenance
-window, it will postponed to the following week.
+A configuration change might not be applied during an upcoming weekly maintenance window, even if
+it meets the minimum lead time. If GitLab needs to perform high-priority maintenance tasks that
+run beyond the maintenance window, configuration changes will be postponed to the following week.
 
 Changes cannot be applied outside of a weekly maintenance window unless it qualifies for
 [emergency support](https://about.gitlab.com/support/#how-to-engage-emergency-support).

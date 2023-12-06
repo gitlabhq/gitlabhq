@@ -48,22 +48,8 @@ RSpec.describe Projects::PipelineHelper do
         graphql_resource_etag: graphql_etag_pipeline_path(pipeline),
         pipeline_iid: pipeline.iid,
         pipelines_path: project_pipelines_path(project),
-        name: pipeline.name,
-        total_jobs: pipeline.total_size,
         yaml_errors: pipeline.yaml_errors,
-        failure_reason: pipeline.failure_reason,
-        triggered_by_path: '',
-        schedule: pipeline.schedule?.to_s,
-        trigger: pipeline.trigger?.to_s,
-        child: pipeline.child?.to_s,
-        latest: pipeline.latest?.to_s,
-        merge_train_pipeline: pipeline.merge_train_pipeline?.to_s,
-        invalid: pipeline.has_yaml_errors?.to_s,
-        failed: pipeline.failure_reason?.to_s,
-        auto_devops: pipeline.auto_devops_source?.to_s,
-        detached: pipeline.detached_merge_request_pipeline?.to_s,
-        stuck: pipeline.stuck?.to_s,
-        ref_text: pipeline.ref_text
+        trigger: pipeline.trigger?.to_s
       })
     end
   end
