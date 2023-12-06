@@ -1,0 +1,9 @@
+---
+name: project_feature_model_registry_access_level_updated
+description: Model registry access level was updated
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/412734
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138399
+feature_category: mlops
+milestone: '16.7'
+saved_to_database: true
+streamed: true

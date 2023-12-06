@@ -318,6 +318,7 @@ included_attributes:
     - :releases_access_level
     - :infrastructure_access_level
     - :model_experiments_access_level
+    - :model_registry_access_level
   prometheus_metrics:
     - :created_at
     - :updated_at
@@ -738,6 +739,7 @@ included_attributes:
     - :releases_access_level
     - :infrastructure_access_level
     - :model_experiments_access_level
+    - :model_registry_access_level
     - :auto_devops_deploy_strategy
     - :auto_devops_enabled
     - :container_registry_enabled

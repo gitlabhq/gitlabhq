@@ -1,8 +1,0 @@
----
-name: global_dependency_scanning_on_advisory_ingestion
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135581
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/427424
-milestone: '16.6'
-type: development
-group: group::composition analysis
-default_enabled: true

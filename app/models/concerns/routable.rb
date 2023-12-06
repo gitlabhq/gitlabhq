@@ -94,16 +94,31 @@ module Routable
         "(LOWER(routes.path) = LOWER(#{connection.quote(path)}))"
       end
 
-      route =
-        if use_includes
-          includes(:route).references(:routes)
-        else
-          joins(:route)
-        end
+      if Feature.enabled?(:optimize_where_full_path_in, Feature.current_request)
+        route_scope = all
+        source_type_condition = { source_type: route_scope.klass.base_class }
 
-      route
-        .where(wheres.join(' OR '))
-        .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
+        routes_matching_condition = Route.where(source_type_condition).where(wheres.join(' OR '))
+
+        result = route_scope.where(id: routes_matching_condition.pluck(:source_id))
+
+        if use_includes
+          result.preload(:route)
+        else
+          result
+        end
+      else
+        route =
+          if use_includes
+            includes(:route).references(:routes)
+          else
+            joins(:route)
+          end
+
+        route
+          .where(wheres.join(' OR '))
+          .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
+      end
     end
   end
 

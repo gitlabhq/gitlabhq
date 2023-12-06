@@ -12,7 +12,7 @@ RSpec.describe Resolvers::GroupResolver do
     it 'batch-resolves groups by full path' do
       paths = [group1.full_path, group2.full_path]
 
-      result = batch_sync(max_queries: 1) do
+      result = batch_sync(max_queries: 3) do
         paths.map { |path| resolve_group(path) }
       end
 

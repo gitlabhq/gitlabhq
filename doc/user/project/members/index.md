@@ -116,6 +116,7 @@ to perform actions.
 Prerequisites:
 
 - You must have the Owner or Maintainer role.
+- [Group membership lock](../../group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) must be disabled.
 
 To add a user to a project:
 

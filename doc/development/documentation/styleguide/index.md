@@ -218,8 +218,6 @@ Use sentence case for topic titles. For example:
 
 When referring to specific user interface text, like a button label or menu
 item, use the same capitalization that's displayed in the user interface.
-Standards for this content are listed in the [Pajamas Design System Content section](https://design.gitlab.com/content/punctuation/)
-and typically match what's mentioned in this Documentation Style Guide.
 
 If you think the user interface text contains style mistakes,
 create an issue or an MR to propose a change to the user interface text.

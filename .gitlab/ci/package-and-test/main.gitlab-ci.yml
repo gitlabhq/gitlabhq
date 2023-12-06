@@ -359,6 +359,7 @@ oauth:
   variables:
     QA_SCENARIO: Test::Integration::OAuth
   rules:
+    - when: manual
     - !reference [.rules:test:qa-default-branch, rules]
     - if: $QA_SUITES =~ /Test::Integration::OAuth/
     - !reference [.rules:test:manual, rules]

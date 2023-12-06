@@ -166,6 +166,8 @@ class Projects::PipelinesController < Projects::ApplicationController
     @stage = pipeline.stage(params[:stage])
     return not_found unless @stage
 
+    return unless stage_stale?
+
     render json: StageSerializer
       .new(project: @project, current_user: @current_user)
       .represent(@stage, details: true, retried: params[:retried])
@@ -261,6 +263,15 @@ class Projects::PipelinesController < Projects::ApplicationController
     return unless %w[running pending].include?(params[:scope])
 
     redirect_to url_for(safe_params.except(:scope).merge(status: safe_params[:scope])), status: :moved_permanently
+  end
+
+  def stage_stale?
+    return true if Feature.disabled?(:pipeline_stage_set_last_modified, @current_user)
+
+    last_modified = [@stage.updated_at.utc, @stage.statuses.maximum(:updated_at)].max
+
+    expires_in 24.hours
+    stale?(last_modified: last_modified, etag: @stage)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

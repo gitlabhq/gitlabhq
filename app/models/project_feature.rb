@@ -27,6 +27,7 @@ class ProjectFeature < ApplicationRecord
     releases
     infrastructure
     model_experiments
+    model_registry
   ].freeze
 
   EXPORTABLE_FEATURES = (FEATURES - [:security_and_compliance, :pages]).freeze
@@ -81,6 +82,7 @@ class ProjectFeature < ApplicationRecord
   attribute :feature_flags_access_level, default: ENABLED
   attribute :environments_access_level, default: ENABLED
   attribute :model_experiments_access_level, default: ENABLED
+  attribute :model_registry_access_level, default: ENABLED
 
   attribute :package_registry_access_level, default: -> do
     if ::Gitlab.config.packages.enabled

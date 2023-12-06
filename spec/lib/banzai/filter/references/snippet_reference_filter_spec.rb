@@ -239,9 +239,15 @@ RSpec.describe Banzai::Filter::References::SnippetReferenceFilter, feature_categ
 
       # Since we're not batching snippet queries across projects,
       # we have to account for that.
-      # 1 for both projects, 1 for snippets in each project == 3
+      # 1 for for routes to find routes.source_id of projects matching paths
+      # 1 for projects belonging to the above routes
+      # 1 for preloading routes of the projects
+      # 1 for loading the namespaces associated to the project
+      # 1 for loading the routes associated with the namespace
+      # 1x2 for snippets in each project == 2
+      # Total = 7
       # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/330359
-      max_count = control_count + 2
+      max_count = control_count + 6
 
       expect do
         reference_filter(markdown)

@@ -1,0 +1,8 @@
+---
+name: pipeline_stage_set_last_modified
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138499
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/433359
+milestone: '16.7'
+type: development
+group: group::global search
+default_enabled: false

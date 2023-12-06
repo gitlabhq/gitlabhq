@@ -406,6 +406,7 @@ The following table lists group permissions available for each role:
 | Manage group runners                                                                    |       |          |           |            | ✓     |
 | [Migrate groups](group/import/index.md)                                                 |       |          |           |            | ✓     |
 | Manage [subscriptions, and purchase storage and compute minutes](../subscriptions/gitlab_com/index.md) |    |    |    |            | ✓     |
+| Manage group-level custom roles                                                         |       |          |           |            | ✓     |
 
 <!-- markdownlint-disable MD029 -->
 

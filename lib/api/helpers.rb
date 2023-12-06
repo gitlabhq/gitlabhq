@@ -378,6 +378,10 @@ module API
       authorize! :admin_group, user_group
     end
 
+    def authorize_admin_member_role!
+      authorize! :admin_member_role, user_group
+    end
+
     def authorize_read_builds!
       authorize! :read_build, user_project
     end

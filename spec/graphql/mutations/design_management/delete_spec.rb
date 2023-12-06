@@ -86,46 +86,47 @@ RSpec.describe Mutations::DesignManagement::Delete do
           end
         end
 
-        it 'runs no more than 31 queries' do
+        it 'runs no more than 34 queries' do
           allow(Gitlab::Tracking).to receive(:event) # rubocop:disable RSpec/ExpectGitlabTracking
 
           filenames.each(&:present?) # ignore setup
-          # Queries: as of 2022-09-08
+          # Queries: as of 2022-12-01
           # -------------
-          # 01. routing query
-          # 02. policy query: find namespace by type and id
-          # 03. policy query: find namespace by id
-          # 04. policy query: project.project_feature
-          # 05,06. project.authorizations for user (same query twice)
-          # 07. find issue by iid
-          # 08. find project by id
-          # 09. find namespace by id
-          # 10. find group namespace by id
-          # 11. policy query: find namespace by id (same query as 3)
-          # 12. project.authorizations for user (same query as 5)
-          # 13. find user by id
-          # 14. project.project_features (same query as 3)
-          # 15. project.authorizations for user (same query as 5)
-          # 16. current designs by filename and issue
-          # 17, 18 project.authorizations for user (same query as 5)
-          # 19. find design_management_repository for project
-          # 20. find route by id and source_type
+          # 01. for routes to find routes.source_id of projects matching paths
+          # 02. Find projects with the above source id.
+          # 03. preload routes of the above projects
+          # 04. policy query: find namespace by type and id
+          # 05. policy query: namespace_bans
+          # 06. policy query: project.project_feature
+          # 07,08. project.authorizations for user (same query twice)
+          # 09. find issue by iid
+          # 10. find project by id
+          # 11. find namespace by id
+          # 12. policy query: find namespace by type and id (same query as 4)
+          # 13. project.authorizations for user (same query as 7)
+          # 14. find user by id
+          # 15. project.project_features (same query as 6)
+          # 16. project.authorizations for user (same query as 7)
+          # 17. current designs by filename and issue
+          # 18, 19 project.authorizations for user (same query as 7)
+          # 20. find design_management_repository for project
+          # 21. find route by source_id and source_type
           # ------------- our queries are below:
-          # 21. start transaction
-          # 22.   create version with sha and issue
-          # 23.   create design-version links
-          # 24.   validate version.actions.present?
-          # 25.   validate version.sha is unique
-          # 26.   validate version.issue.present?
-          # 27. leave transaction
-          # 28. find project by id (same query as 8)
-          # 29. find namespace by id (same query as 9)
-          # 30. find project by id (same query as 8)
-          # 31. find project by id (same query as 8)
-          # 32. create event
-          # 33. find plan for standard context
+          # 22. start transaction
+          # 23.   create version with sha and issue
+          # 24.   create design-version links
+          # 25.   validate version.actions.present?
+          # 26.   validate version.sha is unique
+          # 27.   validate version.issue.present?
+          # 28. leave transaction
+          # 29. find project by id (same query as 10)
+          # 30. find namespace by id (same query as 11)
+          # 31. find project by id (same query as 10)
+          # 32. find project by id (same query as 10)
+          # 33. create event
+          # 34. find plan for standard context
           #
-          expect { run_mutation }.not_to exceed_query_limit(33)
+          expect { run_mutation }.not_to exceed_query_limit(34)
         end
       end
 

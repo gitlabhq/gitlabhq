@@ -26,7 +26,6 @@ export const initSecurityConfiguration = (el) => {
     autoDevopsHelpPagePath,
     autoDevopsPath,
     vulnerabilityTrainingDocsPath,
-    continuousVulnerabilityScansEnabled,
   } = el.dataset;
 
   const { augmentedSecurityFeatures } = augmentFeatures(
@@ -44,7 +43,6 @@ export const initSecurityConfiguration = (el) => {
       autoDevopsHelpPagePath,
       autoDevopsPath,
       vulnerabilityTrainingDocsPath,
-      continuousVulnerabilityScansEnabled,
     },
     render(createElement) {
       return createElement(SecurityConfigurationApp, {

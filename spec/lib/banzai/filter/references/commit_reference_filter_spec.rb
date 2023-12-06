@@ -287,12 +287,18 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
         reference_filter(markdown)
       end.count
 
-      markdown = "#{commit_reference} 8b95f2f1 8b95f2f2 8b95f2f3 #{commit2_reference}  #{commit3_reference}"
+      expect(max_count).to eq 0
+
+      markdown = "#{commit_reference} 8b95f2f1 8b95f2f2 8b95f2f3 #{commit2_reference} #{commit3_reference}"
 
       # Commits are not DB entries, they are on the project itself.
-      # So adding commits from two more projects to the markdown should
-      # only increase by 1 query
-      max_count += 1
+      # 1 for for routes to find routes.source_id of projects matching paths
+      # 1 for projects belonging to the above routes
+      # 1 for preloading routes of the projects
+      # 1 for loading the namespaces associated to the project
+      # 1 for loading the routes associated with the namespace
+      # Total = 5
+      max_count += 5
 
       expect do
         reference_filter(markdown)

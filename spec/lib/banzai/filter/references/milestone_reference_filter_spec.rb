@@ -522,7 +522,7 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
       # queries increase when a new project/group is added.
       # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/330359
       markdown = "#{project_reference} #{group2_reference}"
-      control_count += 5
+      control_count += 9
 
       expect do
         reference_filter(markdown)

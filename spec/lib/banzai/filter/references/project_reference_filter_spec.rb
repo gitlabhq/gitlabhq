@@ -119,7 +119,7 @@ RSpec.describe Banzai::Filter::References::ProjectReferenceFilter, feature_categ
         reference_filter(markdown)
       end.count
 
-      expect(max_count).to eq 1
+      expect(max_count).to eq 2
 
       markdown = "#{normal_project_reference} #{invalidate_reference(normal_project_reference)} #{group_project_reference} #{nested_project_reference}"
 

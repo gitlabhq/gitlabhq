@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'gitlab-qa', '~> 12', '>= 12.5.1', require: 'gitlab/qa'
+gem 'gitlab-qa', '~> 13', require: 'gitlab/qa'
 gem 'gitlab_quality-test_tooling', '~> 1.8.1', require: false
 gem 'gitlab-utils', path: '../gems/gitlab-utils'
 gem 'activesupport', '~> 7.0.8' # This should stay in sync with the root's Gemfile
@@ -26,7 +26,7 @@ gem 'rspec-parameterized', '~> 1.0.0'
 gem 'octokit', '~> 8.0.0'
 gem "faraday-retry", "~> 2.2"
 gem 'zeitwerk', '~> 2.6', '>= 2.6.12'
-gem 'influxdb-client', '~> 2.9'
+gem 'influxdb-client', '~> 3.0'
 gem 'terminal-table', '~> 3.0.2', require: false
 gem 'slack-notifier', '~> 2.4', require: false
 gem 'fog-google', '~> 1.19', require: false

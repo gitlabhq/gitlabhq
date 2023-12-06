@@ -1128,6 +1128,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to delegate_method(:container_registry_access_level).to(:project_feature) }
     it { is_expected.to delegate_method(:environments_access_level).to(:project_feature) }
     it { is_expected.to delegate_method(:model_experiments_access_level).to(:project_feature) }
+    it { is_expected.to delegate_method(:model_registry_access_level).to(:project_feature) }
     it { is_expected.to delegate_method(:feature_flags_access_level).to(:project_feature) }
     it { is_expected.to delegate_method(:releases_access_level).to(:project_feature) }
     it { is_expected.to delegate_method(:infrastructure_access_level).to(:project_feature) }
