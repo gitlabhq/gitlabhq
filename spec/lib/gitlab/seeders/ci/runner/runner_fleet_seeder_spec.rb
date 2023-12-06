@@ -4,7 +4,7 @@ require 'spec_helper'
 
 NULL_LOGGER = Gitlab::JsonLogger.new('/dev/null')
 
-RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetSeeder, feature_category: :runner_fleet do
+RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetSeeder, feature_category: :fleet_visibility do
   let_it_be(:user) { create(:user, :admin, username: 'test-admin') }
 
   subject(:seeder) do

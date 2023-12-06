@@ -3,7 +3,7 @@ table_name: p_ci_finished_build_ch_sync_events
 classes:
 - Ci::FinishedBuildChSyncEvent
 feature_categories:
-- runner_fleet
+- fleet_visibility
 description: Holds references to finished CI builds ready to be synced to ClickHouse
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/
 milestone: '16.5'

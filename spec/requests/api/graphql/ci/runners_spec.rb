@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'Query.runners', feature_category: :runner_fleet do
+RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create_default(:user, :admin) }

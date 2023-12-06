@@ -2,7 +2,7 @@ table_name: p_ci_runner_machine_builds
 classes:
 - Ci::RunnerManagerBuild
 feature_categories:
-- runner_fleet
+- fleet_visibility
 description: Relationships between builds and runner managers
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111476
 milestone: '15.9'

@@ -9,10 +9,10 @@ module QA
         end
 
         view 'app/assets/javascripts/badges/components/badge_form.vue' do
-          element :badge_name_field
-          element :badge_link_url_field
-          element :badge_image_url_field
-          element :add_badge_button
+          element 'badge-name-field'
+          element 'badge-link-url-field'
+          element 'badge-image-url-field'
+          element 'add-badge-button'
         end
 
         view 'app/assets/javascripts/badges/components/badge_list.vue' do
@@ -29,19 +29,19 @@ module QA
         end
 
         def fill_name(name)
-          fill_element :badge_name_field, name
+          fill_element 'badge-name-field', name
         end
 
         def fill_link_url(url)
-          fill_element :badge_link_url_field, url
+          fill_element 'badge-link-url-field', url
         end
 
         def fill_image_url(url)
-          fill_element :badge_image_url_field, url
+          fill_element 'badge-image-url-field', url
         end
 
         def click_add_badge_button
-          click_element :add_badge_button
+          click_element 'add-badge-button'
         end
 
         def has_badge?(badge_name)

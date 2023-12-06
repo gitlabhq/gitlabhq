@@ -3,4 +3,4 @@ migration_job_name: BackfillCodeSuggestionsNamespaceSettings
 description: Updates default value of code_suggestions on namespace_settings table
 feature_category: code_suggestions
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121126
-milestone: 16.1
+milestone: '16.1'

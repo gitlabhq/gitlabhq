@@ -136,14 +136,18 @@ RSpec.describe RuboCop::Cop::BackgroundMigration::DictionaryFile, feature_catego
         context 'with dictionary file' do
           let(:introduced_by_url) { 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132639' }
           let(:finalize_after) { '20230507160251' }
+          let(:milestone) { '16.1' }
 
           before do
+            allow(File).to receive(:exist?).and_call_original
             allow(File).to receive(:exist?).with(dictionary_file_path).and_return(true)
-
-            allow_next_instance_of(RuboCop::BatchedBackgroundMigrationsDictionary) do |dictionary|
-              allow(dictionary).to receive(:finalize_after).and_return(finalize_after)
-              allow(dictionary).to receive(:introduced_by_url).and_return(introduced_by_url)
-            end
+            allow(::RuboCop::BatchedBackgroundMigrationsDictionary).to receive(:dictionary_data).and_return({
+              '20231118100907' => {
+                finalize_after: finalize_after,
+                introduced_by_url: introduced_by_url,
+                milestone: milestone
+              }
+            })
           end
 
           context 'without introduced_by_url' do
@@ -165,6 +169,31 @@ RSpec.describe RuboCop::Cop::BackgroundMigration::DictionaryFile, feature_catego
               expect_offense(<<~RUBY)
                 class QueueMyMigration < Gitlab::Database::Migration[2.1]
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{format('Invalid `introduced_by_url` url for the dictionary. Please use the following format: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/XXX')}
+                  def up
+                    queue_batched_background_migration(
+                      'MyMigration',
+                      :users,
+                      :id
+                    )
+                  end
+                end
+              RUBY
+            end
+          end
+
+          context 'without milestone' do
+            it_behaves_like 'migration with missing dictionary keys offense', :milestone do
+              let(:milestone) { nil }
+            end
+          end
+
+          context 'when milestone is a number' do
+            let(:milestone) { 16.1 }
+
+            it 'throws offense on having an invalid milestone' do
+              expect_offense(<<~RUBY)
+                class QueueMyMigration < Gitlab::Database::Migration[2.1]
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{format('Invalid `milestone` for the dictionary. It must be a string. Please ensure it is quoted.')}
                   def up
                     queue_batched_background_migration(
                       'MyMigration',

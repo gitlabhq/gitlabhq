@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::UserRunners, :aggregate_failures, feature_category: :runner_fleet do
+RSpec.describe API::UserRunners, :aggregate_failures, feature_category: :fleet_visibility do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:user, reload: true) { create(:user, username: 'user.withdot') }
 

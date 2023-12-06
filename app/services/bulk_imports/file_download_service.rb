@@ -58,6 +58,13 @@ module BulkImports
         http_client.stream(relative_url) do |chunk|
           next if bytes_downloaded == 0 && [301, 302, 303, 307, 308].include?(chunk.code)
 
+          if BulkImports::NetworkError::RETRIABLE_HTTP_CODES.include?(chunk.code)
+            raise BulkImports::NetworkError.new(
+              "Error downloading file from #{relative_url}. Error code: #{chunk.code}",
+              response: chunk.http_response
+            )
+          end
+
           @response_code = chunk.code
           @response_headers ||= Gitlab::HTTP::Response::Headers.new(chunk.http_response.to_hash)
           @last_chunk_context = chunk.to_s.truncate(LAST_CHUNK_CONTEXT_CHAR_LIMIT)

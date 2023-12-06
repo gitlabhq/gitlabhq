@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::Ci::RunnerUpgradeStatusEnum, feature_category: :runner_fleet do
+RSpec.describe Types::Ci::RunnerUpgradeStatusEnum, feature_category: :fleet_visibility do
   let(:model_only_enum_values) { %w[not_processed] }
   let(:expected_graphql_source_values) do
     Ci::RunnerVersion.statuses.keys - model_only_enum_values

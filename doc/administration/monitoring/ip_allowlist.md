@@ -4,12 +4,12 @@ group: Cloud Connector
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# IP whitelist **(FREE SELF)**
+# IP allowlist **(FREE SELF)**
 
 GitLab provides some [monitoring endpoints](health_check.md)
 that provide health check information when probed.
 
-To control access to those endpoints via IP whitelisting, you can add single
+To control access to those endpoints through IP allowlisting, you can add single
 hosts or use IP ranges:
 
 ::Tabs
@@ -32,7 +32,7 @@ You can set the required IPs under the `gitlab.webservice.monitoring.ipWhitelist
 gitlab:
    webservice:
       monitoring:
-         # Monitoring IP whitelist
+         # Monitoring IP allowlist
          ipWhitelist:
          - 0.0.0.0/0 # Default
 ```

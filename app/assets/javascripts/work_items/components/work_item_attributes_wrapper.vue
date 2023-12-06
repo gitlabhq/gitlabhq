@@ -19,7 +19,8 @@ import WorkItemDueDate from './work_item_due_date.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemLabels from './work_item_labels.vue';
 import WorkItemMilestone from './work_item_milestone.vue';
-import WorkItemParent from './work_item_parent.vue';
+import WorkItemParentInline from './work_item_parent_inline.vue';
+import WorkItemParent from './work_item_parent_with_edit.vue';
 
 export default {
   components: {
@@ -28,6 +29,7 @@ export default {
     WorkItemAssignees,
     WorkItemDueDate,
     WorkItemParent,
+    WorkItemParentInline,
     WorkItemWeightInline: () =>
       import('ee_component/work_items/components/work_item_weight_inline.vue'),
     WorkItemWeight: () =>
@@ -209,14 +211,25 @@ export default {
       :work-item-type="workItemType"
       @error="$emit('error', $event)"
     />
-    <work-item-parent
-      v-if="showWorkItemParent"
-      class="gl-mb-5"
-      :can-update="canUpdate"
-      :work-item-id="workItem.id"
-      :work-item-type="workItemType"
-      :parent="workItemParent"
-      @error="$emit('error', $event)"
-    />
+    <template v-if="showWorkItemParent">
+      <work-item-parent
+        v-if="glFeatures.workItemsMvc2"
+        class="gl-mb-5"
+        :can-update="canUpdate"
+        :work-item-id="workItem.id"
+        :work-item-type="workItemType"
+        :parent="workItemParent"
+        @error="$emit('error', $event)"
+      />
+      <work-item-parent-inline
+        v-else
+        class="gl-mb-5"
+        :can-update="canUpdate"
+        :work-item-id="workItem.id"
+        :work-item-type="workItemType"
+        :parent="workItemParent"
+        @error="$emit('error', $event)"
+      />
+    </template>
   </div>
 </template>

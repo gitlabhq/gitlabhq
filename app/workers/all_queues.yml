@@ -275,7 +275,7 @@
   :tags: []
 - :name: cronjob:ci_runners_reconcile_existing_runner_versions_cron
   :worker_name: Ci::Runners::ReconcileExistingRunnerVersionsCronWorker
-  :feature_category: :runner_fleet
+  :feature_category: :fleet_visibility
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -284,7 +284,7 @@
   :tags: []
 - :name: cronjob:ci_runners_stale_machines_cleanup_cron
   :worker_name: Ci::Runners::StaleMachinesCleanupCronWorker
-  :feature_category: :runner_fleet
+  :feature_category: :fleet_visibility
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2741,7 +2741,7 @@
   :tags: []
 - :name: ci_runners_process_runner_version_update
   :worker_name: Ci::Runners::ProcessRunnerVersionUpdateWorker
-  :feature_category: :runner_fleet
+  :feature_category: :fleet_visibility
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

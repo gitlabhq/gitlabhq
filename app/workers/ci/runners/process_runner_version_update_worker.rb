@@ -7,7 +7,7 @@ module Ci
 
       data_consistency :always
 
-      feature_category :runner_fleet
+      feature_category :fleet_visibility
       urgency :low
 
       idempotent!

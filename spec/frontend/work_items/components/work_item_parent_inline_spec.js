@@ -6,7 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import WorkItemParent from '~/work_items/components/work_item_parent.vue';
+import WorkItemParentInline from '~/work_items/components/work_item_parent_inline.vue';
 import { removeHierarchyChild } from '~/work_items/graphql/cache_utils';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import groupWorkItemsQuery from '~/work_items/graphql/group_work_items.query.graphql';
@@ -26,7 +26,7 @@ jest.mock('~/work_items/graphql/cache_utils', () => ({
   removeHierarchyChild: jest.fn(),
 }));
 
-describe('WorkItemParent component', () => {
+describe('WorkItemParentInline component', () => {
   Vue.use(VueApollo);
 
   let wrapper;
@@ -50,7 +50,7 @@ describe('WorkItemParent component', () => {
     mutationHandler = successUpdateWorkItemMutationHandler,
     isGroup = false,
   } = {}) => {
-    wrapper = shallowMountExtended(WorkItemParent, {
+    wrapper = shallowMountExtended(WorkItemParentInline, {
       apolloProvider: createMockApollo([
         [projectWorkItemsQuery, searchQueryHandler],
         [groupWorkItemsQuery, groupWorkItemsSuccessHandler],

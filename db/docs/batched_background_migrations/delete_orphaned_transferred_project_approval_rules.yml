@@ -5,4 +5,4 @@ description: |
   that are defined for a group hierachy prior to transfer, so they cannot be applied, nor edited.
 feature_category: security_policy_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127767
-milestone: 16.3
+milestone: '16.3'

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
+RSpec.describe Groups::RunnersController, feature_category: :fleet_visibility do
   let_it_be(:user) { create(:user) }
   let_it_be(:namespace_settings) { create(:namespace_settings, runner_registration_enabled: true) }
   let_it_be(:group) { create(:group, namespace_settings: namespace_settings) }

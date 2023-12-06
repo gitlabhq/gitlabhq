@@ -657,6 +657,25 @@ end
 You can then [run a UserSync](#sync-all-users) **(PREMIUM SELF)** to sync the latest DN
 for each of these users.
 
+## Could not authenticate from AzureActivedirectoryV2 because "Invalid grant"
+
+When converting from LDAP to SAML you might get an error in Azure that states the following:
+
+```plaintext
+Authentication failure! invalid_credentials: OAuth2::Error, invalid_grant.
+```
+
+This issue occurs when both of the following are true:
+
+- LDAP identities still exist for users after SAML has been configured for those users.
+- You disable LDAP for those users.
+
+You would receive both LDAP and Azure metadata in the logs, which generates the error in Azure.
+
+The workaround for a single user is to remove the LDAP identity from the user in **Admin > Identities**.
+
+To remove multiple LDAP identities, use either of the workarounds for the [`Could not authenticate you from Ldapmain because "Unknown provider"` error](#could-not-authenticate-you-from-ldapmain-because-unknown-provider).
+
 ## `Could not authenticate you from Ldapmain because "Unknown provider"`
 
 You can receive the following error when authenticating with an LDAP server:

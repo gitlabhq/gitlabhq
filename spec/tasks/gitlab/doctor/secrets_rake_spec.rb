@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'gitlab:doctor:reset_encrypted_tokens', :silence_stdout, feature_category: :runner_fleet do
+RSpec.describe 'gitlab:doctor:reset_encrypted_tokens', :silence_stdout, feature_category: :fleet_visibility do
   let(:model_names) { 'Project,Group' }
   let(:token_names) { 'runners_token' }
 

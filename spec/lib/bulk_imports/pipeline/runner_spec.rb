@@ -322,7 +322,7 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
         end
 
         context 'when exception is not retriable' do
-          let(:reponse_status_code) { 503 }
+          let(:reponse_status_code) { 505 }
 
           it_behaves_like 'failed pipeline', 'BulkImports::NetworkError', 'Net::ReadTimeout'
         end

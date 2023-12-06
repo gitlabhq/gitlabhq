@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunnerManagerBuild, model: true, feature_category: :runner_fleet do
+RSpec.describe Ci::RunnerManagerBuild, model: true, feature_category: :fleet_visibility do
   let_it_be(:runner) { create(:ci_runner) }
   let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner) }
   let_it_be(:build) { create(:ci_build, runner_manager: runner_manager) }

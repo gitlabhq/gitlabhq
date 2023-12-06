@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::FixAllowDescendantsOverrideDisabledSharedRunners, schema: 20230802085923, feature_category: :runner_fleet do # rubocop:disable Layout/LineLength
+RSpec.describe Gitlab::BackgroundMigration::FixAllowDescendantsOverrideDisabledSharedRunners, schema: 20230802085923,
+  feature_category: :fleet_visibility do
   let(:namespaces) { table(:namespaces) }
 
   let!(:valid_enabled) do

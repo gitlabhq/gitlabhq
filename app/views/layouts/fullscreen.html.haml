@@ -4,9 +4,7 @@
   %body{ class: "#{user_tab_width} #{@body_class} fullscreen-layout", data: { page: body_data_page } }
     = render 'peek/bar'
     = header_message
-    .gl--flex-full.gl-h-full{ class: nav ? ["layout-page", page_with_sidebar_class, "gl-mt-0!"]: '' }
-      - if defined?(nav) && nav
-        = render "layouts/nav/sidebar/#{nav}"
+    .gl--flex-full.gl-h-full
       .gl--flex-full.gl-flex-direction-column.gl-w-full
         .alert-wrapper
           = render 'shared/outdated_browser'

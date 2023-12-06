@@ -27,38 +27,4 @@ RSpec.describe 'layouts/fullscreen' do
 
   it_behaves_like 'a layout which reflects the application theme setting'
   it_behaves_like 'a layout which reflects the preferred language'
-
-  describe 'sidebar' do
-    context 'when nav is set' do
-      before do
-        allow(view).to receive(:nav).and_return("admin")
-        render
-      end
-
-      it 'renders the sidebar' do
-        expect(rendered).to render_template("layouts/nav/sidebar/_admin")
-        expect(rendered).to have_selector("aside.nav-sidebar")
-      end
-
-      it 'adds the proper classes' do
-        expect(rendered).to have_selector(".layout-page.gl-mt-0\\!")
-      end
-    end
-
-    describe 'when nav is not set' do
-      before do
-        allow(view).to receive(:nav).and_return(nil)
-        render
-      end
-
-      it 'does not render the sidebar' do
-        expect(rendered).not_to render_template("layouts/nav/sidebar/_admin")
-        expect(rendered).not_to have_selector("aside.nav-sidebar")
-      end
-
-      it 'not add classes' do
-        expect(rendered).not_to have_selector(".layout-page.gl-mt-0\\!")
-      end
-    end
-  end
 end

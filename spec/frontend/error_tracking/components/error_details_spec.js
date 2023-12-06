@@ -463,7 +463,7 @@ describe('ErrorDetails', () => {
       const gitlabIssuePath = 'https://gitlab.example.com/issues/1';
       const findGitLabLink = () => wrapper.find(`[href="${gitlabIssuePath}"]`);
       const findCreateIssueButton = () => wrapper.find('[data-testid="create-issue-button"]');
-      const findViewIssueButton = () => wrapper.find('[data-qa-selector="view_issue_button"]');
+      const findViewIssueButton = () => wrapper.find('[data-testid="view-issue-button"]');
 
       describe('is present', () => {
         beforeEach(() => {

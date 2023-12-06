@@ -149,13 +149,24 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
     end
 
     context 'when chunk code is not 200' do
-      let(:chunk_code) { 500 }
+      let(:chunk_code) { 404 }
 
       it 'raises an error' do
         expect { subject.execute }.to raise_error(
           described_class::ServiceError,
-          'File download error 500'
+          'File download error 404'
         )
+      end
+
+      context 'when chunk code is retriable' do
+        let(:chunk_code) { 502 }
+
+        it 'raises a retriable error' do
+          expect { subject.execute }.to raise_error(
+            BulkImports::NetworkError,
+            'Error downloading file from /test. Error code: 502'
+          )
+        end
       end
 
       context 'when chunk code is redirection' do

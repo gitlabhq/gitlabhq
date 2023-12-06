@@ -5,4 +5,4 @@ description: >-
   does not have an entry in this table.
 feature_category: geo
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113783
-milestone: 15.10
+milestone: '15.10'

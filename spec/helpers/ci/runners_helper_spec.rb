@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunnersHelper, feature_category: :runner_fleet do
+RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
   let_it_be(:user) { create(:user) }
 
   before do

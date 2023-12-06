@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::Runners::AssignRunnerService, '#execute', feature_category: :runner_fleet do
+RSpec.describe ::Ci::Runners::AssignRunnerService, '#execute', feature_category: :fleet_visibility do
   subject(:execute) { described_class.new(runner, new_project, user).execute }
 
   let_it_be(:owner_group) { create(:group) }

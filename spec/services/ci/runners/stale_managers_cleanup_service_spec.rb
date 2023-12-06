@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Runners::StaleManagersCleanupService, feature_category: :runner_fleet do
+RSpec.describe Ci::Runners::StaleManagersCleanupService, feature_category: :fleet_visibility do
   let(:service) { described_class.new }
   let!(:runner_manager3) { create(:ci_runner_machine, created_at: 6.months.ago, contacted_at: Time.current) }
 

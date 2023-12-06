@@ -735,8 +735,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/support/shared_examples/serializers/report_status_shared_examples.rb'
     - 'ee/spec/views/compliance_management/compliance_framework/_project_settings.html.haml_spec.rb'
     - 'ee/spec/views/layouts/header/_new_dropdown.haml_spec.rb'
-    - 'ee/spec/views/layouts/nav/sidebar/_group.html.haml_spec.rb'
-    - 'ee/spec/views/layouts/nav/sidebar/_project.html.haml_spec.rb'
     - 'ee/spec/views/shared/promotions/_promotion_link_project.html.haml_spec.rb'
     - 'ee/spec/workers/abuse/new_abuse_report_worker_spec.rb'
     - 'ee/spec/workers/app_sec/dast/profile_schedule_worker_spec.rb'

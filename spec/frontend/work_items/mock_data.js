@@ -445,7 +445,7 @@ export const descriptionHtmlWithCheckboxes = `
   </ul>
 `;
 
-const taskType = {
+export const taskType = {
   __typename: 'WorkItemType',
   id: 'gid://gitlab/WorkItems::Type/5',
   name: 'Task',
@@ -457,6 +457,20 @@ export const objectiveType = {
   id: 'gid://gitlab/WorkItems::Type/2411',
   name: 'Objective',
   iconName: 'issue-type-objective',
+};
+
+export const keyResultType = {
+  __typename: 'WorkItemType',
+  id: 'gid://gitlab/WorkItems::Type/2411',
+  name: 'Key Result',
+  iconName: 'issue-type-keyresult',
+};
+
+export const issueType = {
+  __typename: 'WorkItemType',
+  id: 'gid://gitlab/WorkItems::Type/2411',
+  name: 'Issue',
+  iconName: 'issue-type-issue',
 };
 
 export const mockEmptyLinkedItems = {

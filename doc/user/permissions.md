@@ -122,7 +122,7 @@ The following table lists project permissions available for each role:
 | [License Scanning](compliance/license_scanning_of_cyclonedx_files/index.md):<br>View License list                                                                                                   |          | ✓        | ✓         | ✓          | ✓        |
 | [License approval policies](../user/compliance/license_approval_policies.md):<br>Manage license policy                                                                                               |          |          |           | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Assign reviewer                                                                                                                |          | ✓        | ✓         | ✓          | ✓        |
-| [Merge requests](project/merge_requests/index.md):<br>See list                                                                                                                       |          | ✓        | ✓         | ✓          | ✓        |
+| [Merge requests](project/merge_requests/index.md):<br>View list                                                                                                                       | (25)       | ✓        | ✓         | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Apply code change suggestions                                                                                                  |          |          | ✓         | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Approve (8)                                                                                                                  |          |          | ✓         | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Assign                                                                                                                         |          |          | ✓         | ✓          | ✓        |
@@ -250,6 +250,7 @@ The following table lists project permissions available for each role:
 22. You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic).
 23. In GitLab 15.9 and later, users with the Guest role and an Ultimate license can view private repository content if an administrator (on self-managed) or group owner (on GitLab.com) gives those users permission. The administrator or group owner can create a [custom role](custom_roles.md) through the API and assign that role to the users.
 24. In GitLab 16.4 the ability for `Developers` to change the status of a vulnerability (`admin_vulnerability`) was [deprecated](../update/deprecations.md#deprecate-change-vulnerability-status-from-the-developer-role). The `admin_vulnerability` permission will be removed, by default, from all `Developer` roles in GitLab 17.0.
+25. Members with the Guest role can view the list of MRs in public projects. Private projects restrict Guests from viewing MR lists.
 
 <!-- markdownlint-enable MD029 -->
 

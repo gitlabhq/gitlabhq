@@ -25184,6 +25184,7 @@ CREATE TABLE vulnerability_reads (
     dismissal_reason smallint,
     has_merge_request boolean DEFAULT false,
     has_remediations boolean DEFAULT false NOT NULL,
+    owasp_top_10 smallint,
     CONSTRAINT check_380451bdbe CHECK ((char_length(location_image) <= 2048)),
     CONSTRAINT check_a105eb825a CHECK ((char_length(cluster_agent_id) <= 10))
 );
@@ -25589,22 +25590,28 @@ CREATE TABLE workspaces (
     devfile_path text NOT NULL,
     devfile text,
     processed_devfile text,
-    url text NOT NULL,
+    url text,
     deployment_resource_version text,
     personal_access_token_id bigint,
     config_version integer DEFAULT 1 NOT NULL,
     force_include_all_resources boolean DEFAULT true NOT NULL,
+    url_prefix text,
+    url_domain text,
+    url_query_string text,
+    CONSTRAINT check_03c5d442fd CHECK ((char_length(url_domain) <= 256)),
     CONSTRAINT check_15543fb0fa CHECK ((char_length(name) <= 64)),
     CONSTRAINT check_157d5f955c CHECK ((char_length(namespace) <= 64)),
     CONSTRAINT check_2b401b0034 CHECK ((char_length(deployment_resource_version) <= 64)),
     CONSTRAINT check_77d1a2ff50 CHECK ((char_length(processed_devfile) <= 65535)),
+    CONSTRAINT check_8a0ab61b6b CHECK ((char_length(url_query_string) <= 256)),
     CONSTRAINT check_8e363ee3ad CHECK ((char_length(devfile_ref) <= 256)),
     CONSTRAINT check_8e4db5ffc2 CHECK ((char_length(actual_state) <= 32)),
     CONSTRAINT check_9e42558c35 CHECK ((char_length(url) <= 1024)),
     CONSTRAINT check_b70eddcbc1 CHECK ((char_length(desired_state) <= 32)),
     CONSTRAINT check_d7ed376e49 CHECK ((char_length(editor) <= 256)),
     CONSTRAINT check_dc58d56169 CHECK ((char_length(devfile_path) <= 2048)),
-    CONSTRAINT check_eb32879a3d CHECK ((char_length(devfile) <= 65535))
+    CONSTRAINT check_eb32879a3d CHECK ((char_length(devfile) <= 65535)),
+    CONSTRAINT check_ffa8cad434 CHECK ((char_length(url_prefix) <= 256))
 );
 
 CREATE SEQUENCE workspaces_id_seq

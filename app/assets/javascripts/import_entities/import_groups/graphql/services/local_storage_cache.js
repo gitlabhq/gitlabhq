@@ -1,8 +1,8 @@
 import { debounce, merge } from 'lodash';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 
-const OLD_KEY = 'gl-bulk-imports-import-state';
-export const KEY = 'gl-bulk-imports-import-state-v2';
+const OLD_KEY = 'gl-bulk-imports-import-state-v2';
+export const KEY = 'gl-bulk-imports-import-state-v3';
 export const DEBOUNCE_INTERVAL = DEFAULT_DEBOUNCE_AND_THROTTLE_MS;
 
 export class LocalStorageCache {

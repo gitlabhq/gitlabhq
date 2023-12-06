@@ -5,4 +5,4 @@ description: |
   to hash and store values in new columns.
 feature_category: user_profile
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129350
-milestone: 16.4
+milestone: '16.4'

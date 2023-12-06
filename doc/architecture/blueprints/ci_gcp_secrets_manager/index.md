@@ -78,7 +78,7 @@ The proposed CI keyword would be the following:
 job_name:
   id_tokens:
     GCP_SM_ID_TOKEN:
-      aud: https://iam.googleapis.com/projects/$GCP_PROJECT_NUMBER/locations/global/workloadIdentityPools/$GCP_WORKLOAD_FEDERATION_POOL_ID/providers/$GCP_WORKLOAD_FEDERATION_PROVIDER_ID # or a custom audience as configured in GCP Workload Identity Pool Provider.
+      aud: my-GCP-workload-identity-federation-audience
   secrets:
     DATABASE_PASSWORD:
       gcp_sm:

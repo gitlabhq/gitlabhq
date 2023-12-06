@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Admin Runners", feature_category: :runner_fleet do
+RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
   include Features::SortingHelpers
   include Features::RunnersHelpers
   include Spec::Support::Helpers::ModalHelpers

@@ -6683,9 +6683,6 @@ msgstr ""
 msgid "Artifacts|Total artifacts size"
 msgstr ""
 
-msgid "As this is a newly created account, to get started, click the link below to confirm your account."
-msgstr ""
-
 msgid "As we continue to build more features for SAST, we'd love your feedback on the SAST configuration feature in %{linkStart}this issue%{linkEnd}."
 msgstr ""
 
@@ -10882,9 +10879,6 @@ msgid "Close epic"
 msgstr ""
 
 msgid "Close milestone"
-msgstr ""
-
-msgid "Close sidebar"
 msgstr ""
 
 msgid "Close this %{quick_action_target}"
@@ -22180,7 +22174,7 @@ msgstr ""
 msgid "GitLabPages|Updating your Pages configuration..."
 msgstr ""
 
-msgid "GitLabPages|Use multiple versions"
+msgid "GitLabPages|Use multiple deployments"
 msgstr ""
 
 msgid "GitLabPages|Use unique domain"
@@ -22198,7 +22192,7 @@ msgstr ""
 msgid "GitLabPages|When enabled, all attempts to visit your website through HTTP are automatically redirected to HTTPS using a response with status code 301. Requires a valid certificate for all domains. %{docs_link_start}Learn more.%{link_end}"
 msgstr ""
 
-msgid "GitLabPages|When enabled, you can create multiple versions of your pages site."
+msgid "GitLabPages|When enabled, you can create multiple deployments of your pages site. %{docs_link_start}Learn More.%{link_end}"
 msgstr ""
 
 msgid "GitLabPages|When using Pages under the general domain of a GitLab instance (%{pages_host}), you cannot use HTTPS with subdomains of subdomains. If your namespace or groupname contains a dot, it does not work. This is a limitation of the HTTP Over TLS protocol. HTTP pages work if you don't redirect HTTP to HTTPS. %{docs_link_start}Learn more.%{link_end}"
@@ -51943,7 +51937,7 @@ msgstr ""
 msgid "UsageQuota|%{percentageRemaining}%% purchased storage remaining."
 msgstr ""
 
-msgid "UsageQuota|%{storage_limit_link_start}A namespace storage limit%{link_end} will soon be enforced for the %{strong_start}%{namespace_name}%{strong_end} namespace. %{extra_message}"
+msgid "UsageQuota|%{storage_limit_link_start}A namespace storage limit%{link_end} of %{limit} will soon be enforced for the %{strong_start}%{namespace_name}%{strong_end} namespace. %{extra_message}"
 msgstr ""
 
 msgid "UsageQuota|Any additional purchased storage will be displayed here."

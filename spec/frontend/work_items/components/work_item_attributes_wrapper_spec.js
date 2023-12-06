@@ -1,11 +1,20 @@
+import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import WorkItemDueDate from '~/work_items/components/work_item_due_date.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
-
+import WorkItemParentInline from '~/work_items/components/work_item_parent_inline.vue';
+import WorkItemParent from '~/work_items/components/work_item_parent_with_edit.vue';
+import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemAttributesWrapper from '~/work_items/components/work_item_attributes_wrapper.vue';
-import { workItemResponseFactory } from '../mock_data';
+import {
+  workItemResponseFactory,
+  taskType,
+  issueType,
+  objectiveType,
+  keyResultType,
+} from '../mock_data';
 
 describe('WorkItemAttributesWrapper component', () => {
   let wrapper;
@@ -16,8 +25,13 @@ describe('WorkItemAttributesWrapper component', () => {
   const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssignees);
   const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabels);
   const findWorkItemMilestone = () => wrapper.findComponent(WorkItemMilestone);
+  const findWorkItemParentInline = () => wrapper.findComponent(WorkItemParentInline);
+  const findWorkItemParent = () => wrapper.findComponent(WorkItemParent);
 
-  const createComponent = ({ workItem = workItemQueryResponse.data.workItem } = {}) => {
+  const createComponent = ({
+    workItem = workItemQueryResponse.data.workItem,
+    workItemsMvc2 = true,
+  } = {}) => {
     wrapper = shallowMount(WorkItemAttributesWrapper, {
       propsData: {
         fullPath: 'group/project',
@@ -29,6 +43,9 @@ describe('WorkItemAttributesWrapper component', () => {
         hasOkrsFeature: true,
         hasIssuableHealthStatusFeature: true,
         projectNamespace: 'namespace',
+        glFeatures: {
+          workItemsMvc2,
+        },
       },
       stubs: {
         WorkItemWeight: true,
@@ -92,6 +109,56 @@ describe('WorkItemAttributesWrapper component', () => {
       createComponent({ workItem: response.data.workItem });
 
       expect(findWorkItemMilestone().exists()).toBe(exists);
+    });
+  });
+
+  describe('parent widget', () => {
+    describe.each`
+      description                           | workItemType     | exists
+      ${'when work item type is task'}      | ${taskType}      | ${true}
+      ${'when work item type is objective'} | ${objectiveType} | ${true}
+      ${'when work item type is keyresult'} | ${keyResultType} | ${true}
+      ${'when work item type is issue'}     | ${issueType}     | ${false}
+    `('$description', ({ workItemType, exists }) => {
+      it(`${exists ? 'renders' : 'does not render'} parent component`, async () => {
+        const response = workItemResponseFactory({ workItemType });
+        createComponent({ workItem: response.data.workItem });
+
+        await waitForPromises();
+
+        expect(findWorkItemParent().exists()).toBe(exists);
+      });
+    });
+
+    it('renders WorkItemParent when workItemsMvc2 enabled', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findWorkItemParent().exists()).toBe(true);
+      expect(findWorkItemParentInline().exists()).toBe(false);
+    });
+
+    it('renders WorkItemParentInline when workItemsMvc2 disabled', async () => {
+      createComponent({ workItemsMvc2: false });
+
+      await waitForPromises();
+
+      expect(findWorkItemParent().exists()).toBe(false);
+      expect(findWorkItemParentInline().exists()).toBe(true);
+    });
+
+    it('emits an error event to the wrapper', async () => {
+      const response = workItemResponseFactory({ parentWidgetPresent: true });
+      createComponent({ workItem: response.data.workItem });
+      const updateError = 'Failed to update';
+
+      await waitForPromises();
+
+      findWorkItemParent().vm.$emit('error', updateError);
+      await nextTick();
+
+      expect(wrapper.emitted('error')).toEqual([[updateError]]);
     });
   });
 });

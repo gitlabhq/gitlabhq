@@ -97,11 +97,11 @@ module PackagesHelper
     }
   end
 
-  def settings_data
+  def settings_data(project)
     cleanup_settings_data.merge(
-      show_container_registry_settings: show_container_registry_settings(@project).to_s,
-      show_package_registry_settings: show_package_registry_settings(@project).to_s,
-      cleanup_settings_path: cleanup_image_tags_project_settings_packages_and_registries_path(@project)
+      show_container_registry_settings: show_container_registry_settings(project).to_s,
+      show_package_registry_settings: show_package_registry_settings(project).to_s,
+      cleanup_settings_path: cleanup_image_tags_project_settings_packages_and_registries_path(project)
     )
   end
 end

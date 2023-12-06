@@ -175,7 +175,7 @@ To enable multiple GitLab Pages deployments:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Pages**.
-1. Select **Use multiple versions**.
+1. Select **Use multiple deployments**.
 
 ### Path clash
 

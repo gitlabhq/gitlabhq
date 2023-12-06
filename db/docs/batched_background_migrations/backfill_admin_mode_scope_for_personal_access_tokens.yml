@@ -4,5 +4,5 @@ description: backfills `admin_mode` scope to personal access tokens associated t
   administrators
 feature_category: system_access
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107875
-milestone: 15.8
+milestone: '15.8'
 finalized_by: '20231128155514'

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::StuckBuilds::DropPendingService, feature_category: :runner_fleet do
+RSpec.describe Ci::StuckBuilds::DropPendingService, feature_category: :fleet_visibility do
   let_it_be(:runner) { create(:ci_runner) }
   let_it_be(:pipeline) { create(:ci_empty_pipeline) }
   let_it_be_with_reload(:job) do

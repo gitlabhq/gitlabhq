@@ -3,4 +3,4 @@ migration_job_name: BackfillProjectStatisticsStorageSizeWithoutPipelineArtifacts
 description: Refreshes ProjectStatistics to remove pipeline_artifacts_size from the total storage_size
 feature_category: consumables_cost_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126053
-milestone: 16.3
+milestone: '16.3'

@@ -24,7 +24,6 @@
 - build_artifacts
 - capacity_planning
 - cell
-- ci-cd_visibility
 - cloud_connector
 - cloud_native_installation
 - code_quality
@@ -61,6 +60,7 @@
 - error_tracking
 - feature_flags
 - five_minute_production_app
+- fleet_visibility
 - fulfillment_admin_tooling
 - fulfillment_infrastructure
 - fuzz_testing
@@ -109,7 +109,6 @@
 - requirements_management
 - review_apps
 - runner
-- runner_fleet
 - runner_saas
 - saas_provisioning
 - sbom

@@ -3,7 +3,7 @@ migration_job_name: BackfillPackagesTagsProjectId
 description: Populates the new `packages_tags.project_id` column after joining with the `packages_packages` table
 feature_category: package_registry
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135451
-milestone: 16.6
+milestone: '16.6'
 queued_migration_version: 20231030071209
 finalize_after: '2023-12-23'
 finalized_by: # version of the migration that ensured this bbm

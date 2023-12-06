@@ -45,7 +45,7 @@ module API
         optional :maximum_timeout, type: Integer,
           desc: 'Maximum timeout that limits the amount of time (in seconds) that runners can run jobs'
       end
-      post 'runners', urgency: :low, feature_category: :runner_fleet do
+      post 'runners', urgency: :low, feature_category: :fleet_visibility do
         attributes = attributes_for_keys(
           %i[runner_type group_id project_id description maintenance_note paused locked run_untagged tag_list
             access_level maximum_timeout]

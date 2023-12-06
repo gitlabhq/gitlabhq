@@ -3,5 +3,5 @@ migration_job_name: DeleteInvalidProtectedTagCreateAccessLevels
 description: Remove rows from protected_tag_create_access_levels for groups that do not have project_group_links to the project for the associated protected tag
 feature_category: source_code_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134337
-milestone: 16.6
+milestone: '16.6'
 queued_migration_version: 20231016194943

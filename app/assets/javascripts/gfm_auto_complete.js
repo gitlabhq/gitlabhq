@@ -11,7 +11,7 @@ import { state } from '~/sidebar/components/reviewers/sidebar_reviewers.vue';
 import AjaxCache from './lib/utils/ajax_cache';
 import { spriteIcon } from './lib/utils/common_utils';
 import { parsePikadayDate } from './lib/utils/datetime_utility';
-import glRegexp from './lib/utils/regexp';
+import { unicodeLetters } from './lib/utils/regexp';
 
 const USERS_ALIAS = 'users';
 const ISSUES_ALIAS = 'issues';
@@ -307,10 +307,7 @@ class GfmAutoComplete {
       callbacks: {
         ...this.getDefaultCallbacks(),
         matcher(flag, subtext) {
-          const regexp = new RegExp(
-            `(?:[^${glRegexp.unicodeLetters}0-9:]|\n|^):([^ :][^:]*)?$`,
-            'gi',
-          );
+          const regexp = new RegExp(`(?:[^${unicodeLetters}0-9:]|\n|^):([^ :][^:]*)?$`, 'gi');
           const match = regexp.exec(subtext);
 
           if (match && match.length) {

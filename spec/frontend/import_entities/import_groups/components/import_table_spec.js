@@ -9,8 +9,9 @@ import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { createAlert } from '~/alert';
 import { HTTP_STATUS_OK, HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
+
 import { STATUSES } from '~/import_entities/constants';
-import { i18n, ROOT_NAMESPACE } from '~/import_entities/import_groups/constants';
+import { ROOT_NAMESPACE } from '~/import_entities/import_groups/constants';
 import ImportTable from '~/import_entities/import_groups/components/import_table.vue';
 import ImportStatus from '~/import_entities/import_groups/components/import_status.vue';
 import ImportHistoryLink from '~/import_entities/import_groups/components//import_history_link.vue';
@@ -148,7 +149,7 @@ describe('import table', () => {
       });
       await waitForPromises();
 
-      expect(wrapper.findComponent(GlEmptyState).props().title).toBe(i18n.NO_GROUPS_FOUND);
+      expect(wrapper.findComponent(GlEmptyState).props().title).toBe('No groups found');
     });
   });
 
@@ -296,6 +297,42 @@ describe('import table', () => {
     });
   });
 
+  describe('when importGroup query is using stale data from LocalStorageCache', () => {
+    it('displays error', async () => {
+      const mockMutationWithProgressInvalid = jest.fn().mockResolvedValue({
+        __typename: 'ClientBulkImportSourceGroup',
+        id: 1,
+        lastImportTarget: { id: 1, targetNamespace: 'root', newName: 'group1' },
+        progress: {
+          __typename: 'ClientBulkImportProgress',
+          id: null,
+          status: 'failed',
+          message: '',
+        },
+      });
+
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: [FAKE_GROUP],
+          pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
+        }),
+        importGroups: mockMutationWithProgressInvalid,
+      });
+
+      await waitForPromises();
+      await findRowImportDropdownAtIndex(0).trigger('click');
+      await waitForPromises();
+
+      expect(mockMutationWithProgressInvalid).toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Importing the group failed.',
+        captureError: true,
+        error: expect.any(Error),
+      });
+    });
+  });
+
   it('displays error if importing group fails', async () => {
     createComponent({
       bulkImportSourceGroups: () => ({
@@ -312,11 +349,11 @@ describe('import table', () => {
     await findRowImportDropdownAtIndex(0).trigger('click');
     await waitForPromises();
 
-    expect(createAlert).toHaveBeenCalledWith(
-      expect.objectContaining({
-        message: i18n.ERROR_IMPORT,
-      }),
-    );
+    expect(createAlert).toHaveBeenCalledWith({
+      message: 'Importing the group failed.',
+      captureError: true,
+      error: expect.any(Error),
+    });
   });
 
   it('displays inline error if importing group reports rate limit', async () => {
@@ -338,7 +375,9 @@ describe('import table', () => {
     await waitForPromises();
 
     expect(createAlert).not.toHaveBeenCalled();
-    expect(wrapper.find('tbody tr').text()).toContain(i18n.ERROR_TOO_MANY_REQUESTS);
+    expect(wrapper.find('tbody tr').text()).toContain(
+      'Over six imports in one minute were attempted. Wait at least one minute and try again.',
+    );
   });
 
   it('displays inline error if backend returns validation error', async () => {

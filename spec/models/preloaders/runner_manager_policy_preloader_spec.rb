@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Preloaders::RunnerManagerPolicyPreloader, feature_category: :runner_fleet do
+RSpec.describe Preloaders::RunnerManagerPolicyPreloader, feature_category: :fleet_visibility do
   let_it_be(:user) { create(:user) }
   let_it_be(:runner1) { create(:ci_runner) }
   let_it_be(:runner2) { create(:ci_runner) }

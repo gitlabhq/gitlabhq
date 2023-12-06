@@ -3,4 +3,4 @@ migration_job_name: BackfillRootStorageStatisticsForkStorageSizes
 description: Backfill the public_forks_storage_size, internal_forks_storage_size, and private_forks_storage_size columns on the namespace_root_storage_statistics table
 feature_category: consumables_cost_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120916
-milestone: 16.1
+milestone: '16.1'
