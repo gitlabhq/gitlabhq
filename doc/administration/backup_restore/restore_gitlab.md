@@ -100,7 +100,7 @@ sudo gitlab-ctl status
 Next, ensure you have completed the [restore prerequisites](#restore-prerequisites) steps and have run `gitlab-ctl reconfigure`
 after copying over the GitLab secrets file from the original installation.
 
-Next, restore the backup, specifying the timestamp of the backup you wish to
+Next, restore the backup, specifying the ID of the backup you wish to
 restore:
 
 ```shell
@@ -301,8 +301,8 @@ options.
 
 ### Specify backup to restore when there are more than one
 
-By default, backup files use a naming scheme [starting with a timestamp](backup_gitlab.md#backup-timestamp). When more than one backup exists, you must specify which
-`*_gitlab_backup.tar` file to restore by setting the environment variable `BACKUP=timestamp_of_backup`.
+Backup files use a naming scheme [starting with a backup ID](index.md#backup-id). When more than one backup exists, you must specify which
+`<backup-id>_gitlab_backup.tar` file to restore by setting the environment variable `BACKUP=<backup-id>`.
 
 ### Disable prompts during restore
 
@@ -350,13 +350,13 @@ To exclude specific tasks:
 - Linux package installations:
 
   ```shell
-  sudo gitlab-backup restore BACKUP=timestamp_of_backup SKIP=db,uploads
+  sudo gitlab-backup restore BACKUP=<backup-id> SKIP=db,uploads
   ```
 
 - Self-compiled installations:
 
   ```shell
-  sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup SKIP=db,uploads RAILS_ENV=production
+  sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=<backup-id> SKIP=db,uploads RAILS_ENV=production
   ```
 
 ### Restore specific repository storages
@@ -373,13 +373,13 @@ For example:
 - Linux package installations:
 
   ```shell
-  sudo gitlab-backup restore BACKUP=timestamp_of_backup REPOSITORIES_STORAGES=storage1,storage2
+  sudo gitlab-backup restore BACKUP=<backup-id> REPOSITORIES_STORAGES=storage1,storage2
   ```
 
 - Self-compiled installations:
 
   ```shell
-  sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup REPOSITORIES_STORAGES=storage1,storage2
+  sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=<backup-id> REPOSITORIES_STORAGES=storage1,storage2
   ```
 
 ### Restore specific repositories
@@ -397,19 +397,19 @@ and skip the **Project D** in **Group A** (`group-a/project-d`):
 - Linux package installations:
 
   ```shell
-  sudo gitlab-backup restore BACKUP=timestamp_of_backup REPOSITORIES_PATHS=group-a,group-b/project-c SKIP_REPOSITORIES_PATHS=group-a/project-d
+  sudo gitlab-backup restore BACKUP=<backup-id> REPOSITORIES_PATHS=group-a,group-b/project-c SKIP_REPOSITORIES_PATHS=group-a/project-d
   ```
 
 - Self-compiled installations:
 
   ```shell
-  sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup REPOSITORIES_PATHS=group-a,group-b/project-c SKIP_REPOSITORIES_PATHS=group-a/project-d
+  sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=<backup-id> REPOSITORIES_PATHS=group-a,group-b/project-c SKIP_REPOSITORIES_PATHS=group-a/project-d
   ```
 
 ### Restore untarred backups
 
 If an [untarred backup](backup_gitlab.md#skipping-tar-creation) (made with `SKIP=tar`) is found,
-and no backup is chosen with `BACKUP=<timestamp>`, the untarred backup is used.
+and no backup is chosen with `BACKUP=<backup-id>`, the untarred backup is used.
 
 For example:
 
@@ -471,7 +471,7 @@ While restoring from backup, you can encounter an error when the following are t
 The error looks like:
 
 ```plaintext
-{"level":"fatal","msg":"restore: pipeline: 1 failures encountered:\n - @hashed/path/to/hashed_repository.git (path/to_project): manager: restore custom hooks, \"@hashed/path/to/hashed_repository/<BackupTimestamp>_<GitLabVersion>-ee/001.custom_hooks.tar\": rpc error: code = Internal desc = setting custom hooks: generating prepared vote: walking directory: copying file to hash: read /mnt/gitlab-app/git-data/repositories/+gitaly/tmp/default-repositories.old.<timestamp>.<temporaryfolder>/custom_hooks/compliance-triggers.d: is a directory\n","pid":3256017,"time":"2023-08-10T20:09:44.395Z"}
+{"level":"fatal","msg":"restore: pipeline: 1 failures encountered:\n - @hashed/path/to/hashed_repository.git (path/to_project): manager: restore custom hooks, \"@hashed/path/to/hashed_repository/<BackupID>_<GitLabVersion>-ee/001.custom_hooks.tar\": rpc error: code = Internal desc = setting custom hooks: generating prepared vote: walking directory: copying file to hash: read /mnt/gitlab-app/git-data/repositories/+gitaly/tmp/default-repositories.old.<timestamp>.<temporaryfolder>/custom_hooks/compliance-triggers.d: is a directory\n","pid":3256017,"time":"2023-08-10T20:09:44.395Z"}
 ```
 
 To resolve this, you can update the Git [server hooks](../server_hooks.md) for GitLab version 15.11 and later, and create a new backup.

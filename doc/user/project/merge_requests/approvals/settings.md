@@ -29,8 +29,8 @@ These settings limit who can approve merge requests:
   Prevents users who add commits to a merge request from also approving it.
 - [**Prevent editing approval rules in merge requests**](#prevent-editing-approval-rules-in-merge-requests):
   Prevents users from overriding project level approval rules on merge requests.
-- [**Require user password to approve**](#require-user-re-authentication-to-approve):
-  Force potential approvers to first authenticate with a password.
+- [**Require user re-authentication (password or SAML) to approve**](#require-user-re-authentication-to-approve):
+  Force potential approvers to first authenticate with either a password or with SAML.
 - Code Owner approval removals: Define what happens to existing approvals when
   commits are added to the merge request.
   - **Keep approvals**: Do not remove any approvals.
@@ -114,15 +114,24 @@ When this field is changed, it can affect all open merge requests depending on t
 
 ## Require user re-authentication to approve
 
-You can force potential approvers to first authenticate with a password. This
-permission enables an electronic signature for approvals, such as the one defined by
+> SAML authentication for GitLab.com groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5981) in GitLab 16.6.
+
+You can force potential approvers to first authenticate with either:
+
+- A password.
+- SAML. Available on GitLab.com groups only.
+
+This permission enables an electronic signature for approvals, such as the one defined by
 [Code of Federal Regulations (CFR) Part 11](https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfcfr/CFRSearch.cfm?CFRPart=11&showFR=1&subpartNode=21:1.0.1.1.8.3)):
 
-1. Enable password authentication for the web interface, as described in the
-   [sign-in restrictions documentation](../../../../administration/settings/sign_in_restrictions.md#password-authentication-enabled).
+1. Enable password authentication and SAML authentication. For more information on:
+   - Password authentication, see
+     [sign-in restrictions documentation](../../../../administration/settings/sign_in_restrictions.md#password-authentication-enabled).
+   - SAML authentication for GitLab.com groups, see
+     [SAML SSO for GitLab.com groups documentation](../../../../user/group/saml_sso).
 1. On the left sidebar, select **Settings > Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval settings** and
-   select **Require user password to approve**.
+   select **Require user re-authentication (password or SAML) to approve**.
 1. Select **Save changes**.
 
 ## Remove all approvals when commits are added to the source branch

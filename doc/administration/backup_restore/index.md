@@ -58,6 +58,19 @@ When working with GitLab backups, you might need to know how GitLab creates back
 1. Optional. Uploads the new backup archive to object-storage.
 1. Cleans up backup staging directory files that are now archived.
 
+## Backup ID
+
+Backup IDs identify individual backup archives. You need the backup ID of a backup archive if you need to restore GitLab and multiple backup archives are available.
+
+Backup archives are saved in a directory set in `backup_path`, which is specified in the `config/gitlab.yml` file.
+
+- By default, backup archives are stored in `/var/opt/gitlab/backups`.
+- By default, backup archive file names are `<backup-id>_gitlab_backup.tar` where `<backup-id>` identifies the time when the
+  backup archive was created, the GitLab version, and the GitLab edition.
+
+For example, if the archive file name is `1493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar`,
+the backup ID is `1493107454_2018_04_25_10.6.4-ce`.
+
 ## Backup staging directory
 
 The backup staging directory is a place to temporarily:
@@ -151,7 +164,7 @@ up once no matter the replication factor.
 You can configure repository backups as server-side repository backups. When specified, `gitaly-backup` makes a single RPC call for each repository to create the backup. This RPC
 does not transmit any repository data. Instead, the RPC triggers the Gitaly node that stores that physical repository to upload the backup data directly to object-storage. Because
 the data is no longer transmitted through RPCs from Gitaly, server-side backups require much less network transfer and require no disk storage on the machine that is running the
-backup Rake task. The backups stored on object-storage are linked to the created backup archive by [the backup name](backup_gitlab.md#backup-timestamp).
+backup Rake task. The backups stored on object-storage are linked to the created backup archive by [the backup ID](#backup-id).
 
 ```mermaid
 sequenceDiagram

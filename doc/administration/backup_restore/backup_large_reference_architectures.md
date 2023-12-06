@@ -96,12 +96,12 @@ To back up the Git repositories:
    sudo gitlab-backup create SKIP=db
    ```
 
-   The resulting tar file will include only the Git repositories and some metadata. Blobs such as uploads, artifacts, and LFS do not need to be explicitly skipped, because the command does not back up object storage by default. The tar file will be created in the [`/var/opt/gitlab/backups` directory](https://docs.gitlab.com/omnibus/settings/backups.html#creating-an-application-backup) and [the file name will end in `_gitlab_backup.tar`](backup_gitlab.md#backup-timestamp).
+   The resulting tar file will include only the Git repositories and some metadata. Blobs such as uploads, artifacts, and LFS do not need to be explicitly skipped, because the command does not back up object storage by default. The tar file will be created in the [`/var/opt/gitlab/backups` directory](https://docs.gitlab.com/omnibus/settings/backups.html#creating-an-application-backup) and [the file name will end in `_gitlab_backup.tar`](index.md#backup-id).
 
    Since we configured uploading backups to remote cloud storage, the tar file will be uploaded to the remote region and deleted from disk.
 
-1. Note the [timestamp](backup_gitlab.md#backup-timestamp) of the backup file for the next step. For example, if the backup name is `1493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar`, the timestamp is `1493107454_2018_04_25_10.6.4-ce`.
-1. Run the [backup command](backup_gitlab.md#backup-command) again, this time specifying [incremental backup of Git repositories](backup_gitlab.md#incremental-repository-backups), and the timestamp of the source backup file. Using the example timestamp from the previous step, the command is:
+1. Note the [backup ID](index.md#backup-id) of the backup file for the next step. For example, if the backup archive name is `1493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar`, the backup ID is `1493107454_2018_04_25_10.6.4-ce`.
+1. Run the [backup command](backup_gitlab.md#backup-command) again, this time specifying [incremental backup of Git repositories](backup_gitlab.md#incremental-repository-backups), and the backup ID of the source backup file. Using the example ID from the previous step, the command is:
 
    ```shell
    sudo gitlab-backup create SKIP=db INCREMENTAL=yes PREVIOUS_BACKUP=1493107454_2018_04_25_10.6.4-ce
@@ -277,7 +277,7 @@ To restore Git repositories:
    sudo chown git:git /var/opt/gitlab/backups/11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar
    ```
 
-1. Restore the backup, specifying the timestamp of the backup you wish to restore:
+1. Restore the backup, specifying the ID of the backup you wish to restore:
 
    WARNING:
    The restore command requires

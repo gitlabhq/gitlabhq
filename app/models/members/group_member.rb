@@ -95,9 +95,7 @@ class GroupMember < Member
   end
 
   def post_create_hook
-    if send_welcome_email?
-      run_after_commit_or_now { notification_service.new_group_member(self) }
-    end
+    run_after_commit_or_now { notification_service.new_group_member(self) }
 
     super
   end
@@ -122,10 +120,6 @@ class GroupMember < Member
     update_two_factor_requirement
 
     super
-  end
-
-  def send_welcome_email?
-    true
   end
 end
 

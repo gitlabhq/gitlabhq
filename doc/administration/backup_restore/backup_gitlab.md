@@ -283,21 +283,10 @@ Dumping database tables:
 - Dumping table wikis... [DONE]
 Dumping repositories:
 - Dumping repository abcd... [DONE]
-Creating backup archive: $TIMESTAMP_gitlab_backup.tar [DONE]
+Creating backup archive: <backup-id>_gitlab_backup.tar [DONE]
 Deleting tmp directories...[DONE]
 Deleting old backups... [SKIPPING]
 ```
-
-### Backup timestamp
-
-The backup archive is saved in `backup_path`, which is specified in the
-`config/gitlab.yml` file. The default path is `/var/opt/gitlab/backups`. The file name is `[TIMESTAMP]_gitlab_backup.tar`,
-where `TIMESTAMP` identifies the time at which each backup was created, plus
-the GitLab version. The timestamp is needed if you need to restore GitLab and
-multiple backups are available.
-
-For example, if the backup name is `1493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar`,
-the timestamp is `1493107454_2018_04_25_10.6.4-ce`.
 
 ### Backup options
 
@@ -333,9 +322,8 @@ WARNING:
 If you use a custom backup file name, you can't
 [limit the lifetime of the backups](#limit-backup-lifetime-for-local-files-prune-old-backups).
 
-By default, a backup file is created according to the specification in the
-previous [Backup timestamp](#backup-timestamp) section. You can, however,
-override the `[TIMESTAMP]` portion of the file name by setting the `BACKUP`
+Backup files are created with file names according to [specific defaults](index.md#backup-id). However, you can
+override the `<backup-id>` portion of the file name by setting the `BACKUP`
 environment variable. For example:
 
 ```shell
@@ -613,9 +601,9 @@ Incremental repository backups can be faster than full repository backups becaus
 The incremental backup archives are not linked to each other: each archive is a self-contained backup of the instance. There must be an existing backup
 to create an incremental backup from:
 
-- In GitLab 14.9 and 14.10, use the `BACKUP=<timestamp_of_backup>` option to choose the backup to use. The chosen previous backup is overwritten.
-- In GitLab 15.0 and later, use the `PREVIOUS_BACKUP=<timestamp_of_backup>` option to choose the backup to use. By default, a backup file is created
-  as documented in the [Backup timestamp](#backup-timestamp) section. You can override the `[TIMESTAMP]` portion of the file name by setting the
+- In GitLab 14.9 and 14.10, use the `BACKUP=<backup-id>` option to choose the backup to use. The chosen previous backup is overwritten.
+- In GitLab 15.0 and later, use the `PREVIOUS_BACKUP=<backup-id>` option to choose the backup to use. By default, a backup file is created
+  as documented in the [Backup ID](index.md#backup-id) section. You can override the `<backup-id>` portion of the file name by setting the
   [`BACKUP` environment variable](#backup-file-name).
 
 To create an incremental backup, run:
@@ -623,13 +611,13 @@ To create an incremental backup, run:
 - In GitLab 15.0 or later:
 
   ```shell
-  sudo gitlab-backup create INCREMENTAL=yes PREVIOUS_BACKUP=<timestamp_of_backup>
+  sudo gitlab-backup create INCREMENTAL=yes PREVIOUS_BACKUP=<backup-id>
   ```
 
 - In GitLab 14.9 and 14.10:
 
   ```shell
-  sudo gitlab-backup create INCREMENTAL=yes BACKUP=<timestamp_of_backup>
+  sudo gitlab-backup create INCREMENTAL=yes BACKUP=<backup-id>
   ```
 
 To create an [untarred](#skipping-tar-creation) incremental backup from a tarred backup, use `SKIP=tar`:

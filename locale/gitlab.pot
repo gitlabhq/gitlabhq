@@ -5015,9 +5015,6 @@ msgstr ""
 msgid "An Administrator has set the maximum expiration date to %{maxDate}. %{helpLinkStart}Learn more%{helpLinkEnd}."
 msgstr ""
 
-msgid "An Enterprise User GitLab account has been created for you by your organization:"
-msgstr ""
-
 msgid "An administrator changed the password for your GitLab account on %{link_to}."
 msgstr ""
 
@@ -9209,9 +9206,6 @@ msgid "Buy more Pipeline minutes"
 msgstr ""
 
 msgid "By %{user_name}"
-msgstr ""
-
-msgid "By authenticating with an account tied to an Enterprise e-mail address, it is understood that this account is an Enterprise User. "
 msgstr ""
 
 msgid "By default, all projects and groups use the global notifications setting."
@@ -21008,9 +21002,6 @@ msgid "For files larger than this limit, only index the file name. The file cont
 msgstr ""
 
 msgid "For general work"
-msgstr ""
-
-msgid "For individual use, create a separate account under your personal email address, not tied to the Enterprise email domain or group."
 msgstr ""
 
 msgid "For individual use, create a separate account under your personal email address, not tied to the Enterprise email domain."
@@ -50405,9 +50396,6 @@ msgid "To ensure %{project_name} is unscheduled for deletion, check that activit
 msgstr ""
 
 msgid "To ensure no loss of access to personal content, only use this account for matters related to %{group_name}."
-msgstr ""
-
-msgid "To ensure no loss of personal content, this account should only be used for matters related to %{group_name}."
 msgstr ""
 
 msgid "To find the state of this project's repository at the time of any of these versions, check out %{link_start}the tags%{link_end}"

@@ -441,7 +441,8 @@ topology with a [Redis Sentinel](https://redis.io/docs/manual/sentinel/) service
 start the failover procedure.
 
 NOTE:
-Redis clusters must each be deployed in an odd number of 3 nodes or more. This is to ensure Redis Sentinel can take votes as part of a quorum. This does not apply when configuring Redis externally, such as a cloud provider service.
+Multi-node Redis must be deployed in an odd number of 3 nodes or more to ensure Redis Sentinel can take votes as part of a quorum. This does not apply when configuring Redis externally,
+such as a cloud provider service.
 
 Redis requires authentication if used with Sentinel. See
 [Redis Security](https://redis.io/docs/manual/security/) documentation for more
@@ -463,7 +464,7 @@ to be used with GitLab. The following IPs will be used as an example:
 You can optionally use a [third party external service for the Redis instance](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider) with the following guidance:
 
 - A reputable provider or solution should be used for this. [Google Memorystore](https://cloud.google.com/memorystore/docs/redis/redis-overview) and [AWS ElastiCache](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) are known to work.
-- Redis Cluster mode is specifically not supported, but Redis Standalone with HA is.
+- Redis Cluster mode is specifically not supported, but Redis Standalone with HA (Redis Sentinel) **is** supported.
 
 For more information, see [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services).
 
