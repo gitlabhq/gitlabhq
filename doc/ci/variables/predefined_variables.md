@@ -4,11 +4,11 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Predefined variables reference **(FREE ALL)**
+# Predefined CI/CD variables reference **(FREE ALL)**
 
 Predefined [CI/CD variables](index.md) are available in every GitLab CI/CD pipeline.
 
-Predefined CI/CD variables become available at two different phases of pipeline execution.
+Predefined variables become available at two different phases of pipeline execution.
 Some variables are available when GitLab creates the pipeline, and can be used to configure
 the pipeline or in job scripts. The other variables become available when a runner runs the job,
 and can only be used in job scripts.

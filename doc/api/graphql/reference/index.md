@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 <!---
@@ -1507,6 +1507,30 @@ Input type: `AuditEventsInstanceAmazonS3ConfigurationCreateInput`
 | <a id="mutationauditeventsinstanceamazons3configurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationauditeventsinstanceamazons3configurationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationauditeventsinstanceamazons3configurationcreateinstanceamazons3configuration"></a>`instanceAmazonS3Configuration` | [`InstanceAmazonS3ConfigurationType`](#instanceamazons3configurationtype) | Created instance Amazon S3 configuration. |
+
+### `Mutation.auditEventsInstanceAmazonS3ConfigurationUpdate`
+
+Input type: `AuditEventsInstanceAmazonS3ConfigurationUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsinstanceamazons3configurationupdateaccesskeyxid"></a>`accessKeyXid` | [`String`](#string) | Access key ID of the Amazon S3 account. |
+| <a id="mutationauditeventsinstanceamazons3configurationupdateawsregion"></a>`awsRegion` | [`String`](#string) | AWS region where the bucket is created. |
+| <a id="mutationauditeventsinstanceamazons3configurationupdatebucketname"></a>`bucketName` | [`String`](#string) | Name of the bucket where the audit events would be logged. |
+| <a id="mutationauditeventsinstanceamazons3configurationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsinstanceamazons3configurationupdateid"></a>`id` | [`AuditEventsInstanceAmazonS3ConfigurationID!`](#auditeventsinstanceamazons3configurationid) | ID of the instance-level Amazon S3 configuration to update. |
+| <a id="mutationauditeventsinstanceamazons3configurationupdatename"></a>`name` | [`String`](#string) | Destination name. |
+| <a id="mutationauditeventsinstanceamazons3configurationupdatesecretaccesskey"></a>`secretAccessKey` | [`String`](#string) | Secret access key of the Amazon S3 account. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsinstanceamazons3configurationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsinstanceamazons3configurationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationauditeventsinstanceamazons3configurationupdateinstanceamazons3configuration"></a>`instanceAmazonS3Configuration` | [`InstanceAmazonS3ConfigurationType`](#instanceamazons3configurationtype) | Updated instance-level Amazon S3 configuration. |
 
 ### `Mutation.auditEventsStreamingDestinationEventsAdd`
 
@@ -31778,6 +31802,12 @@ An example `AuditEventsExternalAuditEventDestinationID` is: `"gid://gitlab/Audit
 A `AuditEventsGoogleCloudLoggingConfigurationID` is a global ID. It is encoded as a string.
 
 An example `AuditEventsGoogleCloudLoggingConfigurationID` is: `"gid://gitlab/AuditEvents::GoogleCloudLoggingConfiguration/1"`.
+
+### `AuditEventsInstanceAmazonS3ConfigurationID`
+
+A `AuditEventsInstanceAmazonS3ConfigurationID` is a global ID. It is encoded as a string.
+
+An example `AuditEventsInstanceAmazonS3ConfigurationID` is: `"gid://gitlab/AuditEvents::Instance::AmazonS3Configuration/1"`.
 
 ### `AuditEventsInstanceExternalAuditEventDestinationID`
 

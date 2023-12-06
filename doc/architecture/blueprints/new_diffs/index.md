@@ -109,7 +109,7 @@ To measure our success, we need to set meaningful metrics. These metrics should 
 1. Meets or exceeds [ATAG 2.0 AA](https://www.w3.org/TR/ATAG20/).
 1. The new Diffs app loads less than or equal to 300 KiB of JavaScript (compressed / "across-the-wire")<sup>1</sup>.
 1. The new Diffs app loads less than or equal to 150 KiB of markup, images, styles, fonts, etc. (compressed / "across-the-wire")<sup>1</sup>.
-1. The new Diffs app can load and execute in total isolation from the rest of the GitLab product:
+1. The new Diffs app can execute in total isolation from the rest of the GitLab product:
     1. "Execute" means the app can load, display data, and allows user interaction ("read-only").
     1. If a part of the application is only used in merge requests or diffs, it is considered part of the Diffs application.
     1. If a part of the application must be brought in from the rest of the product, it is not considered part of the Diffs load (as defined in metrics 3 and 4).

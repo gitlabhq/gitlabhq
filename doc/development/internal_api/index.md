@@ -1411,11 +1411,21 @@ Parameters:
 | `group_path` | string | yes    | Full path to the group. |
 | `Operations`   | JSON string  | yes     | An [operations](#available-operations) expression. |
 
-Example request:
+Example request to update the user's `id`:
 
 ```shell
 curl --verbose --request PATCH "https://gitlab.example.com/api/scim/v2/groups/test_group/Users/f0b1d561c-21ff-4092-beab-8154b17f82f2" \
      --data '{ "Operations": [{"op":"replace","path":"id","value":"1234abcd"}] }' \
+     --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
+```
+
+Returns an empty response with a `204` status code if successful.
+
+Example request to set the user's `active` state:
+
+```shell
+curl --verbose --request PATCH "https://gitlab.example.com/api/scim/v2/groups/test_group/Users/f0b1d561c-21ff-4092-beab-8154b17f82f2" \
+     --data '{ "Operations": [{"op":"replace","path":"active","value":"true"}] }' \
      --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
 ```
 

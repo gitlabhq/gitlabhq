@@ -5616,6 +5616,9 @@ msgstr ""
 msgid "Analytics|Event Props"
 msgstr ""
 
+msgid "Analytics|Exclude anonymous users"
+msgstr ""
+
 msgid "Analytics|Failed to fetch data"
 msgstr ""
 
@@ -5737,6 +5740,9 @@ msgid "Analytics|Users"
 msgstr ""
 
 msgid "Analytics|View available dashboards"
+msgstr ""
+
+msgid "Analytics|View metrics only for users who have consented to activity tracking."
 msgstr ""
 
 msgid "Analytics|Viewport"

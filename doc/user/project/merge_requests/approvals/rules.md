@@ -114,15 +114,22 @@ more of these:
 
 - The project.
 - The project's immediate parent [group](#group-approvers).
-- A group that has access to the project via a [share](../../members/share_project_with_groups.md).
+- A group that has been [shared](../../members/share_project_with_groups.md) with the project.
 - A [group added as approvers](#group-approvers).
 
-The following users can approve merge requests if they have Developer or
-higher [permissions](../../../permissions.md):
+The following users can approve merge requests if they have at least the Developer role:
 
 - Users added as approvers at the project or merge request level.
 - Users who are [Code owners](#code-owners-as-eligible-approvers) of the files
   changed in the merge request.
+
+Users with the Reporter role can approve only if both of the following are true:
+
+- The users are part of a group that has been [shared](../../members/share_project_with_groups.md) with the project.
+  The group must have at least the Reporter role.
+- The group has been added as merge request approvers.
+
+For detailed instructions, see [Merge request approval segregation of duties](#merge-request-approval-segregation-of-duties).
 
 To show who has participated in the merge request review, the Approvals widget in
 a merge request displays a **Commented by** column. This column lists eligible approvers
@@ -183,21 +190,24 @@ for protected branches.
 
 ## Merge request approval segregation of duties
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40491) in GitLab 13.4.
-> - Moved to GitLab Premium in 13.9.
-
 You may have to grant users with the Reporter role
 permission to approve merge requests before they can merge to a protected branch.
 Some users (like managers) may not need permission to push or merge code, but still need
-oversight on proposed work. To enable approval permissions for these users without
-granting them push access:
+oversight on proposed work.
+
+Prerequisites:
+
+- You must select a specific branch, as this method does **not** work with `All Branches` or `All protected branches` settings.
+- The shared group must be added to an approval rule and not individual users, even when the added user is part of the group.
+
+To enable approval permissions for these users without granting them push access:
 
 1. [Create a protected branch](../../protected_branches.md)
 1. [Create a new group](../../../group/index.md#create-a-group).
 1. [Add the user to the group](../../../group/index.md#add-users-to-a-group),
    and select the Reporter role for the user.
 1. [Share the project with your group](../../members/share_project_with_groups.md#share-a-project-with-a-group),
-   based on the Reporter role.
+   with at least the Reporter role.
 1. Go to your project and select **Settings > Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval rules**, and either:
    - For a new rule, select **Add approval rule** and target the protected branch.

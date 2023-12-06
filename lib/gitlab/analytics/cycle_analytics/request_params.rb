@@ -153,8 +153,8 @@ module Gitlab
           helpers = ActionController::Base.helpers
 
           {}.tap do |paths|
-            paths[:empty_state_svg_path] = helpers.image_path("illustrations/analytics/cycle-analytics-empty-chart.svg")
-            paths[:no_data_svg_path] = helpers.image_path("illustrations/analytics/cycle-analytics-empty-chart.svg")
+            paths[:empty_state_svg_path] = helpers.image_path("illustrations/empty-state/empty-dashboard-md.svg")
+            paths[:no_data_svg_path] = helpers.image_path("illustrations/empty-state/empty-dashboard-md.svg")
             paths[:no_access_svg_path] = helpers.image_path("illustrations/analytics/no-access.svg")
 
             if project

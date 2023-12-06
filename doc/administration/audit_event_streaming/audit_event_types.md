@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Compliance
-info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 <!---
@@ -56,6 +56,7 @@ Audit event types belong to the following product categories.
 | [`google_cloud_logging_configuration_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122025) | Triggered when Google Cloud Logging configuration is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/409422) |
 | [`google_cloud_logging_configuration_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122025) | Triggered when Google Cloud Logging configuration is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/409422) |
 | [`instance_amazon_s3_configuration_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137651) | Triggered when instance Amazon S3 configuration for audit events streaming is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/423235) |
+| [`instance_amazon_s3_configuration_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138310) | Triggered when instance-level Amazon S3 configuration for audit events streaming is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/423235) |
 | [`instance_google_cloud_logging_configuration_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130663) | Triggered when Instance level Google Cloud Logging configuration is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.4](https://gitlab.com/gitlab-org/gitlab/-/issues/423038) |
 | [`instance_google_cloud_logging_configuration_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131752) | Triggered when instance level Google Cloud Logging configuration is deleted.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/423040) |
 | [`instance_google_cloud_logging_configuration_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131790) | Triggered when instance level Google Cloud Logging configuration is updated.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/423039) |

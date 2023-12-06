@@ -38,7 +38,7 @@ are valid:
 - Run once a day at midnight: `0 0 * * *`
 - Run once a week at midnight on Sunday morning: `0 0 * * 0`
 - Run once a month at midnight of the first day of the month: `0 0 1 * *`
-- Run once a month on the 22nd: `0 0 22 * *`)
+- Run once a month on the 22nd: `0 0 22 * *`
 - Run once a month on the 2nd Monday: `0 0 * * 1#2`
 - Run once a year at midnight of 1 January: `0 0 1 1 *`
 - Run every other Sunday at 0900 hours: `0 9 * * sun%2`

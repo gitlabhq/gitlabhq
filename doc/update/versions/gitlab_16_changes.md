@@ -31,6 +31,10 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   - [Praefect configuration structure change](#praefect-configuration-structure-change).
   - [Gitaly configuration structure change](#gitaly-configuration-structure-change).
 
+## 16.6.0
+
+- Old [CI Environment destroy jobs may be spawned](https://gitlab.com/gitlab-org/gitlab/-/issues/433264#) after upgrading to GitLab 16.6.
+
 ## 16.5.0
 
 - Git 2.42.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/installation.md#git).

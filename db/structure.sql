@@ -22805,9 +22805,19 @@ ALTER SEQUENCE required_code_owners_sections_id_seq OWNED BY required_code_owner
 
 CREATE TABLE requirements (
     id bigint NOT NULL,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone,
     project_id integer NOT NULL,
+    author_id integer,
     iid integer NOT NULL,
+    cached_markdown_version integer,
+    state smallint DEFAULT 1,
+    title character varying(255),
+    title_html text,
+    description text,
+    description_html text,
     issue_id bigint,
+    CONSTRAINT check_785ae25b9d CHECK ((char_length(description) <= 10000)),
     CONSTRAINT check_requirement_issue_not_null CHECK ((issue_id IS NOT NULL))
 );
 
@@ -34357,11 +34367,21 @@ CREATE INDEX index_requirements_management_test_reports_on_build_id ON requireme
 
 CREATE INDEX index_requirements_management_test_reports_on_issue_id ON requirements_management_test_reports USING btree (issue_id);
 
+CREATE INDEX index_requirements_on_author_id ON requirements USING btree (author_id);
+
+CREATE INDEX index_requirements_on_created_at ON requirements USING btree (created_at);
+
 CREATE UNIQUE INDEX index_requirements_on_issue_id ON requirements USING btree (issue_id);
 
 CREATE INDEX index_requirements_on_project_id ON requirements USING btree (project_id);
 
 CREATE UNIQUE INDEX index_requirements_on_project_id_and_iid ON requirements USING btree (project_id, iid) WHERE (project_id IS NOT NULL);
+
+CREATE INDEX index_requirements_on_state ON requirements USING btree (state);
+
+CREATE INDEX index_requirements_on_title_trigram ON requirements USING gin (title gin_trgm_ops);
+
+CREATE INDEX index_requirements_on_updated_at ON requirements USING btree (updated_at);
 
 CREATE INDEX index_requirements_project_id_user_id_id_and_target_type ON todos USING btree (project_id, user_id, id, target_type);
 
@@ -38643,6 +38663,9 @@ ALTER TABLE ONLY alert_management_alert_metric_images
 
 ALTER TABLE ONLY suggestions
     ADD CONSTRAINT fk_rails_33b03a535c FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY requirements
+    ADD CONSTRAINT fk_rails_33fed8aa4e FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY metrics_dashboard_annotations
     ADD CONSTRAINT fk_rails_345ab51043 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;

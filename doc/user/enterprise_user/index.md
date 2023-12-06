@@ -192,14 +192,14 @@ To disable 2FA:
 1. Find a user with the **Enterprise** and **2FA** badges.
 1. Select **More actions** (**{ellipsis_v}**) and select **Disable two-factor authentication**.
 
-### Prevent users from creating groups and projects outside the corporate group
+### Prevent enterprise users from creating groups and projects outside the corporate group
 
 A SAML identity administrator can configure the SAML response to set:
 
-- Whether users can create groups.
-- The maximum number of personal projects users can create.
+- Whether enterprise users can create groups.
+- The maximum number of personal projects enterprise users can create.
 
-For more information, see the [supported user attributes for SAML responses](../group/saml_sso/index.md#supported-user-attributes).
+For more information, see how to [configure enterprise user settings from the SAML response](../group/saml_sso/index.md#configure-enterprise-user-settings-from-saml-response).
 
 ### Bypass email confirmation for provisioned users
 

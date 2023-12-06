@@ -59,13 +59,13 @@ The following files require a review from a technical writer:
 The review does not need to block merging this merge request. See the:
 
 - [Metadata for the `*.md` files](https://docs.gitlab.com/ee/development/documentation/#metadata) that you've changed. The first few lines of each `*.md` file identify the stage and group most closely associated with your docs change.
-- The [Technical Writer assigned](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments) for that stage and group.
+- The [Technical Writer assigned](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments) for that stage and group.
 - [Documentation workflows](https://docs.gitlab.com/ee/development/documentation/workflow.html) for information on when to assign a merge request for review.
 MSG
 
 # Documentation should be updated for feature::addition and feature::enhancement
 DOCUMENTATION_UPDATE_MISSING = <<~MSG
-~"feature::addition" and ~"feature::enhancement" merge requests normally have a documentation change. Consider adding a documentation update or confirming the documentation plan with the [Technical Writer counterpart](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments).
+~"feature::addition" and ~"feature::enhancement" merge requests normally have a documentation change. Consider adding a documentation update or confirming the documentation plan with the [Technical Writer counterpart](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments).
 
 For more information, see:
 

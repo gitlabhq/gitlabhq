@@ -319,7 +319,9 @@ GitLab Dedicated limits the number of reverse PrivateLink connections to 10.
 
 ### IP allowlist
 
-GitLab Dedicated allows you to control which IP addresses can access your instance through an IP allowlist.
+GitLab Dedicated allows you to control which IP addresses can access your instance through an IP allowlist. Once the IP allowlist has been enabled, when an IP not on the allowlist tries to access your instance an `HTTP 403 Forbidden` response is returned.
+
+IP addresses that have been added to your IP allowlist can be viewed on the Configuration page in Switchboard. You can add or remove IP addresses from your allowlist with Switchboard or a support request.
 
 #### Add an IP to the allowlist with Switchboard
 
@@ -330,11 +332,11 @@ GitLab Dedicated allows you to control which IP addresses can access your instan
 1. Select **Add Item**.
 1. Enter the IP address and description. To add another IP address, repeat steps 5 and 6.
 1. Select **Save**.
-1. Scroll up to the top of the page and select whether to apply the changes immediately or during the next maintenance window.
+1. Scroll up to the top of the page and select whether to apply the changes immediately or during the next maintenance window. After the changes are applied, the IP addresses are added to the IP allowlist for your instance.
 
 #### Add an IP to the allowlist with a Support Request
 
-Specify a comma separated list of IP addresses that can access your GitLab Dedicated instance in your [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650). After the configuration has been applied, when an IP not on the allowlist tries to access your instance, the connection is refused.
+Specify a comma separated list of IP addresses that can access your GitLab Dedicated instance in your [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650). The IP addresses are then added to the IP allowlist for your instance.
 
 ### SAML
 

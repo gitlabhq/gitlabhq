@@ -82,7 +82,7 @@ To update your fork from the GitLab UI:
    information box to determine if your fork is ahead, behind, or both. In this example,
    the fork is behind the upstream repository:
 
-   ![Information box for a fork 23552 commits behind the upstream repository](img/update-fork_v15_11.png)
+   ![Information box for a fork some commits behind the upstream repository](img/update-fork_v16_6.png)
 
 1. If your fork is **ahead** of the upstream repository, select
    **Create merge request** to propose adding your fork's changes to the upstream repository.

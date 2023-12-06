@@ -32,7 +32,7 @@ A single top-level group provides insights in your entire organization via a com
 
 ## Group visibility
 
-Like projects, a group can be configured to limit the visibility of it to:
+Like projects, a group can be configured to be visible to:
 
 - Anonymous users.
 - All authenticated users.
@@ -42,7 +42,7 @@ The restriction for [visibility levels](../../administration/settings/visibility
 on the application setting level also applies to groups. If set to internal, the explore page is
 empty for anonymous users. The group page has a visibility level icon.
 
-Administrator users cannot create a subgroup or project with a higher visibility level than that of
+Users cannot create a subgroup or project with a higher visibility level than that of
 the immediate parent group.
 
 ## View groups

@@ -10,6 +10,8 @@ General development guidelines and tips for the [Import/Export feature](../user/
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> This document is originally based on the [Import/Export 201 presentation available on YouTube](https://www.youtube.com/watch?v=V3i1OfExotE).
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For more context you can watch this [Deep dive on Import / Export Development on YouTube](https://www.youtube.com/watch?v=IYD39JMGK78).
+
 ## Security
 
 The Import/Export feature is constantly updated (adding new things to export). However,

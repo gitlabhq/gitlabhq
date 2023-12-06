@@ -351,25 +351,22 @@ breaks the configuration and could lock users out of the GitLab group.
 For more information on the recommended value and format for specific identity
 providers, see [set up your identity provider](#set-up-your-identity-provider).
 
-### Configure user settings from SAML response
+### Configure enterprise user settings from SAML response
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263661) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263661) in GitLab 13.7.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/412898) to configure only enterprise user settings in GitLab 16.7.
 
 GitLab allows setting certain user attributes based on values from the SAML response.
 An existing user's attributes are updated from the SAML response values if that
-user was originally provisioned by the group. Users are provisioned by the group
-when the account was created either:
-
-- Through [SCIM](scim_setup.md).
-- By first sign-in with SAML SSO for GitLab.com groups.
+user is an [enterprise user](../../enterprise_user/index.md) of the group.
 
 #### Supported user attributes
 
-- **can_create_group** - `true` or `false` to indicate whether the user can create
+- **can_create_group** - `true` or `false` to indicate whether an enterprise user can create
   new top-level groups. Default is `true`.
-- **projects_limit** - The total number of personal projects a user can create.
+- **projects_limit** - The total number of personal projects an enterprise user can create.
   A value of `0` means the user cannot create new projects in their personal
-  namespace. Default is `10000`.
+  namespace. Default is `100000`.
 
 #### Example SAML response
 
