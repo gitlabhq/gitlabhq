@@ -134,8 +134,6 @@ module API
 
         destroy_conditionally!(package) do |package|
           ::Packages::MarkPackageForDestructionService.new(container: package, current_user: current_user).execute
-
-          enqueue_sync_metadata_cache_worker(user_project, package.name) if package.npm?
         end
       end
     end

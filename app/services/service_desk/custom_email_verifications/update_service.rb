@@ -44,6 +44,7 @@ module ServiceDesk
 
       def verify
         return :mail_not_received_within_timeframe if mail_not_received_within_timeframe?
+        return :incorrect_forwarding_target if forwarded_to_service_desk_alias_address?
         return :incorrect_from if incorrect_from?
         return :incorrect_token if incorrect_token?
 
@@ -53,6 +54,16 @@ module ServiceDesk
       def mail_not_received_within_timeframe?
         # (For completeness) also raise if no email provided
         mail.blank? || !verification.in_timeframe?
+      end
+
+      def forwarded_to_service_desk_alias_address?
+        return false unless Gitlab::Email::ServiceDeskEmail.enabled?
+
+        # Users must use the Service Desk address created from `incoming_email`
+        # so all reply by email features work as expected.
+        # Using the Service Desk alias address generated from `service_desk_email`
+        # doesn't allow to ingest email replies, so we'd always add a new issue.
+        addresses_from_headers.include?(project.service_desk_alias_address)
       end
 
       def incorrect_from?
@@ -68,6 +79,12 @@ module ServiceDesk
         return true if scan_result.empty?
 
         scan_result.first.first != verification.token
+      end
+
+      def addresses_from_headers
+        # Common headers for forwarding target addresses are
+        # `To` and `Delivered-To`. We may expand that list if necessary.
+        (Array(mail.to) + Array(mail['Delivered-To']).map(&:value)).uniq
       end
 
       def error_parameter_missing

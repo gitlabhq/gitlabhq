@@ -3,9 +3,9 @@ module gitlab.com/gitlab-org/gitlab/workhorse
 go 1.20
 
 require (
-	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.1.0
+	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.2.0
 	github.com/BurntSushi/toml v1.3.2
-	github.com/alecthomas/chroma/v2 v2.9.1
+	github.com/alecthomas/chroma/v2 v2.11.1
 	github.com/aws/aws-sdk-go v1.45.20
 	github.com/disintegration/imaging v1.6.2
 	github.com/getsentry/raven-go v0.2.0
@@ -22,14 +22,14 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	github.com/smartystreets/goconvey v1.8.1
 	github.com/stretchr/testify v1.8.4
-	gitlab.com/gitlab-org/gitaly/v16 v16.4.1
+	gitlab.com/gitlab-org/gitaly/v16 v16.6.1
 	gitlab.com/gitlab-org/labkit v1.21.0
 	gocloud.dev v0.34.0
 	golang.org/x/image v0.7.0
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
 	golang.org/x/net v0.17.0
 	golang.org/x/oauth2 v0.10.0
-	golang.org/x/tools v0.13.0
+	golang.org/x/tools v0.14.0
 	google.golang.org/grpc v1.58.3
 	google.golang.org/protobuf v1.31.0
 	honnef.co/go/tools v0.4.6
@@ -77,6 +77,7 @@ require (
 	github.com/googleapis/gax-go/v2 v2.12.0 // indirect
 	github.com/gopherjs/gopherjs v1.17.2 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0 // indirect
+	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.0 // indirect
 	github.com/hashicorp/yamux v0.1.2-0.20220728231024-8f49b6f63f18 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/jtolds/gls v4.20.0+incompatible // indirect
@@ -111,8 +112,8 @@ require (
 	go.uber.org/atomic v1.11.0 // indirect
 	golang.org/x/crypto v0.14.0 // indirect
 	golang.org/x/exp/typeparams v0.0.0-20221208152030-732eee02a75a // indirect
-	golang.org/x/mod v0.12.0 // indirect
-	golang.org/x/sync v0.3.0 // indirect
+	golang.org/x/mod v0.13.0 // indirect
+	golang.org/x/sync v0.4.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
 	golang.org/x/time v0.3.0 // indirect

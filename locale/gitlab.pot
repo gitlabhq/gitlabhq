@@ -18303,6 +18303,9 @@ msgstr ""
 msgid "Email patch"
 msgstr ""
 
+msgid "Email reset removed at:"
+msgstr ""
+
 msgid "Email sent"
 msgstr ""
 
@@ -32599,6 +32602,9 @@ msgstr ""
 msgid "Notify|Fingerprint: %{fingerprint}"
 msgstr ""
 
+msgid "Notify|Forward all emails to the custom email address to %{code_open}%{service_desk_incoming_address}%{code_end}."
+msgstr ""
+
 msgid "Notify|Here are the results for your CSV import for %{project_link}."
 msgstr ""
 
@@ -32621,6 +32627,9 @@ msgid "Notify|If you no longer wish to use this domain with GitLab Pages, please
 msgstr ""
 
 msgid "Notify|Incorrect %{code_open}From%{code_end} header:"
+msgstr ""
+
+msgid "Notify|Incorrect forwarding target:"
 msgstr ""
 
 msgid "Notify|Incorrect verification token:"
@@ -41823,7 +41832,7 @@ msgstr ""
 msgid "Runners|Shared runners are disabled."
 msgstr ""
 
-msgid "Runners|Shared runners will be disabled for all projects and subgroups in this group. If you proceed, you must manually re-enable shared runners in the settings of each project and subgroup."
+msgid "Runners|Shared runners will be disabled for all projects and subgroups in this group."
 msgstr ""
 
 msgid "Runners|Show only inherited"
@@ -44715,7 +44724,13 @@ msgstr ""
 msgid "ServiceDesk|For help setting up the Service Desk for your instance, please contact an administrator."
 msgstr ""
 
+msgid "ServiceDesk|Forward all emails to the custom email address to %{incomingEmail}."
+msgstr ""
+
 msgid "ServiceDesk|Incorrect From header"
+msgstr ""
+
+msgid "ServiceDesk|Incorrect forwarding target"
 msgstr ""
 
 msgid "ServiceDesk|Incorrect verification token"
@@ -54856,6 +54871,9 @@ msgstr ""
 msgid "WorkItem|Cancel"
 msgstr ""
 
+msgid "WorkItem|Child items"
+msgstr ""
+
 msgid "WorkItem|Child objectives and key results"
 msgstr ""
 
@@ -54943,6 +54961,9 @@ msgstr ""
 msgid "WorkItem|New task"
 msgstr ""
 
+msgid "WorkItem|No child items are currently assigned. Use child items to break down this issue into smaller parts."
+msgstr ""
+
 msgid "WorkItem|No iteration"
 msgstr ""
 
@@ -55024,6 +55045,9 @@ msgstr ""
 msgid "WorkItem|Something went wrong when deleting the task. Please try again."
 msgstr ""
 
+msgid "WorkItem|Something went wrong when fetching child items. Please refresh this page."
+msgstr ""
+
 msgid "WorkItem|Something went wrong when fetching items. Please refresh this page."
 msgstr ""
 
@@ -55031,9 +55055,6 @@ msgid "WorkItem|Something went wrong when fetching iterations. Please try again.
 msgstr ""
 
 msgid "WorkItem|Something went wrong when fetching labels. Please try again."
-msgstr ""
-
-msgid "WorkItem|Something went wrong when fetching tasks. Please refresh this page."
 msgstr ""
 
 msgid "WorkItem|Something went wrong when fetching work item types. Please try again"

@@ -136,6 +136,7 @@ GET /users?without_project_bots=true
 > - The `created_by` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092) in GitLab 15.6.
 > - The `scim_identities` field in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324247) in GitLab 16.1.
 > - The `auditors` field in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418023) in GitLab 16.2.
+> - The `email_reset_offered_at` field in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137610) in GitLab 16.7.
 
 ```plaintext
 GET /users
@@ -197,7 +198,8 @@ You can use all [parameters available for everyone](#for-non-administrator-users
     "current_sign_in_ip": "196.165.1.102",
     "last_sign_in_ip": "172.127.2.22",
     "namespace_id": 1,
-    "created_by": null
+    "created_by": null,
+    "email_reset_offered_at": null
   },
   {
     "id": 2,
@@ -235,7 +237,8 @@ You can use all [parameters available for everyone](#for-non-administrator-users
     "current_sign_in_ip": "10.165.1.102",
     "last_sign_in_ip": "172.127.2.22",
     "namespace_id": 2,
-    "created_by": null
+    "created_by": null,
+    "email_reset_offered_at": null
   }
 ]
 ```
@@ -380,6 +383,7 @@ Parameters:
 
 > - The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 > - The `created_by` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092) in GitLab 15.6.
+> - The `email_reset_offered_at` field in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137610) in GitLab 16.7.
 
 ```plaintext
 GET /users/:id
@@ -445,7 +449,8 @@ Example Responses:
   "trial": true,
   "sign_in_count": 1337,
   "namespace_id": 1,
-  "created_by": null
+  "created_by": null,
+  "email_reset_offered_at": null
 }
 ```
 
@@ -728,6 +733,7 @@ Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also se
 
 > - The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 > - The `created_by` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092) in GitLab 15.6.
+> - The `email_reset_offered_at` field in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137610) in GitLab 16.7.
 
 ```plaintext
 GET /user
@@ -783,6 +789,7 @@ Parameters:
   "last_sign_in_ip": "172.127.2.22",
   "namespace_id": 1,
   "created_by": null,
+  "email_reset_offered_at": null,
   "note": null
 }
 ```

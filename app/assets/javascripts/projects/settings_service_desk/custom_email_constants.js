@@ -132,6 +132,12 @@ export const I18N_ERROR_READ_TIMEOUT_LABEL = s__('ServiceDesk|Read timeout');
 export const I18N_ERROR_READ_TIMEOUT_DESC = s__(
   'ServiceDesk|The SMTP server did not respond in time.',
 );
+export const I18N_ERROR_INCORRECT_FORWARDING_TARGET_LABEL = s__(
+  'ServiceDesk|Incorrect forwarding target',
+);
+export const I18N_ERROR_INCORRECT_FORWARDING_TARGET_DESC = s__(
+  'ServiceDesk|Forward all emails to the custom email address to %{incomingEmail}.',
+);
 
 export const I18N_VERIFICATION_ERRORS = {
   smtp_host_issue: {
@@ -157,5 +163,9 @@ export const I18N_VERIFICATION_ERRORS = {
   read_timeout: {
     label: I18N_ERROR_READ_TIMEOUT_LABEL,
     description: I18N_ERROR_READ_TIMEOUT_DESC,
+  },
+  incorrect_forwarding_target: {
+    label: I18N_ERROR_INCORRECT_FORWARDING_TARGET_LABEL,
+    description: I18N_ERROR_INCORRECT_FORWARDING_TARGET_DESC,
   },
 };

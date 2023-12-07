@@ -8148,7 +8148,6 @@
 - './spec/requests/api/users_spec.rb'
 - './spec/requests/api/wikis_spec.rb'
 - './spec/requests/concerns/planning_hierarchy_spec.rb'
-- './spec/requests/content_security_policy_spec.rb'
 - './spec/requests/dashboard_controller_spec.rb'
 - './spec/requests/dashboard/projects_controller_spec.rb'
 - './spec/requests/git_http_spec.rb'

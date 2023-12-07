@@ -367,6 +367,12 @@ class Packages::Package < ApplicationRecord
     ::Packages::Maven::Metadata::SyncWorker.perform_async(user.id, project_id, name)
   end
 
+  def sync_npm_metadata_cache
+    return unless npm?
+
+    ::Packages::Npm::CreateMetadataCacheWorker.perform_async(project_id, name)
+  end
+
   def create_build_infos!(build)
     return unless build&.pipeline
 

@@ -34967,8 +34967,6 @@ CREATE INDEX index_users_star_projects_on_project_id ON users_star_projects USIN
 
 CREATE UNIQUE INDEX index_users_star_projects_on_user_id_and_project_id ON users_star_projects USING btree (user_id, project_id);
 
-CREATE INDEX index_users_with_static_object_token ON users USING btree (id) WHERE ((static_object_token IS NOT NULL) AND (static_object_token_encrypted IS NULL));
-
 CREATE UNIQUE INDEX index_verification_codes_on_phone_and_visitor_id_code ON ONLY verification_codes USING btree (visitor_id_code, phone, created_at);
 
 COMMENT ON INDEX index_verification_codes_on_phone_and_visitor_id_code IS 'JiHu-specific index';

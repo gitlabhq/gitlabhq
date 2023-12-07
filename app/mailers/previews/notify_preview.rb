@@ -272,6 +272,10 @@ class NotifyPreview < ActionMailer::Preview
     end
   end
 
+  def service_desk_verification_result_email_for_incorrect_forwarding_target_error
+    service_desk_verification_result_email_for_error_state(error: :incorrect_forwarding_target)
+  end
+
   def service_desk_verification_result_email_for_read_timeout_error
     service_desk_verification_result_email_for_error_state(error: :read_timeout)
   end

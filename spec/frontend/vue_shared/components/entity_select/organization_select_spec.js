@@ -1,8 +1,8 @@
 import VueApollo from 'vue-apollo';
-import Vue, { nextTick } from 'vue';
-import { GlCollapsibleListbox } from '@gitlab/ui';
+import Vue from 'vue';
+import { GlCollapsibleListbox, GlAlert } from '@gitlab/ui';
 import { chunk } from 'lodash';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import OrganizationSelect from '~/vue_shared/components/entity_select/organization_select.vue';
 import EntitySelect from '~/vue_shared/components/entity_select/entity_select.vue';
 import { DEFAULT_PER_PAGE } from '~/api';
@@ -17,6 +17,7 @@ import getOrganizationQuery from '~/organizations/shared/graphql/queries/organiz
 import { organizations as nodes, pageInfo, pageInfoEmpty } from '~/organizations/mock_data';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 Vue.use(VueApollo);
 
@@ -29,11 +30,6 @@ describe('OrganizationSelect', () => {
   const organizations = {
     nodes,
     pageInfo,
-  };
-
-  // Stubs
-  const GlAlert = {
-    template: '<div><slot /></div>',
   };
 
   // Props
@@ -67,7 +63,7 @@ describe('OrganizationSelect', () => {
   } = {}) => {
     mockApollo = createMockApollo(handlers);
 
-    wrapper = shallowMountExtended(OrganizationSelect, {
+    wrapper = mountExtended(OrganizationSelect, {
       apolloProvider: mockApollo,
       propsData: {
         label,
@@ -77,20 +73,12 @@ describe('OrganizationSelect', () => {
         toggleClass,
         ...props,
       },
-      stubs: {
-        GlAlert,
-        EntitySelect,
-      },
       listeners: {
         input: handleInput,
       },
     });
   };
   const openListbox = () => findListbox().vm.$emit('shown');
-
-  afterEach(() => {
-    mockApollo = null;
-  });
 
   describe('entity_select props', () => {
     beforeEach(() => {
@@ -114,15 +102,16 @@ describe('OrganizationSelect', () => {
   describe('on mount', () => {
     it('fetches organizations when the listbox is opened', async () => {
       createComponent();
-      await waitForPromises();
-
       openListbox();
       await waitForPromises();
-      expect(findListbox().props('items')).toEqual([
-        { text: nodes[0].name, value: 1 },
-        { text: nodes[1].name, value: 2 },
-        { text: nodes[2].name, value: 3 },
-      ]);
+
+      const expectedItems = nodes.map((node) => ({
+        ...node,
+        text: node.name,
+        value: getIdFromGraphQLId(node.id),
+      }));
+
+      expect(findListbox().props('items')).toEqual(expectedItems);
     });
 
     describe('with an initial selection', () => {
@@ -136,7 +125,7 @@ describe('OrganizationSelect', () => {
       it('show an error if fetching initially selected fails', async () => {
         createComponent({
           props: { initialSelection: organization.id },
-          handlers: [[getOrganizationQuery, jest.fn().mockRejectedValueOnce(new Error())]],
+          handlers: [[getOrganizationQuery, jest.fn().mockRejectedValueOnce()]],
         });
 
         expect(findAlert().exists()).toBe(false);
@@ -183,7 +172,6 @@ describe('OrganizationSelect', () => {
       await waitForPromises();
 
       findListbox().vm.$emit('bottom-reached');
-      await nextTick();
       await waitForPromises();
     });
 
@@ -198,10 +186,8 @@ describe('OrganizationSelect', () => {
 
   it('shows an error when fetching organizations fails', async () => {
     createComponent({
-      handlers: [[getCurrentUserOrganizationsQuery, jest.fn().mockRejectedValueOnce(new Error())]],
+      handlers: [[getCurrentUserOrganizationsQuery, jest.fn().mockRejectedValueOnce()]],
     });
-    await waitForPromises();
-
     openListbox();
     expect(findAlert().exists()).toBe(false);
 

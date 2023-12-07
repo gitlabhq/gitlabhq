@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Merge requests **(FREE ALL)**
 
-To incorporate changes from a source branch to a target branch, you use a *merge request* (MR).
+A merge request (MR) is a proposal to incorporate changes from a source branch to a target branch.
 
 When you open a merge request, you can visualize and collaborate on the changes before merge.
 Merge requests include:

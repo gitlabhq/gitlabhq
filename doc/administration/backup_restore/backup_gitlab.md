@@ -349,6 +349,7 @@ Caveats:
 - If you specify a command that is not packaged with GitLab, then you must install it yourself.
 - The resultant file names will still end in `.gz`.
 - The default decompression command, used during restore, is `gzip -cd`. Therefore if you override the compression command to use a format that cannot be decompressed by `gzip -cd`, you must override the decompression command during restore.
+- [Do not place environment variables after the backup command](https://gitlab.com/gitlab-org/gitlab/-/issues/433227). For example, `gitlab-backup create COMPRESS_CMD="pigz -c --best"` doesn't work as intended.
 
 ##### Default compression: Gzip with fastest method
 
@@ -359,7 +360,7 @@ gitlab-backup create
 ##### Gzip with slowest method
 
 ```shell
-gitlab-backup create COMPRESS_CMD="gzip -c --best"
+COMPRESS_CMD="gzip -c --best" gitlab-backup create
 ```
 
 If `gzip` was used for backup, then restore does not require any options:
@@ -375,13 +376,13 @@ If your backup destination has built-in automatic compression, then you may wish
 The `tee` command pipes `stdin` to `stdout`.
 
 ```shell
-gitlab-backup create COMPRESS_CMD=tee
+COMPRESS_CMD=tee gitlab-backup create
 ```
 
 And on restore:
 
 ```shell
-gitlab-backup restore DECOMPRESS_CMD=tee
+DECOMPRESS_CMD=tee gitlab-backup restore
 ```
 
 ##### Parallel compression with `pigz`
@@ -395,13 +396,13 @@ NOTE:
 An example of compressing backups with `pigz` using 4 processes:
 
 ```shell
-sudo gitlab-backup create COMPRESS_CMD="pigz --compress --stdout --fast --processes=4"
+COMPRESS_CMD="pigz --compress --stdout --fast --processes=4" sudo gitlab-backup create
 ```
 
 Because `pigz` compresses to the `gzip` format, it is not required to use `pigz` to decompress backups which were compressed by `pigz`. However, it can still have a performance benefit over `gzip`. An example of decompressing backups with `pigz`:
 
 ```shell
-sudo gitlab-backup restore DECOMPRESS_CMD="pigz --decompress --stdout"
+DECOMPRESS_CMD="pigz --decompress --stdout" sudo gitlab-backup restore
 ```
 
 ##### Parallel compression with `zstd`
@@ -415,13 +416,13 @@ NOTE:
 An example of compressing backups with `zstd` using 4 threads:
 
 ```shell
-sudo gitlab-backup create COMPRESS_CMD="zstd --compress --stdout --fast --threads=4"
+COMPRESS_CMD="zstd --compress --stdout --fast --threads=4" sudo gitlab-backup create
 ```
 
 An example of decompressing backups with `zstd`:
 
 ```shell
-sudo gitlab-backup restore DECOMPRESS_CMD="zstd --decompress --stdout"
+DECOMPRESS_CMD="zstd --decompress --stdout" sudo gitlab-backup restore
 ```
 
 #### Confirm archive can be transferred

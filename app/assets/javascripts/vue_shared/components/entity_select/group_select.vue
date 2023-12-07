@@ -76,11 +76,7 @@ export default {
       try {
         const url = groupsPath(this.groupsFilter, this.parentGroupID);
         const { data = [], headers } = await axios.get(url, { params });
-        groups = data.map((group) => ({
-          ...group,
-          text: group.full_name,
-          value: String(group.id),
-        }));
+        groups = data.map((group) => this.mapGroupData(group));
 
         totalPages = parseIntPagination(normalizeHeaders(headers)).totalPages;
       } catch (error) {
@@ -88,15 +84,19 @@ export default {
       }
       return { items: groups, totalPages };
     },
-    async fetchGroupName(groupId) {
-      let groupName = '';
+    async fetchInitialGroup(groupId) {
       try {
         const group = await Api.group(groupId);
-        groupName = group.full_name;
+
+        return this.mapGroupData(group);
       } catch (error) {
         this.handleError({ message: FETCH_GROUP_ERROR, error });
+
+        return {};
       }
-      return groupName;
+    },
+    mapGroupData(group) {
+      return { ...group, text: group.full_name, value: String(group.id) };
     },
     handleError({ message, error }) {
       Sentry.captureException(error);
@@ -123,7 +123,7 @@ export default {
     :header-text="$options.i18n.selectGroup"
     :default-toggle-text="$options.i18n.toggleText"
     :fetch-items="fetchGroups"
-    :fetch-initial-selection-text="fetchGroupName"
+    :fetch-initial-selection="fetchInitialGroup"
     v-on="$listeners"
   >
     <template #error>

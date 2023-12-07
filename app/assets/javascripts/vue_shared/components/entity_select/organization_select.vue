@@ -73,25 +73,16 @@ export default {
       }
 
       try {
-        const {
-          data: {
-            currentUser: {
-              organizations: { nodes, pageInfo },
-            },
-          },
-        } = await this.$apollo.query({
+        const response = await this.$apollo.query({
           query: getCurrentUserOrganizationsQuery,
           // TODO: implement search support - https://gitlab.com/gitlab-org/gitlab/-/issues/433954.
           variables: { after: this.endCursor, first: DEFAULT_PER_PAGE },
         });
-
+        const { nodes, pageInfo } = response.data.currentUser.organizations;
         this.endCursor = pageInfo.endCursor;
 
         return {
-          items: nodes.map((organization) => ({
-            text: organization.name,
-            value: getIdFromGraphQLId(organization.id),
-          })),
+          items: nodes.map((organization) => this.mapOrganizationData(organization)),
           // `EntitySelect` expects a `totalPages` key but GraphQL requests don't provide this data
           // because it uses keyset pagination. Since the dropdown uses infinite scroll it
           // only needs to know if there is a next page. We pass `page + 1` if there is a next page,
@@ -105,23 +96,26 @@ export default {
         return { items: [], totalPages: 0 };
       }
     },
-    async fetchOrganizationName(id) {
+    async fetchInitialOrganization(id) {
       try {
-        const {
-          data: {
-            organization: { name },
-          },
-        } = await this.$apollo.query({
+        const response = await this.$apollo.query({
           query: getOrganizationQuery,
           variables: { id: convertToGraphQLId(TYPE_ORGANIZATION, id) },
         });
 
-        return name;
+        return this.mapOrganizationData(response.data.organization);
       } catch (error) {
         this.handleError({ message: FETCH_ORGANIZATION_ERROR, error });
 
-        return '';
+        return {};
       }
+    },
+    mapOrganizationData(organization) {
+      return {
+        ...organization,
+        text: organization.name,
+        value: getIdFromGraphQLId(organization.id),
+      };
     },
     handleError({ message, error }) {
       Sentry.captureException(error);
@@ -150,7 +144,7 @@ export default {
     :header-text="$options.i18n.selectGroup"
     :default-toggle-text="$options.i18n.toggleText"
     :fetch-items="fetchOrganizations"
-    :fetch-initial-selection-text="fetchOrganizationName"
+    :fetch-initial-selection="fetchInitialOrganization"
     :toggle-class="toggleClass"
     v-on="$listeners"
   >

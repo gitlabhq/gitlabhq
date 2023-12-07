@@ -38,6 +38,12 @@ describe('CustomEmailWrapper', () => {
     customEmailEndpoint: '/flightjs/Flight/-/service_desk/custom_email',
   };
 
+  const defaultCustomEmailProps = {
+    incomingEmail: defaultProps.incomingEmail,
+    customEmail: 'user@example.com',
+    smtpAddress: 'smtp.example.com',
+  };
+
   const showToast = jest.fn();
 
   const createWrapper = (props = {}) => {
@@ -117,8 +123,7 @@ describe('CustomEmailWrapper', () => {
         expect(showToast).toHaveBeenCalledWith(I18N_TOAST_SAVED);
 
         expect(findCustomEmail().props()).toEqual({
-          customEmail: 'user@example.com',
-          smtpAddress: 'smtp.example.com',
+          ...defaultCustomEmailProps,
           verificationState: 'started',
           verificationError: null,
           isEnabled: false,
@@ -140,8 +145,7 @@ describe('CustomEmailWrapper', () => {
 
     it('displays CustomEmail component', () => {
       expect(findCustomEmail().props()).toEqual({
-        customEmail: 'user@example.com',
-        smtpAddress: 'smtp.example.com',
+        ...defaultCustomEmailProps,
         verificationState: 'started',
         verificationError: null,
         isEnabled: false,
@@ -193,8 +197,7 @@ describe('CustomEmailWrapper', () => {
 
     it('fetches data from endpoint and displays CustomEmail component', () => {
       expect(findCustomEmail().props()).toEqual({
-        customEmail: 'user@example.com',
-        smtpAddress: 'smtp.example.com',
+        ...defaultCustomEmailProps,
         verificationState: 'failed',
         verificationError: 'smtp_host_issue',
         isEnabled: false,
@@ -225,8 +228,7 @@ describe('CustomEmailWrapper', () => {
 
     it('fetches data from endpoint and displays CustomEmail component', () => {
       expect(findCustomEmail().props()).toEqual({
-        customEmail: 'user@example.com',
-        smtpAddress: 'smtp.example.com',
+        ...defaultCustomEmailProps,
         verificationState: 'finished',
         verificationError: null,
         isEnabled: false,
@@ -257,8 +259,7 @@ describe('CustomEmailWrapper', () => {
       expect(showToast).toHaveBeenCalledWith(I18N_TOAST_ENABLED);
 
       expect(findCustomEmail().props()).toEqual({
-        customEmail: 'user@example.com',
-        smtpAddress: 'smtp.example.com',
+        ...defaultCustomEmailProps,
         verificationState: 'finished',
         verificationError: null,
         isEnabled: true,
@@ -279,8 +280,7 @@ describe('CustomEmailWrapper', () => {
 
     it('fetches data from endpoint and displays CustomEmail component', () => {
       expect(findCustomEmail().props()).toEqual({
-        customEmail: 'user@example.com',
-        smtpAddress: 'smtp.example.com',
+        ...defaultCustomEmailProps,
         verificationState: 'finished',
         verificationError: null,
         isEnabled: true,
@@ -301,8 +301,7 @@ describe('CustomEmailWrapper', () => {
       expect(showToast).toHaveBeenCalledWith(I18N_TOAST_DISABLED);
 
       expect(findCustomEmail().props()).toEqual({
-        customEmail: 'user@example.com',
-        smtpAddress: 'smtp.example.com',
+        ...defaultCustomEmailProps,
         verificationState: 'finished',
         verificationError: null,
         isEnabled: false,

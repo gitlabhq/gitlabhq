@@ -74,7 +74,7 @@ export default {
           attributes: {
             variant: 'danger',
             disabled: this.confirmDisabled,
-            'data-qa-selector': 'confirm_delete_button',
+            'data-testid': 'confirm-delete-button',
           },
         },
         cancel: {
@@ -147,7 +147,7 @@ export default {
         v-model="userInput"
         name="confirm_name_input"
         type="text"
-        data-qa-selector="confirm_name_field"
+        data-testid="confirm-name-field"
       />
       <slot name="modal-footer"></slot>
     </div>

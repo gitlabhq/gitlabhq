@@ -3,13 +3,14 @@
 module ApplicationCable
   class Connection < ActionCable::Connection::Base
     include Logging
+    include Gitlab::Auth::AuthFinders
 
     identified_by :current_user
 
     public :request
 
     def connect
-      self.current_user = find_user_from_session_store
+      self.current_user = find_user_from_bearer_token || find_user_from_session_store
     end
 
     private

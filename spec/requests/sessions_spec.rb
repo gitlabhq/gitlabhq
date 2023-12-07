@@ -7,6 +7,10 @@ RSpec.describe 'Sessions', feature_category: :system_access do
 
   let(:user) { create(:user) }
 
+  it_behaves_like 'Base action controller' do
+    subject(:request) { get new_user_session_path }
+  end
+
   context 'for authentication', :allow_forgery_protection do
     it 'logout does not require a csrf token' do
       login_as(user)

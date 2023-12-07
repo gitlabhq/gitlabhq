@@ -16,7 +16,7 @@ find an object more quickly.
 
 To open the command palette:
 
-1. On the left sidebar, at the top, select **Search or go to** or use the <kbd>/</kbd> key to enable.
+1. On the left sidebar, select **Search or go to** or use the <kbd>/</kbd> key to enable.
 1. Type one of the special characters:
 
    - <kbd>></kbd> - Create a new object or find a menu item.

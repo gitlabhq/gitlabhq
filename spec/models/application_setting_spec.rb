@@ -738,6 +738,24 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       end
     end
 
+    describe '#repository_storages_with_default_weight' do
+      context 'with no extra storage set-up in the config file', fips_mode: false do
+        it 'keeps existing key restrictions' do
+          expect(setting.repository_storages_with_default_weight).to eq({ 'default' => 100 })
+        end
+      end
+
+      context 'with extra storage set-up in the config file', fips_mode: false do
+        before do
+          stub_storage_settings({ 'default' => {}, 'custom' => {} })
+        end
+
+        it 'keeps existing key restrictions' do
+          expect(setting.repository_storages_with_default_weight).to eq({ 'default' => 100, 'custom' => 0 })
+        end
+      end
+    end
+
     describe 'setting validated as `addressable_url` configured with external URI' do
       before do
         # Use any property that has the `addressable_url` validation.

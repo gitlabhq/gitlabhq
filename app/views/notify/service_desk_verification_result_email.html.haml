@@ -11,6 +11,7 @@
 - verify_email_address = @service_desk_setting.custom_email_address_for_verification
 - code_open = '<code>'.html_safe
 - code_end = '</code>'.html_safe
+- service_desk_incoming_address = @service_desk_setting.project.service_desk_incoming_address
 
 %tr
   %td.text-content
@@ -59,5 +60,10 @@
           %b
             = s_('Notify|Read timeout:')
           = s_('Notify|The SMTP server did not respond in time.')
+      - if @verification.incorrect_forwarding_target?
+        %p
+          %b
+            = s_('Notify|Incorrect forwarding target:')
+          = html_escape(s_('Notify|Forward all emails to the custom email address to %{code_open}%{service_desk_incoming_address}%{code_end}.')) % { code_open: code_open, service_desk_incoming_address: service_desk_incoming_address, code_end: code_end }
       %p
         = html_escape(s_('Notify|To restart the verification process, go to your %{settings_link_start}project\'s Service Desk settings page%{settings_link_end}.')) % { settings_link_start: settings_link_start, settings_link_end: settings_link_end }

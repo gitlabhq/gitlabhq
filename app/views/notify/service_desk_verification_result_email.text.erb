@@ -1,6 +1,7 @@
 <% project_name = @service_desk_setting.project.human_name %>
 <% email_address = @service_desk_setting.custom_email %>
 <% verify_email_address = @service_desk_setting.custom_email_address_for_verification %>
+<% service_desk_incoming_address = @service_desk_setting.project.service_desk_incoming_address %>
 
 <% if @verification.finished? %>
   <%= s_("Notify|Email successfully verified") %>
@@ -35,6 +36,9 @@
   <% elsif @verification.read_timeout? %>
     <%= s_('Notify|Read timeout:') %>
     <%= s_('Notify|The SMTP server did not respond in time.') %>
+  <% elsif @verification.incorrect_forwarding_target? %>
+    <%= s_('Notify|Incorrect forwarding target:') %>
+    <%= s_('Notify|Forward all emails to the custom email address to %{code_open}%{service_desk_incoming_address}%{code_end}.') % { code_open: '', service_desk_incoming_address: service_desk_incoming_address, code_end: '' } %>
   <% end %>
 
   <%= s_('Notify|To restart the verification process, go to your %{settings_link_start}project\'s Service Desk settings page%{settings_link_end}.') % { settings_link_start: '', settings_link_end: '' } %>

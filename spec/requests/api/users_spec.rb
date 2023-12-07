@@ -182,6 +182,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
           expect(json_response.first).not_to have_key('note')
           expect(json_response.first).not_to have_key('namespace_id')
           expect(json_response.first).not_to have_key('created_by')
+          expect(json_response.first).not_to have_key('email_reset_offered_at')
         end
       end
 
@@ -194,6 +195,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
             expect(json_response.first).not_to have_key('note')
             expect(json_response.first).not_to have_key('namespace_id')
             expect(json_response.first).not_to have_key('created_by')
+            expect(json_response.first).not_to have_key('email_reset_offered_at')
           end
         end
 
@@ -203,6 +205,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
 
             expect(response).to have_gitlab_http_status(:success)
             expect(json_response.first).to have_key('note')
+            expect(json_response.first).to have_key('email_reset_offered_at')
             expect(json_response.first['note']).to eq '2018-11-05 | 2FA removed | user requested | www.gitlab.com'
           end
 

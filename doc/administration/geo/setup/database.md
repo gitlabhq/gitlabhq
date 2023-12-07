@@ -762,7 +762,7 @@ defaults
     default-server inter 3s fall 3 rise 2 on-marked-down shutdown-sessions
 
 frontend internal-postgresql-tcp-in
-    bind *:5000
+    bind *:5432
     mode tcp
     option tcplog
 
@@ -898,6 +898,10 @@ For each node running a Patroni instance on the secondary site:
    gitlab_rails['enable'] = true
    gitlab_rails['auto_migrate'] = false
    ```
+
+   When configuring `patroni['standby_cluster']['host']` and `patroni['standby_cluster']['port']`:
+   - `INTERNAL_LOAD_BALANCER_PRIMARY_IP` must point to the primary internal load balancer IP.
+   - `INTERNAL_LOAD_BALANCER_PRIMARY_PORT` must point to the frontend port [configured for the primary Patroni cluster leader](#step-2-configure-the-internal-load-balancer-on-the-primary-site). **Do not** use the PgBouncer frontend port.
 
 1. Reconfigure GitLab for the changes to take effect.
    This step is required to bootstrap PostgreSQL users and settings.

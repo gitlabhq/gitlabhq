@@ -216,6 +216,7 @@ export default {
 
           <custom-email
             v-if="customEmail"
+            :incoming-email="incomingEmail"
             :custom-email="customEmail"
             :smtp-address="smtpAddress"
             :verification-state="verificationState"

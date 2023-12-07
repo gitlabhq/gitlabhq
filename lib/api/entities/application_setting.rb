@@ -8,6 +8,7 @@ module API
         attributes.delete(:performance_bar_allowed_group_path)
         attributes.delete(:performance_bar_enabled)
         attributes.delete(:allow_local_requests_from_hooks_and_services)
+        attributes.delete(:repository_storages_weighted)
 
         # let's not expose the secret key in a response
         attributes.delete(:asset_proxy_secret_key)
@@ -49,6 +50,7 @@ module API
       expose(:housekeeping_full_repack_period) { |settings, _options| settings.housekeeping_optimize_repository_period }
       expose(:housekeeping_gc_period) { |settings, _options| settings.housekeeping_optimize_repository_period }
       expose(:housekeeping_incremental_repack_period) { |settings, _options| settings.housekeeping_optimize_repository_period }
+      expose(:repository_storages_weighted) { |settings, _options| settings.repository_storages_with_default_weight }
     end
   end
 end

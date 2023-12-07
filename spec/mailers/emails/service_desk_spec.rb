@@ -625,5 +625,10 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
       let(:error_identifier) { 'read_timeout' }
       let(:expected_text) { 'Read timeout' }
     end
+
+    it_behaves_like 'a custom email verification process result email with error' do
+      let(:error_identifier) { 'incorrect_forwarding_target' }
+      let(:expected_text) { 'Incorrect forwarding target' }
+    end
   end
 end

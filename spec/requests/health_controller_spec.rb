@@ -73,7 +73,9 @@ RSpec.describe HealthController, feature_category: :database do
   end
 
   describe 'GET /-/readiness' do
-    subject { get '/-/readiness', params: params, headers: headers }
+    subject(:request) { get readiness_path, params: params, headers: headers }
+
+    it_behaves_like 'Base action controller'
 
     shared_context 'endpoint responding with readiness data' do
       context 'when requesting instance-checks' do
@@ -219,7 +221,6 @@ RSpec.describe HealthController, feature_category: :database do
         stub_remote_addr(whitelisted_ip)
       end
 
-      it_behaves_like 'endpoint not querying database'
       it_behaves_like 'endpoint responding with readiness data'
 
       context 'when requesting all checks' do
@@ -236,7 +237,6 @@ RSpec.describe HealthController, feature_category: :database do
         stub_remote_addr(not_whitelisted_ip)
       end
 
-      it_behaves_like 'endpoint not querying database'
       it_behaves_like 'endpoint not found'
     end
 
@@ -273,7 +273,6 @@ RSpec.describe HealthController, feature_category: :database do
         stub_remote_addr(whitelisted_ip)
       end
 
-      it_behaves_like 'endpoint not querying database'
       it_behaves_like 'endpoint responding with liveness data'
     end
 
@@ -282,7 +281,6 @@ RSpec.describe HealthController, feature_category: :database do
         stub_remote_addr(not_whitelisted_ip)
       end
 
-      it_behaves_like 'endpoint not querying database'
       it_behaves_like 'endpoint not found'
 
       context 'accessed with valid token' do

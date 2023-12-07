@@ -2398,7 +2398,6 @@ RSpec/ContextWording:
     - 'spec/requests/api/usage_data_spec.rb'
     - 'spec/requests/api/users_preferences_spec.rb'
     - 'spec/requests/api/users_spec.rb'
-    - 'spec/requests/content_security_policy_spec.rb'
     - 'spec/requests/dashboard/projects_controller_spec.rb'
     - 'spec/requests/dashboard_controller_spec.rb'
     - 'spec/requests/git_http_spec.rb'

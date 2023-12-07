@@ -8,6 +8,12 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
   let_it_be(:admin) { create(:admin) }
 
   describe "GET /application/settings" do
+    before do
+      # Testing config file config/gitlab.yml becomes SSOT for this API
+      # see https://gitlab.com/gitlab-org/gitlab/-/issues/426091#note_1675160909
+      stub_storage_settings({ 'default' => {}, 'custom' => {} })
+    end
+
     it "returns application settings" do
       get api("/application/settings", admin)
 
@@ -15,7 +21,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response).to be_an Hash
       expect(json_response['default_projects_limit']).to eq(42)
       expect(json_response['password_authentication_enabled_for_web']).to be_truthy
-      expect(json_response['repository_storages_weighted']).to eq({ 'default' => 100 })
+      expect(json_response['repository_storages_weighted']).to eq({ 'default' => 100, 'custom' => 0 })
       expect(json_response['password_authentication_enabled']).to be_truthy
       expect(json_response['plantuml_enabled']).to be_falsey
       expect(json_response['plantuml_url']).to be_nil
@@ -109,7 +115,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
           }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['repository_storages_weighted']).to eq({ 'custom' => 75 })
+        expect(json_response['repository_storages_weighted']).to eq({ 'default' => 0, 'custom' => 75 })
       end
 
       context "repository_storages_weighted value is outside a 0-100 range" do
@@ -131,7 +137,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             default_projects_limit: 3,
             default_project_creation: 2,
             password_authentication_enabled_for_web: false,
-            repository_storages_weighted: { 'custom' => 100 },
+            repository_storages_weighted: { 'default' => 100, 'custom' => 0 },
             plantuml_enabled: true,
             plantuml_url: 'http://plantuml.example.com',
             diagramsnet_enabled: false,
@@ -214,7 +220,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['default_projects_limit']).to eq(3)
         expect(json_response['default_project_creation']).to eq(::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS)
         expect(json_response['password_authentication_enabled_for_web']).to be_falsey
-        expect(json_response['repository_storages_weighted']).to eq({ 'custom' => 100 })
+        expect(json_response['repository_storages_weighted']).to eq({ 'default' => 100, 'custom' => 0 })
         expect(json_response['plantuml_enabled']).to be_truthy
         expect(json_response['plantuml_url']).to eq('http://plantuml.example.com')
         expect(json_response['diagramsnet_enabled']).to be_falsey

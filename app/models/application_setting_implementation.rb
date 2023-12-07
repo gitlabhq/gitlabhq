@@ -571,6 +571,16 @@ module ApplicationSettingImplementation
     end
   end
 
+  def repository_storages_with_default_weight
+    # config file config/gitlab.yml becomes SSOT for this API
+    # see https://gitlab.com/gitlab-org/gitlab/-/issues/426091#note_1675160909
+    storages_map = Gitlab.config.repositories.storages.keys.map do |storage|
+      [storage, repository_storages_weighted[storage] || 0]
+    end
+
+    Hash[storages_map]
+  end
+
   private
 
   def set_max_key_restriction!(key_type)

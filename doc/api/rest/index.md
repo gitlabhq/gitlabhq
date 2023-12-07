@@ -839,6 +839,10 @@ For questions about these integrations, use the [GitLab community forum](https:/
 
 - [Ruby wrapper and CLI for the GitLab REST API](https://github.com/NARKOZ/gitlab)
 
+### Rust
+
+- [`gitlab` crate](https://crates.io/crates/gitlab)
+
 ### Swift
 
 - [`RxGitLabKit`](https://github.com/Qase/RxGitLabKit)

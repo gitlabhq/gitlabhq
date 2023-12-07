@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Rails/ApplicationController
-class ChaosController < ActionController::Base
+class ChaosController < BaseActionController
   before_action :validate_chaos_secret, unless: :development_or_test?
 
   def leakmem
@@ -95,4 +94,3 @@ class ChaosController < ActionController::Base
     Rails.env.development? || Rails.env.test?
   end
 end
-# rubocop:enable Rails/ApplicationController

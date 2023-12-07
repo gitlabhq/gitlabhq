@@ -264,6 +264,26 @@ To troubleshoot this:
 
      1. Select one of the supported authentication methods in the custom email setup form.
 
+##### Incorrect forwarding target
+
+You might get an error that states that an incorrect forwarding target was used.
+
+This occurs when the verification email was forwarded to a different email address than the
+project-specific Service Desk address that's displayed in the custom email configuration form.
+
+You must use the Service Desk address generated from `incoming_email`. Forwarding to the additional
+Service Desk alias address generated from `service_desk_email` is not supported because it doesn't support
+all reply by email functionalities.
+
+To troubleshoot this:
+
+1. Find the correct email address to forward emails to. Either:
+   - Note the address from the verification result email that all project owners and the user that
+      triggered the verification process receive.
+   - Copy the address from the **Service Desk email address to forward emails to** input in the
+      custom email setup form.
+1. Forward all emails to the custom email address to the correct target email address.
+
 ### Enable or disable the custom email address
 
 After the custom email address has been verified, administrators can enable or disable sending Service Desk emails via the custom email address.

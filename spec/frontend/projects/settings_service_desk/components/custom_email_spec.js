@@ -3,7 +3,6 @@ import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import CustomEmail from '~/projects/settings_service_desk/components/custom_email.vue';
 import {
-  I18N_VERIFICATION_ERRORS,
   I18N_STATE_VERIFICATION_STARTED,
   I18N_STATE_VERIFICATION_FAILED,
   I18N_STATE_VERIFICATION_FAILED_RESET_PARAGRAPH,
@@ -15,6 +14,7 @@ describe('CustomEmail', () => {
   let wrapper;
 
   const defaultProps = {
+    incomingEmail: 'incoming+test-1-issue-@example.com',
     customEmail: 'user@example.com',
     smtpAddress: 'smtp.example.com',
     verificationState: 'started',
@@ -70,19 +70,21 @@ describe('CustomEmail', () => {
   });
 
   describe('verification error', () => {
-    it.each([
-      'smtp_host_issue',
-      'invalid_credentials',
-      'mail_not_received_within_timeframe',
-      'incorrect_from',
-      'incorrect_token',
-      'read_timeout',
-    ])('displays %s label and description', (error) => {
+    it.each`
+      error                                   | label                                                 | description
+      ${'smtp_host_issue'}                    | ${'SMTP host issue'}                                  | ${'A connection to the specified host could not be made or an SSL issue occurred.'}
+      ${'invalid_credentials'}                | ${'Invalid credentials'}                              | ${'The given credentials (username and password) were rejected by the SMTP server, or you need to explicitly set an authentication method.'}
+      ${'mail_not_received_within_timeframe'} | ${'Verification email not received within timeframe'} | ${"The verification email wasn't received in time. There is a 30 minutes timeframe for verification emails to appear in your instance's Service Desk. Make sure that you have set up email forwarding correctly."}
+      ${'incorrect_from'}                     | ${'Incorrect From header'}                            | ${'Check your forwarding settings and make sure the original email sender remains in the From header.'}
+      ${'incorrect_token'}                    | ${'Incorrect verification token'}                     | ${"The received email didn't contain the verification token that was sent to your email address."}
+      ${'read_timeout'}                       | ${'Read timeout'}                                     | ${'The SMTP server did not respond in time.'}
+      ${'incorrect_forwarding_target'}        | ${'Incorrect forwarding target'}                      | ${`Forward all emails to the custom email address to ${defaultProps.incomingEmail}`}
+    `('displays $error label and description', ({ error, label, description }) => {
       createWrapper({ verificationError: error });
       const text = wrapper.text();
 
-      expect(text).toContain(I18N_VERIFICATION_ERRORS[error].label);
-      expect(text).toContain(I18N_VERIFICATION_ERRORS[error].description);
+      expect(text).toContain(label);
+      expect(text).toContain(description);
     });
   });
 

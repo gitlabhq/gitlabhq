@@ -40,13 +40,10 @@ module ApplicationSettingsHelper
   def storage_weights
     # Instead of using a `Struct` we could wrap this into an object.
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/358419
-    weights = Struct.new(*Gitlab.config.repositories.storages.keys.map(&:to_sym))
+    storages_weighted = @application_setting.repository_storages_with_default_weight
 
-    values = Gitlab.config.repositories.storages.keys.map do |storage|
-      @application_setting.repository_storages_weighted[storage] || 0
-    end
-
-    weights.new(*values)
+    weights = Struct.new(*storages_weighted.keys.map(&:to_sym))
+    weights.new(*storages_weighted.values)
   end
 
   def all_protocols_enabled?
