@@ -4,7 +4,6 @@ module QA
   module Page
     module Project
       class Menu < Page::Base
-        include SubMenus::Common
         include SubMenus::CreateNewMenu
         include SubMenus::Plan
         include SubMenus::Settings

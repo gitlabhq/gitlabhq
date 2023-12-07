@@ -344,6 +344,12 @@ FactoryBot.define do
             branch_name: 'master')
           project.repository.create_file(
             project.creator,
+            ".gitlab/#{templates_path}/(test).md",
+            'parentheses',
+            message: 'test 3',
+            branch_name: 'master')
+          project.repository.create_file(
+            project.creator,
             ".gitlab/#{templates_path}/template_test.md",
             'template_test',
             message: 'test 1',

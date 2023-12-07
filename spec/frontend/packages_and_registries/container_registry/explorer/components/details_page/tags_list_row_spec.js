@@ -342,6 +342,13 @@ describe('tags list row', () => {
         expect(findDetailsRows().length).toBe(3);
       });
 
+      it('has 2 details rows when revision is empty', async () => {
+        mountComponent({ tag: { ...tag, revision: '' } });
+        await nextTick();
+
+        expect(findDetailsRows().length).toBe(2);
+      });
+
       describe.each`
         name                       | finderFunction             | text                                                                                                    | icon            | clipboard
         ${'published date detail'} | ${findPublishedDateDetail} | ${'Published to the gitlab-org/gitlab-test/rails-12009 image repository at 13:29:38 UTC on 2020-11-03'} | ${'clock'}      | ${false}

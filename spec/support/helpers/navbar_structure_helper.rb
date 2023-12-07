@@ -127,7 +127,7 @@ module NavbarStructureHelper
   def project_analytics_sub_nav_item
     [
       _('Value stream analytics'),
-      _('Contributor statistics'),
+      _('Contributor analytics'),
       _('CI/CD analytics'),
       _('Repository analytics'),
       (_('Code review analytics') if Gitlab.ee?),

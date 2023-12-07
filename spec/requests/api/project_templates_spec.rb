@@ -69,7 +69,7 @@ RSpec.describe API::ProjectTemplates, feature_category: :source_code_management 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(response).to match_response_schema('public_api/v4/template_list')
-      expect(json_response.map { |t| t['key'] }).to match_array(%w[bug feature_proposal template_test])
+      expect(json_response.map { |t| t['key'] }).to match_array(%w[bug feature_proposal template_test (test)])
     end
 
     it 'returns merge request templates' do
@@ -78,7 +78,7 @@ RSpec.describe API::ProjectTemplates, feature_category: :source_code_management 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(response).to match_response_schema('public_api/v4/template_list')
-      expect(json_response.map { |t| t['key'] }).to match_array(%w[bug feature_proposal template_test])
+      expect(json_response.map { |t| t['key'] }).to match_array(%w[bug feature_proposal template_test (test)])
     end
 
     it 'returns 400 for an unknown template type' do
@@ -169,6 +169,17 @@ RSpec.describe API::ProjectTemplates, feature_category: :source_code_management 
       expect(response).to match_response_schema('public_api/v4/template')
       expect(json_response['name']).to eq('bug')
       expect(json_response['content']).to eq('something valid')
+    end
+
+    context 'when issue template uses parentheses' do
+      it 'returns a specific issue template' do
+        get api("/projects/#{private_project.id}/templates/issues/(test)", developer)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('public_api/v4/template')
+        expect(json_response['name']).to eq('(test)')
+        expect(json_response['content']).to eq('parentheses')
+      end
     end
 
     it 'returns a specific merge request template' do

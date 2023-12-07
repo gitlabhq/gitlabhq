@@ -37,7 +37,7 @@ Use project-level analytics to get insights into your projects':
 - [Security Dashboards](../application_security/security_dashboard/index.md)
 - [CI/CD analytics and DORA metrics](ci_cd_analytics.md)
 - [Code review analytics](code_review_analytics.md)
-- [Contributor statistics](../../user/analytics/contributor_statistics.md)
+- [Contributor analytics](../../user/analytics/contributor_analytics.md)
 - [Insights](../project/insights/index.md)
 - [Issue analytics](../../user/analytics/issue_analytics.md)
 - [Merge request analytics](merge_request_analytics.md), enabled with the `project_merge_request_analytics`

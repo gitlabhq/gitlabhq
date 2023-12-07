@@ -112,7 +112,7 @@ RSpec.describe Sidebars::Projects::Menus::RepositoryMenu, feature_category: :sou
         end
       end
 
-      describe 'Contributor statistics' do
+      describe 'Contributor analytics' do
         let_it_be(:item_id) { :contributors }
 
         context 'when analytics is disabled' do

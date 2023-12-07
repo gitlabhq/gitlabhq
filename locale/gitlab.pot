@@ -13818,7 +13818,7 @@ msgstr ""
 msgid "Contributor"
 msgstr ""
 
-msgid "Contributor statistics"
+msgid "Contributor analytics"
 msgstr ""
 
 msgid "Control how the CI_JOB_TOKEN CI/CD variable is used for API access between projects."
@@ -33525,9 +33525,6 @@ msgid "Open new window"
 msgstr ""
 
 msgid "Open raw"
-msgstr ""
-
-msgid "Open sidebar"
 msgstr ""
 
 msgid "Open: %{open}"

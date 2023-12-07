@@ -11,7 +11,7 @@ include:
 
 # FF changes
 .feature-flags-set: &feature-flags-set
-  if: $QA_FEATURE_FLAGS =~ /enabled|disabled/
+  if: $FEATURE_FLAGS =~ /enabled|disabled/
 
 # Specific specs specified
 .spec-file-specified: &spec-file-specified
@@ -33,7 +33,7 @@ include:
 
 # Run all tests when QA framework changes present, full suite execution is explicitly enabled or a feature flag file is removed
 .qa-run-all-tests: &qa-run-all-tests
-  if: $QA_FRAMEWORK_CHANGES == "true" || $QA_RUN_ALL_TESTS == "true" || $QA_RUN_ALL_E2E_LABEL == "true" || $QA_FEATURE_FLAGS =~ /deleted/
+  if: $QA_FRAMEWORK_CHANGES == "true" || $QA_RUN_ALL_TESTS == "true" || $QA_RUN_ALL_E2E_LABEL == "true" || $FEATURE_FLAGS =~ /deleted/
 
 # Run job when MR has pipeline:run-all-e2e label
 .qa-run-all-e2e-label: &qa-run-all-e2e-label

@@ -406,21 +406,6 @@
   @include media-breakpoint-down(xs) { margin-right: 3px; }
 }
 
-.toggle-mobile-nav {
-  @include gl-display-none;
-
-  @include media-breakpoint-down(sm) {
-    @include gl-display-block;
-
-    + .breadcrumbs {
-      @include gl-pl-4;
-      @include gl-border-l-1;
-      @include gl-border-l-solid;
-      @include gl-border-gray-100;
-    }
-  }
-}
-
 .top-nav-menu-item {
   &.active,
   &:hover {

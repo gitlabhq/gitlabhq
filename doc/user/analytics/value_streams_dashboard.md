@@ -29,6 +29,8 @@ With the Value Streams Dashboard, you can:
 - Understand security exposure.
 - Drill down into individual projects or metrics to take actions for improvement.
 
+The Value Streams Dashboard has a default configuration, but you can also [customize the dashboard panels](#customize-the-dashboard-panels).
+
 ## DevSecOps metrics comparison panel
 
 The DevSecOps metrics comparison displays DORA4, vulnerability, and flow metrics for a group or project in the
@@ -129,6 +131,8 @@ To view the value streams dashboard:
    1. Select **Analyze > Value stream analytics**.
    1. Below the **Filter results** text box, in the **Lifecycle metrics** row, select **Value Streams Dashboard / DORA**.
    1. Optional. To open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL (for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards/value_streams_dashboard`).
+
+You can also view the Value Streams Dashboard rendered as an analytics dashboard for a [group](analytics_dashboards.md#view-group-dashboards) or [project](analytics_dashboards.md#view-project-dashboards).
 
 ## Customize the dashboard panels
 

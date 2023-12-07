@@ -100,6 +100,60 @@ To view a list of dashboards (both built-in and custom) for a project:
 1. Select **Analyze > Analytics dashboards**.
 1. From the list of available dashboards, select the dashboard you want to view.
 
+### View the value streams dashboard
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137483) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `project_analytics_dashboard_dynamic_vsd`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `combined_analytics_dashboards` and `project_analytics_dashboard_dynamic_vsd`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+- Overview background aggregation for Value Streams Dashboards must be enabled.
+
+To view the Value Streams Dashboard as an analytics dashboard for a project:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Analyze > Analytics dashboards**.
+1. From the list of available dashboards, select **Value Streams Dashboard**.
+
+## View group dashboards
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390542) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboards`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the group.
+
+To view a list of dashboards (both built-in and custom) for a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Analyze > Analytics dashboards**.
+1. From the list of available dashboards, select the dashboard you want to view.
+
+### View the value streams dashboard
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132839) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+To view the Value Streams Dashboard as an analytics dashboard for a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Analyze > Analytics dashboards**.
+1. From the list of available dashboards, select **Value Streams Dashboard**.
+
 ## Change the location of dashboards
 
 You can change the location of your project or group dashboards.

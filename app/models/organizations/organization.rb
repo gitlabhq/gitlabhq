@@ -24,6 +24,7 @@ module Organizations
 
     validates :path,
       presence: true,
+      uniqueness: { case_sensitive: false },
       'organizations/path': true,
       length: { minimum: 2, maximum: 255 }
 

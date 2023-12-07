@@ -71,7 +71,6 @@ Style/ExplicitBlockArgument:
     - 'qa/qa/page/profile/menu.rb'
     - 'qa/qa/page/project/settings/deploy_keys.rb'
     - 'qa/qa/page/project/settings/deploy_tokens.rb'
-    - 'qa/qa/page/sub_menus/common.rb'
     - 'qa/qa/resource/events/base.rb'
     - 'qa/qa/runtime/api/repository_storage_moves.rb'
     - 'qa/qa/runtime/search.rb'

@@ -80,15 +80,17 @@ When SAML is enabled, users with the Maintainer or Owner role see a new menu
 item in group **Settings > SAML Group Links**.
 
 - You can configure one or more **SAML Group Links** to map a SAML identity
-provider group name to a GitLab role.
+  provider group name to a GitLab role.
 - Members of the SAML identity provider group are added as members of the GitLab
-group on their next SAML sign-in.
+  group on their next SAML sign-in.
 - Group membership is evaluated each time a user signs in using SAML.
 - SAML Group Links can be configured for a top-level group or any subgroup.
 - SAML Group Sync only manages a group if that group has one or more SAML group
-links.
-  - If a SAML group link is created then removed, the user remains in the
-group until they are removed from the group in the identity provider.
+  links. If a SAML group link is created then removed, and there are:
+  - Other SAML group links configured, users that were in the removed group
+    link are automatically removed from the group during sync.
+  - No other SAML group links configured, users remain in the group during sync.
+    Those users must be manually removed from the group.
 
 Prerequisites:
 

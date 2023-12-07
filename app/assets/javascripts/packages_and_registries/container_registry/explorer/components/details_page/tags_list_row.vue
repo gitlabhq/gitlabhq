@@ -119,8 +119,14 @@ export default {
     tagLocation() {
       return this.tag.path?.replace(`:${this.tag.name}`, '');
     },
+    isEmptyRevision() {
+      return this.tag.revision === '';
+    },
     isInvalidTag() {
       return !this.tag.digest;
+    },
+    showConfigDigest() {
+      return !this.isInvalidTag && !this.isEmptyRevision;
     },
   },
 };
@@ -235,7 +241,7 @@ export default {
         />
       </details-row>
     </template>
-    <template v-if="!isInvalidTag" #details-configuration-digest>
+    <template v-if="showConfigDigest" #details-configuration-digest>
       <details-row icon="cloud-gear" data-testid="configuration-detail">
         <gl-sprintf :message="$options.i18n.CONFIGURATION_DETAILS_ROW_TEST">
           <template #digest>

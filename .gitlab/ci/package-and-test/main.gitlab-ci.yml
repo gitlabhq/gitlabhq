@@ -64,6 +64,7 @@ instance-ff-inverse:
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_KNAPSACK_REPORT_NAME: instance
+    QA_FEATURE_FLAGS: $FEATURE_FLAGS
   rules:
     - !reference [.rules:test:feature-flags-set, rules]
 

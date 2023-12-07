@@ -255,9 +255,9 @@ The size can differ slightly from one instance to another due to compression, ho
 Administrators can set a [repository size limit](../../../administration/settings/account_and_limit_settings.md).
 [GitLab sets the size limits for GitLab.com](../../gitlab_com/index.md#account-and-limit-settings).
 
-## Repository contributor statistics
+## Repository contributor analytics
 
-You can view a list and charts of commits made by project members in [Contributor statistics](../../analytics/contributor_statistics.md).
+You can view a list and charts of commits made by project members in [Contributor analytics](../../analytics/contributor_analytics.md).
 
 ## Repository history graph
 

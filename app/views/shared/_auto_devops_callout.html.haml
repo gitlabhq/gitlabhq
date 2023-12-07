@@ -1,6 +1,4 @@
-- container = @no_top_bar_container ? 'container-fluid' : container_class
-
-%div{ class: [container, @content_class, 'gl-pt-5!'] }
+%div{ class: [container_class, @content_class, 'gl-pt-5!'] }
   = render Pajamas::BannerComponent.new(button_text: s_('AutoDevOps|Enable in settings'),
     button_link: project_settings_ci_cd_path(@project, anchor: 'autodevops-settings'),
     svg_path: 'illustrations/autodevops.svg',

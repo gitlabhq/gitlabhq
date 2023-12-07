@@ -8,7 +8,7 @@ module API
     # The regex is needed to ensure a period (e.g. agpl-3.0)
     # isn't confused with a format type. We also need to allow encoded
     # values (e.g. C%2B%2B for C++), so allow % and + as well.
-    TEMPLATE_NAMES_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(name: /[\w%.+-]+/)
+    TEMPLATE_NAMES_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(name: /[\w()%.+-]+/)
 
     before { authenticate_non_get! }
 

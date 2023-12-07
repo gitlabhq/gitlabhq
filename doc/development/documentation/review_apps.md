@@ -44,7 +44,7 @@ the GitLab team to run the job.
 If you want to know the in-depth details, here's what's really happening:
 
 1. You manually run the `review-docs-deploy` job in a merge request.
-1. The job runs the [`scripts/trigger-build.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/trigger-build.rb)
+1. The job downloads and runs the [`scripts/trigger-build.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/trigger-build.rb)
    script with the `docs deploy` flag, which triggers the "Triggered from `gitlab-org/gitlab` 'review-docs-deploy' job"
    pipeline trigger in the `gitlab-org/gitlab-docs` project for the `$DOCS_BRANCH` (defaults to `main`).
 1. The preview URL is shown both at the job output and in the merge request
@@ -63,6 +63,69 @@ The following GitLab features are used among others:
 - [Review Apps](../../ci/review_apps/index.md)
 - [Artifacts](../../ci/yaml/index.md#artifacts)
 - [Merge request pipelines](../../ci/pipelines/merge_request_pipelines.md)
+
+## How to add a new documentation review app
+
+In case a documentation review app is missing from one of the documentation
+projects, you can use the following CI/CD template to add a manually triggered review app:
+
+```yaml
+# Set up documentation review apps
+# https://docs.gitlab.com/ee/development/documentation/review_apps.html
+.review-docs:
+  image: ruby:3.1-alpine
+  needs: []
+  before_script:
+  - gem install gitlab --no-doc
+  # We need to download the script rather than clone the repo since the
+  # review-docs-cleanup job will not be able to run when the branch gets
+  # deleted (when merging the MR).
+  - apk add --update openssl
+  - wget https://gitlab.com/gitlab-org/gitlab/-/raw/master/scripts/trigger-build.rb
+  - chmod 755 trigger-build.rb
+  variables:
+    GIT_STRATEGY: none
+    DOCS_REVIEW_APPS_DOMAIN: docs.gitlab-review.app
+    # By default, deploy the Review App using the `main` branch of the `gitlab-org/gitlab-docs` project
+    DOCS_BRANCH: main
+  when: manual
+  allow_failure: true
+
+# Trigger a docs build in gitlab-docs
+# Useful to preview the docs changes live
+# https://docs.gitlab.com/ee/development/documentation/index.html#previewing-the-changes-live
+review-docs-deploy:
+  extends:
+  - .review-docs
+  environment:
+    name: review-docs/mr-${CI_MERGE_REQUEST_IID}
+    # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are CI variables
+    # Discussion: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14236/diffs#note_40140693
+    auto_stop_in: 2 weeks
+    url: https://${DOCS_BRANCH}-${DOCS_GITLAB_REPO_SUFFIX}-${CI_MERGE_REQUEST_IID}.${DOCS_REVIEW_APPS_DOMAIN}/${DOCS_GITLAB_REPO_SUFFIX}
+    on_stop: review-docs-cleanup
+  script:
+  - ./trigger-build.rb docs deploy
+
+# Cleanup remote environment of gitlab-docs
+review-docs-cleanup:
+  extends:
+  - .review-docs
+  environment:
+    name: review-docs/mr-${CI_MERGE_REQUEST_IID}
+    action: stop
+  script:
+  - ./trigger-build.rb docs cleanup
+```
+
+You may need to add some rules when those jobs run, it depends on the project.
+You can find the current implementations:
+
+- [GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/docs.gitlab-ci.yml)
+- [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/ee8699658c8a7d4c635ad503ef0b825ac592dc4b/gitlab-ci-config/gitlab-com.yml#L367-391)
+- [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/main/.gitlab/ci/docs.gitlab-ci.yml)
+- [GitLab Charts](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/aae7ee8d23a60d6025eec7d1a864ce244f21cd85/.gitlab-ci.yml#L629-679)
+- [GitLab Operator](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/5fa29607cf9286b510148a8f5fef7595dca34186/.gitlab-ci.yml#L180-228)
 
 ## Troubleshooting review apps
 
