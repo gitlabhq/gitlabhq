@@ -1,0 +1,13 @@
+- title: "Dependency Proxy: group access tokens to have additional scope checks for service accounts"
+  announcement_milestone: "16.7"
+  removal_milestone: "17.0"
+  breaking_change: true
+  reporter: trizzi
+  stage: Package
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/431386
+  body: |
+    When using the Dependency Proxy for containers with a group access token, `docker login` and `docker pull` requests with insufficient scopes for Dependency Proxy are not rejected.
+
+    GitLab 16.7 adds checks for group access tokens authenticating for the dependency proxy for containers. This is a breaking change, because tokens without the required scopes will fail.
+
+    To help avoid being impacted by this breaking change, create new group access tokens with the [required scopes](https://docs.gitlab.com/ee/user/packages/dependency_proxy/#authenticate-with-the-dependency-proxy), and update your workflow variables and scripts with those new tokens.

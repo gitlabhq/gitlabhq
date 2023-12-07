@@ -16,14 +16,14 @@ RSpec.describe Ci::Catalog::Resources::ProcessSyncEventsWorker, feature_category
   end
 
   describe '#perform' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project) { create(:project, name: 'Old Name') }
     let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
 
     before_all do
       create(:ci_catalog_resource_sync_event, catalog_resource: resource, status: :processed)
       create_list(:ci_catalog_resource_sync_event, 2, catalog_resource: resource)
       # PG trigger adds an event for this update
-      project.update!(name: 'Name', description: 'Test', visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+      project.update!(name: 'New Name', description: 'Test', visibility_level: Gitlab::VisibilityLevel::INTERNAL)
     end
 
     subject(:perform) { worker.perform }
@@ -47,6 +47,22 @@ RSpec.describe Ci::Catalog::Resources::ProcessSyncEventsWorker, feature_category
       expect(worker).to receive(:log_extra_metadata_on_done).with(:processed_events, 3)
 
       perform
+    end
+
+    context 'when FF `ci_process_catalog_resource_sync_events` is disabled' do
+      before do
+        stub_feature_flags(ci_process_catalog_resource_sync_events: false)
+      end
+
+      it 'does not process the sync events', :aggregate_failures do
+        expect(worker).not_to receive(:log_extra_metadata_on_done)
+
+        expect { perform }.not_to change { Ci::Catalog::Resources::SyncEvent.status_pending.count }
+
+        expect(resource.reload.name).to eq('Old Name')
+        expect(resource.reload.description).to be_nil
+        expect(resource.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+      end
     end
   end
 end

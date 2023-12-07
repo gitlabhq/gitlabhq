@@ -10,7 +10,7 @@ module QA
         include SubMenus::SuperSidebar::GlobalSearchModal
 
         view 'app/assets/javascripts/super_sidebar/components/super_sidebar.vue' do
-          element :navbar, required: true # TODO: rename to sidebar once it's default implementation
+          element 'super-sidebar', required: true
         end
 
         view 'app/assets/javascripts/super_sidebar/components/user_bar.vue' do
@@ -20,7 +20,7 @@ module QA
         view 'app/assets/javascripts/super_sidebar/components/user_menu.vue' do
           element 'user-dropdown', required: !Runtime::Env.phone_layout?
           element 'user-avatar-content', required: !Runtime::Env.phone_layout?
-          element :sign_out_link
+          element 'sign-out-link'
           element 'edit-profile-link'
         end
 
@@ -35,12 +35,8 @@ module QA
           element 'todos-shortcut-button', required: !Runtime::Env.phone_layout?
         end
 
-        view 'app/assets/javascripts/super_sidebar/components/global_search/components/global_search.vue' do
-          element 'global-search-input'
-        end
-
         view 'lib/gitlab/nav/top_nav_menu_item.rb' do
-          element :menu_item_link
+          element 'menu-item-link'
         end
 
         view 'app/views/layouts/header/_new_dropdown.html.haml' do
@@ -48,9 +44,9 @@ module QA
         end
 
         view 'app/helpers/nav/new_dropdown_helper.rb' do
-          element :global_new_group_link
-          element :global_new_project_link
-          element :global_new_snippet_link
+          element 'global-new-group-link'
+          element 'global-new-project-link'
+          element 'global-new-snippet-link'
         end
 
         def go_to_projects
@@ -112,7 +108,7 @@ module QA
             break true unless signed_in?
 
             within_user_menu do
-              click_element :sign_out_link
+              click_element 'sign-out-link'
             end
 
             not_signed_in?
@@ -164,7 +160,7 @@ module QA
         private
 
         def within_user_menu(&block)
-          within_element(:navbar) do
+          within_element('super-sidebar') do
             click_element 'user-avatar-content' unless has_element?('user-profile-link', wait: 1)
 
             within_element('user-dropdown', &block)

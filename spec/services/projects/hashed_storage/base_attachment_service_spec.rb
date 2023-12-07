@@ -45,7 +45,7 @@ RSpec.describe Projects::HashedStorage::BaseAttachmentService, feature_category:
   describe '#move_folder!' do
     context 'when old_path is not a directory' do
       it 'adds information to the logger and returns true' do
-        Tempfile.create do |old_path| # rubocop:disable Rails/SaveBang
+        Tempfile.create do |old_path|
           new_path = "#{old_path}-new"
 
           expect(subject.send(:move_folder!, old_path, new_path)).to be_truthy

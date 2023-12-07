@@ -930,3 +930,153 @@ export const fluxKustomizationsMock = [
 ];
 
 export const fluxResourcePathMock = 'path/to/flux/resource';
+
+export const resolvedEnvironmentToDelete = {
+  __typename: 'LocalEnvironment',
+  id: 41,
+  name: 'review/hello',
+  deletePath: '/api/v4/projects/8/environments/41',
+};
+
+export const resolvedEnvironmentToRollback = {
+  __typename: 'LocalEnvironment',
+  id: 41,
+  name: 'review/hello',
+  lastDeployment: {
+    id: 78,
+    iid: 24,
+    sha: 'f3ba6dd84f8f891373e9b869135622b954852db1',
+    ref: { name: 'main', refPath: '/h5bp/html5-boilerplate/-/tree/main' },
+    status: 'success',
+    createdAt: '2022-01-07T15:47:27.415Z',
+    deployedAt: '2022-01-07T15:47:32.450Z',
+    tierInYaml: 'staging',
+    tag: false,
+    isLast: true,
+    user: {
+      id: 1,
+      username: 'root',
+      name: 'Administrator',
+      state: 'active',
+      avatarUrl:
+        'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+      webUrl: 'http://gck.test:3000/root',
+      showStatus: false,
+      path: '/root',
+    },
+    deployable: {
+      id: 1014,
+      name: 'deploy-prod',
+      started: '2022-01-07T15:47:31.037Z',
+      complete: true,
+      archived: false,
+      buildPath: '/h5bp/html5-boilerplate/-/jobs/1014',
+      retryPath: '/h5bp/html5-boilerplate/-/jobs/1014/retry',
+      playable: false,
+      scheduled: false,
+      createdAt: '2022-01-07T15:47:27.404Z',
+      updatedAt: '2022-01-07T15:47:32.341Z',
+      status: {
+        action: {
+          buttonTitle: 'Retry this job',
+          icon: 'retry',
+          method: 'post',
+          path: '/h5bp/html5-boilerplate/-/jobs/1014/retry',
+          title: 'Retry',
+        },
+        detailsPath: '/h5bp/html5-boilerplate/-/jobs/1014',
+        favicon:
+          '/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png',
+        group: 'success',
+        hasDetails: true,
+        icon: 'status_success',
+        illustration: {
+          image:
+            '/assets/illustrations/skipped-job_empty-29a8a37d8a61d1b6f68cf3484f9024e53cd6eb95e28eae3554f8011a1146bf27.svg',
+          size: 'svg-430',
+          title: 'This job does not have a trace.',
+        },
+        label: 'passed',
+        text: 'passed',
+        tooltip: 'passed',
+      },
+    },
+    commit: {
+      id: 'f3ba6dd84f8f891373e9b869135622b954852db1',
+      shortId: 'f3ba6dd8',
+      createdAt: '2022-01-07T15:47:26.000+00:00',
+      parentIds: ['3213b6ac17afab99be37d5d38f38c6c8407387cc'],
+      title: 'Update .gitlab-ci.yml file',
+      message: 'Update .gitlab-ci.yml file',
+      authorName: 'Administrator',
+      authorEmail: 'admin@example.com',
+      authoredDate: '2022-01-07T15:47:26.000+00:00',
+      committerName: 'Administrator',
+      committerEmail: 'admin@example.com',
+      committedDate: '2022-01-07T15:47:26.000+00:00',
+      trailers: {},
+      webUrl:
+        'http://gck.test:3000/h5bp/html5-boilerplate/-/commit/f3ba6dd84f8f891373e9b869135622b954852db1',
+      author: {
+        avatarUrl:
+          'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+        id: 1,
+        name: 'Administrator',
+        path: '/root',
+        showStatus: false,
+        state: 'active',
+        username: 'root',
+        webUrl: 'http://gck.test:3000/root',
+      },
+      authorGravatarUrl:
+        'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+      commitUrl:
+        'http://gck.test:3000/h5bp/html5-boilerplate/-/commit/f3ba6dd84f8f891373e9b869135622b954852db1',
+      commitPath: '/h5bp/html5-boilerplate/-/commit/f3ba6dd84f8f891373e9b869135622b954852db1',
+    },
+    manualActions: [
+      {
+        id: 1015,
+        name: 'deploy-staging',
+        started: null,
+        complete: false,
+        archived: false,
+        buildPath: '/h5bp/html5-boilerplate/-/jobs/1015',
+        playPath: '/h5bp/html5-boilerplate/-/jobs/1015/play',
+        playable: true,
+        scheduled: false,
+        createdAt: '2022-01-07T15:47:27.422Z',
+        updatedAt: '2022-01-07T15:47:28.557Z',
+        status: {
+          icon: 'status_manual',
+          text: 'manual',
+          label: 'manual play action',
+          group: 'manual',
+          tooltip: 'manual action',
+          hasDetails: true,
+          detailsPath: '/h5bp/html5-boilerplate/-/jobs/1015',
+          illustration: {
+            image:
+              '/assets/illustrations/manual_action-c55aee2c5f9ebe9f72751480af8bb307be1a6f35552f344cc6d1bf979d3422f6.svg',
+            size: 'svg-394',
+            title: 'This job requires a manual action',
+            content:
+              'This job requires manual intervention to start. Before starting this job, you can add variables below for last-minute configuration changes.',
+          },
+          favicon:
+            '/assets/ci_favicons/favicon_status_manual-829a0804612cef47d9efc1618dba38325483657c847dba0546c3b9f0295bb36c.png',
+          action: {
+            icon: 'play',
+            title: 'Play',
+            path: '/h5bp/html5-boilerplate/-/jobs/1015/play',
+            method: 'post',
+            buttonTitle: 'Run job',
+          },
+        },
+      },
+    ],
+    scheduledActions: [],
+    cluster: null,
+  },
+  retryUrl: '/h5bp/html5-boilerplate/-/jobs/1014/retry',
+};

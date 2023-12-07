@@ -1945,6 +1945,31 @@ Input type: `BoardListUpdateLimitMetricsInput`
 | <a id="mutationboardlistupdatelimitmetricserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationboardlistupdatelimitmetricslist"></a>`list` | [`BoardList`](#boardlist) | Updated list. |
 
+### `Mutation.branchRuleUpdate`
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `BranchRuleUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbranchruleupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbranchruleupdateid"></a>`id` | [`ProtectedBranchID!`](#protectedbranchid) | Global ID of the protected branch. |
+| <a id="mutationbranchruleupdatename"></a>`name` | [`String!`](#string) | Branch name, with wildcards, for the branch rules. |
+| <a id="mutationbranchruleupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path to the project that the branch is associated with. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbranchruleupdatebranchrule"></a>`branchRule` | [`BranchRule`](#branchrule) | Branch rule after mutation. |
+| <a id="mutationbranchruleupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbranchruleupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.buildForecast`
 
 WARNING:
@@ -32483,6 +32508,12 @@ An example `ProjectID` is: `"gid://gitlab/Project/1"`.
 A `ProjectImportStateID` is a global ID. It is encoded as a string.
 
 An example `ProjectImportStateID` is: `"gid://gitlab/ProjectImportState/1"`.
+
+### `ProtectedBranchID`
+
+A `ProtectedBranchID` is a global ID. It is encoded as a string.
+
+An example `ProtectedBranchID` is: `"gid://gitlab/ProtectedBranch/1"`.
 
 ### `ReleaseID`
 

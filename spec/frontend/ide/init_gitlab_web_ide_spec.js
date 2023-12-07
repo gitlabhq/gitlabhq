@@ -40,6 +40,9 @@ const TEST_EDITOR_FONT_SRC_URL = 'http://gitlab.test/assets/gitlab-mono/GitLabMo
 const TEST_EDITOR_FONT_FORMAT = 'woff2';
 const TEST_EDITOR_FONT_FAMILY = 'GitLab Mono';
 
+const TEST_OAUTH_CLIENT_ID = 'oauth-client-id-123abc';
+const TEST_OAUTH_CALLBACK_URL = 'https://example.com/oauth_callback';
+
 describe('ide/init_gitlab_web_ide', () => {
   let resolveConfirm;
 
@@ -227,6 +230,31 @@ describe('ide/init_gitlab_web_ide', () => {
         findRootElement(),
         expect.objectContaining({
           forkInfo: TEST_FORK_INFO,
+        }),
+      );
+    });
+  });
+
+  describe('when oauth info is in dataset', () => {
+    beforeEach(() => {
+      findRootElement().dataset.clientId = TEST_OAUTH_CLIENT_ID;
+      findRootElement().dataset.callbackUrl = TEST_OAUTH_CALLBACK_URL;
+
+      createSubject();
+    });
+
+    it('calls start with element', () => {
+      expect(start).toHaveBeenCalledTimes(1);
+      expect(start).toHaveBeenCalledWith(
+        findRootElement(),
+        expect.objectContaining({
+          auth: {
+            type: 'oauth',
+            clientId: TEST_OAUTH_CLIENT_ID,
+            callbackUrl: TEST_OAUTH_CALLBACK_URL,
+            protectRefreshToken: true,
+          },
+          httpHeaders: undefined,
         }),
       );
     });

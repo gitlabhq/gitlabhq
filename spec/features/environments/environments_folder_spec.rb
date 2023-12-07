@@ -8,9 +8,41 @@ RSpec.describe 'Environments Folder page', :js, feature_category: :environment_m
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let!(:envs) { create_list(:environment, 4, :with_folders, project: project, folder: folder_name) }
+  let!(:stopped_env) { create(:environment, :stopped, :with_folders, project: project, folder: folder_name) }
 
   def get_env_name(environment)
     environment.name.split('/').last
+  end
+
+  def find_env_element(environment)
+    find_by_id(environment.name)
+  end
+
+  def stop_environment(environment)
+    environment_item = find_env_element(environment)
+    within(environment_item) do
+      click_button 'Stop'
+    end
+
+    within('.modal') do
+      click_button 'Stop environment'
+    end
+
+    wait_for_requests
+  end
+
+  def redeploy_environment(environment)
+    environment_item = find_env_element(environment)
+    within(environment_item) do
+      click_button 'More actions'
+      click_button 'Delete environment'
+    end
+
+    within('.modal') do
+      click_button 'Delete environment'
+    end
+
+    wait_for_requests
   end
 
   before_all do
@@ -35,6 +67,37 @@ RSpec.describe 'Environments Folder page', :js, feature_category: :environment_m
     it 'renders the environments' do
       expect(page).not_to have_content('production')
       envs.each { |env| expect(page).to have_content(get_env_name(env)) }
+    end
+
+    it 'shows scope tabs' do
+      expect(page).to have_content("Active")
+      expect(page).to have_content("Stopped")
+    end
+
+    it 'can stop the environment' do
+      environment_to_stop = envs.first
+
+      stop_environment(environment_to_stop)
+
+      expect(page).not_to have_content(get_env_name(environment_to_stop))
+    end
+
+    describe 'stopped environments tab' do
+      before do
+        element = find('a', text: 'Stopped')
+        element.click
+        wait_for_requests
+      end
+
+      it 'shows stopped environments on stopped tab' do
+        expect(page).to have_content(get_env_name(stopped_env))
+      end
+
+      it 'can re-start the environment' do
+        redeploy_environment(stopped_env)
+
+        expect(page).not_to have_content(get_env_name(stopped_env))
+      end
     end
   end
 

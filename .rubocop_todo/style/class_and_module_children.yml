@@ -102,7 +102,7 @@ Style/ClassAndModuleChildren:
     - 'app/controllers/oauth/token_info_controller.rb'
     - 'app/controllers/oauth/tokens_controller.rb'
     - 'app/controllers/profiles/accounts_controller.rb'
-    - 'app/controllers/profiles/active_sessions_controller.rb'
+    - 'app/controllers/user_settings/active_sessions_controller.rb'
     - 'app/controllers/profiles/application_controller.rb'
     - 'app/controllers/profiles/avatars_controller.rb'
     - 'app/controllers/profiles/chat_names_controller.rb'

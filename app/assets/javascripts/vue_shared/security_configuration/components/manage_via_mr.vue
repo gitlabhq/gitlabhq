@@ -110,7 +110,6 @@ export default {
     :loading="isLoading"
     :variant="variant"
     :category="category"
-    :data-qa-selector="`${feature.type}_mr_button`"
     @click="mutate"
     >{{ $options.i18n.buttonLabel }}</gl-button
   >

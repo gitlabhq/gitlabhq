@@ -837,7 +837,9 @@ Rails/TimeZone:
 Rails/SaveBang:
   Enabled: true
   AllowImplicitReturn: false
-  AllowedReceivers: ['ActionDispatch::TestRequest']
+  AllowedReceivers:
+    - ActionDispatch::TestRequest
+    - Tempfile
   Include:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'

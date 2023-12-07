@@ -700,6 +700,9 @@ Settings.cron_jobs['deactivated_pages_deployments_delete_cron_worker']['job_clas
 Settings.cron_jobs['ci_schedule_unlock_pipelines_in_queue_worker'] ||= {}
 Settings.cron_jobs['ci_schedule_unlock_pipelines_in_queue_worker']['cron'] ||= '*/1 * * * *'
 Settings.cron_jobs['ci_schedule_unlock_pipelines_in_queue_worker']['job_class'] = 'Ci::ScheduleUnlockPipelinesInQueueCronWorker'
+Settings.cron_jobs['ci_catalog_resources_process_sync_events_worker'] ||= {}
+Settings.cron_jobs['ci_catalog_resources_process_sync_events_worker']['cron'] ||= '*/1 * * * *'
+Settings.cron_jobs['ci_catalog_resources_process_sync_events_worker']['job_class'] = 'Ci::Catalog::Resources::ProcessSyncEventsWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}

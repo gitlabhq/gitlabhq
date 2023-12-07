@@ -22,15 +22,14 @@ Sign commits with your:
 ## Verify commits
 
 You can review commits for a merge request, or for an entire project, to confirm
-they are signed:
+they are signed.
 
-1. To review commits for a project:
-   1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-   1. Select **Code > Commits**.
-1. To review commits for a merge request:
-   1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-   1. On the left sidebar, select **Merge requests**, then select your merge request.
-   1. Select **Commits**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. To review commits:
+   - For a project, select **Code > Commits**.
+   - For a merge request:
+     1. Select **Merge requests**, then select your merge request.
+     1. Select **Commits**.
 1. Identify the commit you want to review. Signed commits show either a **Verified**
    or **Unverified** badge, depending on the verification status of the signature.
    Unsigned commits do not display a badge:

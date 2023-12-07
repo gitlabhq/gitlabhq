@@ -1605,7 +1605,6 @@ RSpec/FeatureCategory:
     - 'spec/controllers/oauth/tokens_controller_spec.rb'
     - 'spec/controllers/passwords_controller_spec.rb'
     - 'spec/controllers/profiles/accounts_controller_spec.rb'
-    - 'spec/controllers/profiles/active_sessions_controller_spec.rb'
     - 'spec/controllers/profiles/avatars_controller_spec.rb'
     - 'spec/controllers/profiles/emails_controller_spec.rb'
     - 'spec/controllers/profiles/gpg_keys_controller_spec.rb'

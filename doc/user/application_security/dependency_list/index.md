@@ -37,7 +37,7 @@ To view your project's dependencies, ensure you meet the following requirements:
 
 To view the dependencies of a project or all projects in a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Secure > Dependency list**.
 
 Details of each dependency are listed, sorted by decreasing severity of vulnerabilities (if any). You can sort the list instead by component name or packager.
@@ -98,6 +98,6 @@ list shows only the results of the last successful pipeline that ran on the defa
 
 To download the dependency list:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Secure > Dependency list**.
 1. Select **Export**.

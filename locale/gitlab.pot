@@ -4427,6 +4427,9 @@ msgstr ""
 msgid "After the export is complete, download the data file from a notification email or from this page. You can then import the data file from the %{strong_text_start}Create new group%{strong_text_end} page of another GitLab instance."
 msgstr ""
 
+msgid "After the report is generated, an email will be sent with the report attached."
+msgstr ""
+
 msgid "After you enable the integration, the following protected variable is created for CI/CD use:"
 msgstr ""
 
@@ -5028,9 +5031,6 @@ msgid "An application called %{link_to_client} is requesting access to your GitL
 msgstr ""
 
 msgid "An email notification was recently sent from the admin panel. Please wait %{wait_time_in_words} before attempting to send another message."
-msgstr ""
-
-msgid "An email will be sent with the report attached after it is generated."
 msgstr ""
 
 msgid "An empty GitLab User field will add the FogBugz user's full name (e.g. \"By John Smith\") in the description of all issues and comments. It will also associate and/or assign these issues and comments with the project creator."
@@ -7128,6 +7128,9 @@ msgid "Authenticated web rate limit period in seconds"
 msgstr ""
 
 msgid "Authenticated web requests"
+msgstr ""
+
+msgid "Authenticating..."
 msgstr ""
 
 msgid "Authentication"
@@ -11990,6 +11993,9 @@ msgstr ""
 msgid "CodeSuggestions|Subject to the %{terms_link_start}Testing Terms of Use%{link_end}. Code Suggestions uses third-party AI services."
 msgstr ""
 
+msgid "CodeSuggestions|Subject to the %{terms_link_start}Testing Terms of Use%{link_end}. Code Suggestions uses third-party AI services.|To start receiving Code Suggestions after enabling this feature, you must install and configure a %{ide_extension_link_start}supported IDE editor extension%{link_end}."
+msgstr ""
+
 msgid "CodeownersValidation|An error occurred while loading the validation errors. Please try again later."
 msgstr ""
 
@@ -12438,16 +12444,16 @@ msgstr ""
 msgid "Completed in %{duration_seconds} seconds (%{relative_time})"
 msgstr ""
 
-msgid "Compliance Center Export|(limited to 15 MB)"
-msgstr ""
-
 msgid "Compliance Center Export|Example: 2dc6aa3"
 msgstr ""
 
-msgid "Compliance Center Export|Export as CSV"
+msgid "Compliance Center Export|Export chain of custody report"
 msgstr ""
 
-msgid "Compliance Center Export|Export chain of custody report"
+msgid "Compliance Center Export|Export chain of custody report as a CSV file (limited to 15MB)."
+msgstr ""
+
+msgid "Compliance Center Export|Export chain of custody report of a specific commit as a CSV file (limited to 15MB)."
 msgstr ""
 
 msgid "Compliance Center Export|Export custody report"
@@ -12459,6 +12465,12 @@ msgstr ""
 msgid "Compliance Center Export|Export list of project frameworks"
 msgstr ""
 
+msgid "Compliance Center Export|Export list of project frameworks as a CSV file."
+msgstr ""
+
+msgid "Compliance Center Export|Export merge request violations as a CSV file."
+msgstr ""
+
 msgid "Compliance Center Export|Export violations report"
 msgstr ""
 
@@ -12466,6 +12478,9 @@ msgid "Compliance Center Export|Invalid hash"
 msgstr ""
 
 msgid "Compliance Center Export|Send email of the chosen report as CSV"
+msgstr ""
+
+msgid "Compliance Center Export|You will be emailed after the export is processed."
 msgstr ""
 
 msgid "Compliance Center|Frameworks"
@@ -12483,6 +12498,9 @@ msgstr ""
 msgid "Compliance framework"
 msgstr ""
 
+msgid "ComplianceChainOfCustody| Chain of custody export"
+msgstr ""
+
 msgid "ComplianceFrameworksReport|Associated Projects"
 msgstr ""
 
@@ -12495,6 +12513,9 @@ msgstr ""
 msgid "ComplianceFrameworksReport|Edit framework"
 msgstr ""
 
+msgid "ComplianceFrameworks| Frameworks export"
+msgstr ""
+
 msgid "ComplianceFrameworks|Active compliance frameworks"
 msgstr ""
 
@@ -12505,9 +12526,6 @@ msgid "ComplianceFrameworks|Background color"
 msgstr ""
 
 msgid "ComplianceFrameworks|Cancel"
-msgstr ""
-
-msgid "ComplianceFrameworks|Compliance Frameworks Export"
 msgstr ""
 
 msgid "ComplianceFrameworks|Compliance framework created"
@@ -12798,7 +12816,7 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|View details (fix available)"
 msgstr ""
 
-msgid "ComplianceViolations|Compliance Violations Export"
+msgid "ComplianceViolations| Violations export"
 msgstr ""
 
 msgid "ComplianceViolations|Your Compliance Violations CSV export for the group \"%{group_name}\" has been attached to this email."
@@ -18942,6 +18960,9 @@ msgstr ""
 msgid "Environments|Open live environment"
 msgstr ""
 
+msgid "Environments|Or select namespace: %{searchTerm}"
+msgstr ""
+
 msgid "Environments|Re-deploy environment"
 msgstr ""
 
@@ -19101,10 +19122,10 @@ msgstr ""
 msgid "Environment|Unauthorized to access %{resourceType} from this environment."
 msgstr ""
 
-msgid "Environment|Unauthorized to access the cluster agent from this environment. Check your authentication and try again."
+msgid "Environment|Unhealthy"
 msgstr ""
 
-msgid "Environment|Unhealthy"
+msgid "Environment|You don't have permission to view all the namespaces in the cluster. If a namespace is not shown, you can still enter its name to select it."
 msgstr ""
 
 msgid "Epic"

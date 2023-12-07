@@ -55,7 +55,7 @@ RSpec.describe Tooling::ParallelRSpecRunner, feature_category: :tooling do # rub
 
     context 'given filter tests file' do
       let(:filter_tests_file) do
-        Tempfile.create.tap do |f| # rubocop:disable Rails/SaveBang -- Tempfile has no create! method
+        Tempfile.create.tap do |f|
           f.write(filter_tests.join(' '))
           f.rewind
         end

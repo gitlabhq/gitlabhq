@@ -188,7 +188,6 @@ export default {
       class="super-sidebar"
       :class="peekClasses"
       data-testid="super-sidebar"
-      data-qa-selector="navbar"
       :inert="sidebarState.isCollapsed"
       @mouseenter="isMouseover = true"
       @mouseleave="isMouseover = false"

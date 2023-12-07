@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import VueRouter from 'vue-router';
 import createDefaultClient from '~/lib/graphql';
 import Translate from '~/vue_shared/translate';
 import { apolloProvider } from '../graphql/client';
@@ -17,28 +18,46 @@ export default () => {
   const el = document.getElementById('environments-folder-list-view');
   const environmentsData = el.dataset;
   if (gon.features.environmentsFolderNewLook) {
+    Vue.use(VueRouter);
+
     const folderName = environmentsData.environmentsDataFolderName;
     const folderPath = environmentsData.environmentsDataEndpoint.replace('.json', '');
     const projectPath = environmentsData.environmentsDataProjectPath;
     const helpPagePath = environmentsData.environmentsDataHelpPagePath;
 
+    const router = new VueRouter({
+      mode: 'history',
+      base: window.location.pathname,
+      routes: [
+        {
+          path: '/',
+          name: 'environments_folder',
+          component: EnvironmentsFolderApp,
+          props: (route) => ({
+            scope: route.query.scope,
+            folderName,
+            folderPath,
+          }),
+        },
+      ],
+      scrollBehavior(to, from, savedPosition) {
+        if (savedPosition) {
+          return savedPosition;
+        }
+        return { top: 0 };
+      },
+    });
+
     return new Vue({
       el,
-      components: {
-        EnvironmentsFolderApp,
-      },
       provide: {
         projectPath,
         helpPagePath,
       },
       apolloProvider,
+      router,
       render(createElement) {
-        return createElement('environments-folder-app', {
-          props: {
-            folderName,
-            folderPath,
-          },
-        });
+        return createElement('router-view');
       },
     });
   }

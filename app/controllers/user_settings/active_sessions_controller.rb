@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Profiles::ActiveSessionsController < Profiles::ApplicationController
+class UserSettings::ActiveSessionsController < Profiles::ApplicationController
   feature_category :system_access
 
   def index
@@ -13,7 +13,7 @@ class Profiles::ActiveSessionsController < Profiles::ApplicationController
     current_user.forget_me!
 
     respond_to do |format|
-      format.html { redirect_to profile_active_sessions_url, status: :found }
+      format.html { redirect_to user_settings_active_sessions_url, status: :found }
       format.js { head :ok }
     end
   end

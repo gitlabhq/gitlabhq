@@ -162,7 +162,7 @@ const ERROR_OTHER = 'other';
 
 export const CLUSTER_AGENT_ERROR_MESSAGES = {
   [ERROR_UNAUTHORIZED]: s__(
-    'Environment|Unauthorized to access the cluster agent from this environment. Check your authentication and try again.',
+    "Environment|You don't have permission to view all the namespaces in the cluster. If a namespace is not shown, you can still enter its name to select it.",
   ),
   [ERROR_FORBIDDEN]: s__(
     'Environment|Forbidden to access the cluster agent from this environment.',

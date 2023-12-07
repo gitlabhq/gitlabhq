@@ -150,7 +150,7 @@ export default {
             href: this.data.sign_out_link,
             extraAttrs: {
               'data-method': 'post',
-              'data-testid': 'sign_out_link',
+              'data-testid': 'sign-out-link',
               class: 'sign-out-link',
             },
           },

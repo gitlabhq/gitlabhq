@@ -149,7 +149,7 @@ module Gitlab
         return if @data == '' # don't mess with submodule blobs
 
         # Even if we return early, recalculate whether this blob is binary in
-        # case a blob was initialized as text but the full data isn't
+        # case a blob was initialized as text but the full data isn'tspec/requests/api/graphql/mutations/branch_rules/update_spec.rb:
         @binary = nil
 
         return if @loaded_all_data

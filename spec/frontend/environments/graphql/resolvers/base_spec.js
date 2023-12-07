@@ -147,10 +147,10 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   describe('stopEnvironmentREST', () => {
     it('should post to the stop environment path', async () => {
       mock.onPost(ENDPOINT).reply(HTTP_STATUS_OK);
-
+      const cache = { evict: jest.fn() };
       const client = { writeQuery: jest.fn() };
       const environment = { stopPath: ENDPOINT };
-      await mockResolvers.Mutation.stopEnvironmentREST(null, { environment }, { client });
+      await mockResolvers.Mutation.stopEnvironmentREST(null, { environment }, { client, cache });
 
       expect(mock.history.post).toContainEqual(
         expect.objectContaining({ url: ENDPOINT, method: 'post' }),
@@ -161,6 +161,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         variables: { environment },
         data: { isEnvironmentStopping: true },
       });
+      expect(cache.evict).toHaveBeenCalledWith({ fieldName: 'folder' });
     });
     it('should set is stopping to false if stop fails', async () => {
       mock.onPost(ENDPOINT).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
@@ -183,27 +184,39 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   describe('rollbackEnvironment', () => {
     it('should post to the retry environment path', async () => {
       mock.onPost(ENDPOINT).reply(HTTP_STATUS_OK);
+      const cache = { evict: jest.fn() };
 
-      await mockResolvers.Mutation.rollbackEnvironment(null, {
-        environment: { retryUrl: ENDPOINT },
-      });
+      await mockResolvers.Mutation.rollbackEnvironment(
+        null,
+        {
+          environment: { retryUrl: ENDPOINT },
+        },
+        { cache },
+      );
 
       expect(mock.history.post).toContainEqual(
         expect.objectContaining({ url: ENDPOINT, method: 'post' }),
       );
+      expect(cache.evict).toHaveBeenCalledWith({ fieldName: 'folder' });
     });
   });
   describe('deleteEnvironment', () => {
     it('should DELETE to the delete environment path', async () => {
       mock.onDelete(ENDPOINT).reply(HTTP_STATUS_OK);
+      const cache = { evict: jest.fn() };
 
-      await mockResolvers.Mutation.deleteEnvironment(null, {
-        environment: { deletePath: ENDPOINT },
-      });
+      await mockResolvers.Mutation.deleteEnvironment(
+        null,
+        {
+          environment: { deletePath: ENDPOINT },
+        },
+        { cache },
+      );
 
       expect(mock.history.delete).toContainEqual(
         expect.objectContaining({ url: ENDPOINT, method: 'delete' }),
       );
+      expect(cache.evict).toHaveBeenCalledWith({ fieldName: 'folder' });
     });
   });
   describe('cancelAutoStop', () => {

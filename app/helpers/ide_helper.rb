@@ -52,6 +52,19 @@ module IdeHelper
     {}
   end
 
+  def new_ide_oauth_data
+    return {} unless ::Gitlab::WebIde::DefaultOauthApplication.feature_enabled?(current_user)
+    return {} unless ::Gitlab::WebIde::DefaultOauthApplication.oauth_application
+
+    client_id = ::Gitlab::WebIde::DefaultOauthApplication.oauth_application.uid
+    callback_url = ::Gitlab::WebIde::DefaultOauthApplication.oauth_callback_url
+
+    {
+      'client-id' => client_id,
+      'callback-url' => callback_url
+    }
+  end
+
   def new_ide_data(project:)
     {
       'project-path' => project&.path_with_namespace,
@@ -59,7 +72,7 @@ module IdeHelper
       # We will replace these placeholders in the FE
       'ide-remote-path' => ide_remote_path(remote_host: ':remote_host', remote_path: ':remote_path'),
       'editor-font' => new_ide_fonts.to_json
-    }.merge(new_ide_code_suggestions_data)
+    }.merge(new_ide_code_suggestions_data).merge(new_ide_oauth_data)
   end
 
   def legacy_ide_data(project:)

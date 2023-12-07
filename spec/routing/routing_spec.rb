@@ -394,10 +394,18 @@ RSpec.describe JwksController, "routing" do
   end
 end
 
-# user_settings_authentication_log GET  /-/user_settings/authentication_log(.:format) system_access/user_settings#authentication_log
+# user_settings_authentication_log GET  /-/user_settings/authentication_log(.:format) user_settings/user_settings#authentication_log
 
 RSpec.describe UserSettings::UserSettingsController, 'routing', feature_category: :system_access do
   it 'to #authentication_log' do
     expect(get('/-/user_settings/authentication_log')).to route_to('user_settings/user_settings#authentication_log')
+  end
+end
+
+# user_settings_active_sessions_log GET /-/user_settings_active_sessions_log(.:format)  user_settings/active_sessions#index#
+
+RSpec.describe UserSettings::ActiveSessionsController, 'routing', feature_category: :system_access do
+  it 'to #index' do
+    expect(get('/-/user_settings/active_sessions')).to route_to('user_settings/active_sessions#index')
   end
 end

@@ -12,4 +12,4 @@
   = render Pajamas::CardComponent.new(card_options: { class: 'gl-border-0' }, body_options: { class: 'gl-p-0' }) do |c|
     - c.with_body do
       %ul.list-group.list-group-flush
-        = render partial: 'profiles/active_sessions/active_session', collection: @sessions
+        = render partial: 'user_settings/active_sessions/active_session', collection: @sessions

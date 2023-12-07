@@ -75,7 +75,7 @@ export const baseQueries = (endpoint) => ({
 });
 
 export const baseMutations = {
-  stopEnvironmentREST(_, { environment }, { client }) {
+  stopEnvironmentREST(_, { environment }, { client, cache }) {
     client.writeQuery({
       query: isEnvironmentStoppingQuery,
       variables: { environment },
@@ -84,6 +84,9 @@ export const baseMutations = {
     return axios
       .post(environment.stopPath)
       .then(() => buildErrors())
+      .then(() => {
+        cache.evict({ fieldName: 'folder' });
+      })
       .catch(() => {
         client.writeQuery({
           query: isEnvironmentStoppingQuery,
@@ -95,10 +98,11 @@ export const baseMutations = {
         ]);
       });
   },
-  deleteEnvironment(_, { environment: { deletePath } }) {
+  deleteEnvironment(_, { environment: { deletePath } }, { cache }) {
     return axios
       .delete(deletePath)
       .then(() => buildErrors())
+      .then(() => cache.evict({ fieldName: 'folder' }))
       .catch(() =>
         buildErrors([
           s__(
@@ -107,10 +111,13 @@ export const baseMutations = {
         ]),
       );
   },
-  rollbackEnvironment(_, { environment, isLastDeployment }) {
+  rollbackEnvironment(_, { environment, isLastDeployment }, { cache }) {
     return axios
       .post(environment?.retryUrl)
       .then(() => buildErrors())
+      .then(() => {
+        cache.evict({ fieldName: 'folder' });
+      })
       .catch(() => {
         buildErrors([
           isLastDeployment

@@ -246,6 +246,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: cronjob:ci_catalog_resources_process_sync_events
+  :worker_name: Ci::Catalog::Resources::ProcessSyncEventsWorker
+  :feature_category: :pipeline_composition
+  :has_external_dependencies: false
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:ci_delete_unit_tests
   :worker_name: Ci::DeleteUnitTestsWorker
   :feature_category: :code_testing
@@ -2688,15 +2697,6 @@
 - :name: ci_cancel_redundant_pipelines
   :worker_name: Ci::CancelRedundantPipelinesWorker
   :feature_category: :continuous_integration
-  :has_external_dependencies: false
-  :urgency: :high
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: ci_catalog_resources_process_sync_events
-  :worker_name: Ci::Catalog::Resources::ProcessSyncEventsWorker
-  :feature_category: :pipeline_composition
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :unknown

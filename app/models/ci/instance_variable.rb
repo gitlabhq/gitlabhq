@@ -47,5 +47,9 @@ module Ci
         end
       end
     end
+
+    def audit_details
+      key
+    end
   end
 end

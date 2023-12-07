@@ -111,7 +111,7 @@ export default {
       :id="`menu-section-button-${itemId}`"
       class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-min-h-7 gl-gap-3 gl-mb-2 gl-py-2 gl-px-3 gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-appearance-none gl-border-0 gl-bg-transparent gl-text-left gl-w-full gl-focus--focus"
       :class="computedLinkClasses"
-      data-qa-selector="menu_section_button"
+      data-testid="menu-section-button"
       :data-qa-section-name="item.title"
       v-bind="buttonProps"
       @click="isExpanded = !isExpanded"
@@ -153,7 +153,7 @@ export default {
       :id="itemId"
       v-model="isExpanded"
       class="gl-list-style-none gl-p-0 gl-m-0 gl-transition-duration-medium gl-transition-timing-function-ease"
-      data-qa-selector="menu_section"
+      data-testid="menu-section"
       :data-qa-section-name="item.title"
     >
       <slot>

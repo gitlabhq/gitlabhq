@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Profiles::ActiveSessionsController do
+RSpec.describe UserSettings::ActiveSessionsController, feature_category: :system_access do
   describe 'DELETE destroy' do
     let_it_be(:user) { create(:user) }
 
