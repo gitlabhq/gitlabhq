@@ -10,10 +10,12 @@ class SwapColumnsForCiPipelinesPipelineIdBigintForSelfHost < Gitlab::Database::M
   TRIGGER_FUNCTION_NAME = :trigger_1bd97da9c1a4
   COLUMN_NAME = :auto_canceled_by_id
   BIGINT_COLUMN_NAME = :auto_canceled_by_id_convert_to_bigint
-  FK_NAME = :fk_262d4c2d19
-  BIGINT_FK_NAME = :fk_67e4288f3a
   INDEX_NAME = :index_ci_pipelines_on_auto_canceled_by_id
   BIGINT_INDEX_NAME = :index_ci_pipelines_on_auto_canceled_by_id_bigint
+
+  class PgForeignKeys < MigrationRecord
+    self.table_name = :postgres_foreign_keys
+  end
 
   def up
     return if column_type_of?(:bigint)
@@ -45,10 +47,21 @@ class SwapColumnsForCiPipelinesPipelineIdBigintForSelfHost < Gitlab::Database::M
       reset_trigger_function(TRIGGER_FUNCTION_NAME)
 
       # Swap fkey constraint
-      swap_foreign_keys(TABLE_NAME, FK_NAME, BIGINT_FK_NAME)
+      swap_foreign_keys(
+        TABLE_NAME,
+        foreign_key_name_for(TABLE_NAME, COLUMN_NAME),
+        foreign_key_name_for(TABLE_NAME, BIGINT_COLUMN_NAME)
+      )
 
       # Swap index
       swap_indexes(TABLE_NAME, INDEX_NAME, BIGINT_INDEX_NAME)
     end
+  end
+
+  def foreign_key_name_for(source, column)
+    PgForeignKeys
+      .where(constrained_table_name: source)
+      .where(constrained_columns: [column])
+      .first&.name || raise("Required foreign key for #{source} #{column} is missing.")
   end
 end
