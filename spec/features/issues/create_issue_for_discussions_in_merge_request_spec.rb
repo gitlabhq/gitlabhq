@@ -47,7 +47,7 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
       end
     end
 
-    context 'creating an issue for threads' do
+    context 'creating an issue for threads', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/420845' do
       before do
         find('.discussions-counter .gl-new-dropdown-toggle').click
         find(resolve_all_discussions_link_selector).click

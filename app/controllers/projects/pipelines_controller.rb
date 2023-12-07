@@ -270,7 +270,6 @@ class Projects::PipelinesController < Projects::ApplicationController
 
     last_modified = [@stage.updated_at.utc, @stage.statuses.maximum(:updated_at)].max
 
-    expires_in 24.hours
     stale?(last_modified: last_modified, etag: @stage)
   end
 

@@ -357,11 +357,14 @@ oauth:
     - .qa
     - .failure-videos
   variables:
-    QA_SCENARIO: Test::Integration::OAuth
+    QA_SCENARIO: Test::Instance::Image
+    QA_GITLAB_HOSTNAME: "gitlab"
+    QA_GITLAB_USE_TLS: "true"
+    QA_RSPEC_TAGS: --tag oauth
+    GITLAB_QA_OPTS: --omnibus-config facebook_oauth --omnibus-config github_oauth
   rules:
-    - when: manual
     - !reference [.rules:test:qa-default-branch, rules]
-    - if: $QA_SUITES =~ /Test::Integration::OAuth/
+    - if: $QA_SUITES =~ /Test::Instance::All/
     - !reference [.rules:test:manual, rules]
 
 instance-saml:

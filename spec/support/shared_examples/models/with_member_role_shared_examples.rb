@@ -79,11 +79,11 @@ RSpec.shared_examples 'model with member role relation' do
         it { is_expected.to be_valid }
       end
 
-      context 'when the member role namespace is the same as the saml provider group' do
+      context "when the member role namespace is the same as the model's group" do
         it { is_expected.to be_valid }
       end
 
-      context 'when the member role namespace is not the same as the saml provider group' do
+      context "when the member role namespace is outside the hierarchy of the model's group" do
         before do
           model.group = create(:group)
         end

@@ -99,6 +99,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
       let(:last_modified) { DateTime.parse(response.headers['Last-Modified']).utc }
       let(:cache_control) { response.headers['Cache-Control'] }
+      let(:expected_cache_control) { 'max-age=0, private, must-revalidate' }
 
       context 'when status.updated_at is before stage.updated' do
         let(:stage) { pipeline.stage('build') }
@@ -109,7 +110,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(last_modified).to be_within(1.second).of stage.updated_at
-          expect(cache_control).to eq('max-age=86400, private')
+          expect(cache_control).to eq(expected_cache_control)
         end
       end
 
@@ -122,7 +123,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(last_modified).to be_within(1.second).of status_timestamp
-          expect(cache_control).to eq('max-age=86400, private')
+          expect(cache_control).to eq(expected_cache_control)
         end
       end
     end

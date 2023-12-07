@@ -58161,9 +58161,6 @@ msgstr ""
 msgid "must belong to same project of the work item."
 msgstr ""
 
-msgid "must belong to the same namespace as the custom role's namespace"
-msgstr ""
-
 msgid "must contain only a discord user ID."
 msgstr ""
 
