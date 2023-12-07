@@ -1,7 +1,7 @@
 ---
 stage: Monitor
 group: Product Analytics
-info: For assistance with this tutorial, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
 # Tutorial: Set up product analytics in a GitLab Pages website project **(ULTIMATE ALL EXPERIMENT)**

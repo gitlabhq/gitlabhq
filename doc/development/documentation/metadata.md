@@ -1,5 +1,5 @@
 ---
-info: For assistance with this Style Guide page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 stage: none
 group: unassigned
 ---
@@ -19,7 +19,7 @@ belongs to, as well as an information block. For example:
 ---
 stage: Example Stage
 group: Example Group
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 ```
 
@@ -57,7 +57,7 @@ You can use a Rake task to update the `CODEOWNERS` file.
 
 ### Update the `CODEOWNERS` file
 
-When groups or [TW assignments](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments)
+When groups or [TW assignments](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments)
 change, you must update the `CODEOWNERS` file:
 
 1. Update the [stage and group metadata](#stage-and-group-metadata) for any affected doc pages, if necessary. If there are many changes, you can do this step in a separate MR.

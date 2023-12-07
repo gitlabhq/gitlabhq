@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab for Jira Cloud app administration **(FREE SELF)**
@@ -395,6 +395,8 @@ For the second log:
 
 - `json.message` is `Proxy lifecycle event received error response` or similar.
 - `json.jira_status_code` and `json.jira_body` might contain details on why GitLab.com wasn't able to connect back to the self-managed instance.
+- If `json.jira_status_code` is `401` and `json.jira_body` is empty, this might indicate that the [**Jira Connect Proxy URL**](#set-up-your-instance) is not set to
+  `https://gitlab.com`.
 
 ### `Failed to link group`
 

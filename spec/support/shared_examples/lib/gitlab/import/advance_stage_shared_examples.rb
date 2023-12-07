@@ -63,7 +63,7 @@ RSpec.shared_examples Gitlab::Import::AdvanceStage do |factory:|
         next_worker = described_class::STAGES[next_stage.to_sym]
 
         expect_next_found_instance_of(import_state.class) do |state|
-          expect(state).to receive(:refresh_jid_expiration)
+          expect(state).to receive(:refresh_jid_expiration).twice
         end
 
         expect(next_worker).to receive(:perform_async).with(project.id)
@@ -124,7 +124,7 @@ RSpec.shared_examples Gitlab::Import::AdvanceStage do |factory:|
           freeze_time do
             next_worker = described_class::STAGES[next_stage.to_sym]
 
-            expect(next_worker).not_to receive(:perform_async).with(project.id)
+            expect(next_worker).not_to receive(:perform_async)
             expect_next_instance_of(described_class) do |klass|
               expect(klass).to receive(:find_import_state).and_call_original
             end

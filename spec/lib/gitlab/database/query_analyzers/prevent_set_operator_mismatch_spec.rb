@@ -42,12 +42,21 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventSetOperatorMismatch, que
   end
 
   context 'when SQL does not include a set operator' do
-    let(:sql) { 'SELECT 1' }
+    where(:sql) do
+      [
+        'SELECT 1',
+        'SELECT union_station',
+        'SELECT intersection',
+        'SELECT deny_all_requests_except_allowed from application_settings'
+      ]
+    end
 
-    it 'does not parse SQL' do
-      expect(described_class::SelectStmt).not_to receive(:new)
+    with_them do
+      it 'does not parse SQL' do
+        expect(described_class::SelectStmt).not_to receive(:new)
 
-      process_sql sql
+        process_sql sql
+      end
     end
   end
 

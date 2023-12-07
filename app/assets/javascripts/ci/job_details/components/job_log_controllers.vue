@@ -80,9 +80,6 @@ export default {
         size: numberToHumanSize(this.size),
       });
     },
-    showJumpToFailures() {
-      return this.glFeatures.jobLogJumpToFailures;
-    },
     hasFailures() {
       return this.failureCount > 0;
     },
@@ -95,19 +92,17 @@ export default {
   },
   methods: {
     checkFailureCount() {
-      if (this.glFeatures.jobLogJumpToFailures) {
-        backOff((next, stop) => {
-          this.failureCount = document.querySelectorAll('.term-fg-l-red').length;
+      backOff((next, stop) => {
+        this.failureCount = document.querySelectorAll('.term-fg-l-red').length;
 
-          if (this.hasFailures || (this.isComplete && !this.hasFailures)) {
-            stop();
-          } else {
-            next();
-          }
-        }).catch(() => {
-          this.failureCount = null;
-        });
-      }
+        if (this.hasFailures || (this.isComplete && !this.hasFailures)) {
+          stop();
+        } else {
+          next();
+        }
+      }).catch(() => {
+        this.failureCount = null;
+      });
     },
     handleScrollToNextFailure() {
       const failures = document.querySelectorAll('.term-fg-l-red');
@@ -221,7 +216,6 @@ export default {
 
       <!-- scroll buttons -->
       <gl-button
-        v-if="showJumpToFailures"
         v-gl-tooltip
         :title="$options.i18n.scrollToNextFailureButtonLabel"
         :aria-label="$options.i18n.scrollToNextFailureButtonLabel"

@@ -37,6 +37,8 @@ module Gitlab
         if new_job_count != previous_job_count
           timeout_timer = Time.zone.now
           previous_job_count = new_job_count
+
+          import_state_jid.refresh_jid_expiration
         end
 
         if new_waiters.empty?

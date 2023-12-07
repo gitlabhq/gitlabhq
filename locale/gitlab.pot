@@ -5727,6 +5727,9 @@ msgstr ""
 msgid "Analytics|Updating visualization %{visualizationName}"
 msgstr ""
 
+msgid "Analytics|Usage overview for %{namespaceName} group"
+msgstr ""
+
 msgid "Analytics|Use the visualization designer to create custom visualizations. After you save a visualization, you can add it to a dashboard."
 msgstr ""
 
@@ -11916,6 +11919,18 @@ msgid "CodeOwners|Show all"
 msgstr ""
 
 msgid "CodeOwner|Pattern"
+msgstr ""
+
+msgid "CodeSuggestionsGAAlert|Learn more"
+msgstr ""
+
+msgid "CodeSuggestionsGAAlert|Quickly and securely author code by getting suggestions in your IDE while you type. Available in multiple languages, try Code Suggestions today."
+msgstr ""
+
+msgid "CodeSuggestionsGAAlert|Try GitLab Duo Code Suggestions today"
+msgstr ""
+
+msgid "CodeSuggestionsGAAlert|Try now"
 msgstr ""
 
 msgid "CodeSuggestionsSM|By enabling this feature, you agree to the %{terms_link_start}GitLab Testing Agreement%{link_end} and acknowledge that GitLab will send data from the instance, including personal data, to our %{ai_docs_link_start}AI providers%{link_end} to provide this feature."

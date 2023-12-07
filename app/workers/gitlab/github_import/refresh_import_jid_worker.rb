@@ -10,7 +10,7 @@ module Gitlab
       include GithubImport::Queue
 
       # The interval to schedule new instances of this job at.
-      INTERVAL = 1.minute.to_i
+      INTERVAL = 5.minutes.to_i
 
       def self.perform_in_the_future(*args)
         perform_in(INTERVAL, *args)
@@ -23,9 +23,11 @@ module Gitlab
         return unless import_state
 
         if SidekiqStatus.running?(check_job_id)
-          # As long as the repository is being cloned we want to keep refreshing
-          # the import JID status.
-          import_state.refresh_jid_expiration
+          # As long as the worker is running we want to keep refreshing
+          # the worker's JID as well as the import's JID.
+          Gitlab::SidekiqStatus.expire(check_job_id, Gitlab::Import::StuckImportJob::IMPORT_JOBS_EXPIRATION)
+          Gitlab::SidekiqStatus.set(import_state.jid, Gitlab::Import::StuckImportJob::IMPORT_JOBS_EXPIRATION)
+
           self.class.perform_in_the_future(project_id, check_job_id)
         end
 

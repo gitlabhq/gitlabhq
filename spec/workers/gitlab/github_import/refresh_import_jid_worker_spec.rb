@@ -9,7 +9,7 @@ RSpec.describe Gitlab::GithubImport::RefreshImportJidWorker, feature_category: :
     it 'schedules a job in the future' do
       expect(described_class)
         .to receive(:perform_in)
-        .with(1.minute.to_i, 10, '123')
+        .with(5.minutes.to_i, 10, '123')
 
       described_class.perform_in_the_future(10, '123')
     end
@@ -33,15 +33,20 @@ RSpec.describe Gitlab::GithubImport::RefreshImportJidWorker, feature_category: :
         allow(worker)
           .to receive(:find_import_state)
           .with(project.id)
-          .and_return(project)
+          .and_return(import_state)
 
         expect(Gitlab::SidekiqStatus)
           .to receive(:running?)
           .with('123')
           .and_return(true)
 
-        expect(project)
-          .to receive(:refresh_jid_expiration)
+        expect(Gitlab::SidekiqStatus)
+          .to receive(:expire)
+          .with('123', Gitlab::Import::StuckImportJob::IMPORT_JOBS_EXPIRATION)
+
+        expect(Gitlab::SidekiqStatus)
+          .to receive(:set)
+          .with(import_state.jid, Gitlab::Import::StuckImportJob::IMPORT_JOBS_EXPIRATION)
 
         expect(worker.class)
           .to receive(:perform_in_the_future)
@@ -63,8 +68,11 @@ RSpec.describe Gitlab::GithubImport::RefreshImportJidWorker, feature_category: :
           .with('123')
           .and_return(false)
 
-        expect(project)
-          .not_to receive(:refresh_jid_expiration)
+        expect(Gitlab::SidekiqStatus)
+          .not_to receive(:expire)
+
+        expect(Gitlab::SidekiqStatus)
+          .not_to receive(:set)
 
         worker.perform(project.id, '123')
       end

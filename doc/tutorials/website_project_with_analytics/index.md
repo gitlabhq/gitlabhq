@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Optimize
-info: For assistance with this tutorial, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
 # Tutorial: Set up an analytics-powered website project **(ULTIMATE ALL)**

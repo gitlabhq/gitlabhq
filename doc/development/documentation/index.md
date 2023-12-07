@@ -76,7 +76,7 @@ Ask for help from the Technical Writing team if you:
 To identify someone who can help you:
 
 1. Locate the Technical Writer for the relevant
-   [DevOps stage group](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments).
+   [DevOps stage group](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments).
 1. Either:
    - If urgent help is required, directly assign the Technical Writer in the issue or in the merge request.
    - If non-urgent help is required, ping the Technical Writer in the issue or merge request.

@@ -14,12 +14,6 @@ module Gitlab
         # client - An instance of Gitlab::GithubImport::Client.
         # project - An instance of Project.
         def import(client, project)
-          # In extreme cases it's possible for a clone to take more than the
-          # import job expiration time. To work around this we schedule a
-          # separate job that will periodically run and refresh the import
-          # expiration time.
-          RefreshImportJidWorker.perform_in_the_future(project.id, jid)
-
           info(project.id, message: "starting importer", importer: 'Importer::RepositoryImporter')
 
           # If a user creates an issue while the import is in progress, this can lead to an import failure.

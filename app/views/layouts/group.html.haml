@@ -23,5 +23,6 @@
 = dispensable_render_if_exists "shared/web_hooks/group_web_hook_disabled_alert"
 = dispensable_render_if_exists "shared/free_user_cap_alert", source: @group
 = dispensable_render_if_exists "shared/unlimited_members_during_trial_alert", resource: @group
+= dispensable_render_if_exists "shared/code_suggestions_ga_non_owner_alert", resource: @group
 
 = render template: base_layout || "layouts/application"

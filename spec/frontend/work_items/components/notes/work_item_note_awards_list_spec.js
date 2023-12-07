@@ -48,6 +48,7 @@ describe('Work Item Note Awards List', () => {
   const createComponent = ({
     isGroup = false,
     note = firstNote,
+    query = workItemNotesByIidQuery,
     addAwardEmojiMutationHandler = addAwardEmojiMutationSuccessHandler,
     removeAwardEmojiMutationHandler = removeAwardEmojiMutationSuccessHandler,
   } = {}) => {
@@ -57,7 +58,7 @@ describe('Work Item Note Awards List', () => {
     ]);
 
     apolloProvider.clients.defaultClient.writeQuery({
-      query: isGroup ? groupWorkItemNotesByIidQuery : workItemNotesByIidQuery,
+      query,
       variables: { fullPath, iid: workItemIid },
       ...mockWorkItemNotesResponseWithComments,
     });
@@ -94,10 +95,14 @@ describe('Work Item Note Awards List', () => {
       expect(findAwardsList().props('canAwardEmoji')).toBe(hasAwardEmojiPermission);
     });
 
-    it.each([true, false])(
+    it.each`
+      isGroup  | query
+      ${true}  | ${groupWorkItemNotesByIidQuery}
+      ${false} | ${workItemNotesByIidQuery}
+    `(
       'adds award if not already awarded in both group and project contexts',
-      async (isGroup) => {
-        createComponent({ isGroup });
+      async ({ isGroup, query }) => {
+        createComponent({ isGroup, query });
         await waitForPromises();
 
         findAwardsList().vm.$emit('award', EMOJI_THUMBSUP);
@@ -110,27 +115,25 @@ describe('Work Item Note Awards List', () => {
     );
 
     it('emits error if awarding emoji fails', async () => {
-      createComponent({
-        addAwardEmojiMutationHandler: jest.fn().mockRejectedValue('oh no'),
-      });
-      await waitForPromises();
+      createComponent({ addAwardEmojiMutationHandler: jest.fn().mockRejectedValue('oh no') });
 
       findAwardsList().vm.$emit('award', EMOJI_THUMBSUP);
-
       await waitForPromises();
 
       expect(wrapper.emitted('error')).toEqual([[__('Failed to add emoji. Please try again')]]);
     });
 
-    it.each([true, false])(
+    it.each`
+      isGroup  | query
+      ${true}  | ${groupWorkItemNotesByIidQuery}
+      ${false} | ${workItemNotesByIidQuery}
+    `(
       'removes award if already awarded in both group and project contexts',
-      async (isGroup) => {
+      async ({ isGroup, query }) => {
         const removeAwardEmojiMutationHandler = removeAwardEmojiMutationSuccessHandler;
-
-        createComponent({ isGroup, removeAwardEmojiMutationHandler });
+        createComponent({ isGroup, query, removeAwardEmojiMutationHandler });
 
         findAwardsList().vm.$emit('award', EMOJI_THUMBSDOWN);
-
         await waitForPromises();
 
         expect(removeAwardEmojiMutationHandler).toHaveBeenCalledWith({
@@ -141,13 +144,9 @@ describe('Work Item Note Awards List', () => {
     );
 
     it('restores award if remove fails', async () => {
-      createComponent({
-        removeAwardEmojiMutationHandler: jest.fn().mockRejectedValue('oh no'),
-      });
-      await waitForPromises();
+      createComponent({ removeAwardEmojiMutationHandler: jest.fn().mockRejectedValue('oh no') });
 
       findAwardsList().vm.$emit('award', EMOJI_THUMBSDOWN);
-
       await waitForPromises();
 
       expect(wrapper.emitted('error')).toEqual([[__('Failed to remove emoji. Please try again')]]);

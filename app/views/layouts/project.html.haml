@@ -25,5 +25,6 @@
 = dispensable_render_if_exists "shared/web_hooks/web_hook_disabled_alert"
 = dispensable_render_if_exists "projects/free_user_cap_alert", project: @project
 = dispensable_render_if_exists 'shared/unlimited_members_during_trial_alert', resource: @project
+= dispensable_render_if_exists 'projects/code_suggestions_ga_non_owner_alert', project: @project
 
 = render template: "layouts/application"

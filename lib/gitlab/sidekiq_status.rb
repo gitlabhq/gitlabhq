@@ -50,6 +50,16 @@ module Gitlab
       end
     end
 
+    # Refreshes the timeout on the key if it exists
+    #
+    # jid = The Sidekiq job ID
+    # expire - The expiration time of the Redis key.
+    def self.expire(jid, expire = DEFAULT_EXPIRATION)
+      with_redis do |redis|
+        redis.expire(key_for(jid), expire)
+      end
+    end
+
     # Returns true if all the given job have been completed.
     #
     # job_ids - The Sidekiq job IDs to check.

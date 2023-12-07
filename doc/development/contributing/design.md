@@ -47,7 +47,7 @@ Check these aspects both when _designing_ and _reviewing_ UI changes.
 - Use clear and consistent [terminology](https://design.gitlab.com/content/terminology/).
 - Check grammar and spelling.
 - Consider help content and follow its [guidelines](https://design.gitlab.com/usability/contextual-help).
-- Request review from the [appropriate Technical Writer](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments),
+- Request review from the [appropriate Technical Writer](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments),
   indicating any specific files or lines they should review, and how to preview
   or understand the location/context of the text from the user's perspective.
 

@@ -57,7 +57,7 @@ If you want to automate a page on the docs site:
 1. Review [issue 823](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/823)
    and consider adding feedback there.
 1. If that issue does not describe what you need, contact
-   [the DRI for the docs site backend](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects).
+   [the DRI for the docs site backend](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects).
 
 Because automation adds extra complexity and a support burden, we
 review it on a case-by-case basis.

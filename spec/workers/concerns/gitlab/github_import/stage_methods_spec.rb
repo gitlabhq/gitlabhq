@@ -138,6 +138,10 @@ RSpec.describe Gitlab::GithubImport::StageMethods, feature_category: :importers 
   end
 
   describe '#try_import' do
+    before do
+      allow(worker).to receive(:jid).and_return('jid')
+    end
+
     it 'imports the project' do
       client = double(:client)
 
@@ -145,7 +149,7 @@ RSpec.describe Gitlab::GithubImport::StageMethods, feature_category: :importers 
         .to receive(:import)
         .with(client, project)
 
-      expect(project.import_state).to receive(:refresh_jid_expiration)
+      expect(Gitlab::GithubImport::RefreshImportJidWorker).to receive(:perform_in_the_future).with(project.id, 'jid')
 
       worker.try_import(client, project)
     end
@@ -153,7 +157,7 @@ RSpec.describe Gitlab::GithubImport::StageMethods, feature_category: :importers 
     it 'reschedules the worker if RateLimitError was raised' do
       client = double(:client, rate_limit_resets_in: 10)
 
-      expect(project.import_state).to receive(:refresh_jid_expiration)
+      expect(Gitlab::GithubImport::RefreshImportJidWorker).to receive(:perform_in_the_future).with(project.id, 'jid')
 
       expect(worker)
         .to receive(:import)
@@ -186,7 +190,7 @@ RSpec.describe Gitlab::GithubImport::StageMethods, feature_category: :importers 
     end
   end
 
-  describe '.resumes_work_when_interrupted!' do
+  describe '.sidekiq_options!' do
     subject(:sidekiq_options) { worker.class.sidekiq_options }
 
     it 'does not set the `max_retries_after_interruption` if not called' do
@@ -197,6 +201,10 @@ RSpec.describe Gitlab::GithubImport::StageMethods, feature_category: :importers 
       worker.class.resumes_work_when_interrupted!
 
       is_expected.to include('max_retries_after_interruption' => 20)
+    end
+
+    it 'sets the status_expiration' do
+      is_expected.to include('status_expiration' => Gitlab::Import::StuckImportJob::IMPORT_JOBS_EXPIRATION)
     end
   end
 end

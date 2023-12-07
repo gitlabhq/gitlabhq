@@ -10,6 +10,8 @@ module Gitlab
       included do
         include ApplicationWorker
 
+        sidekiq_options status_expiration: Gitlab::Import::StuckImportJob::IMPORT_JOBS_EXPIRATION
+
         sidekiq_retries_exhausted do |msg, e|
           Gitlab::Import::ImportFailureService.track(
             project_id: msg['args'][0],
@@ -77,7 +79,7 @@ module Gitlab
       # client - An instance of Gitlab::GithubImport::Client.
       # project - An instance of Project.
       def try_import(client, project)
-        project.import_state.refresh_jid_expiration
+        RefreshImportJidWorker.perform_in_the_future(project.id, jid)
 
         import(client, project)
       rescue RateLimitError

@@ -54,6 +54,31 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues,
       end
     end
 
+    describe '.expire' do
+      it 'refreshes the expiration time if key is present' do
+        described_class.set('123', 1.minute)
+        described_class.expire('123', 1.hour)
+
+        key = described_class.key_for('123')
+
+        with_redis do |redis|
+          expect(redis.exists?(key)).to eq(true)
+          expect(redis.ttl(key) > 5.minutes).to eq(true)
+        end
+      end
+
+      it 'does nothing if key is not present' do
+        described_class.expire('123', 1.minute)
+
+        key = described_class.key_for('123')
+
+        with_redis do |redis|
+          expect(redis.exists?(key)).to eq(false)
+          expect(redis.ttl(key)).to eq(-2)
+        end
+      end
+    end
+
     describe '.all_completed?' do
       it 'returns true if all jobs have been completed' do
         expect(described_class.all_completed?(%w[123])).to eq(true)
