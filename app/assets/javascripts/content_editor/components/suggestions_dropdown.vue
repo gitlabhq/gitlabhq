@@ -1,10 +1,15 @@
 <script>
-import { GlAvatarLabeled, GlLoadingIcon } from '@gitlab/ui';
+import { GlAvatar, GlLoadingIcon } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 
 export default {
   components: {
-    GlAvatarLabeled,
+    GlAvatar,
     GlLoadingIcon,
+  },
+
+  directives: {
+    SafeHtml,
   },
 
   props: {
@@ -37,6 +42,12 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+
+    query: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
 
@@ -90,20 +101,30 @@ export default {
     isEmoji() {
       return this.nodeType === 'emoji';
     },
+
+    shouldSelectFirstItem() {
+      return this.items.length && this.query;
+    },
   },
 
   watch: {
     items() {
-      this.selectedIndex = -1;
+      this.selectedIndex = this.shouldSelectFirstItem ? 0 : -1;
     },
     selectedIndex() {
       this.scrollIntoView();
     },
   },
 
+  mounted() {
+    if (this.shouldSelectFirstItem) {
+      this.selectedIndex = 0;
+    }
+  },
+
   methods: {
     getText(item) {
-      if (this.isEmoji) return item.e;
+      if (this.isEmoji) return item.emoji.e;
 
       switch (this.isReference && this.nodeProps.referenceType) {
         case 'user':
@@ -133,10 +154,10 @@ export default {
 
       if (this.isEmoji) {
         Object.assign(props, {
-          name: item.name,
-          unicodeVersion: item.u,
-          title: item.d,
-          moji: item.e,
+          name: item.emoji.name,
+          unicodeVersion: item.emoji.u,
+          title: item.emoji.d,
+          moji: item.emoji.e,
         });
       }
 
@@ -173,7 +194,7 @@ export default {
         return true;
       }
 
-      if (event.key === 'Enter') {
+      if (event.key === 'Enter' || event.key === 'Tab') {
         this.enterHandler();
         return true;
       }
@@ -194,7 +215,7 @@ export default {
     },
 
     scrollIntoView() {
-      this.$refs.dropdownItems[this.selectedIndex]?.scrollIntoView({ block: 'nearest' });
+      this.$refs.dropdownItems?.[this.selectedIndex]?.scrollIntoView({ block: 'nearest' });
     },
 
     selectItem(index) {
@@ -211,7 +232,17 @@ export default {
     avatarSubLabel(item) {
       return item.count ? `${item.name} (${item.count})` : item.name;
     },
+
+    highlight(text) {
+      return this.query
+        ? String(text).replace(
+            new RegExp(this.query, 'i'),
+            (match) => `<strong class="gl-text-body!">${match}</strong>`,
+          )
+        : text;
+    },
   },
+  safeHtmlConfig: { ALLOWED_TAGS: ['strong'] },
 };
 </script>
 
@@ -238,29 +269,45 @@ export default {
               @click="selectItem(index)"
             >
               <div class="gl-new-dropdown-item-text-wrapper">
-                <gl-avatar-labeled
-                  v-if="isUser"
-                  :label="item.username"
-                  :sub-label="avatarSubLabel(item)"
-                  :src="item.avatar_url"
-                  :entity-name="item.username"
-                  :shape="item.type === 'Group' ? 'rect' : 'circle'"
-                  :size="32"
-                />
+                <span v-if="isUser" class="gl-flex">
+                  <gl-avatar
+                    :src="item.avatar_url"
+                    :entity-name="item.username"
+                    :size="24"
+                    :shape="item.type === 'Group' ? 'rect' : 'circle'"
+                    class="gl-vertical-align-middle gl-mx-2"
+                  />
+                  <span class="gl-vertical-align-middle">
+                    <span v-safe-html:safeHtmlConfig="highlight(item.username)"></span>
+                    <small
+                      v-safe-html:safeHtmlConfig="highlight(avatarSubLabel(item))"
+                      class="gl-text-gray-500"
+                    ></small>
+                  </span>
+                </span>
                 <span v-if="isIssue || isMergeRequest">
-                  <small>{{ item.iid }}</small>
-                  {{ item.title }}
+                  <small
+                    v-safe-html:safeHtmlConfig="highlight(item.iid)"
+                    class="gl-text-gray-500"
+                  ></small>
+                  <span v-safe-html:safeHtmlConfig="highlight(item.title)"></span>
                 </span>
                 <span v-if="isVulnerability || isSnippet">
-                  <small>{{ item.id }}</small>
-                  {{ item.title }}
+                  <small
+                    v-safe-html:safeHtmlConfig="highlight(item.id)"
+                    class="gl-text-gray-500"
+                  ></small>
+                  <span v-safe-html:safeHtmlConfig="highlight(item.title)"></span>
                 </span>
                 <span v-if="isEpic">
-                  <small>{{ item.reference }}</small>
-                  {{ item.title }}
+                  <small
+                    v-safe-html:safeHtmlConfig="highlight(item.reference)"
+                    class="gl-text-gray-500"
+                  ></small>
+                  <span v-safe-html:safeHtmlConfig="highlight(item.title)"></span>
                 </span>
                 <span v-if="isMilestone">
-                  {{ item.title }}
+                  <span v-safe-html:safeHtmlConfig="highlight(item.title)"></span>
                 </span>
                 <span v-if="isLabel" class="gl-display-flex">
                   <span
@@ -268,20 +315,31 @@ export default {
                     class="dropdown-label-box gl-flex-shrink-0 gl-top-0 gl-mr-3"
                     :style="{ backgroundColor: item.color }"
                   ></span>
-                  {{ item.title }}
+                  <span v-safe-html:safeHtmlConfig="highlight(item.title)"></span>
                 </span>
                 <div v-if="isCommand">
                   <div class="gl-mb-1">
-                    <span class="gl-font-weight-bold">/{{ item.name }}</span>
-                    <em class="gl-text-gray-500 gl-font-sm">{{ item.params[0] }}</em>
+                    /<span v-safe-html:safeHtmlConfig="highlight(item.name)"></span>
+                    <span class="gl-text-gray-500 gl-font-sm">{{ item.params[0] }}</span>
                   </div>
-                  <small class="gl-text-gray-500"> {{ item.description }} </small>
+                  <em
+                    v-safe-html:safeHtmlConfig="highlight(item.description)"
+                    class="gl-text-gray-500 gl-font-sm"
+                  ></em>
                 </div>
                 <div v-if="isEmoji" class="gl-display-flex gl-align-items-center">
-                  <div class="gl-pr-4 gl-font-lg">{{ item.e }}</div>
+                  <div class="gl-pr-4 gl-font-lg">
+                    <gl-emoji
+                      :key="item.emoji.e"
+                      :data-name="item.emoji.name"
+                      :title="item.emoji.d"
+                      :data-unicode-version="item.emoji.u"
+                      :data-fallback-src="item.emoji.src"
+                      >{{ item.emoji.e }}</gl-emoji
+                    >
+                  </div>
                   <div class="gl-flex-grow-1">
-                    {{ item.name }}<br />
-                    <small>{{ item.d }}</small>
+                    <span v-safe-html:safeHtmlConfig="highlight(item.fieldValue)"></span>
                   </div>
                 </div>
               </div>

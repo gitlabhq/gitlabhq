@@ -80,7 +80,6 @@ Style/SymbolProc:
     - 'ee/app/services/security/scanned_resources_counting_service.rb'
     - 'ee/app/services/timebox_report_service.rb'
     - 'ee/app/services/vulnerabilities/historical_statistics/deletion_service.rb'
-    - 'ee/app/workers/geo/batch/project_registry_worker.rb'
     - 'ee/app/workers/geo/sync_timeout_cron_worker.rb'
     - 'ee/app/workers/geo/verification_cron_worker.rb'
     - 'ee/lib/api/entities/pending_member.rb'

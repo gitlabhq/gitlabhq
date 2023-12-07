@@ -547,7 +547,7 @@ describe('GfmAutoComplete', () => {
       expect(membersBeforeSave([{ ...mockGroup, avatar_url: null }])).toEqual([
         {
           username: 'my-group',
-          avatarTag: '<div class="avatar rect-avatar center avatar-inline s26">M</div>',
+          avatarTag: '<div class="avatar rect-avatar avatar-inline s24 gl-mr-2">M</div>',
           title: 'My Group (2)',
           search: 'MyGroup my-group',
           icon: '',
@@ -560,7 +560,7 @@ describe('GfmAutoComplete', () => {
         {
           username: 'my-group',
           avatarTag:
-            '<img src="./group.jpg" alt="my-group" class="avatar rect-avatar avatar-inline center s26"/>',
+            '<img src="./group.jpg" alt="my-group" class="avatar rect-avatar avatar-inline s24 gl-mr-2"/>',
           title: 'My Group (2)',
           search: 'MyGroup my-group',
           icon: '',
@@ -573,7 +573,7 @@ describe('GfmAutoComplete', () => {
         {
           username: 'my-group',
           avatarTag:
-            '<img src="./group.jpg" alt="my-group" class="avatar rect-avatar avatar-inline center s26"/>',
+            '<img src="./group.jpg" alt="my-group" class="avatar rect-avatar avatar-inline s24 gl-mr-2"/>',
           title: 'My Group',
           search: 'MyGroup my-group',
           icon:
@@ -591,7 +591,7 @@ describe('GfmAutoComplete', () => {
         {
           username: 'my-user',
           avatarTag:
-            '<img src="./users.jpg" alt="my-user" class="avatar  avatar-inline center s26"/>',
+            '<img src="./users.jpg" alt="my-user" class="avatar  avatar-inline s24 gl-mr-2"/>',
           title: 'My User',
           search: 'MyUser my-user',
           icon: '',

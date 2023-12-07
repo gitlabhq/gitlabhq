@@ -114,8 +114,6 @@ Lint/RedundantCopDisableDirective:
     - 'ee/app/services/ee/search_service.rb'
     - 'ee/app/services/security/token_revocation_service.rb'
     - 'ee/app/workers/ee/issuable_export_csv_worker.rb'
-    - 'ee/app/workers/geo/repository_shard_sync_worker.rb'
-    - 'ee/app/workers/geo/repository_verification/secondary/shard_worker.rb'
     - 'ee/app/workers/scan_security_report_secrets_worker.rb'
     - 'ee/app/workers/security/orchestration_policy_rule_schedule_worker.rb'
     - 'ee/db/geo/migrate/20210504143244_add_verification_to_merge_request_diff_registry.rb'

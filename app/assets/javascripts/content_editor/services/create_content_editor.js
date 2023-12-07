@@ -70,6 +70,7 @@ import createGlApiMarkdownDeserializer from './gl_api_markdown_deserializer';
 import createRemarkMarkdownDeserializer from './remark_markdown_deserializer';
 import AssetResolver from './asset_resolver';
 import trackInputRulesAndShortcuts from './track_input_rules_and_shortcuts';
+import DataSourceFactory from './data_source_factory';
 
 const createTiptapEditor = ({ extensions = [], ...options } = {}) =>
   new Editor({
@@ -86,6 +87,7 @@ export const createContentEditor = ({
   drawioEnabled = false,
   enableAutocomplete,
   autocompleteDataSources = {},
+  sidebarMediator = {},
   codeSuggestionsConfig = {},
 } = {}) => {
   if (!isFunction(renderMarkdown)) {
@@ -95,6 +97,10 @@ export const createContentEditor = ({
   const eventHub = eventHubFactory();
   const assetResolver = new AssetResolver({ renderMarkdown });
   const serializer = new MarkdownSerializer({ serializerConfig });
+  const autocompleteHelper = new DataSourceFactory({
+    dataSourceUrls: autocompleteDataSources,
+    sidebarMediator,
+  });
   const deserializer = window.gon?.features?.preserveUnchangedMarkdown
     ? createRemarkMarkdownDeserializer()
     : createGlApiMarkdownDeserializer({
@@ -166,7 +172,8 @@ export const createContentEditor = ({
 
   const allExtensions = [...builtInContentEditorExtensions, ...extensions];
 
-  if (enableAutocomplete) allExtensions.push(Suggestions.configure({ autocompleteDataSources }));
+  if (enableAutocomplete)
+    allExtensions.push(Suggestions.configure({ autocompleteHelper, serializer }));
   if (drawioEnabled) allExtensions.push(DrawioDiagram.configure({ uploadsPath, assetResolver }));
 
   const trackedExtensions = allExtensions.map(trackInputRulesAndShortcuts);

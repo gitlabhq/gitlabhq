@@ -1,7 +1,6 @@
 ---
 Cop/IgnoredColumns:
   Exclude:
-    - 'app/models/loose_foreign_keys/deleted_record.rb'
     - 'ee/lib/ee/gitlab/background_migration/create_vulnerability_links.rb'
     - 'ee/lib/ee/gitlab/background_migration/migrate_vulnerabilities_feedback_to_vulnerabilities_state_transition.rb'
     - 'spec/lib/gitlab/database/partitioning/sliding_list_strategy_spec.rb'

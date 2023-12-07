@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProtectedBranchAccessPolicy do
+RSpec.describe ProtectedBranchAccessPolicy, feature_category: :source_code_management do
   let(:user) { create(:user) }
   let(:protected_branch_access) { create(:protected_branch_merge_access_level) }
   let(:project) { protected_branch_access.protected_branch.project }
@@ -14,9 +14,7 @@ RSpec.describe ProtectedBranchAccessPolicy do
       project.add_maintainer(user)
     end
 
-    it 'can be read' do
-      is_expected.to be_allowed(:read_protected_branch)
-    end
+    it_behaves_like 'allows protected branch crud'
   end
 
   context 'as guests' do
@@ -24,8 +22,6 @@ RSpec.describe ProtectedBranchAccessPolicy do
       project.add_guest(user)
     end
 
-    it 'can not be read' do
-      is_expected.to be_disallowed(:read_protected_branch)
-    end
+    it_behaves_like 'disallows protected branch crud'
   end
 end

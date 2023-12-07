@@ -82,8 +82,8 @@ export function membersBeforeSave(members) {
     const autoCompleteAvatar = member.avatar_url || member.username.charAt(0).toUpperCase();
 
     const rectAvatarClass = member.type === GROUP_TYPE ? 'rect-avatar' : '';
-    const imgAvatar = `<img src="${member.avatar_url}" alt="${member.username}" class="avatar ${rectAvatarClass} avatar-inline center s26"/>`;
-    const txtAvatar = `<div class="avatar ${rectAvatarClass} center avatar-inline s26">${autoCompleteAvatar}</div>`;
+    const imgAvatar = `<img src="${member.avatar_url}" alt="${member.username}" class="avatar ${rectAvatarClass} avatar-inline s24 gl-mr-2"/>`;
+    const txtAvatar = `<div class="avatar ${rectAvatarClass} avatar-inline s24 gl-mr-2">${autoCompleteAvatar}</div>`;
     const avatarIcon = member.mentionsDisabled
       ? spriteIcon('notifications-off', 's16 vertical-align-middle gl-ml-2')
       : '';

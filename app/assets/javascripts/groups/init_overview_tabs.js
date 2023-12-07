@@ -21,7 +21,7 @@ export const createRouter = () => {
   const router = new VueRouter({
     routes,
     mode: 'history',
-    base: '/',
+    base: gon.relative_url_root || '/',
   });
 
   return router;

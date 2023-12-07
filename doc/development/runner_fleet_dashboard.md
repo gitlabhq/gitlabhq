@@ -6,11 +6,11 @@ info: >-
   this page, see
   https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
-# Runner Fleet Dashboard **(ULTIMATE BETA)**
+# Runner Fleet Dashboard **(ULTIMATE EXPERIMENT)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424495) in GitLab 16.6 behind several [feature flags](#enable-feature-flags).
 
-This feature is in [BETA](../policy/experiment-beta-support.md).
+This feature is an [Experiment](../policy/experiment-beta-support.md).
 To join the list of users testing this feature, contact us in
 [epic 11180](https://gitlab.com/groups/gitlab-org/-/epics/11180).
 
@@ -48,7 +48,7 @@ for some customers to try this feature.
 
 To test the Runner Fleet Dashboard as part of the early adopters program, you must:
 
-- Run GitLab 16.6 or above.
+- Run GitLab 16.7 or above.
 - Have an [Ultimate license](https://about.gitlab.com/pricing/).
 - Be able to run ClickHouse database. We recommend using [ClickHouse Cloud](https://clickhouse.cloud/).
 

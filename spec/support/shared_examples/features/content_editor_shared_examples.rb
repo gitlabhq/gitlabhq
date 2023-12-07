@@ -570,7 +570,7 @@ RSpec.shared_examples 'edits content using the content editor' do |params = {
         type_in_content_editor '/assign'
 
         expect(find(suggestions_dropdown)).to have_text('/assign')
-        send_keys [:arrow_down, :enter]
+        send_keys :enter
 
         expect(page).to have_text('/assign @')
       end
@@ -579,7 +579,7 @@ RSpec.shared_examples 'edits content using the content editor' do |params = {
         type_in_content_editor '/label'
 
         expect(find(suggestions_dropdown)).to have_text('/label')
-        send_keys [:arrow_down, :enter]
+        send_keys :enter
 
         expect(page).to have_text('/label ~')
       end
@@ -588,10 +588,23 @@ RSpec.shared_examples 'edits content using the content editor' do |params = {
         type_in_content_editor '/milestone'
 
         expect(find(suggestions_dropdown)).to have_text('/milestone')
-        send_keys [:arrow_down, :enter]
+        send_keys :enter
 
         expect(page).to have_text('/milestone %')
       end
+
+      it 'scrolls selected item into view when navigating with keyboard' do
+        type_in_content_editor '/'
+
+        expect(find(suggestions_dropdown)).to have_text('label')
+
+        expect(dropdown_scroll_top).to be 0
+
+        send_keys :arrow_up
+
+        expect(dropdown_scroll_top).to be > 100
+      end
+
     end
 
     it 'shows suggestions for members with descriptions' do
@@ -603,7 +616,18 @@ RSpec.shared_examples 'edits content using the content editor' do |params = {
 
       type_in_content_editor 'bc'
 
-      send_keys [:arrow_down, :enter]
+      send_keys :enter
+
+      expect(page).not_to have_css(suggestions_dropdown)
+      expect(page).to have_text('@abc123')
+    end
+
+    it 'allows selecting element with tab key' do
+      type_in_content_editor '@abc'
+
+      expect(find(suggestions_dropdown)).to have_text('abc123')
+
+      send_keys :tab
 
       expect(page).not_to have_css(suggestions_dropdown)
       expect(page).to have_text('@abc123')
@@ -701,11 +725,11 @@ RSpec.shared_examples 'edits content using the content editor' do |params = {
       expect(find(suggestions_dropdown)).to have_text('😃 smiley')
       expect(find(suggestions_dropdown)).to have_text('😸 smile_cat')
 
-      send_keys [:arrow_down, :enter]
+      send_keys :enter
 
       expect(page).not_to have_css(suggestions_dropdown)
 
-      expect(page).to have_text('😃')
+      expect(page).to have_text('😄')
     end
 
     it 'doesn\'t show suggestions dropdown if there are no suggestions to show' do
@@ -716,18 +740,6 @@ RSpec.shared_examples 'edits content using the content editor' do |params = {
       type_in_content_editor 'x'
 
       expect(page).not_to have_css(suggestions_dropdown)
-    end
-
-    it 'scrolls selected item into view when navigating with keyboard' do
-      type_in_content_editor ':'
-
-      expect(find(suggestions_dropdown)).to have_text('grinning')
-
-      expect(dropdown_scroll_top).to be 0
-
-      send_keys :arrow_up
-
-      expect(dropdown_scroll_top).to be > 100
     end
 
     def dropdown_scroll_top

@@ -1,27 +1,24 @@
 .atwho-view {
   overflow-y: auto;
   overflow-x: hidden;
-  max-width: calc(100% - 6px);
+  min-width: $gl-new-dropdown-min-width;
+  max-width: $gl-new-dropdown-max-width;
+
   @include gl-border-b-1;
   @include gl-border-b-solid;
   @include gl-border-b-gray-100;
   @include gl-rounded-lg;
   @include gl-shadow-md;
 
-  .name,
-  small.aliases,
-  small.params {
-    float: left;
-  }
 
-  small.aliases,
-  small.params {
-    padding: 2px 5px;
+  small {
+    @include gl-font-sm;
   }
 
   small.description {
-    float: right;
-    padding: 3px 5px;
+    display: block;
+    width: auto;
+    @include gl-mt-2;
   }
 
   .avatar-inline {
@@ -42,24 +39,22 @@
     }
   }
 
-  ul > li {
-    @include clearfix;
-    white-space: nowrap;
-  }
-
   // TODO: fallback to global style
   .atwho-view-ul {
-    @include gl-p-2;
+    @include gl-py-2;
     max-height: $gl-max-dropdown-max-height;
 
     li {
-      @include gl-px-3;
-      padding-top: $gl-padding-6;
-      padding-bottom: $gl-padding-6;
       border: 0;
-      @include gl-rounded-base;
+      padding: $gl-padding-6;
+
+      @include gl-my-2;
+      @include gl-mx-3;
+      @include gl-rounded-small;
+      @include gl-line-height-normal;
 
       &.cur {
+        @include gl-focus;
         background-color: $gray-darker;
         color: $gl-text-color;
 
@@ -76,10 +71,6 @@
         display: inline-flex;
         justify-content: center;
         align-items: center;
-      }
-
-      .center {
-        line-height: 14px;
       }
 
       strong {

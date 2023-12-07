@@ -46,7 +46,7 @@ export default Node.create({
         title: node.attrs.title,
         'data-unicode-version': node.attrs.unicodeVersion,
       },
-      node.attrs.moji,
+      node.attrs.moji || '',
     ];
   },
 

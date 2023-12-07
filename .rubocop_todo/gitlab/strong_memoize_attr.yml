@@ -375,7 +375,6 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/app/services/vulnerability_feedback/create_service.rb'
     - 'ee/app/services/vulnerability_feedback/destroy_service.rb'
     - 'ee/app/workers/auth/saml_group_sync_worker.rb'
-    - 'ee/app/workers/geo/repository_cleanup_worker.rb'
     - 'ee/app/workers/geo/scheduler/scheduler_worker.rb'
     - 'ee/app/workers/status_page/publish_worker.rb'
     - 'ee/lib/api/analytics/project_deployment_frequency.rb'

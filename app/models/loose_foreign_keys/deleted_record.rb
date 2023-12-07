@@ -6,9 +6,13 @@ class LooseForeignKeys::DeletedRecord < Gitlab::Database::SharedModel
   PARTITION_DURATION = 1.day
 
   include PartitionedTable
+  include IgnorableColumns
 
   self.primary_key = :id
-  self.ignored_columns = %i[partition]
+
+  # This column must be ignored otherwise Rails will cache the default value and `bulk_insert!` will start saving
+  # incorrect partition.
+  ignore_column :partition, remove_never: true
 
   partitioned_by :partition, strategy: :sliding_list,
     next_partition_if: -> (active_partition) do

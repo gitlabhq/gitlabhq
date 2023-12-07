@@ -1757,7 +1757,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
       let(:sha) do
         components_project.repository.create_file(
           user,
-          'my-component/template.yml',
+          'templates/my-component/template.yml',
           template,
           message: 'Add my first CI component',
           branch_name: 'master'
@@ -1894,7 +1894,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
       let(:sha) do
         components_project.repository.create_file(
           user,
-          'my-component/template.yml',
+          'templates/my-component/template.yml',
           template,
           message: 'Add my first CI component',
           branch_name: 'master'

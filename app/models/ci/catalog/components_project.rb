@@ -45,16 +45,13 @@ module Ci
       end
 
       def fetch_component(component_name)
+        return ComponentData.new unless component_name.index('/').nil?
+
         path = simple_template_path(component_name)
         content = fetch_content(path)
 
         if content.nil?
           path = complex_template_path(component_name)
-          content = fetch_content(path)
-        end
-
-        if content.nil?
-          path = legacy_template_path(component_name)
           content = fetch_content(path)
         end
 
@@ -71,9 +68,6 @@ module Ci
 
       # A simple template consists of a single file
       def simple_template_path(component_name)
-        # TODO: Extract this line and move to fetch_content once we remove legacy fetching
-        return unless component_name.index('/').nil?
-
         File.join(TEMPLATES_DIR, "#{component_name}.yml")
       end
 
@@ -81,14 +75,7 @@ module Ci
       # Given a path like "my-org/sub-group/the-project/templates/component"
       # returns the entry point path: "templates/component/template.yml".
       def complex_template_path(component_name)
-        # TODO: Extract this line and move to fetch_content once we remove legacy fetching
-        return unless component_name.index('/').nil?
-
         File.join(TEMPLATES_DIR, component_name, TEMPLATE_FILE)
-      end
-
-      def legacy_template_path(component_name)
-        File.join(component_name, TEMPLATE_FILE).delete_prefix('/')
       end
     end
   end

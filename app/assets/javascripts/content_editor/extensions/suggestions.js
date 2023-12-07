@@ -3,29 +3,20 @@ import { VueRenderer } from '@tiptap/vue-2';
 import tippy from 'tippy.js';
 import Suggestion from '@tiptap/suggestion';
 import { PluginKey } from '@tiptap/pm/state';
-import { isFunction, uniqueId, memoize } from 'lodash';
-import axios from '~/lib/utils/axios_utils';
-import { initEmojiMap, getAllEmoji } from '~/emoji';
+import { uniqueId } from 'lodash';
 import SuggestionsDropdown from '../components/suggestions_dropdown.vue';
-
-function find(haystack, needle) {
-  return String(haystack).toLocaleLowerCase().includes(String(needle).toLocaleLowerCase());
-}
 
 function createSuggestionPlugin({
   editor,
   char,
-  dataSource,
-  search,
-  limit = 15,
+  limit = 5,
   nodeType,
-  nodeProps = {},
+  referenceType,
+  cache = true,
   insertionMap = {},
+  serializer,
+  autocompleteHelper,
 }) {
-  const fetchData = memoize(
-    isFunction(dataSource) ? dataSource : async () => (await axios.get(dataSource)).data,
-  );
-
   return Suggestion({
     editor,
     char,
@@ -42,16 +33,17 @@ function createSuggestionPlugin({
         .run();
     },
 
-    async items({ query }) {
-      if (!dataSource) return [];
+    async items({ query, editor: tiptapEditor }) {
+      const slice = tiptapEditor.state.doc.slice(0, tiptapEditor.state.selection.to);
+      const markdownLine = serializer.serialize({ doc: slice.content }).split('\n').pop();
 
-      try {
-        const items = await fetchData();
-
-        return items.filter(search(query)).slice(0, limit);
-      } catch {
-        return [];
-      }
+      return autocompleteHelper
+        .getDataSource(referenceType, {
+          command: markdownLine.match(/\/\w+/)?.[0],
+          cache,
+          limit,
+        })
+        .search(query);
     },
 
     render: () => {
@@ -76,7 +68,7 @@ function createSuggestionPlugin({
               ...props,
               char,
               nodeType,
-              nodeProps,
+              nodeProps: { referenceType },
               loading: true,
             },
             editor: props.editor,
@@ -132,101 +124,38 @@ export default Node.create({
 
   addOptions() {
     return {
-      autocompleteDataSources: {},
+      autocompleteHelper: {},
+      serializer: null,
     };
   },
 
   addProseMirrorPlugins() {
+    const { serializer, autocompleteHelper } = this.options;
+
+    const createPlugin = (char, nodeType, referenceType, options = {}) =>
+      createSuggestionPlugin({
+        editor: this.editor,
+        char,
+        nodeType,
+        referenceType,
+        serializer,
+        autocompleteHelper,
+        ...options,
+      });
+
     return [
-      createSuggestionPlugin({
-        editor: this.editor,
-        char: '@',
-        dataSource: this.options.autocompleteDataSources.members,
-        nodeType: 'reference',
-        nodeProps: {
-          referenceType: 'user',
-        },
-        search: (query) => ({ name, username }) => find(name, query) || find(username, query),
-      }),
-      createSuggestionPlugin({
-        editor: this.editor,
-        char: '#',
-        dataSource: this.options.autocompleteDataSources.issues,
-        nodeType: 'reference',
-        nodeProps: {
-          referenceType: 'issue',
-        },
-        search: (query) => ({ iid, title }) => find(iid, query) || find(title, query),
-      }),
-      createSuggestionPlugin({
-        editor: this.editor,
-        char: '$',
-        dataSource: this.options.autocompleteDataSources.snippets,
-        nodeType: 'reference',
-        nodeProps: {
-          referenceType: 'snippet',
-        },
-        search: (query) => ({ id, title }) => find(id, query) || find(title, query),
-      }),
-      createSuggestionPlugin({
-        editor: this.editor,
-        char: '~',
-        dataSource: this.options.autocompleteDataSources.labels,
-        nodeType: 'referenceLabel',
-        nodeProps: {
-          referenceType: 'label',
-        },
-        search: (query) => ({ title }) => find(title, query),
-      }),
-      createSuggestionPlugin({
-        editor: this.editor,
-        char: '&',
-        dataSource: this.options.autocompleteDataSources.epics,
-        nodeType: 'reference',
-        nodeProps: {
-          referenceType: 'epic',
-        },
-        search: (query) => ({ iid, title }) => find(iid, query) || find(title, query),
-      }),
-      createSuggestionPlugin({
-        editor: this.editor,
-        char: '[vulnerability:',
-        dataSource: this.options.autocompleteDataSources.vulnerabilities,
-        nodeType: 'reference',
-        nodeProps: {
-          referenceType: 'vulnerability',
-        },
-        search: (query) => ({ id, title }) => find(id, query) || find(title, query),
-      }),
-      createSuggestionPlugin({
-        editor: this.editor,
-        char: '!',
-        dataSource: this.options.autocompleteDataSources.mergeRequests,
-        nodeType: 'reference',
-        nodeProps: {
-          referenceType: 'merge_request',
-        },
-        search: (query) => ({ iid, title }) => find(iid, query) || find(title, query),
-      }),
-      createSuggestionPlugin({
-        editor: this.editor,
-        char: '%',
-        dataSource: this.options.autocompleteDataSources.milestones,
-        nodeType: 'reference',
-        nodeProps: {
-          referenceType: 'milestone',
-        },
-        search: (query) => ({ iid, title }) => find(iid, query) || find(title, query),
-      }),
-      createSuggestionPlugin({
-        editor: this.editor,
-        char: '/',
-        dataSource: this.options.autocompleteDataSources.commands,
-        nodeType: 'reference',
-        nodeProps: {
-          referenceType: 'command',
-        },
-        search: (query) => ({ name }) => find(name, query),
+      createPlugin('@', 'reference', 'user', { limit: 10 }),
+      createPlugin('#', 'reference', 'issue'),
+      createPlugin('$', 'reference', 'snippet'),
+      createPlugin('~', 'referenceLabel', 'label', { limit: 20 }),
+      createPlugin('&', 'reference', 'epic'),
+      createPlugin('!', 'reference', 'merge_request'),
+      createPlugin('[vulnerability:', 'reference', 'vulnerability'),
+      createPlugin('%', 'reference', 'milestone'),
+      createPlugin(':', 'emoji', 'emoji'),
+      createPlugin('/', 'reference', 'command', {
+        cache: false,
+        limit: 100,
         insertionMap: {
           '/label': '~',
           '/unlabel': '~',
@@ -241,18 +170,6 @@ export default Node.create({
           '/milestone': '%',
         },
       }),
-      createSuggestionPlugin({
-        editor: this.editor,
-        char: ':',
-        dataSource: () => getAllEmoji(),
-        nodeType: 'emoji',
-        search: (query) => ({ d, name }) => find(d, query) || find(name, query),
-        limit: 10,
-      }),
     ];
-  },
-
-  onCreate() {
-    initEmojiMap();
   },
 });

@@ -97,6 +97,7 @@ RSpec.describe Ci::Catalog::ComponentsProject, feature_category: :pipeline_compo
       'dast'             | 'image: alpine_2'                                   | 'templates/dast/template.yml'
       'template'         | 'image: alpine_3'                                   | 'templates/template.yml'
       'blank-yaml'       | ''                                                  | 'templates/blank-yaml.yml'
+      'non/exist'        | nil                                                 | nil
     end
 
     with_them do

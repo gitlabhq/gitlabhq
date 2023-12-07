@@ -1,6 +1,8 @@
 import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
 import { EditorContent, Editor } from '@tiptap/vue-2';
 import { nextTick } from 'vue';
+import MockAdapter from 'axios-mock-adapter';
+import axios from 'axios';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ContentEditor from '~/content_editor/components/content_editor.vue';
 import ContentEditorAlert from '~/content_editor/components/content_editor_alert.vue';
@@ -16,11 +18,10 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { KEYDOWN_EVENT } from '~/content_editor/constants';
 import EditorModeSwitcher from '~/vue_shared/components/markdown/editor_mode_switcher.vue';
 
-jest.mock('~/emoji');
-
 describe('ContentEditor', () => {
   let wrapper;
   let renderMarkdown;
+  let mock;
   const uploadsPath = '/uploads';
 
   const findEditorElement = () => wrapper.findByTestId('content-editor');
@@ -32,6 +33,7 @@ describe('ContentEditor', () => {
     wrapper = shallowMountExtended(ContentEditor, {
       propsData: {
         renderMarkdown,
+        markdownDocsPath: '/docs/markdown',
         uploadsPath,
         markdown,
         autofocus,
@@ -49,7 +51,15 @@ describe('ContentEditor', () => {
   };
 
   beforeEach(() => {
+    mock = new MockAdapter(axios);
+    // ignore /-/emojis requests
+    mock.onGet().reply(200, []);
+
     renderMarkdown = jest.fn();
+  });
+
+  afterEach(() => {
+    mock.restore();
   });
 
   it('triggers initialized event', () => {

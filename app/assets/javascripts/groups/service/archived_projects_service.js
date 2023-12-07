@@ -32,7 +32,7 @@ export default class ArchivedProjectsService {
           markdown_description: project.description_html,
           visibility: project.visibility,
           avatar_url: project.avatar_url,
-          relative_path: `/${project.path_with_namespace}`,
+          relative_path: `${gon.relative_url_root}/${project.path_with_namespace}`,
           edit_path: null,
           leave_path: null,
           can_edit: false,
