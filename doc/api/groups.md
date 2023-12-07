@@ -1688,6 +1688,7 @@ To delete the LDAP group link, provide either a `cn` or a `filter`, but not both
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.0.
 > - `access_level` type [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95607) from `string` to `integer` in GitLab 15.3.3.
+> - `member_role_id` type [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/417201) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `custom_roles_for_saml_group_links`. Disabled by default.
 
 List, get, add, and delete SAML group links.
 
@@ -1711,6 +1712,7 @@ If successful, returns [`200`](rest/index.md#status-codes) and the following res
 |:-------------------|:--------|:-----------------------------------------------------------------------------|
 | `[].name`          | string  | Name of the SAML group                                                       |
 | `[].access_level`  | integer | [Role (`access_level`)](members.md#roles) for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3 |
+| `[].member_role_id` | integer | [Member Role ID (`member_role_id`)](member_roles.md) for members of the SAML group. |
 
 Example request:
 
@@ -1724,11 +1726,13 @@ Example response:
 [
   {
     "name": "saml-group-1",
-    "access_level": 10
+    "access_level": 10,
+    "member_role_id": 12
   },
   {
     "name": "saml-group-2",
-    "access_level": 40
+    "access_level": 40,
+    "member_role_id": 99
   }
 ]
 ```
@@ -1754,6 +1758,7 @@ If successful, returns [`200`](rest/index.md#status-codes) and the following res
 |:---------------|:--------|:-----------------------------------------------------------------------------|
 | `name`         | string  | Name of the SAML group                                                       |
 | `access_level` | integer | [Role (`access_level`)](members.md#roles) for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3 |
+| `member_role_id` | integer | [Member Role ID (`member_role_id`)](member_roles.md) for members of the SAML group. |
 
 Example request:
 
@@ -1766,7 +1771,8 @@ Example response:
 ```json
 {
 "name": "saml-group-1",
-"access_level": 10
+"access_level": 10,
+"member_role_id": 12
 }
 ```
 
@@ -1785,6 +1791,7 @@ Supported attributes:
 | `id`               | integer or string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding)     |
 | `saml_group_name`  | string         | yes      | Name of a SAML group                                                         |
 | `access_level`     | integer        | yes      | [Role (`access_level`)](members.md#roles) for members of the SAML group |
+| `member_role_id`   | integer        | no       | [Member Role ID (`member_role_id`)](member_roles.md) for members of the SAML group. |
 
 If successful, returns [`201`](rest/index.md#status-codes) and the following response attributes:
 
@@ -1792,11 +1799,12 @@ If successful, returns [`201`](rest/index.md#status-codes) and the following res
 |:---------------|:--------|:-----------------------------------------------------------------------------|
 | `name`         | string  | Name of the SAML group                                                       |
 | `access_level` | integer | [Role (`access_level`)](members.md#roles) for members of the for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3 |
+| `member_role_id` | integer | [Member Role ID (`member_role_id`)](member_roles.md) for members of the SAML group. |
 
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" --data '{ "saml_group_name": "<your_saml_group_name`>", "access_level": <chosen_access_level> }' --url  "https://gitlab.example.com/api/v4/groups/1/saml_group_links"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" --data '{ "saml_group_name": "<your_saml_group_name`>", "access_level": <chosen_access_level>, "member_role_id": <chosen_member_role_id> }' --url  "https://gitlab.example.com/api/v4/groups/1/saml_group_links"
 ```
 
 Example response:
@@ -1804,7 +1812,8 @@ Example response:
 ```json
 {
 "name": "saml-group-1",
-"access_level": 10
+"access_level": 10,
+"member_role_id": 12
 }
 ```
 

@@ -9,6 +9,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 When a security incident occurs, you should follow the processes defined by your organization. However, you might consider some
 additional steps. These suggestions are intended to supplement existing security incident response processes within your organization.
 
+Administrators can choose to
+[provide public security contact information](../administration/settings/security_contact_information.md)
+to support receiving reports of security issues from security researchers.
+
 ## Suspected compromised user account
 
 If you suspect that a user account or bot account has been compromised, consider taking the following steps:

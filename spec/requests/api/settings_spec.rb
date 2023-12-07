@@ -205,7 +205,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             allow_account_deletion: false,
             gitlab_shell_operation_limit: 500,
             namespace_aggregation_schedule_lease_duration_in_seconds: 400,
-            max_import_remote_file_size: 2
+            max_import_remote_file_size: 2,
+            security_txt_content: nil
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -288,6 +289,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['namespace_aggregation_schedule_lease_duration_in_seconds']).to be(400)
         expect(json_response['max_import_remote_file_size']).to be(2)
         expect(json_response['bulk_import_max_download_file_size']).to be(1)
+        expect(json_response['security_txt_content']).to be(nil)
       end
     end
 
@@ -1060,6 +1062,20 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['max_login_attempts']).to eq(3)
         expect(json_response['failed_login_attempts_unlock_period_in_minutes']).to eq(30)
+      end
+    end
+
+    context 'security txt settings' do
+      let(:content) { "Contact: foo@acme.com" }
+
+      it 'updates the settings' do
+        put(
+          api("/application/settings", admin),
+          params: { security_txt_content: content }
+        )
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['security_txt_content']).to eq(content)
       end
     end
   end

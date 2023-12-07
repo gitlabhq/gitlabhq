@@ -49,7 +49,7 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
         name="MyWidget"
       />
       <div
-        class="gl-display-flex gl-w-full"
+        class="gl-display-flex gl-flex-direction-column gl-w-full"
       >
         <div
           class="gl-display-flex gl-flex-grow-1"
@@ -88,7 +88,7 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
         >
           <li>
             <div
-              class="gl-align-items-center gl-display-flex"
+              class="gl-align-items-baseline gl-display-flex"
             >
               <div
                 class="gl-min-w-0 gl-w-full"
@@ -110,7 +110,7 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
                   class="gl-align-items-baseline gl-display-flex"
                 >
                   <div
-                    class="gl-display-flex gl-w-full"
+                    class="gl-display-flex gl-flex-direction-column gl-w-full"
                   >
                     <div
                       class="gl-display-flex gl-flex-grow-1"

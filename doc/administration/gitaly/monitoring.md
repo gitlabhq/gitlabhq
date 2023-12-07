@@ -176,6 +176,20 @@ gitaly_streamcache_filestore_removed_total{dir="/var/opt/gitlab/git-data/reposit
 gitaly_streamcache_index_entries{dir="/var/opt/gitlab/git-data/repositories/+gitaly/PackObjectsCache"} 1
 ```
 
+## Monitor Gitaly server-side backups
+
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5358) in GitLab 16.7.
+
+Monitor [server-side repository backups](configure_gitaly.md#configure-server-side-backups) with the following metrics:
+
+- `gitaly_backup_latency_seconds`, a histogram measuring the amount of time in seconds that each phase of a server-side
+  backup takes. The different phases are `refs`, `bundle`, and `custom_hooks` and represent the type of data being
+  processed at each stage.
+- `gitaly_backup_bundle_bytes`, a histogram measuring the upload data rate of Git bundles being pushed to object
+  storage by the Gitaly backup service.
+
+Use these metrics especially if your GitLab instance contains large repositories.
+
 ## Queries
 
 The following are some queries for monitoring Gitaly:

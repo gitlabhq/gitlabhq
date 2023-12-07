@@ -512,7 +512,8 @@ module ApplicationSettingsHelper
       :gitlab_shell_operation_limit,
       :namespace_aggregation_schedule_lease_duration_in_seconds,
       :ci_max_total_yaml_size_bytes,
-      :project_jobs_api_rate_limit
+      :project_jobs_api_rate_limit,
+      :security_txt_content
     ].tap do |settings|
       next if Gitlab.com?
 

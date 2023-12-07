@@ -44247,6 +44247,18 @@ msgstr ""
 msgid "SecurityTraining|Training from this partner takes precedence when more than one training partner is enabled."
 msgstr ""
 
+msgid "SecurityTxt|Add security contact information"
+msgstr ""
+
+msgid "SecurityTxt|Configure a %{codeOpen}security.txt%{codeClose} file."
+msgstr ""
+
+msgid "SecurityTxt|Content for security.txt"
+msgstr ""
+
+msgid "SecurityTxt|When present, this will be publicly available at %{codeOpen}https://gitlab.example.com/.well-known/security.txt%{codeClose}. Maximum 2048 characters."
+msgstr ""
+
 msgid "See example DevOps Score page in our documentation."
 msgstr ""
 

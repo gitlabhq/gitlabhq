@@ -748,6 +748,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :package_registry_allow_anyone_to_pull_option,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
+  validates :security_txt_content,
+    length: { maximum: 2_048, message: N_('is too long (maximum is %{count} characters)') },
+    allow_blank: true
+
   attr_encrypted :asset_proxy_secret_key,
     mode: :per_attribute_iv,
     key: Settings.attr_encrypted_db_key_base_truncated,

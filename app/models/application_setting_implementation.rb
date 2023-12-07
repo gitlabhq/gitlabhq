@@ -274,7 +274,8 @@ module ApplicationSettingImplementation
         ci_max_includes: 150,
         allow_account_deletion: true,
         gitlab_shell_operation_limit: 600,
-        project_jobs_api_rate_limit: 600
+        project_jobs_api_rate_limit: 600,
+        security_txt_content: nil
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

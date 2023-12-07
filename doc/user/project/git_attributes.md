@@ -52,13 +52,12 @@ The `.gitattributes` file can be used to define which language to use when
 syntax highlighting files and diffs. For more information, see
 [Syntax highlighting](highlighting.md).
 
-## Custom merge drivers
+## Custom merge drivers **(FREE SELF)**
 
 > Ability to configure custom merge drivers through GitLab introduced in GitLab 15.10.
 
-You can define [custom merge drivers](https://git-scm.com/docs/gitattributes#_defining_a_custom_merge_driver)
-in a GitLab configuration file, then use the custom merge drivers in a Git
-`.gitattributes` file.
+GitLab self-managed instance administrators can define [custom merge drivers](https://git-scm.com/docs/gitattributes#_defining_a_custom_merge_driver)
+in a GitLab configuration file, then use the custom merge drivers in a Git `.gitattributes` file. Custom merge drivers are not supported on GitLab.com.
 
 You might configure a custom merge driver, for example, if there are certain
 files that should be ignored during a merge such as build files and configuration files.

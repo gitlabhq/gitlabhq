@@ -1714,4 +1714,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       expect(setting.personal_access_tokens_disabled?).to eq(false)
     end
   end
+
+  context 'security txt content' do
+    it { is_expected.to validate_length_of(:security_txt_content).is_at_most(2048) }
+  end
 end

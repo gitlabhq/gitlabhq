@@ -72,10 +72,14 @@ export default {
     :widget-name="widgetName"
     :header="data.header"
     :help-popover="data.helpPopover"
-    :class="{ 'gl-border-top-0': rowIndex === 0 }"
+    :class="{
+      'gl-border-top-0': rowIndex === 0,
+      'gl-align-items-start': data.supportingText,
+      'gl-align-items-baseline': !data.supportingText,
+    }"
   >
     <template #body>
-      <div class="gl-w-full gl-display-flex" :class="{ 'gl-flex-direction-column': level === 1 }">
+      <div class="gl-w-full gl-display-flex gl-flex-direction-column">
         <div class="gl-display-flex gl-flex-grow-1">
           <div class="gl-display-flex gl-flex-grow-1 gl-align-items-baseline">
             <div>
