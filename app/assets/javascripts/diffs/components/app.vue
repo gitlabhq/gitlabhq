@@ -440,7 +440,7 @@ export default {
     fetchScannerFindingsError() {
       this.hasScannerError = true;
       createAlert({
-        message: __('Something went wrong fetching the Scanner Findings. Please try again.'),
+        message: __('Something went wrong fetching the scanner findings. Please try again.'),
       });
     },
     subscribeToEvents() {

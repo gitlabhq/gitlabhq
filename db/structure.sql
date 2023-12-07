@@ -34579,6 +34579,8 @@ CREATE INDEX index_service_desk_custom_email_verifications_on_triggerer_id ON se
 
 CREATE INDEX index_service_desk_enabled_projects_on_id_creator_id_created_at ON projects USING btree (id, creator_id, created_at) WHERE (service_desk_enabled = true);
 
+CREATE INDEX index_service_desk_settings_on_custom_email_enabled ON service_desk_settings USING btree (custom_email_enabled);
+
 CREATE INDEX index_service_desk_settings_on_file_template_project_id ON service_desk_settings USING btree (file_template_project_id);
 
 CREATE UNIQUE INDEX index_shards_on_name ON shards USING btree (name);

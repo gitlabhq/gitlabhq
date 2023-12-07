@@ -14,12 +14,4 @@ RSpec.describe Environments::AutoStopCronWorker, feature_category: :continuous_d
 
     subject
   end
-
-  it 'executes Environments::AutoRecoverService' do
-    expect_next_instance_of(Environments::AutoRecoverService) do |service|
-      expect(service).to receive(:execute)
-    end
-
-    subject
-  end
 end

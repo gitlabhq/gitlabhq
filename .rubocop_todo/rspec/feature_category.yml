@@ -1200,7 +1200,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/presenters/project_member_presenter_spec.rb'
     - 'ee/spec/presenters/security/scan_presenter_spec.rb'
     - 'ee/spec/presenters/subscription_presenter_spec.rb'
-    - 'ee/spec/presenters/subscriptions/new_plan_presenter_spec.rb'
     - 'ee/spec/presenters/vulnerability_presenter_spec.rb'
     - 'ee/spec/presenters/web_hooks/group/hook_presenter_spec.rb'
     - 'ee/spec/requests/admin/credentials_controller_spec.rb'

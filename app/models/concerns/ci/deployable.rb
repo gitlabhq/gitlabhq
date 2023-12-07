@@ -18,14 +18,6 @@ module Ci
           end
         end
 
-        after_transition any => [:failed] do |job|
-          next unless job.stops_environment?
-
-          job.run_after_commit do
-            Environments::StopJobFailedWorker.perform_async(id)
-          end
-        end
-
         # Synchronize Deployment Status
         # Please note that the data integrity is not assured because we can't use
         # a database transaction due to DB decomposition.

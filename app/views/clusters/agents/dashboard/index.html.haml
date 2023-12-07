@@ -1,0 +1,12 @@
+- breadcrumb_title s_('KubernetesDashboard|Kubernetes Dashboard')
+- page_title s_('KubernetesDashboard|Kubernetes Dashboard')
+
+= render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-search-md.svg',
+  title: s_("KubernetesDashboard|No agent selected"),
+  primary_button_text: s_("KubernetesDashboard|View projects"),
+  primary_button_link: dashboard_projects_path,
+  secondary_button_text: s_("KubernetesDashboard|Learn more"),
+  secondary_button_link: help_page_path('ci/environments/kubernetes_dashboard')) do |c|
+
+  - c.with_description do
+    = s_("KubernetesDashboard|You can select an agent from a project's environment page.")

@@ -3,13 +3,35 @@
 require 'spec_helper'
 
 RSpec.describe Clusters::Agents::DashboardController, feature_category: :deployment_management do
+  let(:user) { create(:user) }
+  let(:stub_ff) { true }
+
+  describe 'GET index' do
+    before do
+      allow(::Gitlab::Kas).to receive(:enabled?).and_return(true)
+      stub_feature_flags(k8s_dashboard: stub_ff)
+      sign_in(user)
+      get kubernetes_dashboard_index_path
+    end
+
+    it 'returns ok and renders view' do
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    context 'with k8s_dashboard feature flag disabled' do
+      let(:stub_ff) { false }
+
+      it 'returns not found' do
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'GET show' do
     let_it_be(:organization) { create(:group) }
     let_it_be(:agent_management_project) { create(:project, group: organization) }
     let_it_be(:agent) { create(:cluster_agent, project: agent_management_project) }
     let_it_be(:deployment_project) { create(:project, group: organization) }
-    let(:user) { create(:user) }
-    let(:stub_ff) { true }
 
     before do
       allow(::Gitlab::Kas).to receive(:enabled?).and_return(true)
@@ -37,7 +59,7 @@ RSpec.describe Clusters::Agents::DashboardController, feature_category: :deploym
         ).to be_present
       end
 
-      it 'returns not found' do
+      it 'returns ok' do
         expect(response).to have_gitlab_http_status(:ok)
       end
 

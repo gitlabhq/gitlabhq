@@ -6,11 +6,13 @@ module Clusters
       include KasCookie
 
       before_action :check_feature_flag!
-      before_action :find_agent
-      before_action :authorize_read_cluster_agent!
+      before_action :find_agent, only: [:show], if: -> { current_user }
+      before_action :authorize_read_cluster_agent!, only: [:show], if: -> { current_user }
       before_action :set_kas_cookie, only: [:show], if: -> { current_user }
 
       feature_category :deployment_management
+
+      def index; end
 
       def show; end
 

@@ -166,28 +166,6 @@ RSpec.shared_examples 'a deployable job' do
 
         expect(deployment).to be_failed
       end
-
-      context 'when the job is a stop job' do
-        before do
-          job.update!(environment: 'review', options: { environment: { action: 'stop' } })
-        end
-
-        it 'enqueues Environments::StopJobFailedWorker' do
-          expect(Environments::StopJobFailedWorker)
-            .to receive(:perform_async)
-
-          subject
-        end
-      end
-
-      context 'when the job is not a stop job' do
-        it 'does not enqueue Environments::StopJobFailedWorker' do
-          expect(Environments::StopJobFailedWorker)
-            .not_to receive(:perform_async)
-
-          subject
-        end
-      end
     end
 
     context 'when transits to skipped' do

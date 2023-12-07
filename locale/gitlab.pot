@@ -27826,13 +27826,22 @@ msgstr ""
 msgid "KubernetesDashboard|Kind"
 msgstr ""
 
+msgid "KubernetesDashboard|Kubernetes Dashboard"
+msgstr ""
+
 msgid "KubernetesDashboard|Labels"
+msgstr ""
+
+msgid "KubernetesDashboard|Learn more"
 msgstr ""
 
 msgid "KubernetesDashboard|Name"
 msgstr ""
 
 msgid "KubernetesDashboard|Namespace"
+msgstr ""
+
+msgid "KubernetesDashboard|No agent selected"
 msgstr ""
 
 msgid "KubernetesDashboard|Pending"
@@ -27854,6 +27863,12 @@ msgid "KubernetesDashboard|Status"
 msgstr ""
 
 msgid "KubernetesDashboard|Succeeded"
+msgstr ""
+
+msgid "KubernetesDashboard|View projects"
+msgstr ""
+
+msgid "KubernetesDashboard|You can select an agent from a project's environment page."
 msgstr ""
 
 msgid "LDAP"
@@ -45934,7 +45949,7 @@ msgstr ""
 msgid "Something went wrong"
 msgstr ""
 
-msgid "Something went wrong fetching the Scanner Findings. Please try again."
+msgid "Something went wrong fetching the scanner findings. Please try again."
 msgstr ""
 
 msgid "Something went wrong on our end"

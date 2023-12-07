@@ -968,6 +968,7 @@ lib/gitlab/checks/**
 /config/initializers/declarative_policy_cached_attributes.rb
 /app/policies/
 /ee/app/policies/
+/ee/app/models/members/member_role.rb
 /ee/app/services/member_roles/
 /ee/app/graphql/types/member_roles/
 /ee/app/graphql/mutations/member_roles/
@@ -1148,7 +1149,6 @@ lib/gitlab/checks/**
 /ee/app/models/concerns/password_complexity.rb
 /ee/app/models/ee/personal_access_token.rb
 /ee/app/models/ee/project_authorization.rb
-/ee/app/models/members/member_role.rb
 /ee/app/models/scim_oauth_access_token.rb
 /ee/app/serializers/scim_oauth_access_token_entity.rb
 /ee/app/services/arkose/token_verification_service.rb

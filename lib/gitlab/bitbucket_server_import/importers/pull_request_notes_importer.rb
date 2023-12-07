@@ -9,17 +9,14 @@ module Gitlab
 
         def initialize(project, hash)
           @project = project
-          @formatter = Gitlab::ImportFormatter.new
-          @client = BitbucketServer::Client.new(project.import_data.credentials)
-          @project_key = project.import_data.data['project_key']
-          @repository_slug = project.import_data.data['repo_slug']
           @user_finder = UserFinder.new(project)
-
-          # TODO: Convert object into a object instead of using it as a hash
+          @formatter = Gitlab::ImportFormatter.new
           @object = hash.with_indifferent_access
         end
 
         def execute
+          return unless project.import_data
+
           log_info(import_stage: 'import_pull_request_notes', message: 'starting', iid: object[:iid])
 
           merge_request = project.merge_requests.find_by(iid: object[:iid]) # rubocop: disable CodeReuse/ActiveRecord
@@ -46,7 +43,7 @@ module Gitlab
 
         private
 
-        attr_reader :object, :project, :formatter, :client, :project_key, :repository_slug, :user_finder
+        attr_reader :object, :project, :formatter, :user_finder
 
         # rubocop: disable CodeReuse/ActiveRecord
         def import_merge_event(merge_request, merge_event)
@@ -206,6 +203,18 @@ module Gitlab
             created_at: comment.created_at,
             updated_at: comment.updated_at
           }
+        end
+
+        def client
+          BitbucketServer::Client.new(project.import_data.credentials)
+        end
+
+        def project_key
+          project.import_data.data['project_key']
+        end
+
+        def repository_slug
+          project.import_data.data['repo_slug']
         end
       end
     end

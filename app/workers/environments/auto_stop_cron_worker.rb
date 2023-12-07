@@ -13,7 +13,6 @@ module Environments
 
     def perform
       AutoStopService.new.execute
-      AutoRecoverService.new.execute
     end
   end
 end

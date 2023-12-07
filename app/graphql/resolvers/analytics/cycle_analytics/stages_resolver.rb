@@ -7,14 +7,17 @@ module Resolvers
         type [Types::Analytics::CycleAnalytics::ValueStreams::StageType], null: true
 
         def resolve
-          response =
-            ::Analytics::CycleAnalytics::Stages::ListService.new(
-              parent: namespace,
-              current_user: current_user,
-              params: { value_stream: object }
-            ).execute
+          list_stages({ value_stream: object })
+        end
 
-          response[:stages]
+        private
+
+        def list_stages(list_service_params)
+          ::Analytics::CycleAnalytics::Stages::ListService.new(
+            parent: namespace,
+            current_user: current_user,
+            params: list_service_params
+          ).execute[:stages]
         end
 
         def namespace

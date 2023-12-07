@@ -79,9 +79,22 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
       .to receive(:info).with(include(import_stage: stage, message: message))
   end
 
-  subject(:importer) { described_class.new(project, pull_request.to_hash) }
+  subject(:importer) { described_class.new(project.reload, pull_request.to_hash) }
 
-  describe '#execute', :clean_gitlab_redis_cache do
+  describe '#execute' do
+    context 'when the project has been marked as failed' do
+      before do
+        project.import_state.mark_as_failed('error')
+      end
+
+      it 'does not log and does not import notes' do
+        expect(Gitlab::BitbucketServerImport::Logger)
+          .not_to receive(:info).with(include(import_stage: 'import_pull_request_notes', message: 'starting'))
+
+        expect { importer.execute }.not_to change { Note.count }
+      end
+    end
+
     context 'when a matching merge request is not found' do
       it 'does nothing' do
         expect { importer.execute }.not_to change { Note.count }
@@ -95,7 +108,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
       end
     end
 
-    context 'when a matching merge request is found' do
+    context 'when a matching merge request is found', :clean_gitlab_redis_cache do
       let_it_be(:merge_request) { create(:merge_request, iid: pull_request.iid, source_project: project) }
 
       it 'logs its progress' do

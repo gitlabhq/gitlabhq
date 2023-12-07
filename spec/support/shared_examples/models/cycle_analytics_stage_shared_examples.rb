@@ -59,7 +59,9 @@ RSpec.shared_examples 'value stream analytics stage' do
 
       it { expect(stage).not_to be_valid }
     end
+  end
 
+  describe 'scopes' do
     # rubocop: disable Rails/SaveBang
     describe '.by_value_stream' do
       it 'finds stages by value stream' do
@@ -69,6 +71,17 @@ RSpec.shared_examples 'value stream analytics stage' do
         result = described_class.by_value_stream(stage1.value_stream)
 
         expect(result).to eq([stage1])
+      end
+    end
+
+    describe '.by_value_stream_ids' do
+      it 'finds stages by array of value streams ids' do
+        stages = create_list(factory, 2)
+        create(factory) # To be left out of the results
+
+        result = described_class.by_value_streams_ids(stages.map(&:value_stream_id))
+
+        expect(result).to match_array(stages)
       end
     end
     # rubocop: enable Rails/SaveBang

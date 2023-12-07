@@ -1,0 +1,21 @@
+---
+key_path: counts.service_desk_custom_email_enabled
+description: "Number of projects that have Service Desk custom email enabled"
+product_section: seg
+product_stage: service management
+product_group: respond
+value_type: number
+status: active
+milestone: "16.7"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138662
+time_frame: all
+data_source: database
+data_category: optional
+instrumentation_class: CountServiceDeskCustomEmailEnabledMetric
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
