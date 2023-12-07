@@ -146,6 +146,16 @@ RSpec.describe PgFullTextSearchable, feature_category: :global_search do
         expect(model_class.pg_full_text_search('123')).to contain_exactly(with_dash)
       end
     end
+
+    context 'when text has XML tags' do
+      let(:with_xml) { model_class.create!(project: project, namespace: project.project_namespace, title: '<rain>go away</rain>', description: 'description') }
+
+      it 'removes XML tag syntax' do
+        with_xml.update_search_data!
+
+        expect(model_class.pg_full_text_search('rain')).to contain_exactly(with_xml)
+      end
+    end
   end
 
   describe '#update_search_data!' do

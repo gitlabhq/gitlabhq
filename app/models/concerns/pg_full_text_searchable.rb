@@ -26,6 +26,7 @@ module PgFullTextSearchable
   TEXT_SEARCH_DICTIONARY = 'english'
   URL_SCHEME_REGEX = %r{(?<=\A|\W)\w+://(?=\w+)}
   TSQUERY_DISALLOWED_CHARACTERS_REGEX = %r{[^a-zA-Z0-9 .@/\-_"]}
+  XML_TAG_REGEX = %r{</?([^>]+)>}
 
   def update_search_data!
     tsvector_sql_nodes = self.class.pg_full_text_searchable_columns.map do |column, weight|
@@ -55,6 +56,7 @@ module PgFullTextSearchable
     column_text = self[column].gsub(LONG_WORDS_REGEX, ' ')
     column_text = column_text[0..(TSVECTOR_MAX_LENGTH - 1)]
     column_text = ActiveSupport::Inflector.transliterate(column_text)
+    column_text = column_text.gsub(XML_TAG_REGEX, ' \1 ')
 
     Arel::Nodes::NamedFunction.new(
       'setweight',
