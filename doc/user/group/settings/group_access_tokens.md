@@ -58,6 +58,7 @@ To create a group access token:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Access Tokens**.
+1. Select **Add new token**.
 1. Enter a name. The token name is visible to any user with permissions to view the group.
 1. Enter an expiry date for the token:
    - The token expires on that date at midnight UTC.
@@ -120,7 +121,7 @@ To revoke a group access token:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Access Tokens**.
-1. Next to the group access token to revoke, select **Revoke**.
+1. Next to the group access token to revoke, select **Revoke**  (**{remove}**).
 
 ## Revoke a group access token using Rails console
 
@@ -162,6 +163,7 @@ To enable or disable group access token creation for all subgroups in a top-leve
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. Under **Permissions**, turn on or off **Users can create project access tokens and group access tokens in this group**.
+1. Select **Save changes**.
 
 Even when creation is disabled, you can still use and revoke existing group access tokens.
 

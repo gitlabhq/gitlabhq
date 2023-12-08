@@ -285,9 +285,11 @@ findings, select **View full report** to go directly to the **Security** tab in 
 
 ### Pipeline security tab
 
-A pipeline's security tab lists all findings in the current branch. It includes new findings introduced by this branch
-and existing vulnerabilities already present when you created the branch. These results likely do not match the findings
-displayed in the Merge Request security widget, as those do not include the existing vulnerabilities. Refer to [View vulnerabilities in a pipeline](vulnerability_report/pipeline.md) for more information.
+A pipeline's security tab lists all findings in the current branch. It includes findings introduced
+by this branch and vulnerabilities already present in the base branch. These results likely do not
+match the findings displayed in the Merge Request security widget, as those do not include the
+existing vulnerabilities. For more information see
+[Vulnerabilities in a pipeline](vulnerability_report/pipeline.md).
 
 ### Security dashboard
 

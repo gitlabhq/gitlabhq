@@ -980,7 +980,8 @@ Guidance for each individual UI element is in [the word list](word_list.md).
 
 ### How to write navigation task steps
 
-To be consistent, use these templates when you write navigation steps in a task topic.
+To be consistent, use these examples to write navigation steps in a task topic.
+Although alternative steps might exist, use these steps instead.
 
 To open project settings:
 

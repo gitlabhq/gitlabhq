@@ -177,6 +177,9 @@ describe('Manual Variables Form', () => {
     beforeEach(async () => {
       await createComponent({
         handlers: {
+          getJobQueryResponseHandlerWithVariables: jest
+            .fn()
+            .mockResolvedValue(mockJobWithVariablesResponse),
           playJobMutationHandler: jest.fn().mockResolvedValue(mockJobPlayMutationData),
         },
       });
@@ -208,6 +211,15 @@ describe('Manual Variables Form', () => {
       expect(requestHandlers.playJobMutationHandler).toHaveBeenCalledTimes(1);
       expect(redirectTo).toHaveBeenCalledWith(mockJobPlayMutationData.data.jobPlay.job.webPath); // eslint-disable-line import/no-deprecated
     });
+
+    it('does not refetch variables after job is run', async () => {
+      expect(requestHandlers.getJobQueryResponseHandlerWithVariables).toHaveBeenCalledTimes(1);
+
+      findRunBtn().vm.$emit('click');
+      await waitForPromises();
+
+      expect(requestHandlers.getJobQueryResponseHandlerWithVariables).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('when play mutation is unsuccessful', () => {
@@ -234,6 +246,9 @@ describe('Manual Variables Form', () => {
       await createComponent({
         props: { isRetryable: true },
         handlers: {
+          getJobQueryResponseHandlerWithVariables: jest
+            .fn()
+            .mockResolvedValue(mockJobWithVariablesResponse),
           retryJobMutationHandler: jest.fn().mockResolvedValue(mockJobRetryMutationData),
         },
       });
@@ -249,6 +264,15 @@ describe('Manual Variables Form', () => {
 
       expect(requestHandlers.retryJobMutationHandler).toHaveBeenCalledTimes(1);
       expect(redirectTo).toHaveBeenCalledWith(mockJobRetryMutationData.data.jobRetry.job.webPath); // eslint-disable-line import/no-deprecated
+    });
+
+    it('does not refetch variables after job is rerun', async () => {
+      expect(requestHandlers.getJobQueryResponseHandlerWithVariables).toHaveBeenCalledTimes(1);
+
+      findRunBtn().vm.$emit('click');
+      await waitForPromises();
+
+      expect(requestHandlers.getJobQueryResponseHandlerWithVariables).toHaveBeenCalledTimes(1);
     });
   });
 

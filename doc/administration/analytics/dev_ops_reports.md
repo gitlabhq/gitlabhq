@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # DevOps Reports **(FREE SELF)**
 
 DevOps Reports give you an overview of your entire instance's adoption of
-[Concurrent DevOps](https://about.gitlab.com/topics/concurrent-devops/)
+[DevOps](https://about.gitlab.com/topics/devops/)
 from planning to monitoring.
 
 To see DevOps Reports:
