@@ -3,12 +3,17 @@
 require "spec_helper"
 
 RSpec.describe Projects::Ml::ShowMlModelVersionComponent, type: :component, feature_category: :mlops do
-  let_it_be(:project) { create(:project) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- build_stubbed breaks because it doesn't create iids properly.
+  let_it_be(:project) { build_stubbed(:project) }
   let_it_be(:user) { project.owner }
-  let_it_be(:model) { create(:ml_models, project: project) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- build_stubbed breaks because it doesn't create iids properly.
-  let_it_be(:experiment) { model.default_experiment }
+  let_it_be(:model) { build_stubbed(:ml_models, project: project) }
+  let_it_be(:experiment) do
+    model.default_experiment.iid = 100
+    model.default_experiment
+  end
+
   let_it_be(:candidate) do
-    create(:ml_candidates, :with_artifact, experiment: experiment, user: user, project: project) # rubocop:disable RSpec/FactoryBot/AvoidCreate -- build_stubbed breaks because it doesn't create iids properly.
+    build_stubbed(:ml_candidates, :with_artifact, experiment: experiment, user: user, project: project,
+      internal_id: 100)
   end
 
   let_it_be(:version) do

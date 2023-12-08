@@ -86,7 +86,6 @@ RSpec/InstanceVariable:
     - 'spec/lib/extracts_ref_spec.rb'
     - 'spec/lib/gitlab/auth/auth_finders_spec.rb'
     - 'spec/lib/gitlab/auth/ldap/person_spec.rb'
-    - 'spec/lib/gitlab/bitbucket_import/importer_spec.rb'
     - 'spec/lib/gitlab/chat_name_token_spec.rb'
     - 'spec/lib/gitlab/ci/lint_spec.rb'
     - 'spec/lib/gitlab/ci/status/composite_spec.rb'

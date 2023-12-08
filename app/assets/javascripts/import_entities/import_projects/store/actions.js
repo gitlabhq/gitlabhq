@@ -1,5 +1,5 @@
 import Visibility from 'visibilityjs';
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
@@ -25,7 +25,7 @@ const pathWithParams = ({ path, ...params }) => {
   return queryString ? `${path}?${queryString}` : path;
 };
 const commitPaginationData = ({ state, commit, data }) => {
-  const cursorsGitHubResponse = !_.isEmpty(data.pageInfo || {});
+  const cursorsGitHubResponse = !isEmpty(data.pageInfo || {});
 
   if (state.provider === PROVIDERS.GITHUB && cursorsGitHubResponse) {
     commit(types.SET_PAGE_CURSORS, data.pageInfo);

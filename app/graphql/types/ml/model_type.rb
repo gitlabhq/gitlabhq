@@ -13,6 +13,9 @@ module Types
 
       field :versions, ::Types::Ml::ModelVersionType.connection_type, null: true,
         description: 'Versions of the model.'
+
+      field :candidates, ::Types::Ml::CandidateType.connection_type, null: true,
+        description: 'Version candidates of the model.'
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

@@ -29,8 +29,6 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
 
   before do
     sign_in user
-
-    set_cookie('sidebar_collapsed', 'true')
   end
 
   context 'discussion tab' do

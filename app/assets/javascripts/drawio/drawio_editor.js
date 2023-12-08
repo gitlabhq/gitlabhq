@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { isNil } from 'lodash';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
 import { base64DecodeUnicode } from '~/lib/utils/text_utility';
@@ -181,7 +181,7 @@ function configureDrawIOEditor(drawIOEditorState) {
 }
 
 function onDrawIOEditorMessage(drawIOEditorState, editorFacade, evt) {
-  if (_.isNil(evt) || evt.source !== drawIOEditorState.iframe.contentWindow) {
+  if (isNil(evt) || evt.source !== drawIOEditorState.iframe.contentWindow) {
     return;
   }
 

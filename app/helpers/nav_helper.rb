@@ -11,28 +11,11 @@ module NavHelper
     header_links.include?(link)
   end
 
-  def page_has_sidebar?
-    defined?(@left_sidebar) && @left_sidebar
-  end
-
-  def page_has_collapsed_sidebar?
-    page_has_sidebar? && collapsed_sidebar?
-  end
-
-  def page_has_collapsed_super_sidebar?
-    page_has_sidebar? && collapsed_super_sidebar?
-  end
-
   def page_with_sidebar_class
     class_name = page_gutter_class
 
-    if show_super_sidebar?
-      class_name << 'page-with-super-sidebar' if page_has_sidebar?
-      class_name << 'page-with-super-sidebar-collapsed' if page_has_collapsed_super_sidebar?
-    else
-      class_name << 'page-with-contextual-sidebar' if page_has_sidebar?
-      class_name << 'page-with-icon-sidebar' if page_has_collapsed_sidebar?
-    end
+    class_name << 'page-with-super-sidebar'
+    class_name << 'page-with-super-sidebar-collapsed' if collapsed_super_sidebar?
 
     class_name -= ['right-sidebar-expanded'] if defined?(@right_sidebar) && !@right_sidebar
 

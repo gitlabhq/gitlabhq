@@ -74,38 +74,6 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
     end
   end
 
-  describe '.import_table' do
-    subject { described_class.import_table }
-
-    describe 'Bitbucket cloud' do
-      it 'returns the ParallelImporter' do
-        is_expected.to include(
-          described_class::ImportSource.new(
-            'bitbucket',
-            'Bitbucket Cloud',
-            Gitlab::BitbucketImport::ParallelImporter
-          )
-        )
-      end
-
-      context 'when flag is disabled' do
-        before do
-          stub_feature_flags(bitbucket_parallel_importer: false)
-        end
-
-        it 'returns the legacy Importer' do
-          is_expected.to include(
-            described_class::ImportSource.new(
-              'bitbucket',
-              'Bitbucket Cloud',
-              Gitlab::BitbucketImport::Importer
-            )
-          )
-        end
-      end
-    end
-  end
-
   describe '.title' do
     import_sources = {
       'github' => 'GitHub',

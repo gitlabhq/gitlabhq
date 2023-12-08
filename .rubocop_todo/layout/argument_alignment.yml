@@ -1350,7 +1350,6 @@ Layout/ArgumentAlignment:
     - 'spec/lib/gitlab/auth/otp/strategies/forti_token_cloud_spec.rb'
     - 'spec/lib/gitlab/auth/saml/auth_hash_spec.rb'
     - 'spec/lib/gitlab/auth/saml/user_spec.rb'
-    - 'spec/lib/gitlab/bitbucket_import/importer_spec.rb'
     - 'spec/lib/gitlab/bitbucket_import/project_creator_spec.rb'
     - 'spec/lib/gitlab/bitbucket_import/wiki_formatter_spec.rb'
     - 'spec/lib/gitlab/cache/ci/project_pipeline_status_spec.rb'

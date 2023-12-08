@@ -110,12 +110,12 @@ export default {
     </div>
     <div
       v-if="showParticipantLabel"
-      class="title hide-collapsed gl-mb-2! gl-line-height-20 gl-font-weight-bold"
+      class="title hide-collapsed gl-line-height-20 gl-font-weight-bold gl-mb-0!"
     >
       <gl-loading-icon v-if="loading" size="sm" :inline="true" />
       {{ participantLabel }}
     </div>
-    <div class="hide-collapsed gl-display-flex gl-flex-wrap">
+    <div class="hide-collapsed gl-display-flex gl-flex-wrap gl-mt-2 gl-mb-n3">
       <div
         v-for="participant in visibleParticipants"
         :key="participant.id"

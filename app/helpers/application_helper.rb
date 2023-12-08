@@ -378,10 +378,6 @@ module ApplicationHelper
     external_redirect_path(url: "https://#{url[2]}/@#{url[1]}")
   end
 
-  def collapsed_sidebar?
-    cookies["sidebar_collapsed"] == "true"
-  end
-
   def collapsed_super_sidebar?
     return false if @force_desktop_expanded_sidebar
 

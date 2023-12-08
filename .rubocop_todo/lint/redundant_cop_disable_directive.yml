@@ -169,7 +169,6 @@ Lint/RedundantCopDisableDirective:
     - 'lib/gitlab/background_migration/re_expire_o_auth_tokens.rb'
     - 'lib/gitlab/background_migration/remove_occurrence_pipelines_and_duplicate_vulnerabilities_findings.rb'
     - 'lib/gitlab/background_migration/update_jira_tracker_data_deployment_type_based_on_url.rb'
-    - 'lib/gitlab/bitbucket_import/importer.rb'
     - 'lib/gitlab/buffered_io.rb'
     - 'lib/gitlab/cache/request_cache.rb'
     - 'lib/gitlab/ci/build/artifacts/metadata/entry.rb'

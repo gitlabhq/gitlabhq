@@ -375,7 +375,6 @@ Lint/UnusedMethodArgument:
     - 'lib/gitlab/background_migration/cleanup_orphaned_routes.rb'
     - 'lib/gitlab/background_migration/job_coordinator.rb'
     - 'lib/gitlab/background_migration/project_namespaces/backfill_project_namespaces.rb'
-    - 'lib/gitlab/bitbucket_import/importer.rb'
     - 'lib/gitlab/cache/helpers.rb'
     - 'lib/gitlab/cache/metrics.rb'
     - 'lib/gitlab/ci/ansi2html.rb'

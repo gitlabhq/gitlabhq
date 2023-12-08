@@ -31,8 +31,6 @@ RSpec.describe 'User adds lists', :js, feature_category: :team_planning do
     before do
       sign_in(user)
 
-      set_cookie('sidebar_collapsed', 'true')
-
       case board_type
       when :project
         visit project_board_path(project, project_board)

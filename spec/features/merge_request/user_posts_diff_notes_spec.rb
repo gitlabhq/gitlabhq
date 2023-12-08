@@ -15,8 +15,6 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
   let(:test_note_comment) { 'this is a test note!' }
 
   before do
-    set_cookie('sidebar_collapsed', 'true')
-
     project.add_developer(user)
     sign_in(user)
   end

@@ -114,7 +114,6 @@ RSpec/ReturnFromStub:
     - 'spec/lib/gitlab/auth/o_auth/user_spec.rb'
     - 'spec/lib/gitlab/auth/saml/user_spec.rb'
     - 'spec/lib/gitlab/auth_spec.rb'
-    - 'spec/lib/gitlab/bitbucket_import/importer_spec.rb'
     - 'spec/lib/gitlab/ci/build/policy/changes_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/seed/stage_spec.rb'
     - 'spec/lib/gitlab/ci/status/build/failed_spec.rb'

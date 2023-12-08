@@ -18,6 +18,7 @@ module Ml
     belongs_to :project
     belongs_to :user
     has_many :versions, class_name: 'Ml::ModelVersion'
+    has_many :candidates, -> { without_model_version }, class_name: 'Ml::Candidate', through: :default_experiment
     has_many :metadata, class_name: 'Ml::ModelMetadata'
     has_one :latest_version, -> { latest_by_model }, class_name: 'Ml::ModelVersion', inverse_of: :model
 

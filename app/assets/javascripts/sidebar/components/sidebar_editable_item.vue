@@ -164,7 +164,7 @@ export default {
       </gl-button>
     </div>
     <template v-if="!initialLoading">
-      <div v-show="!edit" data-testid="collapsed-content" class="gl-line-height-14">
+      <div v-show="!edit" data-testid="collapsed-content">
         <slot name="collapsed">{{ __('None') }}</slot>
       </div>
       <div v-show="edit" data-testid="expanded-content" :class="{ 'gl-mt-3': !isClassicSidebar }">

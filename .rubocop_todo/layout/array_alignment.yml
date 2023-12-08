@@ -146,7 +146,6 @@ Layout/ArrayAlignment:
     - 'lib/api/internal/base.rb'
     - 'lib/api/statistics.rb'
     - 'lib/gitlab/alert_management/payload/prometheus.rb'
-    - 'lib/gitlab/bitbucket_import/importer.rb'
     - 'lib/gitlab/chat/command.rb'
     - 'lib/gitlab/checks/single_change_access.rb'
     - 'lib/gitlab/ci/config/entry/default.rb'

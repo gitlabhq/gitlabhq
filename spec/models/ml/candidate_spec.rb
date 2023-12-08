@@ -5,7 +5,12 @@ require 'spec_helper'
 RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops do
   let_it_be(:candidate) { create(:ml_candidates, :with_metrics_and_params, :with_artifact, name: 'candidate0') }
   let_it_be(:candidate2) do
-    create(:ml_candidates, experiment: candidate.experiment, user: create(:user), name: 'candidate2')
+    create(:ml_candidates, experiment: candidate.experiment, name: 'candidate2', project: candidate.project)
+  end
+
+  let_it_be(:existing_model) { create(:ml_models, project: candidate2.project) }
+  let_it_be(:existing_model_version) do
+    create(:ml_model_versions, model: existing_model, candidate: candidate2)
   end
 
   let(:project) { candidate.project }
@@ -228,6 +233,14 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
       it 'does not fetch any candidate' do
         expect(subject).to match_array([])
       end
+    end
+  end
+
+  describe '#without_model_version' do
+    subject { described_class.without_model_version }
+
+    it 'finds only candidates without model version' do
+      expect(subject).to match_array([candidate])
     end
   end
 

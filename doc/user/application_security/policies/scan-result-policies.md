@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 You can use scan result policies to take action based on scan results. For example, one type of scan
 result policy is a security approval policy that allows approval to be required based on the
-findings of one or more security scan jobs. Scan result policies are evaluated after a CI scanning job is fully executed.
+findings of one or more security scan jobs. Scan result policies are evaluated after a CI scanning job is fully executed and both vulnerability and license type policies are evaluated based on the job artifact reports that are published in the completed pipeline.
 
 NOTE:
 Scan result policies are applicable only to [protected](../../project/protected_branches.md) target branches.

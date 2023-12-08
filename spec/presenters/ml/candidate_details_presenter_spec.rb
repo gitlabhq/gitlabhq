@@ -3,11 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
-  let_it_be(:user) { create(:user, :with_avatar) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
-  let_it_be(:project) { create(:project, :private, creator: user) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
-  let_it_be(:experiment) { create(:ml_experiments, user: user, project: project) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
+  let_it_be(:user) { build_stubbed(:user, :with_avatar) }
+  let_it_be(:project) { build_stubbed(:project, :private, creator: user) }
+  let_it_be(:experiment) { build_stubbed(:ml_experiments, user: user, project: project, iid: 100) }
   let_it_be(:candidate) do
-    create(:ml_candidates, :with_artifact, experiment: experiment, user: user, project: project) # rubocop:disable RSpec/FactoryBot/AvoidCreate
+    build_stubbed(:ml_candidates, :with_artifact, experiment: experiment, user: user, project: project,
+      internal_id: 100)
   end
 
   let_it_be(:pipeline) { build_stubbed(:ci_pipeline, project: project, user: user) }

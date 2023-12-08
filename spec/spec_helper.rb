@@ -139,11 +139,6 @@ RSpec.configure do |config|
       metadata[:migration] = true if metadata[:level] == :migration || metadata[:level] == :background_migration
     end
 
-    # Do not overwrite schema if it's already set
-    unless metadata.key?(:schema)
-      metadata[:schema] = :latest if metadata[:level] == :background_migration
-    end
-
     # Admin controller specs get auto admin mode enabled since they are
     # protected by the 'EnforcesAdminAuthentication' concern
     metadata[:enable_admin_mode] = true if %r{(ee)?/spec/controllers/admin/}.match?(location)

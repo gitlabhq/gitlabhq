@@ -11806,6 +11806,43 @@ The edge type for [`Milestone`](#milestone).
 | <a id="milestoneedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="milestoneedgenode"></a>`node` | [`Milestone`](#milestone) | The item at the end of the edge. |
 
+#### `MlCandidateConnection`
+
+The connection type for [`MlCandidate`](#mlcandidate).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlcandidateconnectionedges"></a>`edges` | [`[MlCandidateEdge]`](#mlcandidateedge) | A list of edges. |
+| <a id="mlcandidateconnectionnodes"></a>`nodes` | [`[MlCandidate]`](#mlcandidate) | A list of nodes. |
+| <a id="mlcandidateconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `MlCandidateConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlcandidateconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
+
+#### `MlCandidateEdge`
+
+The edge type for [`MlCandidate`](#mlcandidate).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlcandidateedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="mlcandidateedgenode"></a>`node` | [`MlCandidate`](#mlcandidate) | The item at the end of the edge. |
+
 #### `MlModelVersionConnection`
 
 The connection type for [`MlModelVersion`](#mlmodelversion).
@@ -21235,6 +21272,17 @@ Represents an entry from the Cloud License history.
 | <a id="locationblobpath"></a>`blobPath` | [`String`](#string) | HTTP URI path to view the input file in GitLab. |
 | <a id="locationpath"></a>`path` | [`String`](#string) | Path, relative to the root of the repository, of the filewhich was analyzed to detect the dependency. |
 
+### `MLCandidateLinks`
+
+Represents links to perform actions on the candidate.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlcandidatelinksartifactpath"></a>`artifactPath` | [`String`](#string) | Path to the artifact. |
+| <a id="mlcandidatelinksshowpath"></a>`showPath` | [`String`](#string) | Path to the details page of the candidate. |
+
 ### `MLModelVersionLinks`
 
 Represents links to perform actions on the model version.
@@ -22849,6 +22897,19 @@ Contains statistics about a milestone.
 | <a id="milestonestatsclosedissuescount"></a>`closedIssuesCount` | [`Int`](#int) | Number of closed issues associated with the milestone. |
 | <a id="milestonestatstotalissuescount"></a>`totalIssuesCount` | [`Int`](#int) | Total number of issues associated with the milestone. |
 
+### `MlCandidate`
+
+Candidate for a model version in the model registry.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlcandidate_links"></a>`_links` | [`MLCandidateLinks!`](#mlcandidatelinks) | Map of links to perform actions on the candidate. |
+| <a id="mlcandidatecreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="mlcandidateid"></a>`id` | [`MlCandidateID!`](#mlcandidateid) | ID of the candidate. |
+| <a id="mlcandidatename"></a>`name` | [`String!`](#string) | Name of the candidate. |
+
 ### `MlModel`
 
 Machine learning model in the model registry.
@@ -22857,6 +22918,7 @@ Machine learning model in the model registry.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mlmodelcandidates"></a>`candidates` | [`MlCandidateConnection`](#mlcandidateconnection) | Version candidates of the model. (see [Connections](#connections)) |
 | <a id="mlmodelid"></a>`id` | [`MlModelID!`](#mlmodelid) | ID of the model. |
 | <a id="mlmodelname"></a>`name` | [`String!`](#string) | Name of the model. |
 | <a id="mlmodelversions"></a>`versions` | [`MlModelVersionConnection`](#mlmodelversionconnection) | Versions of the model. (see [Connections](#connections)) |
@@ -32379,6 +32441,12 @@ An example `MergeRequestID` is: `"gid://gitlab/MergeRequest/1"`.
 A `MilestoneID` is a global ID. It is encoded as a string.
 
 An example `MilestoneID` is: `"gid://gitlab/Milestone/1"`.
+
+### `MlCandidateID`
+
+A `MlCandidateID` is a global ID. It is encoded as a string.
+
+An example `MlCandidateID` is: `"gid://gitlab/Ml::Candidate/1"`.
 
 ### `MlModelID`
 

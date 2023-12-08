@@ -1115,10 +1115,6 @@ $tabs-holder-z-index: 250;
   border-top: 1px solid var(--border-color, $border-color);
   transition: padding $gl-transition-duration-medium;
 
-  .page-with-icon-sidebar & {
-    padding-left: $contextual-sidebar-collapsed-width;
-  }
-
   @media (max-width: map-get($grid-breakpoints, sm)-1) {
     padding-left: 0;
     padding-right: 0;

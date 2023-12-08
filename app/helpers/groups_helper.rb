@@ -215,7 +215,7 @@ module GroupsHelper
 
     return {} unless max_access_level
 
-    GroupMember.access_level_roles.select { |_k, v| v <= max_access_level }
+    group.access_level_roles.select { |_k, v| v <= max_access_level }
   end
 
   def groups_projects_more_actions_dropdown_data(source)

@@ -357,7 +357,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/gitlab/background_migration/batching_strategies/base_strategy_spec.rb'
     - 'spec/lib/gitlab/background_migration/job_coordinator_spec.rb'
     - 'spec/lib/gitlab/background_migration_spec.rb'
-    - 'spec/lib/gitlab/bitbucket_import/importer_spec.rb'
     - 'spec/lib/gitlab/bitbucket_import/project_creator_spec.rb'
     - 'spec/lib/gitlab/cache/import/caching_spec.rb'
     - 'spec/lib/gitlab/changelog/committer_spec.rb'

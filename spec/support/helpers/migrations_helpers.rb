@@ -120,11 +120,18 @@ module MigrationsHelpers
     end
   end
 
+  def finalized_by_version
+    ::Gitlab::Database::BackgroundMigration::BatchedBackgroundMigrationDictionary
+      .entry(described_class.to_s.demodulize)&.finalized_by
+  end
+
   def migration_schema_version
     metadata_schema = self.class.metadata[:schema]
 
     if metadata_schema == :latest
       migrations.last.version
+    elsif self.class.metadata[:level] == :background_migration
+      metadata_schema || finalized_by_version || migrations.last.version
     else
       metadata_schema || previous_migration.version
     end

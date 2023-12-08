@@ -58,21 +58,7 @@
   }
 }
 
-@include media-breakpoint-up(md) {
-  .page-with-contextual-sidebar {
-    --application-bar-left: #{$contextual-sidebar-collapsed-width};
-  }
-}
-
 @include media-breakpoint-up(xl) {
-  .page-with-contextual-sidebar {
-    --application-bar-left: #{$contextual-sidebar-width};
-  }
-
-  .page-with-icon-sidebar {
-    --application-bar-left: #{$contextual-sidebar-collapsed-width};
-  }
-
   .page-with-super-sidebar {
     --application-bar-left: #{$super-sidebar-width};
   }

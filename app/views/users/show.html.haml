@@ -6,10 +6,8 @@
 - page_itemtype    'http://schema.org/Person'
 - add_page_specific_style 'page_bundles/profile'
 - add_page_specific_style 'page_bundles/projects'
-- if show_super_sidebar?
-  - @left_sidebar = true
-  - @force_desktop_expanded_sidebar = true
-  - nav "user_profile"
+- @force_desktop_expanded_sidebar = true
+- nav "user_profile"
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")

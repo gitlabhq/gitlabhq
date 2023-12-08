@@ -4,3 +4,4 @@ description: Migrates human user type from old value (nil) to new value (0) for 
 feature_category: user_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115849
 milestone: '16.0'
+finalized_by: 20230523101514

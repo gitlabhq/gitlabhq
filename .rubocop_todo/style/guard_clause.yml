@@ -427,7 +427,6 @@ Style/GuardClause:
     - 'lib/gitlab/auth/o_auth/user.rb'
     - 'lib/gitlab/auth/unique_ips_limiter.rb'
     - 'lib/gitlab/background_migration/fix_projects_without_project_feature.rb'
-    - 'lib/gitlab/bitbucket_import/importer.rb'
     - 'lib/gitlab/blob_helper.rb'
     - 'lib/gitlab/cache/ci/project_pipeline_status.rb'
     - 'lib/gitlab/changelog/config.rb'

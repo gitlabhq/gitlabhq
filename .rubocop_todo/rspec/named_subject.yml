@@ -1855,7 +1855,6 @@ RSpec/NamedSubject:
     - 'spec/lib/gitlab/background_migration/truncate_overlong_vulnerability_html_titles_spec.rb'
     - 'spec/lib/gitlab/background_migration/update_ci_pipeline_artifacts_unknown_locked_status_spec.rb'
     - 'spec/lib/gitlab/background_task_spec.rb'
-    - 'spec/lib/gitlab/bitbucket_import/importer_spec.rb'
     - 'spec/lib/gitlab/bitbucket_import/parallel_importer_spec.rb'
     - 'spec/lib/gitlab/bitbucket_server_import/importers/pull_request_notes_importer_spec.rb'
     - 'spec/lib/gitlab/blame_spec.rb'

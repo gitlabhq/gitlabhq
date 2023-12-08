@@ -2377,7 +2377,6 @@ Style/InlineDisableAnnotation:
     - 'lib/gitlab/background_migration/update_workspaces_config_version.rb'
     - 'lib/gitlab/background_task.rb'
     - 'lib/gitlab/base_doorkeeper_controller.rb'
-    - 'lib/gitlab/bitbucket_import/importer.rb'
     - 'lib/gitlab/bitbucket_import/importers/issue_importer.rb'
     - 'lib/gitlab/bitbucket_import/importers/issue_notes_importer.rb'
     - 'lib/gitlab/bitbucket_server_import/importers/pull_request_notes_importer.rb'

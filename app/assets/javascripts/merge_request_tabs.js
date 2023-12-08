@@ -604,11 +604,7 @@ export default class MergeRequestTabs {
     if (!isInVueNoteablePage() || this.cachedPageLayoutClasses) return;
 
     this.cachedPageLayoutClasses = this.pageLayout.className;
-    this.pageLayout.classList.remove(
-      'right-sidebar-collapsed',
-      'right-sidebar-expanded',
-      'page-with-icon-sidebar',
-    );
+    this.pageLayout.classList.remove('right-sidebar-collapsed', 'right-sidebar-expanded');
     this.sidebar.style.width = '0px';
   }
 

@@ -5376,7 +5376,6 @@
 - './spec/lib/gitlab/background_task_spec.rb'
 - './spec/lib/gitlab/backtrace_cleaner_spec.rb'
 - './spec/lib/gitlab/batch_worker_context_spec.rb'
-- './spec/lib/gitlab/bitbucket_import/importer_spec.rb'
 - './spec/lib/gitlab/bitbucket_import/project_creator_spec.rb'
 - './spec/lib/gitlab/bitbucket_import/wiki_formatter_spec.rb'
 - './spec/lib/gitlab/blame_spec.rb'

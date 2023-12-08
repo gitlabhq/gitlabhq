@@ -6,11 +6,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Bitbucket Cloud importer developer documentation
 
-The Bitbucket Cloud importer can be configured with the `bitbucket_parallel_importer` feature flag. When the feature flag is:
-
-- Enabled, the importer uses Sidekiq to schedule work asynchronously.
-- Disabled, the importer does all the work in a single thread.
-
 ## Prerequisites
 
 You must be authenticated with Bitbucket:

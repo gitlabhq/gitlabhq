@@ -62,9 +62,6 @@ include:
     GDK_URL: http://gdk.test:3000
     KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/*_spec.rb"
     QA_SUITE_STATUS_ENV_FILE: "$CI_PROJECT_DIR/suite_status.env"
-    # Workaround to avoid enabling feature flags unintentionally
-    # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137890#note_1681217315
-    QA_FEATURE_FLAGS: ""
   before_script:
     - echo "SUITE_RAN=true" > "$QA_SUITE_STATUS_ENV_FILE"
     - echo -e "\e[0Ksection_start:`date +%s`:pull_image[collapsed=true]\r\e[0KPull GDK QA image"

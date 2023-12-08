@@ -184,7 +184,6 @@ Layout/FirstHashElementIndentation:
     - 'spec/lib/container_registry/client_spec.rb'
     - 'spec/lib/gitlab/application_rate_limiter_spec.rb'
     - 'spec/lib/gitlab/asciidoc_spec.rb'
-    - 'spec/lib/gitlab/bitbucket_import/importer_spec.rb'
     - 'spec/lib/gitlab/ci/config_spec.rb'
     - 'spec/lib/gitlab/ci/parsers/codequality/code_climate_spec.rb'
     - 'spec/lib/gitlab/ci/parsers/coverage/sax_document_spec.rb'

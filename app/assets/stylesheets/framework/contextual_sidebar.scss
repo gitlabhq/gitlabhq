@@ -195,32 +195,6 @@
 }
 
 //
-// PAGE-LAYOUT
-//
-
-.page-with-contextual-sidebar {
-  transition: padding-left $gl-transition-duration-medium;
-
-  @include media-breakpoint-up(md) {
-    padding-left: $contextual-sidebar-collapsed-width;
-  }
-
-  @include media-breakpoint-up(xl) {
-    padding-left: $contextual-sidebar-width;
-  }
-
-  .issues-bulk-update.right-sidebar.right-sidebar-expanded .issuable-sidebar-header {
-    padding: 10px 0 15px;
-  }
-}
-
-.page-with-icon-sidebar {
-  @include media-breakpoint-up(md) {
-    padding-left: $contextual-sidebar-collapsed-width;
-  }
-}
-
-//
 // THE PANEL
 //
 
