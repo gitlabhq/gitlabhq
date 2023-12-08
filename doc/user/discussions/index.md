@@ -77,7 +77,8 @@ Notifications and mentions can be disabled in
 When you mention a group in a comment, every member of the group gets a to-do item
 added to their To-do list.
 
-1. Open the MR or issue.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Issues** or **Merge requests**, and find your issue or merge request.
 1. In a comment, type `@` followed by the user, group, or subgroup namespace.
    For example, `@alex`, `@alex-team`, or `@alex-team/marketing`.
 1. Select **Comment**.
@@ -96,8 +97,9 @@ persist, even when you:
 
 To add a commit diff comment:
 
-1. To select a specific commit, on the merge request, select the **Commits** tab, select the commit
-   message. To view the latest commit, select the **Changes** tab.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Merge requests**, and find your merge request.
+1. Select the **Commits** tab, then select the commit message.
 1. By the line you want to comment on, hover over the line number and select **Comment** (**{comment}**).
    You can select multiple lines by dragging the **Comment** (**{comment}**) icon.
 1. Enter your comment and select **Start a review** or **Add comment now**.
@@ -157,10 +159,11 @@ Prerequisites:
 
 To lock an issue or merge request:
 
-1. On the right sidebar, next to **Lock discussion**, select **Edit**.
-1. On the confirmation dialog, select **Lock**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Issues** or **Merge requests**, and find your issue or merge request.
+1. On the top right, select **Merge request actions** or **Issue actions** (**{ellipsis_v}**), then select **Lock discussion**.
 
-Notes are added to the page details.
+A system note is added to the page details.
 
 If an issue or merge request is closed with a locked discussion, then you cannot reopen it until the discussion is unlocked.
 
@@ -189,7 +192,7 @@ Prerequisites:
 
 To add an internal note:
 
-1. Start adding a new comment.
+1. On the issue or epic, in the **Comment** text box, type a comment.
 1. Below the comment, select the **Make this an internal note** checkbox.
 1. Select **Add internal note**.
 
@@ -204,7 +207,7 @@ changes ([system notes](../project/system_notes.md)). System notes include chang
 objects, or changes to labels, assignees, and the milestone.
 GitLab saves your preference, and applies it to every issue, merge request, or epic you view.
 
-1. Open the **Overview** tab in a merge request, issue, or epic.
+1. On a merge request, issue, or epic, select the **Overview** tab.
 1. On the right side of the page, from the **Sort or filter** dropdown list, select a filter:
    - **Show all activity**: Display all user comments and system notes.
    - **Show comments only**: Display only user comments.

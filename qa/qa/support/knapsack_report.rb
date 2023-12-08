@@ -58,16 +58,6 @@ module QA
         File.write(selective_path, filtered_timed_specs.to_json)
       end
 
-      # Add '-selective-parallel' suffix to report name
-      #
-      # @return [String]
-      def selective_path
-        extension = File.extname(report_path)
-        directory = File.dirname(report_path)
-        file_name = File.basename(report_path, extension)
-        File.join(directory, "#{file_name}-selective-parallel#{extension}")
-      end
-
       # Rename and move new regenerated report to a separate folder used to indicate report name
       #
       # @return [void]
@@ -103,7 +93,7 @@ module QA
           report = jsons
             .map { |json| JSON.parse(File.read(json)) }
             .reduce({}, :merge)
-            .sort_by { |k, v| v } # sort report by execution time
+            .sort_by { |_k, v| v } # sort report by execution time
             .to_h
           next logger.warn("Knapsack generated empty report for '#{name}', skipping upload!") if report.empty?
 
@@ -187,6 +177,17 @@ module QA
         return { google_json_key_location: json_key } if File.exist?(json_key)
 
         { google_json_key_string: json_key }
+      end
+
+      # Add '-selective-parallel' suffix to report name
+      #
+      # @return [String]
+      def selective_path
+        extension = File.extname(report_path)
+        directory = File.dirname(report_path)
+        file_name = File.basename(report_path, extension)
+
+        File.join(directory, "#{file_name}-selective-parallel#{extension}")
       end
     end
   end

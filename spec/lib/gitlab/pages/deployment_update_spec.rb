@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::Pages::DeploymentUpdate, feature_category: :pages do
   let_it_be(:project, refind: true) { create(:project, :repository) }
 
-  let_it_be(:old_pipeline) { create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha) }
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha) }
+  let_it_be(:old_pipeline) { create(:ci_pipeline, project: project, sha: project.commit('HEAD~~').sha) }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit('HEAD~').sha) }
 
   let(:build) { create(:ci_build, pipeline: pipeline, ref: 'HEAD') }
   let(:invalid_file) { fixture_file_upload('spec/fixtures/dk.png') }
@@ -135,6 +135,37 @@ RSpec.describe Gitlab::Pages::DeploymentUpdate, feature_category: :pages do
 
     it 'marks older pages:deploy jobs retried' do
       expect(pages_deployment_update).to be_valid
+    end
+  end
+
+  context 'when validating if current build is outdated' do
+    before do
+      create(:ci_job_artifact, :correct_checksum, file: file, job: build)
+      create(:ci_job_artifact, file_type: :metadata, file_format: :gzip, file: metadata, job: build)
+      build.reload
+    end
+
+    context 'when there is NOT a newer build' do
+      it 'does not fail' do
+        expect(pages_deployment_update).to be_valid
+      end
+    end
+
+    context 'when there is a newer build' do
+      before do
+        new_pipeline = create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha)
+        new_build = create(:ci_build, name: 'pages', pipeline: new_pipeline, ref: 'HEAD')
+        create(:ci_job_artifact, :correct_checksum, file: file, job: new_build)
+        create(:ci_job_artifact, file_type: :metadata, file_format: :gzip, file: metadata, job: new_build)
+        create(:pages_deployment, project: project, ci_build: new_build)
+        new_build.reload
+      end
+
+      it 'fails with outdated reference message' do
+        expect(pages_deployment_update).not_to be_valid
+        expect(pages_deployment_update.errors.full_messages)
+          .to include('build SHA is outdated for this ref')
+      end
     end
   end
 end

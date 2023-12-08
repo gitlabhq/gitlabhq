@@ -53,8 +53,8 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
         let(:expected_result) { 'Update capybara, rspec-rails, poltergeist to recent versions' }
 
         before do
-          fill_in('dashboard_search', with: 'rspec')
-          find('.gl-search-box-by-click-search-button').click
+          submit_dashboard_search('rspec')
+          select_search_scope('Code')
         end
 
         it 'finds code and links to blob' do
@@ -81,8 +81,8 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
         search = 'for naming files'
         ref_selector = 'v1.0.0'
 
-        fill_in('dashboard_search', with: search)
-        find('.gl-search-box-by-click-search-button').click
+        submit_dashboard_search(search)
+        select_search_scope('Code')
 
         expect(page).to have_selector('.results', text: expected_result)
 
@@ -96,52 +96,6 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
         expect(find_field('dashboard_search').value).to eq(search)
         expect(find("#blob-L1502")[:href]).to match(%r{blob/v1.0.0/files/markdown/ruby-style-guide.md#L1502})
         expect(find("#blame-L1502")[:href]).to match(%r{blame/v1.0.0/files/markdown/ruby-style-guide.md#L1502})
-      end
-    end
-
-    context 'when header search' do
-      context 'search code within refs' do
-        let(:ref_name) { 'v1.0.0' }
-
-        before do
-          visit(project_tree_path(project, ref_name))
-
-          submit_search('gitlab-grack')
-          wait_for_requests
-          select_search_scope('Code')
-        end
-
-        it 'shows ref switcher in code result summary' do
-          expect(find('.ref-selector')).to have_text(ref_name)
-        end
-
-        it 'persists branch name across search' do
-          find('.gl-search-box-by-click-search-button').click
-          expect(find('.ref-selector')).to have_text(ref_name)
-        end
-
-        #  this example is use to test the design that the refs is not
-        #  only represent the branch as well as the tags.
-        it 'ref switcher list all the branches and tags' do
-          find('.ref-selector').click
-          wait_for_requests
-
-          page.within('.ref-selector') do
-            expect(page).to have_selector('li', text: 'add-ipython-files')
-            expect(page).to have_selector('li', text: 'v1.0.0')
-          end
-        end
-
-        it 'search result changes when refs switched' do
-          expect(find('.results')).not_to have_content('path = gitlab-grack')
-
-          find('.ref-selector').click
-          wait_for_requests
-
-          select_listbox_item('add-ipython-files')
-
-          expect(page).to have_selector('.results', text: 'path = gitlab-grack')
-        end
       end
     end
 

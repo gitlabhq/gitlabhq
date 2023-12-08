@@ -18,7 +18,6 @@ QA::Runtime::Browser.configure!
 QA::Specs::Helpers::FeatureSetup.configure!
 QA::Runtime::AllureReport.configure!
 QA::Runtime::Scenario.from_env(QA::Runtime::Env.runtime_scenario_attributes)
-QA::Support::KnapsackReport.configure!
 QA::Service::DockerRun::Video.configure!
 
 # Enable zero monkey patching mode before loading any other RSpec code.

@@ -35,6 +35,15 @@ module SearchHelpers
     end
   end
 
+  def submit_dashboard_search(query)
+    visit(search_path) unless page.has_css?('#dashboard_search')
+
+    search_form = page.find('input[name="search"]', match: :first)
+
+    search_form.fill_in(with: query)
+    search_form.send_keys(:enter)
+  end
+
   def select_search_scope(scope)
     within_testid('search-filter') do
       click_link scope

@@ -75,7 +75,6 @@ export default {
       searchInProgress: false,
     };
   },
-  computed: {},
   watch: {
     items() {
       if (this.searchText === '') {

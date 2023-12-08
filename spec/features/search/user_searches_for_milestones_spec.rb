@@ -21,8 +21,7 @@ RSpec.describe 'User searches for milestones', :js, :clean_gitlab_redis_rate_lim
   include_examples 'search timeouts', 'milestones'
 
   it 'finds a milestone' do
-    fill_in('dashboard_search', with: milestone1.title)
-    find('.gl-search-box-by-click-search-button').click
+    submit_dashboard_search(milestone1.title)
     select_search_scope('Milestones')
 
     page.within('.results') do
@@ -41,8 +40,7 @@ RSpec.describe 'User searches for milestones', :js, :clean_gitlab_redis_rate_lim
         select_listbox_item project.name
       end
 
-      fill_in('dashboard_search', with: milestone1.title)
-      find('.gl-search-box-by-click-search-button').click
+      submit_dashboard_search(milestone1.title)
       select_search_scope('Milestones')
 
       page.within('.results') do

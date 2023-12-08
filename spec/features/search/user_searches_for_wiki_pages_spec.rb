@@ -33,8 +33,7 @@ RSpec.describe 'User searches for wiki pages', :js, :clean_gitlab_redis_rate_lim
         select_listbox_item project.name
       end
 
-      fill_in('dashboard_search', with: search_term)
-      find('.gl-search-box-by-click-search-button').click
+      submit_dashboard_search(search_term)
       select_search_scope('Wiki')
 
       page.within('.results') do

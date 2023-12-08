@@ -11,8 +11,7 @@ RSpec.describe 'User searches for issues', :js, :clean_gitlab_redis_rate_limitin
   let!(:issue2) { create(:issue, :closed, :confidential, title: 'issue Bar', project: project) }
 
   def search_for_issue(search)
-    fill_in('dashboard_search', with: search)
-    find('.gl-search-box-by-click-search-button').click
+    submit_dashboard_search(search)
     select_search_scope('Issues')
   end
 

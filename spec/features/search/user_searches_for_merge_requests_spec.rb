@@ -10,8 +10,7 @@ RSpec.describe 'User searches for merge requests', :js, :clean_gitlab_redis_rate
   let_it_be(:merge_request2) { create(:merge_request, :simple, title: 'Merge Request Bar', source_project: project, target_project: project) }
 
   def search_for_mr(search)
-    fill_in('dashboard_search', with: search)
-    find('.gl-search-box-by-click-search-button').click
+    submit_dashboard_search(search)
     select_search_scope('Merge requests')
   end
 

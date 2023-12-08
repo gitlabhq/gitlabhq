@@ -24653,7 +24653,6 @@ CREATE TABLE user_preferences (
     diffs_deletion_color text,
     diffs_addition_color text,
     markdown_automatic_lists boolean DEFAULT true NOT NULL,
-    use_legacy_web_ide boolean DEFAULT false NOT NULL,
     use_new_navigation boolean,
     achievements_enabled boolean DEFAULT true NOT NULL,
     pinned_nav_items jsonb DEFAULT '{}'::jsonb NOT NULL,

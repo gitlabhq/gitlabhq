@@ -24,16 +24,9 @@ RSpec.describe QA::Support::KnapsackReport do
     end
 
     it 'creates a filtered file based on qa_tests' do
-      expect(File).to receive(:write)
-                        .with('knapsack/instance-selective-parallel.json', expected_output.to_json)
+      expect(File).to receive(:write).with('knapsack/instance-selective-parallel.json', expected_output.to_json)
 
       knapsack_report.create_for_selective(qa_tests)
-    end
-  end
-
-  describe '#selective_path' do
-    it 'returns the path with file name suffixed with -selective-parallel' do
-      expect(knapsack_report.selective_path).to eq('knapsack/instance-selective-parallel.json')
     end
   end
 end

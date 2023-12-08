@@ -1,4 +1,4 @@
-import { GlSearchBoxByClick, GlButton } from '@gitlab/ui';
+import { GlSearchBoxByType, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
@@ -43,7 +43,7 @@ describe('GlobalSearchTopbar', () => {
     });
   };
 
-  const findGlSearchBox = () => wrapper.findComponent(GlSearchBoxByClick);
+  const findGlSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findGroupFilter = () => wrapper.findComponent(GroupFilter);
   const findProjectFilter = () => wrapper.findComponent(ProjectFilter);
   const findSyntaxOptionButton = () => wrapper.findComponent(GlButton);

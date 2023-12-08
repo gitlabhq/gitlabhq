@@ -1,7 +1,7 @@
 ---
 status: proposed
 creation-date: "2023-10-10"
-authors: [ "@thomasrandolph", "@patrickbajao", "@igor.drozdov", "@jerasmus", "@iamphill" ]
+authors: [ "@thomasrandolph", "@patrickbajao", "@igor.drozdov", "@jerasmus", "@iamphill", "@slashmanov" ]
 coach: [ "@ntepluhina" ]
 approvers: [ ]
 owning-stage: "~devops::create"
@@ -55,16 +55,34 @@ In essence, we'll strive to meet every goal at each decision but prioritise the 
 
 ## Proposal
 
-<!--
-This is where we get down to the specifics of what the proposal actually is,
-but keep it simple!  This should have enough detail that reviewers can
-understand exactly what you're proposing, but should not include things like
-API designs or implementation. The "Design Details" section below is for the
-real nitty-gritty.
+New diffs introduce a paradigm shift in our approach to rendering diffs.
+Previously, we had two different approaches to rendering diffs:
 
-You might want to consider including the pros and cons of the proposed solution so that they can be
-compared with the pros and cons of alternatives.
--->
+1. Merge requests heavily utilized client-side rendering.
+1. All other pages used server-side rendering with sprinkles of JavaScript.
+
+In merge requests, most of the rendering work was done on the client:
+
+- The backend would only generate a JSON response with diffs data.
+- The client would be responsible for both drawing the diffs and reacting to user input.
+
+This led to us adopting a
+[virtualized scrolling solution](https://github.com/Akryum/vue-virtual-scroller/tree/v1/packages/vue-virtual-scroller)
+for client-side rendering, which sped up drawing large diff file lists significantly.
+
+Unfortunately, this came with downsides of a very high maintenance cost and
+[constant bugs](https://gitlab.com/gitlab-org/gitlab/-/issues/427155#note_1607184794).
+The user experience also suffered because we couldn't show diffs right away
+when you visited a page, and had to wait for the JSON response first.
+Lastly, this approach went completely parallel to the server-rendered diffs used on other pages,
+which resulted in two completely separate codebases for the diffs.
+
+The new-diffs approach changes that by doing the following:
+
+1. Stop using virtualized scrolling for rendering diffs.
+1. Move most of the rendering work to the server.
+1. Enhance server-rendered HTML on the client.
+1. Unify diffs codebase across merge requests and other pages.
 
 ### Accessibility
 
@@ -121,6 +139,42 @@ To measure our success, we need to set meaningful metrics. These metrics should 
 
 ---
 <sup>1</sup>: [The Performance Inequality Gap, 2023](https://infrequently.org/2022/12/performance-baseline-2023/)
+
+### New architecture overview
+
+New diffs introduce a change in responsibilities for both frontend and backend.
+
+The backend will:
+
+1. Prepare diffs data.
+1. Highlight diff lines.
+1. Render diffs as HTML.
+1. Embed diffs metadata into the final response.
+
+The frontend will:
+
+1. Enhance existing and future diffs HTML.
+1. Fetch and render additional diffs HTML that didn't fit into the page document.
+
+#### Static and dynamic separation
+
+To achieve the separation of concerns, we should distinguish between static and dynamic UI on the page:
+
+- Everything that is static should always be rendered on the server.
+- Everything dynamic should be enhanced on the client.
+
+As an example: a highlighted diff line doesn't change with user input, so we should consider rendering it on the server.
+
+#### Performance optimizations
+
+To improve the perceived performance of the page we should implement the following techniques:
+
+1. Limit the number of diffs rendered on the page at first.
+1. Use [HTML streaming](https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/101)
+   to render the rest of the diffs.
+    1. Use Web Components to hook into diff files appearing on the page.
+1. Apply `content-visibility` whenever possible to reduce redraw overhead.
+1. Render diff discussions asynchronously.
 
 ### Front end
 

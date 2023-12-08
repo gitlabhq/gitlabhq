@@ -198,7 +198,7 @@ http://secondary.example.com/
                 Last status report was: 1 minute ago
 ```
 
-There are up to three statuses for each item. For example, for `Project Repositories`, you see the following lines:
+Each item can have up to three statuses. For example, for `Project Repositories`, you see the following lines:
 
 ```plaintext
   Project Repositories: succeeded 12345 / total 12345 (100%)
@@ -738,16 +738,75 @@ If large repositories are affected by this problem,
 their resync may take a long time and cause significant load on your Geo sites,
 storage and network systems.
 
-If you see the error message `Synchronization failed - Error syncing repository` along with `fatal: fsck error in packed object`, this indicates
-a consistency check error when syncing the repository.
+The following error message indicates a consistency check error when syncing the repository:
 
-One example of a consistency error is: `error: object f4a87a3be694fbbd6e50a668a31a8513caeaafe3: hasDotgit: contains '.git`.
+```plaintext
+Synchronization failed - Error syncing repository [..] fatal: fsck error in packed object
+```
 
-Removing the malformed objects causing consistency errors require rewriting the repository history, which is not always an option. However,
-it's possible to override the consistency checks instead. To do that, follow
-[the instructions in the Gitaly docs](../../gitaly/configure_gitaly.md#repository-consistency-checks).
+Several issues can trigger this error. For example, problems with email addresses:
 
-You can also get the error message `Synchronization failed - Error syncing repository` along with the following log messages, this indicates that the expected `geo` remote is not present in the `.git/config` file
+```plaintext
+Error syncing repository: 13:fetch remote: "error: object <SHA>: badEmail: invalid author/committer line - bad email
+   fatal: fsck error in packed object
+   fatal: fetch-pack: invalid index-pack output
+```
+
+Another issue that can trigger this error is `object <SHA>: hasDotgit: contains '.git'`. Check the specific errors because you might have more than one problem across all
+your repositories.
+
+A second synchronization error can also be caused by repository check issues:
+
+```plaintext
+Error syncing repository: 13:Received RST_STREAM with error code 2.
+```
+
+These errors can be observed by [immediately syncing all failed repositories](#sync-all-failed-repositories-now).
+
+Removing the malformed objects causing consistency errors involves rewriting the repository history, which is usually not an option.
+
+To ignore these consistency checks, reconfigure Gitaly **on the secondary Geo sites** to ignore these `git fsck` issues.
+The following configuration example:
+
+- [Uses the new configuration structure](../../../update/versions/gitlab_16_changes.md#gitaly-configuration-structure-change) required from GitLab 16.0.
+- Ignores five common check failures.
+
+[The Gitaly documentation has more details](../../gitaly/configure_gitaly.md#repository-consistency-checks)
+about other Git check failures and older versions of GitLab.
+
+```ruby
+gitaly['configuration'] = {
+  git: {
+    config: [
+      { key: "fsck.duplicateEntries", value: "ignore" },
+      { key: "fsck.badFilemode", value: "ignore" },
+      { key: "fsck.missingEmail", value: "ignore" },
+      { key: "fsck.badEmail", value: "ignore" },
+      { key: "fsck.hasDotgit", value: "ignore" },
+      { key: "fetch.fsck.duplicateEntries", value: "ignore" },
+      { key: "fetch.fsck.badFilemode", value: "ignore" },
+      { key: "fetch.fsck.missingEmail", value: "ignore" },
+      { key: "fetch.fsck.badEmail", value: "ignore" },
+      { key: "fetch.fsck.hasDotgit", value: "ignore" },
+      { key: "receive.fsck.duplicateEntries", value: "ignore" },
+      { key: "receive.fsck.badFilemode", value: "ignore" },
+      { key: "receive.fsck.missingEmail", value: "ignore" },
+      { key: "receive.fsck.badEmail", value: "ignore" },
+      { key: "receive.fsck.hasDotgit", value: "ignore" },
+    ],
+  },
+}
+```
+
+GitLab 16.1 and later [include an enhancement](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5879) that might resolve some of these issues.
+
+[Gitaly issue 5625](https://gitlab.com/gitlab-org/gitaly/-/issues/5625) proposes to ensure that Geo replicates repositories even if the source repository contains
+problematic commits.
+
+#### Related error `does not appear to be a git repository`
+
+You can also get the error message `Synchronization failed - Error syncing repository` along with the following log messages.
+This error indicates that the expected Geo remote is not present in the `.git/config` file
 of a repository on the secondary Geo site's file system:
 
 ```json
@@ -965,6 +1024,11 @@ The following script:
 - Displays the project details and the reasons for the last failure.
 - Attempts to resync the repository.
 - Reports back if a failure occurs, and why.
+- Might take some time to complete. Each repository check must complete
+  before reporting back the result. If your session times out, take measures
+  to allow the process to continue running such as starting a `screen` session,
+  or running it using [Rails runner](../../operations/rails_console.md#using-the-rails-runner)
+  and `nohup`.
 
 ```ruby
 Geo::ProjectRegistry.sync_failed('repository').find_each do |p|
