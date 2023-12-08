@@ -23,7 +23,7 @@ import eventHub from '~/diffs/event_hub';
 
 import { diffViewerModes, diffViewerErrors } from '~/ide/constants';
 import axios from '~/lib/utils/axios_utils';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement, isElementStuck } from '~/lib/utils/common_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import createNotesStore from '~/notes/stores/modules';
 import diffsModule from '~/diffs/store/modules';
@@ -429,6 +429,7 @@ describe('DiffFile', () => {
       describe('scoll-to-top of file after collapse', () => {
         beforeEach(() => {
           jest.spyOn(wrapper.vm.$store, 'dispatch').mockImplementation(() => {});
+          isElementStuck.mockReturnValueOnce(true);
         });
 
         it("scrolls to the top when the file is open, the users initiates the collapse, and there's a content block to scroll to", async () => {

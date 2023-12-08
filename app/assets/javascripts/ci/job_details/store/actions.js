@@ -15,17 +15,11 @@ import { __ } from '~/locale';
 import { reportToSentry } from '~/ci/utils';
 import * as types from './mutation_types';
 
-export const init = ({ dispatch }, { endpoint, pagePath, testReportSummaryUrl }) => {
-  dispatch('setJobLogOptions', {
-    endpoint,
-    pagePath,
-    testReportSummaryUrl,
-  });
+export const init = ({ commit, dispatch }, { jobEndpoint, logEndpoint, testReportSummaryUrl }) => {
+  commit(types.SET_JOB_LOG_OPTIONS, { jobEndpoint, logEndpoint, testReportSummaryUrl });
 
   return dispatch('fetchJob');
 };
-
-export const setJobLogOptions = ({ commit }, options) => commit(types.SET_JOB_LOG_OPTIONS, options);
 
 export const hideSidebar = ({ commit }) => commit(types.HIDE_SIDEBAR);
 export const showSidebar = ({ commit }) => commit(types.SHOW_SIDEBAR);
@@ -155,10 +149,9 @@ export const requestJobLog = ({ commit }) => commit(types.REQUEST_JOB_LOG);
 export const fetchJobLog = ({ commit, dispatch, state }) => {
   let isScrolledToBottomBeforeReceivingJobLog;
 
-  // update trace endpoint once BE completes trace re-naming in #340626
   return (
     axios
-      .get(`${state.jobLogEndpoint}/trace.json`, {
+      .get(state.logEndpoint, {
         params: { state: state.jobLogState },
       })
       .then(({ data }) => {

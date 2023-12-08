@@ -262,18 +262,11 @@ In the example below, the `production` stage has a job with a manual action:
 
 ![Pipelines example](img/manual_pipeline_v14_2.png)
 
-#### Start multiple manual actions in a stage
+#### Start all manual jobs in a stage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27188) in GitLab 11.11.
-
-Multiple manual actions in a single stage can be started at the same time using the "Play all manual"
-After you select this action, each individual manual action is triggered and refreshed
-to an updated status.
-
-This functionality is only available:
-
-- For users with at least the Developer role.
-- If the stage contains [manual actions](#add-manual-interaction-to-your-pipeline).
+If a stage contains only manual jobs, you can start all the jobs at the same time
+by selecting **Play all manual** (**{play}**) above the stage. If the stage contains
+non-manual jobs, the option is not displayed.
 
 ### Skip a pipeline
 

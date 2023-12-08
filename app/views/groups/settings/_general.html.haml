@@ -17,7 +17,7 @@
     .row.gl-mt-3
       .form-group.col-md-9
         = f.label :description, s_('Groups|Group description (optional)'), class: 'label-bold'
-        = f.text_area :description, class: 'form-control', rows: 3
+        = f.text_area :description, class: 'form-control', rows: 3, maxlength: 500
 
     .row.gl-mt-3
       .form-group.col-md-5

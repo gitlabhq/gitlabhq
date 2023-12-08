@@ -20,13 +20,14 @@ export const initJobDetails = () => {
   }
 
   const {
+    jobEndpoint,
+    logEndpoint,
+    pagePath,
+    projectPath,
     artifactHelpUrl,
     deploymentHelpUrl,
     runnerSettingsUrl,
     subscriptionsMoreMinutesUrl,
-    endpoint,
-    pagePath,
-    projectPath,
     retryOutdatedJobDocsUrl,
     aiRootCauseAnalysisAvailable,
     testReportSummaryUrl,
@@ -35,13 +36,14 @@ export const initJobDetails = () => {
 
   // init store to start fetching log
   const store = createStore();
-  store.dispatch('init', { endpoint, pagePath, testReportSummaryUrl });
+  store.dispatch('init', { jobEndpoint, logEndpoint, testReportSummaryUrl });
 
   return new Vue({
     el,
     apolloProvider,
     store,
     provide: {
+      pagePath,
       projectPath,
       retryOutdatedJobDocsUrl,
       aiRootCauseAnalysisAvailable: parseBoolean(aiRootCauseAnalysisAvailable),

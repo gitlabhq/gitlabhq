@@ -17,7 +17,7 @@ module Ci
         self.primary_key = :id
         self.sequence_name = :p_catalog_resource_sync_events_id_seq
 
-        ignore_column :partition_id, remove_with: '3000.0', remove_after: '3000-01-01'
+        ignore_column :partition_id, remove_never: true
 
         belongs_to :catalog_resource, class_name: 'Ci::Catalog::Resource', inverse_of: :sync_events
         belongs_to :project, inverse_of: :catalog_resource_sync_events

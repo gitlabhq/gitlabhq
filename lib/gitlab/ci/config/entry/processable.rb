@@ -15,7 +15,8 @@ module Gitlab
           include ::Gitlab::Config::Entry::Inheritable
 
           PROCESSABLE_ALLOWED_KEYS = %i[extends stage only except rules variables
-                                        inherit allow_failure when needs resource_group environment].freeze
+                                        inherit allow_failure when needs resource_group environment
+                                        interruptible].freeze
           MAX_NESTING_LEVEL = 10
 
           included do
@@ -73,6 +74,10 @@ module Gitlab
             entry :environment, Entry::Environment,
               description: 'Environment configuration for this job.',
               inherit: false
+
+            entry :interruptible, ::Gitlab::Config::Entry::Boolean,
+              description: 'Set jobs interruptible value.',
+              inherit: true
 
             attributes :extends, :rules, :resource_group
           end
@@ -133,7 +138,8 @@ module Gitlab
               except: except_value,
               environment: environment_defined? ? environment_value : nil,
               environment_name: environment_defined? ? environment_value[:name] : nil,
-              resource_group: resource_group }.compact
+              resource_group: resource_group,
+              interruptible: interruptible_defined? ? interruptible_value : nil }.compact
           end
 
           def root_variables_inheritance

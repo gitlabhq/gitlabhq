@@ -423,7 +423,7 @@ export default {
         >
           <div>
             <gl-icon
-              data-qa-selector="fork_privacy_button"
+              data-testid="fork-privacy-button"
               :name="icon"
               :data-qa-privacy-level="`${value}`"
             />
@@ -440,8 +440,7 @@ export default {
         category="primary"
         variant="confirm"
         class="js-no-auto-disable"
-        data-testid="submit-button"
-        data-qa-selector="fork_project_button"
+        data-testid="fork-project-button"
         :loading="isSaving"
       >
         {{ s__('ForkProject|Fork project') }}

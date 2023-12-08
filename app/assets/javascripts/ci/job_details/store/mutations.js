@@ -3,8 +3,8 @@ import { logLinesParser } from './utils';
 
 export default {
   [types.SET_JOB_LOG_OPTIONS](state, options = {}) {
-    state.jobLogEndpoint = options.pagePath;
-    state.jobEndpoint = options.endpoint;
+    state.jobEndpoint = options.jobEndpoint;
+    state.logEndpoint = options.logEndpoint;
     state.testReportSummaryUrl = options.testReportSummaryUrl;
   },
 

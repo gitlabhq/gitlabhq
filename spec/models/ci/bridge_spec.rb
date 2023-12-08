@@ -1039,8 +1039,9 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     end
 
     it 'creates the metadata record and assigns its partition' do
-      # the factory doesn't use any metadatable setters by default
-      # so the record will be initialized by the before_validation callback
+      # The record is initialized by the factory calling metadatable setters
+      bridge.metadata = nil
+
       expect(bridge.metadata).to be_nil
 
       expect(bridge.save!).to be_truthy

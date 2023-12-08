@@ -111,11 +111,6 @@ module Ci
     validates :coverage, numericality: true, allow_blank: true
     validates :ref, presence: true
 
-    scope :not_interruptible, -> do
-      joins(:metadata)
-        .where.not(Ci::BuildMetadata.table_name => { id: Ci::BuildMetadata.scoped_build.with_interruptible.select(:id) })
-    end
-
     scope :unstarted, -> { where(runner_id: nil) }
 
     scope :with_any_artifacts, -> do

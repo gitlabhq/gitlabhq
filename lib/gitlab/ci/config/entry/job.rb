@@ -13,7 +13,7 @@ module Gitlab
           ALLOWED_WHEN = %w[on_success on_failure always manual delayed].freeze
           ALLOWED_KEYS = %i[tags script image services start_in artifacts
                             cache dependencies before_script after_script hooks
-                            coverage retry parallel interruptible timeout
+                            coverage retry parallel timeout
                             release id_tokens publish pages].freeze
 
           validations do
@@ -83,10 +83,6 @@ module Gitlab
             description: 'Services that will be used to execute this job.',
             inherit: true
 
-          entry :interruptible, ::Gitlab::Config::Entry::Boolean,
-            description: 'Set jobs interruptible value.',
-            inherit: true
-
           entry :timeout, Entry::Timeout,
             description: 'Timeout duration of this job.',
             inherit: true
@@ -139,7 +135,7 @@ module Gitlab
 
           attributes :script, :tags, :when, :dependencies,
                      :needs, :retry, :parallel, :start_in,
-                     :interruptible, :timeout, :release,
+                     :timeout, :release,
                      :allow_failure, :publish, :pages
 
           def self.matching?(name, config)
@@ -169,7 +165,6 @@ module Gitlab
               coverage: coverage_defined? ? coverage_value : nil,
               retry: retry_defined? ? retry_value : nil,
               parallel: has_parallel? ? parallel_value : nil,
-              interruptible: interruptible_defined? ? interruptible_value : nil,
               timeout: parsed_timeout,
               artifacts: artifacts_value,
               release: release_value,

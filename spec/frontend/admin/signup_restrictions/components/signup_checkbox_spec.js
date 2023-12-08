@@ -10,7 +10,7 @@ describe('Signup Form', () => {
     helpText: 'some help text',
     label: 'a label',
     value: true,
-    dataQaSelector: 'qa_selector',
+    dataTestId: 'test-id',
   };
 
   const mountComponent = () => {
@@ -55,7 +55,7 @@ describe('Signup Form', () => {
       });
 
       it('gets passed data qa selector', () => {
-        expect(findCheckbox().attributes('data-qa-selector')).toBe(props.dataQaSelector);
+        expect(findCheckbox().attributes('data-testid')).toBe(props.dataTestId);
       });
     });
   });

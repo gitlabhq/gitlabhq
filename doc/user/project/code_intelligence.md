@@ -40,7 +40,7 @@ code_navigation:
       lsif: dump.lsif
 ```
 
-The generated LSIF file size may be limited by
+The generated LSIF file size might be limited by
 the [artifact application limits (`ci_max_artifact_size_lsif`)](../../administration/instance_limits.md#maximum-file-size-per-type-of-artifact),
 default to 100 MB (configurable by an instance administrator).
 

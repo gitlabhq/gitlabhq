@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
 import {
-  setJobLogOptions,
+  init,
   clearEtagPoll,
   stopPolling,
   requestJob,
@@ -37,6 +37,9 @@ import { testSummaryData } from 'jest/ci/jobs_mock_data';
 
 jest.mock('~/lib/utils/scroll_utils');
 
+const mockJobEndpoint = '/group1/project1/-/jobs/99.json';
+const mockLogEndpoint = '/group1/project1/-/jobs/99/trace';
+
 describe('Job State actions', () => {
   let mockedState;
 
@@ -44,22 +47,27 @@ describe('Job State actions', () => {
     mockedState = state();
   });
 
-  describe('setJobLogOptions', () => {
+  describe('init', () => {
     it('should commit SET_JOB_LOG_OPTIONS mutation', () => {
       return testAction(
-        setJobLogOptions,
-        { endpoint: '/group1/project1/-/jobs/99.json', pagePath: '/group1/project1/-/jobs/99' },
+        init,
+        {
+          jobEndpoint: mockJobEndpoint,
+          logEndpoint: mockLogEndpoint,
+          testReportSummaryUrl: '/group1/project1/-/jobs/99/test_report_summary.json',
+        },
         mockedState,
         [
           {
             type: types.SET_JOB_LOG_OPTIONS,
             payload: {
-              endpoint: '/group1/project1/-/jobs/99.json',
-              pagePath: '/group1/project1/-/jobs/99',
+              jobEndpoint: mockJobEndpoint,
+              logEndpoint: mockLogEndpoint,
+              testReportSummaryUrl: '/group1/project1/-/jobs/99/test_report_summary.json',
             },
           },
         ],
-        [],
+        [{ type: 'fetchJob' }],
       );
     });
   });
@@ -102,7 +110,7 @@ describe('Job State actions', () => {
     let mock;
 
     beforeEach(() => {
-      mockedState.jobEndpoint = `${TEST_HOST}/endpoint.json`;
+      mockedState.jobEndpoint = mockJobEndpoint;
       mock = new MockAdapter(axios);
     });
 
@@ -114,9 +122,7 @@ describe('Job State actions', () => {
 
     describe('success', () => {
       it('dispatches requestJob and receiveJobSuccess', () => {
-        mock
-          .onGet(`${TEST_HOST}/endpoint.json`)
-          .replyOnce(HTTP_STATUS_OK, { id: 121212, name: 'karma' });
+        mock.onGet(mockJobEndpoint).replyOnce(HTTP_STATUS_OK, { id: 121212, name: 'karma' });
 
         return testAction(
           fetchJob,
@@ -206,7 +212,7 @@ describe('Job State actions', () => {
     let mock;
 
     beforeEach(() => {
-      mockedState.jobLogEndpoint = `${TEST_HOST}/endpoint`;
+      mockedState.logEndpoint = mockLogEndpoint;
       mock = new MockAdapter(axios);
     });
 
@@ -230,7 +236,7 @@ describe('Job State actions', () => {
             complete: true,
           };
 
-          mock.onGet(`${TEST_HOST}/endpoint/trace.json`).replyOnce(HTTP_STATUS_OK, jobLogPayload);
+          mock.onGet(mockLogEndpoint).replyOnce(HTTP_STATUS_OK, jobLogPayload);
         });
 
         it('commits RECEIVE_JOB_LOG_SUCCESS, dispatches stopPollingJobLog and requestTestSummary', () => {
@@ -256,7 +262,7 @@ describe('Job State actions', () => {
             complete: false,
           };
 
-          mock.onGet(`${TEST_HOST}/endpoint/trace.json`).replyOnce(HTTP_STATUS_OK, jobLogPayload);
+          mock.onGet(mockLogEndpoint).replyOnce(HTTP_STATUS_OK, jobLogPayload);
         });
 
         it('dispatches startPollingJobLog', () => {
@@ -301,7 +307,7 @@ describe('Job State actions', () => {
             complete: true,
           };
 
-          mock.onGet(`${TEST_HOST}/endpoint/trace.json`).replyOnce(HTTP_STATUS_OK, jobLogPayload);
+          mock.onGet(mockLogEndpoint).replyOnce(HTTP_STATUS_OK, jobLogPayload);
         });
 
         it('should auto scroll to bottom by dispatching scrollBottom', () => {
@@ -327,7 +333,7 @@ describe('Job State actions', () => {
 
     describe('server error', () => {
       beforeEach(() => {
-        mock.onGet(`${TEST_HOST}/endpoint/trace.json`).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+        mock.onGet(mockLogEndpoint).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('dispatches requestJobLog and receiveJobLogError', () => {
@@ -347,7 +353,7 @@ describe('Job State actions', () => {
 
     describe('unexpected error', () => {
       beforeEach(() => {
-        mock.onGet(`${TEST_HOST}/endpoint/trace.json`).reply(() => {
+        mock.onGet(mockLogEndpoint).reply(() => {
           throw new Error('an error');
         });
       });

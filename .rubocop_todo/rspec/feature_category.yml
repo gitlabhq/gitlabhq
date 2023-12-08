@@ -2905,7 +2905,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/ci/config/edge_stages_injector_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/allow_failure_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/artifacts_spec.rb'
-    - 'spec/lib/gitlab/ci/config/entry/bridge_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/cache_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/caches_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/commands_spec.rb'

@@ -33,6 +33,7 @@ You can use advanced search in:
 - On GitLab.com, advanced search is enabled for groups with paid subscriptions.
 - For self-managed GitLab instances, an administrator must
   [enable advanced search](../../integration/advanced_search/elasticsearch.md#enable-advanced-search).
+- For GitLab Dedicated, advanced search is enabled.
 
 ## Syntax
 

@@ -207,12 +207,12 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
 
         it 'does not cancel any builds' do
           expect(build_statuses(prev_pipeline)).to contain_exactly('running', 'success', 'created')
-          expect(build_statuses(parent_pipeline)).to contain_exactly('running', 'running')
+          expect(build_statuses(parent_pipeline)).to contain_exactly('created', 'running', 'running')
 
           execute
 
           expect(build_statuses(prev_pipeline)).to contain_exactly('running', 'success', 'created')
-          expect(build_statuses(parent_pipeline)).to contain_exactly('running', 'running')
+          expect(build_statuses(parent_pipeline)).to contain_exactly('created', 'running', 'running')
         end
       end
 
@@ -224,6 +224,25 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
 
           expect(build_statuses(prev_pipeline)).to contain_exactly('created', 'running', 'success')
           expect(build_statuses(pipeline)).to contain_exactly('pending')
+        end
+      end
+
+      context 'when there are trigger jobs' do
+        before do
+          create(:ci_bridge, :created, pipeline: prev_pipeline)
+          create(:ci_bridge, :running, pipeline: prev_pipeline)
+          create(:ci_bridge, :success, pipeline: prev_pipeline)
+          create(:ci_bridge, :interruptible, :created, pipeline: prev_pipeline)
+          create(:ci_bridge, :interruptible, :running, pipeline: prev_pipeline)
+          create(:ci_bridge, :interruptible, :success, pipeline: prev_pipeline)
+        end
+
+        it 'still cancels the pipeline because auto-cancel is not affected by non-interruptible started triggers' do
+          execute
+
+          expect(job_statuses(prev_pipeline)).to contain_exactly(
+            'canceled', 'success', 'canceled', 'canceled', 'canceled', 'success', 'canceled', 'canceled', 'success')
+          expect(job_statuses(pipeline)).to contain_exactly('pending')
         end
       end
 
@@ -269,7 +288,8 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
 
   private
 
-  def build_statuses(pipeline)
-    pipeline.builds.pluck(:status)
+  def job_statuses(pipeline)
+    pipeline.statuses.pluck(:status)
   end
+  alias_method :build_statuses, :job_statuses
 end

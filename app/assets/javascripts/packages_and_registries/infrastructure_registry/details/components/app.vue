@@ -126,7 +126,6 @@ export default {
       attributes: {
         variant: 'danger',
         category: 'primary',
-        'data-qa-selector': 'delete_modal_button',
       },
     },
     fileDeletePrimaryAction: {
@@ -158,7 +157,6 @@ export default {
           class="js-delete-button"
           variant="danger"
           category="primary"
-          data-qa-selector="delete_button"
         >
           {{ __('Delete') }}
         </gl-button>

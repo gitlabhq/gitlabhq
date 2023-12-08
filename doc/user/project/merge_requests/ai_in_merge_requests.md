@@ -80,7 +80,7 @@ Provide feedback on this experimental feature in [issue 408991](https://gitlab.c
 
 This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
 
-When preparing to merge your merge request you may wish to edit the proposed squash or merge commit message.
+When preparing to merge your merge request you might wish to edit the proposed squash or merge commit message.
 
 To generate a commit message with GitLab Duo:
 

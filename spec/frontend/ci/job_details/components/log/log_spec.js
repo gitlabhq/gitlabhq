@@ -10,6 +10,8 @@ import LineNumber from '~/ci/job_details/components/log/line_number.vue';
 import { logLinesParser } from '~/ci/job_details/store/utils';
 import { mockJobLog, mockJobLogLineCount } from './mock_data';
 
+const mockPagePath = 'project/-/jobs/99';
+
 jest.mock('~/lib/utils/common_utils', () => ({
   ...jest.requireActual('~/lib/utils/common_utils'),
   scrollToElement: jest.fn(),
@@ -28,6 +30,9 @@ describe('Job Log', () => {
     store = new Vuex.Store({ actions, state });
 
     wrapper = mount(Log, {
+      provide: {
+        pagePath: mockPagePath,
+      },
       propsData: {
         ...props,
       },
@@ -46,25 +51,25 @@ describe('Job Log', () => {
     state = {
       jobLog: lines,
       jobLogSections: sections,
-      jobLogEndpoint: 'jobs/id',
     };
   });
 
-  const findLineNumbers = () => wrapper.findAllComponents(LineNumber).wrappers.map((w) => w.text());
+  const findLineNumbers = () => wrapper.findAllComponents(LineNumber);
   const findLineHeader = () => wrapper.findComponent(LogLineHeader);
-  const findAllLineHeaders = () => wrapper.findAllComponents(LogLineHeader);
+  const findLineHeaders = () => wrapper.findAllComponents(LogLineHeader);
 
   describe('line numbers', () => {
     beforeEach(() => {
       createComponent();
     });
 
-    it('renders a line number for each line %d', () => {
-      const expectLineNumbers = Array(mockJobLogLineCount)
-        .fill()
-        .map((_, i) => `${i + 1}`);
+    it('renders a line number for each line %d with an href', () => {
+      for (let i = 0; i < mockJobLogLineCount; i += 1) {
+        const w = findLineNumbers().at(i);
 
-      expect(findLineNumbers()).toEqual(expectLineNumbers);
+        expect(w.text()).toBe(`${i + 1}`);
+        expect(w.attributes('href')).toBe(`${mockPagePath}#L${i + 1}`);
+      }
     });
   });
 
@@ -112,7 +117,7 @@ describe('Job Log', () => {
       });
 
       it('hides lines in section', () => {
-        expect(findLineNumbers()).toEqual([
+        expect(findLineNumbers().wrappers.map((w) => w.text())).toEqual([
           '1',
           '2',
           '3',
@@ -185,8 +190,8 @@ describe('Job Log', () => {
 
         createComponent({ searchResults: mockSearchResults });
 
-        expect(findAllLineHeaders().at(0).props('isHighlighted')).toBe(true);
-        expect(findAllLineHeaders().at(1).props('isHighlighted')).toBe(false);
+        expect(findLineHeaders().at(0).props('isHighlighted')).toBe(true);
+        expect(findLineHeaders().at(1).props('isHighlighted')).toBe(false);
       });
     });
   });

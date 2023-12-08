@@ -19,14 +19,15 @@ RSpec.describe Ci::JobsHelper, feature_category: :continuous_integration do
 
     it 'returns jobs data' do
       expect(helper.jobs_data(project, job)).to include({
-        "endpoint" => "/#{project.full_path}/-/jobs/#{job.id}.json",
+        "job_endpoint" => "/#{project.full_path}/-/jobs/#{job.id}.json",
+        "log_endpoint" => "/#{project.full_path}/-/jobs/#{job.id}/trace",
+        "test_report_summary_url" => "/#{project.full_path}/-/jobs/#{job.id}/test_report_summary.json",
         "page_path" => "/#{project.full_path}/-/jobs/#{job.id}",
         "project_path" => project.full_path,
         "artifact_help_url" => "/help/user/gitlab_com/index.md#gitlab-cicd",
         "deployment_help_url" => "/help/user/project/clusters/deploy_to_cluster.md#troubleshooting",
         "runner_settings_url" => "/#{project.full_path}/-/runners#js-runners-settings",
         "retry_outdated_job_docs_url" => "/help/ci/pipelines/settings#retry-outdated-jobs",
-        "test_report_summary_url" => "/#{project.full_path}/-/jobs/#{job.id}/test_report_summary.json",
         "pipeline_test_report_url" => "/#{project.full_path}/-/pipelines/#{job.pipeline.id}/test_report"
       })
     end

@@ -93,7 +93,6 @@ export default {
     tableCell({
       key: 'status',
       label: __('Status'),
-      tdAttr: { 'data-qa-selector': 'import_status_indicator' },
     }),
   ],
 

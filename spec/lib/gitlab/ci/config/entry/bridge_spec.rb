@@ -2,10 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Bridge do
+RSpec.describe Gitlab::Ci::Config::Entry::Bridge, feature_category: :continuous_integration do
   subject(:entry) { described_class.new(config, name: :my_bridge) }
 
   it_behaves_like 'with inheritable CI config' do
+    let(:config) { { trigger: 'some/project' } }
     let(:inheritable_key) { 'default' }
     let(:inheritable_class) { Gitlab::Ci::Config::Entry::Default }
 
@@ -13,8 +14,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Bridge do
     # that we know that we don't want to inherit
     # as they do not have sense in context of Bridge
     let(:ignored_inheritable_columns) do
-      %i[before_script after_script hooks image services cache interruptible timeout
+      %i[before_script after_script hooks image services cache timeout
          retry tags artifacts id_tokens]
+    end
+
+    before do
+      allow(entry).to receive_message_chain(:inherit_entry, :default_entry, :inherit?).and_return(true)
     end
   end
 

@@ -123,55 +123,6 @@ module Gitlab
           end
         end
 
-        describe 'interruptible entry' do
-          describe 'interruptible job' do
-            let(:config) do
-              YAML.dump(rspec: { script: 'rspec', interruptible: true })
-            end
-
-            it { expect(rspec_build[:interruptible]).to be_truthy }
-          end
-
-          describe 'interruptible job with default value' do
-            let(:config) do
-              YAML.dump(rspec: { script: 'rspec' })
-            end
-
-            it { expect(rspec_build).not_to have_key(:interruptible) }
-          end
-
-          describe 'uninterruptible job' do
-            let(:config) do
-              YAML.dump(rspec: { script: 'rspec', interruptible: false })
-            end
-
-            it { expect(rspec_build[:interruptible]).to be_falsy }
-          end
-
-          it "returns interruptible when overridden for job" do
-            config = YAML.dump({ default: { interruptible: true },
-                                 rspec: { script: "rspec" } })
-
-            config_processor = described_class.new(config).execute
-            builds = config_processor.builds.select { |b| b[:stage] == "test" }
-
-            expect(builds.size).to eq(1)
-            expect(builds.first).to eq({
-              stage: "test",
-              stage_idx: 2,
-              name: "rspec",
-              only: { refs: %w[branches tags] },
-              options: { script: ["rspec"] },
-              interruptible: true,
-              allow_failure: false,
-              when: "on_success",
-              job_variables: [],
-              root_variables_inheritance: true,
-              scheduling_type: :stage
-            })
-          end
-        end
-
         describe 'retry entry' do
           context 'when retry count is specified' do
             let(:config) do

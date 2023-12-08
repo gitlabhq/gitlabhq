@@ -637,11 +637,5 @@ FactoryBot.define do
         build.build_runner_session(url: 'https://gitlab.example.com')
       end
     end
-
-    trait :interruptible do
-      after(:build) do |build|
-        build.metadata.interruptible = true
-      end
-    end
   end
 end

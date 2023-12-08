@@ -740,3 +740,12 @@ export const isDefaultCiConfig = (path) => {
 export const hasCiConfigExtension = (path) => {
   return CI_CONFIG_PATH_EXTENSION.test(path);
 };
+
+/**
+ * Checks if an element with position:sticky is stuck
+ *
+ * @param el
+ * @returns {boolean}
+ */
+export const isElementStuck = (el) =>
+  el.getBoundingClientRect().top <= parseInt(getComputedStyle(el).top, 10);

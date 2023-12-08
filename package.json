@@ -124,7 +124,7 @@
     "clipboard": "^2.0.8",
     "compression-webpack-plugin": "^5.0.2",
     "copy-webpack-plugin": "^6.4.1",
-    "core-js": "^3.33.3",
+    "core-js": "^3.34.0",
     "cron-validator": "^1.1.1",
     "cronstrue": "^1.122.0",
     "cropperjs": "^1.6.1",

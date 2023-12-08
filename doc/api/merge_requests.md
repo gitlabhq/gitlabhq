@@ -206,7 +206,7 @@ Supported attributes:
 
 ### Merge requests list response notes
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31890) in GitLab 13.0, listing merge requests may
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31890) in GitLab 13.0, listing merge requests might
   not proactively update `merge_status` (which also affects the `has_conflicts`), as this can be an expensive operation.
   If you need the value of these fields from this endpoint, set the `with_merge_status_recheck` parameter to
   `true` in the query.
@@ -1279,7 +1279,7 @@ POST /projects/:id/merge_requests
 | `milestone_id`             | integer | No       | The global ID of a milestone. |
 | `remove_source_branch`     | boolean | No       | Flag indicating if a merge request should remove the source branch when merging. |
 | `reviewer_ids`             | integer array | No | The ID of the users added as a reviewer to the merge request. If set to `0` or left empty, no reviewers are added. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49341) in GitLab 13.8. |
-| `squash`                   | boolean | No       | Indicates if the merge request is set to be squashed when merged. [Project settings](../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project) may override this value. |
+| `squash`                   | boolean | No       | Indicates if the merge request is set to be squashed when merged. [Project settings](../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project) might override this value. |
 | `target_project_id`        | integer | No       | Numeric ID of the target project. |
 
 ```json

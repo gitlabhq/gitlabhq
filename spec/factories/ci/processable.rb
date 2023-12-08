@@ -11,6 +11,10 @@ FactoryBot.define do
     scheduling_type { 'stage' }
     partition_id { pipeline.partition_id }
 
+    options do
+      {}
+    end
+
     # This factory was updated to help with the efforts of the removal of `ci_builds.stage`:
     # https://gitlab.com/gitlab-org/gitlab/-/issues/364377
     # These additions can be removed once the specs that use the stage attribute have been updated
@@ -50,6 +54,12 @@ FactoryBot.define do
 
       after(:build) do |processable, evaluator|
         processable.resource_group = create(:ci_resource_group, project: processable.project)
+      end
+    end
+
+    trait :interruptible do
+      after(:build) do |processable|
+        processable.metadata.interruptible = true
       end
     end
   end

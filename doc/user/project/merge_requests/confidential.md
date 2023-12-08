@@ -33,8 +33,8 @@ permissions in your downstream private fork without action by you. These users c
 immediately push code to branches in your private fork to help fix the confidential issue.
 
 WARNING:
-Your private fork may expose confidential information, if you create it in a different
-namespace than the upstream repository. The two namespaces may not contain the same users.
+Your private fork might expose confidential information, if you create it in a different
+namespace than the upstream repository. The two namespaces might not contain the same users.
 
 Prerequisites:
 

@@ -129,7 +129,7 @@ export default {
 </script>
 
 <template>
-  <settings-block data-qa-selector="dependency_proxy_settings_content">
+  <settings-block data-testid="dependency-proxy-settings-content">
     <template #title> {{ $options.i18n.DEPENDENCY_PROXY_HEADER }} </template>
     <template #description> {{ $options.i18n.DEPENDENCY_PROXY_DESCRIPTION }} </template>
     <template #default>
@@ -138,7 +138,6 @@ export default {
           v-model="enabled"
           :disabled="isLoading"
           :label="$options.i18n.enabledProxyLabel"
-          data-qa-selector="dependency_proxy_setting_toggle"
           data-testid="dependency-proxy-setting-toggle"
         >
           <template v-if="enabled" #help>

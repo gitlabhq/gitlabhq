@@ -12,6 +12,7 @@ export default {
     LogLineHeader,
     LogLine,
   },
+  inject: ['pagePath'],
   props: {
     searchResults: {
       type: Array,
@@ -20,7 +21,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['jobLogEndpoint', 'jobLog', 'jobLogSections', 'isJobLogComplete']),
+    ...mapState(['jobLog', 'jobLogSections', 'isJobLogComplete']),
     highlightedLines() {
       return this.searchResults.map((result) => result.lineNumber);
     },
@@ -73,7 +74,7 @@ export default {
           v-if="line.isHeader"
           :key="line.offset"
           :line="line"
-          :path="jobLogEndpoint"
+          :path="pagePath"
           :is-closed="jobLogSections[line.section].isClosed"
           :duration="jobLogSections[line.section].duration"
           :hide-duration="jobLogSections[line.section].hideDuration"
@@ -84,7 +85,7 @@ export default {
           v-else
           :key="line.offset"
           :line="line"
-          :path="jobLogEndpoint"
+          :path="pagePath"
           :is-highlighted="isHighlighted(line)"
         />
       </template>

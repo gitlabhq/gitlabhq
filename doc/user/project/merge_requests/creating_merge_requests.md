@@ -26,7 +26,7 @@ You can create a merge request from the list of merge requests.
 1. Fill out the fields and select **Create merge request**.
 
 NOTE:
-Merge requests are designed around a one-to-one (1:1) branch relationship. Only one open merge request may
+Merge requests are designed around a one-to-one (1:1) branch relationship. Only one open merge request can
 be associated with a given target branch at a time.
 
 ## From an issue

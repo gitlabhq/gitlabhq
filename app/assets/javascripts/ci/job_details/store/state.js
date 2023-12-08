@@ -1,6 +1,6 @@
 export default () => ({
   jobEndpoint: null,
-  jobLogEndpoint: null,
+  logEndpoint: null,
   testReportSummaryUrl: null,
 
   // sidebar

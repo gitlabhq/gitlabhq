@@ -65,10 +65,10 @@ export default {
       key: 'created_at',
       label: __('Date'),
     }),
+
     tableCell({
       key: 'status',
       label: __('Status'),
-      tdAttr: { 'data-qa-selector': 'import_status_indicator' },
     }),
   ],
 

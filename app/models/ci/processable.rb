@@ -33,6 +33,12 @@ module Ci
       where('NOT EXISTS (?)', needs)
     end
 
+    scope :not_interruptible, -> do
+      joins(:metadata).where.not(
+        Ci::BuildMetadata.table_name => { id: Ci::BuildMetadata.scoped_build.with_interruptible.select(:id) }
+      )
+    end
+
     state_machine :status do
       event :enqueue do
         transition [:created, :skipped, :manual, :scheduled] => :waiting_for_resource, if: :with_resource_group?

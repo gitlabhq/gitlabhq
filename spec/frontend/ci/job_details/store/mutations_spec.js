@@ -16,13 +16,15 @@ describe('Jobs Store Mutations', () => {
   describe('SET_JOB_LOG_OPTIONS', () => {
     it('should set jobEndpoint', () => {
       mutations[types.SET_JOB_LOG_OPTIONS](stateCopy, {
-        endpoint: '/group1/project1/-/jobs/99.json',
-        pagePath: '/group1/project1/-/jobs/99',
+        jobEndpoint: '/group1/project1/-/jobs/99.json',
+        logEndpoint: '/group1/project1/-/jobs/99/trace',
+        testReportSummaryUrl: '/group1/project1/-/jobs/99/test_report_summary.json',
       });
 
       expect(stateCopy).toMatchObject({
-        jobLogEndpoint: '/group1/project1/-/jobs/99',
         jobEndpoint: '/group1/project1/-/jobs/99.json',
+        logEndpoint: '/group1/project1/-/jobs/99/trace',
+        testReportSummaryUrl: '/group1/project1/-/jobs/99/test_report_summary.json',
       });
     });
   });

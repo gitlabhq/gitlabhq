@@ -462,7 +462,7 @@ merge request to display an incorrect message: `merged into <branch-name>`.
 
 ### Close a merge request from the Rails console **(FREE SELF)**
 
-If closing a merge request doesn't work through the UI or API, you may want to attempt to close it in a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
+If closing a merge request doesn't work through the UI or API, you might want to attempt to close it in a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
@@ -476,7 +476,7 @@ MergeRequests::CloseService.new(project: p, current_user: u).execute(m)
 
 ### Delete a merge request from the Rails console **(FREE SELF)**
 
-If deleting a merge request doesn't work through the UI or API, you may want to attempt to delete it in a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
+If deleting a merge request doesn't work through the UI or API, you might want to attempt to delete it in a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
 WARNING:
 Any command that changes data directly could be damaging if not run correctly,

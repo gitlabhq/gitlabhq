@@ -154,9 +154,6 @@ class ProjectPolicy < BasePolicy
   end
 
   with_scope :subject
-  condition(:restrict_job_token_enabled) { Feature.enabled?(:restrict_ci_job_token_for_public_and_internal_projects, @subject) }
-
-  with_scope :subject
   condition(:forking_allowed) do
     @subject.feature_available?(:forking, @user)
   end
@@ -709,7 +706,7 @@ class ProjectPolicy < BasePolicy
   rule { ~public_project & ~internal_access & ~project_allowed_for_job_token }.prevent_all
 
   # If this project is public or internal we want to prevent all aside from a few public policies
-  rule { public_or_internal & ~project_allowed_for_job_token & restrict_job_token_enabled }.policy do
+  rule { public_or_internal & ~project_allowed_for_job_token }.policy do
     prevent :guest_access
     prevent :public_access
     prevent :public_user_access
@@ -719,25 +716,25 @@ class ProjectPolicy < BasePolicy
     prevent :owner_access
   end
 
-  rule { public_or_internal & job_token_container_registry & restrict_job_token_enabled }.policy do
+  rule { public_or_internal & job_token_container_registry }.policy do
     enable :build_read_container_image
     enable :read_container_image
   end
 
-  rule { public_or_internal & job_token_package_registry & restrict_job_token_enabled }.policy do
+  rule { public_or_internal & job_token_package_registry }.policy do
     enable :read_package
     enable :read_project
   end
 
-  rule { public_or_internal & job_token_builds & restrict_job_token_enabled }.policy do
+  rule { public_or_internal & job_token_builds }.policy do
     enable :read_commit_status # this is additionally needed to download artifacts
   end
 
-  rule { public_or_internal & job_token_releases & restrict_job_token_enabled }.policy do
+  rule { public_or_internal & job_token_releases }.policy do
     enable :read_release
   end
 
-  rule { public_or_internal & job_token_environments & restrict_job_token_enabled }.policy do
+  rule { public_or_internal & job_token_environments }.policy do
     enable :read_environment
   end
 

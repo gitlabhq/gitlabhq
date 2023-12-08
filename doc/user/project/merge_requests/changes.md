@@ -84,7 +84,7 @@ The changes are displayed after the original text.
 
 ## Compare changes side-by-side
 
-Depending on the length of the changes in your merge request, you may find it
+Depending on the length of the changes in your merge request, you might find it
 easier to view the changes inline, or side-by-side:
 
 1. On the left sidebar, select **Search or go to** and find your project.

@@ -78,7 +78,6 @@ export default {
             exception: 'mavenDuplicateExceptionRegex',
           },
           testid: 'maven-settings',
-          dataQaSelector: 'allow_duplicates_toggle',
         },
         {
           id: 'generic-duplicated-settings-regex-input',
@@ -154,7 +153,7 @@ export default {
 </script>
 
 <template>
-  <settings-block data-qa-selector="package_registry_settings_content">
+  <settings-block data-testid="package-registry-settings-content">
     <template #title> {{ $options.i18n.PACKAGE_SETTINGS_HEADER }}</template>
     <template #description>
       <span data-testid="description">
@@ -174,7 +173,7 @@ export default {
           </template>
           <template #cell(allowDuplicates)="{ item }">
             <gl-toggle
-              :data-qa-selector="item.dataQaSelector"
+              :data-testid="item.dataTestid"
               :label="$options.i18n.DUPLICATES_TOGGLE_LABEL"
               :value="item.duplicatesAllowed"
               :disabled="isLoading"
