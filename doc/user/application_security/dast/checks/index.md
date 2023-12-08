@@ -1,7 +1,7 @@
 ---
 stage: Secure
 group: Dynamic Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # DAST browser-based crawler vulnerability checks **(ULTIMATE)**
@@ -168,12 +168,18 @@ The [DAST browser-based crawler](../browser_based.md) provides a number of vulne
 | ID | Check | Severity | Type |
 |:---|:------|:---------|:-----|
 | [113.1](113.1.md) | Improper Neutralization of CRLF Sequences in HTTP Headers | High | Active |
+| [1336.1](1336.1.md) | Server-Side Template Injection | High | Active |
+| [16.11](16.11.md) | TRACE HTTP method enabled | High | Active |
 | [22.1](22.1.md) | Improper limitation of a pathname to a restricted directory (Path traversal) | High | Active |
 | [611.1](611.1.md) | External XML Entity Injection (XXE) | High | Active |
+| [74.1](74.1.md) | XSLT Injection | High | Active |
+| [78.1](78.1.md) | OS Command Injection | High | Active |
 | [89.1](89.1.md) | SQL Injection | High | Active |
 | [917.1](917.1.md) | Expression Language Injection | High | Active |
+| [918.1](918.1.md) | Server-Side Request Forgery | High | Active |
 | [94.1](94.1.md) | Server-side code injection (PHP) | High | Active |
 | [94.2](94.2.md) | Server-side code injection (Ruby) | High | Active |
 | [94.3](94.3.md) | Server-side code injection (Python) | High | Active |
 | [94.4](94.4.md) | Server-side code injection (NodeJS) | High | Active |
 | [943.1](943.1.md) | Improper neutralization of special elements in data query logic | High | Active |
+| [98.1](98.1.md) | PHP Remote File Inclusion | High | Active |

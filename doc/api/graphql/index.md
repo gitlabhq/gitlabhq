@@ -61,6 +61,17 @@ You can work with sample queries that pull data from public projects on GitLab.c
 
 The [get started](getting_started.md) page includes different methods to customize GraphQL queries.
 
+### Global IDs
+
+In the GitLab GraphQL API, an `id` field is nearly always a [Global ID](https://graphql.org/learn/global-object-identification/)
+and never a database primary key ID. A Global ID in the GitLab GraphQL API
+begins with `"gid://gitlab/"`. For example, `"gid://gitlab/Issue/123"`.
+
+Global IDs are a convention used for caching and fetching in some client-side libraries.
+
+GitLab Global IDs are subject to change. If changed, the use of the old Global ID as an argument is deprecated and supported according to the [deprecation and breaking change](#breaking-changes) process.
+You should not expect that a cached Global ID will be valid beyond the time of a GitLab GraphQL deprecation cycle.
+
 ## Breaking changes
 
 The GitLab GraphQL API is [versionless](https://graphql.org/learn/best-practices/#versioning) and changes to the API are primarily backward-compatible.

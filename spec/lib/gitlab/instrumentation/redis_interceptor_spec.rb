@@ -84,7 +84,6 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :request_store, featur
           expect(redis._client).to receive(:write).with([:get, 'foobar']).and_raise(::Redis::ConnectionError)
         end
 
-        expect(instrumentation_class).to receive(:log_exception).with(instance_of(Redis::ConnectionError)).and_call_original
         expect(instrumentation_class).to receive(:instance_count_connection_exception)
                                              .with(instance_of(Redis::ConnectionError)).and_call_original
 

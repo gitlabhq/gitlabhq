@@ -39,7 +39,6 @@ module Gitlab
       def instrument_reconnection_errors
         yield
       rescue ::Redis::BaseConnectionError => ex
-        instrumentation_class.log_exception(ex)
         instrumentation_class.instance_count_connection_exception(ex)
 
         raise ex

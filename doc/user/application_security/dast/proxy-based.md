@@ -6,6 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # DAST proxy-based analyzer **(ULTIMATE ALL)**
 
+WARNING:
+Proxy-based DAST is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966).
+We plan to [remove support for Proxy-based DAST](../../../update/deprecations.md#proxy-based-dast-deprecated). Please migrate to [Browser-based DAST](browser_based.md)
+to continue analyzing your projects for security findings via dynamic analysis.
+
 The DAST proxy-based analyzer can be added to your [GitLab CI/CD](../../../ci/index.md) pipeline.
 This helps you discover vulnerabilities in web applications that do not use JavaScript heavily. For applications that do,
 see the [DAST browser-based analyzer](browser_based.md).

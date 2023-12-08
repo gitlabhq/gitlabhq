@@ -6,10 +6,10 @@ require (
 	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.2.0
 	github.com/BurntSushi/toml v1.3.2
 	github.com/alecthomas/chroma/v2 v2.11.1
-	github.com/aws/aws-sdk-go v1.45.20
+	github.com/aws/aws-sdk-go v1.48.10
 	github.com/disintegration/imaging v1.6.2
 	github.com/getsentry/raven-go v0.2.0
-	github.com/golang-jwt/jwt/v5 v5.0.0
+	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/golang/gddo v0.0.0-20210115222349-20d68f94ee1f
 	github.com/gorilla/websocket v1.5.1
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
@@ -25,7 +25,7 @@ require (
 	gitlab.com/gitlab-org/gitaly/v16 v16.6.1
 	gitlab.com/gitlab-org/labkit v1.21.0
 	gocloud.dev v0.34.0
-	golang.org/x/image v0.7.0
+	golang.org/x/image v0.14.0
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
 	golang.org/x/net v0.17.0
 	golang.org/x/oauth2 v0.11.0
@@ -114,7 +114,7 @@ require (
 	golang.org/x/mod v0.13.0 // indirect
 	golang.org/x/sync v0.4.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect
-	golang.org/x/text v0.13.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/api v0.134.0 // indirect
