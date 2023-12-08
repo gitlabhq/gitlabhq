@@ -56,7 +56,6 @@ module Gitlab
       gon.dot_com                = Gitlab.com?
       gon.uf_error_prefix        = ::Gitlab::Utils::ErrorMessage::UF_ERROR_PREFIX
       gon.pat_prefix             = Gitlab::CurrentSettings.current_application_settings.personal_access_token_prefix
-      gon.use_new_navigation     = NavHelper.show_super_sidebar?(current_user)
       gon.keyboard_shortcuts_enabled = current_user ? current_user.keyboard_shortcuts_enabled : true
 
       gon.diagramsnet_url = Gitlab::CurrentSettings.diagramsnet_url if Gitlab::CurrentSettings.diagramsnet_enabled
@@ -81,6 +80,7 @@ module Gitlab
       # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/399248
       push_frontend_feature_flag(:remove_monitor_metrics)
       push_frontend_feature_flag(:custom_emoji)
+      push_frontend_feature_flag(:encoding_logs_tree)
     end
 
     # Exposes the state of a feature flag to the frontend code.

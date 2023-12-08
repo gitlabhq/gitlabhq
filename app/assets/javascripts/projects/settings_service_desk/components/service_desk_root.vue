@@ -53,6 +53,9 @@ export default {
     projectKey: {
       default: '',
     },
+    reopenIssueOnExternalParticipantNote: {
+      default: false,
+    },
     addExternalParticipantsFromCc: {
       default: false,
     },
@@ -115,6 +118,7 @@ export default {
       fileTemplateProjectId,
       outgoingName,
       projectKey,
+      reopenIssueOnExternalParticipantNote,
       addExternalParticipantsFromCc,
     }) {
       this.isTemplateSaving = true;
@@ -123,6 +127,7 @@ export default {
         issue_template_key: selectedTemplate,
         outgoing_name: outgoingName,
         project_key: projectKey,
+        reopen_issue_on_external_participant_note: reopenIssueOnExternalParticipantNote,
         add_external_participants_from_cc: addExternalParticipantsFromCc,
         service_desk_enabled: this.isEnabled,
         file_template_project_id: fileTemplateProjectId,
@@ -195,6 +200,7 @@ export default {
       :initial-selected-file-template-project-id="selectedFileTemplateProjectId"
       :initial-outgoing-name="outgoingName"
       :initial-project-key="projectKey"
+      :initial-reopen-issue-on-external-participant-note="reopenIssueOnExternalParticipantNote"
       :initial-add-external-participants-from-cc="addExternalParticipantsFromCc"
       :templates="templates"
       :is-template-saving="isTemplateSaving"

@@ -78,24 +78,25 @@ RSpec.describe Projects::ServiceDeskController, feature_category: :service_desk 
       expect(response).to have_gitlab_http_status(:ok)
     end
 
-    it 'sets issue_template_key' do
-      put project_service_desk_path(project, format: :json), params: { issue_template_key: 'service_desk' }
+    it 'sets attributes', :aggregate_failures do
+      put project_service_desk_path(project, format: :json), params: {
+        issue_template_key: 'service_desk',
+        reopen_issue_on_external_participant_note: true,
+        add_external_participants_from_cc: true
+      }
 
       settings = project.service_desk_setting
       expect(settings).to be_present
-      expect(settings.issue_template_key).to eq('service_desk')
-      expect(json_response['template_file_missing']).to eq(false)
-      expect(json_response['issue_template_key']).to eq('service_desk')
-    end
-
-    it 'sets add_external_participants_from_cc' do
-      put project_service_desk_path(project, format: :json), params: { add_external_participants_from_cc: true }
-      project.reset
-
-      settings = project.service_desk_setting
-      expect(settings).to be_present
-      expect(settings.add_external_participants_from_cc).to eq(true)
-      expect(json_response['add_external_participants_from_cc']).to eq(true)
+      expect(settings).to have_attributes(
+        issue_template_key: 'service_desk',
+        reopen_issue_on_external_participant_note: true,
+        add_external_participants_from_cc: true
+      )
+      expect(json_response).to include(
+        'issue_template_key' => 'service_desk',
+        'reopen_issue_on_external_participant_note' => true,
+        'add_external_participants_from_cc' => true
+      )
     end
 
     it 'returns an error when update of service desk settings fails' do

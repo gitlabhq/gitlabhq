@@ -106,25 +106,4 @@ RSpec.describe Gitlab::UsageDataQueries do
       expect(described_class.maximum_id(Project)).to eq(nil)
     end
   end
-
-  describe 'sent_in_product_marketing_email_count' do
-    it 'returns sql query that returns correct value' do
-      expect(described_class.sent_in_product_marketing_email_count(nil, 0, 0)).to eq(
-        'SELECT COUNT("in_product_marketing_emails"."id") ' \
-        'FROM "in_product_marketing_emails" ' \
-        'WHERE "in_product_marketing_emails"."track" = 0 AND "in_product_marketing_emails"."series" = 0'
-      )
-    end
-  end
-
-  describe 'clicked_in_product_marketing_email_count' do
-    it 'returns sql query that returns correct value' do
-      expect(described_class.clicked_in_product_marketing_email_count(nil, 0, 0)).to eq(
-        'SELECT COUNT("in_product_marketing_emails"."id") ' \
-        'FROM "in_product_marketing_emails" ' \
-        'WHERE "in_product_marketing_emails"."track" = 0 AND "in_product_marketing_emails"."series" = 0 ' \
-        'AND "in_product_marketing_emails"."cta_clicked_at" IS NOT NULL'
-      )
-    end
-  end
 end

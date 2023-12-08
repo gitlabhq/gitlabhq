@@ -254,6 +254,13 @@ module Types
       extras: [:lookahead],
       resolver: Resolvers::WorkItemsResolver
 
+    field :work_item_state_counts,
+      Types::WorkItemStateCountsType,
+      null: true,
+      alpha: { milestone: '16.7' },
+      description: 'Counts of work items by state for the project.',
+      resolver: Resolvers::WorkItemStateCountsResolver
+
     field :issue_status_counts,
       Types::IssueStatusCountsType,
       null: true,

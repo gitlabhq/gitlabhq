@@ -20281,6 +20281,31 @@ Returns [`WorkItem`](#workitem).
 | ---- | ---- | ----------- |
 | <a id="groupworkitemiid"></a>`iid` | [`String!`](#string) | IID of the work item. |
 
+##### `Group.workItemStateCounts`
+
+Counts of work items by state for the namespace. Returns `null` if the `namespace_level_work_items` feature flag is disabled.
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupworkitemstatecountsauthorusername"></a>`authorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.9. This feature is an Experiment. It can be changed or removed at any time. Filter work items by author username. |
+| <a id="groupworkitemstatecountsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
+| <a id="groupworkitemstatecountsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
+| <a id="groupworkitemstatecountsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
+| <a id="groupworkitemstatecountsrequirementlegacywidget"></a>`requirementLegacyWidget` **{warning-solid}** | [`RequirementLegacyFilterInput`](#requirementlegacyfilterinput) | **Deprecated** in 15.9. Use work item IID filter instead. |
+| <a id="groupworkitemstatecountssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
+| <a id="groupworkitemstatecountssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by criteria. |
+| <a id="groupworkitemstatecountsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
+| <a id="groupworkitemstatecountsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_mvc_2` is disabled. |
+| <a id="groupworkitemstatecountstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
+
 ##### `Group.workItemTypes`
 
 Work item types available to the group.
@@ -25587,6 +25612,31 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="projectvulnerabilityseveritiescountseverity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter vulnerabilities by severity. |
 | <a id="projectvulnerabilityseveritiescountstate"></a>`state` | [`[VulnerabilityState!]`](#vulnerabilitystate) | Filter vulnerabilities by state. |
 
+##### `Project.workItemStateCounts`
+
+Counts of work items by state for the project.
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectworkitemstatecountsauthorusername"></a>`authorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.9. This feature is an Experiment. It can be changed or removed at any time. Filter work items by author username. |
+| <a id="projectworkitemstatecountsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
+| <a id="projectworkitemstatecountsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
+| <a id="projectworkitemstatecountsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
+| <a id="projectworkitemstatecountsrequirementlegacywidget"></a>`requirementLegacyWidget` **{warning-solid}** | [`RequirementLegacyFilterInput`](#requirementlegacyfilterinput) | **Deprecated** in 15.9. Use work item IID filter instead. |
+| <a id="projectworkitemstatecountssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
+| <a id="projectworkitemstatecountssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by criteria. |
+| <a id="projectworkitemstatecountsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
+| <a id="projectworkitemstatecountsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_mvc_2` is disabled. |
+| <a id="projectworkitemstatecountstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
+
 ##### `Project.workItemTypes`
 
 Work item types available to the project.
@@ -28683,6 +28733,18 @@ Check permissions for the current user on a work item.
 | <a id="workitempermissionsreadworkitem"></a>`readWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_work_item` on this resource. |
 | <a id="workitempermissionssetworkitemmetadata"></a>`setWorkItemMetadata` | [`Boolean!`](#boolean) | If `true`, the user can perform `set_work_item_metadata` on this resource. |
 | <a id="workitempermissionsupdateworkitem"></a>`updateWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_work_item` on this resource. |
+
+### `WorkItemStateCountsType`
+
+Represents total number of work items for the represented states.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemstatecountstypeall"></a>`all` | [`Int`](#int) | Number of work items for the project or group. |
+| <a id="workitemstatecountstypeclosed"></a>`closed` | [`Int`](#int) | Number of work items with state CLOSED for the project or group. |
+| <a id="workitemstatecountstypeopened"></a>`opened` | [`Int`](#int) | Number of work items with state OPENED for the project or group. |
 
 ### `WorkItemType`
 

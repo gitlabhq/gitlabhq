@@ -124,7 +124,7 @@ module Gitlab
 
     def cache_issues_count?
       @store_in_redis_cache &&
-        finder.instance_of?(IssuesFinder) &&
+        finder.class <= IssuesFinder &&
         parent_group.present? &&
         !params_include_filters?
     end
@@ -134,7 +134,7 @@ module Gitlab
     end
 
     def redis_cache_key
-      ['group', parent_group&.id, 'issues']
+      ['group', parent_group&.id, finder.klass.model_name.plural]
     end
 
     def cache_options
@@ -143,8 +143,8 @@ module Gitlab
 
     def params_include_filters?
       non_filtering_params = %i[
-        scope state sort group_id include_subgroups
-        attempt_group_search_optimizations non_archived issue_types
+        scope state sort group_id include_subgroups namespace_id
+        attempt_group_search_optimizations non_archived issue_types lookahead
       ]
 
       finder.params.except(*non_filtering_params).values.any?

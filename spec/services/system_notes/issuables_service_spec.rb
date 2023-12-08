@@ -387,7 +387,7 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
       describe 'note_body' do
         context 'cross-project' do
           let(:project2) { create(:project, :repository) }
-          let(:mentioned_in) { create(:issue, project: project2) }
+          let(:mentioned_in) { create(:issue, :task, project: project2) }
 
           context 'from Commit' do
             let(:mentioned_in) { project2.repository.commit }
@@ -399,7 +399,7 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
 
           context 'from non-Commit' do
             it 'references the mentioning object' do
-              expect(subject.note).to eq "mentioned in issue #{mentioned_in.to_reference(project)}"
+              expect(subject.note).to eq "mentioned in task #{mentioned_in.to_reference(project)}"
             end
           end
         end

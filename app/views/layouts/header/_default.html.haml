@@ -1,6 +1,3 @@
-- has_impersonation_link = header_link?(:admin_impersonation)
-- user_status_data = user_status_properties(current_user)
-
 %header.navbar.navbar-gitlab.navbar-expand-sm.js-navbar.legacy-top-bar{ data: { testid: 'navbar' } }
   %a.gl-sr-only.gl-accessibility{ href: "#content-body" } Skip to content
   .container-fluid
@@ -12,64 +9,6 @@
         %ul.nav.navbar-nav.gl-w-full.gl-align-items-center.gl-justify-content-end
           - if current_user
             = render 'layouts/header/new_dropdown', class: 'gl-display-none gl-sm-display-block gl-white-space-nowrap gl-text-right'
-          - if header_link?(:issues)
-            = nav_link(path: 'dashboard#issues', html_options: { class: "user-counter" }) do
-              = link_to assigned_issues_dashboard_path, title: _('Issues'), class: 'dashboard-shortcuts-issues js-prefetch-document', aria: { label: _('Issues') },
-                data: { testid: 'issues_shortcut_button', toggle: 'tooltip', placement: 'bottom',
-                track_label: 'main_navigation',
-                track_action: 'click_issues_link',
-                track_property: 'navigation_top',
-                container: 'body' } do
-                = sprite_icon('issues')
-                - issues_count = assigned_issuables_count(:issues)
-                = gl_badge_tag({ size: :sm, variant: :success }, { class: "gl-ml-n2 #{'gl-display-none' if issues_count == 0}", "aria-label": n_("%d assigned issue", "%d assigned issues", issues_count) % issues_count }) do
-                  = assigned_open_issues_count_text
-          - if header_link?(:merge_requests)
-            = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter dropdown" }) do
-              - top_level_link = assigned_mrs_dashboard_path
-              = link_to top_level_link, class: 'dashboard-shortcuts-merge_requests has-tooltip', title: _('Merge requests'), aria: { label: _('Merge requests') },
-                data: { testid: 'merge_requests_shortcut_button',
-                toggle: "dropdown",
-                placement: 'bottom',
-                track_label: 'merge_requests_menu',
-                track_action: 'click_dropdown',
-                track_property: 'navigation_top',
-                container: 'body' } do
-                = sprite_icon('git-merge')
-                = gl_badge_tag({ size: :sm, variant: :warning }, { class: "js-merge-requests-count gl-ml-n2 #{'gl-display-none' if user_merge_requests_counts[:total] == 0}", "aria-label": n_("%d merge request", "%d merge requests", user_merge_requests_counts[:total]) % user_merge_requests_counts[:total] }) do
-                  = number_with_delimiter(user_merge_requests_counts[:total])
-                = sprite_icon('chevron-down', css_class: 'caret-down gl-mx-0!')
-              .dropdown-menu.dropdown-menu-right
-                %ul
-                  %li.dropdown-header
-                    = _('Merge requests')
-                  %li
-                    = link_to assigned_mrs_dashboard_path,
-                      class: 'gl-display-flex! gl-align-items-center js-prefetch-document',
-                      data: {track_action: 'click_link', track_label: 'merge_requests_assigned', track_property: 'navigation_top'} do
-                      = _('Assigned')
-                      = gl_badge_tag({ variant: :neutral, size: :sm }, { class: "js-assigned-mr-count gl-ml-auto" }) do
-                        = user_merge_requests_counts[:assigned]
-                  %li
-                    = link_to reviewer_mrs_dashboard_path,
-                      class: 'dashboard-shortcuts-review_requests gl-display-flex! gl-align-items-center js-prefetch-document',
-                      data: {track_action: 'click_link', track_label: 'merge_requests_to_review', track_property: 'navigation_top'} do
-                      = _('Review requests')
-                      = gl_badge_tag({ variant: :neutral, size: :sm }, { class: "js-reviewer-mr-count gl-ml-auto" }) do
-                        = user_merge_requests_counts[:review_requested]
-          - if header_link?(:todos)
-            = nav_link(controller: 'dashboard/todos', html_options: { class: "user-counter" }) do
-              = link_to dashboard_todos_path, title: _('To-Do List'), aria: { label: _('To-Do List') }, class: 'shortcuts-todos js-prefetch-document',
-                data: { testid: 'todos-shortcut-button', toggle: 'tooltip', placement: 'bottom',
-                track_label: 'main_navigation',
-                track_action: 'click_to_do_link',
-                track_property: 'navigation_top',
-                container: 'body' } do
-                = sprite_icon('todo-done')
-                -# The todos' counter badge's visibility is being toggled by adding or removing the .hidden class in Js.
-                -# We'll eventually migrate to .gl-display-none: https://gitlab.com/gitlab-org/gitlab/-/issues/351792.
-                = gl_badge_tag({ size: :sm, variant: :info }, { class: "js-todos-count gl-ml-n2 #{'hidden' if todos_pending_count == 0}", "aria-label": _("Todos count") }) do
-                  = todos_count_format(todos_pending_count)
           %li.nav-item.header-help.dropdown.d-none.d-md-block
             = link_to help_path, class: 'header-help-dropdown-toggle gl-relative', data: { toggle: "dropdown", track_action: 'click_question_mark_link', track_label: 'main_navigation', track_property: 'navigation_top' } do
               %span.gl-sr-only
@@ -79,27 +18,6 @@
               = sprite_icon('chevron-down', css_class: 'caret-down')
             .dropdown-menu.dropdown-menu-right
               = render 'layouts/header/help_dropdown'
-          - if header_link?(:user_dropdown)
-            %li.nav-item.header-user.js-nav-user-dropdown.dropdown{ data: { testid: 'user-dropdown' }, class: ('mr-0' if has_impersonation_link) }
-              = link_to current_user, class: user_dropdown_class, data: { toggle: "dropdown", track_label: "profile_dropdown", track_action: "click_dropdown", track_property: "navigation_top" } do
-                = render Pajamas::AvatarComponent.new(current_user, size: 24, class: 'header-user-avatar', avatar_options: { data: { testid: 'user-avatar-content' } })
-                = render_if_exists 'layouts/header/user_notification_dot', project: project, namespace: group
-                = sprite_icon('chevron-down', css_class: 'caret-down')
-              .dropdown-menu.dropdown-menu-right
-                = render 'layouts/header/current_user_dropdown'
-          - if has_impersonation_link
-            %li.nav-item.impersonation.ml-0
-              = render Pajamas::ButtonComponent.new(href: admin_impersonation_path, icon: 'incognito', button_options: { title: _('Stop impersonation'), class: 'impersonation-btn', aria: { label: _('Stop impersonation') }, data: { method: :delete, toggle: 'tooltip', placement: 'bottom', container: 'body', testid: 'stop_impersonation_btn' } })
-          - if header_link?(:sign_in)
-            - if allow_signup?
-              %li.nav-item
-                = render Pajamas::ButtonComponent.new(href: new_user_registration_path) do
-                  = _('Register')
-            %li.nav-item{ class: 'gl-flex-grow-0! gl-flex-basis-half!' }
-              = link_to _('Sign in'), new_session_path(:user, redirect_to_referer: 'yes')
 
 - if display_whats_new?
   #whats-new-app{ data: { version_digest: whats_new_version_digest } }
-
-- if can?(current_user, :update_user_status, current_user)
-  .js-set-status-modal-wrapper{ data: user_status_data }

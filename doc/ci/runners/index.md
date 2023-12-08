@@ -20,7 +20,7 @@ For more information about the cost factor applied to the machine type based on 
 The number of minutes you can use on these runners depends on the [maximum number of units of compute](../pipelines/cicd_minutes.md)
 in your [subscription plan](https://about.gitlab.com/pricing/).
 
-[Untagged](../../ci/runners/configure_runners.md#use-tags-to-control-which-jobs-a-runner-can-run) jobs automatically run in containers
+[Untagged](../../ci/runners/configure_runners.md#control-jobs-that-a-runner-can-run) jobs automatically run in containers
 on the `small` Linux runners.
 
 The objective is to make 90% of CI/CD jobs start executing in 120 seconds or less. The error rate should be less than 0.5%.

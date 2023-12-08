@@ -31,13 +31,14 @@ const fetchData = (projectPath, path, ref, offset, refType) => {
 
   fetchedBatches.push(offset);
 
+  const encodePathFunc = gon.features.encodingLogsTree ? encodeURI : encodeURIComponent;
   const url = joinPaths(
     gon.relative_url_root || '/',
     projectPath,
     '/-/refs/',
-    encodeURIComponent(ref),
+    encodePathFunc(ref),
     '/logs_tree/',
-    encodeURIComponent(removeLeadingSlash(path)),
+    encodePathFunc(removeLeadingSlash(path)),
   );
 
   return axios

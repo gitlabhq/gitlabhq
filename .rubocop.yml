@@ -1103,3 +1103,10 @@ RSpec/UselessDynamicDefinition:
   Exclude:
     - 'spec/factories/**/*'
     - 'ee/spec/factories/**/*'
+
+Database/AvoidUsingPluckWithoutLimit:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+    - 'qa/qa/specs/**/*.rb'

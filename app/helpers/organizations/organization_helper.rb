@@ -51,8 +51,7 @@ module Organizations
 
     def home_organization_setting_app_data
       {
-        # TODO: use real setting - https://gitlab.com/gitlab-org/gitlab/-/issues/428668
-        initial_selection: 1
+        initial_selection: current_user.home_organization_id
       }.to_json
     end
 

@@ -1,3 +1,5 @@
+import { __ } from '~/locale';
+
 export const SCOPE_ISSUES = 'issues';
 export const SCOPE_MERGE_REQUESTS = 'merge_requests';
 export const SCOPE_BLOB = 'blobs';
@@ -26,3 +28,23 @@ export const TRACKING_LABEL_RESET = 'Reset Filters';
 export const SEARCH_TYPE_BASIC = 'basic';
 export const SEARCH_TYPE_ADVANCED = 'advanced';
 export const SEARCH_TYPE_ZOEKT = 'zoekt';
+
+export const ANY_OPTION = {
+  id: null,
+  name: __('Any'),
+  name_with_namespace: __('Any'),
+};
+
+export const GROUP_DATA = {
+  headerText: __('Filter results by group'),
+  queryParam: 'group_id',
+  name: 'name',
+  fullName: 'full_name',
+};
+
+export const PROJECT_DATA = {
+  headerText: __('Filter results by project'),
+  queryParam: 'project_id',
+  name: 'name',
+  fullName: 'name_with_namespace',
+};

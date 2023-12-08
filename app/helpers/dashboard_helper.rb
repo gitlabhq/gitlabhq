@@ -3,18 +3,6 @@
 module DashboardHelper
   include IconsHelper
 
-  def assigned_issues_dashboard_path
-    issues_dashboard_path(assignee_username: current_user.username)
-  end
-
-  def assigned_mrs_dashboard_path
-    merge_requests_dashboard_path(assignee_username: current_user.username)
-  end
-
-  def reviewer_mrs_dashboard_path
-    merge_requests_dashboard_path(reviewer_username: current_user.username)
-  end
-
   def has_start_trial?
     false
   end

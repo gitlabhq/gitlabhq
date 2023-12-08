@@ -75,16 +75,6 @@ module Gitlab
         }
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
-      def sent_in_product_marketing_email_count(sent_emails, track, series)
-        count(Users::InProductMarketingEmail.where(track: track, series: series))
-      end
-
-      def clicked_in_product_marketing_email_count(clicked_emails, track, series)
-        count(Users::InProductMarketingEmail.where(track: track, series: series).where.not(cta_clicked_at: nil))
-      end
-      # rubocop: enable CodeReuse/ActiveRecord
-
       def stage_manage_events(time_period)
         # rubocop: disable CodeReuse/ActiveRecord
         # rubocop: disable UsageData/LargeTable

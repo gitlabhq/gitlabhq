@@ -275,6 +275,14 @@ module Types
           description: 'Find a work item by IID directly associated with the group. Returns `null` if the ' \
                        '`namespace_level_work_items` feature flag is disabled.'
 
+    field :work_item_state_counts,
+          Types::WorkItemStateCountsType,
+          null: true,
+          alpha: { milestone: '16.7' },
+          description: 'Counts of work items by state for the namespace. Returns `null` if the ' \
+                       '`namespace_level_work_items` feature flag is disabled.',
+          resolver: Resolvers::Namespaces::WorkItemStateCountsResolver
+
     field :autocomplete_users,
           null: true,
           resolver: Resolvers::AutocompleteUsersResolver,

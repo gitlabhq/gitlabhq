@@ -4,27 +4,23 @@ import GlobalSearchSidebar from './components/app.vue';
 
 Vue.use(Translate);
 
-export const sidebarInitState = () => {
-  const el = document.getElementById('js-search-sidebar');
-  if (!el) return {};
-
-  const { navigationJson, searchType } = el.dataset;
-
-  const navigationJsonParsed = JSON.parse(navigationJson);
-
-  return { navigationJsonParsed, searchType };
-};
-
 export const initSidebar = (store) => {
   const el = document.getElementById('js-search-sidebar');
+  const hederEl = document.getElementById('super-sidebar-context-header');
+  const headerText = hederEl.innerText;
 
   if (!el) return false;
 
   return new Vue({
     el,
+    name: 'GlobalSearchSidebar',
     store,
     render(createElement) {
-      return createElement(GlobalSearchSidebar);
+      return createElement(GlobalSearchSidebar, {
+        props: {
+          headerText,
+        },
+      });
     },
   });
 };

@@ -2200,4 +2200,21 @@ RSpec.describe Issue, feature_category: :team_planning do
       end
     end
   end
+
+  describe '#gfm_reference' do
+    where(:issue_type, :expected_name) do
+      :issue     | 'issue'
+      :incident  | 'incident'
+      :test_case | 'test case'
+      :task      | 'task'
+    end
+
+    with_them do
+      it 'uses the issue type as the reference name' do
+        issue = create(:issue, issue_type, project: reusable_project)
+
+        expect(issue.gfm_reference).to eq("#{expected_name} #{issue.to_reference}")
+      end
+    end
+  end
 end

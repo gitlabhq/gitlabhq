@@ -6,8 +6,8 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import { MOCK_GROUPS, MOCK_QUERY } from 'jest/search/mock_data';
-import SearchableDropdown from '~/search/topbar/components/searchable_dropdown.vue';
-import { ANY_OPTION, GROUP_DATA } from '~/search/topbar/constants';
+import SearchableDropdown from '~/search/sidebar/components/searchable_dropdown.vue';
+import { ANY_OPTION, GROUP_DATA } from '~/search/sidebar/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 
 Vue.use(Vuex);

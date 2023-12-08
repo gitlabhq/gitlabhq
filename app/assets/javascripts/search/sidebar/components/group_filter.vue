@@ -2,34 +2,27 @@
 import { isEmpty } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
+import { s__ } from '~/locale';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { ANY_OPTION, GROUP_DATA, PROJECT_DATA } from '../constants';
 import SearchableDropdown from './searchable_dropdown.vue';
 
 export default {
   name: 'GroupFilter',
+  i18n: {
+    groupFieldLabel: s__('GlobalSearch|Group'),
+  },
   components: {
     SearchableDropdown,
-  },
-  props: {
-    groupInitialJson: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
-    labelId: {
-      type: String,
-      required: false,
-      default: 'labelId',
-    },
   },
   data() {
     return {
       search: '',
+      labelId: 'group-filter-dropdown-id',
     };
   },
   computed: {
-    ...mapState(['query', 'groups', 'fetchingGroups']),
+    ...mapState(['query', 'groups', 'fetchingGroups', 'groupInitialJson', 'useSidebarNavigation']),
     ...mapGetters(['frequentGroups', 'currentScope']),
     selectedGroup() {
       return isEmpty(this.groupInitialJson) ? ANY_OPTION : this.groupInitialJson;
@@ -73,17 +66,22 @@ export default {
 </script>
 
 <template>
-  <searchable-dropdown
-    data-testid="group-filter"
-    :header-text="$options.GROUP_DATA.headerText"
-    :name="$options.GROUP_DATA.name"
-    :loading="fetchingGroups"
-    :selected-item="selectedGroup"
-    :items="groups"
-    :frequent-items="frequentGroups"
-    :search-handler="fetchGroups"
-    :label-id="labelId"
-    @first-open="firstLoad"
-    @change="handleGroupChange"
-  />
+  <div>
+    <h5 :id="labelId" class="gl-mt-0 gl-mb-5 gl-font-sm">
+      {{ $options.i18n.groupFieldLabel }}
+    </h5>
+    <searchable-dropdown
+      data-testid="group-filter"
+      :header-text="$options.GROUP_DATA.headerText"
+      :name="$options.GROUP_DATA.name"
+      :loading="fetchingGroups"
+      :selected-item="selectedGroup"
+      :items="groups"
+      :frequent-items="frequentGroups"
+      :search-handler="fetchGroups"
+      :label-id="labelId"
+      @first-open="firstLoad"
+      @change="handleGroupChange"
+    />
+  </div>
 </template>

@@ -25,6 +25,7 @@ import NotesFilters from './notes_filters.vue';
 import CommitsFilters from './commits_filters.vue';
 import MilestonesFilters from './milestones_filters.vue';
 import WikiBlobsFilters from './wiki_blobs_filters.vue';
+import AllScopesStartFilters from './all_scopes_start_filters.vue';
 
 export default {
   name: 'GlobalSearchSidebar',
@@ -40,8 +41,16 @@ export default {
     DomElementListener,
     CommitsFilters,
     MilestonesFilters,
+    AllScopesStartFilters,
   },
   mixins: [glFeatureFlagsMixin()],
+  props: {
+    headerText: {
+      required: false,
+      type: String,
+      default: '',
+    },
+  },
   computed: {
     ...mapState(['searchType']),
     ...mapGetters(['currentScope']),
@@ -82,6 +91,13 @@ export default {
   <section>
     <dom-element-listener selector="#js-open-mobile-filters" @click="toggleFiltersFromSidebar" />
     <sidebar-portal>
+      <all-scopes-start-filters />
+      <div
+        v-if="headerText"
+        class="gl-px-5 gl-pt-3 gl-pb-2 gl-m-0 gl-reset-line-height gl-font-weight-bold gl-font-sm super-sidebar-context-header"
+      >
+        {{ headerText }}
+      </div>
       <scope-sidebar-navigation />
       <issues-filters v-if="showIssuesFilters" />
       <merge-requests-filters v-if="showMergeRequestFilters" />

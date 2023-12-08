@@ -121,27 +121,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     end
   end
 
-  describe '#assigned_open_issues_count_text', feature_category: :team_planning do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project).tap { |p| p.add_developer(user) } }
-
-    subject { helper.assigned_open_issues_count_text }
-
-    before do
-      allow(helper).to receive(:current_user).and_return(user)
-    end
-
-    context 'when assigned issues count is over MAX_LIMIT_FOR_ASSIGNEED_ISSUES_COUNT' do
-      before do
-        stub_const('User::MAX_LIMIT_FOR_ASSIGNEED_ISSUES_COUNT', 2)
-      end
-
-      let_it_be(:issues) { create_list(:issue, 3, project: project, assignees: [user]) }
-
-      it { is_expected.to eq '1+' }
-    end
-  end
-
   describe '#issuables_state_counter_text' do
     let_it_be(:user) { create(:user) }
 

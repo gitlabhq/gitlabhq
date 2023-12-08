@@ -216,6 +216,17 @@ If you disable [catalog resource setting](#set-a-component-project-as-a-catalog-
 the component project and all versions are removed from the catalog. To publish it again,
 you must re-enable the setting and release a new version.
 
+### Unpublish a component project
+
+To remove a component project from the catalog, turn off the [**CI/CD Catalog resource**](#set-a-component-project-as-a-catalog-resource) toggle.
+in the project settings.
+
+WARNING:
+This action destroys the metadata about the component project and its versions published
+in the catalog. The project and its repository still exist, but are not visible in the catalog.
+
+To publish the component project in the catalog again, you need to [publish a new release](#publish-a-new-release).
+
 ## Best practices
 
 This section describes some best practices for creating high quality component projects.

@@ -75,10 +75,4 @@ RSpec.describe DashboardHelper do
 
     it { is_expected.to eq(false) }
   end
-
-  describe '#reviewer_mrs_dashboard_path' do
-    subject { helper.reviewer_mrs_dashboard_path }
-
-    it { is_expected.to eq(merge_requests_dashboard_path(reviewer_username: user.username)) }
-  end
 end

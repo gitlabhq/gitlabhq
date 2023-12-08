@@ -16,8 +16,8 @@
     - page_description(_("%{count} %{scope} for term '%{term}'") % { count: @search_results.formatted_count(@scope), scope: @scope, term: @search_term })
   - page_card_attributes("Namespace" => @group&.full_path, "Project" => @project&.full_path)
 
-#js-search-topbar{ data: { "group-initial-json": group_attributes.to_json, "project-initial-json": project_attributes.to_json, "default-branch-name": @project&.default_branch } }
+#js-search-topbar{ data: { "default-branch-name": @project&.default_branch } }
 .results.gl-lg-display-flex.gl-mt-0
-  #js-search-sidebar{ data: { navigation_json: search_navigation_json, search_type: search_service.search_type } }
+  #js-search-sidebar{ data: { navigation_json: search_navigation_json, search_type: search_service.search_type, group_initial_json: group_attributes.to_json, project_initial_json: project_attributes.to_json, } }
   - if @search_term
     = render 'search/results'

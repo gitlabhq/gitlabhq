@@ -187,6 +187,8 @@
   - 1
 - - compliance_management_pending_status_check
   - 1
+- - compliance_management_standards_adherence_export_mailer
+  - 1
 - - compliance_management_standards_gitlab_at_least_two_approvals
   - 1
 - - compliance_management_standards_gitlab_base

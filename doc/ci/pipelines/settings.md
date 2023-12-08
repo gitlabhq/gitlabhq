@@ -225,7 +225,7 @@ You can define how long a job can run before it times out.
 
 Jobs that exceed the timeout are marked as failed.
 
-You can override this value [for individual runners](../runners/configure_runners.md#set-maximum-job-timeout-for-a-runner).
+You can override this value [for individual runners](../runners/configure_runners.md#set-the-maximum-job-timeout).
 
 ## Pipeline badges
 

@@ -6,9 +6,9 @@ import Vuex from 'vuex';
 import { MOCK_PROJECT, MOCK_QUERY, CURRENT_SCOPE } from 'jest/search/mock_data';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { PROJECTS_LOCAL_STORAGE_KEY } from '~/search/store/constants';
-import ProjectFilter from '~/search/topbar/components/project_filter.vue';
-import SearchableDropdown from '~/search/topbar/components/searchable_dropdown.vue';
-import { ANY_OPTION, GROUP_DATA, PROJECT_DATA } from '~/search/topbar/constants';
+import ProjectFilter from '~/search/sidebar/components/project_filter.vue';
+import SearchableDropdown from '~/search/sidebar/components/searchable_dropdown.vue';
+import { ANY_OPTION, GROUP_DATA, PROJECT_DATA } from '~/search/sidebar/constants';
 
 Vue.use(Vuex);
 
@@ -36,6 +36,7 @@ describe('ProjectFilter', () => {
     const store = new Vuex.Store({
       state: {
         query: MOCK_QUERY,
+        projectInitialJson: MOCK_PROJECT,
         ...initialState,
       },
       actions: actionSpies,
@@ -130,7 +131,7 @@ describe('ProjectFilter', () => {
     describe('selectedProject', () => {
       describe('when initialData is null', () => {
         beforeEach(() => {
-          createComponent({}, { projectInitialJson: ANY_OPTION });
+          createComponent({ projectInitialJson: ANY_OPTION }, {});
         });
 
         it('sets selectedProject to ANY_OPTION', () => {
@@ -164,8 +165,9 @@ describe('ProjectFilter', () => {
         createComponent(
           {
             query: { ...MOCK_QUERY, nav_source: navSource },
+            projectInitialJson: { ...initialData },
           },
-          { projectInitialJson: { ...initialData } },
+          {},
         );
       });
 

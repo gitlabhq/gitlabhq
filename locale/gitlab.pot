@@ -167,11 +167,6 @@ msgid_plural "%d artifacts"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d assigned issue"
-msgid_plural "%d assigned issues"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d author"
 msgid_plural "%d authors"
 msgstr[0] ""
@@ -12732,6 +12727,9 @@ msgstr ""
 msgid "ComplianceReport|Update result"
 msgstr ""
 
+msgid "ComplianceStandardsAdherence| Standards adherence export"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|A rule is configured to prevent author approved merge requests."
 msgstr ""
 
@@ -12817,6 +12815,12 @@ msgid "ComplianceStandardsAdherence|View details"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|View details (fix available)"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Your standards adherence CSV export for the group \"%{group_name}\" is attached to this email."
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Your standards adherence CSV export for the group %{group_link} is attached to this email."
 msgstr ""
 
 msgid "ComplianceViolations| Violations export"
@@ -44811,6 +44815,9 @@ msgstr ""
 msgid "ServiceDesk|Read timeout"
 msgstr ""
 
+msgid "ServiceDesk|Reopen issues when an external participant comments"
+msgstr ""
+
 msgid "ServiceDesk|Reset custom email"
 msgstr ""
 
@@ -44881,6 +44888,9 @@ msgid "ServiceDesk|The received email didn't contain the verification token that
 msgstr ""
 
 msgid "ServiceDesk|The verification email wasn't received in time. There is a 30 minutes timeframe for verification emails to appear in your instance's Service Desk. Make sure that you have set up email forwarding correctly."
+msgstr ""
+
+msgid "ServiceDesk|This also adds an internal comment that mentions the assignees of the issue."
 msgstr ""
 
 msgid "ServiceDesk|This issue has been reopened because it received a new comment from an external participant."
@@ -46879,9 +46889,6 @@ msgid "Stop Terminal"
 msgstr ""
 
 msgid "Stop impersonating"
-msgstr ""
-
-msgid "Stop impersonation"
 msgstr ""
 
 msgid "Stop this environment"
@@ -50623,9 +50630,6 @@ msgid "To-do item successfully marked as done."
 msgstr ""
 
 msgid "Today"
-msgstr ""
-
-msgid "Todos count"
 msgstr ""
 
 msgid "Todos|Added"
@@ -57631,6 +57635,9 @@ msgid "is not linked to a SAML account or has an inactive SCIM identity. For inf
 msgstr ""
 
 msgid "is not one of"
+msgstr ""
+
+msgid "is not part of the given organization"
 msgstr ""
 
 msgid "is not valid. The iteration group has to match the iteration cadence group."

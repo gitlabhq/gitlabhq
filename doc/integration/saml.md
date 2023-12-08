@@ -38,8 +38,8 @@ For more information on:
    gitlab_rails['omniauth_block_auto_created_users'] = false
    ```
 
-1. Optional. You can automatically link SAML users with existing GitLab users if their
-   email addresses match by adding the following setting in `/etc/gitlab/gitlab.rb`:
+1. Optional. You should automatically link a first-time SAML sign-in with existing GitLab users if their
+   email addresses match. To do this, add the following setting in `/etc/gitlab/gitlab.rb`:
 
    ```ruby
    gitlab_rails['omniauth_auto_link_saml_user'] = true
@@ -727,6 +727,9 @@ or `http://schemas.microsoft.com`.
 On GitLab.com, Microsoft Azure/Entra ID attributes are introduced
 [with a flag](../administration/feature_flags.md) named `saml_microsoft_attribute_names`.
 On GitLab.com, this feature is unavailable but can be configured by GitLab.com administrators only.
+
+NOTE:
+The attributes are case-sensitive.
 
 | Field           | Supported default keys                                                                                                                                                         |
 |-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

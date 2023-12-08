@@ -400,6 +400,7 @@ class User < MainClusterwide::ApplicationRecord
     :pinned_nav_items, :pinned_nav_items=,
     :achievements_enabled, :achievements_enabled=,
     :enabled_following, :enabled_following=,
+    :home_organization, :home_organization_id, :home_organization_id=,
     to: :user_preference
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
@@ -612,6 +613,10 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   strip_attributes! :name
+
+  def user_belongs_to_organization?(organization)
+    organization_users.exists?(organization: organization)
+  end
 
   def preferred_language
     read_attribute('preferred_language').presence || Gitlab::CurrentSettings.default_preferred_language

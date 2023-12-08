@@ -236,29 +236,6 @@ RSpec.shared_context '"Explore" navbar structure' do
         nav_sub_items: []
       },
       {
-        nav_item: _("Topics"),
-        nav_sub_items: []
-      },
-      {
-        nav_item: _("Snippets"),
-        nav_sub_items: []
-      }
-    ]
-  end
-end
-
-RSpec.shared_context '"Explore" navbar structure with global_ci_catalog FF' do
-  let(:structure) do
-    [
-      {
-        nav_item: _("Projects"),
-        nav_sub_items: []
-      },
-      {
-        nav_item: _("Groups"),
-        nav_sub_items: []
-      },
-      {
         nav_item: _("CI/CD Catalog"),
         nav_sub_items: []
       },

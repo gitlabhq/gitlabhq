@@ -23,6 +23,12 @@ export default {
     issueTrackerEnableMessage: __(
       'To use Service Desk in this project, you must %{linkStart}activate the issue tracker%{linkEnd}.',
     ),
+    reopenIssueOnExternalParticipantNote: {
+      label: s__('ServiceDesk|Reopen issues when an external participant comments'),
+      help: s__(
+        'ServiceDesk|This also adds an internal comment that mentions the assignees of the issue.',
+      ),
+    },
     addExternalParticipantsFromCc: {
       label: s__('ServiceDesk|Add external participants from the %{codeStart}Cc%{codeEnd} header'),
       help: s__(
@@ -91,6 +97,11 @@ export default {
       required: false,
       default: '',
     },
+    initialReopenIssueOnExternalParticipantNote: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     initialAddExternalParticipantsFromCc: {
       type: Boolean,
       required: false,
@@ -113,6 +124,7 @@ export default {
       selectedFileTemplateProjectId: this.initialSelectedFileTemplateProjectId,
       outgoingName: this.initialOutgoingName || __('GitLab Support Bot'),
       projectKey: this.initialProjectKey,
+      reopenIssueOnExternalParticipantNote: this.initialReopenIssueOnExternalParticipantNote,
       addExternalParticipantsFromCc: this.initialAddExternalParticipantsFromCc,
       searchTerm: '',
       projectKeyError: null,
@@ -156,6 +168,7 @@ export default {
         selectedTemplate: this.selectedTemplate,
         outgoingName: this.outgoingName,
         projectKey: this.projectKey,
+        reopenIssueOnExternalParticipantNote: this.reopenIssueOnExternalParticipantNote,
         addExternalParticipantsFromCc: this.addExternalParticipantsFromCc,
         fileTemplateProjectId: this.selectedFileTemplateProjectId,
       });
@@ -323,9 +336,22 @@ export default {
         </gl-form-group>
 
         <gl-form-checkbox
+          v-model="reopenIssueOnExternalParticipantNote"
+          :disabled="!isIssueTrackerEnabled"
+          data-testid="reopen-issue-on-external-participant-note"
+        >
+          {{ $options.i18n.reopenIssueOnExternalParticipantNote.label }}
+
+          <template #help>
+            {{ $options.i18n.reopenIssueOnExternalParticipantNote.help }}
+          </template>
+        </gl-form-checkbox>
+
+        <gl-form-checkbox
           v-if="showAddExternalParticipantsFromCC"
           v-model="addExternalParticipantsFromCc"
           :disabled="!isIssueTrackerEnabled"
+          data-testid="add-external-participants-from-cc"
         >
           <gl-sprintf :message="$options.i18n.addExternalParticipantsFromCc.label">
             <template #code="{ content }">

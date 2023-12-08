@@ -254,6 +254,24 @@ FactoryBot.define do
       end
     end
 
+    trait :pipeline_refs do
+      transient do
+        object_format { Repository::FORMAT_SHA1 }
+        pipeline_count { 10 }
+      end
+
+      after :create do |project, evaluator|
+        raise "Failed to create repository!" unless project.repository.exists? || project.create_repository(object_format: evaluator.object_format)
+
+        project.repository.create_file(project.creator, "README.md", "Test", message: "Test file", branch_name: project.default_branch || 'master')
+
+        evaluator.pipeline_count.times do |x|
+          project.repository.create_ref(project.repository.head_commit.id, "refs/pipelines/#{x}")
+          project.repository.create_ref(project.repository.head_commit.id, "refs/head/foo-#{x}")
+        end
+      end
+    end
+
     # A catalog resource repository with a file structure set up for ci components.
     trait :catalog_resource_with_components do
       small_repo

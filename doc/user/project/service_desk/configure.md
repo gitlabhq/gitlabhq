@@ -155,6 +155,26 @@ To edit the custom email display name:
 1. Below **Email display name**, enter a new name.
 1. Select **Save changes**.
 
+## Reopen issues when an external participant comments
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8549) in GitLab 16.7
+
+You can configure GitLab to reopen closed issues when an external participant adds
+a new comment on an issue by email. This also adds an internal comment that mentions
+the assignees of the issue and creates to-do items for them.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+
+To enable this setting:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. Expand **Service Desk**.
+1. Select the **Reopen issues on a new note from an external participant** checkbox.
+1. Select **Save changes**.
+
 ## Custom email address **(BETA)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329990) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `service_desk_custom_email`. Disabled by default.

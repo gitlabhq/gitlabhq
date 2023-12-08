@@ -435,7 +435,7 @@ You can change the maximum time a job can run before it times out:
 
 - At the project-level in the [project's CI/CD settings](../ci/pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run)
   for a given project. This limit must be between 10 minutes and 1 month.
-- At the [runner level](../ci/runners/configure_runners.md#set-maximum-job-timeout-for-a-runner).
+- At the [runner level](../ci/runners/configure_runners.md#set-the-maximum-job-timeout).
   This limit must be 10 minutes or longer.
 
 ### Maximum number of deployment jobs in a pipeline

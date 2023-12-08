@@ -13,7 +13,14 @@ RSpec.describe ServiceDeskSettings::UpdateService, :aggregate_failures, feature_
     let_it_be(:user) { create(:user) }
 
     context 'with valid params' do
-      let(:params) { { outgoing_name: 'some name', project_key: 'foo', add_external_participants_from_cc: true } }
+      let(:params) do
+        {
+          outgoing_name: 'some name',
+          project_key: 'foo',
+          reopen_issue_on_external_participant_note: true,
+          add_external_participants_from_cc: true
+        }
+      end
 
       it 'updates service desk settings' do
         response = described_class.new(settings.project, user, params).execute
@@ -22,6 +29,7 @@ RSpec.describe ServiceDeskSettings::UpdateService, :aggregate_failures, feature_
         expect(settings.reset).to have_attributes(
           outgoing_name: 'some name',
           project_key: 'foo',
+          reopen_issue_on_external_participant_note: true,
           add_external_participants_from_cc: true
         )
       end

@@ -1249,8 +1249,15 @@ By default, Gitaly doesn't sign commits made using GitLab UI. For example, commi
 - Web IDE.
 - Merge requests.
 
-You can configure Gitaly to sign commits made with the GitLab UI. The commits show as unverified and signed by an unknown
-user. Support for improvements is proposed in [issue 19185](https://gitlab.com/gitlab-org/gitlab/-/issues/19185).
+You can configure Gitaly to sign commits made with the GitLab UI.
+
+By default, Gitaly sets the author of a commit as the committer. In this case,
+it is harder to [Verify commits locally](../../user/project/repository/signed_commits/ssh.md#verify-commits-locally)
+because the signature belongs to neither the author nor the committer of the commit.
+
+You can configure Gitaly to reflect that a commit has been committed by your instance by
+setting `committer_email` and `committer_name`. For example, on GitLab.com these configuration options are
+set to `noreply@gitlab.com` and `GitLab`.
 
 Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
 
@@ -1281,7 +1288,10 @@ Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
       # ...
       git: {
         # ...
+        committer_name: 'Your Instance',
+        committer_email: 'noreply@yourinstance.com',
         signing_key: '/etc/gitlab/gitaly/signing_key.gpg',
+        # ...
       },
    }
    ```
@@ -1310,6 +1320,8 @@ Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
 
    ```toml
    [git]
+   committer_name = "Your Instance"
+   committer_email = "noreply@yourinstance.com"
    signing_key = "/etc/gitlab/gitaly/signing_key.gpg"
    ```
 

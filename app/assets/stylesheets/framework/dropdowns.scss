@@ -810,14 +810,6 @@
   .navbar-gitlab {
     li.dropdown {
       position: static;
-
-      &.user-counter {
-        margin-left: 8px !important;
-
-        > a {
-          padding: 0 4px !important;
-        }
-      }
     }
   }
 

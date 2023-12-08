@@ -90,7 +90,7 @@ To create a project runner:
 1. Expand the **Runners** section.
 1. Select **New project runner**.
 1. Select your operating system.
-1. In the **Tags** section, select the **Run untagged** checkbox. [Tags](../../ci/runners/configure_runners.md#use-tags-to-control-which-jobs-a-runner-can-run) specify which jobs
+1. In the **Tags** section, select the **Run untagged** checkbox. [Tags](../../ci/runners/configure_runners.md#control-jobs-that-a-runner-can-run) specify which jobs
    the runner can run and are optional.
 1. Select **Create runner**.
 1. Follow the on-screen instructions to register the runner from the command line. When prompted:

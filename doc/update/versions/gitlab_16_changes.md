@@ -541,6 +541,10 @@ by this issue.
   [throw errors on startup](../../install/docker.md#threaderror-cant-create-thread-operation-not-permitted).
 - Starting with 16.0, GitLab self-managed installations now have two database connections by default, instead of one. This change doubles the number of PostgreSQL connections. It makes self-managed versions of GitLab behave similarly to GitLab.com, and is a step toward enabling a separate database for CI features for self-managed versions of GitLab. Before upgrading to 16.0, determine if you need to [increase max connections for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
   - This change applies to installation methods with Linux packages (Omnibus), GitLab Helm chart, GitLab Operator, GitLab Docker images, and self-compiled installations.
+  - The second database connection can be disabled:
+    - [Linux package and Docker installations](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
+    - [Helm chart and GitLab Operator installations](https://docs.gitlab.com/charts/charts/globals.html#configure-multiple-database-connections).
+    - [Self-compiled installations](../../install/installation.md#configure-gitlab-db-settings).
 - Container registry using Azure storage might be empty with zero tags. You can fix this by following the [breaking change instructions](../deprecations.md#azure-storage-driver-defaults-to-the-correct-root-prefix).
 
 ### Linux package installations

@@ -22,6 +22,7 @@ describe('ServiceDeskRoot', () => {
     isIssueTrackerEnabled: true,
     outgoingName: 'GitLab Support Bot',
     projectKey: 'key',
+    reopenIssueOnExternalParticipantNote: true,
     addExternalParticipantsFromCc: true,
     selectedTemplate: 'Bug',
     selectedFileTemplateProjectId: 42,
@@ -60,6 +61,8 @@ describe('ServiceDeskRoot', () => {
         incomingEmail: provideData.initialIncomingEmail,
         initialOutgoingName: provideData.outgoingName,
         initialProjectKey: provideData.projectKey,
+        initialReopenIssueOnExternalParticipantNote:
+          provideData.reopenIssueOnExternalParticipantNote,
         initialAddExternalParticipantsFromCc: provideData.addExternalParticipantsFromCc,
         initialSelectedTemplate: provideData.selectedTemplate,
         initialSelectedFileTemplateProjectId: provideData.selectedFileTemplateProjectId,
@@ -146,6 +149,7 @@ describe('ServiceDeskRoot', () => {
             selectedTemplate: 'Bug',
             outgoingName: 'GitLab Support Bot',
             projectKey: 'key',
+            reopenIssueOnExternalParticipantNote: true,
             addExternalParticipantsFromCc: true,
           };
 
@@ -160,6 +164,7 @@ describe('ServiceDeskRoot', () => {
             outgoing_name: 'GitLab Support Bot',
             project_key: 'key',
             service_desk_enabled: true,
+            reopen_issue_on_external_participant_note: true,
             add_external_participants_from_cc: true,
           });
         });
@@ -179,6 +184,7 @@ describe('ServiceDeskRoot', () => {
             selectedTemplate: 'Bug',
             outgoingName: 'GitLab Support Bot',
             projectKey: 'key',
+            reopen_issue_on_external_participant_note: true,
             addExternalParticipantsFromCc: true,
           };
 

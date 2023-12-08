@@ -2,34 +2,33 @@
 import { isEmpty } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
+import { s__ } from '~/locale';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
-import { ANY_OPTION, GROUP_DATA, PROJECT_DATA } from '../constants';
+import { ANY_OPTION, GROUP_DATA, PROJECT_DATA } from '~/search/sidebar/constants';
 import SearchableDropdown from './searchable_dropdown.vue';
 
 export default {
   name: 'ProjectFilter',
+  i18n: {
+    projectFieldLabel: s__('GlobalSearch|Project'),
+  },
   components: {
     SearchableDropdown,
-  },
-  props: {
-    projectInitialJson: {
-      type: Object,
-      required: false,
-      default: () => null,
-    },
-    labelId: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   data() {
     return {
       search: '',
+      labelId: 'projects-filter-dropdown-id',
     };
   },
   computed: {
-    ...mapState(['query', 'projects', 'fetchingProjects']),
+    ...mapState([
+      'query',
+      'projects',
+      'fetchingProjects',
+      'projectInitialJson',
+      'useSidebarNavigation',
+    ]),
     ...mapGetters(['frequentProjects', 'currentScope']),
     selectedProject() {
       return isEmpty(this.projectInitialJson) ? ANY_OPTION : this.projectInitialJson;
@@ -74,17 +73,22 @@ export default {
 </script>
 
 <template>
-  <searchable-dropdown
-    data-testid="project-filter"
-    :header-text="$options.PROJECT_DATA.headerText"
-    :name="$options.PROJECT_DATA.name"
-    :loading="fetchingProjects"
-    :selected-item="selectedProject"
-    :items="projects"
-    :frequent-items="frequentProjects"
-    :search-handler="fetchProjects"
-    :label-id="labelId"
-    @first-open="firstLoad"
-    @change="handleProjectChange"
-  />
+  <div>
+    <h5 :id="labelId" class="gl-mt-0 gl-mb-5 gl-font-sm">
+      {{ $options.i18n.projectFieldLabel }}
+    </h5>
+    <searchable-dropdown
+      data-testid="project-filter"
+      :header-text="$options.PROJECT_DATA.headerText"
+      :name="$options.PROJECT_DATA.name"
+      :loading="fetchingProjects"
+      :selected-item="selectedProject"
+      :items="projects"
+      :frequent-items="frequentProjects"
+      :search-handler="fetchProjects"
+      :label-id="labelId"
+      @first-open="firstLoad"
+      @change="handleProjectChange"
+    />
+  </div>
 </template>

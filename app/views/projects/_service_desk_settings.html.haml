@@ -18,6 +18,7 @@
         selected_file_template_project_id: "#{@project.service_desk_setting&.file_template_project_id}",
         outgoing_name: "#{@project.service_desk_setting&.outgoing_name}",
         project_key: "#{@project.service_desk_setting&.project_key}",
+        reopen_issue_on_external_participant_note: "#{@project.service_desk_setting&.reopen_issue_on_external_participant_note}",
         add_external_participants_from_cc: "#{@project.service_desk_setting&.add_external_participants_from_cc}",
         templates: available_service_desk_templates_for(@project),
         public_project: "#{@project.public?}",

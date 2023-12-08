@@ -109,8 +109,7 @@ Prerequisites:
 If you need support for namespace in the URL path to remove the requirement for wildcard DNS:
 
 1. Enable the GitLab Pages flag for this feature by adding
-   `gitlab_pages["namespace_in_path"] = true` to `gitlab.rb`. For more information,
-   see [Use environment variables](#use-environment-variables).
+   `gitlab_pages["namespace_in_path"] = true` to `/etc/gitlab/gitlab.rb`.
 1. In your DNS provider, add entries for `example.com` and `projects.example.com`.
    In both lines, replace `example.com` with your domain name, and `192.0.0.0` with
    the IPv4 version of your IP address. The entries look like this:
@@ -214,8 +213,7 @@ Prerequisites:
 
    pages_nginx['enable'] = true
 
-   # Set this feature flag to enable this feature
-   # For more information, see https://docs.gitlab.com/ee/administration/pages/index.html#use-environment-variables
+   # Set this flag to enable this feature
    gitlab_pages["namespace_in_path"] = true
    ```
 
@@ -304,8 +302,7 @@ daemon doesn't listen to the outside world:
    pages_nginx['enable'] = true
    pages_nginx['redirect_http_to_https'] = true
 
-   # Set this feature flag to enable this feature
-   # For more information, see https://docs.gitlab.com/ee/administration/pages/index.html#use-environment-variables
+   # Set this flag to enable this feature
    gitlab_pages["namespace_in_path"] = true
    ```
 

@@ -10,6 +10,7 @@ class UserPreference < MainClusterwide::ApplicationRecord
   TIME_DISPLAY_FORMATS = { system: 0, non_iso_format: 1, iso_format: 2 }.freeze
 
   belongs_to :user
+  belongs_to :home_organization, class_name: "Organizations::Organization", optional: true
 
   scope :with_user, -> { joins(:user) }
   scope :gitpod_enabled, -> { where(gitpod_enabled: true) }
@@ -29,6 +30,8 @@ class UserPreference < MainClusterwide::ApplicationRecord
   validates :pinned_nav_items, json_schema: { filename: 'pinned_nav_items' }
 
   validates :time_display_format, inclusion: { in: TIME_DISPLAY_FORMATS.values }, presence: true
+
+  validate :user_belongs_to_home_organization, if: :home_organization_changed?
 
   # 2023-06-22 is after 16.1 release and during 16.2 release https://docs.gitlab.com/ee/development/database/avoiding_downtime_in_migrations.html#ignoring-the-column-release-m
   ignore_columns :use_legacy_web_ide, remove_with: '16.2', remove_after: '2023-06-22'
@@ -50,6 +53,16 @@ class UserPreference < MainClusterwide::ApplicationRecord
         s_('Notes|Show history only') => NOTES_FILTERS[:only_activity]
       }
     end
+  end
+
+  def user_belongs_to_home_organization
+    # If we don't ignore the default organization id below then all users need to have their corresponding entry
+    # with default organization id as organization id in the `organization_users` table.
+    # Otherwise, the user won't be able to the default organization as the home organization.
+    return if home_organization_id == Organizations::Organization::DEFAULT_ORGANIZATION_ID
+    return if user.user_belongs_to_organization?(home_organization_id)
+
+    errors.add(:user, _("is not part of the given organization"))
   end
 
   def set_notes_filter(filter_id, issuable)

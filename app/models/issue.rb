@@ -758,6 +758,11 @@ class Issue < ApplicationRecord
     Gitlab::HookData::IssueBuilder.new(self).build
   end
 
+  override :gfm_reference
+  def gfm_reference(from = nil)
+    "#{work_item_type_with_default.name.underscore} #{to_reference(from)}"
+  end
+
   private
 
   def project_level_readable_by?(user)

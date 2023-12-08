@@ -149,16 +149,6 @@ module IssuablesHelper
     end
   end
 
-  def assigned_open_issues_count_text
-    count = assigned_issuables_count(:issues)
-
-    if count > User::MAX_LIMIT_FOR_ASSIGNEED_ISSUES_COUNT - 1
-      "#{count - 1}+"
-    else
-      count.to_s
-    end
-  end
-
   def issuable_reference(issuable)
     @show_full_reference ? issuable.to_reference(full: true) : issuable.to_reference(@group || @project)
   end

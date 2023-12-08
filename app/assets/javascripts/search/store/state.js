@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash';
 import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY } from './constants';
 
-const createState = ({ query, navigation, defaultBranchName, searchType }) => ({
+const createState = ({ query, navigation, searchType, groupInitialJson, projectInitialJson }) => ({
   urlQuery: cloneDeep(query),
   query,
   groups: [],
@@ -21,7 +21,8 @@ const createState = ({ query, navigation, defaultBranchName, searchType }) => ({
   },
   searchLabelString: '',
   searchType,
-  defaultBranchName,
+  groupInitialJson,
+  projectInitialJson,
 });
 
 export default createState;

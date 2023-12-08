@@ -179,6 +179,9 @@ To set up OneLogin as your identity provider:
 
 ### Configure assertions
 
+NOTE:
+The attributes are case-sensitive.
+
 At minimum, you must configure the following assertions:
 
 1. [NameID](#manage-user-saml-identity).

@@ -2281,7 +2281,6 @@ Layout/LineLength:
     - 'ee/spec/views/admin/dashboard/index.html.haml_spec.rb'
     - 'ee/spec/views/compliance_management/compliance_framework/_project_settings.html.haml_spec.rb'
     - 'ee/spec/views/groups/security/discover/show.html.haml_spec.rb'
-    - 'ee/spec/views/layouts/header/_current_user_dropdown.html.haml_spec.rb'
     - 'ee/spec/views/operations/environments.html.haml_spec.rb'
     - 'ee/spec/views/projects/security/discover/show.html.haml_spec.rb'
     - 'ee/spec/views/shared/_mirror_status.html.haml_spec.rb'

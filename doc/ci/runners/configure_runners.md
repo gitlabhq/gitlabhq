@@ -11,53 +11,79 @@ If you have installed your own runners, you can configure and secure them in Git
 If you need to configure runners on the machine where you installed GitLab Runner, see
 [the GitLab Runner documentation](https://docs.gitlab.com/runner/configuration/).
 
-## Manually clear the runner cache
+## Set the maximum job timeout
 
-Read [clearing the cache](../caching/index.md#clearing-the-cache).
+You can specify a maximum job timeout for each runner to prevent projects
+with longer job timeouts from using the runner. The maximum job timeout is
+used of it is shorter than the job timeout defined in the project.
 
-## Set maximum job timeout for a runner
+### For a shared runner
 
-For each runner, you can specify a *maximum job timeout*. This timeout,
-if smaller than the [project defined timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run), takes precedence.
+Prerequisites:
 
-This feature can be used to prevent your shared runner from being overwhelmed
-by a project that has jobs with a long timeout (for example, one week).
+- You must be an administrator.
 
-On GitLab.com, you cannot override the job timeout for shared runners and must use the [project defined timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run).
+On GitLab.com, you cannot override the job timeout for shared runners and must use the [project defined timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) instead.
+
+To set the maximum job timeout:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **CI/CD > Runners**.
+1. To the right of the runner, you want to edit, select **Edit** (**{pencil}**).
+1. In the **Maximum job timeout** field, enter a value in seconds. The minimum amount is 600 seconds (10 minutes).
+1. Select **Save changes**.
+
+### For a group runner
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+To set the maximum job timeout:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Build > Runners**.
+1. To the right of the runner you want to edit, select **Edit** (**{pencil}**).
+1. In the **Maximum job timeout** field, enter a value in seconds. The minimum amount is 600 seconds (10 minutes).
+1. Select **Save changes**.
+
+### For a project runner
+
+Prerequisites:
+
+- You must have the Owner role for the project.
 
 To set the maximum job timeout:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
-1. Select your project runner to edit the settings.
-1. Enter a value under **Maximum job timeout**. Must be 10 minutes or more. If not
-   defined, the [project's job timeout setting](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run)
-   is used.
+1. To the right of the runner you want to edit, select **Edit** (**{pencil}**).
+1. In the **Maximum job timeout** field, enter a value in seconds. The minimum amount is 600 seconds (10 minutes). If not defined, the [job timeout for the project](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) is used instead.
 1. Select **Save changes**.
 
-How this feature works:
+## How maximum job timeout works
 
 **Example 1 - Runner timeout bigger than project timeout**
 
-1. You set the _maximum job timeout_ for a runner to 24 hours
-1. You set the _CI/CD Timeout_ for a project to **2 hours**
-1. You start a job
-1. The job, if running longer, times out after **2 hours**
+1. You set the _maximum job timeout_ for a runner to 24 hours.
+1. You set the _CI/CD Timeout_ for a project to **2 hours**.
+1. You start a job.
+1. The job, if running longer, times out after **2 hours**.
 
 **Example 2 - Runner timeout not configured**
 
-1. You remove the _maximum job timeout_ configuration from a runner
-1. You set the _CI/CD Timeout_ for a project to **2 hours**
-1. You start a job
-1. The job, if running longer, times out after **2 hours**
+1. You remove the _maximum job timeout_ configuration from a runner.
+1. You set the _CI/CD Timeout_ for a project to **2 hours**.
+1. You start a job.
+1. The job, if running longer, times out after **2 hours**.
 
 **Example 3 - Runner timeout smaller than project timeout**
 
-1. You set the _maximum job timeout_ for a runner to **30 minutes**
-1. You set the _CI/CD Timeout_ for a project to 2 hours
-1. You start a job
-1. The job, if running longer, times out after **30 minutes**
+1. You set the _maximum job timeout_ for a runner to **30 minutes**.
+1. You set the _CI/CD Timeout_ for a project to 2 hours.
+1. You start a job.
+1. The job, if running longer, times out after **30 minutes**.
 
 ## Set `script` and `after_script` timeouts
 
@@ -66,7 +92,7 @@ How this feature works:
 To control the amount of time `script` and `after_script` runs before it terminates, you can set specify a timeout.
 
 For example, you can specify a timeout to terminate a long-running `script` early, so that artifacts and caches can still be uploaded
-before the [job timeout](#set-maximum-job-timeout-for-a-runner) is exceeded.
+before the job timeout is exceeded.
 
 - To set a timeout for `script`, use the job variable `RUNNER_SCRIPT_TIMEOUT`.
 - To set a timeout for `after_script`, and override the default of 5 minutes, use the job variable `RUNNER_AFTER_SCRIPT_TIMEOUT`.
@@ -105,25 +131,10 @@ of shared runners on large GitLab instances. This ensures that you
 control access to your GitLab instances and secure [runner executors](https://docs.gitlab.com/runner/executors/).
 
 If certain executors run a job, the file system, the code the runner executes,
-and the runner authentication token may be exposed. This means that anyone that runs jobs
+and the runner authentication token may be exposed. This means that anyone who runs jobs
 on a _shared runner_ can access another user's code that runs on the runner.
 Users with access to the runner authentication token can use it to create a clone of
 a runner and submit false jobs in a vector attack. For more information, see [Security Considerations](https://docs.gitlab.com/runner/security/).
-
-### Prevent runners from revealing sensitive information
-
-To ensure runners don't reveal sensitive information, you can configure them to only run jobs
-on [protected branches](../../user/project/protected_branches.md), or jobs that have [protected tags](../../user/project/protected_tags.md).
-
-To prevent runners from revealing sensitive information:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
-1. Expand **Runners**.
-1. Find the runner you want to protect or unprotect. Make sure the runner is enabled.
-1. Select **Edit** (**{pencil}**).
-1. Select the **Protected** checkbox.
-1. Select **Save changes**.
 
 ### Using shared runners in forked projects
 
@@ -179,37 +190,129 @@ To reset the runner authentication token:
    - [Create a project runner](runners_scope.md#create-a-project-runner-with-a-runner-authentication-token).
 1. Optional. To verify that the previous runner authentication token has been revoked, use the [Runners API](../../api/runners.md#verify-authentication-for-a-registered-runner).
 
-## Use tags to control which jobs a runner can run
+### Automatically rotate runner authentication tokens
 
-You can use [tags](../yaml/index.md#tags) to ensure that runners only run the jobs they are equipped
-to run. For example, you can specify the `rails` tag for runners that have the dependencies to run
+You can specify an interval for runner authentication tokens to rotate.
+This rotation helps ensure the security of the tokens assigned to your runners.
+
+Prerequisites:
+
+- Runners must use [GitLab Runner 15.3 or later](https://docs.gitlab.com/runner/#gitlab-runner-versions).
+- You must be an administrator.
+
+To automatically rotate runner authentication tokens:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Continuous Integration and Deployment**
+1. Set a **Runners expiration** time for runners, leave empty for no expiration.
+1. Select **Save changes**.
+
+Before the interval expires, runners automatically request a new runner authentication token.
+
+## Prevent runners from revealing sensitive information
+
+To ensure runners don't reveal sensitive information, you can configure them to only run jobs
+on [protected branches](../../user/project/protected_branches.md), or jobs that have [protected tags](../../user/project/protected_tags.md).
+
+### For a shared runner
+
+Prerequisites:
+
+- You must be an administrator.
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **CI/CD > Runners**.
+1. To the right of the runner you want to protect, select **Edit** (**{pencil}**).
+1. Select the **Protected** checkbox.
+1. Select **Save changes**.
+
+### For a group runner
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Build > Runners**.
+1. To the right of the runner you want to protect, select **Edit** (**{pencil}**).
+1. Select the **Protected** checkbox.
+1. Select **Save changes**.
+
+### For a project runner
+
+Prerequisites:
+
+- You must have the Owner role for the project.
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > CI/CD**.
+1. Expand **Runners**.
+1. To the right of the runner you want to protect, select **Edit** (**{pencil}**).
+1. Select the **Protected** checkbox.
+1. Select **Save changes**.
+
+## Control jobs that a runner can run
+
+You can use [tags](../yaml/index.md#tags) to control the jobs a runner can run.
+For example, you can specify the `rails` tag for runners that have the dependencies to run
 Rails test suites.
 
 GitLab CI/CD tags are different to Git tags. GitLab CI/CD tags are associated with runners.
 Git tags are associated with commits.
 
-### Set a runner to run untagged jobs
+### For a shared runner
 
-When you [register a runner](https://docs.gitlab.com/runner/register/), its default behavior is to **only pick**
-[tagged jobs](../yaml/index.md#tags).
-To change this, you must have the Owner role for the project.
+Prerequisites:
 
-To make a runner pick untagged jobs:
+- You must be an administrator.
+
+To set the maximum job timeout:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **CI/CD > Runners**.
+1. To the right of the runner you want to edit, select **Edit** (**{pencil}**).
+1. Set the runner to run tagged or untagged jobs:
+   - To run tagged jobs, in the **Tags** field, enter the job tags separated with a comma. For example, `macos`, `rails`.
+   - To run untagged jobs, select the **Run untagged jobs** checkbox.
+1. Select **Save changes**.
+
+### For a group runner
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+To set the maximum job timeout:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Build > Runners**.
+1. To the right of the runner you want to edit, select **Edit** (**{pencil}**).
+1. Set the runner to run tagged or untagged jobs:
+   - To run tagged jobs, in the **Tags** field, enter the job tags separated with a comma. For example, `macos`, `ruby`.
+   - To run untagged jobs, select the **Run untagged jobs** checkbox.
+1. Select **Save changes**.
+
+### For a project runner
+
+Prerequisites:
+
+- You must have the Owner role for the project.
+
+To set a runner to run tagged jobs:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
-1. Find the runner you want to pick untagged jobs and make sure it's enabled.
-1. Select **Edit** (**{pencil}**).
-1. Select the **Run untagged jobs** checkbox.
+1. To the right of the runner you want to edit, select **Edit** (**{pencil}**).
+1. Set the runner to run tagged or untagged jobs:
+   - To run tagged jobs, in the **Tags** field, enter the job tags separated with a comma. For example, `macos`, `ruby`.
+   - To run untagged jobs, select the **Run untagged jobs** checkbox.
 1. Select **Save changes**.
 
-NOTE:
-The runner tags list cannot be empty when it's not allowed to pick untagged jobs.
+### How the runner uses tags
 
-Below are some example scenarios of different variations.
-
-### Runner runs only tagged jobs
+#### Runner runs only tagged jobs
 
 The following examples illustrate the potential impact of the runner being set
 to run only tagged jobs.
@@ -229,7 +332,7 @@ Example 3:
 1. The runner is configured to run only tagged jobs and has the `docker` tag.
 1. A job that has no tags defined is executed and stuck.
 
-### Runner is allowed to run untagged jobs
+#### Runner is allowed to run untagged jobs
 
 The following examples illustrate the potential impact of the runner being set
 to run tagged and untagged jobs.
@@ -246,7 +349,7 @@ Example 2:
 1. A job that has no tags defined is executed and run.
 1. A second job that has a `docker` tag defined is stuck.
 
-### A runner and a job have multiple tags
+#### A runner and a job have multiple tags
 
 The selection logic that matches the job and runner is based on the list of `tags`
 defined in the job.
@@ -273,7 +376,9 @@ Example 3:
 
 You can use tags to run different jobs on different platforms. For
 example, if you have an OS X runner with tag `osx` and a Windows runner with tag
-`windows`, you can run a job on each platform:
+`windows`, you can run a job on each platform.
+
+Update the `tags` field in the `config.toml`:
 
 ```yaml
 windows job:
@@ -295,7 +400,7 @@ osx job:
 
 > Introduced in [GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/35742).
 
-You can use [CI/CD variables](../variables/index.md) with `tags` for dynamic runner selection:
+In the `.gitlab-ci.yml` file, use [CI/CD variables](../variables/index.md) with `tags` for dynamic runner selection:
 
 ```yaml
 variables:
@@ -928,22 +1033,3 @@ No manual intervention should be required, and no running jobs should be affecte
 
 If you need to manually update the runner authentication token, you can run a
 command to [reset the token](https://docs.gitlab.com/runner/commands/#gitlab-runner-reset-token).
-
-### Automatically rotate runner authentication tokens
-
-You can specify an interval for runner authentication tokens to rotate.
-This rotation helps ensure the security of the tokens assigned to your runners.
-
-Prerequisites:
-
-- Ensure your runners are using [GitLab Runner 15.3 or later](https://docs.gitlab.com/runner/#gitlab-runner-versions).
-
-To automatically rotate runner authentication tokens:
-
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Settings > CI/CD**.
-1. Expand **Continuous Integration and Deployment**
-1. Set a **Runners expiration** time for runners, leave empty for no expiration.
-1. Select **Save**.
-
-Before the interval expires, runners automatically request a new runner authentication token.

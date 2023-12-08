@@ -11,19 +11,16 @@ export const initTopbar = (store) => {
     return false;
   }
 
-  const { groupInitialJson, projectInitialJson } = el.dataset;
-
-  const groupInitialJsonParsed = JSON.parse(groupInitialJson);
-  const projectInitialJsonParsed = JSON.parse(projectInitialJson);
+  const { defaultBranchName } = el.dataset;
 
   return new Vue({
     el,
+    name: 'GlobalSearchTopbar',
     store,
     render(createElement) {
       return createElement(GlobalSearchTopbar, {
         props: {
-          groupInitialJson: groupInitialJsonParsed,
-          projectInitialJson: projectInitialJsonParsed,
+          defaultBranchName,
         },
       });
     },

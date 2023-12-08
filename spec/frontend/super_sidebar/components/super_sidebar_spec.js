@@ -1,5 +1,6 @@
 import { nextTick } from 'vue';
 import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/dist/utils';
+import sidebarEventHub from '~/super_sidebar/event_hub';
 import ExtraInfo from 'jh_else_ce/super_sidebar/components/extra_info.vue';
 import { Mousetrap } from '~/lib/mousetrap';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -60,6 +61,7 @@ describe('SuperSidebar component', () => {
   const findTrialStatusPopover = () => wrapper.findByTestId(trialStatusPopoverStubTestId);
   const findSidebarMenu = () => wrapper.findComponent(SidebarMenu);
   const findAdminLink = () => wrapper.findByTestId('sidebar-admin-link');
+  const findContextHeader = () => wrapper.findComponent('#super-sidebar-context-header');
   let trackingSpy = null;
 
   const createWrapper = ({
@@ -214,6 +216,15 @@ describe('SuperSidebar component', () => {
       createWrapper();
 
       expect(wrapper.text()).toContain('Your work');
+    });
+
+    it('handles event toggle-menu-header  correctly', async () => {
+      createWrapper();
+
+      sidebarEventHub.$emit('toggle-menu-header', false);
+
+      await nextTick();
+      expect(findContextHeader().exists()).toBe(false);
     });
 
     describe('item access tracking', () => {

@@ -14,6 +14,7 @@ export const initBlobRefSwitcher = () => {
 
   return new Vue({
     el,
+    name: 'GlobalSearchUnderTopbar',
     render(createElement) {
       return createElement(RefSelector, {
         props: {

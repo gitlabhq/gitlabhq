@@ -6,9 +6,9 @@ import Vuex from 'vuex';
 import { MOCK_GROUP, MOCK_QUERY, CURRENT_SCOPE } from 'jest/search/mock_data';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { GROUPS_LOCAL_STORAGE_KEY } from '~/search/store/constants';
-import GroupFilter from '~/search/topbar/components/group_filter.vue';
-import SearchableDropdown from '~/search/topbar/components/searchable_dropdown.vue';
-import { ANY_OPTION, GROUP_DATA, PROJECT_DATA } from '~/search/topbar/constants';
+import GroupFilter from '~/search/sidebar/components/group_filter.vue';
+import SearchableDropdown from '~/search/sidebar/components/searchable_dropdown.vue';
+import { ANY_OPTION, GROUP_DATA, PROJECT_DATA } from '~/search/sidebar/constants';
 
 Vue.use(Vuex);
 
@@ -137,7 +137,7 @@ describe('GroupFilter', () => {
 
       describe('when initialData is set', () => {
         beforeEach(() => {
-          createComponent({}, { groupInitialJson: { ...MOCK_GROUP } });
+          createComponent({ groupInitialJson: { ...MOCK_GROUP } }, {});
         });
 
         it('sets selectedGroup to ANY_OPTION', () => {
@@ -162,8 +162,9 @@ describe('GroupFilter', () => {
         createComponent(
           {
             query: { ...MOCK_QUERY, nav_source: navSource },
+            groupInitialJson: { ...initialData },
           },
-          { groupInitialJson: { ...initialData } },
+          {},
         );
       });
 

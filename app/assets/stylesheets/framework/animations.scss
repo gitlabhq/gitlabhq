@@ -92,8 +92,7 @@
   @include transition(background-color, border-color, color, box-shadow);
 }
 
-.dropdown-menu-toggle,
-.header-user-avatar {
+.dropdown-menu-toggle {
   @include transition(border-color);
 }
 

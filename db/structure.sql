@@ -24663,6 +24663,7 @@ CREATE TABLE user_preferences (
     enabled_zoekt boolean DEFAULT true NOT NULL,
     keyboard_shortcuts_enabled boolean DEFAULT true NOT NULL,
     time_display_format smallint DEFAULT 0 NOT NULL,
+    home_organization_id bigint,
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_d07ccd35f7 CHECK ((char_length(diffs_addition_color) <= 7))
 );
@@ -34896,6 +34897,8 @@ CREATE INDEX index_user_phone_validations_on_dial_code_phone_number ON user_phon
 
 CREATE INDEX index_user_preferences_on_gitpod_enabled ON user_preferences USING btree (gitpod_enabled);
 
+CREATE INDEX index_user_preferences_on_home_organization_id ON user_preferences USING btree (home_organization_id);
+
 CREATE UNIQUE INDEX index_user_preferences_on_user_id ON user_preferences USING btree (user_id);
 
 CREATE INDEX index_user_project_callouts_on_project_id ON user_project_callouts USING btree (project_id);
@@ -38157,6 +38160,9 @@ ALTER TABLE ONLY gitlab_subscriptions
 
 ALTER TABLE ONLY abuse_events
     ADD CONSTRAINT fk_e5ce49c215 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY user_preferences
+    ADD CONSTRAINT fk_e5e029c10b FOREIGN KEY (home_organization_id) REFERENCES organizations(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_e719a85f8a FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;

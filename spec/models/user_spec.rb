@@ -95,6 +95,10 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:achievements_enabled).to(:user_preference) }
     it { is_expected.to delegate_method(:achievements_enabled=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:home_organization).to(:user_preference) }
+    it { is_expected.to delegate_method(:home_organization_id).to(:user_preference) }
+    it { is_expected.to delegate_method(:home_organization_id=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:job_title).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:job_title=).to(:user_detail).with_arguments(:args).allow_nil }
 
@@ -1438,6 +1442,25 @@ RSpec.describe User, feature_category: :user_profile do
       it 'returns only the trusted users' do
         expect(described_class.trusted).to match_array([trusted_user1, trusted_user2])
       end
+    end
+  end
+
+  describe '#user_belongs_to_organization?' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:organization) { create(:organization) }
+
+    subject { user.user_belongs_to_organization?(organization) }
+
+    context 'when user is an organization user' do
+      before do
+        create(:organization_user, organization: organization, user: user)
+      end
+
+      it { is_expected.to eq true }
+    end
+
+    context 'when user is not an organization user' do
+      it { is_expected.to eq false }
     end
   end
 

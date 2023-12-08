@@ -4568,7 +4568,7 @@ In this example, only runners with *both* the `ruby` and `postgres` tags can run
 
 **Related topics**:
 
-- [Use tags to control which jobs a runner can run](../runners/configure_runners.md#use-tags-to-control-which-jobs-a-runner-can-run).
+- [Use tags to control which jobs a runner can run](../runners/configure_runners.md#control-jobs-that-a-runner-can-run).
 - [Select different runner tags for each parallel matrix job](../jobs/job_control.md#select-different-runner-tags-for-each-parallel-matrix-job).
 
 ### `timeout`
@@ -4579,7 +4579,7 @@ Use `timeout` to configure a timeout for a specific job. If the job runs for lon
 than the timeout, the job fails.
 
 The job-level timeout can be longer than the [project-level timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run),
-but can't be longer than the [runner's timeout](../runners/configure_runners.md#set-maximum-job-timeout-for-a-runner).
+but can't be longer than the [runner's timeout](../runners/configure_runners.md#set-the-maximum-job-timeout).
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).

@@ -1,2 +1,1 @@
-- current_href = Feature.enabled?(:global_ci_catalog, @user) ? href : nil
-= render Pajamas::BadgeComponent.new(s_('CiCatalog|CI/CD catalog resource'), variant: 'info', icon: 'catalog-checkmark', class: css_class, href: current_href)
+= render Pajamas::BadgeComponent.new(s_('CiCatalog|CI/CD catalog resource'), variant: 'info', icon: 'catalog-checkmark', class: css_class, href: href)

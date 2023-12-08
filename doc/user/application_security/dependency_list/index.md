@@ -61,14 +61,38 @@ Details of each dependency are listed, sorted by decreasing severity of vulnerab
 
 ![Dependency list](img/dependency_list_v16_3.png)
 
-### Vulnerabilities
+## Filter dependency list
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422356) in GitLab 16.7  [with a flag](../../../administration/feature_flags.md) named `group_level_dependencies_filtering`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `group_level_dependencies_filtering`.
+On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+
+In the group-level dependency list you can filter by:
+
+- Project
+- License
+
+To filter the dependency list:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. Select **Secure > Dependency list**.
+1. Select the filter bar.
+1. Select a filter, then from the dropdown list select one or more criteria.
+   To close the dropdown list, select outside of it. To add more filters, repeat this step.
+1. To apply the selected filters, press <kbd>Enter</kbd>.
+
+The dependency list shows only dependencies that match your filters.
+
+## Vulnerabilities
 
 If a dependency has known vulnerabilities, view them by selecting the arrow next to the
 dependency's name or the badge that indicates how many known vulnerabilities exist. For each
 vulnerability, its severity and description appears below it. To view more details of a vulnerability,
 select the vulnerability's description. The [vulnerability's details](../vulnerabilities) page is opened.
 
-### Dependency paths
+## Dependency paths
 
 The dependency list shows the path between a dependency and a top-level dependency it's connected
 to, if any. Multiple paths may connect a transient dependency to top-level

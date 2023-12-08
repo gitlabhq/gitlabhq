@@ -98,12 +98,6 @@
   .container-fluid {
     padding: 0;
 
-    .user-counter {
-      svg {
-        margin-right: 3px;
-      }
-    }
-
     .navbar-nav {
       @include media-breakpoint-down(xs) {
         display: flex;
@@ -120,12 +114,6 @@
     }
 
     .nav > li {
-      &.header-user {
-        @include media-breakpoint-down(xs) {
-          padding-left: 10px;
-        }
-      }
-
       > a {
         will-change: color;
         margin: 4px 0;
@@ -137,37 +125,10 @@
             padding: 0;
           }
         }
-
-        &.header-user-dropdown-toggle {
-          margin-left: 2px;
-
-          .header-user-avatar {
-            margin-right: 0;
-          }
-        }
       }
 
       .header-new-dropdown-toggle {
         margin-right: 0;
-      }
-
-      .impersonated-user,
-      .impersonated-user:hover {
-        margin-right: 1px;
-        background-color: $white;
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-      }
-
-      .impersonation-btn,
-      .impersonation-btn:hover {
-        background-color: $white;
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-
-        svg {
-          color: $orange-500;
-        }
       }
     }
   }
@@ -223,10 +184,6 @@
     top: -1px;
     font-size: 10px;
   }
-
-  .impersonation i {
-    color: $red-500;
-  }
 }
 
 .caret-down,
@@ -238,7 +195,6 @@
   fill: currentColor;
 }
 
-.header-user .dropdown-menu,
 .header-new .dropdown-menu {
   margin-top: $dropdown-vertical-offset;
 }
@@ -304,44 +260,6 @@
       }
     }
   }
-
-  .header-user-dropdown-toggle {
-    text-align: center;
-  }
-
-  .header-user-avatar {
-    float: none;
-  }
-}
-
-.header-user {
-  &.show .dropdown-menu {
-    margin-top: 4px;
-    color: var(--gl-text-color, $gl-text-color);
-    left: auto;
-    max-height: $dropdown-max-height-lg;
-
-    .user-status {
-      max-width: 240px;
-    }
-
-    svg {
-      vertical-align: text-top;
-    }
-
-    a.ci-minutes-emoji gl-emoji,
-    a.trial-link gl-emoji {
-      font-size: $gl-font-size;
-      vertical-align: baseline;
-    }
-  }
-}
-
-.header-user-avatar {
-  float: left;
-  margin-right: 5px;
-  border-radius: 50%;
-  border: 1px solid $gray-normal;
 }
 
 .notification-dot {
