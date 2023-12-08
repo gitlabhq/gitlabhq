@@ -14,24 +14,9 @@ module Sidebars
           s_('ZentaoIntegration|ZenTao')
         end
 
-        override :title_html_options
-        def title_html_options
-          {
-            id: 'js-onboarding-settings-link'
-          }
-        end
-
         override :sprite_icon
         def sprite_icon
           'external-link'
-        end
-
-        # Hardcode sizes so image doesn't flash before CSS loads https://gitlab.com/gitlab-org/gitlab/-/issues/321022
-        override :image_html_options
-        def image_html_options
-          {
-            size: 16
-          }
         end
 
         override :render?

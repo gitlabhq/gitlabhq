@@ -90,9 +90,9 @@ RSpec.describe Gitlab::Access::BranchProtection do
       where(:level, :result) do
         Gitlab::Access::PROTECTION_NONE                 | true
         Gitlab::Access::PROTECTION_DEV_CAN_PUSH         | false
-        Gitlab::Access::PROTECTION_DEV_CAN_MERGE        | true
+        Gitlab::Access::PROTECTION_DEV_CAN_MERGE        | false
         Gitlab::Access::PROTECTION_FULL                 | false
-        Gitlab::Access::PROTECTION_DEV_CAN_INITIAL_PUSH | true
+        Gitlab::Access::PROTECTION_DEV_CAN_INITIAL_PUSH | false
       end
 
       with_them { it { is_expected.to eq(result) } }
@@ -117,10 +117,10 @@ RSpec.describe Gitlab::Access::BranchProtection do
 
       where(:level, :result) do
         Gitlab::Access::PROTECTION_NONE                 | [{ 'access_level' => Gitlab::Access::DEVELOPER }]
-        Gitlab::Access::PROTECTION_DEV_CAN_PUSH         | [{ 'access_level' => Gitlab::Access::DEVELOPER }]
+        Gitlab::Access::PROTECTION_DEV_CAN_PUSH         | [{ 'access_level' => Gitlab::Access::MAINTAINER }]
         Gitlab::Access::PROTECTION_DEV_CAN_MERGE        | [{ 'access_level' => Gitlab::Access::DEVELOPER }]
         Gitlab::Access::PROTECTION_FULL                 | [{ 'access_level' => Gitlab::Access::MAINTAINER }]
-        Gitlab::Access::PROTECTION_DEV_CAN_INITIAL_PUSH | [{ 'access_level' => Gitlab::Access::DEVELOPER }]
+        Gitlab::Access::PROTECTION_DEV_CAN_INITIAL_PUSH | [{ 'access_level' => Gitlab::Access::MAINTAINER }]
       end
 
       with_them { it { is_expected.to eq(result) } }

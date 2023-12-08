@@ -1396,7 +1396,6 @@ Layout/ArgumentAlignment:
     - 'spec/lib/gitlab/gitaly_client/ref_service_spec.rb'
     - 'spec/lib/gitlab/gitaly_client_spec.rb'
     - 'spec/lib/gitlab/github_gists_import/importer/gist_importer_spec.rb'
-    - 'spec/lib/gitlab/github_import/importer/issue_event_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/importer/labels_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/importer/milestones_importer_spec.rb'
     - 'spec/lib/gitlab/graphql/query_analyzers/ast/logger_analyzer_spec.rb'

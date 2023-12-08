@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_cache, :clean_gitlab_redis_shared_state, feature_category: :importers do
   shared_examples 'validated redis value' do
     let(:value) { double('value', to_s: Object.new) }
 
@@ -32,7 +32,7 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_cache do
 
       expect(redis).to receive(:get).with(/foo/).and_return('bar')
       expect(redis).to receive(:expire).with(/foo/, described_class::TIMEOUT)
-      expect(Gitlab::Redis::Cache).to receive(:with).twice.and_yield(redis)
+      expect(Gitlab::Redis::Cache).to receive(:with).exactly(4).times.and_yield(redis)
 
       described_class.read('foo')
     end
@@ -44,7 +44,7 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_cache do
 
       expect(redis).to receive(:get).with(/foo/).and_return('')
       expect(redis).not_to receive(:expire)
-      expect(Gitlab::Redis::Cache).to receive(:with).and_yield(redis)
+      expect(Gitlab::Redis::Cache).to receive(:with).twice.and_yield(redis)
 
       described_class.read('foo')
     end
@@ -80,6 +80,10 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_cache do
   end
 
   describe '.increment' do
+    before do
+      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
+    end
+
     it 'increment a key and returns the current value' do
       expect(described_class.increment('foo')).to eq(1)
 

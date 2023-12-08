@@ -4,9 +4,9 @@ module Types
   module Ci
     module Catalog
       module Resources
-        # rubocop: disable Graphql/AuthorizeTypes -- Authorization is handled by VersionsType
+        # rubocop: disable Graphql/AuthorizeTypes -- Authorization is handled by VersionType
         class ComponentType < BaseObject
-          graphql_name 'CiCatalogResourcesComponent'
+          graphql_name 'CiCatalogResourceComponent'
 
           field :id, ::Types::GlobalIDType[::Ci::Catalog::Resources::Component], null: false,
             description: 'ID of the component.',

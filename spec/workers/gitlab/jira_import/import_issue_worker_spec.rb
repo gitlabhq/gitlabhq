@@ -22,15 +22,15 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker, feature_category: :importe
   describe '#perform', :clean_gitlab_redis_cache do
     let(:assignee_ids) { [user.id] }
     let(:issue_attrs) do
-      build(:issue, project_id: project.id, namespace_id: project.project_namespace_id, title: 'jira issue')
-        .as_json.merge(
-          'label_ids' => [jira_issue_label_1.id, jira_issue_label_2.id], 'assignee_ids' => assignee_ids
-        ).except('issue_type')
+      build(:issue, project_id: project.id, namespace_id: project.project_namespace_id, title: 'jira issue').as_json
+        .merge('label_ids' => [jira_issue_label_1.id, jira_issue_label_2.id], 'assignee_ids' => assignee_ids)
+        .except('issue_type')
         .compact
     end
 
     context 'when any exception raised while inserting to DB' do
       before do
+        allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
         allow(subject).to receive(:insert_and_return_id).and_raise(StandardError)
         expect(Gitlab::JobWaiter).to receive(:notify)
 

@@ -65,6 +65,7 @@ module Groups
       ) do
         Group.transaction do
           update_group_attributes
+          remove_paid_features_for_projects(old_root_ancestor_id)
           ensure_ownership
           update_integrations
           remove_issue_contacts(old_root_ancestor_id, was_root_group)
@@ -177,6 +178,10 @@ module Groups
       @group.save!
       # #reload is called to make sure traversal_ids are reloaded
       @group.reload # rubocop:disable Cop/ActiveRecordAssociationReload
+    end
+
+    # Overridden in EE
+    def remove_paid_features_for_projects(old_root_ancestor_id)
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

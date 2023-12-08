@@ -17,11 +17,11 @@ This competency validates that GitLab delivers DevOps solutions that work with a
 
 ## DevSecOps Specialty Category
 
-[AWS Program Information](https://aws.amazon.com/blogs/apn/aws-devops-competency-expands-to-include-devsecops-category/) [GitLab Announcement](https://about.gitlab.com/blog/2023/09/25/aws-devsecops-competency-partner/)
+The DevSecOps qualification is a category of the DevOps Software Competency that demonstrates that GitLab is a substantial solution in helping organizations meet their DevSecOps maturity goals. GitLab was reviewed for meeting these additional qualifications before being granted this designation. [AWS Program Information](https://aws.amazon.com/blogs/apn/aws-devops-competency-expands-to-include-devsecops-category/) [GitLab Announcement](https://about.gitlab.com/blog/2023/09/25/aws-devsecops-competency-partner/)
 
 ## Public Sector Partner
 
-This designation indicates that GitLab has been deemed qualified to work with AWS Public Sector customers. In fact, we have an entire organization dedicated to this practice. [AWS Program Information](https://aws.amazon.com/partners/programs/public-sector/)
+This designation indicates that GitLab has been deemed qualified to work with AWS Public Sector customers. GitLab has a dedicated organization to address public sector specific needs. [AWS Program Information](https://aws.amazon.com/partners/programs/public-sector/)
 
 ## AWS Graviton
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Types::Ci::Catalog::Resources::ComponentType, feature_category: :pipeline_composition do
-  specify { expect(described_class.graphql_name).to eq('CiCatalogResourcesComponent') }
+  specify { expect(described_class.graphql_name).to eq('CiCatalogResourceComponent') }
 
   it 'exposes the expected fields' do
     expected_fields = %i[

@@ -18,11 +18,6 @@ module Sidebars
           { class: 'shortcuts-project-information' }
         end
 
-        override :extra_nav_link_html_options
-        def extra_nav_link_html_options
-          { class: 'home' }
-        end
-
         override :title
         def title
           _('Project information')

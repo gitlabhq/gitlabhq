@@ -12,6 +12,7 @@ module Gitlab
           cross-referenced
           demilestoned
           labeled
+          merged
           milestoned
           renamed
           reopened
@@ -62,6 +63,8 @@ module Gitlab
             Gitlab::GithubImport::Importer::Events::ChangedAssignee
           when 'review_requested', 'review_request_removed'
             Gitlab::GithubImport::Importer::Events::ChangedReviewer
+          when 'merged'
+            Gitlab::GithubImport::Importer::Events::Merged
           end
         end
       end

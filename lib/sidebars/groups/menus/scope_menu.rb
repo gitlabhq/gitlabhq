@@ -19,15 +19,6 @@ module Sidebars
           { path: %w[groups#show groups#details groups#new projects#new] }
         end
 
-        override :extra_nav_link_html_options
-        def extra_nav_link_html_options
-          {
-            class: 'context-header has-tooltip',
-            title: context.group.name,
-            data: { container: 'body', placement: 'right' }
-          }
-        end
-
         override :render?
         def render?
           true

@@ -75,6 +75,7 @@ module Gitlab
         end
 
         def reopen_issue_on_external_participant_note
+          return unless noteable.respond_to?(:closed?)
           return unless noteable.closed?
           return unless author == Users::Internal.support_bot
           return unless project.service_desk_setting&.reopen_issue_on_external_participant_note?

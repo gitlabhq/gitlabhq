@@ -76,6 +76,10 @@ RSpec.describe Gitlab::GithubImport::Importer::NotesImporter, feature_category: 
   end
 
   describe '#parallel_import', :clean_gitlab_redis_cache do
+    before do
+      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
+    end
+
     it 'imports each note in parallel' do
       importer = described_class.new(project, client)
 

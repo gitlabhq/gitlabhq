@@ -6106,7 +6106,6 @@
 - './spec/lib/gitlab/github_import/importer/events/renamed_spec.rb'
 - './spec/lib/gitlab/github_import/importer/events/reopened_spec.rb'
 - './spec/lib/gitlab/github_import/importer/issue_and_label_links_importer_spec.rb'
-- './spec/lib/gitlab/github_import/importer/issue_event_importer_spec.rb'
 - './spec/lib/gitlab/github_import/importer/issue_events_importer_spec.rb'
 - './spec/lib/gitlab/github_import/importer/issue_importer_spec.rb'
 - './spec/lib/gitlab/github_import/importer/issues_importer_spec.rb'

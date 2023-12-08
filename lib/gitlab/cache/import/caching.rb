@@ -138,7 +138,7 @@ module Gitlab
 
           key = cache_key_for(raw_key)
 
-          Redis::Cache.with do |redis|
+          with_redis do |redis|
             redis.sismember(key, value)
           end
         end
@@ -244,7 +244,14 @@ module Gitlab
         end
 
         def self.with_redis(&block)
-          Redis::Cache.with(&block) # rubocop:disable CodeReuse/ActiveRecord
+          block_result = Gitlab::Redis::Cache.with(&block) # rubocop:disable CodeReuse/ActiveRecord -- This is not AR
+          cache_identity = Gitlab::Redis::Cache.with(&:inspect) # rubocop:disable CodeReuse/ActiveRecord -- This is not AR
+
+          Gitlab::Redis::SharedState.with do |redis|
+            yield redis unless cache_identity == redis.default_store.inspect
+          end
+
+          block_result
         end
 
         def self.validate_redis_value!(value)

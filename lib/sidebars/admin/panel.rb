@@ -9,11 +9,6 @@ module Sidebars
         add_menus
       end
 
-      override :render_raw_scope_menu_partial
-      def render_raw_scope_menu_partial
-        "shared/nav/admin_scope_header"
-      end
-
       override :aria_label
       def aria_label
         s_("Admin|Admin Area")

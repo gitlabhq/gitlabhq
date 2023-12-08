@@ -236,17 +236,23 @@ To rename a repository:
 1. In the **Change path** text box, edit the path.
 1. Select **Change path**.
 
-## Access the Project overview page by using the project ID
+## Access the project overview page by using the project ID
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53671) in GitLab 11.8.
+> Project ID [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
 
 To access a project by using the project ID instead of its name,
-go to `https://gitlab.example.com/projects/:id`.
+go to `https://gitlab.example.com/projects/<id>`.
 
-The project ID is displayed in the **Project overview** page, under the project name.
+To copy the project ID:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. On the project overview page, in the top right, select **Actions** (**{ellipsis_v})**.
+1. Select **Copy project ID**.
 
 For example, if in your personal namespace `alex` you have a project `my-project` with the ID `123456`, you can access the project
 either at `https://gitlab.example.com/alex/my-project` or `https://gitlab.example.com/projects/123456`.
+
+You might also need the project ID if you want to interact with it using the [GitLab API](../../api/index.md).
 
 ## Who can view the Project overview page
 
@@ -266,18 +272,24 @@ For users without permission to view the project's code, the landing page shows:
 
 ## Leave a project
 
+> The button to leave a project [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
+
 When you leave a project:
 
 - You are no longer a project member and cannot contribute.
 - All the issues and merge requests that were assigned
   to you are unassigned.
 
+Prerequisites:
+
+- You can leave a project this way only when a project is part of a group under a [group namespace](../namespace/index.md).
+- You must be a [direct member](members/index.md#membership-types) of the project.
+
 To leave a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Leave project**. The **Leave project** option only displays
-on the project dashboard when a project is part of a group under a
-[group namespace](../namespace/index.md).
+1. On the project overview page, in the top right, select **Actions** (**{ellipsis_v})**.
+1. Select **Leave project**, then **Leave project** again..
 
 ## Add a compliance framework to a project **(PREMIUM)**
 

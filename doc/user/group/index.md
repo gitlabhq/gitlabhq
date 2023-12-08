@@ -117,6 +117,21 @@ To edit group details:
    The description is limited to 500 characters.
 1. Select **Save changes**.
 
+## Leave a group
+
+> The button to leave a group [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
+
+When you leave a group:
+
+- You are no longer a member of the group, its subgroups, and projects, and cannot contribute.
+- All the issues and merge requests that were assigned to you are unassigned.
+
+To leave a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. On the group overview page, in the top right, select **Actions** (**{ellipsis_v})**.
+1. Select **Leave group**, then **Leave group** again.
+
 ## Remove a group
 
 > Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
@@ -339,9 +354,6 @@ You can add a new project to a group in two ways:
 
 ### Specify who can add projects to a group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2534) in GitLab 10.5.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25975) from GitLab Premium to GitLab Free in 11.10.
-
 By default, users with at least the:
 
 - Developer role can create projects under a group. This default can be changed.
@@ -357,3 +369,15 @@ To change the role that can create projects under a group:
 1. Select **Save changes**.
 
 To change this setting globally, see [Default project creation protection](../../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
+
+## Get the group ID
+
+> Group ID [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
+
+You might need the group ID if you want to interact with it using the [GitLab API](../../api/index.md).
+
+To copy the group ID:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. On the group overview page, in the top right, select **Actions** (**{ellipsis_v})**.
+1. Select **Copy group ID**.

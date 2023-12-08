@@ -1469,7 +1469,7 @@ msgstr ""
 msgid "+ %{count} more"
 msgstr ""
 
-msgid "+ %{hiddenBranchesLength} more"
+msgid "+ %{itemsLength} more"
 msgstr ""
 
 msgid "+ %{moreCount} more"
@@ -5506,6 +5506,9 @@ msgid "Analytics|Analytics settings for '%{project_name}' were successfully upda
 msgstr ""
 
 msgid "Analytics|Are you sure you want to cancel creating this dashboard?"
+msgstr ""
+
+msgid "Analytics|Are you sure you want to cancel creating this visualization?"
 msgstr ""
 
 msgid "Analytics|Are you sure you want to cancel editing this dashboard?"
@@ -42265,10 +42268,16 @@ msgstr ""
 msgid "Saving project."
 msgstr ""
 
-msgid "ScanExecutionPolicy|%{boldStart}Run%{boldEnd} %{typeSelector} %{filePath} %{tooltip}"
+msgid "ScanExecutionPolicy|%{boldStart}Run%{boldEnd} %{typeSelector} %{actionType}"
+msgstr ""
+
+msgid "ScanExecutionPolicy|%{boldStart}Run%{boldEnd} %{typeSelector} from the project %{projectSelector} with ref %{refSelector}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|%{hostname}'s timezone"
+msgstr ""
+
+msgid "ScanExecutionPolicy|%{labelStart}File path:%{labelEnd} %{filePath}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|%{period} %{days} at %{time} %{timezoneLabel} %{timezone}"
@@ -42370,6 +42379,9 @@ msgstr ""
 msgid "ScanExecutionPolicy|Select or Create a Key"
 msgstr ""
 
+msgid "ScanExecutionPolicy|Select ref"
+msgstr ""
+
 msgid "ScanExecutionPolicy|Select scanner profile"
 msgstr ""
 
@@ -42395,6 +42407,9 @@ msgid "ScanExecutionPolicy|agent"
 msgstr ""
 
 msgid "ScanExecutionPolicy|branch"
+msgstr ""
+
+msgid "ScanExecutionPolicy|file path group"
 msgstr ""
 
 msgid "ScanExecutionPolicy|has specific tag"
@@ -43427,7 +43442,7 @@ msgstr ""
 msgid "SecurityOrchestration|Groups"
 msgstr ""
 
-msgid "SecurityOrchestration|Hide extra branches"
+msgid "SecurityOrchestration|Hide extra items"
 msgstr ""
 
 msgid "SecurityOrchestration|If any scanner finds a newly detected critical vulnerability in an open merge request targeting the master branch, then require two approvals from any member of App security."
@@ -57413,9 +57428,6 @@ msgid "file"
 msgid_plural "files"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "file path group"
-msgstr ""
 
 msgid "finding is not found or is already attached to a vulnerability"
 msgstr ""

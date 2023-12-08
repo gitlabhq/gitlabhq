@@ -32,13 +32,6 @@ module Sidebars
           _('Repository')
         end
 
-        override :title_html_options
-        def title_html_options
-          {
-            id: 'js-onboarding-repo-link'
-          }
-        end
-
         override :sprite_icon
         def sprite_icon
           'doc-text'

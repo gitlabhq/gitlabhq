@@ -74,6 +74,7 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorsImporter, feature_ca
 
   describe '#parallel_import', :clean_gitlab_redis_cache do
     before do
+      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
       allow(client).to receive(:collaborators).with(project.import_source, affiliation: 'direct')
         .and_return([github_collaborator])
       allow(client).to receive(:collaborators).with(project.import_source, affiliation: 'outside')

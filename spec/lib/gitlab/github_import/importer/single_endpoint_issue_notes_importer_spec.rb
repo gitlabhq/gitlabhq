@@ -28,6 +28,10 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueNotesImporter 
     let(:note) { { id: 1 } }
     let(:page) { double(objects: [note], number: 1) }
 
+    before do
+      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
+    end
+
     it 'fetches data' do
       expect(client)
         .to receive(:each_page)

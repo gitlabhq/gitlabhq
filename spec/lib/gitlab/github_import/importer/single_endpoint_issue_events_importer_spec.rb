@@ -101,14 +101,10 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
     let(:page_counter) { instance_double(Gitlab::GithubImport::PageCounter) }
 
     before do
-      allow(client).to receive(:each_page)
-        .once
-        .with(
-          :issue_timeline,
-          project.import_source,
-          issuable.iid,
-          { state: 'all', sort: 'created', direction: 'asc', page: 1 }
-        ).and_yield(page)
+      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
+      allow(client).to receive(:each_page).once.with(:issue_timeline,
+        project.import_source, issuable.iid, { state: 'all', sort: 'created', direction: 'asc', page: 1 }
+      ).and_yield(page)
     end
 
     context 'with issues' do

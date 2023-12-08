@@ -19,13 +19,6 @@ module Sidebars
           _('Settings')
         end
 
-        override :title_html_options
-        def title_html_options
-          {
-            id: 'js-onboarding-settings-link'
-          }
-        end
-
         override :sprite_icon
         def sprite_icon
           'settings'

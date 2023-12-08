@@ -17,10 +17,6 @@ module Sidebars
         nil
       end
 
-      def image_html_options
-        {}
-      end
-
       def icon_or_image?
         sprite_icon || image_path
       end

@@ -76,7 +76,7 @@ Estimating the duration of migration by direct transfer is difficult. The follow
   very different amounts of time to migrate if one of the projects has a lot more attachments, comments, and other items on the merge requests. Therefore, the number
   of merge requests on a project is a poor predictor of how long a project will take to migrate.
 
-There’s no exact formula to reliably estimate a migration. However, the average durations of each pipeline worker importing a project relation can help you to get an idea of how long importing your projects might take:
+There's no exact formula to reliably estimate a migration. However, the average durations of each pipeline worker importing a project relation can help you to get an idea of how long importing your projects might take:
 
 | Project resource type       | Average time (in seconds) to import a record |
 |:----------------------------|:---------------------------------------------|
@@ -177,6 +177,9 @@ To migrate groups by direct transfer:
 - Your must have a role on the destination namespace the enables you to
   [create a subgroup](../../group/subgroups/index.md#create-a-subgroup) in that
   namespace.
+- To import items stored in object storage, you must either:
+  - [Configure `proxy_download`](../../../administration/object_storage.md#configure-the-common-parameters).
+  - Ensure that the destination GitLab instance has access to the object storage of the source GitLab instance.
 
 ### Prepare user accounts
 

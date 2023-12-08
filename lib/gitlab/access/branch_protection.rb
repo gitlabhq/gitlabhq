@@ -74,7 +74,11 @@ module Gitlab
         end
 
         def protection_partial
-          protection_none.merge(allow_force_push: false)
+          {
+            allowed_to_push: [{ 'access_level' => Gitlab::Access::DEVELOPER }],
+            allowed_to_merge: [{ 'access_level' => Gitlab::Access::MAINTAINER }],
+            allow_force_push: false
+          }
         end
 
         def protected_fully
@@ -89,15 +93,15 @@ module Gitlab
           {
             allowed_to_push: [{ 'access_level' => Gitlab::Access::MAINTAINER }],
             allowed_to_merge: [{ 'access_level' => Gitlab::Access::DEVELOPER }],
-            allow_force_push: true
+            allow_force_push: false
           }
         end
 
         def protected_after_initial_push
           {
             allowed_to_push: [{ 'access_level' => Gitlab::Access::MAINTAINER }],
-            allowed_to_merge: [{ 'access_level' => Gitlab::Access::DEVELOPER }],
-            allow_force_push: true,
+            allowed_to_merge: [{ 'access_level' => Gitlab::Access::MAINTAINER }],
+            allow_force_push: false,
             developer_can_initial_push: true
           }
         end

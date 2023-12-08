@@ -262,6 +262,20 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :sha
       expect(noteable).to be_closed
     end
 
+    context 'when noteable is a commit' do
+      let!(:note) { create(:note_on_commit, project: project) }
+      let!(:noteable) { note.noteable }
+
+      let!(:sent_notification) do
+        allow(Gitlab::ServiceDesk).to receive(:enabled?).with(project: project).and_return(true)
+        SentNotification.record_note(note, Users::Internal.support_bot.id)
+      end
+
+      it 'does not reopen issue but adds external participants comment' do
+        expect { receiver.execute }.to change { noteable.notes.count }.by(1)
+      end
+    end
+
     context 'when reopen_issue_on_external_participant_note is true' do
       shared_examples 'an automatically reopened issue' do
         it 'reopens issue, adds external participants comment and reopen comment' do

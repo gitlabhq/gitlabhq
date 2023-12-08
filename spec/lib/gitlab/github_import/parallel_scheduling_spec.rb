@@ -275,17 +275,10 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
     let(:batch_delay) { 1.minute }
 
     before do
-      allow(importer)
-        .to receive(:representation_class)
-        .and_return(repr_class)
-
-      allow(importer)
-        .to receive(:sidekiq_worker_class)
-        .and_return(worker_class)
-
-      allow(repr_class)
-        .to receive(:from_api_response)
-        .with(object, {})
+      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
+      allow(importer).to receive(:representation_class).and_return(repr_class)
+      allow(importer).to receive(:sidekiq_worker_class).and_return(worker_class)
+      allow(repr_class).to receive(:from_api_response).with(object, {})
         .and_return({ title: 'One' }, { title: 'Two' }, { title: 'Three' })
     end
 

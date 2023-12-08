@@ -7,7 +7,7 @@ module Types
         module Components
           # rubocop: disable Graphql/AuthorizeTypes -- Authorization hanlded by ComponentType -> VersionType
           class InputType < BaseObject
-            graphql_name 'CiCatalogResourcesComponentsInput'
+            graphql_name 'CiCatalogResourceComponentInput'
 
             field :name, GraphQL::Types::String, null: true,
               description: 'Name of the input.',

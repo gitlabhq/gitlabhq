@@ -21,13 +21,6 @@ module Sidebars
           _('Merge requests')
         end
 
-        override :title_html_options
-        def title_html_options
-          {
-            id: 'js-onboarding-mr-link'
-          }
-        end
-
         override :sprite_icon
         def sprite_icon
           'git-merge'

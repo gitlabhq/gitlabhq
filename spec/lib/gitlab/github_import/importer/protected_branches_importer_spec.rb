@@ -133,6 +133,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchesImporter, featur
 
   describe '#parallel_import', :clean_gitlab_redis_cache do
     before do
+      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
       allow(client).to receive(:branches).and_return(branches)
       allow(client)
         .to receive(:branch_protection)

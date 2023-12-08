@@ -67,10 +67,8 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
 
   describe '#import', :clean_gitlab_redis_cache do
     before do
-      expect(worker)
-        .to receive(:importer_class)
-        .at_least(:once)
-        .and_return(importer_class)
+      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
+      expect(worker).to receive(:importer_class).at_least(:once).and_return(importer_class)
     end
 
     it 'imports the object' do

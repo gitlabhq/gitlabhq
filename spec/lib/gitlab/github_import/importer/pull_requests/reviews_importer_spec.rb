@@ -46,6 +46,10 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewsImporter, fe
 
     let(:review) { { id: 1 } }
 
+    before do
+      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
+    end
+
     it 'fetches the pull requests reviews data' do
       page = Struct.new(:objects, :number).new([review], 1)
 
