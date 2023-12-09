@@ -81,6 +81,7 @@ module Gitlab
       push_frontend_feature_flag(:remove_monitor_metrics)
       push_frontend_feature_flag(:custom_emoji)
       push_frontend_feature_flag(:encoding_logs_tree)
+      push_frontend_feature_flag(:group_user_saml)
     end
 
     # Exposes the state of a feature flag to the frontend code.

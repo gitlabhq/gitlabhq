@@ -2,7 +2,10 @@
 
 module IssueEmailParticipants
   class CreateService < ::BaseProjectService
+    include Gitlab::Utils::StrongMemoize
+
     MAX_NUMBER_OF_EMAILS = 6
+    MAX_NUMBER_OF_RECORDS = 10
 
     attr_reader :target, :emails
 
@@ -31,17 +34,27 @@ module IssueEmailParticipants
     private
 
     def deduplicate_and_limit_emails
-      existing_emails = target.email_participants_emails_downcase
       # Compare downcase versions, but use the original email
       emails.index_by { |email| [email.downcase, email] }.excluding(*existing_emails).each_value
         .first(MAX_NUMBER_OF_EMAILS)
     end
 
     def add_participants(emails_to_add)
+      existing_emails_count = existing_emails.size
       added_emails = []
+
       emails_to_add.each do |email|
+        if existing_emails_count >= MAX_NUMBER_OF_RECORDS
+          log_above_limit_count(emails_to_add.size - added_emails.size)
+
+          return added_emails
+        end
+
         new_participant = target.issue_email_participants.create(email: email)
-        added_emails << email if new_participant.persisted?
+        if new_participant.persisted?
+          added_emails << email
+          existing_emails_count += 1
+        end
       end
 
       added_emails
@@ -52,6 +65,17 @@ module IssueEmailParticipants
       ::SystemNoteService.add_email_participants(target, project, current_user, message)
 
       message
+    end
+
+    def existing_emails
+      target.email_participants_emails_downcase
+    end
+    strong_memoize_attr :existing_emails
+
+    def log_above_limit_count(above_limit_count)
+      Gitlab::ApplicationContext.with_context(related_class: self.class.to_s, user: current_user, project: project) do
+        Gitlab::AppLogger.info({ above_limit_count: above_limit_count })
+      end
     end
 
     def error(message)

@@ -2404,6 +2404,30 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           end
         end
 
+        context 'when participants limit on issue is reached' do
+          before do
+            issue.issue_email_participants.create!(email: 'user@example.com')
+            stub_const("IssueEmailParticipants::CreateService::MAX_NUMBER_OF_RECORDS", 1)
+          end
+
+          let(:content) { '/invite_email a@gitlab.com' }
+
+          it_behaves_like 'failed command',
+            "No email participants were added. Either none were provided, or they already exist."
+        end
+
+        context 'when only some emails can be added because of participants limit' do
+          before do
+            stub_const("IssueEmailParticipants::CreateService::MAX_NUMBER_OF_RECORDS", 1)
+          end
+
+          let(:content) { '/invite_email a@gitlab.com b@gitlab.com' }
+
+          it 'only adds one new email' do
+            expect { add_emails }.to change { issue.issue_email_participants.count }.by(1)
+          end
+        end
+
         context 'with feature flag disabled' do
           before do
             stub_feature_flags(issue_email_participants: false)

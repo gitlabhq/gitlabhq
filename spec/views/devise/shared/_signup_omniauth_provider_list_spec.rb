@@ -47,4 +47,14 @@ RSpec.describe 'devise/shared/_signup_omniauth_provider_list', feature_category:
 
     it_behaves_like 'sso buttons have snowplow tracking'
   end
+
+  context 'when rendering button' do
+    before do
+      render
+    end
+
+    it 'renders button in form' do
+      expect(rendered).to have_css('form[action="/users/auth/github"]')
+    end
+  end
 end

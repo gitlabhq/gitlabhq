@@ -388,6 +388,7 @@ class User < MainClusterwide::ApplicationRecord
     :tab_width, :tab_width=,
     :sourcegraph_enabled, :sourcegraph_enabled=,
     :gitpod_enabled, :gitpod_enabled=,
+    :use_web_ide_extension_marketplace, :use_web_ide_extension_marketplace=,
     :setup_for_company, :setup_for_company=,
     :project_shortcut_buttons, :project_shortcut_buttons=,
     :keyboard_shortcuts_enabled, :keyboard_shortcuts_enabled=,

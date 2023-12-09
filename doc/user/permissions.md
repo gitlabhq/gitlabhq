@@ -248,7 +248,7 @@ The following table lists project permissions available for each role:
 20. Maintainers cannot create, demote, or remove Owners, and they cannot promote users to the Owner role. They also cannot approve Owner role access requests.
 21. Authors of tasks can delete them even if they don't have the Owner role, but they have to have at least the Guest role for the project.
 22. You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic).
-23. In GitLab 15.9 and later, users with the Guest role and an Ultimate license can view private repository content if an administrator (on self-managed) or group owner (on GitLab.com) gives those users permission. The administrator or group owner can create a [custom role](custom_roles.md) through the API and assign that role to the users.
+23. In GitLab 15.9 and later, users with the Guest role and an Ultimate license can view private repository content if an administrator (on self-managed or GitLab Dedicated) or group owner (on GitLab.com) gives those users permission. The administrator or group owner can create a [custom role](custom_roles.md) through the API or UI and assign that role to the users.
 24. In GitLab 16.4 the ability for `Developers` to change the status of a vulnerability (`admin_vulnerability`) was [deprecated](../update/deprecations.md#deprecate-change-vulnerability-status-from-the-developer-role). The `admin_vulnerability` permission will be removed, by default, from all `Developer` roles in GitLab 17.0.
 25. Members with the Guest role can view the list of MRs in public projects. Private projects restrict Guests from viewing MR lists.
 

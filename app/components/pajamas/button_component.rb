@@ -12,6 +12,7 @@ module Pajamas
     # @param [Boolean] selected
     # @param [String] icon
     # @param [String] href
+    # @param [Boolean] form
     # @param [String] target
     # @param [Symbol] method
     # @param [Hash] button_options
@@ -28,6 +29,7 @@ module Pajamas
       selected: false,
       icon: nil,
       href: nil,
+      form: false,
       target: nil,
       method: nil,
       button_options: {},
@@ -44,6 +46,7 @@ module Pajamas
       @selected = selected
       @icon = icon
       @href = href
+      @form = form
       @target = filter_attribute(target, TARGET_OPTIONS)
       @method = filter_attribute(method, METHOD_OPTIONS)
       @button_options = button_options
@@ -107,6 +110,10 @@ module Pajamas
 
     def link?
       @href.present?
+    end
+
+    def form?
+      @href.present? && @form.present?
     end
 
     def base_attributes

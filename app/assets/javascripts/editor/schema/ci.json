@@ -58,6 +58,9 @@
         "interruptible": {
           "$ref": "#/definitions/interruptible"
         },
+        "id_tokens": {
+          "$ref": "#/definitions/id_tokens"
+        },
         "retry": {
           "$ref": "#/definitions/retry"
         },

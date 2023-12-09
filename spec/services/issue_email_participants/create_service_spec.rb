@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe IssueEmailParticipants::CreateService, feature_category: :service_desk do
   shared_examples 'a successful service execution' do
     it 'creates new participants', :aggregate_failures do
+      response = service.execute
       expect(response).to be_success
 
       issue.reset
@@ -24,6 +25,7 @@ RSpec.describe IssueEmailParticipants::CreateService, feature_category: :service
 
   shared_examples 'a failed service execution' do
     it 'returns error ServiceResponse with message', :aggregate_failures do
+      response = service.execute
       expect(response).to be_error
       expect(response.message).to eq(error_message)
     end
@@ -32,7 +34,7 @@ RSpec.describe IssueEmailParticipants::CreateService, feature_category: :service
   describe '#execute' do
     let_it_be_with_reload(:project) { create(:project) }
     let_it_be(:user) { create(:user) }
-    let_it_be(:issue) { create(:issue, project: project) }
+    let_it_be_with_reload(:issue) { create(:issue, project: project) }
 
     let(:emails) { nil }
     let(:service) { described_class.new(target: issue, current_user: user, emails: emails) }
@@ -43,8 +45,6 @@ RSpec.describe IssueEmailParticipants::CreateService, feature_category: :service
     let(:error_no_participants) do
       _("No email participants were added. Either none were provided, or they already exist.")
     end
-
-    subject(:response) { service.execute }
 
     context 'when the user is not a project member' do
       let(:error_message) { error_underprivileged }
@@ -82,11 +82,27 @@ RSpec.describe IssueEmailParticipants::CreateService, feature_category: :service
 
             it_behaves_like 'a failed service execution'
           end
+
+          context 'when participants limit on issue is reached' do
+            before do
+              stub_const("#{described_class}::MAX_NUMBER_OF_RECORDS", 1)
+            end
+
+            let(:emails) { ['over-max@example.com'] }
+            let(:error_message) { error_no_participants }
+
+            it_behaves_like 'a failed service execution'
+
+            it 'logs count of emails above limit' do
+              expect(Gitlab::AppLogger).to receive(:info).with({ above_limit_count: 1 }).once
+              service.execute
+            end
+          end
         end
       end
 
       context 'when multiple emails are provided' do
-        let(:emails) { ['user@example.com', 'user2@example.com'] }
+        let(:emails) { ['user@example.com', 'other-user@example.com'] }
 
         it_behaves_like 'a successful service execution'
 
@@ -106,9 +122,24 @@ RSpec.describe IssueEmailParticipants::CreateService, feature_category: :service
 
           it_behaves_like 'a successful service execution'
         end
+
+        context 'when only some emails can be added because of participants limit' do
+          before do
+            stub_const("#{described_class}::MAX_NUMBER_OF_RECORDS", 1)
+          end
+
+          let(:expected_emails) { emails[...-1] }
+
+          it_behaves_like 'a successful service execution'
+
+          it 'logs count of emails above limit' do
+            expect(Gitlab::AppLogger).to receive(:info).with({ above_limit_count: 1 }).once
+            service.execute
+          end
+        end
       end
 
-      context 'when more than the allowed number of emails a re provided' do
+      context 'when more than the allowed number of emails are provided' do
         let(:emails) { (1..7).map { |i| "user#{i}@example.com" } }
 
         let(:expected_emails) { emails[...-1] }

@@ -24664,6 +24664,7 @@ CREATE TABLE user_preferences (
     keyboard_shortcuts_enabled boolean DEFAULT true NOT NULL,
     time_display_format smallint DEFAULT 0 NOT NULL,
     home_organization_id bigint,
+    use_web_ide_extension_marketplace boolean DEFAULT false NOT NULL,
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_d07ccd35f7 CHECK ((char_length(diffs_addition_color) <= 7))
 );

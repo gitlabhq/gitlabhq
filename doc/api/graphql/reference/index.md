@@ -8012,6 +8012,7 @@ Input type: `UserPreferencesUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationuserpreferencesupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationuserpreferencesupdateissuessort"></a>`issuesSort` | [`IssueSort`](#issuesort) | Sort order for issue lists. |
+| <a id="mutationuserpreferencesupdateusewebideextensionmarketplace"></a>`useWebIdeExtensionMarketplace` | [`Boolean`](#boolean) | Whether Web IDE Extension Marketplace is enabled for the user. |
 | <a id="mutationuserpreferencesupdatevisibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
 
 #### Fields
@@ -27923,6 +27924,7 @@ fields relate to interactions between the two entities.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="userpreferencesissuessort"></a>`issuesSort` | [`IssueSort`](#issuesort) | Sort order for issue lists. |
+| <a id="userpreferencesusewebideextensionmarketplace"></a>`useWebIdeExtensionMarketplace` | [`Boolean!`](#boolean) | Whether Web IDE Extension Marketplace is enabled for the user. |
 | <a id="userpreferencesvisibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
 
 ### `UserStatus`

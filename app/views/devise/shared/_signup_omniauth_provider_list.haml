@@ -2,23 +2,20 @@
   .gl-text-center.gl-pt-5
     %label.gl-font-weight-normal
       = _("Register with:")
-    .gl-text-center.gl-ml-auto.gl-mr-auto
+    .gl-display-flex.gl-flex-direction-column.gl-gap-3
       - providers.each do |provider|
-        = button_to omniauth_authorize_path(:user, provider, register_omniauth_params(local_assigns)), class: "btn gl-button btn-default gl-w-full gl-mb-4 js-oauth-login #{test_id_for_provider(provider)}", data: { provider: provider, track_action: "#{provider}_sso", track_label: tracking_label }, id: "oauth-login-#{provider}" do
-          - if provider_has_icon?(provider)
-            = provider_image_tag(provider)
-          %span.gl-button-text
-            = label_for_provider(provider)
+        = render 'devise/shared/signup_omniauth_provider_button',
+          href: omniauth_authorize_path(:user, provider, register_omniauth_params(local_assigns)),
+          provider: provider,
+          tracking_label: tracking_label
+
+
 - else
   %label.gl-font-weight-bold
     = _("Create an account using:")
-  .gl-display-flex.gl-justify-content-between.gl-flex-wrap
+  .gl-display-flex.gl-flex-direction-column.gl-gap-3
     - providers.each do |provider|
-      = button_to omniauth_authorize_path(:user, provider, register_omniauth_params(local_assigns)),
-        class: "btn gl-button btn-default gl-w-full gl-mb-4 js-oauth-login #{test_id_for_provider(provider)}",
-        data: { provider: provider, track_action: "#{provider}_sso", track_label: tracking_label },
-        id: "oauth-login-#{provider}" do
-        - if provider_has_icon?(provider)
-          = provider_image_tag(provider)
-        %span.gl-button-text
-          = label_for_provider(provider)
+      = render 'devise/shared/signup_omniauth_provider_button',
+          href: omniauth_authorize_path(:user, provider, register_omniauth_params(local_assigns)),
+          provider: provider,
+          tracking_label: tracking_label

@@ -42,6 +42,7 @@ class UserPreference < MainClusterwide::ApplicationRecord
   attribute :render_whitespace_in_code, default: false
   attribute :project_shortcut_buttons, default: true
   attribute :keyboard_shortcuts_enabled, default: true
+  attribute :use_web_ide_extension_marketplace, default: false
 
   enum visibility_pipeline_id_type: { id: 0, iid: 1 }
 

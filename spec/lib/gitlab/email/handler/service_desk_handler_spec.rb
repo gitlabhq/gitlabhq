@@ -19,6 +19,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
   let_it_be(:group) { create(:group, :private, :crm_enabled, name: "email") }
 
+  let(:expected_subject) { "The message subject! @all" }
   let(:expected_description) do
     "Service desk stuff!\n\n```\na = b\n```\n\n`/label ~label1`\n`/assign @user1`\n`/close`\n![image](uploads/image.png)"
   end
@@ -43,7 +44,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
         expect(new_issue.author).to eql(Users::Internal.support_bot)
         expect(new_issue.confidential?).to be true
         expect(new_issue.all_references.all).to be_empty
-        expect(new_issue.title).to eq("The message subject! @all")
+        expect(new_issue.title).to eq(expected_subject)
         expect(new_issue.description).to eq(expected_description.strip)
         expect(new_issue.email&.email_message_id).to eq(message_id)
       end
@@ -114,6 +115,40 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
         let(:to_address) { project.service_desk_incoming_address }
 
         it_behaves_like 'a new issue request'
+
+        context 'when more than the defined limit of participants are in Cc header' do
+          before do
+            stub_const("IssueEmailParticipants::CreateService::MAX_NUMBER_OF_RECORDS", 6)
+          end
+
+          let(:cc_addresses) { Array.new(6) { |i| "user#{i}@example.com" }.join(', ') }
+          let(:author_email) { 'from@example.com' }
+          let(:expected_subject) { "Issue title" }
+          let(:expected_description) do
+            <<~DESC
+            Issue description
+
+            ![image](uploads/image.png)
+            DESC
+          end
+
+          let(:email_raw) do
+            <<~EMAIL
+            From: #{author_email}
+            To: #{to_address}
+            Cc: #{cc_addresses}
+            Message-ID: <#{message_id}>
+            Subject: #{expected_subject}
+
+            Issue description
+            EMAIL
+          end
+
+          # Author email plus 5 from Cc
+          let(:issue_email_participants_count) { 6 }
+
+          it_behaves_like 'a new issue request'
+        end
 
         context 'when no CC header is present' do
           let(:email_raw) do

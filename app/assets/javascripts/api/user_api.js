@@ -4,6 +4,7 @@ import { buildApiUrl } from './api_utils';
 
 const USER_COUNTS_PATH = '/api/:version/user_counts';
 const USERS_PATH = '/api/:version/users.json';
+const USERS_SAML_PATH = '/api/:version/groups/:id/users.json';
 const USER_PATH = '/api/:version/users/:id';
 const USER_STATUS_PATH = '/api/:version/users/:id/status';
 const USER_PROJECTS_PATH = '/api/:version/users/:id/projects';
@@ -16,6 +17,25 @@ const USER_ASSOCIATIONS_COUNT_PATH = '/api/:version/users/:id/associations_count
 
 export function getUsers(query, options) {
   const url = buildApiUrl(USERS_PATH);
+  return axios.get(url, {
+    params: {
+      search: query,
+      per_page: DEFAULT_PER_PAGE,
+      ...options,
+    },
+  });
+}
+
+/**
+ * Returns a list of SAML users and service accounts that contains the query string.
+ * If the query string is less than 3 characters it returns an empty list.
+ *
+ * @param {string} query - query string to search
+ * @param {string} groupId -- top-level group id
+ * @param {object} options
+ */
+export function getGroupUsers(query, groupId, options) {
+  const url = buildApiUrl(USERS_SAML_PATH).replace(':id', groupId);
   return axios.get(url, {
     params: {
       search: query,

@@ -513,6 +513,7 @@
 {"name":"redcarpet","version":"3.6.0","platform":"ruby","checksum":"8ad1889c0355ff4c47174af14edd06d62f45a326da1da6e8a121d59bdcd2e9e9"},
 {"name":"redis","version":"4.8.0","platform":"ruby","checksum":"2000cf5014669c9dc821704b6d322a35a9a33852a95208911d9175d63b448a44"},
 {"name":"redis-actionpack","version":"5.3.0","platform":"ruby","checksum":"3fb1ad0a8fd9d26a289c9399bb609dcaef38bf37711e6f677a53ca728fc19140"},
+{"name":"redis-namespace","version":"1.10.0","platform":"ruby","checksum":"2c1c6ea7c6c5e343e75b9bee3aa4c265e364a5b9966507397467af2bb3758d94"},
 {"name":"redis-rack","version":"2.1.4","platform":"ruby","checksum":"0872eecb303e483c3863d6bd0d47323d230640d41c1a4ac4a2c7596ec0b1774c"},
 {"name":"redis-store","version":"1.9.1","platform":"ruby","checksum":"7b4c7438d46f7b7ce8f67fc0eda3a04fc67d32d28cf606cc98a5df4d2b77071d"},
 {"name":"regexp_parser","version":"2.6.0","platform":"ruby","checksum":"f163ba463a45ca2f2730e0902f2475bb0eefcd536dfc2f900a86d1e5a7d7a556"},

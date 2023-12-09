@@ -2,7 +2,9 @@
 import { GlTokenSelector, GlAvatar, GlAvatarLabeled, GlIcon, GlSprintf } from '@gitlab/ui';
 import { debounce, isEmpty } from 'lodash';
 import { __ } from '~/locale';
-import { getUsers } from '~/rest_api';
+import { getUsers, getGroupUsers } from '~/rest_api';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { memberName } from '../utils/member_utils';
 import {
   SEARCH_DELAY,
@@ -20,6 +22,7 @@ export default {
     GlIcon,
     GlSprintf,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     canUseEmailToken: {
       type: Boolean,
@@ -59,6 +62,10 @@ export default {
       required: false,
       default: '',
     },
+    rootGroupId: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -87,9 +94,16 @@ export default {
     },
     queryOptions() {
       if (this.usersFilter === USERS_FILTER_SAML_PROVIDER_ID) {
+        if (!this.glFeatures.groupUserSaml) {
+          return {
+            saml_provider_id: this.filterId,
+            ...this.$options.defaultQueryOptions,
+          };
+        }
         return {
-          saml_provider_id: this.filterId,
-          ...this.$options.defaultQueryOptions,
+          active: true,
+          include_saml_users: true,
+          include_service_accounts: true,
         };
       }
       return this.$options.defaultQueryOptions;
@@ -133,19 +147,27 @@ export default {
         class: this.tokenClass(token),
       }));
     },
-    retrieveUsers: debounce(function debouncedRetrieveUsers() {
-      return getUsers(this.query, this.queryOptions)
-        .then((response) => {
-          this.users = response.data.map((token) => ({
-            id: token.id,
-            name: token.name,
-            username: token.username,
-            avatar_url: token.avatar_url,
-          }));
-        })
-        .finally(() => {
-          this.loading = false;
-        });
+    retrieveUsersRequest() {
+      if (this.usersFilter === USERS_FILTER_SAML_PROVIDER_ID && this.glFeatures.groupUserSaml) {
+        return getGroupUsers(this.query, this.rootGroupId, this.queryOptions);
+      }
+
+      return getUsers(this.query, this.queryOptions);
+    },
+    retrieveUsers: debounce(async function debouncedRetrieveUsers() {
+      try {
+        const { data } = await this.retrieveUsersRequest();
+        this.users = data.map((token) => ({
+          id: token.id,
+          name: token.name,
+          username: token.username,
+          avatar_url: token.avatar_url,
+        }));
+      } catch (error) {
+        Sentry.captureException(error);
+      }
+
+      this.loading = false;
     }, SEARCH_DELAY),
     tokenClass(token) {
       if (this.hasError(token)) {

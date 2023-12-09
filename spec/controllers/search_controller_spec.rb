@@ -189,6 +189,25 @@ RSpec.describe SearchController, feature_category: :global_search do
           end
         end
 
+        context 'when allow_anonymous_searches is disabled' do
+          before do
+            stub_feature_flags(allow_anonymous_searches: false)
+          end
+
+          context 'for unauthenticated user' do
+            before do
+              sign_out(user)
+            end
+
+            it 'redirects to login page' do
+              get :show, params: { scope: 'projects', search: '*' }
+
+              expect(response).to redirect_to new_user_session_path
+              expect(flash[:alert]).to match(/You must be logged in/)
+            end
+          end
+        end
+
         context 'tab feature flags' do
           subject { get :show, params: { scope: scope, search: 'term' }, format: :html }
 

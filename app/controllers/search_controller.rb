@@ -27,7 +27,10 @@ class SearchController < ApplicationController
 
   around_action :allow_gitaly_ref_name_caching
 
-  before_action :block_anonymous_global_searches, :check_scope_global_search_enabled, except: :opensearch
+  before_action :block_all_anonymous_searches,
+    :block_anonymous_global_searches,
+    :check_scope_global_search_enabled,
+    except: :opensearch
   skip_before_action :authenticate_user!
 
   requires_cross_project_access if: -> do
@@ -224,6 +227,14 @@ class SearchController < ApplicationController
     store_location_for(:user, request.fullpath)
 
     redirect_to new_user_session_path, alert: _('You must be logged in to search across all of GitLab')
+  end
+
+  def block_all_anonymous_searches
+    return if current_user || ::Feature.enabled?(:allow_anonymous_searches, type: :ops)
+
+    store_location_for(:user, request.fullpath)
+
+    redirect_to new_user_session_path, alert: _('You must be logged in to search')
   end
 
   def check_scope_global_search_enabled
