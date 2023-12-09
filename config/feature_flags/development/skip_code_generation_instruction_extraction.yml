@@ -1,8 +1,0 @@
----
-name: skip_code_generation_instruction_extraction
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136343
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/431246
-milestone: '16.7'
-type: development
-group: group::code creation
-default_enabled: false
