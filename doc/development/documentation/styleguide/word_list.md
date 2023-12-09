@@ -1445,6 +1445,10 @@ When documenting the tasks that must be completed or the conditions that must be
 
 Do not use **requirements**.
 
+## reset
+
+Use **reset** to describe the action associated with resetting an item to a new state.
+
 ## respectively
 
 Avoid **respectively** and be more precise instead.
@@ -1457,6 +1461,10 @@ Instead of:
 
 - Select **Create user** or **Save changes** if you created a new user or
   edited an existing one respectively.
+
+## restore
+
+See the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/r/restore) for guidance on **restore**.
 
 ## review app
 
@@ -1796,6 +1804,10 @@ See also [**enter**](#enter).
 
 Use **Ultimate**, in uppercase, for the subscription tier. When you refer to **Ultimate**
 in the context of other subscription tiers, follow [the subscription tier](#subscription-tier) guidance.
+
+## undo
+
+See the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/u/undo) for guidance on **undo**.
 
 ## units of measurement
 

@@ -13,11 +13,11 @@ module Projects
       @skip_wiki = @params.delete(:skip_wiki)
       @initialize_with_sast = Gitlab::Utils.to_boolean(@params.delete(:initialize_with_sast))
       @initialize_with_readme = Gitlab::Utils.to_boolean(@params.delete(:initialize_with_readme))
-      @use_sha256_repository = Gitlab::Utils.to_boolean(@params.delete(:use_sha256_repository)) && Feature.enabled?(:support_sha256_repositories, user)
       @import_data = @params.delete(:import_data)
       @relations_block = @params.delete(:relations_block)
       @default_branch = @params.delete(:default_branch)
       @readme_template = @params.delete(:readme_template)
+      @repository_object_format = @params.delete(:repository_object_format)
 
       build_topics
     end
@@ -214,7 +214,10 @@ module Projects
     end
 
     def repository_object_format
-      @use_sha256_repository ? Repository::FORMAT_SHA256 : Repository::FORMAT_SHA1
+      return Repository::FORMAT_SHA1 unless Feature.enabled?(:support_sha256_repositories, current_user)
+      return Repository::FORMAT_SHA256 if @repository_object_format == Repository::FORMAT_SHA256
+
+      Repository::FORMAT_SHA1
     end
 
     def readme_content

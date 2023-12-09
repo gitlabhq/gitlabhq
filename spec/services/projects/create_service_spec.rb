@@ -814,7 +814,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
 
   context 'when SHA256 format is requested' do
     let(:project) { create_project(user, opts) }
-    let(:opts) { super().merge(initialize_with_readme: true, use_sha256_repository: true) }
+    let(:opts) { super().merge(initialize_with_readme: true, repository_object_format: 'sha256') }
 
     before do
       allow(Gitlab::CurrentSettings).to receive(:default_branch_name).and_return('main')
