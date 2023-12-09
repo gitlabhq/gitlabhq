@@ -14,7 +14,7 @@ include:
       gitlab_auth_token_variable_name: "PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE"
       allure_job_name: "${QA_RUN_TYPE}"
   - project: gitlab-org/quality/pipeline-common
-    ref: 8.0.0
+    ref: 8.1.0
     file:
       - /ci/base.gitlab-ci.yml
       - /ci/knapsack-report.yml
@@ -166,6 +166,7 @@ stages:
   stage: notify
   variables:
     QA_RSPEC_XML_FILE_PATTERN: "${CI_PROJECT_DIR}/gitlab-qa-run-*/**/rspec-*.xml"
+    GITLAB_API_TOKEN: $PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE
     SLACK_ICON_EMOJI: ci_failing
     STATUS_SYM: ☠️
     STATUS: failed
