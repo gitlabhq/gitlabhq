@@ -20,7 +20,7 @@ size.
 
 Monorepos can be large for [many reasons](https://about.gitlab.com/blog/2022/09/06/speed-up-your-monorepo-workflow-in-git/#characteristics-of-monorepos).
 
-Large repositories pose a performance risk performance when used in GitLab, especially if a large monorepo receives many clones or pushes a day, which is common for them.
+Large repositories pose a performance risk when used in GitLab, especially if a large monorepo receives many clones or pushes a day, which is common for them.
 
 Git itself has performance limitations when it comes to handling
 monorepos.

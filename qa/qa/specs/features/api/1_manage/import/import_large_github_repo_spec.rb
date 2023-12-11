@@ -128,7 +128,7 @@ module QA
               max: 3,
               interval: 1,
               retry_block: ->(exception:, **) { logger.warn("Request to GitHub failed: '#{exception}', retrying") },
-              exceptions: [Faraday::ServerError, Faraday::TimeoutError]
+              exceptions: [Faraday::ServerError, Faraday::ConnectionFailed]
             )
             builder.use(Faraday::Response::RaiseError) # faraday retry swallows errors, so it needs to be re-raised
           end

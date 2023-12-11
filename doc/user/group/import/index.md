@@ -174,7 +174,7 @@ To migrate groups by direct transfer:
   - For GitLab 15.0 and earlier source instances, the personal access token must
     have both the `api` and `read_repository` scopes.
 - You must have the Owner role on the source group to migrate from.
-- Your must have a role on the destination namespace the enables you to
+- You must have a role in the destination namespace that enables you to
   [create a subgroup](../../group/subgroups/index.md#create-a-subgroup) in that
   namespace.
 - To import items stored in object storage, you must either:
