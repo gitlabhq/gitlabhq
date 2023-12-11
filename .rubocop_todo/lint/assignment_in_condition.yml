@@ -94,7 +94,6 @@ Lint/AssignmentInCondition:
     - 'config/initializers/peek.rb'
     - 'config/initializers/validate_database_config.rb'
     - 'config/initializers/zz_metrics.rb'
-    - 'db/post_migrate/20220919080303_delete_migrate_shared_vulnerability_scanners.rb'
     - 'ee/app/controllers/concerns/gitlab_subscriptions/seat_count_alert.rb'
     - 'ee/app/controllers/omniauth_kerberos_controller.rb'
     - 'ee/app/controllers/users/identity_verification_controller.rb'

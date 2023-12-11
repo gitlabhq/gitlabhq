@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::ResetTooManyTagsSkippedRegistryImports, :migration,
   :aggregate_failures,
-  schema: 20220126191624 do
+  schema: 20221111123146 do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:container_repositories) { table(:container_repositories) }

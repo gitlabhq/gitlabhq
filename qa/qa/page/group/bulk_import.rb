@@ -5,9 +5,8 @@ module QA
     module Group
       class BulkImport < Page::Base
         view "app/assets/javascripts/import_entities/import_groups/components/import_table.vue" do
-          element :import_table
-          element :import_item
-          element :import_status_indicator
+          element 'import-item'
+          element 'import-status-indicator'
           element 'filter-groups'
         end
 
@@ -35,14 +34,14 @@ module QA
 
           filter_group(source_group_name)
 
-          within_element(:import_item, source_group: source_group_name) do
+          within_element('import-item', source_group: source_group_name) do
             click_element('target-namespace-dropdown')
             click_element("listbox-item-#{target_group_name}")
 
             retry_until(message: "Triggering import") do
               click_element('import-group-button')
               # Make sure import started before waiting for completion
-              has_no_element?(:import_status_indicator, text: "Not started", wait: 1)
+              has_no_element?('import-status-indicator', text: "Not started", wait: 1)
             end
           end
         end
@@ -53,8 +52,8 @@ module QA
         # @param [Integer] wait
         # @return [Boolean]
         def has_imported_group?(source_group_name, wait: QA::Support::WaitForRequests::DEFAULT_MAX_WAIT_TIME)
-          within_element(:import_item, source_group: source_group_name) do
-            has_element?(:import_status_indicator, text: "Complete", wait: wait)
+          within_element('import-item', source_group: source_group_name) do
+            has_element?('import-status-indicator', text: "Complete", wait: wait)
           end
         end
       end

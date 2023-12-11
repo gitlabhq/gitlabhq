@@ -51,7 +51,7 @@ To explore all public groups you are a member of:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **View all my groups**.
-1. At the top right, select **Explore groups**.
+1. In the upper right, select **Explore groups**.
 
 To view groups where you have direct or indirect membership:
 
@@ -129,7 +129,7 @@ When you leave a group:
 To leave a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the group overview page, in the top right, select **Actions** (**{ellipsis_v})**.
+1. On the group overview page, in the upper-right corner, select **Actions** (**{ellipsis_v})**.
 1. Select **Leave group**, then **Leave group** again.
 
 ## Remove a group
@@ -196,7 +196,7 @@ As a user, you can request to be a member of a group, if an administrator allows
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **View all my groups**.
-1. At the top right side, select **Explore groups**.
+1. In the upper right, select **Explore groups**.
 1. In the **Search by name** text box, enter the name of the group you want to join.
 1. In the search results, select the name of the group.
 1. On the group page, under the group name, select **Request Access**.
@@ -379,5 +379,5 @@ You might need the group ID if you want to interact with it using the [GitLab AP
 To copy the group ID:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the group overview page, in the top right, select **Actions** (**{ellipsis_v})**.
+1. On the group overview page, in the upper-right corner, select **Actions** (**{ellipsis_v})**.
 1. Select **Copy group ID**.

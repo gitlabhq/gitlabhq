@@ -162,6 +162,87 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
     end
   end
 
+  describe 'POST /internal/kubernetes/agent_events', :clean_gitlab_redis_shared_state do
+    def send_request(headers: {}, params: {})
+      post api('/internal/kubernetes/agent_events'), params: params, headers: headers.reverse_merge(jwt_auth_headers)
+    end
+
+    include_examples 'authorization'
+    include_examples 'error handling'
+
+    context 'is authenticated for an agent' do
+      let!(:agent_token) { create(:cluster_agent_token) }
+
+      context 'when events are valid' do
+        let(:request_count) { 2 }
+        let(:users) { create_list(:user, 3).index_by(&:id) }
+        let(:projects) { create_list(:project, 3).index_by(&:id) }
+        let(:events) do
+          user_ids = users.keys
+          project_ids = projects.keys
+          event_data = Array.new(3) do |i|
+            { user_id: user_ids[i], project_id: project_ids[i] }
+          end
+          {
+            k8s_api_proxy_requests_unique_users_via_ci_access: event_data,
+            k8s_api_proxy_requests_unique_users_via_user_access: event_data,
+            k8s_api_proxy_requests_unique_users_via_pat_access: event_data
+          }
+        end
+
+        it 'tracks events and returns no_content', :aggregate_failures do
+          events.each do |event_name, event_list|
+            event_list.each do |event|
+              expect(Gitlab::InternalEvents).to receive(:track_event)
+                                                  .with(event_name.to_s, user: users[event[:user_id]], project: projects[event[:project_id]])
+                                                  .exactly(request_count).times
+            end
+          end
+
+          request_count.times do
+            send_request(params: { events: events })
+          end
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
+
+      context 'when events are empty' do
+        let(:events) do
+          {
+            k8s_api_proxy_requests_unique_users_via_ci_access: [],
+            k8s_api_proxy_requests_unique_users_via_user_access: [],
+            k8s_api_proxy_requests_unique_users_via_pat_access: []
+          }
+        end
+
+        it 'returns no_content for empty events' do
+          expect(Gitlab::InternalEvents).not_to receive(:track_event)
+          send_request(params: { events: events })
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
+
+      context 'when events have non-integer values' do
+        let(:events) do
+          {
+            k8s_api_proxy_requests_unique_users_via_ci_access: [
+              { user_id: 'string', project_id: 111 }
+            ]
+          }
+        end
+
+        it 'returns 400 for non-integer values' do
+          expect(Gitlab::InternalEvents).not_to receive(:track_event)
+          send_request(params: { events: events })
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+    end
+  end
+
   describe 'POST /internal/kubernetes/agent_configuration' do
     def send_request(headers: {}, params: {})
       post api('/internal/kubernetes/agent_configuration'), params: params, headers: headers.reverse_merge(jwt_auth_headers)

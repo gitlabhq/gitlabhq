@@ -1,6 +1,6 @@
 - return unless can?(current_user, :archive_project, @project)
 
-= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card', data: { qa_selector: 'export_project_content' } }, header_options: { class: 'gl-new-card-header gl-flex-direction-column' }, body_options: { class: 'gl-new-card-body gl-px-5 gl-py-4' }) do |c|
+= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header gl-flex-direction-column' }, body_options: { class: 'gl-new-card-body gl-px-5 gl-py-4' }) do |c|
   - c.with_header do
     .gl-new-card-title-wrapper
       %h4.gl-new-card-title.warning-title

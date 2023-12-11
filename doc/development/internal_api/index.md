@@ -554,6 +554,46 @@ curl --request POST --header "Gitlab-Kas-Api-Request: <JWT token>" --header "Con
      --data '{"counters": {"gitops_sync":1}}' "http://localhost:3000/api/v4/internal/kubernetes/usage_metrics"
 ```
 
+### GitLab agent events
+
+Called from GitLab agent server (`kas`) to track events.
+
+| Attribute                                                                     | Type          | Required | Description                                                               |
+|:------------------------------------------------------------------------------|:--------------|:---------|:--------------------------------------------------------------------------|
+| `events`                                                                      | hash          | no       | Hash of events                                                            |
+| `events["k8s_api_proxy_requests_unique_users_via_ci_access"]`                 | hash array    | no       | Array of events for `k8s_api_proxy_requests_unique_users_via_ci_access`   |
+| `events["k8s_api_proxy_requests_unique_users_via_ci_access"]["user_id"]`      | integer       | no       | The user ID for the event                                                 |
+| `events["k8s_api_proxy_requests_unique_users_via_ci_access"]["project_id"]`   | integer       | no       | The project ID for the event                                              |
+| `events["k8s_api_proxy_requests_unique_users_via_user_access"]`               | hash array    | no       | Array of events for `k8s_api_proxy_requests_unique_users_via_user_access` |
+| `events["k8s_api_proxy_requests_unique_users_via_user_access"]["user_id"]`    | integer       | no       | The user ID for the event                                                 |
+| `events["k8s_api_proxy_requests_unique_users_via_user_access"]["project_id"]` | integer       | no       | The project ID for the event                                              |
+| `events["k8s_api_proxy_requests_unique_users_via_pat_access"]`                | hash array    | no       | Array of events for `k8s_api_proxy_requests_unique_users_via_pat_access`  |
+| `events["k8s_api_proxy_requests_unique_users_via_pat_access"]["user_id"]`     | integer       | no       | The user ID for the event                                                 |
+| `events["k8s_api_proxy_requests_unique_users_via_pat_access"]["project_id"]`  | integer       | no       | The project ID for the event                                              |
+
+```plaintext
+POST /internal/kubernetes/agent_events
+```
+
+Example Request:
+
+```shell
+curl --request POST \
+  --url "http://localhost:3000/api/v4/internal/kubernetes/agent_events" \
+  --header "Gitlab-Kas-Api-Request: <JWT token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "events": {
+      "k8s_api_proxy_requests_unique_users_via_ci_access": [
+        {
+          "user_id": 1,
+          "project_id": 1
+        }
+      ]
+    }
+  }'
+```
+
 ### Create Starboard vulnerability
 
 Called from the GitLab agent server (`kas`) to create a security vulnerability

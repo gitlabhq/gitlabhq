@@ -3,6 +3,7 @@
 module ClickHouse
   class EventsSyncWorker
     include ApplicationWorker
+    include ClickHouseWorker
     include Gitlab::ExclusiveLeaseHelpers
     include Gitlab::Utils::StrongMemoize
 

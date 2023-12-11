@@ -904,14 +904,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           end
         end
 
-        context 'when feature renaming_project_with_tags is disabled' do
-          before do
-            stub_feature_flags(renaming_project_with_tags: false)
-          end
-
-          it_behaves_like 'not allowing the rename of the project'
-        end
-
         context 'when Gitlab API is not supported' do
           before do
             allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)

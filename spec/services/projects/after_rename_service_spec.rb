@@ -79,14 +79,6 @@ RSpec.describe Projects::AfterRenameService, feature_category: :groups_and_proje
         project.container_repositories << container_repository
       end
 
-      context 'when feature renaming_project_with_tags is disabled' do
-        before do
-          stub_feature_flags(renaming_project_with_tags: false)
-        end
-
-        it_behaves_like 'logging and raising a RenameFailedError'
-      end
-
       context 'when Gitlab API is not supported' do
         before do
           allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)

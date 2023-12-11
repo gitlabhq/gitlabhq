@@ -3,17 +3,11 @@
 module ClickHouse
   module MigrationSupport
     class Migrator
-      include ::Gitlab::ExclusiveLeaseHelpers
-
       class << self
         attr_accessor :migrations_paths
       end
 
       attr_accessor :logger
-
-      LEASE_KEY = 'click_house:migrations'
-      RETRY_DELAY = ->(num) { 0.2.seconds * (num**2) }
-      LOCK_DURATION = 1.hour
 
       self.migrations_paths = ["db/click_house/migrate"]
 
@@ -42,11 +36,9 @@ module ClickHouse
       alias_method :current, :current_migration
 
       def migrate
-        in_lock(LEASE_KEY, ttl: LOCK_DURATION, retries: 5, sleep_sec: RETRY_DELAY) do
+        ClickHouse::MigrationSupport::ExclusiveLock.execute_migration do
           migrate_without_lock
         end
-      rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError => e
-        raise ClickHouse::MigrationSupport::LockError, e.message
       end
 
       def runnable
@@ -92,18 +84,9 @@ module ClickHouse
         @schema_migration.create_table(database)
       end
 
-      # Used for running a specific migration.
-      def run_without_lock
-        migration = migrations.detect { |m| m.version == @target_version }
-
-        raise ClickHouse::MigrationSupport::UnknownMigrationVersionError, @target_version if migration.nil?
-
-        execute_migration(migration)
-      end
-
       # Used for running multiple migrations up to or down to a certain value.
       def migrate_without_lock
-        raise ClickHouse::MigrationSupport::UnknownMigrationVersionError, @target_version if invalid_target?
+        raise ClickHouse::MigrationSupport::Errors::UnknownMigrationVersionError, @target_version if invalid_target?
 
         runnable.each(&method(:execute_migration)) # rubocop: disable Performance/MethodObjectAsBlock -- Execute through proxy
       end
@@ -149,10 +132,10 @@ module ClickHouse
 
       def validate(migrations)
         name, = migrations.group_by(&:name).find { |_, v| v.length > 1 }
-        raise ClickHouse::MigrationSupport::DuplicateMigrationNameError, name if name
+        raise ClickHouse::MigrationSupport::Errors::DuplicateMigrationNameError, name if name
 
         version, = migrations.group_by(&:version).find { |_, v| v.length > 1 }
-        raise ClickHouse::MigrationSupport::DuplicateMigrationVersionError, version if version
+        raise ClickHouse::MigrationSupport::Errors::DuplicateMigrationVersionError, version if version
       end
 
       def record_version_state_after_migrating(database, version)

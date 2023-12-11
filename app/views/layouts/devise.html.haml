@@ -3,7 +3,7 @@
 !!! 5
 %html.html-devise-layout{ class: user_application_theme, lang: I18n.locale }
   = render "layouts/head", { startup_filename: 'signin' }
-  %body.gl-h-full.login-page.navless{ class: "#{system_message_class} #{client_class_list}", data: { page: body_data_page, qa_selector: 'login_page', testid: 'login-page' } }
+  %body.gl-h-full.login-page.navless{ class: "#{system_message_class} #{client_class_list}", data: { page: body_data_page, testid: 'login-page' } }
     = header_message
     = render "layouts/init_client_detection_flags"
     - if Feature.enabled?(:restyle_login_page, @project)

@@ -336,7 +336,7 @@ worker that checks if any paused jobs must be restarted.
 To use `pause_control`, you can:
 
 - Use one of the strategies defined in `lib/gitlab/sidekiq_middleware/pause_control/strategies/`.
-- Define a custom strategy in `lib/gitlab/sidekiq_middleware/pause_control/strategies/` and add the strategy to `lib/gitlab/sidekiq_middleware/pause_control/strategies.rb`.
+- Define a custom strategy in `lib/gitlab/sidekiq_middleware/pause_control/strategies/` and add the strategy to `lib/gitlab/sidekiq_middleware/pause_control.rb`.
 
 For example:
 

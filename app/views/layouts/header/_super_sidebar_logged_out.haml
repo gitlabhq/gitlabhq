@@ -1,47 +1,53 @@
-%header.navbar.navbar-gitlab.super-sidebar-logged-out{ data: { testid: 'navbar' } }
+%header.header-logged-out{ data: { testid: 'navbar' } }
   %a.gl-sr-only.gl-accessibility{ href: "#content-body" } Skip to content
   .container-fluid
-    %nav.header-content.gl-displax-flex{ 'aria-label': s_('LoggedOutMarketingHeader|Explore GitLab') }
-      .title-container.gl-display-flex.gl-align-items-stretch.gl-pt-0.gl-mr-3
-        = render 'layouts/header/title'
+    %nav.header-logged-out-nav.gl-display-flex.gl-gap-3.gl-justify-content-space-between{ 'aria-label': s_('LoggedOutMarketingHeader|Explore GitLab') }
+      .header-logged-out-logo.gl-display-flex.gl-align-items-center
+        %span.gl-sr-only GitLab
+        = link_to root_path, title: _('Homepage'), id: 'logo', class: 'has-tooltip', aria: { label: _('Homepage') }, **tracking_attrs('main_navigation', 'click_gitlab_logo_link', 'navigation_top') do
+          = brand_header_logo
+        .gl-display-flex.gl-align-items-center
+          - if Gitlab.com_and_canary?
+            = gl_badge_tag({ variant: :success, size: :sm }, { href: Gitlab::Saas.canary_toggle_com_url, data: { testid: 'canary_badge_link' }, target: :_blank, rel: 'noopener noreferrer', class: 'canary-badge' }) do
+              = _('Next')
 
-        %ul.nav.navbar-sub-nav.gl-align-items-center.gl-display-flex.gl-flex-direction-row.gl-flex-grow-1
-          - if Gitlab.com?
-            %li.nav-item.dropdown.gl-mr-3.gl-md-display-none
-              %button{ type: "button", data: { toggle: "dropdown" } }
-                %span.gl-sr-only
-                  = _('Menu')
-                = sprite_icon('hamburger', size: 16)
-              .dropdown-menu
-                %ul
-                  %li
-                    = link_to Gitlab::Utils.append_path(promo_url, 'why-gitlab') do
-                      = s_('LoggedOutMarketingHeader|Why GitLab')
-                  %li
-                    = link_to Gitlab::Utils.append_path(promo_url, 'pricing') do
-                      = s_('LoggedOutMarketingHeader|Pricing')
-                  %li
-                    = link_to Gitlab::Utils.append_path(promo_url, 'sales') do
-                      = s_('LoggedOutMarketingHeader|Contact Sales')
-                  %li
-                    = link_to _("Explore"), explore_root_path
-            %li.nav-item.gl-mr-3.gl-display-none.gl-md-display-inline-block
-              = link_to Gitlab::Utils.append_path(promo_url, 'why-gitlab') do
-                = s_('LoggedOutMarketingHeader|Why GitLab')
-            %li.nav-item.gl-mr-3.gl-display-none.gl-md-display-inline-block
-              = link_to Gitlab::Utils.append_path(promo_url, 'pricing') do
-                = s_('LoggedOutMarketingHeader|Pricing')
-            %li.nav-item.gl-mr-3.gl-display-none.gl-md-display-inline-block
-              = link_to Gitlab::Utils.append_path(promo_url, 'sales') do
-                = s_('LoggedOutMarketingHeader|Contact Sales')
-          %li.nav-item{ class: ('gl-display-none gl-md-display-inline-block' if Gitlab.com?) }
-            = link_to _("Explore"), explore_root_path, class: ''
+      %ul.gl-list-style-none.gl-p-0.gl-m-0.gl-display-flex.gl-gap-3.gl-align-items-center.gl-flex-grow-1
+        - if Gitlab.com?
+          %li.header-logged-out-nav-item.header-logged-out-dropdown.gl-md-display-none
+            %button.header-logged-out-toggle{ type: "button", data: { toggle: "dropdown" } }
+              %span.gl-sr-only
+                = _('Menu')
+              = sprite_icon('hamburger', size: 16)
+            .dropdown-menu
+              %ul
+                %li
+                  = link_to Gitlab::Utils.append_path(promo_url, 'why-gitlab') do
+                    = s_('LoggedOutMarketingHeader|Why GitLab')
+                %li
+                  = link_to Gitlab::Utils.append_path(promo_url, 'pricing') do
+                    = s_('LoggedOutMarketingHeader|Pricing')
+                %li
+                  = link_to Gitlab::Utils.append_path(promo_url, 'sales') do
+                    = s_('LoggedOutMarketingHeader|Contact Sales')
+                %li
+                  = link_to _("Explore"), explore_root_path
+          %li.header-logged-out-nav-item.gl-display-none.gl-md-display-inline-block
+            = link_to Gitlab::Utils.append_path(promo_url, 'why-gitlab') do
+              = s_('LoggedOutMarketingHeader|Why GitLab')
+          %li.header-logged-out-nav-item.gl-display-none.gl-md-display-inline-block
+            = link_to Gitlab::Utils.append_path(promo_url, 'pricing') do
+              = s_('LoggedOutMarketingHeader|Pricing')
+          %li.header-logged-out-nav-item.gl-display-none.gl-md-display-inline-block
+            = link_to Gitlab::Utils.append_path(promo_url, 'sales') do
+              = s_('LoggedOutMarketingHeader|Contact Sales')
+        %li.header-logged-out-nav-item{ class: ('gl-display-none gl-md-display-inline-block' if Gitlab.com?) }
+          = link_to _("Explore"), explore_root_path, class: ''
 
       - if header_link?(:sign_in)
-        %ul.nav.navbar-nav.gl-align-items-center.gl-justify-content-end.gl-flex-direction-row
-          %li.nav-item.gl-mr-3
+        %ul.gl-list-style-none.gl-p-0.gl-m-0.gl-display-flex.gl-gap-3.gl-align-items-center.gl-justify-content-end
+          %li.header-logged-out-nav-item
             = link_to _('Sign in'), new_session_path(:user, redirect_to_referer: 'yes')
           - if allow_signup?
-            %li.nav-item
+            %li.header-logged-out-nav-item
               = render Pajamas::ButtonComponent.new(href: new_user_registration_path, variant: :confirm) do
                 = Gitlab.com? ? _('Get free trial') : _('Register')

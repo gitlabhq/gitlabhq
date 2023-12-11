@@ -100,7 +100,7 @@
               %ul
                 %li= _("Be careful. Renaming a project's repository can have unintended side effects.")
                 %li= _('You will need to update your local repositories to point to the new location.')
-                - if Feature.enabled?(:renaming_project_with_tags, @project)
+                - if ContainerRegistry::GitlabApiClient.supports_gitlab_api?
                   %li= s_('ContainerRegistry|While the rename is in progress, new uploads to the container registry are blocked. Ongoing uploads may fail and need to be retried.')
               - if @project.deployment_platform.present?
                 %p= _('Your deployment services will be broken, you will need to manually fix the services after renaming.')

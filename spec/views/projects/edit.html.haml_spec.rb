@@ -113,15 +113,21 @@ RSpec.describe 'projects/edit' do
   end
 
   describe 'notifications on renaming the project path' do
-    it 'displays the warning regarding the container registry' do
-      render
+    context 'when the GitlabAPI is supported' do
+      before do
+        allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
+      end
 
-      expect(rendered).to have_content('new uploads to the container registry are blocked')
+      it 'displays the warning regarding the container registry' do
+        render
+
+        expect(rendered).to have_content('new uploads to the container registry are blocked')
+      end
     end
 
-    context 'when the feature renaming_project_with_tags is disabled' do
+    context 'when the GitlabAPI is not supported' do
       before do
-        stub_feature_flags(renaming_project_with_tags: false)
+        allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
       end
 
       it 'does not display the warning regarding the container registry' do

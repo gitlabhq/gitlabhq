@@ -147,6 +147,33 @@ module API
             bad_request!(e.message)
           end
         end
+
+        namespace 'kubernetes/agent_events' do
+          desc 'POST agent events' do
+            detail 'Updates agent events'
+          end
+          params do
+            optional :events, type: Hash, desc: 'Array of events' do
+              optional :k8s_api_proxy_requests_unique_users_via_ci_access, type: Array, desc: 'An array of events that have interacted with the CI tunnel via `ci_access`' do
+                optional :user_id, type: Integer, desc: 'User ID'
+                optional :project_id, type: Integer, desc: 'Project ID'
+              end
+              optional :k8s_api_proxy_requests_unique_users_via_user_access, type: Array, desc: 'An array of events that have interacted with the CI tunnel via `ci_access`' do
+                optional :user_id, type: Integer, desc: 'User ID'
+                optional :project_id, type: Integer, desc: 'Project ID'
+              end
+              optional :k8s_api_proxy_requests_unique_users_via_pat_access, type: Array, desc: 'An array of events that have interacted with the CI tunnel via `ci_access`' do
+                optional :user_id, type: Integer, desc: 'User ID'
+                optional :project_id, type: Integer, desc: 'Project ID'
+              end
+            end
+          end
+          post '/', feature_category: :deployment_management do
+            track_events
+
+            no_content!
+          end
+        end
       end
     end
   end

@@ -8,6 +8,7 @@ module Gitlab
       UnknownStrategyError = Class.new(StandardError)
 
       STRATEGIES = {
+        click_house_migration: ::Gitlab::SidekiqMiddleware::PauseControl::Strategies::ClickHouseMigration,
         zoekt: ::Gitlab::SidekiqMiddleware::PauseControl::Strategies::Zoekt,
         none: ::Gitlab::SidekiqMiddleware::PauseControl::Strategies::None
       }.freeze

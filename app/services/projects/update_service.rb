@@ -92,8 +92,7 @@ module Projects
     def validate_renaming_project_with_tags
       return unless renaming_project_with_container_registry_tags?
 
-      unless Feature.enabled?(:renaming_project_with_tags, project) &&
-          ContainerRegistry::GitlabApiClient.supports_gitlab_api?
+      unless ContainerRegistry::GitlabApiClient.supports_gitlab_api?
         raise ValidationError, s_('UpdateProject|Cannot rename project because it contains container registry tags!')
       end
 

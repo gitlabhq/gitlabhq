@@ -63,8 +63,7 @@ module Projects
     end
 
     def ensure_registry_tags_can_be_handled
-      return if Feature.enabled?(:renaming_project_with_tags, project) &&
-        ContainerRegistry::GitlabApiClient.supports_gitlab_api?
+      return if ContainerRegistry::GitlabApiClient.supports_gitlab_api?
 
       rename_failed!("Project #{full_path_before} cannot be renamed because images are " \
       "present in its container registry")

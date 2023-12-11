@@ -4,17 +4,17 @@
 
 - if can?(current_user, :download_code, @project)
   .git-clone-holder.js-git-clone-holder
-    = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { id: 'clone-dropdown', class: 'clone-dropdown-btn', data: { toggle: 'dropdown', qa_selector: 'clone_dropdown' } }) do
+    = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { id: 'clone-dropdown', class: 'clone-dropdown-btn', data: { toggle: 'dropdown', testid: 'clone-dropdown' } }) do
       %span.js-clone-dropdown-label
         = _('Code')
       = sprite_icon("chevron-down", css_class: "icon")
-    %ul.dropdown-menu.dropdown-menu-large.clone-options-dropdown{ class: dropdown_class, data: { qa_selector: 'clone_dropdown_content' } }
+    %ul.dropdown-menu.dropdown-menu-large.clone-options-dropdown{ class: dropdown_class, data: { testid: 'clone-dropdown-content' } }
       - if ssh_enabled?
         %li.gl-dropdown-item.js-clone-links{ class: 'gl-px-4!' }
           %label.label-bold
             = _('Clone with SSH')
           .input-group.btn-group
-            = text_field_tag :ssh_project_clone, ssh_clone_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true, aria: { label: _('Repository clone URL') }, data: { qa_selector: 'ssh_clone_url_content' }
+            = text_field_tag :ssh_project_clone, ssh_clone_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true, aria: { label: _('Repository clone URL') }, data: { testid: 'ssh-clone-url-content' }
             .input-group-append
               = clipboard_button(target: '#ssh_project_clone', title: _("Copy URL"), category: :primary, size: :medium)
               = render_if_exists 'projects/buttons/geo'
@@ -23,7 +23,7 @@
           %label.label-bold
             = _('Clone with %{http_label}') % { http_label: gitlab_config.protocol.upcase }
           .input-group.btn-group
-            = text_field_tag :http_project_clone, http_clone_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true, aria: { label: _('Repository clone URL') }, data: { qa_selector: 'http_clone_url_content' }
+            = text_field_tag :http_project_clone, http_clone_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true, aria: { label: _('Repository clone URL') }, data: { testid: 'http-clone-url-content' }
             .input-group-append
               = clipboard_button(target: '#http_project_clone', title: _("Copy URL"), category: :primary, size: :medium)
               = render_if_exists 'projects/buttons/geo'

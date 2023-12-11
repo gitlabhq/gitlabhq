@@ -1,7 +1,7 @@
 ---
 status: proposed
 creation-date: "2023-10-10"
-authors: [ "@thomasrandolph", "@patrickbajao", "@igor.drozdov", "@jerasmus", "@iamphill", "@slashmanov" ]
+authors: [ "@thomasrandolph", "@patrickbajao", "@igor.drozdov", "@jerasmus", "@iamphill", "@slashmanov", "@psjakubowska" ]
 coach: [ "@ntepluhina" ]
 approvers: [ ]
 owning-stage: "~devops::create"
@@ -87,6 +87,18 @@ The new-diffs approach changes that by doing the following:
 ### Accessibility
 
 New diffs should be displayed in a way that is compliant with [Web Content Accessibility Guidelines 2.1](https://www.w3.org/TR/WCAG21/) level AA for web-based content and [Authoring Tool Accessibility Guidelines 2.0](https://www.w3.org/TR/ATAG20/) level AA for user interface.
+
+We recognize that in order to have an accessible experience using diffs in the context of GitLab, we need to ensure the compliance both for displaying and interacting with diffs. That's why the accessibility
+audit and further recommendation will also consider Content Editor used feature for reviewing changes.
+
+#### ATAG 2.0 AA
+
+Giving the nature of diffs, the following guidelines will be our main focus:
+
+1. [Guideline A.2.1: (For the authoring tool user interface) Make alternative content available to authors](https://www.w3.org/TR/ATAG20/#gl_a21)
+1. [Guideline A.3.1: (For the authoring tool user interface) Provide keyboard access to authoring features](https://www.w3.org/TR/ATAG20/#gl_a31)
+1. [Guideline A.3.4: (For the authoring tool user interface) Enhance navigation and editing via content structure](https://www.w3.org/TR/ATAG20/#gl_a34)
+1. [Guideline A.3.6: (For the authoring tool user interface) Manage preference settings](https://www.w3.org/TR/ATAG20/#gl_a36)
 
 ## Design and implementation details
 

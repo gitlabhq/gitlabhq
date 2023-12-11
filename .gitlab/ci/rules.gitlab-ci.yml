@@ -912,6 +912,7 @@
       variables:
         ARCH: amd64,arm64
     - <<: *if-ruby3_1-branch
+    - !reference [".releases:rules:canonical-dot-com-gitlab-stable-branch-only-setup-test-env-patterns", rules]
 
 .build-images:rules:build-qa-image-as-if-foss:
   rules:

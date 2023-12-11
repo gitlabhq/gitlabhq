@@ -37,6 +37,7 @@ module Gitlab
         chain.add ::Gitlab::SidekiqStatus::ServerMiddleware
         chain.add ::Gitlab::SidekiqMiddleware::WorkerContext::Server
         chain.add ::Gitlab::SidekiqMiddleware::PauseControl::Server
+        chain.add ::ClickHouse::MigrationSupport::SidekiqMiddleware
         # DuplicateJobs::Server should be placed at the bottom, but before the SidekiqServerMiddleware,
         # so we can compare the latest WAL location against replica
         chain.add ::Gitlab::SidekiqMiddleware::DuplicateJobs::Server

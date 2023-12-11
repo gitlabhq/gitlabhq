@@ -54,6 +54,20 @@ module API
           end
         end
 
+        def track_events
+          event_lists = params[:events]&.slice(
+            :k8s_api_proxy_requests_unique_users_via_ci_access,
+            :k8s_api_proxy_requests_unique_users_via_user_access,
+            :k8s_api_proxy_requests_unique_users_via_pat_access
+          )
+          return if event_lists.blank?
+
+          users, projects = load_users_and_projects(event_lists)
+          event_lists.each do |event_name, events|
+            track_events_for(event_name, events, users, projects)
+          end
+        end
+
         def track_unique_user_events
           events = params[:unique_counters]&.slice(
             :k8s_api_proxy_requests_unique_users_via_ci_access,
@@ -130,6 +144,29 @@ module API
           PersonalAccessToken.find_by_token(params[:access_key])
         end
         strong_memoize_attr :access_token
+
+        private
+
+        def load_users_and_projects(event_lists)
+          all_events = event_lists.values.flatten
+          unique_user_ids = all_events.pluck('user_id').compact.uniq # rubocop:disable CodeReuse/ActiveRecord -- this pluck isn't from ActiveRecord, it's from ActiveSupport
+          unique_project_ids = all_events.pluck('project_id').compact.uniq # rubocop:disable CodeReuse/ActiveRecord -- this pluck isn't from ActiveRecord, it's from ActiveSupport
+          users = User.id_in(unique_user_ids).index_by(&:id)
+          projects = Project.id_in(unique_project_ids).index_by(&:id)
+          [users, projects]
+        end
+
+        def track_events_for(event_name, events, users, projects)
+          events.each do |event|
+            next if event.blank?
+
+            user = users[event[:user_id]]
+            project = projects[event[:project_id]]
+            next if user.nil? || project.nil?
+
+            Gitlab::InternalEvents.track_event(event_name, user: user, project: project)
+          end
+        end
       end
     end
   end

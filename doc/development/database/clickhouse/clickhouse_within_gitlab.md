@@ -205,6 +205,26 @@ end
 NOTE:
 It's important to test and verify efficient batching of database records from PostgreSQL. Consider using the techniques described in the [Iterating tables in batches](../iterating_tables_in_batches.md).
 
+## Implementing Sidekiq workers
+
+Sidekiq workers leveraging ClickHouse databases should include the `ClickHouseWorker` module.
+This ensures that the worker is paused while database migrations are running,
+and that migrations do not run while the worker is active.
+
+```ruby
+# events_sync_worker.rb
+# frozen_string_literal: true
+
+module ClickHouse
+  class EventsSyncWorker
+    include ApplicationWorker
+    include ClickHouseWorker
+
+    ...
+  end
+end
+```
+
 ## Testing
 
 ClickHouse is enabled on CI/CD but to avoid significantly affecting the pipeline runtime we've decided to run the ClickHouse server for test cases tagged with `:click_house` only.

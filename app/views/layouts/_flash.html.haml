@@ -4,7 +4,7 @@
 -# We currently only support `alert`, `notice`, `success`, `warning`, 'toast', and 'raw'
 - type_to_variant = {'alert' => 'danger', 'notice' => 'info', 'success' => 'success', 'warning' => 'warning'}
 - closable = %w[alert notice success]
-.flash-container.flash-container-page.sticky{ data: { qa_selector: 'flash_container' }, class: flash_container_class }
+.flash-container.flash-container-page.sticky{ data: { testid: 'flash-container' }, class: flash_container_class }
   - flash.each do |key, value|
     - if key == 'toast' && value
       .js-toast-message{ data: { message: value } }

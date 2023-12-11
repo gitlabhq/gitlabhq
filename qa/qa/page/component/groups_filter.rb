@@ -10,11 +10,15 @@ module QA
           super
 
           base.view 'app/assets/javascripts/groups/components/overview_tabs.vue' do
-            element :groups_filter_field
+            element 'groups-filter-field'
+          end
+
+          base.view 'app/views/shared/groups/_search_form.html.haml' do
+            element 'groups-filter-field'
           end
 
           base.view 'app/assets/javascripts/groups/components/groups.vue' do
-            element :groups_list_tree_container
+            element 'groups-list-tree-container'
           end
         end
 
@@ -33,10 +37,10 @@ module QA
         # @param name [String] group name
         # @return [Boolean] whether the filter returned any group
         def filter_group(name)
-          fill_element(:groups_filter_field, name).send_keys(:return)
+          fill_element('groups-filter-field', name).send_keys(:return)
           # Loading starts a moment after `return` is sent. We mustn't jump ahead
           wait_for_requests if spinner_exists?
-          has_element?(:groups_list_tree_container, wait: 1)
+          has_element?('groups-list-tree-container', wait: 1)
         end
       end
     end

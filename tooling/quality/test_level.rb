@@ -18,7 +18,6 @@ module Quality
       unit: %w[
         bin
         channels
-        click_house
         components
         config
         contracts

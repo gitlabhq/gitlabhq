@@ -23,7 +23,7 @@
 ### Related issues and merge requests
 
 
-/label ~"pipeline:expedite" ~"master:broken"
+/label ~"pipeline:expedite" ~"master:broken" ~"Pick into auto-deploy" ~"severity::1" ~"priority::1"
 
 <!--
    Regression label: if applicable, specify the milestone-specific regression label

@@ -45,7 +45,7 @@ module ClickHouse
         migrations = migration_files.map do |file|
           version, name, scope = parse_migration_filename(file)
 
-          raise ClickHouse::MigrationSupport::IllegalMigrationNameError, file unless version
+          raise ClickHouse::MigrationSupport::Errors::IllegalMigrationNameError, file unless version
 
           version = version.to_i
           name = name.camelize

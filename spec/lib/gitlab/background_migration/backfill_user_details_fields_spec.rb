@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillUserDetailsFields, :migration, schema: 20221018232820 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillUserDetailsFields, :migration, schema: 20221111123146 do
   let(:users) { table(:users) }
   let(:user_details) { table(:user_details) }
 

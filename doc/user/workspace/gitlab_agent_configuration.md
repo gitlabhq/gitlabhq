@@ -96,7 +96,8 @@ remote_development:
 In this configuration:
 
 - The network policy is generated for each workspace because `enabled` is `true`.
-- The egress rules allow all traffic to the internet (`0.0.0.0/0`) except to the IP CIDR ranges `10.0.0.0/8`, `172.16.0.0/12`, and `192.168.0.0/16`.
+- The egress rules allow all traffic to the internet (`0.0.0.0/0`) except to the
+  IP CIDR ranges `10.0.0.0/8`, `172.16.0.0/12`, and `192.168.0.0/16`.
 
 The behavior of the network policy depends on the Kubernetes network plugin.
 For more information, see the [Kubernetes documentation](https://kubernetes.io/docs/concepts/services-networking/network-policies/).
@@ -139,3 +140,15 @@ In this example, traffic from the workspace is allowed if:
 
 - The destination IP is any range except `10.0.0.0/8`, `172.16.0.0/12`, or `192.168.0.0/16`.
 - The destination IP is `172.16.123.1/32`.
+
+## Configuring user access with remote development
+
+You can configure the `user_access` module to access the connected Kubernetes cluster with your GitLab credentials.
+This module is configured and runs independently of the `remote_development` module.
+
+Be careful when configuring both `user_access` and `remote_development` in the same GitLab agent.
+The `remote_development` clusters manage user credentials (such as personal access tokens) as Kubernetes Secrets.
+Any misconfiguration in `user_access` might cause this private data to be accessible over the Kubernetes API.
+
+For more information about configuring `user_access`, see
+[Configure Kubernetes access](../../user/clusters/agent/user_access.md#configure-kubernetes-access).

@@ -146,7 +146,7 @@ export default {
     {
       key: 'progress',
       label: __('Status'),
-      tdAttr: { 'data-qa-selector': 'import_status_indicator' },
+      tdAttr: { 'data-testid': 'import-status-indicator' },
     },
     {
       key: 'actions',
@@ -326,7 +326,7 @@ export default {
     qaRowAttributes(group, type) {
       if (type === 'row') {
         return {
-          'data-qa-selector': 'import_item',
+          'data-testid': 'import-item',
           'data-qa-source-group': group.fullPath,
         };
       }
@@ -756,7 +756,6 @@ export default {
         <gl-table
           ref="table"
           class="gl-w-full import-table"
-          data-qa-selector="import_table"
           :tbody-tr-class="rowClasses"
           :tbody-tr-attr="qaRowAttributes"
           thead-class="gl-sticky gl-z-index-2 gl-bg-gray-10"

@@ -90,8 +90,8 @@ tests = [
 
   {
     explanation: 'Migration should map to its non-timestamped spec',
-    changed_file: 'db/migrate/20221011062254_sync_new_amount_used_for_ci_project_monthly_usages.rb',
-    expected: ['spec/migrations/sync_new_amount_used_for_ci_project_monthly_usages_spec.rb']
+    changed_file: 'db/migrate/20230707003301_add_expiry_notified_at_to_member.rb',
+    expected: ['spec/migrations/add_expiry_notified_at_to_member_spec.rb']
   },
   # rubocop:disable Layout/LineLength
   {

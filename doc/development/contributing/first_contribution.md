@@ -8,13 +8,17 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 Anyone can contribute to the development of GitLab.
 
-Maybe you want to add functionality that you feel is missing. Or maybe
-you noticed some UI text that you want to improve.
+Maybe you want to add functionality that you feel is missing.
+Or maybe you noticed some UI text that you want to improve.
 
 This tutorial will walk you through the process of updating UI text
 and related files by using the GitLab Development Kit and the GitLab community fork.
-You can follow this example exactly to familiarize yourself with the process,
-or you can choose other UI text to update.
+You can follow this example to familiarize yourself with the process.
+
+NOTE:
+We recommend joining our [Discord server](https://discord.gg/gitlab), where GitLab team
+members and the wider community are ready and waiting to answer your questions
+and ensure [everyone can contribute](https://handbook.gitlab.com/handbook/company/mission/).
 
 ## Steps
 
@@ -40,9 +44,11 @@ On your local machine:
 On GitLab.com:
 
 - Create an account. Ensure you can successfully sign in.
-- Go to the [`gitlab-community/community-members` group](https://gitlab.com/gitlab-community/community-members)
-  and select **Request access**. This action will give you access to the GitLab
-  community fork, where you'll author your changes.
+- Click [here](https://gitlab.com/groups/gitlab-community/community-members/-/group_members/request_access)
+  to request access to the [community forks](https://gitlab.com/gitlab-community).
+  - The access request will be manually verified and should take no more than a few hours.
+  - You can get started without access, and only need it prior to pushing your changes to GitLab.com.
+  - NOTE: If you see an error, you are either: not signed in, or already have access.
 
 ## Step 1: Configure the GitLab Development Kit
 
@@ -55,12 +61,35 @@ You can run it on your local machine, or use GitPod to run a remote version.
 
 ![GDK](img/gdk_home.png)
 
-If you've never used the GDK before, and you think you might contribute
-more than once, you should install it.
+We recommend using Gitpod for your first contribution, it will run the GDK regardless
+of your local hardware and software (e.g. operating system).
+
 If you already have a working GDK, you should
 [update it to use the community fork](#an-existing-gdk-installation).
 
+### Using Gitpod
+
+Set aside about 15 minutes to launch the GDK in Gitpod.
+
+1. Launch the GDK in [Gitpod](https://gitpod.io/#https://gitlab.com/gitlab-community/gitlab/-/tree/master/).
+1. Create an account if this is your first time using Gitpod.
+   After registering, you may need to relaunch [GitLab in Gitpod](https://gitpod.io/#https://gitlab.com/gitlab-community/gitlab/-/tree/master/).
+1. Select **Continue with GitLab**.
+1. If this is your first time using Gitpod with GitLab, select **Authorize** when prompted to
+   **Authorize Gitpod.io to use your account?**.
+1. Leave the default repository URL: `gitlab.com/gitlab-community/gitlab/-/tree/master/`.
+1. Select your preferred **Editor**.
+1. Leave the default **Class**: `Standard`.
+1. Wait for Gitpod to launch.
+
+You can begin exploring the codebase and making your changes once your editor of choice has launched.
+
+You will need to wait a little longer for GitLab to be available to preview your changes.
+
 ### A new GDK installation
+
+NOTE:
+Skip this step if you're using Gitpod.
 
 Set aside about two hours to install the GDK. If all goes smoothly, it
 should take about an hour to install.

@@ -228,7 +228,7 @@ export default {
             <gl-search-box-by-type
               :value="search"
               :placeholder="$options.i18n.searchPlaceholder"
-              data-qa-selector="groups_filter_field"
+              data-testid="groups-filter-field"
               @input="handleSearchInput"
             />
           </div>

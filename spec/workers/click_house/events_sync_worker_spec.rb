@@ -5,6 +5,12 @@ require 'spec_helper'
 RSpec.describe ClickHouse::EventsSyncWorker, feature_category: :value_stream_management do
   let(:worker) { described_class.new }
 
+  specify do
+    expect(worker.class.click_house_worker_attrs).to match(
+      a_hash_including(migration_lock_ttl: ClickHouse::MigrationSupport::ExclusiveLock::DEFAULT_CLICKHOUSE_WORKER_TTL)
+    )
+  end
+
   it_behaves_like 'an idempotent worker' do
     context 'when the event_sync_worker_for_click_house feature flag is on', :click_house do
       before do

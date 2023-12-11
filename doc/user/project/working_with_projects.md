@@ -246,7 +246,7 @@ go to `https://gitlab.example.com/projects/<id>`.
 To copy the project ID:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the project overview page, in the top right, select **Actions** (**{ellipsis_v})**.
+1. On the project overview page, in the upper-right corner, select **Actions** (**{ellipsis_v})**.
 1. Select **Copy project ID**.
 
 For example, if in your personal namespace `alex` you have a project `my-project` with the ID `123456`, you can access the project
@@ -288,7 +288,7 @@ Prerequisites:
 To leave a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the project overview page, in the top right, select **Actions** (**{ellipsis_v})**.
+1. On the project overview page, in the upper-right corner, select **Actions** (**{ellipsis_v})**.
 1. Select **Leave project**, then **Leave project** again..
 
 ## Add a compliance framework to a project **(PREMIUM)**

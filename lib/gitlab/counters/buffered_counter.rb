@@ -248,7 +248,7 @@ module Gitlab
       end
 
       def redis_state(&block)
-        Gitlab::Redis::SharedState.with(&block)
+        Gitlab::Redis::BufferedCounter.with(&block)
       end
 
       def with_exclusive_lease(&block)

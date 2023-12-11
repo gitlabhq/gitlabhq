@@ -9,7 +9,7 @@
 .top-area.multi-line.flex-wrap
   .nav-text
     .title
-      %span.item-title.ref-name{ data: { qa_selector: 'tag_name_content' } }
+      %span.item-title.ref-name{ data: { testid: 'tag-name-content' } }
         = sprite_icon('tag')
         = @tag.name
       - if protected_tag?(@project, @tag)
@@ -52,7 +52,7 @@
       = render 'projects/buttons/remove_tag', project: @project, tag: @tag
 
   - if @tag.message.present?
-    %pre.wrap{ data: { qa_selector: 'tag_message_content' } }
+    %pre.wrap{ data: { testid: 'tag-message-content' } }
       = strip_signature(@tag.message)
 
 - if can?(current_user, :admin_tag, @project)

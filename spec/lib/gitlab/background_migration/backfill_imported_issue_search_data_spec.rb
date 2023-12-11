@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillImportedIssueSearchData,
   :migration,
-  schema: 20220126191624 do
+  schema: 20221111123146 do
   let!(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
   let!(:issue_search_data_table) { table(:issue_search_data) }
 

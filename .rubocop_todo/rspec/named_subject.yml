@@ -2578,8 +2578,6 @@ RSpec/NamedSubject:
     - 'spec/mailers/emails/merge_requests_spec.rb'
     - 'spec/mailers/notify_spec.rb'
     - 'spec/metrics_server/metrics_server_spec.rb'
-    - 'spec/migrations/20221028022627_add_index_on_password_last_changed_at_to_user_details_spec.rb'
-    - 'spec/migrations/20221101032600_add_text_limit_to_default_preferred_language_on_application_settings_spec.rb'
     - 'spec/migrations/20221210154044_update_active_billable_users_index_spec.rb'
     - 'spec/migrations/20221221110733_remove_temp_index_for_project_statistics_upload_size_migration_spec.rb'
     - 'spec/migrations/20230714015909_add_index_for_member_expiring_query_spec.rb'

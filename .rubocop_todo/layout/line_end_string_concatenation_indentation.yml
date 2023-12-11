@@ -39,7 +39,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'config/initializers/wikicloth_redos_patch.rb'
     - 'config/initializers/wikicloth_ruby_3_patch.rb'
     - 'danger/database/Dangerfile'
-    - 'db/post_migrate/20220920081631_prepare_ci_builds_metadata_for_partitioning_primary_key.rb'
     - 'ee/app/components/namespaces/free_user_cap/usage_quota_alert_component.rb'
     - 'ee/app/controllers/admin/licenses_controller.rb'
     - 'ee/app/controllers/concerns/insights_actions.rb'

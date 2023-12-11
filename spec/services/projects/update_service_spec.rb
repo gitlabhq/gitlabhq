@@ -432,15 +432,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
         end
       end
 
-      context 'when feature renaming_project_with_tags is disabled' do
-        before do
-          stub_feature_flags(renaming_project_with_tags: false)
-        end
-
-        it_behaves_like 'renaming the project fails with message', /contains container registry tags/
-      end
-
-      context "when the GitlabAPI is not supported" do
+      context 'when the GitlabAPI is not supported' do
         before do
           allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
         end

@@ -40,7 +40,7 @@ export default {
 </script>
 
 <template>
-  <div class="groups-list-tree-container" data-qa-selector="groups_list_tree_container">
+  <div class="groups-list-tree-container" data-testid="groups-list-tree-container">
     <group-folder :groups="groups" :action="action" />
     <pagination-links
       :change="change"
