@@ -15,12 +15,12 @@ module Gitlab
         lock!
       end
 
-      def subscribe(worker, to:, if: nil, delay: nil)
+      def subscribe(worker, to:, if: nil, delay: nil, group_size: nil)
         condition = binding.local_variable_get('if')
 
         Array(to).each do |event|
           validate_subscription!(worker, event)
-          subscriptions[event] << Gitlab::EventStore::Subscription.new(worker, condition, delay)
+          subscriptions[event] << Gitlab::EventStore::Subscription.new(worker, condition, delay, group_size)
         end
       end
 
@@ -31,6 +31,18 @@ module Gitlab
 
         subscriptions.fetch(event.class, []).each do |subscription|
           subscription.consume_event(event)
+        end
+      end
+
+      def publish_group(events)
+        event_class = events.first.class
+
+        unless events.all? { |e| e.class < Event && e.instance_of?(event_class) }
+          raise InvalidEvent, "Not all events being published are valid"
+        end
+
+        subscriptions.fetch(event_class, []).each do |subscription|
+          subscription.consume_events(events)
         end
       end
 

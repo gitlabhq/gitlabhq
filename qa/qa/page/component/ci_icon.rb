@@ -33,7 +33,7 @@ module QA
         def self.included(base)
           super
 
-          base.view 'app/assets/javascripts/vue_shared/components/ci_icon.vue' do
+          base.view 'app/assets/javascripts/vue_shared/components/ci_icon/ci_icon.vue' do
             element 'ci-icon-text'
           end
         end

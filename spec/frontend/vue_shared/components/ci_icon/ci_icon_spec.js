@@ -1,6 +1,6 @@
 import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 
 const mockStatus = {
   group: 'success',

@@ -142,8 +142,8 @@ export default {
     deleteButtonText() {
       return sprintf(__('Delete %{issuableType}'), { issuableType: this.issueTypeText });
     },
-    qaSelector() {
-      return this.isClosed ? 'reopen_issue_button' : 'close_issue_button';
+    testId() {
+      return this.isClosed ? 'reopen-issue-button' : 'close-issue-button';
     },
     dropdownText() {
       return sprintf(__('%{issueType} actions'), {
@@ -340,7 +340,7 @@ export default {
         </gl-disclosure-dropdown-item>
         <gl-disclosure-dropdown-item
           v-if="showToggleIssueStateButton"
-          :data-testid="`mobile_${qaSelector}`"
+          :data-testid="`mobile-${testId}`"
           @action="toggleIssueState"
         >
           <template #list-item>{{ buttonText }}</template>

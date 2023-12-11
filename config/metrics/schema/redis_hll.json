@@ -32,7 +32,12 @@
         "required": [
           "instrumentation_class",
           "options"
-        ]
+        ],
+        "not": {
+          "required": [
+            "events"
+          ]
+        }
       },
       {
         "properties": {

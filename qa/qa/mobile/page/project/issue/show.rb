@@ -13,21 +13,21 @@ module QA
 
               base.class_eval do
                 view 'app/assets/javascripts/issues/show/components/header_actions.vue' do
-                  element :mobile_dropdown
-                  element :mobile_close_issue_button
-                  element :mobile_reopen_issue_button
+                  element 'mobile-dropdown'
+                  element 'mobile-close-issue-button'
+                  element 'mobile-reopen-issue-button'
                 end
               end
             end
 
             def click_close_issue_button
               find('[data-testid="mobile-dropdown"] > button').click
-              find_element(:mobile_close_issue_button, visible: false).click
+              find_element('mobile-close-issue-button', visible: false).click
             end
 
             def has_reopen_issue_button?
               find('[data-testid="mobile-dropdown"] > button').click
-              has_element?(:mobile_reopen_issue_button)
+              has_element?('mobile-reopen-issue-button')
             end
           end
         end

@@ -491,7 +491,7 @@ When enabled, tasks use a two-column layout, similar to issues.
 The description and threads are on the left, and attributes, such as labels
 or assignees, on the right.
 
-![Task two column view](img/task_two_column_view_v16_2.png)
+![Task two column view](img/task_two_column_view_v16_7.png)
 
 ## Linked items in Tasks
 

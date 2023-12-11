@@ -1,7 +1,7 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { accessValue } from './accessors/linked_pipelines_accessors';
 /**
  * Renders the upstream/downstream portions of the pipeline mini graph.

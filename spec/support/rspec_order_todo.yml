@@ -2513,7 +2513,7 @@
 - './ee/spec/services/ee/merge_requests/after_create_service_spec.rb'
 - './ee/spec/services/ee/merge_requests/base_service_spec.rb'
 - './ee/spec/services/ee/merge_requests/create_approval_event_service_spec.rb'
-- './ee/spec/services/ee/merge_requests/create_from_vulnerability_data_service_spec.rb'
+- './ee/spec/services/merge_requests/create_from_vulnerability_data_service_spec.rb'
 - './ee/spec/services/ee/merge_requests/create_pipeline_service_spec.rb'
 - './ee/spec/services/ee/merge_requests/create_service_spec.rb'
 - './ee/spec/services/ee/merge_requests/execute_approval_hooks_service_spec.rb'

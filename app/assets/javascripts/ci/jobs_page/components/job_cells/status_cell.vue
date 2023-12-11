@@ -1,7 +1,7 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
 import { formatTime } from '~/lib/utils/datetime_utility';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 

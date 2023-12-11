@@ -4,7 +4,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { glEmojiTag } from '~/emoji';
 import { __, sprintf } from '~/locale';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {

@@ -3,7 +3,7 @@ import { GlTableLite } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { formatTime } from '~/lib/utils/datetime_utility';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import RunnerTags from '~/ci/runner/components/runner_tags.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { tableField } from '../utils';

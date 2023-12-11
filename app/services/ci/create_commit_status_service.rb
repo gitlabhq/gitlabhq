@@ -93,7 +93,8 @@ module Ci
         protected: project.protected_for?(ref),
         ci_stage: stage,
         stage_idx: stage.position,
-        stage: 'external'
+        stage: 'external',
+        partition_id: pipeline.partition_id
       ).tap do |new_commit_status|
         new_commit_status.assign_attributes(optional_commit_status_params)
       end

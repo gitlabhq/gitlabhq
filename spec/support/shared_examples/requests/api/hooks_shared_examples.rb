@@ -84,7 +84,7 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
       end
     end
 
-    context 'the hook has URL variables' do
+    context 'the hook has URL variables', if: prefix != '/projects/:id' do
       before do
         hook.update!(url_variables: { 'token' => 'supers3cret' })
       end

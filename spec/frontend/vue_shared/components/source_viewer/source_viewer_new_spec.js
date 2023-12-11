@@ -117,22 +117,18 @@ describe('Source Viewer component', () => {
       });
 
       it('calls the query only once per chunk', async () => {
-        jest.spyOn(wrapper.vm.$apollo, 'query');
-
         // We trigger the `appear` event multiple times here in order to simulate the user scrolling past the chunk more than once.
         // In this scenario we only want to query the backend once.
         await triggerChunkAppear();
         await triggerChunkAppear();
 
-        expect(wrapper.vm.$apollo.query).toHaveBeenCalledTimes(1);
+        expect(blameDataQueryHandlerSuccess).toHaveBeenCalledTimes(1);
       });
 
       it('requests blame information for overlapping chunk', async () => {
-        jest.spyOn(wrapper.vm.$apollo, 'query');
-
         await triggerChunkAppear(1);
 
-        expect(wrapper.vm.$apollo.query).toHaveBeenCalledTimes(2);
+        expect(blameDataQueryHandlerSuccess).toHaveBeenCalledTimes(2);
         expect(blameDataQueryHandlerSuccess).toHaveBeenCalledWith(
           expect.objectContaining({ fromLine: 71, toLine: 110 }),
         );

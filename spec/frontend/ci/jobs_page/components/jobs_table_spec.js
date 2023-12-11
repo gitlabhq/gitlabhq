@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import JobsTable from '~/ci/jobs_page/components/jobs_table.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { DEFAULT_FIELDS_ADMIN } from '~/ci/admin/jobs_table/constants';
 import ProjectCell from '~/ci/admin/jobs_table/components/cells/project_cell.vue';
 import RunnerCell from '~/ci/admin/jobs_table/components/cells/runner_cell.vue';

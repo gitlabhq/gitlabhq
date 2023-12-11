@@ -2092,7 +2092,7 @@ Layout/LineLength:
     - 'ee/spec/services/ee/issues/move_service_spec.rb'
     - 'ee/spec/services/ee/issues/update_service_spec.rb'
     - 'ee/spec/services/ee/members/destroy_service_spec.rb'
-    - 'ee/spec/services/ee/merge_requests/create_from_vulnerability_data_service_spec.rb'
+    - 'ee/spec/services/merge_requests/create_from_vulnerability_data_service_spec.rb'
     - 'ee/spec/services/ee/merge_requests/post_merge_service_spec.rb'
     - 'ee/spec/services/ee/merge_requests/refresh_service_spec.rb'
     - 'ee/spec/services/ee/merge_requests/update_service_spec.rb'

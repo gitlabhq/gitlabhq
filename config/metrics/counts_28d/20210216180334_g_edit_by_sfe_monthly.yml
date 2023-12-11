@@ -8,7 +8,7 @@ product_group: source_code
 value_type: number
 status: active
 time_frame: 28d
-data_source: redis_hll
+data_source: internal_events
 instrumentation_class: RedisHLLMetric
 options:
   events:

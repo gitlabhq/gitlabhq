@@ -8,7 +8,7 @@ import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isMetaKey } from '~/lib/utils/common_utils';
 import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { sprintf } from '~/locale';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import relatedIssuableMixin from '../mixins/related_issuable_mixin';

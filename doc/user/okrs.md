@@ -500,7 +500,7 @@ When enabled, OKRs use a two-column layout, similar to issues.
 The description and threads are on the left, and attributes, such as labels
 or assignees, on the right.
 
-![OKR two column view](img/objective_two_column_view_v16_2.png)
+![OKR two column view](img/objective_two_column_view_v16_7.png)
 
 ## Linked items in OKRs
 

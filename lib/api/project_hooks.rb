@@ -57,7 +57,7 @@ module API
         use :pagination
       end
       get ":id/hooks" do
-        present paginate(user_project.hooks), with: Entities::ProjectHook
+        present paginate(user_project.hooks), with: Entities::ProjectHook, with_url_variables: false
       end
 
       desc 'Get project hook' do

@@ -1,0 +1,8 @@
+---
+name: duo_chat_callout
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138946
+rollout_issue_url:
+milestone: '16.7'
+type: development
+group: group::ai framework
+default_enabled: true

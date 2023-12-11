@@ -1,7 +1,7 @@
 <script>
 import { GlLink, GlDisclosureDropdown, GlSprintf } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { Mousetrap } from '~/lib/mousetrap';
 import { s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';

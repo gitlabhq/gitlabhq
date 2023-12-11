@@ -10,7 +10,7 @@ import { ACTION_FAILURE, UPSTREAM, DOWNSTREAM } from '~/ci/pipeline_details/grap
 import LinkedPipelineComponent from '~/ci/pipeline_details/graph/components/linked_pipeline.vue';
 import CancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
 import RetryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import mockPipeline from './linked_pipelines_mock_data';
 
 describe('Linked pipeline', () => {

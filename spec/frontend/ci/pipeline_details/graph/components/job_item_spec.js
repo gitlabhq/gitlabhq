@@ -5,7 +5,7 @@ import JobItem from '~/ci/pipeline_details/graph/components/job_item.vue';
 import axios from '~/lib/utils/axios_utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import ActionComponent from '~/ci/common/private/job_action_component.vue';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {

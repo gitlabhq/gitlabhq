@@ -12,7 +12,7 @@ import {
 import { isEmpty } from 'lodash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { __, s__, sprintf } from '~/locale';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import CommitComponent from '~/vue_shared/components/commit.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';

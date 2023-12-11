@@ -2,7 +2,7 @@
 import { GlAvatar, GlAvatarLink, GlBadge } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import CiResourceAbout from './ci_resource_about.vue';
 import CiResourceHeaderSkeletonLoader from './ci_resource_header_skeleton_loader.vue';
 

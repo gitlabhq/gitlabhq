@@ -6705,6 +6705,9 @@ msgstr ""
 msgid "AsanaService|User Personal Access Token. User must have access to the task. All comments are attributed to this user."
 msgstr ""
 
+msgid "Ask GitLab Duo"
+msgstr ""
+
 msgid "Ask a maintainer to check the import status for more details."
 msgstr ""
 
@@ -21728,12 +21731,6 @@ msgstr ""
 msgid "Geo|Reverify all"
 msgstr ""
 
-msgid "Geo|Reverify all %{projects_count} projects"
-msgstr ""
-
-msgid "Geo|Reverify project"
-msgstr ""
-
 msgid "Geo|Review replication status, and resynchronize and reverify items with the primary site."
 msgstr ""
 
@@ -21840,9 +21837,6 @@ msgid "Geo|This GitLab instance is subscribed to the %{insufficient_license} tie
 msgstr ""
 
 msgid "Geo|This will %{action} %{replicableType}. It may take some time to complete. Are you sure you want to continue?"
-msgstr ""
-
-msgid "Geo|This will reverify all projects. It may take some time to complete. Are you sure you want to continue?"
 msgstr ""
 
 msgid "Geo|Time in seconds"
@@ -47916,12 +47910,21 @@ msgstr ""
 msgid "TanukiBot|Give feedback"
 msgstr ""
 
+msgid "TanukiBot|How to use GitLab"
+msgstr ""
+
 msgid "TanukiBot|Source"
 msgid_plural "TanukiBot|Sources"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "TanukiBot|The issue, epic, or code you're viewing"
+msgstr ""
+
 msgid "TanukiBot|There was an error communicating with GitLab Duo Chat. Please try again later."
+msgstr ""
+
+msgid "TanukiBot|Use AI to answer questions about things like:"
 msgstr ""
 
 msgid "TanukiBot|What is a fork?"

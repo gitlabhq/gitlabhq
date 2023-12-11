@@ -1,5 +1,5 @@
 <script>
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 
 export default {
   components: {

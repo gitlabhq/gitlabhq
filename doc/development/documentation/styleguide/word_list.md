@@ -1862,6 +1862,19 @@ Do not use **useful**. If the user doesn't find the process to be useful, we los
 You create a **user account**. The user account has an [access level](#access-level).
 When you add a **user account** to a group or project, the user account becomes a **member**.
 
+## using
+
+Avoid **using** in most cases. It hides the subject and makes the phrase more difficult to translate.
+Use **by using**, **that use**, or re-write the sentence.
+
+For example:
+
+- Instead of: The files using storage...
+- Use: The files that use storage...
+
+- Instead of: Change directories using the command line.
+- Use: Change directories by using the command line. Or even better: To change directories, use the command line.
+
 ## utilize
 
 Do not use **utilize**. Use **use** instead. It's more succinct and easier for non-native English speakers to understand.

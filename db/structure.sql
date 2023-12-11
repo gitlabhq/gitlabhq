@@ -35361,6 +35361,8 @@ CREATE INDEX tmp_index_project_statistics_cont_registry_size ON project_statisti
 
 CREATE INDEX tmp_index_project_statistics_updated_at ON project_statistics USING btree (project_id, updated_at) WHERE (repository_size > 0);
 
+CREATE INDEX tmp_index_vulnerabilities_on_id_finding_id_empty ON vulnerabilities USING btree (id) WHERE (finding_id IS NULL);
+
 CREATE INDEX tmp_index_vulnerability_dismissal_info ON vulnerabilities USING btree (id) WHERE ((state = 2) AND ((dismissed_at IS NULL) OR (dismissed_by_id IS NULL)));
 
 CREATE INDEX tmp_index_vulnerability_overlong_title_html ON vulnerabilities USING btree (id) WHERE (length(title_html) > 800);

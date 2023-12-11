@@ -11,6 +11,7 @@ import searchProjectsWithinGroupQuery from '~/issues/list/queries/search_project
 import { DASH_SCOPE, joinPaths } from '~/lib/utils/url_utility';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import { stubComponent } from 'helpers/stub_component';
 import {
   emptySearchProjectsQueryResponse,
   emptySearchProjectsWithinGroupQueryResponse,
@@ -42,6 +43,7 @@ describe('NewResourceDropdown component', () => {
     queryResponse = searchProjectsQueryResponse,
     mountFn = shallowMount,
     propsData = {},
+    stubs = {},
   } = {}) => {
     const requestHandlers = [[query, jest.fn().mockResolvedValue(queryResponse)]];
     const apolloProvider = createMockApollo(requestHandlers);
@@ -49,6 +51,9 @@ describe('NewResourceDropdown component', () => {
     wrapper = mountFn(NewResourceDropdown, {
       apolloProvider,
       propsData,
+      stubs: {
+        ...stubs,
+      },
     });
   };
 
@@ -81,13 +86,18 @@ describe('NewResourceDropdown component', () => {
   });
 
   it('focuses on input when dropdown is shown', async () => {
-    mountComponent({ mountFn: mount });
-
-    const inputSpy = jest.spyOn(findInput().vm, 'focusInput');
+    const inputMock = jest.fn();
+    mountComponent({
+      stubs: {
+        GlSearchBoxByType: stubComponent(GlSearchBoxByType, {
+          methods: { focusInput: inputMock },
+        }),
+      },
+    });
 
     await showDropdown();
 
-    expect(inputSpy).toHaveBeenCalledTimes(1);
+    expect(inputMock).toHaveBeenCalledTimes(1);
   });
 
   describe.each`

@@ -3,7 +3,7 @@ import { GlButton, GlIcon, GlLink, GlTooltip } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__, sprintf } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { BRIDGE_KIND } from '~/ci/pipeline_details/graph/constants';
 import RetryMrFailedJobMutation from '~/ci/merge_requests/graphql/mutations/retry_mr_failed_job.mutation.graphql';

@@ -590,7 +590,7 @@
 {"name":"shellany","version":"0.0.1","platform":"ruby","checksum":"0e127a9132698766d7e752e82cdac8250b6adbd09e6c0a7fbbb6f61964fedee7"},
 {"name":"shoulda-matchers","version":"5.1.0","platform":"ruby","checksum":"a01d20589989e9653ab4a28c67d9db2b82bcf0a2496cf01d5e1a95a4aaaf5b07"},
 {"name":"sidekiq","version":"6.5.12","platform":"ruby","checksum":"b4f93b2204c42220d0b526a7b8e0c49b5f9da82c1ce1a05d2baf1e8f744c197f"},
-{"name":"sidekiq-cron","version":"1.10.1","platform":"ruby","checksum":"81397af7c425d29d8dda91e59494edc28e096344b68defe052892796987cc19e"},
+{"name":"sidekiq-cron","version":"1.12.0","platform":"ruby","checksum":"6663080a454088bd88773a0da3ae91e554b8a2e8b06cfc629529a83fd1a3096c"},
 {"name":"sigdump","version":"0.2.4","platform":"ruby","checksum":"0bf2176e55c1a262788623fe5ea57caddd6ba2abebe5e349d9d5e7c3a3010ed7"},
 {"name":"signet","version":"0.17.0","platform":"ruby","checksum":"1d2831930dc28da32e34bec68cf7ded97ee2867b208f97c500ee293829cb0004"},
 {"name":"simple_po_parser","version":"1.1.6","platform":"ruby","checksum":"122687d44d3de516a0e69e2f383a4180f5015e8c5ed5a7f2258f2b376f64cbf3"},

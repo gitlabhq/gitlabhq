@@ -5,7 +5,7 @@ import delayedJobMixin from '~/ci/mixins/delayed_job_mixin';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __, s__, sprintf } from '~/locale';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import ActionComponent from '../../../common/private/job_action_component.vue';
 import JobNameComponent from '../../../common/private/job_name_component.vue';
 import { BRIDGE_KIND, RETRY_ACTION_TITLE, SINGLE_JOB, SKIP_RETRY_MODAL_KEY } from '../constants';

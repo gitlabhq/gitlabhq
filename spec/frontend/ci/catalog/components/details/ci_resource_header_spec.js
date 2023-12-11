@@ -3,7 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CiResourceHeader from '~/ci/catalog/components/details/ci_resource_header.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CiResourceAbout from '~/ci/catalog/components/details/ci_resource_about.vue';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { catalogSharedDataMock, catalogAdditionalDetailsMock } from '../../mock';
 
 describe('CiResourceHeader', () => {

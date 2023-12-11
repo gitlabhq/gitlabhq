@@ -2,7 +2,7 @@ import { GlLoadingIcon, GlTable, GlLink, GlPagination, GlModal, GlFormCheckbox }
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import getJobArtifactsResponse from 'test_fixtures/graphql/ci/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import JobArtifactsTable from '~/ci/artifacts/components/job_artifacts_table.vue';
 import ArtifactsTableRowDetails from '~/ci/artifacts/components/artifacts_table_row_details.vue';

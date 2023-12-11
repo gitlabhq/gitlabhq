@@ -14,6 +14,8 @@ Use the Dashboard for Kubernetes to understand the status of your clusters with 
 The dashboard works with every connected Kubernetes cluster, whether you deployed them
 with CI/CD or GitOps.
 
+![Kubernetes summary UI](img/kubernetes_summary_ui.png)
+
 ## Configure a dashboard
 
 > - Filtering resources by namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403618) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `kubernetes_namespace_for_environment`. Disabled by default.

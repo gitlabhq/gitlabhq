@@ -4,7 +4,7 @@ import Visibility from 'visibilityjs';
 import { createAlert } from '~/alert';
 import Poll from '~/lib/utils/poll';
 import { __, s__, sprintf } from '~/locale';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import CommitPipelineService from '../services/commit_pipeline_service';
 
 export default {

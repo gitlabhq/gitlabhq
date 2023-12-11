@@ -319,6 +319,26 @@ on the subscriber Sidekiq worker, instead of `perform_async`.
 
 This technique is useful when publishing many events and leverage the Sidekiq deduplication.
 
+### Publishing group of events
+
+In some scenarios we publish multiple events of same type in a single business transaction.
+This puts additional load to Sidekiq by invoking a job for each event. In such cases, we can
+publish a group of events by calling `Gitlab::EventStore.publish_group`. This method accepts an
+array of events of similar type. By default the subscriber worker receives a group of max 10 events,
+but this can be configured by defining `group_size` parameter while creating the subscription.
+The number of published events are dispatched to the subscriber in batches based on the
+configured `group_size`. If the number of groups exceeds 100, we schedule each group with a delay
+of 10 seconds, to reduce the load on Sidekiq.
+
+```ruby
+store.subscribe ::Security::RefreshProjectPoliciesWorker,
+  to: ::ProjectAuthorizations::AuthorizationsChangedEvent,
+  delay: 1.minute,
+  group_size: 25
+```
+
+The `handle_event` method in the subscriber worker is called for each of the events in the group.
+
 ## Testing
 
 ### Testing the publisher

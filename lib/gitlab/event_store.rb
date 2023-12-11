@@ -17,6 +17,10 @@ module Gitlab
       instance.publish(event)
     end
 
+    def self.publish_group(events)
+      instance.publish_group(events)
+    end
+
     def self.instance
       @instance ||= Store.new { |store| configure!(store) }
     end

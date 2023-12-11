@@ -4,7 +4,7 @@ import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 import timeAgoMixin from '~/vue_shared/mixins/timeago';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import { rightSidebarViews } from '../constants';
 import IdeStatusList from './ide_status_list.vue';

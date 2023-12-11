@@ -10,7 +10,7 @@ import {
   GlFormCheckbox,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { createAlert } from '~/alert';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
