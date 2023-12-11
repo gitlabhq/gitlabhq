@@ -209,7 +209,8 @@ When you schedule a job, `AdvanceStageWorker`
 is given a project ID, a list of Redis keys, and the name of the next
 stage. The Redis keys (produced by `Gitlab::JobWaiter`) are used to check if the
 running stage has been completed or not. If the stage has not yet been
-completed `AdvanceStageWorker` reschedules itself. After a stage finishes
+completed `AdvanceStageWorker` reschedules itself. After a stage finishes,
+or if more jobs have been finished after the last invocation.
 `AdvanceStageworker` refreshes the import JID (more on this below) and
 schedule the worker of the next stage.
 
@@ -221,18 +222,19 @@ also reduces pressure on the system as a whole.
 ## Refreshing import job IDs
 
 GitLab includes a worker called `Gitlab::Import::StuckProjectImportJobsWorker`
-that periodically runs and marks project imports as failed if they have been
-running for more than 24 hours. For GitHub projects, this poses a bit of a
-problem: importing large projects could take several hours depending on how
+that periodically runs and marks project imports as failed if they have not been
+refreshed for more than 24 hours. For GitHub projects, this poses a bit of a
+problem: importing large projects could take several days depending on how
 often we hit the GitHub rate limit (more on this below), but we don't want
 `Gitlab::Import::StuckProjectImportJobsWorker` to mark our import as failed because of this.
 
 To prevent this from happening we periodically refresh the expiration time of
-the import process. This works by storing the JID of the import job in the
+the import. This works by storing the JID of the import job in the
 database, then refreshing this JID TTL at various stages throughout the import
-process. This is done by calling `ProjectImportState#refresh_jid_expiration`. By
-refreshing this TTL we can ensure our import does not get marked as failed so
-long we're still performing work.
+process. This is done either by calling `ProjectImportState#refresh_jid_expiration`,
+or by using the RefreshImportJidWorker and passing in the current worker's jid.
+By refreshing this TTL we can ensure our import does not get marked as failed so
+long as we're still performing work.
 
 ## GitHub rate limit
 

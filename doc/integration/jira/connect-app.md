@@ -97,7 +97,7 @@ and the access token is stored encrypted with `AES256-GCM` on GitLab.
 
 When configuring the GitLab for Jira Cloud app on GitLab.com, you might encounter the following issues.
 
-For self-managed GitLab, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app.md#troubleshooting).
+For self-managed GitLab, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app_troubleshooting.md).
 
 ### `Failed to link group`
 

@@ -1,8 +1,6 @@
 <script>
 import { GlDrawer } from '@gitlab/ui';
 import { MountingPortal } from 'portal-vue';
-// eslint-disable-next-line no-restricted-imports
-import { mapState, mapActions, mapGetters } from 'vuex';
 import SidebarDropdownWidget from 'ee_else_ce/sidebar/components/sidebar_dropdown_widget.vue';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
@@ -10,7 +8,6 @@ import { __, s__, sprintf } from '~/locale';
 import SidebarTimeTracker from '~/sidebar/components/time_tracking/time_tracker.vue';
 import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.vue';
 import { INCIDENT } from '~/boards/constants';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ISSUE, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import SidebarAssigneesWidget from '~/sidebar/components/assignees/sidebar_assignees_widget.vue';
 import SidebarConfidentialityWidget from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
@@ -73,9 +70,6 @@ export default {
     isGroupBoard: {
       default: false,
     },
-    isApolloBoard: {
-      default: false,
-    },
     timeTrackingLimitToHours: {
       default: false,
     },
@@ -96,9 +90,6 @@ export default {
           assignees: data.activeBoardItem.assignees?.nodes || [],
         };
       },
-      skip() {
-        return !this.isApolloBoard;
-      },
       error(error) {
         setError({
           error,
@@ -108,10 +99,8 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['activeBoardItem']),
-    ...mapState(['sidebarType']),
     activeBoardIssuable() {
-      return this.isApolloBoard ? this.activeBoardCard : this.activeBoardItem;
+      return this.activeBoardCard;
     },
     isSidebarOpen() {
       return Boolean(this.activeBoardIssuable?.id);
@@ -156,42 +145,12 @@ export default {
     },
   },
   methods: {
-    ...mapActions([
-      'toggleBoardItem',
-      'setAssignees',
-      'setActiveItemConfidential',
-      'setActiveBoardItemLabels',
-      'setActiveItemWeight',
-      'setActiveItemHealthStatus',
-    ]),
     handleClose() {
-      if (this.isApolloBoard) {
-        this.$apollo.mutate({
-          mutation: setActiveBoardItemMutation,
-          variables: {
-            boardItem: null,
-          },
-        });
-      } else {
-        this.toggleBoardItem({
-          boardItem: this.activeBoardIssuable,
-          sidebarType: this.sidebarType,
-        });
-      }
-    },
-    handleUpdateSelectedLabels({ labels, id }) {
-      this.setActiveBoardItemLabels({
-        id,
-        projectPath: this.projectPathForActiveIssue,
-        labelIds: labels.map((label) => getIdFromGraphQLId(label.id)),
-        labels,
-      });
-    },
-    handleLabelRemove(removeLabelId) {
-      this.setActiveBoardItemLabels({
-        iid: this.activeBoardIssuable.iid,
-        projectPath: this.projectPathForActiveIssue,
-        removeLabelIds: [removeLabelId],
+      this.$apollo.mutate({
+        mutation: setActiveBoardItemMutation,
+        variables: {
+          boardItem: null,
+        },
       });
     },
   },
@@ -228,7 +187,6 @@ export default {
           :initial-assignees="activeBoardIssuable.assignees"
           :allow-multiple-assignees="multipleAssigneesFeatureAvailable"
           :editable="canUpdate"
-          @assignees-updated="!isApolloBoard && setAssignees($event)"
         />
         <sidebar-dropdown-widget
           v-if="epicFeatureAvailable && !isIncidentSidebar"
@@ -290,8 +248,6 @@ export default {
           workspace-type="project"
           :issuable-type="issuableType"
           :label-create-type="labelType"
-          @onLabelRemove="!isApolloBoard && handleLabelRemove($event)"
-          @updateSelectedLabels="!isApolloBoard && handleUpdateSelectedLabels($event)"
         >
           {{ __('None') }}
         </sidebar-labels-widget>
@@ -306,20 +262,17 @@ export default {
           :iid="activeBoardIssuable.iid"
           :full-path="projectPathForActiveIssue"
           :issuable-type="issuableType"
-          @weightUpdated="!isApolloBoard && setActiveItemWeight($event)"
         />
         <sidebar-health-status-widget
           v-if="healthStatusFeatureAvailable"
           :iid="activeBoardIssuable.iid"
           :full-path="projectPathForActiveIssue"
           :issuable-type="issuableType"
-          @statusUpdated="!isApolloBoard && setActiveItemHealthStatus($event)"
         />
         <sidebar-confidentiality-widget
           :iid="activeBoardIssuable.iid"
           :full-path="projectPathForActiveIssue"
           :issuable-type="issuableType"
-          @confidentialityUpdated="!isApolloBoard && setActiveItemConfidential($event)"
         />
         <sidebar-subscriptions-widget
           :iid="activeBoardIssuable.iid"

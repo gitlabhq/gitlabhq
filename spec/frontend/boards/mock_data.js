@@ -332,15 +332,17 @@ export const mockIssue = {
   confidential: false,
   referencePath: `${mockIssueFullPath}#27`,
   path: `/${mockIssueFullPath}/-/issues/27`,
-  assignees,
-  labels: [
-    {
-      id: 1,
-      title: 'test',
-      color: '#F0AD4E',
-      description: 'testing',
-    },
-  ],
+  assignees: { nodes: assignees },
+  labels: {
+    nodes: [
+      {
+        id: 1,
+        title: 'test',
+        color: '#F0AD4E',
+        description: 'testing',
+      },
+    ],
+  },
   epic: {
     id: 'gid://gitlab/Epic/41',
   },
@@ -412,6 +414,7 @@ export const mockActiveIssue = {
 };
 
 export const mockIssue2 = {
+  ...rawIssue,
   id: 'gid://gitlab/Issue/437',
   iid: 28,
   title: 'Issue 2',
@@ -421,14 +424,13 @@ export const mockIssue2 = {
   confidential: false,
   referencePath: 'gitlab-org/test-subgroup/gitlab-test#28',
   path: '/gitlab-org/test-subgroup/gitlab-test/-/issues/28',
-  assignees,
-  labels,
   epic: {
     id: 'gid://gitlab/Epic/40',
   },
 };
 
 export const mockIssue3 = {
+  ...rawIssue,
   id: 'gid://gitlab/Issue/438',
   iid: 29,
   title: 'Issue 3',
@@ -437,12 +439,11 @@ export const mockIssue3 = {
   timeEstimate: 0,
   confidential: false,
   path: '/gitlab-org/gitlab-test/-/issues/28',
-  assignees,
-  labels,
   epic: null,
 };
 
 export const mockIssue4 = {
+  ...rawIssue,
   id: 'gid://gitlab/Issue/439',
   iid: 30,
   title: 'Issue 4',
@@ -451,12 +452,11 @@ export const mockIssue4 = {
   timeEstimate: 0,
   confidential: false,
   path: '/gitlab-org/gitlab-test/-/issues/28',
-  assignees,
-  labels,
   epic: null,
 };
 
 export const mockIssue5 = {
+  ...rawIssue,
   id: 'gid://gitlab/Issue/440',
   iid: 40,
   title: 'Issue 5',
@@ -465,12 +465,11 @@ export const mockIssue5 = {
   timeEstimate: 0,
   confidential: false,
   path: '/gitlab-org/gitlab-test/-/issues/40',
-  assignees,
-  labels,
   epic: null,
 };
 
 export const mockIssue6 = {
+  ...rawIssue,
   id: 'gid://gitlab/Issue/441',
   iid: 41,
   title: 'Issue  6',
@@ -479,12 +478,11 @@ export const mockIssue6 = {
   timeEstimate: 0,
   confidential: false,
   path: '/gitlab-org/gitlab-test/-/issues/41',
-  assignees,
-  labels,
   epic: null,
 };
 
 export const mockIssue7 = {
+  ...rawIssue,
   id: 'gid://gitlab/Issue/442',
   iid: 42,
   title: 'Issue  6',
@@ -493,8 +491,6 @@ export const mockIssue7 = {
   timeEstimate: 0,
   confidential: false,
   path: '/gitlab-org/gitlab-test/-/issues/42',
-  assignees,
-  labels,
   epic: null,
 };
 
@@ -1080,6 +1076,38 @@ export const mockGroupProjectsResponse = (projects = mockProjects) => ({
           __typename: 'PageInfo',
         },
         __typename: 'ProjectConnection',
+      },
+      __typename: 'Group',
+    },
+  },
+});
+
+export const mockGroupIssuesResponse = (
+  listId = 'gid://gitlab/List/1',
+  rawIssues = [rawIssue],
+) => ({
+  data: {
+    group: {
+      id: 'gid://gitlab/Group/1',
+      board: {
+        __typename: 'Board',
+        id: 'gid://gitlab/Board/1',
+        lists: {
+          nodes: [
+            {
+              id: listId,
+              listType: 'backlog',
+              issues: {
+                nodes: rawIssues,
+                pageInfo: {
+                  endCursor: null,
+                  hasNextPage: true,
+                },
+              },
+              __typename: 'BoardList',
+            },
+          ],
+        },
       },
       __typename: 'Group',
     },

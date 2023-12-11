@@ -6,7 +6,7 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import Vuex from 'vuex';
 import { TEST_HOST } from 'helpers/test_constants';
 import createEventHub from '~/helpers/event_hub_factory';
-
+import * as urlUtility from '~/lib/utils/url_utility';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import DiscussionFilter from '~/notes/components/discussion_filter.vue';
@@ -40,7 +40,7 @@ describe('DiscussionFilter component', () => {
 
   const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
 
-  const mountComponent = () => {
+  const mountComponent = ({ propsData = {} } = {}) => {
     const discussions = [
       {
         ...discussionMock,
@@ -63,11 +63,12 @@ describe('DiscussionFilter component', () => {
 
     store.state.discussions = discussions;
 
-    return mount(DiscussionFilter, {
+    wrapper = mount(DiscussionFilter, {
       store,
       propsData: {
         filters: discussionFiltersMock,
         selectedValue: DISCUSSION_FILTERS_DEFAULT_VALUE,
+        ...propsData,
       },
     });
   };
@@ -88,7 +89,7 @@ describe('DiscussionFilter component', () => {
 
   describe('default', () => {
     beforeEach(() => {
-      wrapper = mountComponent();
+      mountComponent();
       jest.spyOn(store, 'dispatch').mockImplementation();
     });
 
@@ -105,7 +106,7 @@ describe('DiscussionFilter component', () => {
 
   describe('when asc', () => {
     beforeEach(() => {
-      wrapper = mountComponent();
+      mountComponent();
       jest.spyOn(store, 'dispatch').mockImplementation();
     });
 
@@ -125,7 +126,7 @@ describe('DiscussionFilter component', () => {
 
   describe('when desc', () => {
     beforeEach(() => {
-      wrapper = mountComponent();
+      mountComponent();
       store.state.discussionSortOrder = DESC;
       jest.spyOn(store, 'dispatch').mockImplementation();
     });
@@ -150,7 +151,7 @@ describe('DiscussionFilter component', () => {
 
   describe('discussion filter functionality', () => {
     beforeEach(() => {
-      wrapper = mountComponent();
+      mountComponent();
     });
 
     it('renders the all filters', () => {
@@ -215,7 +216,7 @@ describe('DiscussionFilter component', () => {
         currentTab: 'show',
       };
 
-      wrapper = mountComponent();
+      mountComponent();
     });
 
     afterEach(() => {
@@ -239,7 +240,7 @@ describe('DiscussionFilter component', () => {
 
     it('does not update the filter when the current filter is "Show all activity"', async () => {
       window.location.hash = `note_${discussionMock.notes[0].id}`;
-      wrapper = mountComponent();
+      mountComponent();
 
       await nextTick();
       const filtered = findGlDisclosureDropdownItems().filter((el) => el.classes('is-active'));
@@ -250,7 +251,7 @@ describe('DiscussionFilter component', () => {
 
     it('only updates filter when the URL links to a note', async () => {
       window.location.hash = `testing123`;
-      wrapper = mountComponent();
+      mountComponent();
 
       await nextTick();
       const filtered = findGlDisclosureDropdownItems().filter((el) => el.classes('is-active'));
@@ -260,12 +261,32 @@ describe('DiscussionFilter component', () => {
     });
 
     it('does not fetch discussions when there is no hash', async () => {
-      window.location.hash = '';
-      const selectFilterSpy = jest.spyOn(wrapper.vm, 'selectFilter').mockImplementation(() => {});
-      wrapper = mountComponent();
+      mountComponent();
+      const dispatchSpy = jest.spyOn(store, 'dispatch');
 
       await nextTick();
-      expect(selectFilterSpy).not.toHaveBeenCalled();
+      expect(dispatchSpy).not.toHaveBeenCalled();
+    });
+
+    describe('selected value is not default state', () => {
+      beforeEach(() => {
+        mountComponent({
+          propsData: { selectedValue: 2 },
+        });
+      });
+      it('fetch discussions when there is hash', async () => {
+        jest.spyOn(urlUtility, 'getLocationHash').mockReturnValueOnce('note_123');
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+
+        window.dispatchEvent(new Event('hashchange'));
+
+        await nextTick();
+        expect(dispatchSpy).toHaveBeenCalledWith('filterDiscussion', {
+          filter: 0,
+          path: 'http://test.host/example',
+          persistFilter: false,
+        });
+      });
     });
   });
 });

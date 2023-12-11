@@ -1,8 +1,6 @@
 <script>
 import { GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapState } from 'vuex';
 import { STATUS_CLOSED } from '~/issues/constants';
 import { sprintf, __, s__ } from '~/locale';
 import { defaultSortableOptions } from '~/sortable/constants';
@@ -57,7 +55,6 @@ export default {
     'fullPath',
     'boardType',
     'issuableType',
-    'isApolloBoard',
   ],
   props: {
     list: {
@@ -67,11 +64,6 @@ export default {
     boardId: {
       type: String,
       required: true,
-    },
-    boardItems: {
-      type: Array,
-      required: false, // This is temporary while we remove :apollo_board FF
-      default: () => [],
     },
     filterParams: {
       type: Object,
@@ -116,7 +108,7 @@ export default {
         };
       },
       skip() {
-        return !this.isApolloBoard || this.list.collapsed;
+        return this.list.collapsed;
       },
       update(data) {
         return data[this.boardType].board.lists.nodes[0];
@@ -158,11 +150,8 @@ export default {
     },
   },
   computed: {
-    ...mapState(['pageInfoByListId', 'listsFlags', 'isUpdateIssueOrderInProgress']),
     boardListItems() {
-      return this.isApolloBoard
-        ? this.currentList?.[`${this.issuableType}s`].nodes || []
-        : this.boardItems;
+      return this.currentList?.[`${this.issuableType}s`].nodes || [];
     },
     listQueryVariables() {
       return {
@@ -191,17 +180,10 @@ export default {
       return this.list.maxIssueCount > 0 && this.listItemsCount > this.list.maxIssueCount;
     },
     hasNextPage() {
-      return this.isApolloBoard
-        ? this.currentList?.[`${this.issuableType}s`].pageInfo?.hasNextPage
-        : this.pageInfoByListId[this.list.id]?.hasNextPage;
+      return this.currentList?.[`${this.issuableType}s`].pageInfo?.hasNextPage;
     },
     loading() {
-      return this.isApolloBoard
-        ? this.$apollo.queries.currentList.loading && !this.isLoadingMore
-        : this.listsFlags[this.list.id]?.isLoading;
-    },
-    loadingMore() {
-      return this.isApolloBoard ? this.isLoadingMore : this.listsFlags[this.list.id]?.isLoadingMore;
+      return this.$apollo.queries.currentList.loading && !this.isLoadingMore;
     },
     epicCreateFormVisible() {
       return this.isEpicBoard && this.list.listType !== STATUS_CLOSED && this.showEpicForm;
@@ -225,10 +207,7 @@ export default {
       return !this.disabled;
     },
     treeRootWrapper() {
-      return this.canMoveIssue &&
-        (!this.listsFlags[this.list.id]?.addItemToListInProgress || this.addItemToListInProgress)
-        ? Draggable
-        : 'ul';
+      return this.canMoveIssue && !this.addItemToListInProgress ? Draggable : 'ul';
     },
     treeRootOptions() {
       const options = {
@@ -246,9 +225,7 @@ export default {
       return this.canMoveIssue ? options : {};
     },
     disableScrollingWhenMutationInProgress() {
-      return (
-        this.hasNextPage && (this.isUpdateIssueOrderInProgress || this.updateIssueOrderInProgress)
-      );
+      return this.hasNextPage && this.updateIssueOrderInProgress;
     },
     showMoveToPosition() {
       return !this.disabled && this.list.listType !== ListType.closed;
@@ -281,7 +258,6 @@ export default {
     eventHub.$off(`scroll-board-list-${this.list.id}`, this.scrollToTop);
   },
   methods: {
-    ...mapActions(['fetchItemsForList', 'moveItem']),
     listHeight() {
       return this.listRef?.getBoundingClientRect()?.height || 0;
     },
@@ -295,19 +271,15 @@ export default {
       this.listRef.scrollTop = 0;
     },
     async loadNextPage() {
-      if (this.isApolloBoard) {
-        this.isLoadingMore = true;
-        await this.$apollo.queries.currentList.fetchMore({
-          variables: {
-            ...this.listQueryVariables,
-            id: this.list.id,
-            after: this.currentList?.[`${this.issuableType}s`].pageInfo.endCursor,
-          },
-        });
-        this.isLoadingMore = false;
-      } else {
-        this.fetchItemsForList({ listId: this.list.id, fetchNext: true });
-      }
+      this.isLoadingMore = true;
+      await this.$apollo.queries.currentList.fetchMore({
+        variables: {
+          ...this.listQueryVariables,
+          id: this.list.id,
+          after: this.currentList?.[`${this.issuableType}s`].pageInfo.endCursor,
+        },
+      });
+      this.isLoadingMore = false;
     },
     toggleForm() {
       if (this.isEpicBoard) {
@@ -321,7 +293,7 @@ export default {
       return index !== 0 && index % 6 === 0;
     },
     onReachingListBottom() {
-      if (!this.loadingMore && this.hasNextPage) {
+      if (!this.isLoadingMore && this.hasNextPage) {
         this.showCount = true;
         this.loadNextPage();
       }
@@ -344,7 +316,7 @@ export default {
       from,
       to,
       item: {
-        dataset: { draggableItemType, itemId, itemIid, itemPath },
+        dataset: { draggableItemType, itemId, itemIid },
       },
     }) {
       if (draggableItemType !== DraggableItemTypes.card) {
@@ -388,32 +360,20 @@ export default {
         }
       }
 
-      if (this.isApolloBoard) {
-        this.updateIssueOrderInProgress = true;
-        await this.moveBoardItem(
-          {
-            itemId,
-            iid: itemIid,
-            fromListId: from.dataset.listId,
-            toListId: to.dataset.listId,
-            moveBeforeId,
-            moveAfterId,
-          },
-          newIndex,
-        ).finally(() => {
-          this.updateIssueOrderInProgress = false;
-        });
-      } else {
-        this.moveItem({
+      this.updateIssueOrderInProgress = true;
+      await this.moveBoardItem(
+        {
           itemId,
-          itemIid,
-          itemPath,
+          iid: itemIid,
           fromListId: from.dataset.listId,
           toListId: to.dataset.listId,
           moveBeforeId,
           moveAfterId,
-        });
-      }
+        },
+        newIndex,
+      ).finally(() => {
+        this.updateIssueOrderInProgress = false;
+      });
     },
     isItemInTheList(itemIid) {
       const items = this.toList?.[`${this.issuableType}s`]?.nodes || [];
@@ -719,7 +679,7 @@ export default {
           data-issue-id="-1"
         >
           <gl-loading-icon
-            v-if="loadingMore"
+            v-if="isLoadingMore"
             size="sm"
             :label="$options.i18n.loadingMoreBoardItems"
           />

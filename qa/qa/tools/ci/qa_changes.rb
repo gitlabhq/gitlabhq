@@ -126,6 +126,7 @@ module QA
           return unless devops_stage
 
           spec_dirs = stage_specs(devops_stage)
+          return if spec_dirs.empty?
 
           grp_name = group_name_from_mr_labels
           return spec_dirs if grp_name.nil?
@@ -155,7 +156,7 @@ module QA
         # @param [Array<String>] devops_stages
         # @return [Array]
         def stage_specs(*devops_stages)
-          Dir.glob("qa/specs/**/*/").select { |dir| dir =~ %r{\d+_(#{devops_stages.join('|')})/$} }
+          Dir.glob("qa/specs/features/**/*/").select { |dir| dir =~ %r{\d+_(#{devops_stages.join('|')})/$} }
         end
       end
     end

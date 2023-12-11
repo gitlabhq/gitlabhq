@@ -146,6 +146,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_custom_emoji
     enable :read_counts
     enable :read_issue
+    enable :read_namespace
   end
 
   rule { achievements_enabled }.policy do
@@ -172,8 +173,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   end
 
   rule { has_access }.enable :read_namespace_via_membership
-
-  rule { can?(:read_namespace_via_membership) }.enable :read_namespace
 
   rule { developer }.policy do
     enable :admin_metrics_dashboard_annotation

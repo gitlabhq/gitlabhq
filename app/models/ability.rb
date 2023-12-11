@@ -78,15 +78,6 @@ class Ability
 
       policy = policy_for(user, subject, **opts.slice(:cache))
 
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/421150#note_1638311666
-      if ability.to_sym == :read_namespace && Feature.enabled?(:log_read_namespace_usages, Feature.current_request)
-        Gitlab::AppLogger.info(
-          message: 'Ability is in use',
-          ability: ability.to_sym,
-          caller_locations: caller_locations(1, 5).map(&:to_s)
-        )
-      end
-
       before_check(policy, ability.to_sym, user, subject, opts)
 
       case opts[:scope]

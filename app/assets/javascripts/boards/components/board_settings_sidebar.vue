@@ -2,10 +2,7 @@
 import produce from 'immer';
 import { GlButton, GlDrawer, GlLabel, GlModal, GlModalDirective } from '@gitlab/ui';
 import { MountingPortal } from 'portal-vue';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapState, mapGetters } from 'vuex';
 import {
-  LIST,
   ListType,
   ListTypeTitles,
   listsQuery,
@@ -13,7 +10,6 @@ import {
 } from 'ee_else_ce/boards/constants';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { __, s__ } from '~/locale';
-import eventHub from '~/sidebar/event_hub';
 import Tracking from '~/tracking';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { setError } from '../graphql/cache_updates';
@@ -40,14 +36,7 @@ export default {
     GlModal: GlModalDirective,
   },
   mixins: [glFeatureFlagMixin(), Tracking.mixin()],
-  inject: [
-    'boardType',
-    'canAdminList',
-    'issuableType',
-    'scopedLabelsAvailable',
-    'isIssueBoard',
-    'isApolloBoard',
-  ],
+  inject: ['boardType', 'canAdminList', 'issuableType', 'scopedLabelsAvailable', 'isIssueBoard'],
   inheritAttrs: false,
   props: {
     listId: {
@@ -61,7 +50,7 @@ export default {
     list: {
       type: Object,
       required: false,
-      default: () => null,
+      default: () => {},
     },
     queryVariables: {
       type: Object,
@@ -75,16 +64,14 @@ export default {
   },
   modalId: 'board-settings-sidebar-modal',
   computed: {
-    ...mapGetters(['isSidebarOpen']),
-    ...mapState(['activeId', 'sidebarType', 'boardLists']),
     isWipLimitsOn() {
       return this.glFeatures.wipLimits && this.isIssueBoard;
     },
     activeListId() {
-      return this.isApolloBoard ? this.listId : this.activeId;
+      return this.listId;
     },
     activeList() {
-      return (this.isApolloBoard ? this.list : this.boardLists[this.activeId]) || {};
+      return this.list;
     },
     activeListLabel() {
       return this.activeList.label;
@@ -96,20 +83,10 @@ export default {
       return ListTypeTitles[ListType.label];
     },
     showSidebar() {
-      if (this.isApolloBoard) {
-        return Boolean(this.listId);
-      }
-      return this.sidebarType === LIST && this.isSidebarOpen;
+      return Boolean(this.listId);
     },
   },
-  created() {
-    eventHub.$on('sidebar.closeAll', this.unsetActiveListId);
-  },
-  beforeDestroy() {
-    eventHub.$off('sidebar.closeAll', this.unsetActiveListId);
-  },
   methods: {
-    ...mapActions(['unsetActiveId', 'removeList']),
     handleModalPrimary() {
       this.deleteBoardList();
     },
@@ -118,19 +95,11 @@ export default {
     },
     deleteBoardList() {
       this.track('click_button', { label: 'remove_list' });
-      if (this.isApolloBoard) {
-        this.deleteList(this.activeListId);
-      } else {
-        this.removeList(this.activeId);
-      }
+      this.deleteList(this.activeListId);
       this.unsetActiveListId();
     },
     unsetActiveListId() {
-      if (this.isApolloBoard) {
-        this.$emit('unsetActiveId');
-      } else {
-        this.unsetActiveId();
-      }
+      this.$emit('unsetActiveId');
     },
     async deleteList(listId) {
       try {

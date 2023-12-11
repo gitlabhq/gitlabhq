@@ -1,11 +1,11 @@
 - starrer = local_assigns.fetch(:starrer)
 
 .col-lg-3.col-md-4.col-sm-12
-  = render Pajamas::CardComponent.new(body_options: { class: 'gl-display-flex' }) do |c|
+  = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-4' }, body_options: { class: 'gl-display-flex' }) do |c|
     - c.with_body do
       = render Pajamas::AvatarComponent.new(starrer.user, size: 48, alt: "", class: 'gl-mr-3')
 
-      .user-info
+      .user-info.gl-overflow-hidden
         .block-truncated
           = link_to starrer.user.name, user_path(starrer.user), class: 'user js-user-link', data: { user_id: starrer.user.id }
 
@@ -15,5 +15,5 @@
           - if starrer.user == current_user
             = gl_badge_tag _("It's you"), variant: :success, size: :sm, class: 'gl-ml-2'
 
-        .block-truncated
+        .block-truncated.gl-text-secondary.gl-font-sm
           = time_ago_with_tooltip(starrer.starred_since)

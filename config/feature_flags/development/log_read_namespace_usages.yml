@@ -1,8 +1,0 @@
----
-name: log_read_namespace_usages
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136617
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/421150
-milestone: '16.7'
-type: development
-group: group::tenant scale
-default_enabled: false

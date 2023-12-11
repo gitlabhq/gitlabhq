@@ -7,8 +7,6 @@ import {
   GlCollapsibleListbox,
   GlIcon,
 } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters, mapState } from 'vuex';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import BoardAddNewColumnForm from '~/boards/components/board_add_new_column_form.vue';
 import { __, s__ } from '~/locale';
@@ -31,7 +29,7 @@ export default {
   directives: {
     GlTooltip,
   },
-  inject: ['scopedLabelsAvailable', 'issuableType', 'fullPath', 'boardType', 'isApolloBoard'],
+  inject: ['scopedLabelsAvailable', 'issuableType', 'fullPath', 'boardType'],
   props: {
     listQueryVariables: {
       type: Object,
@@ -51,12 +49,12 @@ export default {
       selectedId: null,
       selectedLabel: null,
       selectedIdValid: true,
-      labelsApollo: [],
+      labels: [],
       searchTerm: '',
     };
   },
   apollo: {
-    labelsApollo: {
+    labels: {
       query: boardLabelsQuery,
       variables() {
         return {
@@ -69,9 +67,6 @@ export default {
       update(data) {
         return data[this.boardType].labels.nodes;
       },
-      skip() {
-        return !this.isApolloBoard;
-      },
       error(error) {
         setError({
           error,
@@ -81,36 +76,22 @@ export default {
     },
   },
   computed: {
-    ...mapState(['labels', 'labelsLoading']),
-    ...mapGetters(['getListByLabelId']),
-    labelsToUse() {
-      return this.isApolloBoard ? this.labelsApollo : this.labels;
-    },
     isLabelsLoading() {
-      return this.isApolloBoard ? this.$apollo.queries.labelsApollo.loading : this.labelsLoading;
+      return this.$apollo.queries.labels.loading;
     },
     columnForSelected() {
-      if (this.isApolloBoard) {
-        return getListByTypeId(this.lists, ListType.label, this.selectedId);
-      }
-      return this.getListByLabelId(this.selectedId);
+      return getListByTypeId(this.lists, ListType.label, this.selectedId);
     },
     items() {
-      return (this.labelsToUse || []).map((i) => ({
+      return (this.labels || []).map((i) => ({
         ...i,
         text: i.title,
         value: i.id,
       }));
     },
   },
-  created() {
-    if (!this.isApolloBoard) {
-      this.filterItems();
-    }
-  },
   methods: {
-    ...mapActions(['createList', 'fetchLabels', 'highlightList']),
-    async createListApollo({ labelId }) {
+    async createList({ labelId }) {
       try {
         await this.$apollo.mutate({
           mutation: createListMutations[this.issuableType].mutation,
@@ -156,38 +137,23 @@ export default {
 
       if (this.columnForSelected) {
         const listId = this.columnForSelected.id;
-        if (this.isApolloBoard) {
-          this.$emit('highlight-list', listId);
-        } else {
-          this.highlightList(listId);
-        }
+        this.$emit('highlight-list', listId);
         return;
       }
 
-      if (this.isApolloBoard) {
-        this.createListApollo({ labelId: this.selectedId });
-      } else {
-        this.createList({ labelId: this.selectedId });
-      }
+      this.createList({ labelId: this.selectedId });
 
       this.$emit('setAddColumnFormVisibility', false);
     },
 
-    filterItems(searchTerm) {
-      this.fetchLabels(searchTerm);
-    },
-
     onSearch: debounce(function debouncedSearch(searchTerm) {
       this.searchTerm = searchTerm;
-      if (!this.isApolloBoard) {
-        this.filterItems(searchTerm);
-      }
     }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
 
     setSelectedItem(selectedId) {
       this.selectedId = selectedId;
 
-      const label = this.labelsToUse.find(({ id }) => id === selectedId);
+      const label = this.labels.find(({ id }) => id === selectedId);
       if (!selectedId || !label) {
         this.selectedLabel = null;
       } else {

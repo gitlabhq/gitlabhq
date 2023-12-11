@@ -8,8 +8,9 @@ import createComponent from 'jest/boards/board_list_helper';
 import BoardCard from '~/boards/components/board_card.vue';
 import eventHub from '~/boards/eventhub';
 import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
+import listIssuesQuery from '~/boards/graphql/lists_issues.query.graphql';
 
-import { mockIssues, mockList, mockIssuesMore } from './mock_data';
+import { mockIssues, mockList, mockIssuesMore, mockGroupIssuesResponse } from './mock_data';
 
 describe('Board list component', () => {
   let wrapper;
@@ -41,8 +42,13 @@ describe('Board list component', () => {
   useFakeRequestAnimationFrame();
 
   describe('When Expanded', () => {
-    beforeEach(() => {
-      wrapper = createComponent({ issuesCount: 1 });
+    beforeEach(async () => {
+      wrapper = createComponent({
+        apolloQueryHandlers: [
+          [listIssuesQuery, jest.fn().mockResolvedValue(mockGroupIssuesResponse())],
+        ],
+      });
+      await waitForPromises();
     });
 
     it('renders component', () => {
@@ -62,7 +68,7 @@ describe('Board list component', () => {
     });
 
     it('sets data attribute with issue id', () => {
-      expect(wrapper.find('.board-card').attributes('data-item-id')).toBe('1');
+      expect(wrapper.find('.board-card').attributes('data-item-id')).toBe('gid://gitlab/Issue/436');
     });
 
     it('shows new issue form after eventhub event', async () => {
@@ -107,19 +113,18 @@ describe('Board list component', () => {
 
   describe('load more issues', () => {
     describe('when loading is not in progress', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         wrapper = createComponent({
-          listProps: {
-            id: 'gid://gitlab/List/1',
-          },
-          componentProps: {
-            boardItems: mockIssuesMore,
-          },
-          actions: {
-            fetchItemsForList: jest.fn(),
-          },
-          state: { listsFlags: { 'gid://gitlab/List/1': { isLoadingMore: false } } },
+          apolloQueryHandlers: [
+            [
+              listIssuesQuery,
+              jest
+                .fn()
+                .mockResolvedValue(mockGroupIssuesResponse('gid://gitlab/List/1', mockIssuesMore)),
+            ],
+          ],
         });
+        await waitForPromises();
       });
 
       it('has intersection observer when the number of board list items are more than 5', () => {

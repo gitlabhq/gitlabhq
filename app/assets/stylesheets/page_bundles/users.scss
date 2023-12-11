@@ -1,48 +1,7 @@
 @import 'mixins_and_variables_and_functions';
 
-.user-search-form {
-  position: relative;
-
-  @include media-breakpoint-up(sm) {
-    float: right;
-  }
-
-  .dropdown {
-    width: 100%;
-    margin-top: 5px;
-
-    .dropdown-menu-toggle {
-      vertical-align: middle;
-      width: 100%;
-    }
-
-    @include media-breakpoint-up(sm) {
-      margin-top: 0;
-      width: 155px;
-    }
-  }
-
-  .form-control {
-    padding-right: 35px;
-  }
-
-  .search-control-wrap,
-  .form-control {
-    width: 100%;
-
-    @include media-breakpoint-up(sm) {
-      width: 250px;
-    }
-  }
-}
-
 .user-search-btn {
-  position: absolute;
-  right: 4px;
-  top: 0;
-  height: 35px;
-  padding-left: 10px;
-  padding-right: 10px;
+  top: 1px;
   color: $gray-darkest;
   background: transparent;
   border: 0;

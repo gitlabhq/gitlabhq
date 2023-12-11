@@ -1,8 +1,6 @@
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
 import BoardsSelector from '~/boards/components/boards_selector.vue';
@@ -29,23 +27,10 @@ import {
 const throttleDuration = 1;
 
 Vue.use(VueApollo);
-Vue.use(Vuex);
 
 describe('BoardsSelector', () => {
   let wrapper;
   let fakeApollo;
-  let store;
-
-  const createStore = () => {
-    store = new Vuex.Store({
-      actions: {
-        setBoardConfig: jest.fn(),
-      },
-      state: {
-        board: mockBoard,
-      },
-    });
-  };
 
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
 
@@ -91,10 +76,10 @@ describe('BoardsSelector', () => {
     ]);
 
     wrapper = shallowMountExtended(BoardsSelector, {
-      store,
       apolloProvider: fakeApollo,
       propsData: {
         throttleDuration,
+        board: mockBoard,
         ...props,
       },
       attachTo: document.body,
@@ -109,7 +94,7 @@ describe('BoardsSelector', () => {
         boardType: isGroupBoard ? 'group' : 'project',
         isGroupBoard,
         isProjectBoard,
-        isApolloBoard: false,
+        // isApolloBoard: false,
         ...provide,
       },
     });
@@ -125,7 +110,6 @@ describe('BoardsSelector', () => {
 
   describe('template', () => {
     beforeEach(() => {
-      createStore();
       createComponent({ isProjectBoard: true });
     });
 
@@ -137,9 +121,6 @@ describe('BoardsSelector', () => {
 
       it('shows loading spinner', async () => {
         createComponent({
-          provide: {
-            isApolloBoard: true,
-          },
           props: {
             isCurrentBoardLoading: true,
           },
@@ -243,7 +224,6 @@ describe('BoardsSelector', () => {
       ${WORKSPACE_GROUP}   | ${groupBoardsQueryHandlerSuccess}   | ${projectBoardsQueryHandlerSuccess}
       ${WORKSPACE_PROJECT} | ${projectBoardsQueryHandlerSuccess} | ${groupBoardsQueryHandlerSuccess}
     `('fetches $boardType boards', async ({ boardType, queryHandler, notCalledHandler }) => {
-      createStore();
       createComponent({
         isGroupBoard: boardType === WORKSPACE_GROUP,
         isProjectBoard: boardType === WORKSPACE_PROJECT,
@@ -265,7 +245,6 @@ describe('BoardsSelector', () => {
       ${WORKSPACE_GROUP}
       ${WORKSPACE_PROJECT}
     `('sets error when fetching $boardType boards fails', async ({ boardType }) => {
-      createStore();
       createComponent({
         isGroupBoard: boardType === WORKSPACE_GROUP,
         isProjectBoard: boardType === WORKSPACE_PROJECT,
@@ -287,7 +266,6 @@ describe('BoardsSelector', () => {
   describe('dropdown visibility', () => {
     describe('when multipleIssueBoardsAvailable is enabled', () => {
       it('show dropdown', () => {
-        createStore();
         createComponent({ provide: { multipleIssueBoardsAvailable: true } });
         expect(findDropdown().exists()).toBe(true);
         expect(findDropdown().props('toggleText')).toBe('Select board');
@@ -296,7 +274,6 @@ describe('BoardsSelector', () => {
 
     describe('when multipleIssueBoardsAvailable is disabled but it hasMissingBoards', () => {
       it('show dropdown', () => {
-        createStore();
         createComponent({
           provide: { multipleIssueBoardsAvailable: false, hasMissingBoards: true },
         });
@@ -307,7 +284,6 @@ describe('BoardsSelector', () => {
 
     describe("when multipleIssueBoardsAvailable is disabled and it dosn't hasMissingBoards", () => {
       it('hide dropdown', () => {
-        createStore();
         createComponent({
           provide: { multipleIssueBoardsAvailable: false, hasMissingBoards: false },
         });
@@ -320,7 +296,6 @@ describe('BoardsSelector', () => {
     it('displays loading state of dropdown while current board is being fetched', () => {
       createComponent({
         props: { isCurrentBoardLoading: true },
-        provide: { isApolloBoard: true },
       });
       expect(findDropdown().props('loading')).toBe(true);
       expect(findDropdown().props('toggleText')).toBe('Select board');

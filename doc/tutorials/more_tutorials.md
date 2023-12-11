@@ -11,7 +11,7 @@ If you're learning about GitLab, to find more tutorial content:
 - Find learning tracks and certification options at [Level Up](https://levelup.gitlab.com/).
   GitLab learning platform login required (email and password for non-GitLab team members).
 
-- Find recent tutorials on the GitLab blog by [searching by the `tutorial` tag](https://about.gitlab.com/blog/tags.html#tutorial).
+- Find recent tutorials on the [GitLab blog](https://about.gitlab.com/blog/).
 
 - Browse the **GitLab Snapshots** [playlist on YouTube](https://www.youtube.com/playlist?list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
   to find video tutorials.

@@ -4299,6 +4299,9 @@ msgstr ""
 msgid "Admin|CI/CD"
 msgstr ""
 
+msgid "Admin|Code Suggestions"
+msgstr ""
+
 msgid "Admin|Credentials"
 msgstr ""
 
@@ -11866,6 +11869,9 @@ msgid "Code Review"
 msgstr ""
 
 msgid "Code Review Analytics displays a table of open merge requests considered to be in code review. There are currently no merge requests in review for this project and/or filters."
+msgstr ""
+
+msgid "Code Suggestions"
 msgstr ""
 
 msgid "Code Suggestions add-on status"
@@ -27045,6 +27051,9 @@ msgid "JiraConnect|Jira Connect Application ID"
 msgstr ""
 
 msgid "JiraConnect|Jira Connect Proxy URL"
+msgstr ""
+
+msgid "JiraConnect|Jira user requirements"
 msgstr ""
 
 msgid "JiraConnect|Link groups"

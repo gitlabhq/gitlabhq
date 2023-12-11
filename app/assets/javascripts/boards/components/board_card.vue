@@ -1,6 +1,4 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapState } from 'vuex';
 import Tracking from '~/tracking';
 import setSelectedBoardItemsMutation from '~/boards/graphql/client/set_selected_board_items.mutation.graphql';
 import unsetSelectedBoardItemsMutation from '~/boards/graphql/client/unset_selected_board_items.mutation.graphql';
@@ -15,7 +13,7 @@ export default {
     BoardCardInner,
   },
   mixins: [Tracking.mixin()],
-  inject: ['disabled', 'isIssueBoard', 'isApolloBoard'],
+  inject: ['disabled', 'isIssueBoard'],
   props: {
     list: {
       type: Object,
@@ -51,18 +49,14 @@ export default {
           isIssue: this.isIssueBoard,
         };
       },
-      skip() {
-        return !this.isApolloBoard;
-      },
     },
     selectedBoardItems: {
       query: selectedBoardItemsQuery,
     },
   },
   computed: {
-    ...mapState(['activeId']),
     activeItemId() {
-      return this.isApolloBoard ? this.activeBoardItem?.id : this.activeId;
+      return this.activeBoardItem?.id;
     },
     isActive() {
       return this.item.id === this.activeItemId;
@@ -86,17 +80,14 @@ export default {
       return this.isColorful ? 'gl-pl-4 gl-border-l-solid gl-border-4' : '';
     },
     formattedItem() {
-      return this.isApolloBoard
-        ? {
-            ...this.item,
-            assignees: this.item.assignees?.nodes || [],
-            labels: this.item.labels?.nodes || [],
-          }
-        : this.item;
+      return {
+        ...this.item,
+        assignees: this.item.assignees?.nodes || [],
+        labels: this.item.labels?.nodes || [],
+      };
     },
   },
   methods: {
-    ...mapActions(['toggleBoardItem']),
     toggleIssue(e) {
       // Don't do anything if this happened on a no trigger element
       if (e.target.closest('.js-no-trigger')) return;
@@ -105,11 +96,7 @@ export default {
       if (isMultiSelect && gon?.features?.boardMultiSelect) {
         this.toggleBoardItemMultiSelection(this.item);
       } else {
-        if (this.isApolloBoard) {
-          this.toggleItem();
-        } else {
-          this.toggleBoardItem({ boardItem: this.item });
-        }
+        this.toggleItem();
         this.track('click_card', { label: 'right_sidebar' });
       }
     },

@@ -5,6 +5,7 @@ import {
   PREREQUISITES_DOC_LINK,
   OAUTH_SELF_MANAGED_DOC_LINK,
   SET_UP_INSTANCE_DOC_LINK,
+  JIRA_USER_REQUIREMENTS_DOC_LINK,
 } from '~/jira_connect/subscriptions/constants';
 
 export default {
@@ -29,6 +30,11 @@ export default {
         {
           name: s__('JiraConnect|Set up your instance'),
           link: SET_UP_INSTANCE_DOC_LINK,
+          checked: false,
+        },
+        {
+          name: s__('JiraConnect|Jira user requirements'),
+          link: JIRA_USER_REQUIREMENTS_DOC_LINK,
           checked: false,
         },
       ],

@@ -1,7 +1,7 @@
+import { GlBadge } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { IndexMlModels } from '~/ml/model_registry/apps';
 import ModelRow from '~/ml/model_registry/components/model_row.vue';
-import { TITLE_LABEL, NO_MODELS_LABEL } from '~/ml/model_registry/translations';
 import Pagination from '~/vue_shared/components/incubation/pagination.vue';
 import SearchBar from '~/ml/model_registry/components/search_bar.vue';
 import { BASE_SORT_FIELDS } from '~/ml/model_registry/constants';
@@ -18,10 +18,11 @@ const createWrapper = (
 
 const findModelRow = (index) => wrapper.findAllComponents(ModelRow).at(index);
 const findPagination = () => wrapper.findComponent(Pagination);
-const findEmptyLabel = () => wrapper.findByText(NO_MODELS_LABEL);
+const findEmptyLabel = () => wrapper.findByText('No models registered in this project');
 const findSearchBar = () => wrapper.findComponent(SearchBar);
 const findTitleArea = () => wrapper.findComponent(TitleArea);
 const findModelCountMetadataItem = () => findTitleArea().findComponent(MetadataItem);
+const findBadge = () => wrapper.findComponent(GlBadge);
 
 describe('MlModelsIndex', () => {
   describe('empty state', () => {
@@ -51,7 +52,11 @@ describe('MlModelsIndex', () => {
 
     describe('header', () => {
       it('displays the title', () => {
-        expect(findTitleArea().props('title')).toBe(TITLE_LABEL);
+        expect(findTitleArea().text()).toContain('Model registry');
+      });
+
+      it('displays the experiment badge', () => {
+        expect(findBadge().attributes().href).toBe('/help/user/project/ml/model_registry/index.md');
       });
 
       it('sets model metadata item to model count', () => {
