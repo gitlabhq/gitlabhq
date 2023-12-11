@@ -15,7 +15,6 @@ class QueueBackfillMergeRequestDiffsProjectId < Gitlab::Database::Migration[2.2]
       :merge_request_diffs,
       :id,
       job_interval: DELAY_INTERVAL,
-      queued_migration_version: '20231114043522',
       batch_size: BATCH_SIZE,
       sub_batch_size: SUB_BATCH_SIZE
     )

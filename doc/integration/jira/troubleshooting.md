@@ -80,6 +80,33 @@ There is a [known bug](https://gitlab.com/gitlab-org/gitlab/-/issues/341571)
 where the Jira integration sometimes does not work for a project that has been imported.
 As a workaround, disable the integration and then re-enable it.
 
+### `certificate verify failed` when testing or using the Jira issue integration
+
+When testing the Jira integration settings, you might see the following error:
+
+```plaintext
+Connection failed. Check your integration settings. SSL_connect returned=1 errno=0 peeraddr=<jira.example.com> state=error: certificate verify failed (unable to get local issuer certificate)
+```
+
+This error might also appear in the [`integrations_json.log`](../../administration/logs/index.md#integrations_jsonlog) file:
+
+```json
+{
+  "severity":"ERROR",
+  "integration_class":"Integrations::Jira",
+  "message":"Error sending message",
+  "exception.class":"OpenSSL::SSL::SSLError",
+  "exception.message":"SSL_connect returned=1 errno=0 peeraddr=x.x.x.x:443 state=error: certificate verify failed (unable to get local issuer certificate)",
+}
+```
+
+The error occurs because the Jira certificate isn't publicly trusted, or the certificate chain is incomplete. Until this is resolved, GitLab won't connect to Jira.
+
+There can be other variations of this error message that are listed on the [common SSL errors](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting.html#common-ssl-errors) page.
+
+To resolve this, refer to the
+[common SSL errors](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting.html#common-ssl-errors) page.
+
 ### Change all Jira projects to instance-level or group-level values
 
 WARNING:

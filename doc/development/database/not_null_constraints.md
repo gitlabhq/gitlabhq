@@ -242,8 +242,7 @@ scheduled after the background migration has completed, which could be several r
            MIGRATION,
            :merge_request_diffs,
            :id,
-           job_interval: DELAY_INTERVAL,
-           queued_migration_version: '20231114043522'
+           job_interval: DELAY_INTERVAL
          )
        end
 

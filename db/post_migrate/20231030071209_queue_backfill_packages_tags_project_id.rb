@@ -16,7 +16,6 @@ class QueueBackfillPackagesTagsProjectId < Gitlab::Database::Migration[2.2]
       :packages_tags,
       :id,
       job_interval: DELAY_INTERVAL,
-      queued_migration_version: '20231030071209',
       batch_size: BATCH_SIZE,
       sub_batch_size: SUB_BATCH_SIZE
     )

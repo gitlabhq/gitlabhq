@@ -121,5 +121,24 @@ RSpec.describe 'User Cluster', :js, feature_category: :environment_management do
         expect(page).to have_content('Kubernetes cluster integration was successfully removed.')
       end
     end
+
+    context 'when signed in user is an admin in admin_mode' do
+      let(:admin) { create(:admin) }
+
+      before do
+        # signs out the user with `maintainer` role in the project
+        gitlab_sign_out
+
+        gitlab_sign_in(admin)
+        gitlab_enable_admin_mode_sign_in(admin)
+
+        visit group_clusters_path(group)
+      end
+
+      it 'can visit the clusters index page', :aggregate_failures do
+        expect(page).to have_title("Kubernetes Clusters · #{group.name} · GitLab")
+        expect(page).to have_content('Connect a cluster')
+      end
+    end
   end
 end

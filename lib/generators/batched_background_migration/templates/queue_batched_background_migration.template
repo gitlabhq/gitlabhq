@@ -19,7 +19,6 @@ class <%= migration_class_name %> < Gitlab::Database::Migration[<%= Gitlab::Data
       :<%= table_name %>,
       :<%= column_name %>,
       job_interval: DELAY_INTERVAL,
-      queued_migration_version: '<%= migration_number %>',
       batch_size: BATCH_SIZE,
       sub_batch_size: SUB_BATCH_SIZE
     )

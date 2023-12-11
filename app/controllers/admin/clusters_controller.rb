@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Admin::ClustersController < Clusters::ClustersController
+class Admin::ClustersController < ::Clusters::ClustersController
   include EnforcesAdminAuthentication
   before_action :ensure_feature_enabled!
 

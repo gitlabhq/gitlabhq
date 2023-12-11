@@ -672,49 +672,37 @@ The following process has been configured to make dependencies more evident whil
 Example:
 
 ```ruby
-   class QueueBackfillRoutesNamespaceId < Gitlab::Database::Migration[2.1]
-     MIGRATION = 'BackfillRouteNamespaceId'
-....
-     restrict_gitlab_migration gitlab_schema: :gitlab_main
+# db/post_migrate/20231113120650_queue_backfill_routes_namespace_id.rb
+class QueueBackfillRoutesNamespaceId < Gitlab::Database::Migration[2.1]
+  MIGRATION = 'BackfillRouteNamespaceId'
 
-     def up
-       queue_batched_background_migration(
-        ...
-         queued_migration_version: '20231113120650',
-        ...
-       )
-     end
-...
-   end
-   ```
+  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  ...
+  ...
 
-  ```ruby
-   class NewQueueBackfillRoutesNamespaceId < Gitlab::Database::Migration[2.1]
-     MIGRATION = 'NewBackfillRouteNamespaceId'
-     DELAY_INTERVAL = 2.minutes
-     BATCH_SIZE = 1000
-     SUB_BATCH_SIZE = 100
-     DEPENDENT_BATCHED_BACKGROUND_MIGRATIONS = ["20231113120650"]
+  def up
+    queue_batched_background_migration(
+      MIGRATION,
+      ...
+    )
+  end
+end
+```
 
-     restrict_gitlab_migration gitlab_schema: :gitlab_main
+```ruby
+# This depends on the finalization of QueueBackfillRoutesNamespaceId BBM
+class AddNotNullToRoutesNamespaceId < Gitlab::Database::Migration[2.1]
+  DEPENDENT_BATCHED_BACKGROUND_MIGRATIONS = ["20231113120650"]
 
-     def up
-       queue_batched_background_migration(
-         MIGRATION,
-         :routes,
-         :id,
-         job_interval: DELAY_INTERVAL,
-         queued_migration_version: '20241213120651',
-         batch_size: BATCH_SIZE,
-         sub_batch_size: SUB_BATCH_SIZE
-       )
-     end
+  def up
+    add_not_null_constraint :routes, :namespace_id
+  end
 
-     def down
-       delete_batched_background_migration(MIGRATION, :routes, :id, [])
-     end
-   end
-   ```
+  def down
+    remove_not_null_constraint :routes, :namespace_id
+  end
+end
+```
 
 #### Notes
 
@@ -1062,7 +1050,6 @@ background migration.
          :routes,
          :id,
          job_interval: DELAY_INTERVAL,
-         queued_migration_version: '20231113120650',
          batch_size: BATCH_SIZE,
          sub_batch_size: SUB_BATCH_SIZE
        )

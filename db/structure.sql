@@ -16345,6 +16345,7 @@ CREATE TABLE elastic_reindexing_tasks (
     max_slices_running smallint DEFAULT 60 NOT NULL,
     slice_multiplier smallint DEFAULT 2 NOT NULL,
     targets text[],
+    options jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_7f64acda8e CHECK ((char_length(error_message) <= 255))
 );
 

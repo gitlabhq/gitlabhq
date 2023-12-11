@@ -38,10 +38,6 @@ module Gitlab
         # batch_class_name - The name of the class that will be called to find the range of each next batch
         # batch_size - The maximum number of rows per job
         # sub_batch_size - The maximum number of rows processed per "iteration" within the job
-        # queued_migration_version - Version of the migration that queues the BBM, this is used to establish dependecies
-        #
-        # queued_migration_version is made optional temporarily to allow prior migrations to not fail,
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/426417 will make it mandatory.
         #
         # *Returns the created BatchedMigration record*
         #
@@ -67,7 +63,6 @@ module Gitlab
           batch_column_name,
           *job_arguments,
           job_interval:,
-          queued_migration_version: nil,
           batch_min_value: BATCH_MIN_VALUE,
           batch_max_value: nil,
           batch_class_name: BATCH_CLASS_NAME,
@@ -80,6 +75,8 @@ module Gitlab
           Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_dml_mode!
 
           gitlab_schema ||= gitlab_schema_from_context
+          # Version of the migration that queued the BBM, this is used to establish dependencies
+          queued_migration_version = version
 
           Gitlab::Database::BackgroundMigration::BatchedMigration.reset_column_information
 
@@ -120,7 +117,7 @@ module Gitlab
               "(given #{job_arguments.count}, expected #{migration.job_class.job_arguments_count})"
           end
 
-          assign_attribtues_safely(
+          assign_attributes_safely(
             migration,
             max_batch_size,
             batch_table_name,
@@ -246,7 +243,7 @@ module Gitlab
         # about columns introduced later on because this model is not
         # isolated in migrations, which is why we need to check for existence
         # of these columns first.
-        def assign_attribtues_safely(migration, max_batch_size, batch_table_name, gitlab_schema, queued_migration_version)
+        def assign_attributes_safely(migration, max_batch_size, batch_table_name, gitlab_schema, queued_migration_version)
           # We keep track of the estimated number of tuples in 'total_tuple_count' to reason later
           # about the overall progress of a migration.
           safe_attributes_value = {

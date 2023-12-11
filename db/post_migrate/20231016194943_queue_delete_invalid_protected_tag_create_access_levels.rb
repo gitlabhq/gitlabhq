@@ -15,7 +15,6 @@ class QueueDeleteInvalidProtectedTagCreateAccessLevels < Gitlab::Database::Migra
       :protected_tag_create_access_levels,
       :id,
       job_interval: DELAY_INTERVAL,
-      queued_migration_version: '20231016194943',
       batch_size: BATCH_SIZE,
       sub_batch_size: SUB_BATCH_SIZE
     )
