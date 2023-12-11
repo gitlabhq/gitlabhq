@@ -6,3 +6,4 @@ description: |
 feature_category: security_policy_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127767
 milestone: '16.3'
+finalized_by: '20231207221140'

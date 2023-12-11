@@ -473,4 +473,12 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
       expect(subject.impersonated?).to be(false)
     end
   end
+
+  describe '.token' do
+    # Specify a blank token_encrypted so that the model's method is used
+    # instead of the factory value
+    subject(:plaintext) { create(:deploy_token, token_encrypted: nil).token }
+
+    it { is_expected.to match(/gldt-[A-Za-z0-9_-]{20}/) }
+  end
 end

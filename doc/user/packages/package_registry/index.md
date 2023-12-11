@@ -154,7 +154,7 @@ Registry disables all package registry operations.
 To allow anyone to pull from the package registry, regardless of project visibility:
 
 1. On the left sidebar, select **Search or go to** and find your private or internal project.
-1. On the left sidebar, select **Settings > General**.
+1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Turn on the **Allow anyone to pull from Package Registry** toggle.
 1. Select **Save changes**.

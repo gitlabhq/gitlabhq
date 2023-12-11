@@ -12,6 +12,7 @@ path = "/gitleaks.toml"
     "glpat-1234567890abcdefghij",
     # spec/frontend/lib/utils/secret_detection_spec.js
     "glpat-cgyKc1k_AsnEpmP-5fRL",
+    "gldt-cgyKc1k_AsnEpmP-5fRL",
     # spec/frontend/lib/utils/secret_detection_spec.js
     "GlPat-abcdefghijklmnopqrstuvwxyz",
     # doc/development/sec/token_revocation_api.md

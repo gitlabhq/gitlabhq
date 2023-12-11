@@ -6,6 +6,7 @@ import * as commonUtils from '~/lib/utils/common_utils';
 import component from '~/packages_and_registries/settings/project/components/registry_settings_app.vue';
 import ContainerExpirationPolicy from '~/packages_and_registries/settings/project/components/container_expiration_policy.vue';
 import PackagesCleanupPolicy from '~/packages_and_registries/settings/project/components/packages_cleanup_policy.vue';
+import DependencyProxyPackagesSettings from 'ee_component/packages_and_registries/settings/project/components/dependency_proxy_packages_settings.vue';
 import {
   SHOW_SETUP_SUCCESS_ALERT,
   UPDATE_SETTINGS_SUCCESS_MESSAGE,
@@ -18,11 +19,16 @@ describe('Registry Settings app', () => {
 
   const findContainerExpirationPolicy = () => wrapper.findComponent(ContainerExpirationPolicy);
   const findPackagesCleanupPolicy = () => wrapper.findComponent(PackagesCleanupPolicy);
+  const findDependencyProxyPackagesSettings = () =>
+    wrapper.findComponent(DependencyProxyPackagesSettings);
   const findAlert = () => wrapper.findComponent(GlAlert);
 
   const defaultProvide = {
+    projectPath: 'path',
     showContainerRegistrySettings: true,
     showPackageRegistrySettings: true,
+    showDependencyProxySettings: false,
+    ...(IS_EE && { showDependencyProxySettings: true }),
   };
 
   const mountComponent = (provide = defaultProvide) => {
@@ -82,6 +88,7 @@ describe('Registry Settings app', () => {
       'container cleanup policy $showContainerRegistrySettings and package cleanup policy is $showPackageRegistrySettings',
       ({ showContainerRegistrySettings, showPackageRegistrySettings }) => {
         mountComponent({
+          ...defaultProvide,
           showContainerRegistrySettings,
           showPackageRegistrySettings,
         });
@@ -90,5 +97,16 @@ describe('Registry Settings app', () => {
         expect(findPackagesCleanupPolicy().exists()).toBe(showPackageRegistrySettings);
       },
     );
+
+    if (IS_EE) {
+      it.each([true, false])('when showDependencyProxySettings is %s', (value) => {
+        mountComponent({
+          ...defaultProvide,
+          showDependencyProxySettings: value,
+        });
+
+        expect(findDependencyProxyPackagesSettings().exists()).toBe(value);
+      });
+    }
   });
 });

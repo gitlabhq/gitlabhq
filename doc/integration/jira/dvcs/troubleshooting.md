@@ -138,7 +138,7 @@ In the example above, the merge requests feature is disabled.
 To resolve the issue, enable the relevant feature:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Use the toggles to enable the features as needed.
 
@@ -147,7 +147,7 @@ To resolve the issue, enable the relevant feature:
 To find webhook logs in a DVCS-linked project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Settings > Webhooks**.
+1. Select **Settings > Webhooks**.
 1. Scroll down to **Project Hooks**.
 1. Next to the log that points to your Jira instance, select **Edit**.
 1. Scroll down to **Recent events**.

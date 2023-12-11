@@ -67,7 +67,7 @@ Prerequisites:
 - You must have the Owner role for a project.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Change **Project visibility** to either **Private**, **Internal**, or **Public**.
    The visibility setting for a project must be at least as restrictive

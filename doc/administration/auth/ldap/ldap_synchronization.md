@@ -514,7 +514,7 @@ GitLab administrators can remove this permission from group Owners:
 
 1. [Configure LDAP](index.md#configure-ldap).
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Settings > General**.
+1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. Ensure the **Allow group owners to manage LDAP-related settings** checkbox is not checked.
 

@@ -234,7 +234,7 @@ The following tables show the prefixes for each type of token where applicable.
 | Impersonation token               | Not applicable.    |
 | Project access token              | Not applicable.    |
 | Group access token                | Not applicable.    |
-| Deploy token                      | Not applicable.    |
+| Deploy token                      | `gldt-` ([Added in GitLab 16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/376752)) |
 | Deploy key                        | Not applicable.    |
 | Runner registration token         | Not applicable.    |
 | Runner authentication token       | `glrt-`            |

@@ -395,6 +395,7 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
           expect(json_response['scopes']).to eq(['read_repository'])
           expect(json_response['username']).to eq('Bar')
           expect(json_response['expires_at'].to_time.to_i).to eq(expires_time.to_i)
+          expect(json_response['token']).to match(/gldt-[A-Za-z0-9_-]{20}/)
         end
 
         context 'with no optional params given' do

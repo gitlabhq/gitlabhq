@@ -326,7 +326,7 @@ method to be enabled. This is enabled by default, but if converting an existing 
 On the **primary** site:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Settings > General**.
+1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. If using Git over SSH, then:
    1. Ensure "Enabled Git access protocols" is set to "Both SSH and HTTP(S)".
@@ -339,7 +339,7 @@ You can sign in to the **secondary** site with the same credentials you used wit
 the **primary** site. After you sign in:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Geo > Sites**.
+1. Select **Geo > Sites**.
 1. Verify that it's correctly identified as a **secondary** Geo site, and that
    Geo is enabled.
 

@@ -12,7 +12,7 @@ module QA
         end
 
         it(
-          'has service ping toggle enabled',
+          'has service ping toggle enabled', :reliable,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348335'
         ) do
           Page::Admin::Settings::MetricsAndProfiling.perform do |setting|

@@ -306,18 +306,6 @@ RSpec.describe 'User interacts with awards', feature_category: :team_planning do
             expect(page).not_to have_selector(emoji_counter)
           end
         end
-
-        context 'execute /award quick action' do
-          xit 'toggles the emoji award on noteable', :js do
-            execute_quick_action('/award :100:')
-
-            expect(find(noteable_award_counter)).to have_text("1")
-
-            execute_quick_action('/award :100:')
-
-            expect(page).not_to have_selector(noteable_award_counter)
-          end
-        end
       end
     end
 

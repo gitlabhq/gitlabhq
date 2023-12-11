@@ -167,7 +167,7 @@ To make published versions of a component project visible in the CI/CD catalog,
 you must set the project as a catalog resource:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Scroll down to **CI/CD Catalog resource** and select the toggle to mark the project as a catalog resource.
 

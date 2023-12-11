@@ -6,16 +6,24 @@ import {
   SHOW_SETUP_SUCCESS_ALERT,
   UPDATE_SETTINGS_SUCCESS_MESSAGE,
 } from '~/packages_and_registries/settings/project/constants';
-import ContainerExpirationPolicy from './container_expiration_policy.vue';
-import PackagesCleanupPolicy from './packages_cleanup_policy.vue';
+import ContainerExpirationPolicy from '~/packages_and_registries/settings/project/components/container_expiration_policy.vue';
+import PackagesCleanupPolicy from '~/packages_and_registries/settings/project/components/packages_cleanup_policy.vue';
 
 export default {
   components: {
     ContainerExpirationPolicy,
+    DependencyProxyPackagesSettings: () =>
+      import(
+        'ee_component/packages_and_registries/settings/project/components/dependency_proxy_packages_settings.vue'
+      ),
     GlAlert,
     PackagesCleanupPolicy,
   },
-  inject: ['showContainerRegistrySettings', 'showPackageRegistrySettings'],
+  inject: [
+    'showContainerRegistrySettings',
+    'showPackageRegistrySettings',
+    'showDependencyProxySettings',
+  ],
   i18n: {
     UPDATE_SETTINGS_SUCCESS_MESSAGE,
   },
@@ -54,5 +62,6 @@ export default {
     </gl-alert>
     <packages-cleanup-policy v-if="showPackageRegistrySettings" />
     <container-expiration-policy v-if="showContainerRegistrySettings" />
+    <dependency-proxy-packages-settings v-if="showDependencyProxySettings" />
   </div>
 </template>

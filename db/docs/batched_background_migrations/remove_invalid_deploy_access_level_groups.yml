@@ -1,6 +1,8 @@
 ---
 migration_job_name: RemoveInvalidDeployAccessLevelGroups
-description: This deletes protected_environment_deploy_access_levels rows that have invalid group_id.
+description: This deletes protected_environment_deploy_access_levels rows that have
+  invalid group_id.
 feature_category: continuous_delivery
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121222
 milestone: '16.1'
+finalized_by: '20231207221300'

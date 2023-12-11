@@ -626,7 +626,7 @@ Prerequisites:
 To enable import and export for a group:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Settings > General**.
+1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. In the **Import sources** section, select the checkboxes for the sources you want.
 

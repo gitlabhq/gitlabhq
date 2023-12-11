@@ -1,8 +1,10 @@
 ---
 migration_job_name: CleanupPersonalAccessTokensWithNilExpiresAt
-description: Updates value of expires_at column to 365 days from now when it's nil for PersonalAccessTokens
-  Originally introduced via https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120239
-  Re-ran because there was a bypass that enabled some new PATs to be created with nil expires_at. That bypass was patched via https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121370.
+description: Updates value of expires_at column to 365 days from now when it's nil
+  for PersonalAccessTokens Originally introduced via https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120239
+  Re-ran because there was a bypass that enabled some new PATs to be created with
+  nil expires_at. That bypass was patched via https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121370.
 feature_category: system_access
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123002
 milestone: '16.1'
+finalized_by: '20231207221119'

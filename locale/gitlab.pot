@@ -16559,6 +16559,9 @@ msgstr ""
 msgid "DependencyProxy|All items in the cache are scheduled for removal."
 msgstr ""
 
+msgid "DependencyProxy|Base URL of the external registry."
+msgstr ""
+
 msgid "DependencyProxy|Cached %{time}"
 msgstr ""
 
@@ -16595,16 +16598,25 @@ msgstr ""
 msgid "DependencyProxy|Enable Dependency Proxy"
 msgstr ""
 
+msgid "DependencyProxy|Enable the Dependency Proxy for packages, and configure connection settings for external registries."
+msgstr ""
+
 msgid "DependencyProxy|Enable the Dependency Proxy to cache container images from Docker Hub and automatically clear the cache."
 msgstr ""
 
 msgid "DependencyProxy|Image list"
 msgstr ""
 
+msgid "DependencyProxy|Password for your external registry."
+msgstr ""
+
 msgid "DependencyProxy|Pull image by digest example"
 msgstr ""
 
 msgid "DependencyProxy|Scheduled for deletion"
+msgstr ""
+
+msgid "DependencyProxy|Something went wrong while fetching the dependency proxy settings."
 msgstr ""
 
 msgid "DependencyProxy|There are no images in the cache"
@@ -16614,6 +16626,9 @@ msgid "DependencyProxy|To see the image prefix and what is in the cache, visit t
 msgstr ""
 
 msgid "DependencyProxy|To store docker images in Dependency Proxy cache, pull an image by tag in your %{codeStart}.gitlab-ci.yml%{codeEnd} file. In this example, the image is %{codeStart}alpine:latest%{codeEnd}"
+msgstr ""
+
+msgid "DependencyProxy|Username of the external registry."
 msgstr ""
 
 msgid "DependencyProxy|When enabled, images older than 90 days will be removed from the cache."

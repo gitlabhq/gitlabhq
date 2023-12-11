@@ -30,7 +30,7 @@ an unstarted job with the same arguments is already in the queue.
 Make sure the worker tests pass using the following shared example:
 
 ```ruby
-include_examples 'an idempotent worker' do
+it_behaves_like 'an idempotent worker' do
   it 'marks the MR as merged' do
     # Using subject inside this block will process the job multiple times
     subject
