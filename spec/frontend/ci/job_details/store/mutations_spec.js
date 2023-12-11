@@ -324,4 +324,34 @@ describe('Jobs Store Mutations', () => {
       expect(stateCopy.jobs).toEqual([]);
     });
   });
+
+  describe('ENTER_FULLSCREEN_SUCCESS', () => {
+    beforeEach(() => {
+      mutations[types.ENTER_FULLSCREEN_SUCCESS](stateCopy);
+    });
+
+    it('sets fullScreenEnabled to true', () => {
+      expect(stateCopy.fullScreenEnabled).toEqual(true);
+    });
+  });
+
+  describe('EXIT_FULLSCREEN_SUCCESS', () => {
+    beforeEach(() => {
+      mutations[types.EXIT_FULLSCREEN_SUCCESS](stateCopy);
+    });
+
+    it('sets fullScreenEnabled to false', () => {
+      expect(stateCopy.fullScreenEnabled).toEqual(false);
+    });
+  });
+
+  describe('FULL_SCREEN_CONTAINER_SET_UP', () => {
+    beforeEach(() => {
+      mutations[types.FULL_SCREEN_CONTAINER_SET_UP](stateCopy, true);
+    });
+
+    it('sets fullScreenEnabled to true', () => {
+      expect(stateCopy.fullScreenContainerSetUp).toEqual(true);
+    });
+  });
 });

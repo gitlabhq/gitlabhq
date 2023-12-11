@@ -44,6 +44,7 @@ describe('Job Log', () => {
     toggleCollapsibleLineMock = jest.fn();
     actions = {
       toggleCollapsibleLine: toggleCollapsibleLineMock,
+      setupFullScreenListeners: jest.fn(),
     };
 
     const { lines, sections } = logLinesParser(mockJobLog);

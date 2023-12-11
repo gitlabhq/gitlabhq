@@ -16,6 +16,12 @@ export default () => ({
   isScrollBottomDisabled: true,
   isScrollTopDisabled: true,
 
+  // fullscreen mode
+  fullScreenAPIAvailable: false,
+  fullScreenModeAvailable: false,
+  fullScreenEnabled: false,
+  fullScreenContainerSetUp: false,
+
   jobLog: [],
   jobLogSections: {},
   isJobLogComplete: false,

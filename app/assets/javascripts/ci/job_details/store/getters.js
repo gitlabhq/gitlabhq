@@ -48,3 +48,6 @@ export const isScrollingDown = (state) => isScrolledToBottom() && !state.isJobLo
 
 export const hasOfflineRunnersForProject = (state) =>
   state?.job?.runners?.available && !state?.job?.runners?.online;
+
+export const fullScreenAPIAndContainerAvailable = (state) =>
+  state.fullScreenAPIAvailable && state.fullScreenModeAvailable;

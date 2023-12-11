@@ -1436,6 +1436,17 @@ Do not use **Reporter permissions**. A user who is assigned the Reporter role ha
 
 Use title case for **Repository Mirroring**.
 
+## resolution, resolve
+
+Use **resolution** when the troubleshooting solution fixes the issue permanently.
+A resolution usually involves file and code changes to correct the problem.
+For example:
+
+- To resolve this issue, update the `.gitlab-ci.yml` file.
+- One resolution is to update the `.gitlab-ci.yml` file.
+
+See also [workaround](#workaround).
+
 ## requirements
 
 When documenting the tasks that must be completed or the conditions that must be met before a user can complete the steps:
@@ -1910,6 +1921,16 @@ Instead of:
 - We created a feature for you to add widgets.
 
 ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
+
+## workaround
+
+Use **workaround** when the troubleshooting solution is a temporary fix.
+A workaround is usually an immediate fix and might have ongoing issues.
+For example:
+
+- The workaround is to temporarily pin your template to the deprecated version.
+
+See also [resolution](#resolution-resolve).
 
 ## while
 

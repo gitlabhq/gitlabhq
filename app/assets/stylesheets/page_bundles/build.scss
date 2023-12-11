@@ -179,6 +179,14 @@
   background-color: $builds-log-bg;
 }
 
+.build-log-container:fullscreen {
+  overflow-y: scroll;
+
+  .top-bar {
+    top: 0 !important;
+  }
+}
+
 .job-log-line {
   padding: 1px $gl-padding-8 1px $job-log-line-padding;
   min-height: $gl-line-height-20;

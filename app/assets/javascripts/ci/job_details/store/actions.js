@@ -15,14 +15,84 @@ import { __ } from '~/locale';
 import { reportToSentry } from '~/ci/utils';
 import * as types from './mutation_types';
 
-export const init = ({ commit, dispatch }, { jobEndpoint, logEndpoint, testReportSummaryUrl }) => {
-  commit(types.SET_JOB_LOG_OPTIONS, { jobEndpoint, logEndpoint, testReportSummaryUrl });
+export const init = (
+  { commit, dispatch },
+  { jobEndpoint, logEndpoint, testReportSummaryUrl, fullScreenAPIAvailable = false },
+) => {
+  commit(types.SET_JOB_LOG_OPTIONS, {
+    jobEndpoint,
+    logEndpoint,
+    testReportSummaryUrl,
+    fullScreenAPIAvailable,
+  });
 
   return dispatch('fetchJob');
 };
 
 export const hideSidebar = ({ commit }) => commit(types.HIDE_SIDEBAR);
 export const showSidebar = ({ commit }) => commit(types.SHOW_SIDEBAR);
+
+export const enterFullscreen = ({ dispatch }) => {
+  const el = document.querySelector('.build-log-container');
+
+  if (!document.fullscreenElement && el) {
+    el.requestFullscreen()
+      .then(() => {
+        dispatch('enterFullscreenSuccess');
+      })
+      .catch((err) => {
+        reportToSentry('job_enter_fullscreen_mode', err);
+      });
+  }
+};
+
+export const enterFullscreenSuccess = ({ commit }) => {
+  commit(types.ENTER_FULLSCREEN_SUCCESS);
+};
+
+export const exitFullscreen = ({ dispatch }) => {
+  if (document.fullscreenElement) {
+    document
+      .exitFullscreen()
+      .then(() => {
+        dispatch('exitFullscreenSuccess');
+      })
+      .catch((err) => {
+        reportToSentry('job_exit_fullscreen_mode', err);
+      });
+  }
+};
+
+export const exitFullscreenSuccess = ({ commit }) => {
+  commit(types.EXIT_FULLSCREEN_SUCCESS);
+};
+
+export const fullScreenContainerSetUpResult = ({ commit }, value) => {
+  commit(types.FULL_SCREEN_CONTAINER_SET_UP, value);
+};
+
+export const fullScreenModeAvailableSuccess = ({ commit }) => {
+  commit(types.FULL_SCREEN_MODE_AVAILABLE_SUCCESS);
+};
+
+export const setupFullScreenListeners = ({ dispatch, state, getters }) => {
+  if (!state.fullScreenContainerSetUp && getters.hasJobLog) {
+    const el = document.querySelector('.build-log-container');
+
+    if (el) {
+      dispatch('fullScreenModeAvailableSuccess');
+
+      el.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement) {
+          // Leaving fullscreen mode
+          dispatch('exitFullscreenSuccess');
+        }
+      });
+
+      dispatch('fullScreenContainerSetUpResult', true);
+    }
+  }
+};
 
 export const toggleSidebar = ({ dispatch, state }) => {
   if (state.isSidebarOpen) {

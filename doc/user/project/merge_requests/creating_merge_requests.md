@@ -22,63 +22,71 @@ You can create a merge request from the list of merge requests.
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests**.
 1. In the upper-right corner, select **New merge request**.
-1. Select a source and target branch and then **Compare branches and continue**.
-1. Fill out the fields and select **Create merge request**.
+1. Select a source and target branch, then select **Compare branches and continue**.
+1. Complete the fields on the **New merge request** page, then select **Create merge request**.
 
-NOTE:
-Merge requests are designed around a one-to-one (1:1) branch relationship. Only one open merge request can
-be associated with a given target branch at a time.
+Each branch can be associated with only one open merge request. If a merge request
+already exists for this branch, a link to the existing merge request is shown.
 
 ## From an issue
 
-> The **Create merge request** button [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/349566) to open the merge request creation form in GitLab 14.8.
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/349566) the behavior of the **Create merge request** button to open the merge request creation form in GitLab 14.8.
 
 If your development workflow requires an issue for every merge
 request, you can create a branch directly from the issue to speed the process up.
 The new branch, and later its merge request, are marked as related to this issue.
 After merging the merge request, the issue is closed automatically, unless
-[automatic issue closing is disabled](../issues/managing_issues.md#disable-automatic-issue-closing).
-You can see a **Create merge request** dropdown list below the issue description.
+[automatic issue closing is disabled](../issues/managing_issues.md#disable-automatic-issue-closing):
 
-NOTE:
-In GitLab 14.8 and later, selecting **Create merge request**
-[redirects to the merge request creation form](https://gitlab.com/gitlab-org/gitlab/-/issues/349566)
-instead of immediately creating the merge request.
+::Tabs
 
-**Create merge request** doesn't display if:
+:::TabTitle Merge request and branch
 
-- A branch with the same name already exists.
-- A merge request already exists for this branch.
-- Your project has an active fork relationship.
-- Your project is private and the issue is confidential.
+To create a branch and a merge request at the same time:
 
-To make this button appear, one possible workaround is to
-[remove your project's fork relationship](../repository/forking_workflow.md#unlink-a-fork).
-After removal, the fork relationship cannot be restored. This project can no longer
-be able to receive or send merge requests to the source project, or other forks.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Issues** and find your issue.
+1. Go to the bottom of the issue description.
+1. Select **Create merge request > Create merge request and branch**.
+1. In the dialog, review the suggested branch name. It's based on your project's
+   [branch name template](../repository/branches/index.md) Rename it if the
+   branch name is already taken, or you need a different branch name.
+1. Select a source branch or tag.
+1. Select **Create merge request**.
 
-The dropdown list contains the options **Create merge request and branch** and **Create branch**.
+:::TabTitle Branch only
 
-After selecting one of these options, a new branch or branch and merge request
-is created based on your project's [default branch](../repository/branches/default.md).
-The branch name is based on your project's [branch name template](../repository/branches/index.md),
-but this value can be changed.
+To create only a branch directly from an issue:
 
-When you select **Create branch** in an empty
-repository project, GitLab performs these actions:
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Plan > Issues** and find your issue.
+1. Go to the bottom of the issue description.
+1. Select **Create merge request > Create branch**.
+1. In the dialog, review the suggested branch name. It's based on your project's
+   [branch name template](../repository/branches/index.md) Rename it if the
+   branch name is already taken, or you need a different branch name.
+1. Select a source branch or tag.
+1. Select **Create branch**.
+
+::EndTabs
+
+If your Git repository is empty, GitLab:
 
 - Creates a default branch.
 - Commits a blank `README.md` file to it.
 - Creates and redirects you to a new branch based on the issue title.
-- _If your project is [configured with a deployment service](../integrations/index.md) like Kubernetes,_
+- If your project is [configured with a deployment service](../integrations/index.md) like Kubernetes,
   GitLab prompts you to set up [auto deploy](../../../topics/autodevops/stages.md#auto-deploy)
   by helping you create a `.gitlab-ci.yml` file.
 
-After the branch is created, you can edit files in the repository to fix
-the issue. When a merge request is created based on the newly-created branch,
-the description field displays the [issue closing pattern](../issues/managing_issues.md#closing-issues-automatically)
-`Closes #ID`, where `ID` is the ID of the issue. This closes the issue when the
-merge request is merged.
+If the name of the branch you create is
+[prefixed with the issue number](../repository/branches/index.md#prefix-branch-names-with-issue-numbers),
+GitLab cross-links the issue and merge request, and adds the
+[issue closing pattern](../issues/managing_issues.md#closing-issues-automatically)
+to the description of the merge request. In most cases, this looks like `Closes #ID`,
+where `ID` is the ID of the issue. If your project is configured with a
+[closing pattern](../issues/managing_issues.md#default-closing-pattern), the issue closes
+when the merge request merges.
 
 ## When you add, edit, or upload a file
 
@@ -86,10 +94,11 @@ You can create a merge request when you add, edit, or upload a file to a reposit
 
 1. [Add, edit, or upload](../repository/web_editor.md) a file to the repository.
 1. In the **Commit message**, enter a reason for the commit.
-1. Select the **Target branch** or create a new branch by typing the name (without spaces).
+1. Select the **Target branch** or create a new branch by typing the name.
 1. Select the **Start a new merge request with these changes** checkbox or toggle. This checkbox or toggle is visible only
    if the target is not the same as the source branch, or if the source branch is protected.
-1. Select **Commit changes**.
+1. Select **Upload file**.
+1. Fill out the fields and select **Create merge request**.
 
 ## When you create a branch
 
@@ -112,20 +121,27 @@ You can create a merge request by running Git commands on your local machine.
    git checkout -b my-new-branch
    ```
 
-1. Create, edit, or delete files. The stage and commit them:
+1. Create, edit, or delete files as needed.
+
+1. Mark the files as ready to commit (staging them) and commit them locally:
 
    ```shell
+   # Mark the files as ready to commit
    git add .
+   # Commit the changes locally
    git commit -m "My commit message"
    ```
 
-1. [Push your branch to GitLab](../../../gitlab-basics/start-using-git.md#send-changes-to-gitlab):
+1. [Push your branch and its commits to GitLab](../../../gitlab-basics/start-using-git.md#send-changes-to-gitlab):
 
    ```shell
    git push origin my-new-branch
    ```
 
-   GitLab prompts you with a direct link for creating a merge request:
+   To reduce the number of fields to edit later in the merge request, use
+   [push options](../push_options.md) to set the value of fields.
+
+1. In the response to the `git push`, GitLab provides a direct link to create the merge request:
 
    ```plaintext
    ...
@@ -134,9 +150,6 @@ You can create a merge request by running Git commands on your local machine.
    ```
 
 1. Copy the link and paste it in your browser.
-
-You can add other [flags to commands when pushing through the command line](../push_options.md)
-to reduce the need for editing merge requests manually through the UI.
 
 ## When you work in a fork
 
@@ -220,3 +233,19 @@ To have merge requests from a fork by default target your own fork
 1. In the **Target project** section, select the option you want to use for
    your default target project.
 1. Select **Save changes**.
+
+## Troubleshooting
+
+### No option to create a merge request on an issue
+
+The option to **Create merge request** doesn't display on an issue if:
+
+- A branch with the same name already exists.
+- A merge request already exists for this branch.
+- Your project has an active fork relationship.
+- Your project is private and the issue is confidential.
+
+To make this button appear, one possible workaround is to
+[remove your project's fork relationship](../repository/forking_workflow.md#unlink-a-fork).
+After removal, the fork relationship cannot be restored. This project can no longer
+be able to receive or send merge requests to the source project, or other forks.

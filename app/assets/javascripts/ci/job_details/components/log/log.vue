@@ -40,9 +40,11 @@ export default {
         }
       });
     }
+
+    this.setupFullScreenListeners();
   },
   methods: {
-    ...mapActions(['toggleCollapsibleLine', 'scrollBottom']),
+    ...mapActions(['toggleCollapsibleLine', 'scrollBottom', 'setupFullScreenListeners']),
     handleOnClickCollapsibleLine(section) {
       this.toggleCollapsibleLine(section);
     },

@@ -34,9 +34,16 @@ export const initJobDetails = () => {
     pipelineTestReportUrl,
   } = el.dataset;
 
+  const fullScreenAPIAvailable = document.fullscreenEnabled;
+
   // init store to start fetching log
   const store = createStore();
-  store.dispatch('init', { jobEndpoint, logEndpoint, testReportSummaryUrl });
+  store.dispatch('init', {
+    jobEndpoint,
+    logEndpoint,
+    testReportSummaryUrl,
+    fullScreenAPIAvailable,
+  });
 
   return new Vue({
     el,

@@ -26,6 +26,9 @@ import {
   toggleSidebar,
   receiveTestSummarySuccess,
   requestTestSummary,
+  enterFullscreenSuccess,
+  exitFullscreenSuccess,
+  fullScreenContainerSetUpResult,
 } from '~/ci/job_details/store/actions';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 
@@ -61,6 +64,7 @@ describe('Job State actions', () => {
           {
             type: types.SET_JOB_LOG_OPTIONS,
             payload: {
+              fullScreenAPIAvailable: false,
               jobEndpoint: mockJobEndpoint,
               logEndpoint: mockLogEndpoint,
               testReportSummaryUrl: '/group1/project1/-/jobs/99/test_report_summary.json',
@@ -604,6 +608,42 @@ describe('Job State actions', () => {
       it('does not dispatch any actions or mutations', () => {
         return testAction(requestTestSummary, null, mockedState, [], []);
       });
+    });
+  });
+
+  describe('enterFullscreenSuccess', () => {
+    it('should commit ENTER_FULLSCREEN_SUCCESS mutation', () => {
+      return testAction(
+        enterFullscreenSuccess,
+        {},
+        mockedState,
+        [{ type: types.ENTER_FULLSCREEN_SUCCESS }],
+        [],
+      );
+    });
+  });
+
+  describe('exitFullscreenSuccess', () => {
+    it('should commit EXIT_FULLSCREEN_SUCCESS mutation', () => {
+      return testAction(
+        exitFullscreenSuccess,
+        {},
+        mockedState,
+        [{ type: types.EXIT_FULLSCREEN_SUCCESS }],
+        [],
+      );
+    });
+  });
+
+  describe('fullScreenContainerSetUpResult', () => {
+    it('should commit FULL_SCREEN_CONTAINER_SET_UP mutation', () => {
+      return testAction(
+        fullScreenContainerSetUpResult,
+        {},
+        mockedState,
+        [{ type: types.FULL_SCREEN_CONTAINER_SET_UP, payload: {} }],
+        [],
+      );
     });
   });
 });

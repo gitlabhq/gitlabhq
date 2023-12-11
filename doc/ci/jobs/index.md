@@ -375,6 +375,14 @@ job1:
     - echo -e "\e[0Ksection_end:`date +%s`:my_first_section\r\e[0K"
 ```
 
+### Full screen mode
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363617) in GitLab 16.7.
+
+You can view the contents of a job log in full screen mode by clicking **Show full screen**.
+
+To use full screen mode, your web browser must also support it. If your web browser does not support full screen mode, then the option is not available.
+
 ## Deployment jobs
 
 Deployment jobs are a specific kind of CI job in that they deploy code to

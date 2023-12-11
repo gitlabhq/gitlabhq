@@ -6,6 +6,7 @@ export default {
     state.jobEndpoint = options.jobEndpoint;
     state.logEndpoint = options.logEndpoint;
     state.testReportSummaryUrl = options.testReportSummaryUrl;
+    state.fullScreenAPIAvailable = options.fullScreenAPIAvailable;
   },
 
   [types.HIDE_SIDEBAR](state) {
@@ -141,5 +142,17 @@ export default {
   },
   [types.RECEIVE_TEST_SUMMARY_COMPLETE](state) {
     state.testSummaryComplete = true;
+  },
+  [types.ENTER_FULLSCREEN_SUCCESS](state) {
+    state.fullScreenEnabled = true;
+  },
+  [types.EXIT_FULLSCREEN_SUCCESS](state) {
+    state.fullScreenEnabled = false;
+  },
+  [types.FULL_SCREEN_CONTAINER_SET_UP](state, value) {
+    state.fullScreenContainerSetUp = value;
+  },
+  [types.FULL_SCREEN_MODE_AVAILABLE_SUCCESS](state) {
+    state.fullScreenModeAvailable = true;
   },
 };
