@@ -120,13 +120,13 @@ export default {
     routerLinkTo() {
       if (this.isBlob) {
         return buildURLwithRefType({
-          path: joinPaths('/-/blob', this.escapedRef, this.path),
+          path: joinPaths('/-/blob', this.escapedRef, encodeURI(this.path)),
           refType: this.refType,
         });
       }
       if (this.isFolder) {
         return buildURLwithRefType({
-          path: joinPaths('/-/tree', this.escapedRef, this.path),
+          path: joinPaths('/-/tree', this.escapedRef, encodeURI(this.path)),
           refType: this.refType,
         });
       }
