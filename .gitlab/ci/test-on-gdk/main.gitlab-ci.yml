@@ -21,7 +21,11 @@ include:
 
 .rules:gdk:qa-parallel:
   rules:
-    - *code-pattern-changes
+    - <<: *code-pattern-changes
+      variables:
+        QA_TESTS: ""
+          # To account for cases where a group label is set which may trigger selective execution
+          # But we want to execute full reliable suite on gdk in case of code-pattern-changes
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::Blocking/
     - !reference [.rules:test:manual, rules]
@@ -36,10 +40,6 @@ include:
         QA_TESTS: ""
     - if: $QA_SUITES =~ /Test::Instance::Smoke/
     - !reference [.rules:test:manual, rules]
-
-.parallel:
-  variables:
-    QA_TESTS: "" # Reset to empty, because parallel run should never pass in specific specs
 
 .gdk-qa-base:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-2.3-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23

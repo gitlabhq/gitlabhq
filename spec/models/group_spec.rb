@@ -1264,40 +1264,8 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#avatar_type' do
-    let(:user) { create(:user) }
-
-    before do
-      group.add_member(user, GroupMember::MAINTAINER)
-    end
-
-    it "is true if avatar is image" do
-      group.update_attribute(:avatar, 'uploads/avatar.png')
-      expect(group.avatar_type).to be_truthy
-    end
-
-    it "is false if avatar is html page" do
-      group.update_attribute(:avatar, 'uploads/avatar.html')
-      group.avatar_type
-
-      expect(group.errors.added?(:avatar, "file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico, webp")).to be true
-    end
-  end
-
-  describe '#avatar_url' do
-    let!(:group) { create(:group, :with_avatar) }
-    let(:user) { create(:user) }
-
-    context 'when avatar file is uploaded' do
-      before do
-        group.add_maintainer(user)
-      end
-
-      it 'shows correct avatar url' do
-        expect(group.avatar_url).to eq(group.avatar.url)
-        expect(group.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, group.avatar.url].join)
-      end
-    end
+  it_behaves_like Avatarable do
+    let(:model) { create(:group, :with_avatar) }
   end
 
   describe '.search' do

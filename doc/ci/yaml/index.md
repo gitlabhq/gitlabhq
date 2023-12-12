@@ -3130,7 +3130,7 @@ pages:
   environment: production
 ```
 
-This example moves all files from a `my-html-content/` directory to the `public/` directory.
+This example renames the `my-html-content/` directory to `public/`.
 This directory is exported as an artifact and published with GitLab Pages.
 
 #### `pages:publish`
@@ -4111,7 +4111,7 @@ job2:
 
 **Additional details**:
 
-- When you use [these special characters in `script`](script.md#use-special-characters-with-script), you must use single quotes (`'`) or double quotes (`"`) .
+- When you use [these special characters in `script`](script.md#use-special-characters-with-script), you must use single quotes (`'`) or double quotes (`"`).
 
 **Related topics**:
 

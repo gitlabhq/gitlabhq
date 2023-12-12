@@ -133,7 +133,6 @@ project_feature:
     - project_id
     - updated_at
     - operations_access_level
-    - model_registry_access_level
   computed_attributes:
     - issues_enabled
     - jobs_enabled

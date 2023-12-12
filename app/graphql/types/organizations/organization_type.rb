@@ -10,9 +10,7 @@ module Types
       field :avatar_url,
         type: GraphQL::Types::String,
         null: true,
-        description:
-          'Avatar URL of the organization. `null` until ' \
-          '[#422418](https://gitlab.com/gitlab-org/gitlab/-/issues/422418) is complete.',
+        description: 'Avatar URL of the organization.',
         alpha: { milestone: '16.7' }
       field :description,
         GraphQL::Types::String,
@@ -53,9 +51,8 @@ module Types
 
       markdown_field :description_html, null: true, alpha: { milestone: '16.7' }, &:organization_detail
 
-      # TODO - update to return real avatar url when https://gitlab.com/gitlab-org/gitlab/-/issues/422418 is complete.
       def avatar_url
-        nil
+        object.avatar_url(only_path: false)
       end
     end
   end

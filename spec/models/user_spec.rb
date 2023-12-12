@@ -3564,32 +3564,8 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
-  describe '#avatar_type' do
-    let(:user) { create(:user) }
-
-    it 'is true if avatar is image' do
-      user.update_attribute(:avatar, 'uploads/avatar.png')
-
-      expect(user.avatar_type).to be_truthy
-    end
-
-    it 'is false if avatar is html page' do
-      user.update_attribute(:avatar, 'uploads/avatar.html')
-      user.avatar_type
-
-      expect(user.errors.added?(:avatar, "file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico, webp")).to be true
-    end
-  end
-
-  describe '#avatar_url' do
-    let(:user) { create(:user, :with_avatar) }
-
-    context 'when avatar file is uploaded' do
-      it 'shows correct avatar url' do
-        expect(user.avatar_url).to eq(user.avatar.url)
-        expect(user.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, user.avatar.url].join)
-      end
-    end
+  it_behaves_like Avatarable do
+    let(:model) { create(:user, :with_avatar) }
   end
 
   describe '#clear_avatar_caches' do

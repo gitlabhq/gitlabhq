@@ -2051,50 +2051,31 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#avatar_type' do
-    let(:project) { create(:project) }
-
-    it 'is true if avatar is image' do
-      project.update_attribute(:avatar, 'uploads/avatar.png')
-      expect(project.avatar_type).to be_truthy
+  context 'with avatar' do
+    it_behaves_like Avatarable do
+      let(:model) { create(:project, :with_avatar) }
     end
 
-    it 'is false if avatar is html page' do
-      project.update_attribute(:avatar, 'uploads/avatar.html')
-      project.avatar_type
+    describe '#avatar_url' do
+      subject { project.avatar_url }
 
-      expect(project.errors.added?(:avatar, "file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico, webp")).to be true
-    end
-  end
-
-  describe '#avatar_url' do
-    subject { project.avatar_url }
-
-    let(:project) { create(:project) }
-
-    context 'when avatar file is uploaded' do
-      let(:project) { create(:project, :public, :with_avatar) }
-
-      it 'shows correct url' do
-        expect(project.avatar_url).to eq(project.avatar.url)
-        expect(project.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, project.avatar.url].join)
-      end
-    end
-
-    context 'when avatar file in git' do
-      before do
-        allow(project).to receive(:avatar_in_git) { true }
-      end
-
-      let(:avatar_path) { "/#{project.full_path}/-/avatar" }
-
-      it { is_expected.to eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
-    end
-
-    context 'when git repo is empty' do
       let(:project) { create(:project) }
 
-      it { is_expected.to eq nil }
+      context 'when avatar file in git' do
+        before do
+          allow(project).to receive(:avatar_in_git) { true }
+        end
+
+        let(:avatar_path) { "/#{project.full_path}/-/avatar" }
+
+        it { is_expected.to eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+      end
+
+      context 'when git repo is empty' do
+        let(:project) { create(:project) }
+
+        it { is_expected.to eq nil }
+      end
     end
   end
 

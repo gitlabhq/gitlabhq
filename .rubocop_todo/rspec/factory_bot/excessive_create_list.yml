@@ -8,7 +8,6 @@ RSpec/FactoryBot/ExcessiveCreateList:
     - 'ee/spec/models/license_spec.rb'
     - 'ee/spec/models/package_metadata/advisory_spec.rb'
     - 'ee/spec/requests/projects/merge_requests_controller_spec.rb'
-    - 'ee/spec/services/ci/llm/generate_config_service_spec.rb'
     - 'ee/spec/views/admin/application_settings/_elasticsearch_form.html.haml_spec.rb'
     - 'spec/controllers/autocomplete_controller_spec.rb'
     - 'spec/controllers/explore/projects_controller_spec.rb'

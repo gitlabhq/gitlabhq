@@ -3,6 +3,8 @@
 module Organizations
   class OrganizationDetail < ApplicationRecord
     include CacheMarkdownField
+    include Avatarable
+    include WithUploads
 
     cache_markdown_field :description
 

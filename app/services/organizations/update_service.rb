@@ -8,13 +8,10 @@ module Organizations
       @organization = organization
       @current_user = current_user
       @params = params.dup
-      return unless @params.key?(:description)
 
-      organization_detail_attributes = { description: @params.delete(:description) }
+      build_organization_detail_attributes
       # TODO: Remove explicit passing of id once https://github.com/rails/rails/issues/48714 is resolved.
-      organization_detail_attributes[:id] = organization.id
-      @params[:organization_detail_attributes] ||= {}
-      @params[:organization_detail_attributes].merge!(organization_detail_attributes)
+      @params[:organization_detail_attributes][:id] = organization.id
     end
 
     def execute

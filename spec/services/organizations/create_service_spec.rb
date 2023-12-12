@@ -7,7 +7,10 @@ RSpec.describe Organizations::CreateService, feature_category: :cell do
     let_it_be(:user) { create(:user) }
 
     let(:current_user) { user }
-    let(:params) { attributes_for(:organization) }
+    let(:params) { attributes_for(:organization).merge(extra_params) }
+    let(:avatar_filename) { nil }
+    let(:extra_params) { {} }
+    let(:created_organization) { response.payload }
 
     subject(:response) { described_class.new(current_user: current_user, params: params).execute }
 
@@ -23,17 +26,41 @@ RSpec.describe Organizations::CreateService, feature_category: :cell do
     end
 
     context 'when user has permission' do
-      it 'creates an organization' do
-        expect { response }.to change { Organizations::Organization.count }
-
-        expect(response).to be_success
+      shared_examples 'creating an organization' do
+        it 'creates the organization' do
+          expect { response }.to change { Organizations::Organization.count }
+          expect(response).to be_success
+          expect(created_organization.name).to eq(params[:name])
+          expect(created_organization.path).to eq(params[:path])
+          expect(created_organization.description).to eq(params[:description])
+          expect(created_organization.avatar.filename).to eq(avatar_filename)
+        end
       end
 
-      it 'returns an error when the organization is not persisted' do
-        params[:name] = nil
+      it_behaves_like 'creating an organization'
 
-        expect(response).to be_error
-        expect(response.message).to match_array(["Name can't be blank"])
+      context 'with description' do
+        let(:description) { 'Organization description' }
+        let(:extra_params) { { description: description } }
+
+        it_behaves_like 'creating an organization'
+      end
+
+      context 'with avatar' do
+        let(:avatar_filename) { 'dk.png' }
+        let(:avatar) { fixture_file_upload("spec/fixtures/#{avatar_filename}") }
+        let(:extra_params) { { avatar: avatar } }
+
+        it_behaves_like 'creating an organization'
+      end
+
+      context 'when the organization is not persisted' do
+        let(:extra_params) { { name: nil } }
+
+        it 'returns an error when the organization is not persisted' do
+          expect(response).to be_error
+          expect(response.message).to match_array(["Name can't be blank"])
+        end
       end
     end
   end

@@ -20041,7 +20041,9 @@ CREATE TABLE organization_details (
     cached_markdown_version integer,
     description text,
     description_html text,
-    CONSTRAINT check_71dfb7807f CHECK ((char_length(description) <= 1024))
+    avatar text,
+    CONSTRAINT check_71dfb7807f CHECK ((char_length(description) <= 1024)),
+    CONSTRAINT check_9fbd483b51 CHECK ((char_length(avatar) <= 255))
 );
 
 CREATE TABLE organization_settings (

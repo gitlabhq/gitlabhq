@@ -356,7 +356,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
     context 'when changes project features' do
       # Using some sample features for testing.
       # Not using all the features because some of them must be enabled/disabled together
-      %w[issues wiki forking model_experiments].each do |feature_name|
+      %w[issues wiki forking model_experiments model_registry].each do |feature_name|
         context "with feature_name:#{feature_name}" do
           let(:feature) { "#{feature_name}_access_level" }
           let(:params) do

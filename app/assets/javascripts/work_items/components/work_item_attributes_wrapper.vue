@@ -37,7 +37,9 @@ export default {
     WorkItemProgress: () => import('ee_component/work_items/components/work_item_progress.vue'),
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
     WorkItemHealthStatus: () =>
-      import('ee_component/work_items/components/work_item_health_status.vue'),
+      import('ee_component/work_items/components/work_item_health_status_with_edit.vue'),
+    WorkItemHealthStatusInline: () =>
+      import('ee_component/work_items/components/work_item_health_status_inline.vue'),
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -201,16 +203,28 @@ export default {
       :work-item-type="workItemType"
       @error="$emit('error', $event)"
     />
-    <work-item-health-status
-      v-if="workItemHealthStatus"
-      class="gl-mb-5"
-      :health-status="workItemHealthStatus.healthStatus"
-      :can-update="canUpdate"
-      :work-item-id="workItem.id"
-      :work-item-iid="workItem.iid"
-      :work-item-type="workItemType"
-      @error="$emit('error', $event)"
-    />
+    <template v-if="workItemHealthStatus">
+      <work-item-health-status
+        v-if="glFeatures.workItemsMvc2"
+        class="gl-mb-5"
+        :health-status="workItemHealthStatus.healthStatus"
+        :can-update="canUpdate"
+        :work-item-id="workItem.id"
+        :work-item-iid="workItem.iid"
+        :work-item-type="workItemType"
+        @error="$emit('error', $event)"
+      />
+      <work-item-health-status-inline
+        v-else
+        class="gl-mb-5"
+        :health-status="workItemHealthStatus.healthStatus"
+        :can-update="canUpdate"
+        :work-item-id="workItem.id"
+        :work-item-iid="workItem.iid"
+        :work-item-type="workItemType"
+        @error="$emit('error', $event)"
+      />
+    </template>
     <template v-if="showWorkItemParent">
       <work-item-parent
         v-if="glFeatures.workItemsMvc2"

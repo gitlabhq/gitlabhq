@@ -56,6 +56,10 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
       expect(page).to have_content '8 files'
     end
 
+    it 'has the correct count for changes' do
+      expect(page).to have_content 'Changes 8'
+    end
+
     it_behaves_like 'allows commenting',
       file_name: '.gitmodules',
       line_text: '[submodule "six"]',
@@ -121,6 +125,10 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
       page.within '.mr-version-compare-dropdown' do
         expect(page).to have_content 'version 1'
       end
+    end
+
+    it 'has the correct count for changes' do
+      expect(page).to have_content 'Changes 4'
     end
 
     it 'has a path with comparison context and shows comments that were last relevant at that version' do

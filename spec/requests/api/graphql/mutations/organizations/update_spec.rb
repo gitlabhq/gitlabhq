@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Mutations::Organizations::Update, feature_category: :cell do
   include GraphqlHelpers
+  include WorkhorseHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:organization) do
@@ -14,16 +15,18 @@ RSpec.describe Mutations::Organizations::Update, feature_category: :cell do
   let(:name) { 'Name' }
   let(:path) { 'path' }
   let(:description) { 'org-description' }
+  let(:avatar) { nil }
   let(:params) do
     {
       id: organization.to_global_id.to_s,
       name: name,
       path: path,
-      description: description
+      description: description,
+      avatar: avatar
     }
   end
 
-  subject(:update_organization) { post_graphql_mutation(mutation, current_user: current_user) }
+  subject(:update_organization) { post_graphql_mutation_with_uploads(mutation, current_user: current_user) }
 
   it { expect(described_class).to require_graphql_authorizations(:admin_organization) }
 
@@ -89,6 +92,29 @@ RSpec.describe Mutations::Organizations::Update, feature_category: :cell do
         'description' => description
       )
       expect(mutation_response['errors']).to be_empty
+    end
+
+    context 'with a new avatar' do
+      let(:filename) { 'spec/fixtures/dk.png' }
+      let(:avatar) { fixture_file_upload(filename) }
+
+      it 'returns the updated organization' do
+        update_organization
+
+        expect(
+          graphql_data_at(:organization_update, :organization)
+        ).to(
+          match(
+            a_hash_including(
+              'name' => name,
+              'path' => path,
+              'description' => description
+            )
+          )
+        )
+        expect(File.basename(organization.reload.avatar.file.file)).to eq(File.basename(filename))
+        expect(mutation_response['errors']).to be_empty
+      end
     end
   end
 end

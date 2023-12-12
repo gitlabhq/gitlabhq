@@ -11,6 +11,10 @@ module Mutations
       argument :description, GraphQL::Types::String,
         required: false,
         description: 'Description of the organization.'
+
+      argument :avatar, ApolloUploadServer::Upload,
+        required: false,
+        description: 'Avatar for the organization.'
     end
   end
 end

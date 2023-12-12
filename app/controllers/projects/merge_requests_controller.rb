@@ -468,11 +468,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def get_diffs_count
-    if show_only_context_commits?
-      @merge_request.context_commits_diff.raw_diffs.size
-    else
-      @merge_request.diff_size
-    end
+    return @merge_request.context_commits_diff.raw_diffs.size if show_only_context_commits?
+    return @merge_request.merge_request_diffs.find_by_id(params[:diff_id])&.size if params[:diff_id]
+
+    @merge_request.diff_size
   end
 
   def merge_request_update_params

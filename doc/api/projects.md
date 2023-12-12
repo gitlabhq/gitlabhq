@@ -1474,7 +1474,8 @@ Refer to the [Events API documentation](events.md#list-a-projects-visible-events
 
 ## Create project
 
-> `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
+> - `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
+> - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
 
 Creates a new project owned by the authenticated user.
 
@@ -1550,6 +1551,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `infrastructure_access_level`                               | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `monitor_access_level`                                      | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `model_experiments_access_level`                            | string  | No | One of `disabled`, `private`, or `enabled`. |
+| `model_registry_access_level`                               | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `remove_source_branch_after_merge`                          | boolean | No | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                   | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `repository_storage`                                        | string  | No | Which storage shard the repository is on. _(administrator only)_ |
@@ -1573,7 +1575,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 
 ## Create project for user
 
-> `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
+> - `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
+> - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
 
 Creates a new project owned by the specified user. Available only for administrators.
 
@@ -1639,6 +1642,7 @@ POST /projects/user/:user_id
 | `infrastructure_access_level`                               | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `monitor_access_level`                                      | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `model_experiments_access_level`                            | string  | No | One of `disabled`, `private`, or `enabled`. |
+| `model_registry_access_level`                               | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `remove_source_branch_after_merge`                          | boolean | No | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                   | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `repository_storage`                                        | string  | No | Which storage shard the repository is on. _(administrators only)_ |
@@ -1664,7 +1668,8 @@ POST /projects/user/:user_id
 
 ## Edit project
 
-> `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
+> - `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
+> - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
 
 Updates an existing project.
 
@@ -1754,6 +1759,7 @@ Supported attributes:
 | `feature_flags_access_level`                                | string         | No | One of `disabled`, `private`, or `enabled`. |
 | `infrastructure_access_level`                               | string         | No | One of `disabled`, `private`, or `enabled`. |
 | `monitor_access_level`                                      | string         | No | One of `disabled`, `private`, or `enabled`. |
+| `model_registry_access_level`                               | string         | No | One of `disabled`, `private`, or `enabled`. |
 | `remove_source_branch_after_merge`                          | boolean        | No | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                   | string         | No | One of `disabled`, `private`, or `enabled`. |
 | `repository_storage`                                        | string         | No | Which storage shard the repository is on. _(administrators only)_ |
