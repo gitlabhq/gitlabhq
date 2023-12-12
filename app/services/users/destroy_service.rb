@@ -53,7 +53,7 @@ module Users
       # Load the records. Groups are unavailable after membership is destroyed.
       solo_owned_groups = user.solo_owned_groups.load
 
-      user.members.each_batch { |batch| batch.destroy_all } # rubocop:disable Style/SymbolProc, Cop/DestroyAll
+      user.members.each_batch { |batch| batch.destroy_all } # rubocop:disable Cop/DestroyAll
 
       solo_owned_groups.each do |group|
         Groups::DestroyService.new(group, current_user).execute

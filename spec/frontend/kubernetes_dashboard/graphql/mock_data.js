@@ -223,3 +223,69 @@ export const mockDeploymentsTableItems = [
     kind: 'Deployment',
   },
 ];
+
+const readyStatefulSet = {
+  status: { readyReplicas: 2 },
+  spec: { replicas: 2 },
+  metadata: {
+    name: 'statefulSet-2',
+    namespace: 'default',
+    creationTimestamp: '2023-07-31T11:50:17Z',
+    labels: {},
+    annotations: {},
+  },
+};
+const failedStatefulSet = {
+  status: { readyReplicas: 1 },
+  spec: { replicas: 2 },
+  metadata: {
+    name: 'statefulSet-3',
+    namespace: 'default',
+    creationTimestamp: '2023-11-21T11:50:59Z',
+    labels: {},
+    annotations: {},
+  },
+};
+
+export const k8sStatefulSetsMock = [readyStatefulSet, readyStatefulSet, failedStatefulSet];
+
+export const mockStatefulSetsStats = [
+  {
+    title: 'Ready',
+    value: 2,
+  },
+  {
+    title: 'Failed',
+    value: 1,
+  },
+];
+
+export const mockStatefulSetsTableItems = [
+  {
+    name: 'statefulSet-2',
+    namespace: 'default',
+    status: 'Ready',
+    age: '114d',
+    labels: {},
+    annotations: {},
+    kind: 'StatefulSet',
+  },
+  {
+    name: 'statefulSet-2',
+    namespace: 'default',
+    status: 'Ready',
+    age: '114d',
+    labels: {},
+    annotations: {},
+    kind: 'StatefulSet',
+  },
+  {
+    name: 'statefulSet-3',
+    namespace: 'default',
+    status: 'Failed',
+    age: '1d',
+    labels: {},
+    annotations: {},
+    kind: 'StatefulSet',
+  },
+];

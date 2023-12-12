@@ -1,6 +1,7 @@
 import {
   getAge,
   calculateDeploymentStatus,
+  calculateStatefulSetStatus,
 } from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
 import { useFakeDate } from 'helpers/fake_date';
 
@@ -50,6 +51,25 @@ describe('k8s_integration_helper', () => {
       ${'Available is false and Progressing is false'} | ${failed}  | ${'Failed'}
     `('returns status as $expected when $condition', ({ status, expected }) => {
       expect(calculateDeploymentStatus({ status })).toBe(expected);
+    });
+  });
+
+  describe('calculateStatefulSetStatus', () => {
+    const ready = {
+      status: { readyReplicas: 2 },
+      spec: { replicas: 2 },
+    };
+    const failed = {
+      status: { readyReplicas: 1 },
+      spec: { replicas: 2 },
+    };
+
+    it.each`
+      condition                                                  | item      | expected
+      ${'there are less readyReplicas than replicas in spec'}    | ${failed} | ${'Failed'}
+      ${'there are the same amount of readyReplicas as in spec'} | ${ready}  | ${'Ready'}
+    `('returns status as $expected when $condition', ({ item, expected }) => {
+      expect(calculateStatefulSetStatus(item)).toBe(expected);
     });
   });
 });

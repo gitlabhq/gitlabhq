@@ -33,7 +33,7 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
       issue.design_collection.repository.raw.delete_all_refs_except([Gitlab::Git::BLANK_SHA])
     end
 
-    allow(::DesignManagement::NewVersionWorker)
+    allow(DesignManagement::NewVersionWorker)
       .to receive(:perform_async).with(Integer, false).and_return(nil)
   end
 
@@ -293,7 +293,7 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
         it 'has the correct side-effects' do
           counter = Gitlab::UsageDataCounters::DesignsCounter
 
-          expect(::DesignManagement::NewVersionWorker)
+          expect(DesignManagement::NewVersionWorker)
             .to receive(:perform_async).once.with(Integer, false).and_return(nil)
 
           expect { run_service }
@@ -327,7 +327,7 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
           design_repository.create_if_not_exists
           design_repository.has_visible_content?
 
-          expect(::DesignManagement::NewVersionWorker)
+          expect(DesignManagement::NewVersionWorker)
             .to receive(:perform_async).once.with(Integer, false).and_return(nil)
 
           expect { service.execute }

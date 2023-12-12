@@ -53,7 +53,7 @@ RSpec.describe 'Upload a design through graphQL', :js, feature_category: :design
   RSpec.shared_examples 'for a design upload through graphQL' do
     it 'creates proper objects' do
       expect { subject }
-        .to change { ::DesignManagement::Design.count }.by(1)
+        .to change { DesignManagement::Design.count }.by(1)
         .and change { ::LfsObject.count }.by(1)
     end
 

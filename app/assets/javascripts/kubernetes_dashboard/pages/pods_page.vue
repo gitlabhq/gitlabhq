@@ -4,10 +4,10 @@ import { getAge } from '../helpers/k8s_integration_helper';
 import WorkloadLayout from '../components/workload_layout.vue';
 import k8sPodsQuery from '../graphql/queries/k8s_dashboard_pods.query.graphql';
 import {
-  PHASE_RUNNING,
-  PHASE_PENDING,
-  PHASE_SUCCEEDED,
-  PHASE_FAILED,
+  STATUS_RUNNING,
+  STATUS_PENDING,
+  STATUS_SUCCEEDED,
+  STATUS_FAILED,
   STATUS_LABELS,
 } from '../constants';
 
@@ -54,20 +54,20 @@ export default {
     podStats() {
       return [
         {
-          value: this.countPodsByPhase(PHASE_RUNNING),
-          title: STATUS_LABELS[PHASE_RUNNING],
+          value: this.countPodsByPhase(STATUS_RUNNING),
+          title: STATUS_LABELS[STATUS_RUNNING],
         },
         {
-          value: this.countPodsByPhase(PHASE_PENDING),
-          title: STATUS_LABELS[PHASE_PENDING],
+          value: this.countPodsByPhase(STATUS_PENDING),
+          title: STATUS_LABELS[STATUS_PENDING],
         },
         {
-          value: this.countPodsByPhase(PHASE_SUCCEEDED),
-          title: STATUS_LABELS[PHASE_SUCCEEDED],
+          value: this.countPodsByPhase(STATUS_SUCCEEDED),
+          title: STATUS_LABELS[STATUS_SUCCEEDED],
         },
         {
-          value: this.countPodsByPhase(PHASE_FAILED),
-          title: STATUS_LABELS[PHASE_FAILED],
+          value: this.countPodsByPhase(STATUS_FAILED),
+          title: STATUS_LABELS[STATUS_FAILED],
         },
       ];
     },

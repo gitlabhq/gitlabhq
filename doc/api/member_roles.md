@@ -16,10 +16,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Feature flag `admin_merge_request` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132578) in GitLab 16.5.
 > - [Admin group members introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131914) in GitLab 16.5 [with a flag](../administration/feature_flags.md) named `admin_group_member`. Disabled by default. The feature flag has been removed in GitLab 16.6.
 > - [Manage project access tokens introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132342) in GitLab 16.5 in [with a flag](../administration/feature_flags.md) named `manage_project_access_tokens`. Disabled by default.
-> - [Archive project introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134998) in GitLab 16.6 in [with a flag](../administration/feature_flags.md) named `archive_project`. Disabled by default.
+> - [Archive project introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134998) in GitLab 16.7.
 
 FLAG:
-On self-managed GitLab, by default these features are not available. To make them available, an administrator can [enable the feature flags](../administration/feature_flags.md) named `admin_group_member`, `manage_project_access_tokens` and `archive_project`.
+On self-managed GitLab, by default these features are not available. To make them available, an administrator can [enable the feature flags](../administration/feature_flags.md) named `admin_group_member` and `manage_project_access_tokens`.
 On GitLab.com, these features are not available.
 
 ## List all member roles of a group

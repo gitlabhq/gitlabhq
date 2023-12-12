@@ -15,7 +15,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Ability to create and remove a custom role with the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393235) in GitLab 16.4.
 > - Ability to manage group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17364) in GitLab 16.5.
 > - Ability to manage project access tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421778) in GitLab 16.5 [with a flag](../administration/feature_flags.md) named `manage_project_access_tokens`.
-> - Ability to archive projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425957) in GitLab 16.6 in [with a flag](../administration/feature_flags.md) named `archive_project`. Disabled by default.
+> - Ability to archive projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425957) in GitLab 16.7.
 > - Ability to use the UI to add a user to your group with a custom role, change a user's custom role, or remove a custom role from a group member [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393239) in GitLab 16.7.
 
 Custom roles allow group Owners or instance administrators to create roles

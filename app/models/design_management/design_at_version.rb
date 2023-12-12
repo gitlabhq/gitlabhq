@@ -53,11 +53,11 @@ module DesignManagement
       design_ids = pairs.map(&:first).uniq
       version_ids = pairs.map(&:second).uniq
 
-      designs = ::DesignManagement::Design
+      designs = DesignManagement::Design
         .where(id: design_ids)
         .index_by(&:id)
 
-      versions = ::DesignManagement::Version
+      versions = DesignManagement::Version
         .where(id: version_ids)
         .index_by(&:id)
 
@@ -93,7 +93,7 @@ module DesignManagement
 
     def action
       strong_memoize(:most_recent_action) do
-        ::DesignManagement::Action
+        DesignManagement::Action
           .most_recent.up_to_version(version)
           .find_by(design: design)
       end

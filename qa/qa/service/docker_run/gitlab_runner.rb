@@ -91,6 +91,7 @@ module QA
             args << '--docker-privileged=true'
             args << "--docker-network-mode=#{network}"
             args << "--docker-volumes=/certs/client"
+            args << "--docker-extra-hosts=gdk.test:#{gdk_host_ip}" if gdk_network
           end
 
           <<~CMD.strip

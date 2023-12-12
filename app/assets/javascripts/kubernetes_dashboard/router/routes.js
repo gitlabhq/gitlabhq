@@ -1,11 +1,14 @@
 import { s__ } from '~/locale';
 import PodsPage from '../pages/pods_page.vue';
 import DeploymentsPage from '../pages/deployments_page.vue';
+import StatefulSetsPage from '../pages/stateful_sets_page.vue';
 import {
   PODS_ROUTE_NAME,
   PODS_ROUTE_PATH,
   DEPLOYMENTS_ROUTE_NAME,
   DEPLOYMENTS_ROUTE_PATH,
+  STATEFUL_SETS_ROUTE_NAME,
+  STATEFUL_SETS_ROUTE_PATH,
 } from './constants';
 
 export default [
@@ -23,6 +26,14 @@ export default [
     component: DeploymentsPage,
     meta: {
       title: s__('KubernetesDashboard|Deployments'),
+    },
+  },
+  {
+    name: STATEFUL_SETS_ROUTE_NAME,
+    path: STATEFUL_SETS_ROUTE_PATH,
+    component: StatefulSetsPage,
+    meta: {
+      title: s__('KubernetesDashboard|StatefulSets'),
     },
   },
 ];

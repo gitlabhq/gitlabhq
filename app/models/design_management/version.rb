@@ -52,7 +52,7 @@ module DesignManagement
     delegate :project, to: :issue
 
     scope :for_designs, -> (designs) do
-      where(id: ::DesignManagement::Action.where(design_id: designs).select(:version_id)).distinct
+      where(id: DesignManagement::Action.where(design_id: designs).select(:version_id)).distinct
     end
     scope :earlier_or_equal_to, -> (version) { where("(#{table_name}.id) <= ?", version) } # rubocop:disable GitlabSecurity/SqlInjection
     scope :ordered, -> { order(id: :desc) }
@@ -88,7 +88,7 @@ module DesignManagement
 
         rows = design_actions.map { |action| action.row_attrs(version) }
 
-        ApplicationRecord.legacy_bulk_insert(::DesignManagement::Action.table_name, rows) # rubocop:disable Gitlab/BulkInsert
+        ApplicationRecord.legacy_bulk_insert(DesignManagement::Action.table_name, rows) # rubocop:disable Gitlab/BulkInsert
         version.designs.reset
         version.validate!
         design_actions.each(&:performed)

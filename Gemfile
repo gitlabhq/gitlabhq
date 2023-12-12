@@ -386,7 +386,7 @@ gem 'snowplow-tracker', '~> 0.8.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Metrics
 gem 'webrick', '~> 1.8.1', require: false # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'prometheus-client-mmap', '~> 1.0', '>= 1.0.1', require: 'prometheus/client' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'prometheus-client-mmap', '~> 1.0', '>= 1.0.2', require: 'prometheus/client' # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem 'warning', '~> 1.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 

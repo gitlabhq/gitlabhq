@@ -8136,7 +8136,7 @@ Input type: `VulnerabilitiesRemoveAllFromProjectInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilitiesremoveallfromprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationvulnerabilitiesremoveallfromprojectprojectids"></a>`projectIds` | [`[ProjectID!]!`](#projectid) | IDs of project for which all Vulnerabilities should be removed. The deletion will happen in the background so the changes will not be visible immediately. Does not work if `enable_remove_all_vulnerabilties_from_project_mutation` feature flag is disabled. |
+| <a id="mutationvulnerabilitiesremoveallfromprojectprojectids"></a>`projectIds` | [`[ProjectID!]!`](#projectid) | IDs of project for which all Vulnerabilities should be removed. The deletion will happen in the background so the changes will not be visible immediately. |
 
 #### Fields
 

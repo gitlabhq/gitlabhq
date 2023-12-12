@@ -62,22 +62,6 @@ RSpec.describe Pajamas::BannerComponent, type: :component do
       end
     end
 
-    describe 'embedded' do
-      context 'by default (false)' do
-        it 'keeps the banner\'s borders' do
-          expect(page).not_to have_css ".gl-banner.gl-border-none\\!"
-        end
-      end
-
-      context 'when set to true' do
-        let(:options) { { embedded: true } }
-
-        it 'removes the banner\'s borders' do
-          expect(page).to have_css ".gl-banner.gl-border-none\\!"
-        end
-      end
-    end
-
     describe 'variant' do
       context 'by default (promotion)' do
         it 'does not apply introduction class' do

@@ -1,5 +1,8 @@
-import { calculateDeploymentStatus } from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
-import { PHASE_READY, PHASE_FAILED } from '~/kubernetes_dashboard/constants';
+import {
+  calculateDeploymentStatus,
+  calculateStatefulSetStatus,
+} from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
+import { STATUS_READY, STATUS_FAILED } from '~/kubernetes_dashboard/constants';
 import { CLUSTER_AGENT_ERROR_MESSAGES } from '../constants';
 
 export function generateServicePortsString(ports) {
@@ -22,10 +25,10 @@ export function getDeploymentsStatuses(items) {
     const status = calculateDeploymentStatus(item);
 
     switch (status) {
-      case PHASE_READY:
+      case STATUS_READY:
         ready.push(item);
         break;
-      case PHASE_FAILED:
+      case STATUS_FAILED:
         failed.push(item);
         break;
       default:
@@ -63,10 +66,10 @@ export function getDaemonSetStatuses(items) {
 
 export function getStatefulSetStatuses(items) {
   const failed = items.filter((item) => {
-    return item.status?.readyReplicas < item.spec?.replicas;
+    return calculateStatefulSetStatus(item) === STATUS_FAILED;
   });
   const ready = items.filter((item) => {
-    return item.status?.readyReplicas === item.spec?.replicas;
+    return calculateStatefulSetStatus(item) === STATUS_READY;
   });
 
   return {

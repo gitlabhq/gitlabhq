@@ -1,0 +1,17 @@
+query getK8sDashboardStatefulSets($configuration: LocalConfiguration) {
+  k8sStatefulSets(configuration: $configuration) @client {
+    metadata {
+      name
+      namespace
+      creationTimestamp
+      labels
+      annotations
+    }
+    status {
+      readyReplicas
+    }
+    spec {
+      replicas
+    }
+  }
+}

@@ -4,7 +4,6 @@ module Pajamas
   class BannerComponent < Pajamas::Component
     # @param [String] button_text
     # @param [String] button_link
-    # @param [Boolean] embedded
     # @param [Symbol] variant
     # @param [String] svg_path
     # @param [Hash] banner_options
@@ -13,7 +12,6 @@ module Pajamas
     def initialize(
       button_text: 'OK',
       button_link: '#',
-      embedded: false,
       variant: :promotion,
       svg_path: nil,
       banner_options: {},
@@ -22,7 +20,6 @@ module Pajamas
     )
       @button_text = button_text
       @button_link = button_link
-      @embedded = embedded
       @variant = filter_attribute(variant.to_sym, VARIANT_OPTIONS, default: :promotion)
       @svg_path = svg_path.to_s
       @banner_options = banner_options
@@ -38,7 +35,6 @@ module Pajamas
       classes = []
       classes.push('gl-bg-gray-10!') unless introduction?
       classes.push('gl-banner-introduction') if introduction?
-      classes.push('gl-border-none!') if @embedded
       classes.join(' ')
     end
 

@@ -30,7 +30,7 @@ module DesignManagement
     attr_reader :issue, :current_user, :params
 
     def init_collection
-      return ::DesignManagement::Design.none unless can?(current_user, :read_design, issue)
+      return DesignManagement::Design.none unless can?(current_user, :read_design, issue)
 
       issue.designs
     end
@@ -43,14 +43,14 @@ module DesignManagement
 
     def by_filename(items)
       return items if params[:filenames].nil?
-      return ::DesignManagement::Design.none if params[:filenames].empty?
+      return DesignManagement::Design.none if params[:filenames].empty?
 
       items.with_filename(params[:filenames])
     end
 
     def by_id(items)
       return items if params[:ids].nil?
-      return ::DesignManagement::Design.none if params[:ids].empty?
+      return DesignManagement::Design.none if params[:ids].empty?
 
       items.id_in(params[:ids])
     end

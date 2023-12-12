@@ -21,7 +21,7 @@ module Pages
       PagesDeployment
         .versioned
         .ci_build_id_in(build_ids)
-        .each_batch do |batch| # rubocop: disable Style/SymbolProc -- deactivate does not accept the index argument
+        .each_batch do |batch|
           batch.deactivate
         end
     end

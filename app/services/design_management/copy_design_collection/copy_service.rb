@@ -172,7 +172,7 @@ module DesignManagement
       def copy_designs!
         design_attributes = attributes_config[:design_attributes]
 
-        ::DesignManagement::Design.with_project_iid_supply(target_project) do |supply|
+        DesignManagement::Design.with_project_iid_supply(target_project) do |supply|
           new_rows = designs.each_with_index.map do |design, i|
             design.attributes.slice(*design_attributes).merge(
               issue_id: target_issue.id,

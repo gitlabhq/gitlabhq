@@ -3,6 +3,7 @@ import createDefaultClient from '~/lib/graphql';
 import typeDefs from '~/environments/graphql/typedefs.graphql';
 import k8sPodsQuery from './queries/k8s_dashboard_pods.query.graphql';
 import k8sDeploymentsQuery from './queries/k8s_dashboard_deployments.query.graphql';
+import k8sStatefulSetsQuery from './queries/k8s_dashboard_stateful_sets.query.graphql';
 import { resolvers } from './resolvers';
 
 export const apolloProvider = () => {
@@ -39,6 +40,25 @@ export const apolloProvider = () => {
       },
       status: {
         conditions: null,
+      },
+    },
+  });
+
+  cache.writeQuery({
+    query: k8sStatefulSetsQuery,
+    data: {
+      metadata: {
+        name: null,
+        namespace: null,
+        creationTimestamp: null,
+        labels: null,
+        annotations: null,
+      },
+      status: {
+        readyReplicas: null,
+      },
+      spec: {
+        replicas: null,
       },
     },
   });

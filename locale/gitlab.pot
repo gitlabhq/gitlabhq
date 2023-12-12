@@ -27917,6 +27917,12 @@ msgstr ""
 msgid "KubernetesDashboard|Running"
 msgstr ""
 
+msgid "KubernetesDashboard|StatefulSet"
+msgstr ""
+
+msgid "KubernetesDashboard|StatefulSets"
+msgstr ""
+
 msgid "KubernetesDashboard|Status"
 msgstr ""
 

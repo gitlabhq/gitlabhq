@@ -25,6 +25,24 @@ export const mapWorkloadItem = (item) => {
   return { status: item.status };
 };
 
+export const mapSetItem = (item) => {
+  const status = {
+    ...item.status,
+    readyReplicas: item.status?.readyReplicas || null,
+  };
+
+  const metadata =
+    {
+      ...item.metadata,
+      annotations: item.metadata?.annotations || {},
+      labels: item.metadata?.labels || {},
+    } || null;
+
+  const spec = item.spec || null;
+
+  return { status, metadata, spec };
+};
+
 export const watchWorkloadItems = ({
   client,
   query,
@@ -32,6 +50,7 @@ export const watchWorkloadItems = ({
   namespace,
   watchPath,
   queryField,
+  mapFn = mapWorkloadItem,
 }) => {
   const config = new Configuration(configuration);
   const watcherApi = new WatchApi(config);
@@ -42,7 +61,7 @@ export const watchWorkloadItems = ({
       let result = [];
 
       watcher.on(EVENT_DATA, (data) => {
-        result = data.map(mapWorkloadItem);
+        result = data.map(mapFn);
 
         client.writeQuery({
           query,

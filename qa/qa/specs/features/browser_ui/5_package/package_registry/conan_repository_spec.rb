@@ -29,7 +29,8 @@ module QA
         package.remove_via_api!
       end
 
-      it 'publishes, installs, and deletes a Conan package', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348014' do
+      it 'publishes, installs, and deletes a Conan package', :reliable,
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348014' do
         Flow::Login.sign_in
 
         Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
@@ -48,7 +49,7 @@ module QA
         end
 
         Page::Project::Job::Show.perform do |job|
-          expect(job).to be_successful(timeout: 800)
+          expect(job).to be_successful(timeout: 180)
         end
 
         Page::Project::Menu.perform(&:go_to_package_registry)

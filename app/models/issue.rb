@@ -639,7 +639,7 @@ class Issue < ApplicationRecord
   end
 
   def design_collection
-    @design_collection ||= ::DesignManagement::DesignCollection.new(self)
+    @design_collection ||= DesignManagement::DesignCollection.new(self)
   end
 
   def from_service_desk?

@@ -1110,3 +1110,12 @@ Database/AvoidUsingPluckWithoutLimit:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
     - 'qa/qa/specs/**/*.rb'
+
+Style/SymbolProc:
+  AllowedMethods:
+    - define_method
+    - mail
+    - respond_to
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/434151
+    - each_batch
+    - each_sub_batch
