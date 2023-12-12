@@ -14052,7 +14052,7 @@ A user with add-on data.
 | <a id="addonusersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="addonuserstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="addonuserstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="addonusertwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
+| <a id="addonusertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="addonuseruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="addonuseruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="addonuserusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -14740,7 +14740,7 @@ Core representation of a GitLab user.
 | <a id="autocompletedusersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="autocompleteduserstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="autocompleteduserstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="autocompletedusertwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
+| <a id="autocompletedusertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="autocompleteduseruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="autocompleteduseruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="autocompleteduserusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -16766,7 +16766,7 @@ The currently authenticated GitLab user.
 | <a id="currentusersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="currentuserstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="currentuserstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="currentusertwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
+| <a id="currentusertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="currentuseruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="currentuseruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="currentuserusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -21625,7 +21625,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneesavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="mergerequestassigneestate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestassigneestatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="mergerequestassigneetwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
+| <a id="mergerequestassigneetwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="mergerequestassigneeuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestassigneeuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestassigneeusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -21913,7 +21913,7 @@ The author of the merge request.
 | <a id="mergerequestauthorsavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="mergerequestauthorstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestauthorstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="mergerequestauthortwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
+| <a id="mergerequestauthortwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="mergerequestauthoruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestauthoruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestauthorusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -22264,7 +22264,7 @@ A user participating in a merge request.
 | <a id="mergerequestparticipantsavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="mergerequestparticipantstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestparticipantstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="mergerequestparticipanttwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
+| <a id="mergerequestparticipanttwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="mergerequestparticipantuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestparticipantuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestparticipantusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -22588,7 +22588,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="mergerequestreviewerstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestreviewerstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="mergerequestreviewertwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
+| <a id="mergerequestreviewertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="mergerequestrevieweruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestrevieweruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestreviewerusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -27643,7 +27643,7 @@ Core representation of a GitLab user.
 | <a id="usercoresavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="usercorestate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="usercorestatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="usercoretwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
+| <a id="usercoretwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="usercoreuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="usercoreuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="usercoreusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -33355,7 +33355,7 @@ Implementations:
 | <a id="usersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="userstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="userstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="usertwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
+| <a id="usertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="useruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="useruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="userusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |

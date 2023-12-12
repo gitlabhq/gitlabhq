@@ -5,7 +5,7 @@
     .page-with-super-sidebar {
       @include gitlab-theme-super-sidebar(
         $theme-green-50,
-        $theme-green-200,
+        $theme-green-100,
         $theme-green-900,
         $theme-green-900,
       );

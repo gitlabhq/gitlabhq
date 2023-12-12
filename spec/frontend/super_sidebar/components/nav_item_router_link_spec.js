@@ -45,7 +45,9 @@ describe('NavItemRouterLink component', () => {
         routerLinkSlotProps: { isActive: true },
       });
 
-      expect(wrapper.findComponent(RouterLinkStub).props('activeClass')).toBe('gl-bg-t-gray-a-08');
+      expect(wrapper.findComponent(RouterLinkStub).props('activeClass')).toBe(
+        'super-sidebar-nav-item-current',
+      );
       expect(wrapper.attributes()).toEqual({
         href: '/foo',
         'aria-current': 'page',

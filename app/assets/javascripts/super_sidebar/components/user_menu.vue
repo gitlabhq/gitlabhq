@@ -248,7 +248,7 @@ export default {
       @shown="onShow"
     >
       <template #toggle>
-        <gl-button category="tertiary" class="user-bar-item btn-with-notification">
+        <gl-button category="tertiary" class="user-bar-dropdown-toggle btn-with-notification">
           <span class="gl-sr-only">{{ toggleText }}</span>
           <gl-avatar
             :size="24"

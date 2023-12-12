@@ -11,22 +11,19 @@
   .super-sidebar {
     --super-sidebar-bg: #{mix(white, $theme-color-lightest, 50%)};
     --super-sidebar-user-bar-bg: #{$theme-color};
-    --super-sidebar-user-bar-button-bg: rgba(255, 255, 255, 0.16);
-    --super-sidebar-user-bar-button-hover-bg: rgba(255, 255, 255, 0.24);
-    --super-sidebar-user-bar-button-color: #{$theme-color-lightest};
-    --super-sidebar-user-bar-button-hover-color: #{$white};
-    --super-sidebar-user-bar-button-icon-color: #{$theme-color-light};
-    --super-sidebar-user-bar-button-icon-hover-color: #{$theme-color-light};
     --super-sidebar-primary: #{$theme-color};
     --super-sidebar-notification-dot: #{$theme-color-darkest};
 
-    .user-bar {
-      .brand-logo,
-      .btn-default-tertiary,
-      .counter {
-        mix-blend-mode: normal;
-      }
-    }
+    --super-sidebar-user-bar-button-bg: #{$t-white-a-16};
+    --super-sidebar-user-bar-button-color: #{$theme-color-lightest};
+    --super-sidebar-user-bar-button-border-color: #{$t-white-a-16};
+    --super-sidebar-user-bar-button-hover-bg: #{$t-white-a-24};
+    --super-sidebar-user-bar-button-hover-color: #{$white};
+    --super-sidebar-user-bar-button-active-bg: #{$t-white-a-36};
+
+    --super-sidebar-user-bar-button-icon-color: #{$theme-color-light};
+    --super-sidebar-user-bar-button-icon-hover-color: #{$theme-color-light};
+    --super-sidebar-user-bar-button-icon-mix-blend-mode: screen;
 
     hr {
       mix-blend-mode: multiply;

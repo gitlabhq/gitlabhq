@@ -54,7 +54,7 @@ export const SIDEBAR_COOKIE_EXPIRATION = 365 * 10;
 
 export const DROPDOWN_Y_OFFSET = 4;
 
-export const NAV_ITEM_LINK_ACTIVE_CLASS = 'gl-bg-t-gray-a-08';
+export const NAV_ITEM_LINK_ACTIVE_CLASS = 'super-sidebar-nav-item-current';
 
 export const IMPERSONATING_OFFSET = 34;
 

@@ -29,7 +29,7 @@ describe('NavItemLink component', () => {
 
       expect(wrapper.attributes()).toEqual({
         href: '/foo',
-        class: 'gl-bg-t-gray-a-08',
+        class: 'super-sidebar-nav-item-current',
         'aria-current': 'page',
       });
     });

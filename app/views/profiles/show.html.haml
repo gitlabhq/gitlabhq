@@ -103,7 +103,7 @@
         %small.form-text.text-gl-muted
           = s_("Profiles|Your LinkedIn profile name from linkedin.com/in/profilename")
       .form-group.gl-form-group
-        = f.label :twitter
+        = f.label :twitter, _('X (formerly Twitter)')
         = f.text_field :twitter, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|@username")
       .form-group.gl-form-group
         - external_accounts_help_url = help_page_path('user/profile/index', anchor: 'add-external-accounts-to-your-user-profile-page')

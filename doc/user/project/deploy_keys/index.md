@@ -65,7 +65,7 @@ As with all sensitive information, you should ensure only those who need access 
 For human interactions, use credentials tied to users such as Personal Access Tokens.
 
 To help detect a potential secret leak, you can use the
-[Audit Event](../../../administration/audit_event_streaming/examples.md#example-payloads-for-ssh-events-with-deploy-key) feature.
+[Audit Event](../../../administration/audit_event_streaming/examples.md#example-payloads-for-git-over-ssh-events-with-deploy-key) feature.
 
 ## View deploy keys
 

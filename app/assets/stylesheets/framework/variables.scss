@@ -101,12 +101,20 @@ $gray-dark: darken($gray-light, $darken-dark-factor) !default;
 $gray-darker: $gray-50 !default;
 $gray-darkest: $gray-200 !default;
 
-$t-gray-a-02: rgba($gray-950, 0.02) !default;
-$t-gray-a-04: rgba($gray-950, 0.04) !default;
-$t-gray-a-06: rgba($gray-950, 0.06) !default;
-$t-gray-a-08: rgba($gray-950, 0.08) !default;
-$t-gray-a-16: rgba($gray-950, 0.16) !default;
-$t-gray-a-24: rgba($gray-950, 0.24) !default;
+$t-white-a-02: rgba(255, 255, 255, 0.02) !default;
+$t-white-a-04: rgba(255, 255, 255, 0.04) !default;
+$t-white-a-06: rgba(255, 255, 255, 0.06) !default;
+$t-white-a-08: rgba(255, 255, 255, 0.08) !default;
+$t-white-a-16: rgba(255, 255, 255, 0.16) !default;
+$t-white-a-24: rgba(255, 255, 255, 0.24) !default;
+$t-white-a-36: rgba(255, 255, 255, 0.36) !default;
+
+$t-gray-a-02: rgba(31, 30, 36, 0.02) !default;
+$t-gray-a-04: rgba(31, 30, 36, 0.04) !default;
+$t-gray-a-06: rgba(31, 30, 36, 0.06) !default;
+$t-gray-a-08: rgba(31, 30, 36, 0.08) !default;
+$t-gray-a-16: rgba(31, 30, 36, 0.16) !default;
+$t-gray-a-24: rgba(31, 30, 36, 0.24) !default;
 
 $white-dark: darken($gray-50, 2) !default;
 

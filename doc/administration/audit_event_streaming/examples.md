@@ -40,7 +40,7 @@ X-Gitlab-Event-Streaming-Token: <DESTINATION_TOKEN>
 X-Gitlab-Audit-Event-Type: repository_git_operation
 ```
 
-### Example payloads for SSH events
+### Example payloads for Git over SSH events
 
 Fetch:
 
@@ -106,7 +106,7 @@ Push:
 }
 ```
 
-### Example payloads for SSH events with Deploy Key
+### Example payloads for Git over SSH events with Deploy Key
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363876) in GitLab 15.3.
 
@@ -142,7 +142,7 @@ Fetch:
 }
 ```
 
-### Example payloads for HTTP and HTTPS events
+### Example payloads for Git over HTTP and HTTPS events
 
 Fetch:
 
@@ -208,7 +208,7 @@ Push:
 }
 ```
 
-### Example payloads for HTTP and HTTPS events with Deploy Token
+### Example payloads for Git over HTTP and HTTPS events with Deploy Token
 
 Fetch:
 

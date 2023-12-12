@@ -8,11 +8,9 @@ $gray-dark: darken($gray-100, 2);
 $gray-darker: darken($gray-200, 2);
 $gray-darkest: $gray-700;
 
-// Some of the other $t-gray-a variables are used
-// for borders and some other places, so we cannot override
-// them. These are used only for box shadows so we can
-$t-gray-a-16: rgba($gray-10, 0.16);
-$t-gray-a-24: rgba($gray-10, 0.24);
+// Used for border and background in a couple instances where inverting between modes is desirable
+// once migrated to suitable color values this can be removed
+$t-gray-a-08: rgba($gray-950, 0.08);
 
 $black-normal: $gray-900;
 $white-dark: $gray-100;

@@ -414,7 +414,6 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/lib/gitlab/auth/smartcard/certificate.rb'
     - 'ee/lib/gitlab/ci/minutes/cached_quota.rb'
     - 'ee/lib/gitlab/ci/minutes/gitlab_contribution_cost_factor.rb'
-    - 'ee/lib/gitlab/ci/minutes/runners_availability.rb'
     - 'ee/lib/gitlab/ci/parsers/security/container_scanning.rb'
     - 'ee/lib/gitlab/ci/project_config/compliance.rb'
     - 'ee/lib/gitlab/ci/reports/license_scanning/reports_comparer.rb'

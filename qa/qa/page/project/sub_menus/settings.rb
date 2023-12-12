@@ -19,10 +19,6 @@ module QA
             open_settings_submenu('Merge requests')
           end
 
-          def go_to_pages_settings
-            open_settings_submenu('Pages')
-          end
-
           def go_to_monitor_settings
             open_settings_submenu('Monitor')
           end
