@@ -4,7 +4,7 @@
 - if @can_bulk_update
   = render Pajamas::ButtonComponent.new(type: :submit, button_options: { class: 'gl-mr-3 js-bulk-update-toggle' }) do
     = _("Bulk edit")
-- if merge_project
+- if merge_project && can?(@current_user, :create_merge_request_in, @project)
   = render Pajamas::ButtonComponent.new(href: new_merge_request_path, variant: :confirm) do
     = _("New merge request")
 

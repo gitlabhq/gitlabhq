@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class Timelog < ApplicationRecord
+  # Gitlab::TimeTrackingFormatter.parse("1y") == 31557600 seconds
+  # 31557600 slightly deviates from (365 days * 24 hours/day * 60 minutes/hour * 60 seconds/minute)
+  MAX_TOTAL_TIME_SPENT = 31557600.seconds.to_i # a year
+
   include Importable
   include IgnorableColumns
   include Sortable
@@ -12,6 +16,7 @@ class Timelog < ApplicationRecord
   validates :time_spent, :user, presence: true
   validates :summary, length: { maximum: 255 }
   validate :issuable_id_is_present, unless: :importing?
+  validate :check_total_time_spent_is_within_range, on: :create, unless: :importing?, if: :time_spent
 
   belongs_to :issue, touch: true
   belongs_to :merge_request, touch: true
@@ -57,6 +62,13 @@ class Timelog < ApplicationRecord
   end
 
   private
+
+  def check_total_time_spent_is_within_range
+    total_time_spent = issuable.timelogs.sum(:time_spent) + time_spent
+
+    errors.add(:base, _("Total time spent cannot be negative.")) if total_time_spent < 0
+    errors.add(:base, _("Total time spent cannot exceed a year.")) if total_time_spent > MAX_TOTAL_TIME_SPENT
+  end
 
   def issuable_id_is_present
     if issue_id && merge_request_id

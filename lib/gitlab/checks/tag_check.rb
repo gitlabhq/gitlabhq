@@ -11,7 +11,8 @@ module Gitlab
         delete_protected_tag_non_web: 'You can only delete protected tags using the web interface.',
         create_protected_tag: 'You are not allowed to create this tag as it is protected.',
         default_branch_collision: 'You cannot use default branch name to create a tag',
-        prohibited_tag_name: 'You cannot create a tag with a prohibited pattern.'
+        prohibited_tag_name: 'You cannot create a tag with a prohibited pattern.',
+        prohibited_sha_tag_name: 'You cannot create a tag with a SHA-1 or SHA-256 tag name.'
       }.freeze
 
       LOG_MESSAGES = {
@@ -19,6 +20,8 @@ module Gitlab
         default_branch_collision_check: "Checking if you are providing a valid tag name...",
         protected_tag_checks: "Checking if you are creating, updating or deleting a protected tag..."
       }.freeze
+
+      STARTS_WITH_SHA_REGEX = %r{\A#{Gitlab::Git::Commit::RAW_FULL_SHA_PATTERN}}o
 
       def validate!
         return unless tag_name
@@ -46,6 +49,8 @@ module Gitlab
         if tag_name.start_with?("refs/tags/") # rubocop: disable Style/GuardClause
           raise GitAccess::ForbiddenError, ERROR_MESSAGES[:prohibited_tag_name]
         end
+
+        validate_tag_name_not_sha_like!
       end
 
       def protected_tag_checks
@@ -76,6 +81,12 @@ module Gitlab
             raise GitAccess::ForbiddenError, ERROR_MESSAGES[:default_branch_collision]
           end
         end
+      end
+
+      def validate_tag_name_not_sha_like!
+        return unless STARTS_WITH_SHA_REGEX.match?(tag_name)
+
+        raise GitAccess::ForbiddenError, ERROR_MESSAGES[:prohibited_sha_tag_name]
       end
     end
   end
