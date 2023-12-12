@@ -32,7 +32,7 @@ You can configure **What's new** to display features based on the tier,
 or you can hide it. To configure it:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Settings > Preferences**.
+1. Select **Settings > Preferences**.
 1. Expand **What's new**, and choose one of the following options:
 
    | Option | Description |

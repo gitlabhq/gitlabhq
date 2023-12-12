@@ -49,7 +49,7 @@ to all available queues:
 To view the Sidekiq processes in GitLab:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Monitoring > Background Jobs**.
+1. Select **Monitoring > Background Jobs**.
 
 ## Concurrency
 

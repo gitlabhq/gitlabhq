@@ -365,7 +365,7 @@ To change the role that can create projects under a group:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
-1. From the **Roles allowed to create projects** dropdown list, select an option.
+1. From **Roles allowed to create projects**, select an option.
 1. Select **Save changes**.
 
 To change this setting globally, see [Default project creation protection](../../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).

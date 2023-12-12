@@ -48,7 +48,7 @@ When you create a runner, it is assigned a runner authentication token that you 
 To create a shared runner:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **CI/CD > Runners**.
+1. Select **CI/CD > Runners**.
 1. Select **New instance runner**.
 1. Select the operating system where GitLab Runner is installed.
 1. In the **Tags** section, in the **Tags** field, enter the job tags to specify jobs the runner can run.
@@ -584,7 +584,7 @@ queued for longer than the median value, and half of the jobs queued for less th
 median value.
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **CI/CD > Runners**.
+1. Select **CI/CD > Runners**.
 1. Select **View metrics**.
 
 ## Determine which runners need to be upgraded **(ULTIMATE ALL)**
@@ -631,7 +631,7 @@ Prerequisites:
 To determine the IP address of a shared runner:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **CI/CD > Runners**.
+1. Select **CI/CD > Runners**.
 1. Find the runner in the table and view the **IP Address** column.
 
 ![shared runner IP address](img/shared_runner_ip_address_14_5.png)

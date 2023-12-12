@@ -126,7 +126,7 @@ RSpec.describe 'User Cluster', :js, feature_category: :deployment_management do
     end
 
     it 'can visit the clusters index page', :aggregate_failures do
-      expect(page).to have_title("Kubernetes Clusters · #{project.full_name} · GitLab")
+      expect(page).to have_title("Kubernetes Clusters · #{project.full_name} · #{_('GitLab')}")
       expect(page).to have_content('Connect a cluster')
     end
   end

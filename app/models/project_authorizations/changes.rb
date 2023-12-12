@@ -11,14 +11,16 @@ module ProjectAuthorizations
   #   changes.remove_projects_for_user(user, project_ids)
   # end.apply!
   class Changes
-    attr_reader :projects_to_remove, :users_to_remove, :authorizations_to_add
+    attr_reader :projects_to_remove, :users_to_remove_in_project, :authorizations_to_add
 
     BATCH_SIZE = 1000
+    EVENT_USER_BATCH_SIZE = 100
     SLEEP_DELAY = 0.1
 
     def initialize
       @authorizations_to_add = []
       @affected_project_ids = Set.new
+      @removed_user_ids = Set.new
       yield self
     end
 
@@ -27,7 +29,7 @@ module ProjectAuthorizations
     end
 
     def remove_users_in_project(project, user_ids)
-      @users_to_remove = { user_ids: user_ids, scope: project }
+      @users_to_remove_in_project = { user_ids: user_ids, scope: project }
     end
 
     def remove_projects_for_user(user, project_ids)
@@ -66,6 +68,7 @@ module ProjectAuthorizations
         ids_to_remove: project_ids,
         column_name_of_ids_to_remove: :project_id)
       @affected_project_ids += project_ids
+      @removed_user_ids.add(user.id)
     end
 
     def delete_authorizations_for_project
@@ -73,6 +76,7 @@ module ProjectAuthorizations
         ids_to_remove: user_ids,
         column_name_of_ids_to_remove: :user_id)
       @affected_project_ids << project.id
+      @removed_user_ids += user_ids
     end
 
     def delete_all_in_batches(resource:, ids_to_remove:, column_name_of_ids_to_remove:)
@@ -127,11 +131,11 @@ module ProjectAuthorizations
     end
 
     def project
-      users_to_remove&.[](:scope)
+      users_to_remove_in_project&.[](:scope)
     end
 
     def user_ids
-      users_to_remove&.[](:user_ids)
+      users_to_remove_in_project&.[](:user_ids)
     end
 
     def publish_events
@@ -139,6 +143,18 @@ module ProjectAuthorizations
         ::Gitlab::EventStore.publish(
           ::ProjectAuthorizations::AuthorizationsChangedEvent.new(data: { project_id: project_id })
         )
+      end
+      return if ::Feature.disabled?(:user_approval_rules_removal) || @removed_user_ids.blank?
+
+      @affected_project_ids.each do |project_id|
+        @removed_user_ids.to_a.each_slice(EVENT_USER_BATCH_SIZE).each do |user_ids_batch|
+          ::Gitlab::EventStore.publish(
+            ::ProjectAuthorizations::AuthorizationsRemovedEvent.new(data: {
+              project_id: project_id,
+              user_ids: user_ids_batch
+            })
+          )
+        end
       end
     end
   end

@@ -29,8 +29,6 @@ module Features
 
         click_on 'Search'
       end
-
-      wait_for_requests
     end
 
     def open_filtered_search_suggestions(filter)
@@ -39,8 +37,6 @@ module Features
       page.within(search_bar_selector) do
         click_on filter
       end
-
-      wait_for_requests
     end
 
     def input_filtered_search_filter_is_only(filter, value)
@@ -56,8 +52,6 @@ module Features
 
         click_on 'Search'
       end
-
-      wait_for_requests
     end
   end
 end

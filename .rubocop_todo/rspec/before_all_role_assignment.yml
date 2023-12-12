@@ -817,7 +817,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/features/global_search_spec.rb'
     - 'spec/features/groups/board_spec.rb'
     - 'spec/features/groups/dependency_proxy_for_containers_spec.rb'
-    - 'spec/features/groups/group_runners_spec.rb'
     - 'spec/features/groups/import_export/export_file_spec.rb'
     - 'spec/features/groups/members/manage_groups_spec.rb'
     - 'spec/features/groups/members/manage_members_spec.rb'

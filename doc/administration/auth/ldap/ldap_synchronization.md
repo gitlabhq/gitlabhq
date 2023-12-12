@@ -502,8 +502,8 @@ To enable global group memberships lock:
 
 1. [Configure LDAP](index.md#configure-ldap).
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Settings > General**.
-1. Expand the **Visibility and access controls** section.
+1. Select **Settings > General**.
+1. Expand **Visibility and access controls**.
 1. Ensure the **Lock memberships to LDAP synchronization** checkbox is selected.
 
 ### Change LDAP group synchronization settings management

@@ -161,12 +161,12 @@ RSpec.describe PipelineScheduleWorker, :sidekiq_inline, feature_category: :conti
     it 'calls bulk_perform_in with the arguments and delay' do
       expect(RunPipelineScheduleWorker)
         .to receive(:bulk_perform_in)
-        .with(7.seconds, [[pipeline_schedule.id, user.id, { scheduling: true }]])
+        .with(1.second, [[pipeline_schedule.id, user.id, { scheduling: true }]])
         .and_call_original
 
       expect(RunPipelineScheduleWorker)
         .to receive(:bulk_perform_in)
-        .with(14.seconds, [[other_pipeline_schedule.id, user.id, { scheduling: true }]])
+        .with(7.seconds, [[other_pipeline_schedule.id, user.id, { scheduling: true }]])
         .and_call_original
 
       subject

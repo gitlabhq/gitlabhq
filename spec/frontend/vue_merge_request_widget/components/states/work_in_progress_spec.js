@@ -182,4 +182,17 @@ describe('~/vue_merge_request_widget/components/states/work_in_progress.vue', ()
       expect(findWIPButton().exists()).toBe(false);
     });
   });
+
+  describe('when project is null', () => {
+    beforeEach(async () => {
+      draftQuerySpy.mockResolvedValue({ data: { project: null } });
+      createComponent();
+      await waitForPromises();
+    });
+
+    // This is to mitigate https://gitlab.com/gitlab-org/gitlab/-/issues/413627
+    it('does not throw any error', () => {
+      expect(wrapper.exists()).toBe(true);
+    });
+  });
 });

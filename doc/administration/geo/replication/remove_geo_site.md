@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 **Secondary** sites can be removed from the Geo cluster using the Geo administration page of the **primary** site. To remove a **secondary** site:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Geo > Nodes**.
+1. Select **Geo > Nodes**.
 1. For the **secondary** site you want to remove, select **Remove**.
 1. Confirm by selecting **Remove** when the prompt appears.
 

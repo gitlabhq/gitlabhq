@@ -11,7 +11,7 @@ the user signs up. When this setting is enabled, the user is unable to sign in u
 they confirm their email address.
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Settings > General**.
+1. Select **Settings > General**.
 1. Expand **Sign-up restrictions** and look for the **Email confirmation settings** options.
 
 ## Confirmation token expiry

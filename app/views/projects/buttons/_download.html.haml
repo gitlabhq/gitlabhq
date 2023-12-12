@@ -1,6 +1,5 @@
 - project = local_assigns.fetch(:project)
 - ref = local_assigns.fetch(:ref)
-- pipeline = local_assigns.fetch(:pipeline, nil)
 - css_class = local_assigns.fetch(:css_class, '')
 
 - if !project.empty_repo? && can?(current_user, :download_code, project)
@@ -10,4 +9,4 @@
       %span.sr-only=  _('Select Archive Format')
       = sprite_icon('chevron-down', css_class: 'gl-icon dropdown-chevron')
     %ul.dropdown-menu.dropdown-menu-right{ role: 'menu' }
-      = render 'projects/buttons/download_menu_items', project: project, ref: ref, pipeline: pipeline
+      = render 'projects/buttons/download_menu_items', project: project, ref: ref

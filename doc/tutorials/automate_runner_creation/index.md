@@ -213,7 +213,7 @@ Now that you've automated your runner creation and automation, you can view
 the runners that use the same configuration in the GitLab UI.
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **CI/CD > Runners**.
+1. Select **CI/CD > Runners**.
 1. In the search box, enter the runner description or search the list of runners.
 1. To view the runners that use the same configuration, in the **Details** tab,
    next to **Runners**, select **Show details**.

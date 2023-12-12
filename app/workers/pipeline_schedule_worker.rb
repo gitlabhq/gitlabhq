@@ -11,7 +11,7 @@ class PipelineScheduleWorker # rubocop:disable Scalability/IdempotentWorker
   LOCK_RETRY = 3
   LOCK_TTL = 5.minutes
   DELAY = 7.seconds
-  BATCH_SIZE = 1000
+  BATCH_SIZE = 500
 
   feature_category :continuous_integration
   worker_resource_boundary :cpu
@@ -23,7 +23,7 @@ class PipelineScheduleWorker # rubocop:disable Scalability/IdempotentWorker
         .runnable_schedules
         .preloaded
         .find_in_batches(batch_size: BATCH_SIZE).with_index do |schedules, index| # rubocop: disable CodeReuse/ActiveRecord -- activates because of batch_size
-          enqueue_run_pipeline_schedule_worker(schedules, index + 1)
+          enqueue_run_pipeline_schedule_worker(schedules, index)
         end
     end
   end
@@ -44,7 +44,7 @@ class PipelineScheduleWorker # rubocop:disable Scalability/IdempotentWorker
   def enqueue_run_pipeline_schedule_worker(schedules, index)
     if ::Feature.enabled?(:run_pipeline_schedule_worker_with_delay)
       RunPipelineScheduleWorker.bulk_perform_in_with_contexts(
-        index * DELAY,
+        [1, index * DELAY].max,
         schedules,
         arguments_proc: ->(schedule) { [schedule.id, schedule.owner_id, { scheduling: true }] },
         context_proc: ->(schedule) { { project: schedule.project, user: schedule.owner } }

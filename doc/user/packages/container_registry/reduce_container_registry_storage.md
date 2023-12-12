@@ -282,7 +282,7 @@ For self-managed instances, those settings can be updated in the [Rails console]
 They are also available in the [administrator area](../../../administration/admin_area.md):
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Settings > CI/CD**
+1. Select **Settings > CI/CD**
 1. Expand **Container Registry**.
 
 ### Use the cleanup policy API

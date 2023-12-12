@@ -171,7 +171,7 @@ Upgrading to an [officially supported operating system](https://about.gitlab.com
 This problem comes from the permissions of the GitLab Pages OAuth application. To fix it:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Applications > GitLab Pages**.
+1. Select **Applications > GitLab Pages**.
 1. Edit the application.
 1. Under **Scopes**, ensure that the `api` scope is selected.
 1. Save your changes.

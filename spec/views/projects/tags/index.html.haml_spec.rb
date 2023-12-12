@@ -49,34 +49,6 @@ RSpec.describe 'projects/tags/index.html.haml' do
     end
   end
 
-  context 'when the most recent build for a tag has artifacts' do
-    let!(:build) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
-
-    it 'renders the Artifacts section in the download list' do
-      render
-      expect(rendered).to have_selector('li', text: 'Artifacts')
-    end
-
-    it 'renders artifact download links' do
-      render
-      expect(rendered).to have_link(href: latest_succeeded_project_artifacts_path(project, "#{pipeline.ref}/download", job: 'test'))
-    end
-  end
-
-  context 'when the most recent build for a tag has expired artifacts' do
-    let!(:build) { create(:ci_build, :success, :expired, :artifacts, pipeline: pipeline) }
-
-    it 'does not render the Artifacts section in the download list' do
-      render
-      expect(rendered).not_to have_selector('li', text: 'Artifacts')
-    end
-
-    it 'does not render artifact download links' do
-      render
-      expect(rendered).not_to have_link(href: latest_succeeded_project_artifacts_path(project, "#{pipeline.ref}/download", job: 'test'))
-    end
-  end
-
   context 'build stats' do
     let(:tag) { 'v1.0.0' }
     let(:page) { Capybara::Node::Simple.new(rendered) }

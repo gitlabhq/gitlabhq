@@ -34,8 +34,8 @@ You can use the UI or the API to enforce 2FA for all users.
 ### Use the UI
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Settings > General**.
-1. Expand the **Sign-in restrictions** section:
+1. Select **Settings > General**.
+1. Expand **Sign-in restrictions**:
    - Select **Enforce two-factor authentication** to enable this feature.
    - In **Two-factor grace period**, enter a number of hours. If you want to
      enforce 2FA on next sign-in attempt, enter `0`.

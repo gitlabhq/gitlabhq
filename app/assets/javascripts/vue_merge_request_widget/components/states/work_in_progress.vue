@@ -29,7 +29,7 @@ export default {
       variables() {
         return this.mergeRequestQueryVariables;
       },
-      update: (data) => data.project.mergeRequest.userPermissions,
+      update: (data) => data.project?.mergeRequest?.userPermissions || {},
     },
   },
   props: {

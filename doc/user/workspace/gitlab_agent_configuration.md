@@ -11,12 +11,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136744) in GitLab 16.7. Feature flag `remote_development_feature_flag` removed.
 
 When you [set up a workspace](configuration.md#set-up-a-workspace),
-you must configure remote development for the GitLab agent.
+you must configure the GitLab agent for remote development.
 The remote development settings are available in the agent
 configuration file under `remote_development`.
 
 You can use any agent defined under the root group of your project,
-provided that remote development is properly configured for that agent.
+provided that the agent is properly configured for remote development.
 
 ## Remote development settings
 
@@ -116,7 +116,7 @@ Use this setting to define a list of IP CIDR ranges to allow as egress destinati
 Define egress rules when:
 
 - The GitLab instance is on a private IP range.
-- Workspace users must access a cloud resource on a private IP range.
+- The workspace must access a cloud resource on a private IP range.
 
 Each element of the list defines an `allow` attribute with an optional `except` attribute.
 `allow` defines an IP range to allow traffic from.

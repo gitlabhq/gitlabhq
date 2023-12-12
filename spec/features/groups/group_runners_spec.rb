@@ -11,7 +11,7 @@ RSpec.describe "Group Runners", feature_category: :fleet_visibility do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
 
-  before do
+  before_all do
     group.add_owner(group_owner)
     group.add_maintainer(group_maintainer)
   end
@@ -45,11 +45,7 @@ RSpec.describe "Group Runners", feature_category: :fleet_visibility do
           visit group_runners_path(group)
         end
 
-        it_behaves_like 'shows runner in list' do
-          let(:runner) { group_runner }
-        end
-
-        it_behaves_like 'shows runner details from list' do
+        it_behaves_like 'shows runner summary and navigates to details' do
           let(:runner) { group_runner }
           let(:runner_page_path) { group_runner_path(group, group_runner) }
         end
@@ -66,10 +62,6 @@ RSpec.describe "Group Runners", feature_category: :fleet_visibility do
           end
 
           it_behaves_like 'shows no runners found'
-
-          it 'shows no runner' do
-            expect(page).not_to have_content 'runner-foo'
-          end
         end
       end
 
@@ -82,11 +74,7 @@ RSpec.describe "Group Runners", feature_category: :fleet_visibility do
           visit group_runners_path(group)
         end
 
-        it_behaves_like 'shows runner in list' do
-          let(:runner) { project_runner }
-        end
-
-        it_behaves_like 'shows runner details from list' do
+        it_behaves_like 'shows runner summary and navigates to details' do
           let(:runner) { project_runner }
           let(:runner_page_path) { group_runner_path(group, project_runner) }
         end
@@ -110,15 +98,9 @@ RSpec.describe "Group Runners", feature_category: :fleet_visibility do
         context "when selecting 'Show only inherited'" do
           before do
             find("[data-testid='runner-membership-toggle'] button").click
-
-            wait_for_requests
           end
 
-          it_behaves_like 'shows runner in list' do
-            let(:runner) { instance_runner }
-          end
-
-          it_behaves_like 'shows runner details from list' do
+          it_behaves_like 'shows runner summary and navigates to details' do
             let(:runner) { instance_runner }
             let(:runner_page_path) { group_runner_path(group, instance_runner) }
           end
@@ -287,7 +269,6 @@ RSpec.describe "Group Runners", feature_category: :fleet_visibility do
 
       before do
         visit edit_group_runner_path(group, group_runner)
-        wait_for_requests
       end
 
       it_behaves_like 'submits edit runner form' do
@@ -301,7 +282,6 @@ RSpec.describe "Group Runners", feature_category: :fleet_visibility do
 
       before do
         visit edit_group_runner_path(group, project_runner)
-        wait_for_requests
       end
 
       it_behaves_like 'submits edit runner form' do

@@ -58,23 +58,25 @@ To view the subgroups of a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select the **Subgroups and projects** tab.
-1. To view a nested subgroup, expand a subgroup in the hierarchy list.
+1. Select the subgroup you want to view.
+   To view nested subgroups, expand (**{chevron-down}**) a subgroup.
 
 ### Private subgroups in public parent groups
 
-In the hierarchy list, public groups with a private subgroup have an expand option (**{chevron-down}**)
-for all users that indicate there is a subgroup. When users who are not direct or inherited members of
-the private subgroup select expand (**{chevron-down}**), the nested subgroup does not display.
+In the hierarchy list, public groups with private subgroups have an expand option (**{chevron-down}**),
+which indicates the group has nested subgroups. The expand option (**{chevron-down}**) is visible
+to all users, but the private group is displayed only to users who are direct or inherited members
+of the private subgroup.
 
-If you prefer to keep information about the presence of nested subgroups private, we advise that you
-add private subgroups only to private parent groups.
+If you prefer to keep information about the presence of nested subgroups private,
+you should add private subgroups only to private parent groups.
 
 ## Create a subgroup
 
 Prerequisites:
 
 - You must have either:
-  - At least the Maintainer role for a group to create subgroups for it.
+  - At least the Maintainer role for a group.
   - The [role determined by a setting](#change-who-can-create-subgroups). These users can create
     subgroups even if group creation is
     [disabled by an Administrator](../../../administration/admin_area.md#prevent-a-user-from-creating-top-level-groups) in the user's settings.
@@ -84,11 +86,10 @@ You cannot host a GitLab Pages subgroup website with a top-level domain name. Fo
 
 To create a subgroup:
 
-1. On the left sidebar, select **Search or go to** and find a parent group for the subgroup.
+1. On the left sidebar, select **Search or go to** and find the group you want to create the subgroup in.
 1. On the parent group's overview page, in the upper-right corner, select **New subgroup**.
-1. Select **Create group**.
 1. Fill in the fields. View a list of [reserved names](../../reserved_names.md) that cannot be used as group names.
-1. Select **Create group**.
+1. Select **Create subgroup**.
 
 ### Change who can create subgroups
 
@@ -102,24 +103,21 @@ To change who can create subgroups on a group:
   1. On the left sidebar, select **Search or go to** and find your group.
   1. Select **Settings > General**.
   1. Expand **Permissions and group features**.
-  1. Select a role from **Roles allowed to create subgroups**.
+  1. From **Roles allowed to create subgroups**, select an option.
   1. Select **Save changes**.
 - As an administrator:
   1. On the left sidebar, at the bottom, select **Admin Area**.
-  1. On the left sidebar, select **Overview > Groups**.
-  1. In the group's row select **Edit**.
-  1. Select a role from **Allowed to create subgroups**.
+  1. On the left sidebar, select **Overview > Groups** and find your group.
+  1. In the group's row, select **Edit**.
+  1. From the **Allowed to create subgroups** dropdown list, select an option.
   1. Select **Save changes**.
 
 For more information, view the [permissions table](../../permissions.md#group-members-permissions).
 
 ## Subgroup membership
 
-NOTE:
-There is a bug that causes some pages in the parent group to be accessible by subgroup members. For more details, see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/340421).
-
-When you add a member to a group, that member is also added to all subgroups. The user's permissions are inherited from
-the group's parent.
+When you add a member to a group, that member is also added to all subgroups of that group.
+The member's permissions are inherited from the group's parent.
 
 Subgroup members can be:
 
@@ -162,6 +160,7 @@ To see if a member has inherited the permissions from a parent group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
+   The member's inheritance is displayed in the **Source** column.
 
 Members list for an example subgroup _Four_:
 
@@ -188,22 +187,23 @@ Members can be [filtered by inherited or direct membership](../index.md#filter-a
 
 ### Override ancestor group membership
 
-Users with the Owner role on a subgroup can add members to it.
+Users with the Owner role in a subgroup can add members to it.
 
-You can't give a user a role on a subgroup that's lower than the roles they have on ancestor groups. To override a user's
-role on an ancestor group, add the user to the subgroup again with a higher role. For example:
+You can't give a user a role in a subgroup that is lower than the roles the user has in ancestor groups.
+To override a user's role in an ancestor group, add the user to the subgroup again with a higher role.
+For example:
 
-- If User 1 is added to group _Two_ with the Developer role, they inherit that role in every subgroup of group _Two_.
-- To give User 1 the Maintainer role on group _Four_ (under _One / Two / Three_), add them again to group _Four_ with
+- If User 1 is added to group _Two_ with the Developer role, User 1 inherits that role in every subgroup of group _Two_.
+- To give User 1 the Maintainer role in group _Four_ (under _One / Two / Three_), add User 1 again to group _Four_ with
   the Maintainer role.
-- If User 1 is removed from group _Four_, their role falls back to their role on group _Two_. They have the Developer
-  role on group _Four_ again.
+- If User 1 is removed from group _Four_, the user's role falls back to their role in group _Two_. User 1 has the Developer
+  role in group _Four_ again.
 
 ## Mention subgroups
 
 Mentioning subgroups ([`@<subgroup_name>`](../../discussions/index.md#mentions)) in issues, commits, and merge requests
-notifies all direct members of that group. Inherited members of a subgroup are not notified by mentions. Mentioning works the same as for projects and groups, and you can choose the group
-of people to be notified.
+notifies all direct members of that group. Inherited members of a subgroup are not notified by mentions.
+Mentioning works the same as for projects and groups, and you can choose the group of members to be notified.
 
 <!-- ## Troubleshooting
 

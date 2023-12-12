@@ -1,0 +1,8 @@
+---
+name: user_approval_rules_removal
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138691
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/434141
+milestone: '16.7'
+type: development
+group: group::code review
+default_enabled: false

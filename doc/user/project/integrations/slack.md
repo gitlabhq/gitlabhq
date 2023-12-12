@@ -11,8 +11,6 @@ WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/372411) in GitLab 15.9
 and is planned for removal in 17.0. Use the [GitLab for Slack app](gitlab_slack_application.md) instead.
 This change is a breaking change.
-For the planned support of the GitLab for Slack app for self-managed instances,
-see [epic 1211](https://gitlab.com/groups/gitlab-org/-/epics/1211).
 
 The Slack notifications integration enables your GitLab project to send events
 (such as issue creation) to your existing Slack team as notifications. Setting up

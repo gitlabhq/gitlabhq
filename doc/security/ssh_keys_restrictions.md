@@ -20,8 +20,8 @@ GitLab allows you to restrict the allowed SSH key technology as well as specify
 the minimum key length for each technology:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Settings > General** .
-1. Expand the **Visibility and access controls** section:
+1. Select **Settings > General** .
+1. Expand **Visibility and access controls**:
 
    ![SSH keys restriction Admin Area settings](img/ssh_keys_restrictions_settings.png)
 

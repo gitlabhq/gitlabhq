@@ -65,7 +65,7 @@ promote a Geo replica and perform a failover.
 On the **secondary** site:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Geo > Sites** to see its status.
+1. Select **Geo > Sites** to see its status.
    Replicated objects (shown in green) should be close to 100%,
    and there should be no failures (shown in red). If a large proportion of
    objects aren't replicated (shown in gray), consider giving the site more

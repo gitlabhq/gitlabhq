@@ -40,15 +40,9 @@ RSpec.describe 'Download buttons in branches page', feature_category: :groups_an
       let(:path_to_visit) { project_branches_filtered_path(project, state: 'all', search: ref) }
     end
 
-    context 'with artifacts' do
+    context 'with download source code button' do
       before do
         visit project_branches_filtered_path(project, state: 'all', search: 'binary-encoding')
-      end
-
-      it 'shows download artifacts button' do
-        href = latest_succeeded_project_artifacts_path(project, 'binary-encoding/download', job: 'build')
-
-        expect(page).to have_link build.name, href: href
       end
 
       it 'passes axe automated accessibility testing', :js do

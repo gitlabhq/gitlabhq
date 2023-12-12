@@ -167,7 +167,7 @@ may see the following message: `Access denied for your LDAP account`.
 We have a workaround, based on toggling the access level of affected users:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Overview > Users**.
+1. Select **Overview > Users**.
 1. Select the name of the affected user.
 1. In the upper-right corner, select **Edit**.
 1. Change the user's access level from `Regular` to `Administrator` (or vice versa).

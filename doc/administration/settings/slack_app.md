@@ -46,7 +46,7 @@ You're then redirected to Slack for the next steps.
 After you've [created a GitLab for Slack app](#create-a-gitlab-for-slack-app), you can configure the settings in GitLab:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Settings > General**.
+1. Select **Settings > General**.
 1. Expand **GitLab for Slack app**.
 1. Select the **Enable GitLab for Slack app** checkbox.
 1. Enter the details of your GitLab for Slack app:

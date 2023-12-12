@@ -154,7 +154,7 @@ ensure these processes are close to 100% as possible during active use.
 On the **secondary** site:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Geo > Sites**.
+1. Select **Geo > Sites**.
    Replicated objects (shown in green) should be close to 100%,
    and there should be no failures (shown in red). If a large proportion of
    objects aren't yet replicated (shown in gray), consider giving the site more
@@ -182,7 +182,7 @@ This [content was moved to another location](background_verification.md).
 On the **primary** site:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Messages**.
+1. Select **Messages**.
 1. Add a message notifying users on the maintenance window.
    You can check under **Geo > Sites** to estimate how long it
    takes to finish syncing.
@@ -195,7 +195,7 @@ be disabled on the **primary** site:
 
 1. Enable [maintenance mode](../../maintenance_mode/index.md) on the **primary** site.
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. On the left sidebar, select **Monitoring > Background Jobs**.
+1. Select **Monitoring > Background Jobs**.
 1. On the Sidekiq dashboard, select **Cron**.
 1. Select `Disable All` to disable non-Geo periodic background jobs.
 1. Select `Enable` for the `geo_sidekiq_cron_config_worker` cron job.
