@@ -8956,21 +8956,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           project.update!(path: 'path')
         end
       end
-
-      context 'when FF `ci_process_catalog_resource_sync_events` is disabled' do
-        before do
-          stub_feature_flags(ci_process_catalog_resource_sync_events: false)
-        end
-
-        it 'does not enqueue Ci::Catalog::Resources::ProcessSyncEventsWorker' do
-          expect(Ci::Catalog::Resources::ProcessSyncEventsWorker).not_to receive(:perform_async)
-
-          project.update!(
-            name: 'New name',
-            description: 'New description',
-            visibility_level: Gitlab::VisibilityLevel::INTERNAL)
-        end
-      end
     end
 
     context 'when the project does not have a catalog resource' do

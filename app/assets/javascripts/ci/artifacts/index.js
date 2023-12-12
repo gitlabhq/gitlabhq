@@ -19,7 +19,7 @@ export const initArtifactsTable = () => {
     return false;
   }
 
-  const { projectPath, projectId, canDestroyArtifacts } = el.dataset;
+  const { projectPath, projectId, canDestroyArtifacts, jobArtifactsCountLimit } = el.dataset;
 
   return new Vue({
     el,
@@ -28,6 +28,7 @@ export const initArtifactsTable = () => {
       projectPath,
       projectId,
       canDestroyArtifacts: parseBoolean(canDestroyArtifacts),
+      jobArtifactsCountLimit: parseInt(jobArtifactsCountLimit, 10),
     },
     render: (createElement) => createElement(App),
   });

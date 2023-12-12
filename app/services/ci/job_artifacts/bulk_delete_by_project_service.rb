@@ -5,7 +5,7 @@ module Ci
     class BulkDeleteByProjectService
       include BaseServiceUtility
 
-      JOB_ARTIFACTS_COUNT_LIMIT = 50
+      JOB_ARTIFACTS_COUNT_LIMIT = 100
 
       def initialize(job_artifact_ids:, project:, current_user:)
         @job_artifact_ids = job_artifact_ids

@@ -551,6 +551,7 @@ class Project < ApplicationRecord
       delegate :show_default_award_emojis, :show_default_award_emojis=
       delegate :enforce_auth_checks_on_uploads, :enforce_auth_checks_on_uploads=
       delegate :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=
+      delegate :code_suggestions, :code_suggestions=
     end
   end
 
@@ -3199,6 +3200,11 @@ class Project < ApplicationRecord
   end
   strong_memoize_attr :instance_runner_running_jobs_count
 
+  def code_suggestions_enabled?
+    code_suggestions && (group.nil? || group.code_suggestions)
+  end
+  strong_memoize_attr :code_suggestions_enabled?
+
   private
 
   # overridden in EE
@@ -3470,8 +3476,6 @@ class Project < ApplicationRecord
 
   # Catalog resource SyncEvents are created by PG triggers
   def enqueue_catalog_resource_sync_event_worker
-    catalog_resource.sync_with_project! if Feature.disabled?(:ci_process_catalog_resource_sync_events)
-
     run_after_commit do
       ::Ci::Catalog::Resources::SyncEvent.enqueue_worker
     end

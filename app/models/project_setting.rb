@@ -39,6 +39,7 @@ class ProjectSetting < ApplicationRecord
   validates :issue_branch_template, length: { maximum: Issue::MAX_BRANCH_TEMPLATE }
   validates :target_platforms, inclusion: { in: ALLOWED_TARGET_PLATFORMS }
   validates :suggested_reviewers_enabled, inclusion: { in: [true, false] }
+  validates :code_suggestions, allow_nil: false, inclusion: { in: [true, false] }
 
   validates :pages_unique_domain,
     uniqueness: { if: -> { pages_unique_domain.present? } },

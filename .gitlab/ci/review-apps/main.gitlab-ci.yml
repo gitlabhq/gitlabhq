@@ -67,7 +67,7 @@ review-build-cng:
     GITLAB_IMAGE_REPOSITORY: "registry.gitlab.com/gitlab-org/build/cng-mirror"
     GITLAB_IMAGE_SUFFIX: "ee"
     GITLAB_REVIEW_APP_BASE_CONFIG_FILE: "scripts/review_apps/base-config.yaml"
-    GITLAB_HELM_CHART_REF: "db886740f66e8dfacd7b9f0f79f640c8c2e0318a"  # 7.5.1: https://gitlab.com/gitlab-org/charts/gitlab/-/commit/db886740f66e8dfacd7b9f0f79f640c8c2e0318a
+    GITLAB_HELM_CHART_REF: "eace227d3465e17e37b1a2e3764dd244c8e2d716"  # 7.6.1: https://gitlab.com/gitlab-org/charts/gitlab/-/commit/eace227d3465e17e37b1a2e3764dd244c8e2d716
   environment:
     name: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # No separator for SCHEDULE_TYPE so it's compatible as before and looks nice without it
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}

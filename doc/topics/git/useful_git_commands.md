@@ -57,36 +57,6 @@ gitk <file>
 gitk --follow <file>
 ```
 
-## Debugging
-
-### Use a custom SSH key for a Git command
-
-```shell
-GIT_SSH_COMMAND="ssh -i ~/.ssh/gitlabadmin" git <command>
-```
-
-### Debug cloning
-
-With SSH:
-
-```shell
-GIT_SSH_COMMAND="ssh -vvv" git clone <git@url>
-```
-
-With HTTPS:
-
-```shell
-GIT_TRACE_PACKET=1 GIT_TRACE=2 GIT_CURL_VERBOSE=1 git clone <url>
-```
-
-### Debugging with Git embedded traces
-
-Git includes a complete set of [traces for debugging Git commands](https://git-scm.com/book/en/v2/Git-Internals-Environment-Variables#_debugging), for example:
-
-- `GIT_TRACE_PERFORMANCE=1`: enables tracing of performance data, showing how long each particular `git` invocation takes.
-- `GIT_TRACE_SETUP=1`: enables tracing of what `git` is discovering about the repository and environment it's interacting with.
-- `GIT_TRACE_PACKET=1`: enables packet-level tracing for network operations.
-
 ## Rebasing
 
 ### Rebase your branch onto the default

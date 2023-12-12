@@ -27,8 +27,6 @@ module Ci
         deduplicate :until_executed, if_deduplicated: :reschedule_once, ttl: 1.minute
 
         def perform
-          return if Feature.disabled?(:ci_process_catalog_resource_sync_events)
-
           results = ::Ci::ProcessSyncEventsService.new(
             ::Ci::Catalog::Resources::SyncEvent, ::Ci::Catalog::Resource
           ).execute

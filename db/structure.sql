@@ -21617,6 +21617,16 @@ CREATE SEQUENCE postgres_reindex_queued_actions_id_seq
 
 ALTER SEQUENCE postgres_reindex_queued_actions_id_seq OWNED BY postgres_reindex_queued_actions.id;
 
+CREATE VIEW postgres_sequences AS
+ SELECT seq_pg_class.relname AS seq_name,
+    dep_pg_class.relname AS table_name,
+    pg_attribute.attname AS col_name
+   FROM (((pg_class seq_pg_class
+     JOIN pg_depend ON ((seq_pg_class.oid = pg_depend.objid)))
+     JOIN pg_class dep_pg_class ON ((pg_depend.refobjid = dep_pg_class.oid)))
+     JOIN pg_attribute ON (((dep_pg_class.oid = pg_attribute.attrelid) AND (pg_depend.refobjsubid = pg_attribute.attnum))))
+  WHERE (seq_pg_class.relkind = 'S'::"char");
+
 CREATE TABLE programming_languages (
     id integer NOT NULL,
     name character varying NOT NULL,
@@ -22200,6 +22210,7 @@ CREATE TABLE project_settings (
     encrypted_product_analytics_configurator_connection_string_iv bytea,
     pages_multiple_versions_enabled boolean DEFAULT false NOT NULL,
     allow_merge_without_pipeline boolean DEFAULT false NOT NULL,
+    code_suggestions boolean DEFAULT true NOT NULL,
     CONSTRAINT check_1a30456322 CHECK ((char_length(pages_unique_domain) <= 63)),
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
     CONSTRAINT check_3ca5cbffe6 CHECK ((char_length(issue_branch_template) <= 255)),

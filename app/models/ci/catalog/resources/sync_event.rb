@@ -58,8 +58,6 @@ module Ci
           end
 
           def enqueue_worker
-            return unless Feature.enabled?(:ci_process_catalog_resource_sync_events)
-
             ::Ci::Catalog::Resources::ProcessSyncEventsWorker.perform_async # rubocop:disable CodeReuse/Worker -- Worker is scheduled in model callback functions
           end
 

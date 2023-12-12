@@ -22,10 +22,11 @@ import {
   I18N_FETCH_ERROR,
   INITIAL_CURRENT_PAGE,
   I18N_BULK_DELETE_ERROR,
-  SELECTED_ARTIFACTS_MAX_COUNT,
 } from '~/ci/artifacts/constants';
 import { totalArtifactsSizeForJob } from '~/ci/artifacts/utils';
 import { createAlert } from '~/alert';
+
+const jobArtifactsCountLimit = 100;
 
 jest.mock('~/alert');
 
@@ -127,10 +128,10 @@ describe('JobArtifactsTable component', () => {
     .map((jobNode) => jobNode.artifacts.nodes.map((artifactNode) => artifactNode.id))
     .reduce((artifacts, jobArtifacts) => artifacts.concat(jobArtifacts));
 
-  const maxSelectedArtifacts = new Array(SELECTED_ARTIFACTS_MAX_COUNT).fill('artifact-id');
+  const maxSelectedArtifacts = new Array(jobArtifactsCountLimit).fill('artifact-id');
   const maxSelectedArtifactsIncludingCurrentPage = [
     ...allArtifacts,
-    ...new Array(SELECTED_ARTIFACTS_MAX_COUNT - allArtifacts.length).fill('artifact-id'),
+    ...new Array(jobArtifactsCountLimit - allArtifacts.length).fill('artifact-id'),
   ];
 
   const createComponent = ({
@@ -151,6 +152,7 @@ describe('JobArtifactsTable component', () => {
         projectPath: 'project/path',
         projectId,
         canDestroyArtifacts,
+        jobArtifactsCountLimit,
       },
       mocks: {
         $toast: {
@@ -665,7 +667,7 @@ describe('JobArtifactsTable component', () => {
 
     describe('select all checkbox respects selected artifacts limit', () => {
       describe('when selecting all visible artifacts would exceed the limit', () => {
-        const selectedArtifactsLength = SELECTED_ARTIFACTS_MAX_COUNT - 1;
+        const selectedArtifactsLength = jobArtifactsCountLimit - 1;
 
         beforeEach(async () => {
           createComponent({
@@ -687,9 +689,7 @@ describe('JobArtifactsTable component', () => {
           await nextTick();
 
           expect(findSelectAllCheckboxChecked()).toBe(true);
-          expect(findBulkDelete().props('selectedArtifacts')).toHaveLength(
-            SELECTED_ARTIFACTS_MAX_COUNT,
-          );
+          expect(findBulkDelete().props('selectedArtifacts')).toHaveLength(jobArtifactsCountLimit);
           expect(findBulkDelete().props('selectedArtifacts')).not.toContain(
             allArtifacts[allArtifacts.length - 1],
           );
@@ -748,7 +748,7 @@ describe('JobArtifactsTable component', () => {
 
           it('deselects all artifacts when toggled', async () => {
             expect(findBulkDelete().props('selectedArtifacts')).toHaveLength(
-              SELECTED_ARTIFACTS_MAX_COUNT,
+              jobArtifactsCountLimit,
             );
 
             toggleSelectAllCheckbox();
@@ -757,7 +757,7 @@ describe('JobArtifactsTable component', () => {
 
             expect(findSelectAllCheckboxChecked()).toBe(false);
             expect(findBulkDelete().props('selectedArtifacts')).toHaveLength(
-              SELECTED_ARTIFACTS_MAX_COUNT - allArtifacts.length,
+              jobArtifactsCountLimit - allArtifacts.length,
             );
           });
         });

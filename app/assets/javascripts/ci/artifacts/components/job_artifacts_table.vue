@@ -40,7 +40,6 @@ import {
   I18N_BULK_DELETE_ERROR,
   I18N_BULK_DELETE_PARTIAL_ERROR,
   I18N_BULK_DELETE_CONFIRMATION_TOAST,
-  SELECTED_ARTIFACTS_MAX_COUNT,
   I18N_BULK_DELETE_MAX_SELECTED,
 } from '../constants';
 import JobCheckbox from './job_checkbox.vue';
@@ -77,7 +76,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['projectId', 'projectPath', 'canDestroyArtifacts'],
+  inject: ['projectId', 'projectPath', 'canDestroyArtifacts', 'jobArtifactsCountLimit'],
   apollo: {
     jobArtifacts: {
       query: getJobArtifactsQuery,
@@ -151,7 +150,7 @@ export default {
       return Boolean(this.selectedArtifacts.length);
     },
     isSelectedArtifactsLimitReached() {
-      return this.selectedArtifacts.length >= SELECTED_ARTIFACTS_MAX_COUNT;
+      return this.selectedArtifacts.length >= this.jobArtifactsCountLimit;
     },
     canBulkDestroyArtifacts() {
       return this.canDestroyArtifacts;

@@ -608,4 +608,16 @@ FactoryBot.define do
     path { 'gitlab-profile' }
     files { { 'README.md' => 'Hello World' } }
   end
+
+  trait :with_code_suggestions_enabled do
+    after(:create) do |project|
+      project.project_setting.update!(code_suggestions: true)
+    end
+  end
+
+  trait :with_code_suggestions_disabled do
+    after(:create) do |project|
+      project.project_setting.update!(code_suggestions: false)
+    end
+  end
 end

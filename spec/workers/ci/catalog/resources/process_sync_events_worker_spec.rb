@@ -48,21 +48,5 @@ RSpec.describe Ci::Catalog::Resources::ProcessSyncEventsWorker, feature_category
 
       perform
     end
-
-    context 'when FF `ci_process_catalog_resource_sync_events` is disabled' do
-      before do
-        stub_feature_flags(ci_process_catalog_resource_sync_events: false)
-      end
-
-      it 'does not process the sync events', :aggregate_failures do
-        expect(worker).not_to receive(:log_extra_metadata_on_done)
-
-        expect { perform }.not_to change { Ci::Catalog::Resources::SyncEvent.status_pending.count }
-
-        expect(resource.reload.name).to eq('Old Name')
-        expect(resource.reload.description).to be_nil
-        expect(resource.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
-      end
-    end
   end
 end

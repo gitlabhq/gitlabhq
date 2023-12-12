@@ -1,0 +1,10 @@
+---
+view_name: postgres_sequences
+classes:
+  - Gitlab::Database::PostgresSequence
+feature_categories:
+  - database
+description: SQL view to get information about postgres sequences
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139117
+milestone: '16.7'
+gitlab_schema: gitlab_shared

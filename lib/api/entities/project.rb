@@ -41,6 +41,7 @@ module API
         end
       end
 
+      expose :code_suggestions, documentation: { type: 'boolean' }
       expose :packages_enabled, documentation: { type: 'boolean' }
       expose :empty_repo?, as: :empty_repo, documentation: { type: 'boolean' }
       expose :archived?, as: :archived, documentation: { type: 'boolean' }

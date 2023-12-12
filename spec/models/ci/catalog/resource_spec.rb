@@ -212,53 +212,6 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
         end
       end
     end
-
-    context 'when FF `ci_process_catalog_resource_sync_events` is disabled' do
-      before do
-        stub_feature_flags(ci_process_catalog_resource_sync_events: false)
-      end
-
-      context 'when the catalog resource is created' do
-        let(:resource) { build(:ci_catalog_resource, project: project) }
-
-        it 'updates the catalog resource columns to match the project' do
-          resource.save!
-          resource.reload
-
-          expect(resource.name).to eq(project.name)
-          expect(resource.description).to eq(project.description)
-          expect(resource.visibility_level).to eq(project.visibility_level)
-        end
-      end
-
-      context 'when the project is updated' do
-        let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
-
-        context 'when project name is updated' do
-          it 'updates the catalog resource name to match' do
-            project.update!(name: 'New name')
-
-            expect(resource.reload.name).to eq(project.name)
-          end
-        end
-
-        context 'when project description is updated' do
-          it 'updates the catalog resource description to match' do
-            project.update!(description: 'New description')
-
-            expect(resource.reload.description).to eq(project.description)
-          end
-        end
-
-        context 'when project visibility_level is updated' do
-          it 'updates the catalog resource visibility_level to match' do
-            project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
-
-            expect(resource.reload.visibility_level).to eq(project.visibility_level)
-          end
-        end
-      end
-    end
   end
 
   describe '#update_latest_released_at! triggered in model callbacks' do

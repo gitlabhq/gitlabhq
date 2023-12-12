@@ -1,0 +1,24 @@
+---
+description: Unique self managed and .com users visiting CI/CD Catalog page count on monthly and weekly basis.
+category: InternalEventTracking
+action: unique_users_visiting_ci_catalog
+label_description:
+property_description:
+value_description:
+extra_properties:
+identifiers:
+product_section: ops
+product_stage: verify
+product_group: pipeline_authoring
+milestone: "16.7"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137564
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate
+events:
+  - name: unique_users_visiting_ci_catalog
+    unique: user.id

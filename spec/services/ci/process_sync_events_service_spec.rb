@@ -212,20 +212,6 @@ RSpec.describe Ci::ProcessSyncEventsService, feature_category: :continuous_integ
 
           execute
         end
-
-        context 'when FF `ci_process_catalog_resource_sync_events` is disabled' do
-          before do
-            stub_feature_flags(ci_process_catalog_resource_sync_events: false)
-          end
-
-          it 'does not enqueue Ci::Catalog::Resources::ProcessSyncEventsWorker' do
-            stub_const("#{described_class}::BATCH_SIZE", 1)
-
-            expect(Ci::Catalog::Resources::ProcessSyncEventsWorker).not_to receive(:perform_async)
-
-            execute
-          end
-        end
       end
 
       # The `p_catalog_resource_sync_events` table does not enforce an FK on catalog_resource_id

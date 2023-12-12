@@ -1,8 +1,8 @@
 ---
 migration_job_name: BackfillProjectWikiRepositories
-description: >-
-  Backfills the project_wiki_repositories table for each project that still
+description: Backfills the project_wiki_repositories table for each project that still
   does not have an entry in this table.
 feature_category: geo
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113783
 milestone: '15.10'
+finalized_by: '20231207221013'

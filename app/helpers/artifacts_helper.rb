@@ -5,7 +5,8 @@ module ArtifactsHelper
     {
       project_path: project.full_path,
       project_id: project.id,
-      can_destroy_artifacts: can?(current_user, :destroy_artifacts, project).to_s
+      can_destroy_artifacts: can?(current_user, :destroy_artifacts, project).to_s,
+      job_artifacts_count_limit: ::Ci::JobArtifacts::BulkDeleteByProjectService::JOB_ARTIFACTS_COUNT_LIMIT
     }
   end
 end

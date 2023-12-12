@@ -6,7 +6,7 @@ product_section: dev
 product_stage: manage
 product_group: optimize
 value_type: number
-status: active
+status: removed
 milestone: '14.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75187
 time_frame: 7d
@@ -22,3 +22,5 @@ tier:
   - free
   - premium
   - ultimate
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139231
+milestone_removed: '16.7'
