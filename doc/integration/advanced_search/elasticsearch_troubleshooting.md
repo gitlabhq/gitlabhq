@@ -367,7 +367,7 @@ Elasticsearch administrator has more experience with.
 
 ## Issues with migrations
 
-Please ensure you've read about [Elasticsearch Migrations](../advanced_search/elasticsearch.md#advanced-search-migrations).
+Ensure you've read about [Elasticsearch Migrations](../advanced_search/elasticsearch.md#advanced-search-migrations).
 
 If there is a halted migration and your [`elasticsearch.log`](../../administration/logs/index.md#elasticsearchlog) file contain errors, this could potentially be a bug/issue. Escalate to GitLab support if retrying migrations does not succeed.
 
@@ -395,7 +395,7 @@ see details in the [update guide](../../update/upgrading_from_source.md).
 
 ## `Elasticsearch::Transport::Transport::Errors::BadRequest`
 
-If you have this exception (just like in the case above but the actual message is different) please check if you have the correct Elasticsearch version and you met the other [requirements](elasticsearch.md#system-requirements).
+If you have this exception (just like in the case above but the actual message is different), check that you have the correct Elasticsearch version and you met the other [requirements](elasticsearch.md#system-requirements).
 There is also an easy way to check it automatically with `sudo gitlab-rake gitlab:check` command.
 
 ## `Elasticsearch::Transport::Transport::Errors::RequestEntityTooLarge`
@@ -419,7 +419,7 @@ Set a custom `gitlab_rails['env']` environment variable, called [`no_proxy`](htt
 WARNING:
 Setting the number of replicas to `0` is discouraged (this is not allowed in the GitLab Elasticsearch Integration menu). If you are planning to add more Elasticsearch nodes (for a total of more than 1 Elasticsearch) the number of replicas needs to be set to an integer value larger than `0`. Failure to do so results in lack of redundancy (losing one node corrupts the index).
 
-If you have a **hard requirement to have a green status for your single node Elasticsearch cluster**, please make sure you understand the risks outlined in the previous paragraph and then run the following query to set the number of replicas to `0`(the cluster no longer tries to create any shard replicas):
+If you have a **hard requirement to have a green status for your single node Elasticsearch cluster**, make sure you understand the risks outlined in the previous paragraph and then run the following query to set the number of replicas to `0`(the cluster no longer tries to create any shard replicas):
 
 ```shell
 curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \
@@ -438,7 +438,7 @@ If you're getting a `health check timeout: no Elasticsearch node available` erro
 Gitlab::Elastic::Indexer::Error: time="2020-01-23T09:13:00Z" level=fatal msg="health check timeout: no Elasticsearch node available"
 ```
 
-You probably have not used either `http://` or `https://` as part of your value in the **"URL"** field of the Elasticsearch Integration Menu. Please make sure you are using either `http://` or `https://` in this field as the [Elasticsearch client for Go](https://github.com/olivere/elastic) that we are using [needs the prefix for the URL to be accepted as valid](https://github.com/olivere/elastic/commit/a80af35aa41856dc2c986204e2b64eab81ccac3a).
+You probably have not used either `http://` or `https://` as part of your value in the **"URL"** field of the Elasticsearch Integration Menu. Make sure you are using either `http://` or `https://` in this field as the [Elasticsearch client for Go](https://github.com/olivere/elastic) that we are using [needs the prefix for the URL to be accepted as valid](https://github.com/olivere/elastic/commit/a80af35aa41856dc2c986204e2b64eab81ccac3a).
 After you have corrected the formatting of the URL, delete the index (via the [dedicated Rake task](elasticsearch.md#gitlab-advanced-search-rake-tasks)) and [reindex the content of your instance](elasticsearch.md#enable-advanced-search).
 
 ## My Elasticsearch cluster has a plugin and the integration is not working

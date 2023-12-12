@@ -65,7 +65,7 @@ sequenceDiagram
   Note right of C: Bearer token included in the Authorization header
 ```
 
-Please refer to the [Docker documentation](https://docs.docker.com/registry/spec/auth/token/) for more details.
+For more details, refer to the [Docker documentation](https://docs.docker.com/registry/spec/auth/token/).
 
 ##### Push and Pull
 
@@ -164,7 +164,7 @@ Although blobs are shared across repositories, manifest and tag metadata are sco
 
 #### GitLab.com
 
-Due to scale, performance and isolation concerns, for GitLab.com the registry database will be on a separate dedicated PostgreSQL cluster. Please see [#93](https://gitlab.com/gitlab-org/container-registry/-/issues/93) and [GitLab-com/gl-infra/reliability#10109](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/10109) for additional context.
+Due to scale, performance and isolation concerns, for GitLab.com the registry database will be on a separate dedicated PostgreSQL cluster. See [#93](https://gitlab.com/gitlab-org/container-registry/-/issues/93) and [GitLab-com/gl-infra/reliability#10109](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/10109) for additional context.
 
 The diagram below illustrates the architecture of the database cluster:
 
@@ -238,7 +238,7 @@ This is a list of all the registry HTTP API operations and how they depend on th
 | [Complete blob upload](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#put-blob-upload)        | `PUT`    | `/v2/<name>/blobs/uploads/<uuid>`       | **{check-circle}** Yes                 | **{check-circle}** Yes                | **{dotted-circle}** No                      |
 | [Cancel blob upload](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/api.md#canceling-an-upload)      | `DELETE` | `/v2/<name>/blobs/uploads/<uuid>`       | **{check-circle}** Yes                 | **{check-circle}** Yes                | **{dotted-circle}** No                      |
 
-`*` Please refer to the [list of interactions between registry and Rails](#from-gitlab-rails-to-registry) to know why and how.
+`*` Refer to the [list of interactions between registry and Rails](#from-gitlab-rails-to-registry) to know why and how.
 
 #### Failure Scenarios
 

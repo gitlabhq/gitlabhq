@@ -44,7 +44,7 @@ To tell License Finder about a dependency's license if it isn't auto-detected:
 license_finder licenses add my_unknown_dependency MIT
 ```
 
-For all of the above, please include `--why "Reason"` and `--who "My Name"` so the `decisions.yml` file can keep track of when, why, and who approved of a dependency.
+For all of the above, include `--why "Reason"` and `--who "My Name"` so the `decisions.yml` file can keep track of when, why, and who approved of a dependency.
 
 More detailed information on how the gem and its commands work is available in the [License Finder README](https://github.com/pivotal/LicenseFinder).
 
@@ -77,4 +77,4 @@ Those projects are set to use a test license encryption key by default.
 
 ## Additional information
 
-Please see the [Open Source](https://about.gitlab.com/handbook/engineering/open-source/#using-open-source-libraries) page for more information on licensing.
+See the [Open Source](https://about.gitlab.com/handbook/engineering/open-source/#using-open-source-libraries) page for more information on licensing.

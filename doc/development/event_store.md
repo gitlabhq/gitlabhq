@@ -184,7 +184,7 @@ Changes to the schema require multiple rollouts. While the new version is being 
 - Existing subscribers can consume events using the old version.
 - Events get persisted in the Sidekiq queue as job arguments, so we could have 2 versions of the schema during deployments.
 
-As changing the schema ultimately impacts the Sidekiq arguments, please refer to our
+As changing the schema ultimately impacts the Sidekiq arguments, refer to our
 [Sidekiq style guide](sidekiq/compatibility_across_updates.md#changing-the-arguments-for-a-worker) with regards to multiple rollouts.
 
 #### Add properties

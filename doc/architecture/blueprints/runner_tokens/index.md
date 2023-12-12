@@ -440,7 +440,7 @@ scope.
 
 ## FAQ
 
-Please follow [the user documentation](../../../ci/runners/new_creation_workflow.md).
+Follow [the user documentation](../../../ci/runners/new_creation_workflow.md).
 
 ## Status
 

@@ -96,7 +96,7 @@ For example, in German, the word _user_ can be translated into _Benutzer_ (male)
 
 ### Updating the glossary
 
-To propose additions to the glossary, please
+To propose additions to the glossary, 
 [open an issue](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&utf8=✓&state=all&label_name[]=Category%3AInternationalization).
 
 ## French translation guidelines

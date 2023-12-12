@@ -76,7 +76,7 @@ When run, this spec doesn't do what we might expect:
 
 This is because FactoryBot sequences are not reset for each example.
 
-Please remember that sequence-generated values exist only to avoid having to
+Remember that sequence-generated values exist only to avoid having to
 explicitly set attributes that have a uniqueness constraint when using a factory.
 
 ### Solution

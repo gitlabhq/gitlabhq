@@ -86,7 +86,7 @@ _can_ be used by `ILIKE` / `LIKE` and can lead to greatly improved performance.
 One downside of these indexes is that they can easily get quite large (depending
 on the amount of data indexed).
 
-To keep naming of these indexes consistent please use the following naming
+To keep naming of these indexes consistent, use the following naming
 pattern:
 
 ```plaintext

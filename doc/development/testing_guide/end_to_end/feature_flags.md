@@ -16,7 +16,7 @@ and `GITLAB_ADMIN_PASSWORD`.
 
 ## `feature_flag` RSpec tag
 
-Please be sure to include the `feature_flag` tag so that the test can be skipped on the appropriate environments.
+Be sure to include the `feature_flag` tag so that the test can be skipped on the appropriate environments.
 
 **Optional metadata:**
 
@@ -181,7 +181,7 @@ active feature flag. To circumvent this behavior, add a wait for elements behind
 It's also possible to run an entire scenario with a feature flag enabled, without having to edit
 existing tests or write new ones.
 
-Please see the [QA README](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa#running-tests-with-a-feature-flag-enabled)
+See the [QA README](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa#running-tests-with-a-feature-flag-enabled)
 for details.
 
 ## Confirming that end-to-end tests pass with a feature flag enabled
@@ -219,4 +219,4 @@ pass on the default branch. The end-to-end tests run on the default branch every
 If the relevant tests do not enable the feature flag themselves, you can check if the tests will need to be updated by opening
 a draft merge request that enables the flag by default via a [feature flag definition file](../../feature_flags/index.md#feature-flag-definition-and-validation).
 That will [automatically execute the end-to-end test suite](#automatic-test-execution-when-a-feature-flag-definition-changes).
-The merge request can be closed once the tests pass. If you need assistance to update the tests, please contact the relevant [stable counterpart in the Quality department](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors), or any Software Engineer in Test if there is no stable counterpart for your group.
+The merge request can be closed once the tests pass. If you need assistance to update the tests, contact the relevant [stable counterpart in the Quality department](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors), or any Software Engineer in Test if there is no stable counterpart for your group.

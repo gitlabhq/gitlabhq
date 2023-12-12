@@ -16,7 +16,7 @@ module QA
       end
 
       it(
-        'can be used to create a file via the project API',
+        'can be used to create a file via the project API', :reliable,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/367064'
       ) do
         expect do
@@ -31,7 +31,7 @@ module QA
       end
 
       it(
-        'can be used to commit via the API',
+        'can be used to commit via the API', :reliable,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/367067'
       ) do
         expect do

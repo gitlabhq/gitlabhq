@@ -222,7 +222,7 @@ You can [query the funnel data with the REST API](../../api/product_analytics.md
 To do this, you can use the example query body below, where you need to replace `FUNNEL_NAME` with your funnel's name.
 
 NOTE:
-The `afterDate` filter is not supported. Please use `beforeDate` or `inDateRange`.
+The `afterDate` filter is not supported. Use `beforeDate` or `inDateRange`.
 
 ```json
 {

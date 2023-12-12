@@ -26,7 +26,7 @@ can still have specifics. They are described in their respective
 The Go upgrade documentation [provides an overview](go_upgrade.md#overview)
 of how GitLab manages and ships Go binary support.
 
-If a GitLab component requires a newer version of Go, please
+If a GitLab component requires a newer version of Go, 
 follow the [upgrade process](go_upgrade.md#updating-go-version) to ensure no customer, team, or component is adversely impacted.
 
 Sometimes, individual projects must also [manage builds with multiple versions of Go](go_upgrade.md#supporting-multiple-go-versions).

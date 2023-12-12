@@ -14,7 +14,7 @@ module QA
       end
 
       context 'for the same project' do
-        it 'can be used to create a file via the project API',
+        it 'can be used to create a file via the project API', :reliable,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347858' do
           expect do
             create(:file,
@@ -58,7 +58,7 @@ module QA
           different_project.remove_via_api!
         end
 
-        it 'cannot be used to create a file via the project API',
+        it 'cannot be used to create a file via the project API', :reliable,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347860' do
           expect do
             create(:file,
@@ -68,7 +68,7 @@ module QA
           end.to raise_error(Resource::ApiFabricator::ResourceFabricationFailedError, /403 Forbidden/)
         end
 
-        it 'cannot be used to commit via the API',
+        it 'cannot be used to commit via the API', :reliable,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347861' do
           expect do
             create(:commit,

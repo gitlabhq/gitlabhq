@@ -151,4 +151,18 @@ RSpec.describe 'Querying a Milestone', feature_category: :team_planning do
       end
     end
   end
+
+  context 'for common GraphQL/REST' do
+    it_behaves_like 'group milestones including ancestors and descendants'
+
+    def query_group_milestone_ids(params)
+      query = graphql_query_for('group', { 'fullPath' => group.full_path },
+        query_graphql_field('milestones', params, query_graphql_path([:nodes], :id))
+      )
+
+      post_graphql(query, current_user: current_user)
+
+      graphql_data_at(:group, :milestones, :nodes).pluck('id').map { |gid| GlobalID.parse(gid).model_id.to_i }
+    end
+  end
 end

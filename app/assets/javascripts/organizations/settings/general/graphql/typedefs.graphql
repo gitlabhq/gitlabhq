@@ -1,5 +1,0 @@
-# TODO: Use real input type when https://gitlab.com/gitlab-org/gitlab/-/issues/419608 is complete.
-input LocalUpdateOrganizationInput {
-  id: ID!
-  name: String
-}

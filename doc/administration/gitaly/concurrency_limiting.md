@@ -163,7 +163,7 @@ The adaptive limiter calibrates the limits every 30 seconds and:
   or CPU throttled for 50% or more of the observation time.
 
 Otherwise, the limits increase by one until reaching the upper bound. For more information about technical implementation
-of this system, please refer to [this blueprint](../../architecture/blueprints/gitaly_adaptive_concurrency_limit/index.md).
+of this system, refer to [this blueprint](../../architecture/blueprints/gitaly_adaptive_concurrency_limit/index.md).
 
 Adaptive limiting is enabled for each RPC or pack-objects cache individually. However, limits are calibrated at the same time.
 

@@ -190,7 +190,7 @@ and incidents) into work items. Eventually (when these resources become regular
 work items), `base_type` will be removed.
 
 Until the architecture of WIT widgets is finalized, we are holding off on the creation of new work item
-types. If a new work item type is absolutely necessary, please reach out to a
+types. If a new work item type is absolutely necessary, reach out to a
 member of the [Project Management Engineering Team](https://gitlab.com/gitlab-org/gitlab/-/issues/370599).
 
 ### Creating a new work item type in the database

@@ -2960,7 +2960,6 @@ RSpec/ContextWording:
     - 'spec/tasks/gitlab/packages/migrate_rake_spec.rb'
     - 'spec/tasks/gitlab/terraform/migrate_rake_spec.rb'
     - 'spec/tasks/gitlab/workhorse_rake_spec.rb'
-    - 'spec/tooling/danger/project_helper_spec.rb'
     - 'spec/tooling/lib/tooling/parallel_rspec_runner_spec.rb'
     - 'spec/uploaders/attachment_uploader_spec.rb'
     - 'spec/uploaders/avatar_uploader_spec.rb'

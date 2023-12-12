@@ -1,9 +1,4 @@
-import {
-  organizations,
-  organizationProjects,
-  organizationGroups,
-  updateOrganizationResponse,
-} from '../../mock_data';
+import { organizations, organizationProjects, organizationGroups } from '../../mock_data';
 
 const simulateLoading = () => {
   return new Promise((resolve) => {
@@ -22,14 +17,6 @@ export default {
         projects: organizationProjects,
         groups: organizationGroups,
       };
-    },
-  },
-  Mutation: {
-    updateOrganization: async () => {
-      // Simulate API loading
-      await simulateLoading();
-
-      return updateOrganizationResponse;
     },
   },
 };

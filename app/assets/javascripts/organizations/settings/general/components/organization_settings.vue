@@ -1,14 +1,18 @@
 <script>
 import { s__, __ } from '~/locale';
-import { createAlert, VARIANT_INFO } from '~/alert';
+import { createAlert } from '~/alert';
+import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import NewEditForm from '~/organizations/shared/components/new_edit_form.vue';
 import { FORM_FIELD_NAME, FORM_FIELD_ID } from '~/organizations/shared/constants';
 import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
-import updateOrganizationMutation from '../graphql/mutations/update_organization.mutation.graphql';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPE_ORGANIZATION } from '~/graphql_shared/constants';
+import FormErrorsAlert from '~/vue_shared/components/form/errors_alert.vue';
+import organizationUpdateMutation from '../graphql/mutations/organization_update.mutation.graphql';
 
 export default {
   name: 'OrganizationSettings',
-  components: { NewEditForm, SettingsBlock },
+  components: { NewEditForm, SettingsBlock, FormErrorsAlert },
   inject: ['organization'],
   i18n: {
     submitButtonText: __('Save changes'),
@@ -25,30 +29,41 @@ export default {
   data() {
     return {
       loading: false,
+      errors: [],
     };
   },
   methods: {
     async onSubmit(formValues) {
+      this.errors = [];
       this.loading = true;
       try {
         const {
           data: {
-            updateOrganization: { errors },
+            organizationUpdate: { errors },
           },
         } = await this.$apollo.mutate({
-          mutation: updateOrganizationMutation,
+          mutation: organizationUpdateMutation,
           variables: {
-            id: this.organization.id,
-            name: formValues.name,
+            input: {
+              id: convertToGraphQLId(TYPE_ORGANIZATION, this.organization.id),
+              name: formValues.name,
+            },
           },
         });
 
         if (errors.length) {
-          // TODO: handle errors when using real API after https://gitlab.com/gitlab-org/gitlab/-/issues/419608 is complete.
+          this.errors = errors;
+
           return;
         }
 
-        createAlert({ message: this.$options.i18n.successMessage, variant: VARIANT_INFO });
+        visitUrlWithAlerts(window.location.href, [
+          {
+            id: 'organization-successfully-updated',
+            message: this.$options.i18n.successMessage,
+            variant: 'info',
+          },
+        ]);
       } catch (error) {
         createAlert({ message: this.$options.i18n.errorMessage, error, captureError: true });
       } finally {
@@ -64,6 +79,7 @@ export default {
     <template #title>{{ $options.i18n.settingsBlock.title }}</template>
     <template #description>{{ $options.i18n.settingsBlock.description }}</template>
     <template #default>
+      <form-errors-alert v-model="errors" />
       <new-edit-form
         :loading="loading"
         :initial-form-values="organization"

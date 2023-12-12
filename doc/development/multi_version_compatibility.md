@@ -243,7 +243,7 @@ With all those details in mind, let's imagine we need to replace a query, and th
 1. **contract**: from `Schema B` to `Schema C` (post-deployment migration). Nothing uses the old index anymore, we can safely remove it.
 
 This is only an example. More complex migrations, especially when background migrations are needed may
-require more than one milestone. For details please refer to our [migration style guide](migration_style_guide.md).
+require more than one milestone. For details refer to our [migration style guide](migration_style_guide.md).
 
 ## Examples of previous incidents
 

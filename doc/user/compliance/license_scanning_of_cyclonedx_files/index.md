@@ -38,7 +38,7 @@ To enable License scanning of CycloneDX files:
 
 - Enable [Dependency Scanning](../../application_security/dependency_scanning/index.md#enabling-the-analyzer)
   and ensure that its prerequisites are met.
-- On GitLab self-managed only, you can [choose package registry metadata to synchronize](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) in the Admin Area for the GitLab instance. For this data synchronization to work, you must allow outbound network traffic from your GitLab instance to the domain `storage.googleapis.com`. If you have limited or no network connectivity then please refer to the documentation section [running in an offline environment](#running-in-an-offline-environment) for further guidance.
+- On GitLab self-managed only, you can [choose package registry metadata to synchronize](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) in the Admin Area for the GitLab instance. For this data synchronization to work, you must allow outbound network traffic from your GitLab instance to the domain `storage.googleapis.com`. If you have limited or no network connectivity then refer to the documentation section [running in an offline environment](#running-in-an-offline-environment) for further guidance.
 
 ## Supported languages and package managers
 

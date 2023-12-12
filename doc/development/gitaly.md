@@ -73,12 +73,12 @@ when Gitaly is called more than 30 times in a single Rails request or Sidekiq ex
 As a temporary measure, export `GITALY_DISABLE_REQUEST_LIMITS=1` to suppress the error. This disables the n+1 detection
 in your development environment.
 
-Please raise an issue in the GitLab CE or EE repositories to report the issue. Include the labels ~Gitaly
-~performance ~"technical debt". Please ensure that the issue contains the full stack trace and error message of the
+Raise an issue in the GitLab CE or EE repositories to report the issue. Include the labels ~Gitaly
+~performance ~"technical debt". Ensure that the issue contains the full stack trace and error message of the
 `TooManyInvocationsError`. Also include any known failing tests if possible.
 
 Isolate the source of the n+1 problem. This is usually a loop that results in Gitaly being called for each
-element in an array. If you are unable to isolate the problem, please contact a member
+element in an array. If you are unable to isolate the problem, contact a member
 of the [Gitaly Team](https://gitlab.com/groups/gl-gitaly/group_members) for assistance.
 
 After the source has been found, wrap it in an `allow_n_plus_1_calls` block, as follows:

@@ -5,11 +5,14 @@ import { visitUrlWithAlerts, joinPaths } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 import OrganizationUrlField from '~/organizations/shared/components/organization_url_field.vue';
 import { FORM_FIELD_PATH, FORM_FIELD_PATH_VALIDATORS } from '~/organizations/shared/constants';
-import updateOrganizationMutation from '../graphql/mutations/update_organization.mutation.graphql';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPE_ORGANIZATION } from '~/graphql_shared/constants';
+import FormErrorsAlert from '~/vue_shared/components/form/errors_alert.vue';
+import organizationUpdateMutation from '../graphql/mutations/organization_update.mutation.graphql';
 
 export default {
   name: 'OrganizationSettings',
-  components: { OrganizationUrlField, GlFormFields, GlButton, GlForm, GlCard },
+  components: { OrganizationUrlField, GlFormFields, GlButton, GlForm, GlCard, FormErrorsAlert },
   inject: ['organization'],
   i18n: {
     cardHeaderTitle: s__('Organization|Change organization URL'),
@@ -39,6 +42,7 @@ export default {
         path: this.organization.path,
       },
       loading: false,
+      errors: [],
     };
   },
   computed: {
@@ -47,23 +51,27 @@ export default {
     },
   },
   methods: {
-    async onSubmit(formValues) {
+    async onSubmit() {
+      this.errors = [];
       this.loading = true;
       try {
         const {
           data: {
-            updateOrganization: { errors, organization },
+            organizationUpdate: { errors, organization },
           },
         } = await this.$apollo.mutate({
-          mutation: updateOrganizationMutation,
+          mutation: organizationUpdateMutation,
           variables: {
-            id: this.organization.id,
-            path: formValues.path,
+            input: {
+              id: convertToGraphQLId(TYPE_ORGANIZATION, this.organization.id),
+              path: this.formValues.path,
+            },
           },
         });
 
         if (errors.length) {
-          // TODO: handle errors when using real API after https://gitlab.com/gitlab-org/gitlab/-/issues/419608 is complete.
+          this.errors = errors;
+
           return;
         }
 
@@ -85,44 +93,47 @@ export default {
 </script>
 
 <template>
-  <gl-card
-    class="gl-new-card"
-    header-class="gl-new-card-header gl-flex-direction-column"
-    body-class="gl-new-card-body gl-px-5 gl-py-4"
-  >
-    <template #header>
-      <div class="gl-new-card-title-wrapper">
-        <h4 class="gl-new-card-title">{{ $options.i18n.cardHeaderTitle }}</h4>
-      </div>
-      <p class="gl-new-card-description">{{ $options.i18n.cardHeaderDescription }}</p>
-    </template>
-    <gl-form :id="$options.formId">
-      <gl-form-fields
-        v-model="formValues"
-        :form-id="$options.formId"
-        :fields="$options.fields"
-        @submit="onSubmit"
-      >
-        <template #input(path)="{ id, value, validation, input, blur }">
-          <organization-url-field
-            :id="id"
-            :value="value"
-            :validation="validation"
-            @input="input"
-            @blur="blur"
-          />
-        </template>
-      </gl-form-fields>
-      <div class="gl-display-flex gl-gap-3">
-        <gl-button
-          type="submit"
-          variant="danger"
-          class="js-no-auto-disable"
-          :loading="loading"
-          :disabled="isSubmitButtonDisabled"
-          >{{ $options.i18n.submitButtonText }}</gl-button
+  <div>
+    <form-errors-alert v-model="errors" />
+    <gl-card
+      class="gl-new-card"
+      header-class="gl-new-card-header gl-flex-direction-column"
+      body-class="gl-new-card-body gl-px-5 gl-py-4"
+    >
+      <template #header>
+        <div class="gl-new-card-title-wrapper">
+          <h4 class="gl-new-card-title">{{ $options.i18n.cardHeaderTitle }}</h4>
+        </div>
+        <p class="gl-new-card-description">{{ $options.i18n.cardHeaderDescription }}</p>
+      </template>
+      <gl-form :id="$options.formId">
+        <gl-form-fields
+          v-model="formValues"
+          :form-id="$options.formId"
+          :fields="$options.fields"
+          @submit="onSubmit"
         >
-      </div>
-    </gl-form>
-  </gl-card>
+          <template #input(path)="{ id, value, validation, input, blur }">
+            <organization-url-field
+              :id="id"
+              :value="value"
+              :validation="validation"
+              @input="input"
+              @blur="blur"
+            />
+          </template>
+        </gl-form-fields>
+        <div class="gl-display-flex gl-gap-3">
+          <gl-button
+            type="submit"
+            variant="danger"
+            class="js-no-auto-disable"
+            :loading="loading"
+            :disabled="isSubmitButtonDisabled"
+            >{{ $options.i18n.submitButtonText }}</gl-button
+          >
+        </div>
+      </gl-form>
+    </gl-card>
+  </div>
 </template>

@@ -104,7 +104,7 @@ Default client accepts two parameters: `resolvers` and `config`.
 
 ### Multiple client queries for the same object
 
-If you are making multiple queries to the same Apollo client object you might encounter the following error: `Cache data may be lost when replacing the someProperty field of a Query object. To address this problem, either ensure all objects of SomeEntityhave an id or a custom merge function`. We are already checking `id` presence for every GraphQL type that has an `id`, so this shouldn't be the case (unless you see this warning when running unit tests; in this case please ensure your mocked responses contain an `id` whenever it's requested).
+If you are making multiple queries to the same Apollo client object you might encounter the following error: `Cache data may be lost when replacing the someProperty field of a Query object. To address this problem, either ensure all objects of SomeEntityhave an id or a custom merge function`. We are already checking `id` presence for every GraphQL type that has an `id`, so this shouldn't be the case (unless you see this warning when running unit tests; in this case ensure your mocked responses contain an `id` whenever it's requested).
 
 When `SomeEntity` type doesn't have an `id` property in the GraphQL schema, to fix this warning we need to define a custom merge function.
 

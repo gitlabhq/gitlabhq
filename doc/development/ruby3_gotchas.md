@@ -150,7 +150,7 @@ We run automated detection for this warning in tests via `deprecation_toolkit`,
 but it relies on the fact that `Kernel#warn` emits a warning, so stubbing out this call will effectively remove the call to warn, which means `deprecation_toolkit` will never see the deprecation warnings.
 Stubbing out the implementation removes that warning, and we never pick it up, so the build is green.
 
-Please refer to [issue 364099](https://gitlab.com/gitlab-org/gitlab/-/issues/364099) for more context.
+Refer to [issue 364099](https://gitlab.com/gitlab-org/gitlab/-/issues/364099) for more context.
 
 ## Testing in `irb` and `rails console`
 

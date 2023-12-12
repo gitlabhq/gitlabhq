@@ -23,7 +23,7 @@ The event triggered by Internal Events has some special properties compared to p
 1. The `label`, `property` and `value` attributes are not used within Internal Events and are always empty.
 1. The `category` is automatically set to `InternalEventTracking`
 
-Please make sure that you are okay with this change before you migrate and dashboards are changed accordingly.
+Make sure that you are okay with this change before you migrate and dashboards are changed accordingly.
 
 ### Backend
 

@@ -479,7 +479,7 @@ executive dashboards to drive organizational visibility.
 
 ### Purchase additional Enterprise Agile Planning seats
 
-Please contact your [GitLab sales representative](https://about.gitlab.com/sales/) for more information.
+Contact your [GitLab sales representative](https://about.gitlab.com/sales/) for more information.
 
 ## Contact Support
 

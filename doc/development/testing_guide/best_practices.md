@@ -385,7 +385,7 @@ NOTE:
 `stub_method` does not support method existence and method arity checks.
 
 WARNING:
-`stub_method` is supposed to be used in factories only. It's strongly discouraged to be used elsewhere. Please consider using [RSpec mocks](https://rspec.info/features/3-12/rspec-mocks/) if available.
+`stub_method` is supposed to be used in factories only. It's strongly discouraged to be used elsewhere. Consider using [RSpec mocks](https://rspec.info/features/3-12/rspec-mocks/) if available.
 
 #### Stubbing member access level
 
@@ -582,7 +582,7 @@ Use the coverage reports to ensure your tests cover 100% of your code.
 
 NOTE:
 Before writing a new system test,
-[please consider **not** writing one](testing_levels.md#consider-not-writing-a-system-test)!
+[consider **not** writing one](testing_levels.md#consider-not-writing-a-system-test)!
 
 - Feature specs should be named `ROLE_ACTION_spec.rb`, such as
   `user_changes_password_spec.rb`.

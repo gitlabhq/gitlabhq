@@ -425,7 +425,7 @@ being upgraded to, we do the following:
 ### Process for removing migrations
 
 1. Select migrations that were marked as obsolete before the current major release
-1. If the step above includes all obsolete migrations, please keep one last migration as a safeguard for customers with unapplied migrations
+1. If the step above includes all obsolete migrations, keep one last migration as a safeguard for customers with unapplied migrations
 1. Delete migration files and spec files for those migrations
 1. Verify that there are no references of the migrations in the `.rubocop_todo/` directory.
 1. Create a merge request and assign it to a team member from the global search team.

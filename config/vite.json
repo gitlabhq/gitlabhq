@@ -1,6 +1,13 @@
 {
   "all": {
     "sourceCodeDir": "app/assets",
+    "watchAdditionalPaths": [
+      "app/graphql/queries",
+      "app/assets",
+      "ee/app/assets",
+      "jh/app/assets",
+      "vendor/assets"
+    ],
     "entrypointsDir": "javascripts/entrypoints",
     "port": 3038,
     "publicOutputDir": "vite-dev",

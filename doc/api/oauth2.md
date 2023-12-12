@@ -72,7 +72,7 @@ parameter, which are securely bound to the user agent", with each request to the
 
 ### Use HTTPS in production
 
-For production, please use HTTPS for your `redirect_uri`.
+For production, use HTTPS for your `redirect_uri`.
 For development, GitLab allows insecure HTTP redirect URIs.
 
 As OAuth 2.0 bases its security entirely on the transport layer, you should not use unprotected

@@ -179,7 +179,7 @@ In [this project](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/614)
 we are extending this so alerts for SLIs with a `feature_category`
 label in the source metrics can also be routed.
 
-For any question, please don't hesitate to create an issue in
+For any question, don't hesitate to create an issue in
 [the Scalability issue tracker](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues)
 or come find us in
 [#g_scalability](https://gitlab.slack.com/archives/CMMF8TKR9) on Slack.

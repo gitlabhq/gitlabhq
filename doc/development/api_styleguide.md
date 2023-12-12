@@ -10,7 +10,7 @@ This style guide recommends best practices for API development.
 
 ## Instance variables
 
-Please do not use instance variables, there is no need for them (we don't need
+Don't use instance variables, there is no need for them (we don't need
 to access them as we do in Rails views), local variables are fine.
 
 ## Entities
@@ -321,7 +321,7 @@ it's own file in the [`validators`](https://gitlab.com/gitlab-org/gitlab/-/blob/
 
 ## Internal API
 
-The [internal API](internal_api/index.md) is documented for internal use. Please keep it up to date so we know what endpoints
+The [internal API](internal_api/index.md) is documented for internal use. Keep it up to date so we know what endpoints
 different components are making use of.
 
 ## Avoiding N+1 problems

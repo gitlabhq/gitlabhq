@@ -14,7 +14,7 @@ label, but you are free to contribute to any issue you want.
 
 ## Working from issues
 
-If you find an issue, please submit a merge request with a fix or improvement,
+If you find an issue, submit a merge request with a fix or improvement,
 if you can, and include tests.
 
 If you want to add a new feature that is not labeled, it is best to first create
@@ -70,13 +70,13 @@ For a walkthrough of the contribution process, see [Tutorial: Make a GitLab cont
 - If you would like quick feedback on your merge request feel free to mention someone
   from the [core team](https://about.gitlab.com/community/core-team/) or one of the
   [merge request coaches](https://about.gitlab.com/company/team/). When having your code reviewed
-  and when reviewing merge requests, please keep the [code review guidelines](../code_review.md)
+  and when reviewing merge requests, keep the [code review guidelines](../code_review.md)
   in mind. And if your code also makes changes to the database, or does expensive queries,
   check the [database review guidelines](../database_review.md).
 
 ### Keep it simple
 
-*Live by smaller iterations.* Please keep the amount of changes in a single MR **as small as possible**.
+*Live by smaller iterations.* Keep the amount of changes in a single MR **as small as possible**.
 If you want to contribute a large feature, think very carefully about what the
 [minimum viable change](https://about.gitlab.com/handbook/product/#the-minimally-viable-change)
 is. Can you split the functionality into two smaller MRs? Can you submit only the
@@ -156,7 +156,7 @@ Example commit message template that can be used on your machine that embodies t
 
 ## Contribution acceptance criteria
 
-To make sure that your merge request can be approved, please ensure that it meets
+To make sure that your merge request can be approved, ensure that it meets
 the contribution acceptance criteria below:
 
 1. The change is as small as possible.
@@ -195,7 +195,7 @@ the contribution acceptance criteria below:
 
 ## Definition of done
 
-If you contribute to GitLab, please know that changes involve more than just
+If you contribute to GitLab, know that changes involve more than just
 code. We use the following [definition of done](https://www.agilealliance.org/glossary/definition-of-done/).
 To reach the definition of done, the merge request must create no regressions and meet all these criteria:
 
@@ -263,7 +263,7 @@ requirements.
 1. For tests that use Capybara, read
    [how to write reliable, asynchronous integration tests](https://thoughtbot.com/blog/write-reliable-asynchronous-integration-tests-with-capybara).
 1. [Black-box tests/end-to-end tests](../testing_guide/testing_levels.md#black-box-tests-at-the-system-level-aka-end-to-end-tests)
-   added if required. Please contact [the quality team](https://about.gitlab.com/handbook/engineering/quality/#teams)
+   added if required. Contact [the quality team](https://about.gitlab.com/handbook/engineering/quality/#teams)
    with any questions.
 1. The change is tested in a review app where possible and if appropriate.
 1. Code affected by a feature flag is covered by [automated tests with the feature flag enabled and disabled](../feature_flags/index.md#feature-flags-in-tests), or both
@@ -275,7 +275,7 @@ requirements.
 1. Use available components from the GitLab Design System,
    [Pajamas](https://design.gitlab.com/).
 1. The MR must include *Before* and *After* screenshots if UI changes are made.
-1. If the MR changes CSS classes, please include the list of affected pages, which
+1. If the MR changes CSS classes, include the list of affected pages, which
    can be found by running `grep css-class ./app -R`.
 
 ### Description of changes
@@ -323,7 +323,7 @@ Contributions do not require approval from the [Product team](https://about.gitl
 
 ## Dependencies
 
-If you add a dependency in GitLab (such as an operating system package) please
+If you add a dependency in GitLab (such as an operating system package),
 consider updating the following, and note the applicability of each in your merge
 request:
 

@@ -275,7 +275,7 @@ gitlab_rails['auto_migrate'] = false
 consul['services'] = %w(postgresql)
 
 # START user configuration
-# Please set the real values as explained in Required Information section
+#  Set the real values as explained in Required Information section
 #
 # Replace PGBOUNCER_PASSWORD_HASH with a generated md5 value
 postgresql['pgbouncer_user_password'] = 'PGBOUNCER_PASSWORD_HASH'
@@ -427,7 +427,7 @@ authentication mode (`patroni['tls_client_mode']`), must each have the same valu
    consul['watchers'] = %w(postgresql)
 
    # START user configuration
-   # Please set the real values as explained in Required Information section
+   # Set the real values as explained in Required Information section
    # Replace CONSUL_PASSWORD_HASH with with a generated md5 value
    # Replace PGBOUNCER_PASSWORD_HASH with with a generated md5 value
    pgbouncer['users'] = {

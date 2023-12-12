@@ -88,7 +88,7 @@ The metadata database is in early beta for self-managed users. The core migratio
 process for existing registries has been implemented, and online garbage collection
 is fully implemented. Certain database enabled features are only enabled for GitLab.com
 and automatic database provisioning for the registry database is not available.
-Please see the table below for the status of features related to the container
+See the table below for the status of features related to the container
 registry database.
 
 | Feature                     | Description                                                         | Status             | Link                                                                                           |

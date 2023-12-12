@@ -42,7 +42,7 @@ The GitLab feature library (using
 [Feature flags process](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/) guide) supports rolling out changes to a percentage of
 time to users. This in turn can be controlled using [GitLab ChatOps](../../ci/chatops/index.md).
 
-For an up to date list of feature flag commands please see
+For an up to date list of feature flag commands see
 [the source code](https://gitlab.com/gitlab-com/chatops/blob/master/lib/chatops/commands/feature.rb).
 Note that all the examples in that file must be preceded by
 `/chatops run`.
@@ -104,7 +104,7 @@ Guidelines:
 - Consider notifying `#support_gitlab-com` beforehand. So in case if the feature has any side effects on user experience, they can mitigate and disable the feature flag to reduce some impact.
 - If the feature meets the requirements for creating a [Change Management](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process) issue, create a Change Management issue per [criticality guidelines](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#change-request-workflows).
 - For simple, low-risk, easily reverted features, proceed and [enable the feature in `#production`](#process).
-- For support requests to toggle feature flags for specific groups or projects, please follow the process outlined in the [support workflows](https://about.gitlab.com/handbook/support/workflows/saas_feature_flags.html).
+- For support requests to toggle feature flags for specific groups or projects, follow the process outlined in the [support workflows](https://about.gitlab.com/handbook/support/workflows/saas_feature_flags.html).
 
 #### Guideline for which percentages to choose during the rollout
 
@@ -203,7 +203,7 @@ Before enabling a feature flag, verify that you are not violating any [Productio
 The following `/chatops` commands should be performed in the Slack
 `#production` channel.
 
-When you begin to enable the feature, please link to the relevant
+When you begin to enable the feature, link to the relevant
 feature flag rollout issue within a Slack thread of the first `/chatops`
 command you make so people can understand the change if they need to.
 

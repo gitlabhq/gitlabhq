@@ -7,7 +7,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 # Features inside the `.gitlab/` directory
 
 We have implemented standard features that depend on configuration files in the `.gitlab/` directory. You can find `.gitlab/` in various GitLab repositories.
-When implementing new features, please refer to these existing features to avoid conflicts:
+When implementing new features, refer to these existing features to avoid conflicts:
 
 - [Issue Templates](../user/project/description_templates.md#create-an-issue-template): `.gitlab/issue_templates/`.
 - [Merge request Templates](../user/project/description_templates.md#create-a-merge-request-template): `.gitlab/merge_request_templates/`.

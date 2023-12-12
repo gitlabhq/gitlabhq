@@ -361,7 +361,7 @@ When you add a new test that requires administrator access, apply the RSpec meta
 When running tests locally or configuring a pipeline, the environment variable `QA_CAN_TEST_ADMIN_FEATURES` can be set to `false` to skip tests that have the `:requires_admin` tag.
 
 NOTE:
-If the _only_ action in the test that requires administrator access is to toggle a feature flag, please use the `feature_flag` tag instead. More details can be found in [testing with feature flags](feature_flags.md).
+If the _only_ action in the test that requires administrator access is to toggle a feature flag, use the `feature_flag` tag instead. More details can be found in [testing with feature flags](feature_flags.md).
 
 ## Prefer `Commit` resource over `ProjectPush`
 

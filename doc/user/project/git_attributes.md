@@ -108,7 +108,7 @@ with no arguments, it always returns a non-zero return code. This means that for
 the files specified in `.gitattributes`, merges do nothing.
 
 To use your own merge driver, replace the value in `driver` to point to an
-executable. For more details on how this command is invoked, please see the Git
+executable. For more details on how this command is invoked, see the Git
 documentation on [custom merge drivers](https://git-scm.com/docs/gitattributes#_defining_a_custom_merge_driver).
 
 ### Use `.gitattributes` to set files custom merge driver applies to

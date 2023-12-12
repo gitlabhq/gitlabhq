@@ -509,8 +509,6 @@ lib/gitlab/checks/**
 /doc/administration/monitoring/performance/ @jglassman1
 /doc/administration/monitoring/prometheus/gitlab_exporter.md @jglassman1
 /doc/administration/monitoring/prometheus/index.md @axil
-/doc/administration/monitoring/prometheus/pgbouncer_exporter.md @aqualls
-/doc/administration/monitoring/prometheus/postgres_exporter.md @aqualls
 /doc/administration/monitoring/prometheus/registry_exporter.md @phillipwells
 /doc/administration/monitoring/prometheus/web_exporter.md @jglassman1
 /doc/administration/nfs.md @axil
@@ -523,8 +521,7 @@ lib/gitlab/checks/**
 /doc/administration/packages/ @marcel.amirault
 /doc/administration/packages/index.md @phillipwells
 /doc/administration/polling.md @axil
-/doc/administration/postgresql/ @aqualls
-/doc/administration/postgresql/multiple_databases.md @lciutacu
+/doc/administration/postgresql/ @lciutacu
 /doc/administration/raketasks/ @axil
 /doc/administration/raketasks/ldap.md @jglassman1
 /doc/administration/raketasks/praefect.md @eread
@@ -552,6 +549,7 @@ lib/gitlab/checks/**
 /doc/administration/settings/import_export_rate_limits.md @eread @ashrafkhamis
 /doc/administration/settings/instance_template_repository.md @msedlakjakubowski
 /doc/administration/settings/jira_cloud_app.md @eread @ashrafkhamis
+/doc/administration/settings/jira_cloud_app_troubleshooting.md @eread @ashrafkhamis
 /doc/administration/settings/package_registry_rate_limits.md @phillipwells
 /doc/administration/settings/project_integration_management.md @eread @ashrafkhamis
 /doc/administration/settings/push_event_activities_limit.md @msedlakjakubowski
@@ -563,6 +561,7 @@ lib/gitlab/checks/**
 /doc/administration/settings/rate_limits_on_git_ssh_operations.md @msedlakjakubowski
 /doc/administration/settings/scim_setup.md @jglassman1
 /doc/administration/settings/security_and_compliance.md @rdickenson
+/doc/administration/settings/security_contact_information.md @eread
 /doc/administration/settings/slack_app.md @eread @ashrafkhamis
 /doc/administration/settings/terraform_limits.md @phillipwells
 /doc/administration/settings/third_party_offers.md @lciutacu
@@ -577,7 +576,6 @@ lib/gitlab/checks/**
 /doc/administration/terraform_state.md @phillipwells
 /doc/administration/timezone.md @axil
 /doc/administration/troubleshooting/ @axil
-/doc/administration/troubleshooting/postgresql.md @aqualls
 /doc/administration/uploads.md @axil
 /doc/administration/user_settings.md @jglassman1
 /doc/api/access_requests.md @jglassman1
@@ -595,7 +593,6 @@ lib/gitlab/checks/**
 /doc/api/commits.md @msedlakjakubowski
 /doc/api/container_registry.md @marcel.amirault
 /doc/api/custom_attributes.md @msedlakjakubowski
-/doc/api/database_migrations.md @aqualls
 /doc/api/dependencies.md @rdickenson
 /doc/api/dependency_list_export.md @rdickenson
 /doc/api/dependency_proxy.md @marcel.amirault
@@ -740,8 +737,6 @@ lib/gitlab/checks/**
 /doc/api/vulnerability_findings.md @rdickenson
 /doc/architecture/blueprints/cells/ @lciutacu
 /doc/architecture/blueprints/ci_builds_runner_fleet_metrics/ @fneill
-/doc/architecture/blueprints/database/scalability/patterns/ @aqualls
-/doc/architecture/blueprints/database_scaling/ @aqualls
 /doc/architecture/blueprints/google_artifact_registry_integration/ @marcel.amirault
 /doc/architecture/blueprints/organization/ @lciutacu
 /doc/ci/ @marcel.amirault @lyspin
@@ -806,7 +801,6 @@ lib/gitlab/checks/**
 /doc/editor_extensions/ @aqualls
 /doc/gitlab-basics/ @msedlakjakubowski
 /doc/install/ @axil
-/doc/install/postgresql_extensions.md @aqualls
 /doc/integration/ @jglassman1
 /doc/integration/advanced_search/ @ashrafkhamis
 /doc/integration/akismet.md @phillipwells
@@ -860,7 +854,6 @@ lib/gitlab/checks/**
 /doc/tutorials/update_commit_messages/ @msedlakjakubowski
 /doc/tutorials/website_project_with_analytics/ @lciutacu
 /doc/update/ @axil
-/doc/update/background_migrations.md @aqualls
 /doc/user/ai_features.md @sselhorn
 /doc/user/analytics/ @lciutacu
 /doc/user/analytics/ci_cd_analytics.md @phillipwells
@@ -875,13 +868,19 @@ lib/gitlab/checks/**
 /doc/user/emoji_reactions.md @msedlakjakubowski
 /doc/user/enterprise_user/ @jglassman1
 /doc/user/gitlab_duo_chat.md @sselhorn
-/doc/user/group/ @lciutacu
+/doc/user/group/access_and_permissions.md @lciutacu
 /doc/user/group/clusters/ @phillipwells
 /doc/user/group/compliance_frameworks.md @eread
+/doc/user/group/contribution_analytics/ @lciutacu
 /doc/user/group/custom_project_templates.md @msedlakjakubowski
+/doc/user/group/devops_adoption/ @lciutacu
 /doc/user/group/epics/ @msedlakjakubowski
 /doc/user/group/import/ @eread @ashrafkhamis
+/doc/user/group/index.md @lciutacu
+/doc/user/group/insights/ @lciutacu
+/doc/user/group/issues_analytics/ @lciutacu
 /doc/user/group/iterations/ @msedlakjakubowski
+/doc/user/group/manage.md @lciutacu
 /doc/user/group/moderate_users.md @phillipwells
 /doc/user/group/planning_hierarchy/ @msedlakjakubowski
 /doc/user/group/reporting/ @phillipwells
@@ -889,6 +888,10 @@ lib/gitlab/checks/**
 /doc/user/group/roadmap/ @msedlakjakubowski
 /doc/user/group/saml_sso/ @jglassman1
 /doc/user/group/settings/ @jglassman1
+/doc/user/group/ssh_certificates.md @msedlakjakubowski
+/doc/user/group/subgroups/ @lciutacu
+/doc/user/group/troubleshooting.md @lciutacu
+/doc/user/group/value_stream_analytics/ @lciutacu
 /doc/user/infrastructure/ @phillipwells
 /doc/user/infrastructure/clusters/manage/management_project_applications/ @phillipwells
 /doc/user/infrastructure/clusters/manage/management_project_applications/runner.md @fneill
@@ -944,8 +947,10 @@ lib/gitlab/checks/**
 /doc/user/project/repository/web_editor.md @ashrafkhamis
 /doc/user/project/settings/import_export.md @eread @ashrafkhamis
 /doc/user/project/settings/import_export_troubleshooting.md @eread @ashrafkhamis
-/doc/user/project/settings/index.md @lciutacu
+/doc/user/project/settings/migrate_projects.md @lciutacu
 /doc/user/project/settings/project_access_tokens.md @jglassman1
+/doc/user/project/settings/project_features_permissions.md @lciutacu
+/doc/user/project/use_project_as_go_package.md @lciutacu
 /doc/user/project/web_ide/ @ashrafkhamis
 /doc/user/project/working_with_projects.md @lciutacu
 /doc/user/public_access.md @lciutacu

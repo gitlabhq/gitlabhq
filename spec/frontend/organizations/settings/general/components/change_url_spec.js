@@ -4,10 +4,14 @@ import Vue, { nextTick } from 'vue';
 
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ChangeUrl from '~/organizations/settings/general/components/change_url.vue';
-import resolvers from '~/organizations/shared/graphql/resolvers';
-import { updateOrganizationResponse } from '~/organizations/mock_data';
+import organizationUpdateMutation from '~/organizations/settings/general/graphql/mutations/organization_update.mutation.graphql';
+import {
+  organizationUpdateResponse,
+  organizationUpdateResponseWithErrors,
+} from '~/organizations/mock_data';
 import { createAlert } from '~/alert';
 import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
+import FormErrorsAlert from '~/vue_shared/components/form/errors_alert.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
@@ -16,7 +20,6 @@ jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrlWithAlerts: jest.fn(),
 }));
-jest.useFakeTimers();
 
 Vue.use(VueApollo);
 
@@ -34,8 +37,12 @@ describe('ChangeUrl', () => {
     rootUrl: 'http://127.0.0.1:3000/',
   };
 
-  const createComponent = ({ mockResolvers = resolvers } = {}) => {
-    mockApollo = createMockApollo([], mockResolvers);
+  const successfulResponseHandler = jest.fn().mockResolvedValue(organizationUpdateResponse);
+
+  const createComponent = ({
+    handlers = [[organizationUpdateMutation, successfulResponseHandler]],
+  } = {}) => {
+    mockApollo = createMockApollo(handlers);
 
     wrapper = mountExtended(ChangeUrl, {
       attachTo: document.body,
@@ -94,13 +101,11 @@ describe('ChangeUrl', () => {
 
     describe('when API is loading', () => {
       beforeEach(async () => {
-        const mockResolvers = {
-          Mutation: {
-            updateOrganization: jest.fn().mockReturnValueOnce(new Promise(() => {})),
-          },
-        };
-
-        createComponent({ mockResolvers });
+        createComponent({
+          handlers: [
+            [organizationUpdateMutation, jest.fn().mockReturnValueOnce(new Promise(() => {}))],
+          ],
+        });
 
         await findOrganizationUrlField().setValue('foo-bar-baz');
         await submitForm();
@@ -116,13 +121,18 @@ describe('ChangeUrl', () => {
         createComponent();
         await findOrganizationUrlField().setValue('foo-bar-baz');
         await submitForm();
-        jest.runAllTimers();
         await waitForPromises();
       });
 
-      it('redirects user to new organization settings page and shows success alert', () => {
+      it('calls mutation with correct variables and redirects user to new organization settings page with success alert', () => {
+        expect(successfulResponseHandler).toHaveBeenCalledWith({
+          input: {
+            id: 'gid://gitlab/Organizations::Organization/1',
+            path: 'foo-bar-baz',
+          },
+        });
         expect(visitUrlWithAlerts).toHaveBeenCalledWith(
-          `${updateOrganizationResponse.organization.webUrl}/settings/general`,
+          `${organizationUpdateResponse.data.organizationUpdate.organization.webUrl}/settings/general`,
           [
             {
               id: 'organization-url-successfully-changed',
@@ -135,27 +145,45 @@ describe('ChangeUrl', () => {
     });
 
     describe('when API request is not successful', () => {
-      const error = new Error();
+      describe('when there is a network error', () => {
+        const error = new Error();
 
-      beforeEach(async () => {
-        const mockResolvers = {
-          Mutation: {
-            updateOrganization: jest.fn().mockRejectedValueOnce(error),
-          },
-        };
+        beforeEach(async () => {
+          createComponent({
+            handlers: [[organizationUpdateMutation, jest.fn().mockRejectedValue(error)]],
+          });
+          await findOrganizationUrlField().setValue('foo-bar-baz');
+          await submitForm();
+          await waitForPromises();
+        });
 
-        createComponent({ mockResolvers });
-        await findOrganizationUrlField().setValue('foo-bar-baz');
-        await submitForm();
-        jest.runAllTimers();
-        await waitForPromises();
+        it('displays error alert', () => {
+          expect(createAlert).toHaveBeenCalledWith({
+            message: 'An error occurred changing your organization URL. Please try again.',
+            error,
+            captureError: true,
+          });
+        });
       });
 
-      it('displays error alert', () => {
-        expect(createAlert).toHaveBeenCalledWith({
-          message: 'An error occurred changing your organization URL. Please try again.',
-          error,
-          captureError: true,
+      describe('when there are GraphQL errors', () => {
+        beforeEach(async () => {
+          createComponent({
+            handlers: [
+              [
+                organizationUpdateMutation,
+                jest.fn().mockResolvedValue(organizationUpdateResponseWithErrors),
+              ],
+            ],
+          });
+          await submitForm();
+          await waitForPromises();
+        });
+
+        it('displays form errors alert', () => {
+          expect(wrapper.findComponent(FormErrorsAlert).props('errors')).toEqual(
+            organizationUpdateResponseWithErrors.data.organizationUpdate.errors,
+          );
         });
       });
     });

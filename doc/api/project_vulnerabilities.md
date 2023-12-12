@@ -16,7 +16,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 WARNING:
 This API is in the process of being deprecated and considered unstable.
 The response payload may be subject to change or breakage
-across GitLab releases. Please use the
+across GitLab releases. Use the
 [GraphQL API](graphql/reference/index.md#queryvulnerabilities)
 instead.
 

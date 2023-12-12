@@ -35,21 +35,29 @@ RSpec.describe ::Ml::FindOrCreateModelVersionService, feature_category: :mlops d
       end
     end
 
-    context 'when model version does not exist' do
+    context 'when model does not exist' do
       let(:project) { existing_version.project }
       let(:name) { 'a_new_model' }
+      let(:version) { '2.0.0' }
+
+      it 'does not create a new model version', :aggregate_failures do
+        expect { model_version }.to change { Ml::ModelVersion.count }.by(0)
+      end
+    end
+
+    context 'when model exists and model version does not' do
+      let(:project) { existing_version.project }
+      let(:name) { existing_version.name }
       let(:version) { '2.0.0' }
       let(:description) { 'A model version' }
 
       let(:package) { create(:ml_model_package, project: project, name: name, version: version) }
 
       it 'creates a new model version', :aggregate_failures do
-        expect { model_version }.to change { Ml::ModelVersion.count }.by(1).and change { Ml::Candidate.count }.by(1)
+        expect { model_version }.to change { Ml::ModelVersion.count }.by(1)
 
-        expect(model_version.name).to eq(name)
         expect(model_version.version).to eq(version)
-        expect(model_version.package).to eq(package)
-        expect(model_version.candidate.model_version_id).to eq(model_version.id)
+        expect(model_version.model).to eq(existing_version.model)
         expect(model_version.description).to eq(description)
       end
     end

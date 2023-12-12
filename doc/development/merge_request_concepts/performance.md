@@ -286,7 +286,7 @@ be clearly mentioned in the merge request description.
 **Summary:** Iterating a single process to external services (for example, PostgreSQL, Redis, Object Storage)
 should be executed in a **batch-style** to reduce connection overheads.
 
-For fetching rows from various tables in a batch-style, please see [Eager Loading](#eager-loading) section.
+For fetching rows from various tables in a batch-style, see [Eager Loading](#eager-loading) section.
 
 ### Example: Delete multiple files from Object Storage
 
@@ -323,7 +323,7 @@ Using [`ReactiveCaching`](../utilities.md#reactivecaching) is one of the best so
 transactions, otherwise it leads to severe contention problems
 as an open transaction basically blocks the release of a PostgreSQL backend connection.
 
-For keeping transaction as minimal as possible, please consider using `AfterCommitQueue`
+For keeping transaction as minimal as possible, consider using `AfterCommitQueue`
 module or `after_commit` AR hook.
 
 Here is [an example](https://gitlab.com/gitlab-org/gitlab/-/issues/36154#note_247228859)

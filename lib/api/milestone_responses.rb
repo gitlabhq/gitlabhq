@@ -6,6 +6,8 @@ module API
 
     included do
       helpers do
+        include ::API::Concerns::Milestones::GroupProjectParams
+
         params :optional_params do
           optional :description, type: String, desc: 'The description of the milestone'
           optional :due_date, type: String, desc: 'The due date of the milestone. The ISO 8601 date format (%Y-%m-%d)'
@@ -90,12 +92,10 @@ module API
         end
 
         def parent_finder_params(parent)
-          include_parent = params[:include_ancestors].present?
-
           if parent.is_a?(Project)
-            { project_ids: parent.id, group_ids: (include_parent ? project_group_ids(parent) : nil) }
+            project_finder_params(parent, params)
           else
-            { group_ids: (include_parent ? group_and_ancestor_ids(parent) : parent.id) }
+            group_finder_params(parent, params)
           end
         end
 
@@ -115,21 +115,6 @@ module API
           else
             [MergeRequestsFinder, Entities::MergeRequestBasic]
           end
-        end
-
-        def project_group_ids(parent)
-          group = parent.group
-          return unless group.present?
-
-          group.self_and_ancestors.select(:id)
-        end
-
-        def group_and_ancestor_ids(group)
-          return unless group.present?
-
-          group.self_and_ancestors
-            .public_or_visible_to_user(current_user)
-            .select(:id)
         end
       end
     end

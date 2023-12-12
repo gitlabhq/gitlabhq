@@ -39,9 +39,9 @@ In the past, we added interactivity to the page piece-by-piece, adding multiple 
 - multiple applications lead to unpredictable user experience, increased page complexity, harder debugging process;
 - the way apps communicate with each other affects Web Vitals numbers.
 
-Because of these reasons, we want to be cautious about adding new Vue applications to the pages where another Vue application is already present (this does not include old or new navigation). Before adding a new app, please make sure that it is absolutely impossible to extend an existing application to achieve a desired functionality. When in doubt, please feel free to ask for the architectural advise on `#frontend` or `#frontend-maintainers` Slack channel.
+Because of these reasons, we want to be cautious about adding new Vue applications to the pages where another Vue application is already present (this does not include old or new navigation). Before adding a new app, make sure that it is absolutely impossible to extend an existing application to achieve a desired functionality. When in doubt, feel free to ask for the architectural advise on `#frontend` or `#frontend-maintainers` Slack channel.
 
-If you still need to add a new application, please make sure it shares local state with existing applications (preferably via Apollo Client, or Vuex if we use REST API)
+If you still need to add a new application, make sure it shares local state with existing applications (preferably via Apollo Client, or Vuex if we use REST API)
 
 ## Vue architecture
 

@@ -77,7 +77,7 @@ Purchases in the Customers Portal require a credit card on record as a payment m
 multiple credit cards to your account, so that purchases for different products are charged to the
 correct card.
 
-If you would like to use an alternative method to pay, please
+If you would like to use an alternative method to pay,
 [contact our Sales team](https://about.gitlab.com/sales/).
 
 To change your payment method:

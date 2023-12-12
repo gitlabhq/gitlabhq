@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Vuex
 
-[Vuex](https://vuex.vuejs.org) should no longer be considered a preferred path to store management and is currently in its legacy phase. This means it is acceptable to add upon existing `Vuex` stores, but we strongly recommend reducing store sizes over time and eventually [migrating away from VueX entirely](migrating_from_vuex.md). Before adding any new `Vuex` store to an application, first ensure that the `Vue` application you plan to add it into **does not use** `Apollo`. `Vuex` and `Apollo` should not be combined unless absolutely necessary. Please consider reading through [our GraphQL documentation](../fe_guide/graphql.md) for more guidelines on how you can build `Apollo` based applications.
+[Vuex](https://vuex.vuejs.org) should no longer be considered a preferred path to store management and is currently in its legacy phase. This means it is acceptable to add upon existing `Vuex` stores, but we strongly recommend reducing store sizes over time and eventually [migrating away from VueX entirely](migrating_from_vuex.md). Before adding any new `Vuex` store to an application, first ensure that the `Vue` application you plan to add it into **does not use** `Apollo`. `Vuex` and `Apollo` should not be combined unless absolutely necessary. Consider reading through [our GraphQL documentation](../fe_guide/graphql.md) for more guidelines on how you can build `Apollo` based applications.
 
 The information included in this page is explained in more detail in the
 official [Vuex documentation](https://vuex.vuejs.org).

@@ -266,7 +266,7 @@ use the [GitLab QA orchestrator](https://gitlab.com/gitlab-org/gitlab-qa/tree/ma
 
 On the other hand, if you would like to run against a local development GitLab
 environment, you can use the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/).
-Please refer to the instructions in the [QA README](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/README.md#how-can-i-use-it)
+Refer to the instructions in the [QA README](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/README.md#how-can-i-use-it)
 and the section below.
 
 ### Running tests that require special setup

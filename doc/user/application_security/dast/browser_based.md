@@ -89,7 +89,7 @@ A simplified timing attack works as follows:
 
 Active scans do not use a browser to send HTTP requests in an effort to minimize scan time.
 
-Anti-CSRF tokens are not regenerated for attacks that submit forms. Please disable anti-CSRF tokens when running an active scan.
+Anti-CSRF tokens are not regenerated for attacks that submit forms. Disable anti-CSRF tokens when running an active scan.
 
 ## Getting started
 

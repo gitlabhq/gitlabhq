@@ -46,7 +46,7 @@ A fortnightly 1-on-1 mentoring sessions are also available to each participant.
 
 There are 10 places available on the course.
 The date will be set after the course material has been prepared.
-Please complete the [Frontend Onboarding Course Application Form](https://forms.gle/39Rs4w4ZxQuByhE4A) to apply.
+Complete the [Frontend Onboarding Course Application Form](https://forms.gle/39Rs4w4ZxQuByhE4A) to apply.
 
 You may also participate in the course informally at your own pace, without the benefit of the synchronous office hours or mentoring session.
 GitLab team members are happy to support you regardless.

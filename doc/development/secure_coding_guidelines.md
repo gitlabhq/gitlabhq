@@ -14,17 +14,16 @@ goal of reducing the number of vulnerabilities released over time.
 **Contributing**
 
 If you would like to contribute to one of the existing documents, or add
-guidelines for a new vulnerability type, please open an MR! Please try to
+guidelines for a new vulnerability type, open an MR! Try to
 include links to examples of the vulnerability found, and link to any resources
-used in defined mitigations. If you have questions or when ready for a review,
-please ping `gitlab-com/gl-security/appsec`.
+used in defined mitigations. If you have questions or when ready for a review, ping `gitlab-com/gl-security/appsec`.
 
 ## Permissions
 
 ### Description
 
 Application permissions are used to determine who can access what and what actions they can perform.
-For more information about the permission model at GitLab, please see [the GitLab permissions guide](permissions.md) or the [EE docs on permissions](../../ee/user/permissions.md).
+For more information about the permission model at GitLab, see [the GitLab permissions guide](permissions.md) or the [EE docs on permissions](../../ee/user/permissions.md).
 
 ### Impact
 
@@ -340,7 +339,7 @@ The injected client-side code is executed on the victim's browser in the context
 - potentially <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [obtain the victim's session tokens](https://youtu.be/2VFavqfDS6w?t=739)
 - perform actions that lead to data loss/theft or account takeover
 
-Much of the impact is contingent upon the function of the application and the capabilities of the victim's session. For further impact possibilities, please check out [the beef project](https://beefproject.com/).
+Much of the impact is contingent upon the function of the application and the capabilities of the victim's session. For further impact possibilities, check out [the beef project](https://beefproject.com/).
 
 For a demonstration of the impact on GitLab with a realistic attack scenario, see [this video on the GitLab Unfiltered channel](https://www.youtube.com/watch?v=t4PzHNycoKo) (internal, it requires being logged in with the GitLab Unfiltered account).
 

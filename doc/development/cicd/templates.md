@@ -284,7 +284,7 @@ the user's `.gitlab-ci.yml` immediately causes a lint error because there
 are no such jobs named `performance` in the included template anymore. Therefore,
 users have to fix their `.gitlab-ci.yml` that could annoy their workflow.
 
-Please read [versioning](#versioning) section for introducing breaking change safely.
+Read [versioning](#versioning) section for introducing breaking change safely.
 
 ## Versioning
 
@@ -377,7 +377,7 @@ Each CI/CD template must be tested to make sure that it's safe to be published.
 ### Manual QA
 
 It's always good practice to test the template in a minimal demo project.
-To do so, please follow the following steps:
+To do so, follow the following steps:
 
 1. Create a public sample project on <https://gitlab.com>.
 1. Add a `.gitlab-ci.yml` to the project with the proposed template.
@@ -481,6 +481,6 @@ If you're unsure if it's secure or not, you must ask security experts for cross-
 
 After your CI/CD template MR is created and labeled with `ci::templates`, DangerBot
 suggests one reviewer and one maintainer that can review your code. When your merge
-request is ready for review, please [mention](../../user/discussions/index.md#mentions)
+request is ready for review, [mention](../../user/discussions/index.md#mentions)
 the reviewer and ask them to review your CI/CD template changes. See details in the merge request that added
 [a DangerBot task for CI/CD template MRs](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44688).

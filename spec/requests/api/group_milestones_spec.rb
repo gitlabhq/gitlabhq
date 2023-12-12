@@ -30,91 +30,103 @@ RSpec.describe API::GroupMilestones, feature_category: :team_planning do
   it_behaves_like 'group and project milestones', "/groups/:id/milestones"
 
   describe 'GET /groups/:id/milestones' do
-    let_it_be(:ancestor_group) { create(:group, :private) }
-    let_it_be(:ancestor_group_milestone) { create(:milestone, group: ancestor_group, updated_at: 2.days.ago) }
+    context 'for REST only' do
+      let_it_be(:ancestor_group) { create(:group, :private) }
+      let_it_be(:ancestor_group_milestone) { create(:milestone, group: ancestor_group, updated_at: 2.days.ago) }
 
-    before_all do
-      group.update!(parent: ancestor_group)
-    end
+      before_all do
+        group.update!(parent: ancestor_group)
+      end
 
-    context 'when include_ancestors is true' do
-      let(:params) { { include_ancestors: true } }
+      context 'when include_ancestors is true' do
+        let(:params) { { include_ancestors: true } }
 
-      context 'when user has access to ancestor groups' do
-        let(:milestones) { [ancestor_group_milestone, milestone, closed_milestone] }
+        context 'when user has access to ancestor groups' do
+          let(:milestones) { [ancestor_group_milestone, milestone, closed_milestone] }
 
-        before do
-          ancestor_group.add_guest(user)
-          group.add_guest(user)
-        end
-
-        it_behaves_like 'listing all milestones'
-
-        context 'when deprecated include_parent_milestones is true' do
-          let(:params) { { include_parent_milestones: true } }
+          before do
+            ancestor_group.add_guest(user)
+            group.add_guest(user)
+          end
 
           it_behaves_like 'listing all milestones'
-        end
 
-        context 'when both include_parent_milestones and include_ancestors are specified' do
-          let(:params) { { include_ancestors: true, include_parent_milestones: true } }
+          context 'when deprecated include_parent_milestones is true' do
+            let(:params) { { include_parent_milestones: true } }
 
-          it 'returns 400' do
-            get api(route, user), params: params
+            it_behaves_like 'listing all milestones'
+          end
 
-            expect(response).to have_gitlab_http_status(:bad_request)
+          context 'when both include_parent_milestones and include_ancestors are specified' do
+            let(:params) { { include_ancestors: true, include_parent_milestones: true } }
+
+            it 'returns 400' do
+              get api(route, user), params: params
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+            end
+          end
+
+          context 'when iids param is present' do
+            let(:params) { { include_ancestors: true, iids: [milestone.iid] } }
+
+            it_behaves_like 'listing all milestones'
+          end
+
+          context 'when updated_before param is present' do
+            let(:params) { { updated_before: 1.day.ago.iso8601, include_ancestors: true } }
+
+            it_behaves_like 'listing all milestones' do
+              let(:milestones) { [ancestor_group_milestone, milestone] }
+            end
+          end
+
+          context 'when updated_after param is present' do
+            let(:params) { { updated_after: 1.day.ago.iso8601, include_ancestors: true } }
+
+            it_behaves_like 'listing all milestones' do
+              let(:milestones) { [closed_milestone] }
+            end
           end
         end
 
-        context 'when iids param is present' do
-          let(:params) { { include_ancestors: true, iids: [milestone.iid] } }
+        context 'when user has no access to ancestor groups' do
+          let(:user) { create(:user) }
 
-          it_behaves_like 'listing all milestones'
-        end
-
-        context 'when updated_before param is present' do
-          let(:params) { { updated_before: 1.day.ago.iso8601, include_ancestors: true } }
-
-          it_behaves_like 'listing all milestones' do
-            let(:milestones) { [ancestor_group_milestone, milestone] }
+          before do
+            group.add_guest(user)
           end
-        end
-
-        context 'when updated_after param is present' do
-          let(:params) { { updated_after: 1.day.ago.iso8601, include_ancestors: true } }
 
           it_behaves_like 'listing all milestones' do
-            let(:milestones) { [closed_milestone] }
+            let(:milestones) { [milestone, closed_milestone] }
           end
         end
       end
 
-      context 'when user has no access to ancestor groups' do
-        let(:user) { create(:user) }
-
-        before do
-          group.add_guest(user)
-        end
+      context 'when updated_before param is present' do
+        let(:params) { { updated_before: 1.day.ago.iso8601 } }
 
         it_behaves_like 'listing all milestones' do
-          let(:milestones) { [milestone, closed_milestone] }
+          let(:milestones) { [milestone] }
+        end
+      end
+
+      context 'when updated_after param is present' do
+        let(:params) { { updated_after: 1.day.ago.iso8601 } }
+
+        it_behaves_like 'listing all milestones' do
+          let(:milestones) { [closed_milestone] }
         end
       end
     end
 
-    context 'when updated_before param is present' do
-      let(:params) { { updated_before: 1.day.ago.iso8601 } }
+    context 'for common GraphQL/REST' do
+      it_behaves_like 'group milestones including ancestors and descendants'
 
-      it_behaves_like 'listing all milestones' do
-        let(:milestones) { [milestone] }
-      end
-    end
+      def query_group_milestone_ids(params)
+        get api(route, current_user), params: params
 
-    context 'when updated_after param is present' do
-      let(:params) { { updated_after: 1.day.ago.iso8601 } }
-
-      it_behaves_like 'listing all milestones' do
-        let(:milestones) { [closed_milestone] }
+        json_response.pluck('id')
       end
     end
   end

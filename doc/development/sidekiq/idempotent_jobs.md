@@ -80,7 +80,7 @@ GitLab supports two deduplication strategies:
 
 More [deduplication strategies have been suggested](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/195).
 If you are implementing a worker that could benefit from a different
-strategy, please comment in the issue.
+strategy, comment in the issue.
 
 #### Until Executing
 

@@ -105,7 +105,7 @@ In addition, there are a few circumstances where we would always run the full RS
 
 #### Have you encountered a problem with backend predictive tests?
 
-If so, please have a look at [the Engineering Productivity RUNBOOK on predictive tests](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/runbooks/predictive-tests.md) for instructions on how to act upon predictive tests issues. Additionally, if you identified any test selection gaps, please let `@gl-quality/eng-prod` know so that we can take the necessary steps to optimize test selections.
+If so, have a look at [the Engineering Productivity RUNBOOK on predictive tests](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/runbooks/predictive-tests.md) for instructions on how to act upon predictive tests issues. Additionally, if you identified any test selection gaps, let `@gl-quality/eng-prod` know so that we can take the necessary steps to optimize test selections.
 
 ### Jest predictive jobs
 
@@ -130,7 +130,7 @@ The `rules` definitions for full Jest tests are defined at `.frontend:rules:jest
 
 #### Have you encountered a problem with frontend predictive tests?
 
-If so, please have a look at [the Engineering Productivity RUNBOOK on predictive tests](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/runbooks/predictive-tests.md) for instructions on how to act upon predictive tests issues.
+If so, have a look at [the Engineering Productivity RUNBOOK on predictive tests](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/runbooks/predictive-tests.md) for instructions on how to act upon predictive tests issues.
 
 ### Fork pipelines
 
@@ -302,7 +302,7 @@ The intent is to ensure that a change doesn't introduce a failure after `gitlab-
 #### What it is
 
 This pipeline is also called [JiHu validation pipeline](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-validation-pipelines.html),
-and it's currently allowed to fail. When that happens, please follow
+and it's currently allowed to fail. When that happens, follow
 [What to do when the validation pipeline fails](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-validation-pipelines.html#what-to-do-when-the-validation-pipeline-failed).
 
 #### How we run it

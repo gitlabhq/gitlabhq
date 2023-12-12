@@ -16,7 +16,7 @@ The feature is not ready for production use.
 
 With distributed tracing, you can troubleshoot application performance issues by inspecting how a request moves through different services and systems, the timing of each operation, and any errors or logs as they occur. Tracing is particularly useful in the context of microservice applications, which group multiple independent services collaborating to fulfill user requests.
 
-This feature is an [Experiment](../policy/experiment-beta-support.md). For more information, see the [group direction page](https://about.gitlab.com/direction/analytics/observability/). To leave feedback about tracing bugs or functionality, please comment in the [feedback issue](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2363) or open a [new issue](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/new).
+This feature is an [Experiment](../policy/experiment-beta-support.md). For more information, see the [group direction page](https://about.gitlab.com/direction/analytics/observability/). To leave feedback about tracing bugs or functionality, comment in the [feedback issue](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2363) or open a [new issue](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/new).
 
 ## Configure distributed tracing for a project
 

@@ -203,15 +203,15 @@ subgraph "CNG-mirror pipeline"
 **Additional notes:**
 
 - If the `review-deploy` job keeps failing (and a manual retry didn't help),
-  please post a message in the `#g_qe_engineering_productivity` channel and/or create a `~"Engineering Productivity"` `~"ep::review apps"` `~"type::bug"`
+  post a message in the `#g_qe_engineering_productivity` channel and/or create a `~"Engineering Productivity"` `~"ep::review apps"` `~"type::bug"`
   issue with a link to your merge request. The deployment failure can
   reveal an actual problem introduced in your merge request (that is, this isn't
   necessarily a transient failure)!
 - If the `review-qa-smoke` or `review-qa-reliable` job keeps failing (we already retry them once),
-  please check the job's logs: you could discover an actual problem introduced in
+  check the job's logs: you could discover an actual problem introduced in
   your merge request. You can also download the artifacts to see screenshots of
   the page at the time the failures occurred. If you don't find the cause of the
-  failure or if it seems unrelated to your change, please post a message in the
+  failure or if it seems unrelated to your change, post a message in the
   `#test-platform` channel and/or create a ~Quality ~"type::bug" issue with a link to your
   merge request.
 - The manual `review-stop` can be used to

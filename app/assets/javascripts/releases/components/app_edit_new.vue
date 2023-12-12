@@ -197,12 +197,16 @@ export default {
           :extra-links="milestoneComboboxExtraLinks"
         />
       </gl-form-group>
-      <gl-form-group :label="__('Release date')" label-for="release-released-at">
-        <template #label-description>
+      <gl-form-group
+        :label="__('Release date')"
+        :label-description="__('The date when the release is ready.')"
+        label-for="release-released-at"
+      >
+        <template #description>
           <gl-sprintf
             :message="
               __(
-                'The date when the release is ready. A release with a date in the future is labeled as an %{linkStart}Upcoming Release%{linkEnd}.',
+                'A release with a date in the future is labeled as an %{linkStart}Upcoming Release%{linkEnd}.',
               )
             "
           >

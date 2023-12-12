@@ -46,4 +46,4 @@ GitLab.com environments prior to changing this file.
 ## Further iteration
 
 We may either deprecate or remove this automatic secret generation `01_secret_token.rb` in the future.
-Please see [issue 222690](https://gitlab.com/gitlab-org/gitlab/-/issues/222690) for more information.
+See [issue 222690](https://gitlab.com/gitlab-org/gitlab/-/issues/222690) for more information.

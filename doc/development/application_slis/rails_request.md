@@ -126,7 +126,7 @@ a case-by-case basis. Take the following into account:
    view. We cannot scale up the fleet fast enough to accommodate for
    the incoming slow requests alongside the regular traffic.
 
-When lowering the urgency for an existing endpoint, please involve a
+When lowering the urgency for an existing endpoint, involve a
 [Scalability team member](https://about.gitlab.com/handbook/engineering/infrastructure/team/scalability/#team-members)
 in the review. We can use request rates and durations available in the
 logs to come up with a recommendation. You can pick a threshold
@@ -172,7 +172,7 @@ information in the logs to check:
    the target duration we want to set.
 
 As decreasing a threshold too much could result in alerts for the
-Apdex degradation, please also involve a Scalability team member in
+Apdex degradation, also involve a Scalability team member in
 the merge request.
 
 ## How to adjust the urgency

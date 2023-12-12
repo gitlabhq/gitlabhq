@@ -226,7 +226,7 @@ After the above steps have been completed, the automatic release process execute
 
 ### Steps to perform after releasing an analyzer
 
-1. After a new version of the analyzer Docker image has been tagged and deployed, please test it with the corresponding test project.
+1. After a new version of the analyzer Docker image has been tagged and deployed, test it with the corresponding test project.
 1. Announce the release on the relevant group Slack channel. Example message:
 
     > FYI I've just released `ANALYZER_NAME` `ANALYZER_VERSION`. `LINK_TO_RELEASE`

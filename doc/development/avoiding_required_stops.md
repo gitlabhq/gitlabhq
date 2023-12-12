@@ -32,7 +32,7 @@ Wherever possible, a required stop should be avoided. If it can't be avoided,
 the required stop should be aligned to a _scheduled_ required stop.
 
 In cases where we are considering retroactively declaring an unplanned required stop,
-please contact the [Distribution team product manager](https://about.gitlab.com/handbook/product/categories/#distributionbuild-group) to advise on next steps. If there
+contact the [Distribution team product manager](https://about.gitlab.com/handbook/product/categories/#distributionbuild-group) to advise on next steps. If there
 is uncertainty about whether we should declare a required stop, the Distribution product
 manager may escalate to GitLab product leadership (VP or Chief Product Officer) to make
 a final determination. This may happen, for example, if a change might require a stop for

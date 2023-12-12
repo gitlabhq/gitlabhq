@@ -39,7 +39,7 @@ Git LFS is designed to work with Git to track large files.
 
 ## Feedback
 
-If you have any feedback to share about this limit, please do so in
+If you have any feedback to share about this limit, do so in
 [issue 428188](https://gitlab.com/gitlab-org/gitlab/-/issues/428188).
 
 ## Related topics

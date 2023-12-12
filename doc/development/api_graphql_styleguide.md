@@ -58,7 +58,7 @@ For example, the one for [GitLab.com](https://gitlab.com/-/graphql-explorer).
 
 The GraphQL framework has some specific gotchas to be aware of, and domain expertise is required to ensure they are satisfied.
 
-If you are asked to review a merge request that modifies any GraphQL files or adds an endpoint, please have a look at
+If you are asked to review a merge request that modifies any GraphQL files or adds an endpoint, have a look at
 [our GraphQL review guide](graphql_guide/reviewing.md).
 
 ## Reading GraphQL logs

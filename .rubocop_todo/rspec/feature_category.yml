@@ -5285,7 +5285,6 @@ RSpec/FeatureCategory:
     - 'spec/tooling/danger/datateam_spec.rb'
     - 'spec/tooling/danger/feature_flag_spec.rb'
     - 'spec/tooling/danger/analytics_instrumentation_spec.rb'
-    - 'spec/tooling/danger/project_helper_spec.rb'
     - 'spec/tooling/danger/sidekiq_queues_spec.rb'
     - 'spec/tooling/docs/deprecation_handling_spec.rb'
     - 'spec/tooling/graphql/docs/renderer_spec.rb'

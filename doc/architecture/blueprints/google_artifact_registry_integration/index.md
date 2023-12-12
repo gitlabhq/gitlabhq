@@ -18,7 +18,7 @@ As highlighted in the announcement, one key goal is the ability to "_use Google'
 
 ## Motivation
 
-Please refer to the [announcement](https://about.gitlab.com/blog/2023/08/29/gitlab-google-partnership-s3c/) blog post for more details about the motivation and long-term goals of the GitLab and Google Cloud partnership.
+Refer to the [announcement](https://about.gitlab.com/blog/2023/08/29/gitlab-google-partnership-s3c/) blog post for more details about the motivation and long-term goals of the GitLab and Google Cloud partnership.
 
 Regarding the scope of this design document, our primary focus is to fulfill the Product requirement of providing users with visibility over their container images in GAR. The motivation for this specific goal is rooted in foundational research on the use of external registries as a complement to the GitLab container registry ([internal](https://gitlab.com/gitlab-org/ux-research/-/issues/2602)).
 
@@ -82,13 +82,13 @@ Regarding the GAR integration, since there is no equivalent entities for GitLab 
 
 GAR provides three APIs: Docker API, REST API, and RPC API.
 
-The [Docker API](https://cloud.google.com/artifact-registry/docs/reference/docker-api) is based on the [Docker Registry HTTP API V2](https://docs.docker.com/registry/spec/api), now superseded by the [OCI Distribution Specification API](https://github.com/opencontainers/distribution-spec/blob/main/spec.md) (from now on referred to as OCI API). This API is used for pushing/pulling images to/from GAR and also provides some discoverability operations. Please refer to [Alternative Solutions](#alternative-solutions) for the reasons why we don't intend to use it.
+The [Docker API](https://cloud.google.com/artifact-registry/docs/reference/docker-api) is based on the [Docker Registry HTTP API V2](https://docs.docker.com/registry/spec/api), now superseded by the [OCI Distribution Specification API](https://github.com/opencontainers/distribution-spec/blob/main/spec.md) (from now on referred to as OCI API). This API is used for pushing/pulling images to/from GAR and also provides some discoverability operations. Refer to [Alternative Solutions](#alternative-solutions) for the reasons why we don't intend to use it.
 
 Among the proprietary GAR APIs, the [REST API](https://cloud.google.com/artifact-registry/docs/reference/rest) provides basic functionality for managing repositories. This includes [`list`](https://cloud.google.com/artifact-registry/docs/reference/rest/v1/projects.locations.repositories.dockerImages/list) and [`get`](https://cloud.google.com/artifact-registry/docs/reference/rest/v1/projects.locations.repositories.dockerImages/get) operations for container image repositories, which could be used for this integration. Both operations return the same data structure, represented by the [`DockerImage`](https://cloud.google.com/artifact-registry/docs/reference/rest/v1/projects.locations.repositories.dockerImages#DockerImage) object, so both provide the same level of detail.
 
 Last but not least, there is also an [RPC API](https://cloud.google.com/artifact-registry/docs/reference/rpc/google.devtools.artifactregistry.v1), backed by gRPC and Protocol Buffers. This API provides the most functionality, covering all GAR features. From the available operations, we can make use of the [`ListDockerImagesRequest`](https://cloud.google.com/artifact-registry/docs/reference/rpc/google.devtools.artifactregistry.v1#listdockerimagesrequest) and [`GetDockerImageRequest`](https://cloud.google.com/artifact-registry/docs/reference/rpc/google.devtools.artifactregistry.v1#google.devtools.artifactregistry.v1.GetDockerImageRequest) operations. As with the REST API, both responses are composed of [`DockerImage`](https://cloud.google.com/artifact-registry/docs/reference/rpc/google.devtools.artifactregistry.v1#google.devtools.artifactregistry.v1.DockerImage) objects.
 
-Between the two proprietary API options, we chose the RPC one because it provides support not only for the operations we need today but also offers better coverage of all GAR features, which will be beneficial in future iterations. Finally, we do not intend to make direct use of this API but rather use it through the official Ruby client SDK. Please see [Client SDK](backend.md#client-sdk) below for more details.
+Between the two proprietary API options, we chose the RPC one because it provides support not only for the operations we need today but also offers better coverage of all GAR features, which will be beneficial in future iterations. Finally, we do not intend to make direct use of this API but rather use it through the official Ruby client SDK. See [Client SDK](backend.md#client-sdk) below for more details.
 
 #### Backend Integration
 

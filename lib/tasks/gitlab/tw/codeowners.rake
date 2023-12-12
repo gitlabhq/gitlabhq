@@ -35,7 +35,7 @@ namespace :tw do
       CodeOwnerRule.new('Composition Analysis', '@rdickenson'),
       CodeOwnerRule.new('Container Registry', '@marcel.amirault'),
       CodeOwnerRule.new('Contributor Experience', '@eread'),
-      CodeOwnerRule.new('Database', '@aqualls'),
+      # CodeOwnerRule.new('Database', ''),
       CodeOwnerRule.new('DataOps', '@sselhorn'),
       # CodeOwnerRule.new('Delivery', ''),
       CodeOwnerRule.new('Distribution', '@axil'),

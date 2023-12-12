@@ -93,7 +93,7 @@ For features that use the embedding database, additional setup is needed.
 
 ### Configure GCP Vertex access
 
-In order to obtain a GCP service key for local development, please follow the steps below:
+In order to obtain a GCP service key for local development, follow the steps below:
 
 - Create a sandbox GCP project by visiting [this page](https://about.gitlab.com/handbook/infrastructure-standards/#individual-environment) and following the instructions, or by requesting access to our existing group GCP project by using [this template](https://gitlab.com/gitlab-com/it/infra/issue-tracker/-/issues/new?issuable_template=gcp_group_account_iam_update_request).
 - If you are using an individual GCP project, you may also need to enable the Vertex AI API:

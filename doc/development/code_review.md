@@ -251,7 +251,7 @@ See the [test engineering process](https://about.gitlab.com/handbook/engineering
 1. You have reviewed the documentation regarding [internal application security reviews](https://about.gitlab.com/handbook/security/#internal-application-security-reviews) for **when** and **how** to request a security review and requested a security review if this is warranted for this change.
 1. If there are security scan results that are blocking the MR (due to the [scan result policies](https://gitlab.com/gitlab-com/gl-security/security-policies)):
     - For true positive findings, they should be corrected before the merge request is merged. This will remove the AppSec approval required by the scan result policy.
-    - For false positive findings, something that should be discussed for risk acceptance, or anything questionable, please ping `@gitlab-com/gl-security/appsec`.
+    - For false positive findings, something that should be discussed for risk acceptance, or anything questionable, ping `@gitlab-com/gl-security/appsec`.
 
 ##### Deployment
 
@@ -466,7 +466,7 @@ Here is a summary of the changes, also reflected in this section above.
 
 ### Having your merge request reviewed
 
-Please keep in mind that code review is a process that can take multiple
+Keep in mind that code review is a process that can take multiple
 iterations, and reviewers may spot things later that they may not have seen the
 first time.
 

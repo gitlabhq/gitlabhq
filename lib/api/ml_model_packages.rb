@@ -23,8 +23,8 @@ module API
     end
 
     authenticate_with do |accept|
-      accept.token_types(:personal_access_token, :deploy_token, :job_token)
-            .sent_through(:http_token)
+      accept.token_types(:personal_access_token, :job_token)
+            .sent_through(:http_bearer_token)
     end
 
     helpers do
@@ -37,6 +37,15 @@ module API
 
       def max_file_size_exceeded?
         project.actual_limits.exceeded?(:ml_model_max_file_size, params[:file].size)
+      end
+
+      def find_model_version!
+        ::Ml::ModelVersion.by_project_id_name_and_version(project.id, params[:model_name], params[:model_version]) ||
+          not_found!
+      end
+
+      def model_version
+        @model_version ||= find_model_version!
       end
     end
 
@@ -88,10 +97,12 @@ module API
           end
           put do
             authorize_upload!(project)
+            not_found! unless can?(current_user, :write_model_registry, project)
 
             bad_request!('File is too large') if max_file_size_exceeded?
 
             create_package_file_params = declared(params).merge(
+              model_version: model_version,
               build: current_authenticated_job,
               package_name: params[:model_name],
               package_version: params[:model_version]
@@ -123,9 +134,7 @@ module API
           get do
             authorize_read_package!(project)
 
-            package = ::Packages::MlModel::PackageFinder.new(project)
-                                                        .execute!(params[:model_name], params[:model_version])
-            package_file = ::Packages::PackageFileFinder.new(package, params[:file_name]).execute!
+            package_file = ::Packages::PackageFileFinder.new(model_version.package, params[:file_name]).execute!
 
             present_package_file!(package_file)
           end

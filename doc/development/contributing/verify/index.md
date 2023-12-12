@@ -242,7 +242,7 @@ scenario relating to a software being built by one of our [early customers](http
 > could generate a new particle that would then cause the universe to implode.
 
 That would be quite an undesirable outcome of a small bug in GitLab CI/CD status
-processing. Please take extra care when you are working on CI/CD statuses,
+processing. Take extra care when you are working on CI/CD statuses,
 we don't want to implode our Universe!
 
 This is an extreme and unlikely scenario, but presenting data that is not accurate

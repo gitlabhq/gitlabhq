@@ -44,7 +44,7 @@ Where:
 
 ## Trigger events
 
-Triggering an event and thereby updating a metric is slightly different on backend and frontend. Please refer to the relevant section below.
+Triggering an event and thereby updating a metric is slightly different on backend and frontend. Refer to the relevant section below.
 
 ### Backend tracking
 
@@ -71,7 +71,7 @@ If a `project` but no `namespace` is provided, the `project.namespace` is used a
 
 Any frontend tracking call automatically passes the values `user.id`, `namespace.id`, and `project.id` from the current context of the page.
 
-If you need to pass any further properties, such as `extra`, `context`, `label`, `property`, and `value`, you can use the [deprecated snowplow implementation](https://docs.gitlab.com/16.4/ee/development/internal_analytics/snowplow/implementation.html). In this case, please let us know about your specific use-case in our [feedback issue for Internal Events](https://gitlab.com/gitlab-org/analytics-section/analytics-instrumentation/internal/-/issues/690).
+If you need to pass any further properties, such as `extra`, `context`, `label`, `property`, and `value`, you can use the [deprecated snowplow implementation](https://docs.gitlab.com/16.4/ee/development/internal_analytics/snowplow/implementation.html). In this case, let us know about your specific use-case in our [feedback issue for Internal Events](https://gitlab.com/gitlab-org/analytics-section/analytics-instrumentation/internal/-/issues/690).
 
 #### Vue components
 

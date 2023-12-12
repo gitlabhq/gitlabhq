@@ -8,18 +8,18 @@
 
 #js-blob-controls
 .tree-controls
-  .d-block.d-sm-flex.flex-wrap.align-items-start.gl-children-ml-sm-3.gl-first-child-ml-sm-0<
+  .gl-display-flex.gl-flex-wrap.gl-gap-3.gl-mb-3.gl-sm-mb-0
     = render_if_exists 'projects/tree/lock_link'
     = render 'projects/buttons/compare', project: @project, ref: @ref, root_ref: @repository&.root_ref
 
     #js-tree-history-link{ data: { history_link: project_commits_path(@project, @ref) } }
 
     = render 'projects/find_file_link'
-    = render 'shared/web_ide_button', blob: nil
+    = render 'shared/web_ide_button', blob: nil, css_classes: 'gl-w-full gl-sm-w-auto'
 
-    .project-code-holder.d-none.d-sm-inline-block>
+    .project-code-holder.d-none.d-sm-inline-block
       = render "projects/buttons/code", dropdown_class: 'dropdown-menu-right', ref: @ref
 
-  .project-code-holder.d-block.d-sm-none.mt-sm-2.mt-md-0.ml-md-2>
+  .project-code-holder.gl-display-flex.gl-gap-3{ class: 'gl-sm-display-none!' }
     = render 'projects/buttons/download', project: @project, ref: @ref
     = render "shared/mobile_clone_panel", ref: @ref

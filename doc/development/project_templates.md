@@ -8,11 +8,11 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 ## Adding a new built-in project template
 
-If you'd like to contribute a new built-in project template to be distributed with GitLab, please do the following:
+If you'd like to contribute a new built-in project template to be distributed with GitLab, do the following:
 
 1. Create a new public project with the project content you'd like to contribute in a namespace of your choosing. You can view a working example [here](https://gitlab.com/gitlab-org/project-templates/dotnetcore).
    - Projects should be as simple as possible and free of any unnecessary assets or dependencies.
-1. When the project is ready for review, please create a new issue in [GitLab](https://gitlab.com/gitlab-org/gitlab/issues) with a link to your project.
+1. When the project is ready for review, create a new issue in [GitLab](https://gitlab.com/gitlab-org/gitlab/issues) with a link to your project.
    - In your issue, `@` mention the relevant Backend Engineering Manager and Product Manager for the [Create:Source Code group](https://about.gitlab.com/handbook/product/categories/#source-code-group).
 
 To make the project template available when creating a new project, the vendoring process will have to be completed:
@@ -59,7 +59,7 @@ To make the project template available when creating a new project, the vendorin
 Existing templates are available in the [project-templates](https://gitlab.com/gitlab-org/project-templates)
 group.
 
-To contribute a change, please open a merge request in the relevant project
+To contribute a change, open a merge request in the relevant project
 and mention `@gitlab-org/manage/import/backend` when you are ready for a review.
 
 Then, if your merge request gets accepted, either open an issue on
@@ -79,7 +79,7 @@ Complete the following steps to test the project template in your own GitLab Dev
 
 ## For GitLab team members
 
-Please ensure the merge request has been reviewed by the Security Counterpart before merging.
+Ensure the merge request has been reviewed by the Security Counterpart before merging.
 
 To review a merge request which changes a vendored project template, run the `check-template-changes` script:
 

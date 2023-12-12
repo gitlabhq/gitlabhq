@@ -91,7 +91,7 @@ Outbound communications from the following features are silenced by Silent Mode.
 | [Executable integrations](../../user/project/integrations/index.md)       | The integrations are not executed.                                                                                                                                                                                                                      |
 | [Service Desk](../../user/project/service_desk/index.md)                  | Incoming emails still raise issues, but the users who sent the emails to Service Desk are not notified of issue creation or comments on their issues.                                                                                                   |
 | Outbound emails                                                           |                                                                                                                                                                                                                                                         |
-| Outbound HTTP requests                                                    | Many HTTP requests are blocked where features are not blocked or skipped explicitly. These may produce errors. If a particular error is problematic for testing during Silent Mode, please consult [GitLab Support](https://about.gitlab.com/support/). |
+| Outbound HTTP requests                                                    | Many HTTP requests are blocked where features are not blocked or skipped explicitly. These may produce errors. If a particular error is problematic for testing during Silent Mode, consult [GitLab Support](https://about.gitlab.com/support/). |
 
 ### Outbound communications that are not silenced
 

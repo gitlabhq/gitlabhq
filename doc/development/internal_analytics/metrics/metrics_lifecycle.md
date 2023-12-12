@@ -24,7 +24,7 @@ As a result, if you need to change one of the following parts of a metric, you n
 - **calculation logic**: This means any changes that can produce a different value than the previous implementation
 - **YAML attributes**: The following attributes are directly used for analysis or calculation: `key_path`, `time_frame`, `value_type`, `data_source`.
 
-If you change the `performance_indicator_type` attribute of a metric or think your case needs an exception from the outlined rules then please notify the Customer Success Ops team (`@csops-team`), Analytics Engineers (`@gitlab-data/analytics-engineers`), and Product Analysts (`@gitlab-data/product-analysts`) teams by `@` mentioning those groups in a comment on the merge request or issue.
+If you change the `performance_indicator_type` attribute of a metric or think your case needs an exception from the outlined rules then notify the Customer Success Ops team (`@csops-team`), Analytics Engineers (`@gitlab-data/analytics-engineers`), and Product Analysts (`@gitlab-data/product-analysts`) teams by `@` mentioning those groups in a comment on the merge request or issue.
 
 You can change any other attributes without impact to the calculation or analysis. See [this video tutorial](https://youtu.be/bYf3c01KCls) for help updating metric attributes.
 
@@ -91,7 +91,7 @@ To remove a metric:
    therefore continue to report the removed metric. The Analytics Instrumentation team
    requires a record of all removed metrics to identify and filter them.
 
-   For example please take a look at this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60149/diffs#b01f429a54843feb22265100c0e4fec1b7da1240_10_10).
+   For example, take a look at this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60149/diffs#b01f429a54843feb22265100c0e4fec1b7da1240_10_10).
 
 1. After you verify the metric can be safely removed,
    remove the metric's instrumentation from
@@ -99,7 +99,7 @@ To remove a metric:
    or
    [`ee/lib/ee/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ee/gitlab/usage_data.rb).
 
-   For example please take a look at this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60149/diffs#6335dc533bd21df26db9de90a02dd66278c2390d_167_167).
+   For example, take a look at this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60149/diffs#6335dc533bd21df26db9de90a02dd66278c2390d_167_167).
 
 1. Remove any other records related to the metric:
    - The feature flag YAML file at [`config/feature_flags/*/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/config/feature_flags).

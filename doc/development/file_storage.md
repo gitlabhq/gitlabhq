@@ -8,7 +8,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 We use the [CarrierWave](https://github.com/carrierwaveuploader/carrierwave) gem to handle file upload, store and retrieval.
 
-File uploads should be accelerated by workhorse, for details please refer to [uploads development documentation](uploads/index.md).
+File uploads should be accelerated by workhorse, for details refer to [uploads development documentation](uploads/index.md).
 
 There are many places where file uploading is used, according to contexts:
 

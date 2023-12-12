@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 This is a list of terms that may have a general meaning but also may have a
 specific meaning at GitLab. If you encounter a piece of technical jargon related
-to AI that you think could benefit from being in this list, please add it!
+to AI that you think could benefit from being in this list, add it!
 
 - **AI Gateway**: standalone service used to give access to AI features to
   non-SaaS GitLab users. This logic will be moved to Cloud Connector when that

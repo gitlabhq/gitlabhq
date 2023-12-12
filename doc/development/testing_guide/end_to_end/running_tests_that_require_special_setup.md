@@ -10,7 +10,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 The [`jenkins_build_status_spec`](https://gitlab.com/gitlab-org/gitlab/-/blob/24a86debf49f3aed6f2ecfd6e8f9233b3a214181/qa/qa/specs/features/browser_ui/3_create/jenkins/jenkins_build_status_spec.rb)
 spins up a Jenkins instance in a Docker container with the Jenkins GitLab plugin pre-installed. Due to a license restriction we are unable to distribute this image.
-To build a QA compatible image, please visit the [third party images project](https://gitlab.com/gitlab-org/quality/third-party-docker-public), where third party Dockerfiles can be found.
+To build a QA compatible image, visit the [third party images project](https://gitlab.com/gitlab-org/quality/third-party-docker-public), where third party Dockerfiles can be found.
 The project also has instructions for forking and building the images automatically in CI.
 
 Some extra environment variables for the location of the forked repository are also needed.
@@ -47,7 +47,7 @@ bin/qa Test::Instance::All http://localhost -- qa/specs/features/ee/browser_ui/3
 
 The test automatically spins up a Docker container for Jenkins and tear down once the test completes.
 
-If you need to run Jenkins manually outside of the tests, please refer to the README for the
+If you need to run Jenkins manually outside of the tests, refer to the README for the
 [third party images project](https://gitlab.com/gitlab-org/quality/third-party-docker-public/-/blob/main/jenkins/README.md)
 
 ### Troubleshooting
@@ -420,7 +420,7 @@ To run these tests locally against the GDK:
    QA_LOG_LEVEL=debug WEBDRIVER_HEADLESS=false bin/qa Test::Instance::All http://localhost:3000 qa/specs/features/browser_ui/2_plan/email/trigger_email_notification_spec.rb -- --tag orchestrated
    ```
 
-For instructions on how to run these tests using the `gitlab-qa` gem, please refer to [the GitLab QA documentation](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#testintegrationsmtp-ceeefull-image-address).
+For instructions on how to run these tests using the `gitlab-qa` gem, refer to [the GitLab QA documentation](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#testintegrationsmtp-ceeefull-image-address).
 
 ## Guide to the mobile suite
 

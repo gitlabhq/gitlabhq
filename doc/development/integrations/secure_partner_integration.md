@@ -104,7 +104,7 @@ and complete an integration with the Secure stage.
    - If you specified `remediations` in your artifact, it is proposed through our [remediation](../../user/application_security/vulnerabilities/index.md#resolve-a-vulnerability)
      interface.
 1. Demo the integration to GitLab:
-   - After you have tested and are ready to demo your integration please
+   - After you have tested and are ready to demo your integration,
      [reach out](https://about.gitlab.com/partners/technology-partners/integrate/) to us. If you
      skip this step you won't be able to do supported marketing.
 1. Begin doing supported marketing of your GitLab integration.
@@ -119,4 +119,4 @@ that may be helpful as part of this process. This covers various topics related 
 tool.
 
 If you have any issues while working through your integration or the steps
-above, please create an issue to discuss with us further.
+above, create an issue to discuss with us further.

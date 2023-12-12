@@ -1897,6 +1897,9 @@ msgstr ""
 msgid "A rebase is already in progress."
 msgstr ""
 
+msgid "A release with a date in the future is labeled as an %{linkStart}Upcoming Release%{linkEnd}."
+msgstr ""
+
 msgid "A sign-in to your account has been made from the following IP address: %{ip}"
 msgstr ""
 
@@ -33005,6 +33008,9 @@ msgstr ""
 msgid "ObservabilityMetrics|Name"
 msgstr ""
 
+msgid "ObservabilityMetrics|No data found for the selected metric."
+msgstr ""
+
 msgid "ObservabilityMetrics|Search metrics starting with..."
 msgstr ""
 
@@ -48537,7 +48543,7 @@ msgstr ""
 msgid "The data in this pipeline is too old to be rendered as a graph. Please check the Jobs tab to access historical data."
 msgstr ""
 
-msgid "The date when the release is ready. A release with a date in the future is labeled as an %{linkStart}Upcoming Release%{linkEnd}."
+msgid "The date when the release is ready."
 msgstr ""
 
 msgid "The default CI/CD configuration file and path for new projects."

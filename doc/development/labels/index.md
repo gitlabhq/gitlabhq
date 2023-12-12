@@ -24,9 +24,9 @@ Most issues will have labels for at least one of the following:
 - Priority: `~"priority::1"`, `~"priority::2"`, `~"priority::3"`, `~"priority::4"`
 - Severity: `~"severity::1"`, `~"severity::2"`, `~"severity::3"`, `~"severity::4"`
 
-Please add `~"breaking change"` label if the issue can be considered as a [breaking change](../deprecation_guidelines/index.md).
+Add `~"breaking change"` label if the issue can be considered as a [breaking change](../deprecation_guidelines/index.md).
 
-Please add `~security` label if the issue is related to application security.
+Add `~security` label if the issue is related to application security.
 
 All labels, their meaning and priority are defined on the
 [labels page](https://gitlab.com/gitlab-org/gitlab/-/labels).
@@ -252,7 +252,7 @@ We have the following priority labels:
 - `~"priority::3"`
 - `~"priority::4"`
 
-Please refer to the issue triage [priority label](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#priority) section in our handbook to see how it's used.
+Refer to the issue triage [priority label](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#priority) section in our handbook to see how it's used.
 
 ## Severity labels
 
@@ -263,7 +263,7 @@ We have the following severity labels:
 - `~"severity::3"`
 - `~"severity::4"`
 
-Please refer to the issue triage [severity label](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#severity) section in our handbook to see how it's used.
+Refer to the issue triage [severity label](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#severity) section in our handbook to see how it's used.
 
 ## Label for community contributors
 
@@ -301,7 +301,7 @@ with the [label `~"Community Challenge"`](https://gitlab.com/gitlab-org/gitlab/-
 If your MR for the `~"Community Challenge"` issue gets merged, you will also have a chance to win a custom
 GitLab merchandise.
 
-If you've decided that you would like to work on an issue, please @-mention
+If you've decided that you would like to work on an issue, @-mention
 the [appropriate product manager](https://about.gitlab.com/handbook/product/#who-to-talk-to-for-what)
 as soon as possible. The product manager will then pull in appropriate GitLab team
 members to further discuss scope, design, and technical considerations. This will
