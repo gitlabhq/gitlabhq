@@ -32102,6 +32102,9 @@ msgstr ""
 msgid "Not confidential"
 msgstr ""
 
+msgid "Not eligible to rotate token with access level higher than the user"
+msgstr ""
+
 msgid "Not found"
 msgstr ""
 
@@ -45523,6 +45526,9 @@ msgstr ""
 msgid "Smartcard authentication failed: client certificate header is missing."
 msgstr ""
 
+msgid "Smartcard authentication failed: login process exceeded the time limit."
+msgstr ""
+
 msgid "Snippet"
 msgstr ""
 
@@ -48123,10 +48129,16 @@ msgstr ""
 msgid "The current user is not authorized to create the pipeline schedule"
 msgstr ""
 
+msgid "The current user is not authorized to create the pipeline schedule variables"
+msgstr ""
+
 msgid "The current user is not authorized to set pipeline schedule variables"
 msgstr ""
 
 msgid "The current user is not authorized to update the pipeline schedule"
+msgstr ""
+
+msgid "The current user is not authorized to update the pipeline schedule variables"
 msgstr ""
 
 msgid "The data in this pipeline is too old to be rendered as a graph. Please check the Jobs tab to access historical data."
@@ -50566,6 +50578,12 @@ msgid "Total spans"
 msgstr ""
 
 msgid "Total test time for all commits/merges"
+msgstr ""
+
+msgid "Total time spent cannot be negative."
+msgstr ""
+
+msgid "Total time spent cannot exceed a year."
 msgstr ""
 
 msgid "Total users"

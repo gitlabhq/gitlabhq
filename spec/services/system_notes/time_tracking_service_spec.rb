@@ -272,7 +272,11 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
     context 'when the timelog has a negative time spent value' do
       let_it_be(:noteable, reload: true) { create(:issue, project: project) }
 
-      let(:timelog) { create(:timelog, user: author, issue: noteable, time_spent: -1800, spent_at: '2022-03-30T00:00:00.000Z') }
+      let!(:existing_timelog) { create(:timelog, user: author, issue: noteable, time_spent: time_spent.to_i) }
+
+      let(:time_spent) { 1800.seconds }
+      let(:spent_at) { '2022-03-30T00:00:00.000Z' }
+      let(:timelog) { create(:timelog, user: author, issue: noteable, time_spent: -time_spent.to_i, spent_at: spent_at) }
 
       it 'sets the note text' do
         expect(subject.note).to eq "subtracted 30m of time spent at 2022-03-30"
@@ -296,7 +300,11 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
     context 'when the timelog has a negative time spent value' do
       let_it_be(:noteable, reload: true) { create(:issue, project: project) }
 
-      let(:timelog) { create(:timelog, user: author, issue: noteable, time_spent: -1800, spent_at: '2022-03-30T00:00:00.000Z') }
+      let!(:existing_timelog) { create(:timelog, user: author, issue: noteable, time_spent: time_spent.to_i) }
+
+      let(:time_spent) { 1800.seconds }
+      let(:spent_at) { '2022-03-30T00:00:00.000Z' }
+      let(:timelog) { create(:timelog, user: author, issue: noteable, time_spent: -time_spent.to_i, spent_at: spent_at) }
 
       it 'sets the note text' do
         expect(subject.note).to eq "deleted -30m of spent time from 2022-03-30"
