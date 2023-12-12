@@ -18767,7 +18767,8 @@ CREATE TABLE merge_request_context_commit_diff_files (
     old_path text NOT NULL,
     diff text,
     "binary" boolean,
-    merge_request_context_commit_id bigint NOT NULL
+    merge_request_context_commit_id bigint NOT NULL,
+    generated boolean
 );
 
 CREATE TABLE merge_request_context_commits (

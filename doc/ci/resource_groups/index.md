@@ -277,7 +277,7 @@ To get job information from the GraphQL API:
 
 1. Go to the pipeline details page.
 1. Select the **Jobs** tab and find the ID of the stuck job.
-1. Go to [GraphiQL explorer](../../api/graphql/index.md#graphiql).
+1. Go to the [interactive GraphQL explorer](../../api/graphql/index.md#interactive-graphql-explorer).
 1. Run the following query:
 
     ```graphql

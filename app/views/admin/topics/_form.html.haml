@@ -45,7 +45,7 @@
 
   - else
     .form-actions
-      = f.submit _('Save changes'), pajamas_button: true, data: { qa_selector: 'save_changes_button' }
+      = f.submit _('Save changes'), pajamas_button: true
       = render Pajamas::ButtonComponent.new(href: admin_topics_path) do
         = _('Cancel')
 

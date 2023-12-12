@@ -8,6 +8,20 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 This document outlines the style guide for the GitLab [GraphQL API](../api/graphql/index.md).
 
+## Vision
+
+We want the GraphQL API to be the **primary** means of interacting
+programmatically with GitLab. To achieve this, it needs full coverage - anything
+possible in the REST API should also be possible in the GraphQL API.
+
+To help us meet this vision, the frontend should use GraphQL in preference to
+the REST API for new features.
+The GraphQL API is [versionless](https://graphql.org/learn/best-practices/#versioning).
+
+There are no plans to deprecate the REST API. To reduce the technical burden of
+supporting two APIs in parallel, they should share implementations as much as
+possible.
+
 ## How GitLab implements GraphQL
 
 <!-- vale gitlab.Spelling = NO -->
@@ -78,7 +92,7 @@ a connection.
 
 ### Max complexity
 
-Complexity is explained [on our client-facing API page](../api/graphql/index.md#max-query-complexity).
+Complexity is explained [on our client-facing API page](../api/graphql/index.md#maximum-query-complexity).
 
 Fields default to adding `1` to a query's complexity score, but developers can
 [specify a custom complexity](#field-complexity) when defining a field.
@@ -477,7 +491,7 @@ field :tags,
 ### Field complexity
 
 The GitLab GraphQL API uses a _complexity_ score to limit performing overly complex queries.
-Complexity is described in [our client documentation](../api/graphql/index.md#max-query-complexity) on the topic.
+Complexity is described in [our client documentation](../api/graphql/index.md#maximum-query-complexity) on the topic.
 
 Complexity limits are defined in [`app/graphql/gitlab_schema.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/gitlab_schema.rb).
 
@@ -864,8 +878,8 @@ mount_mutation Mutations::Ci::JobArtifact::BulkDestroy, alpha: { milestone: '15.
 
 Alpha GraphQL items is a custom GitLab feature that leverages GraphQL deprecations. An Alpha item
 appears as deprecated in the GraphQL schema. Like all deprecated schema items, you can test an
-Alpha field in [GraphiQL](../api/graphql/index.md#graphiql). However, be aware that the GraphiQL
-autocomplete editor doesn't suggest deprecated fields.
+Alpha field in the [interactive GraphQL explorer](../api/graphql/index.md#interactive-graphql-explorer) (GraphiQL).
+However, be aware that the GraphiQL autocomplete editor doesn't suggest deprecated fields.
 
 The item shows as Alpha in our generated GraphQL documentation and its GraphQL schema description.
 

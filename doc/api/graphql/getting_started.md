@@ -343,7 +343,7 @@ More about introspection:
 
 ### Query complexity
 
-The calculated [complexity score and limit](index.md#max-query-complexity) for a query can be revealed to clients by
+The calculated [complexity score and limit](index.md#maximum-query-complexity) for a query can be revealed to clients by
 querying for `queryComplexity`.
 
 ```graphql

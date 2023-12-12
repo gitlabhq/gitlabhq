@@ -6,6 +6,7 @@ Style/OpenStructUse:
     - 'ee/spec/helpers/ee/blob_helper_spec.rb'
     - 'ee/spec/lib/gitlab/auth/group_saml/failure_handler_spec.rb'
     - 'spec/helpers/profiles_helper_spec.rb'
+    - 'spec/lib/gitlab/git/diff_collection_spec.rb'
     - 'spec/lib/gitlab/gitaly_client/blobs_stitcher_spec.rb'
     - 'spec/lib/gitlab/gitaly_client/diff_stitcher_spec.rb'
     - 'spec/support/helpers/repo_helpers.rb'

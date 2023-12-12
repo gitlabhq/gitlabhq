@@ -1664,7 +1664,6 @@ Layout/LineLength:
     - 'ee/spec/lib/gitlab/geo/log_cursor/lease_spec.rb'
     - 'ee/spec/lib/gitlab/geo/oauth/login_state_spec.rb'
     - 'ee/spec/lib/gitlab/geo/oauth/logout_token_spec.rb'
-    - 'ee/spec/lib/gitlab/geo/replication/blob_downloader_spec.rb'
     - 'ee/spec/lib/gitlab/geo_spec.rb'
     - 'ee/spec/lib/gitlab/git_access_spec.rb'
     - 'ee/spec/lib/gitlab/git_access_wiki_spec.rb'

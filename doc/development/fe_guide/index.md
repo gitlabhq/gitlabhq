@@ -24,7 +24,7 @@ When it comes to CSS, we use a utils-based CSS approach. GitLab has its own CSS 
 We also use [SCSS](https://sass-lang.com) and plain JavaScript with
 modern ECMAScript standards supported through [Babel](https://babeljs.io/) and ES module support through [webpack](https://webpack.js.org/).
 
-When making API calls, we use [GraphQL](graphql.md) as [the first choice](../../api/graphql/index.md#vision). There are still instances where GitLab REST API is used such as when creating new simple HAML pages or in legacy part of the codebase, but we should always default to GraphQL when possible.
+When making API calls, we use [GraphQL](graphql.md) as [the first choice](../api_graphql_styleguide.md#vision). There are still instances where GitLab REST API is used such as when creating new simple HAML pages or in legacy part of the codebase, but we should always default to GraphQL when possible.
 
 We use [Apollo](https://www.apollographql.com/) as our global state manager and [GraphQL client](graphql.md).
 [VueX](vuex.md) is still in use across the codebase, but it is no longer the recommended global state manager.

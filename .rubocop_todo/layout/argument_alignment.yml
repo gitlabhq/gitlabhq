@@ -949,7 +949,6 @@ Layout/ArgumentAlignment:
     - 'ee/spec/lib/gitlab/data_builder/vulnerability_spec.rb'
     - 'ee/spec/lib/gitlab/elastic/indexer_spec.rb'
     - 'ee/spec/lib/gitlab/geo/log_cursor/daemon_spec.rb'
-    - 'ee/spec/lib/gitlab/geo/replication/blob_downloader_spec.rb'
     - 'ee/spec/lib/gitlab/geo_spec.rb'
     - 'ee/spec/lib/gitlab/git_access_spec.rb'
     - 'ee/spec/lib/gitlab/git_access_wiki_spec.rb'

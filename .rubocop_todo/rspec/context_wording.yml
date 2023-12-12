@@ -368,7 +368,6 @@ RSpec/ContextWording:
     - 'ee/spec/lib/gitlab/geo/jwt_request_decoder_spec.rb'
     - 'ee/spec/lib/gitlab/geo/log_helpers_spec.rb'
     - 'ee/spec/lib/gitlab/geo/oauth/session_spec.rb'
-    - 'ee/spec/lib/gitlab/geo/replication/blob_downloader_spec.rb'
     - 'ee/spec/lib/gitlab/geo/replicator_spec.rb'
     - 'ee/spec/lib/gitlab/geo/signed_data_spec.rb'
     - 'ee/spec/lib/gitlab/git_access_spec.rb'

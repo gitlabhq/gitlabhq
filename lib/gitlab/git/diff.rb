@@ -10,7 +10,7 @@ module Gitlab
       attr_accessor :old_path, :new_path, :a_mode, :b_mode, :diff
 
       # Stats properties
-      attr_accessor :new_file, :renamed_file, :deleted_file
+      attr_accessor :new_file, :renamed_file, :deleted_file, :generated
 
       alias_method :new_file?, :new_file
       alias_method :deleted_file?, :deleted_file
@@ -20,6 +20,7 @@ module Gitlab
       attr_writer :too_large
 
       alias_method :expanded?, :expanded
+      alias_method :generated?, :generated
 
       # The default maximum content size to display a diff patch.
       #
@@ -31,7 +32,18 @@ module Gitlab
       # persisting limits over that.
       MAX_PATCH_BYTES_UPPER_BOUND = 500.kilobytes
 
-      SERIALIZE_KEYS = %i[diff new_path old_path a_mode b_mode new_file renamed_file deleted_file too_large].freeze
+      SERIALIZE_KEYS = %i[
+        diff
+        new_path
+        old_path
+        a_mode
+        b_mode
+        new_file
+        renamed_file
+        deleted_file
+        too_large
+        generated
+      ].freeze
 
       BINARY_NOTICE_PATTERN = %r{Binary files (.*) and (.*) differ}
 
@@ -79,9 +91,12 @@ module Gitlab
         #    If false, patch raw data will not be included in the diff after
         #    `max_files`, `max_lines` or any of the limits in `limits` are
         #    exceeded
+        #  :generated_files ::
+        #    If the list of generated files is given, those files will be marked
+        #    as generated.
         def filter_diff_options(options, default_options = {})
           allowed_options = [:ignore_whitespace_change, :max_files, :max_lines,
-                             :limits, :expanded, :collect_all_paths]
+                             :limits, :expanded, :collect_all_paths, :generated_files]
 
           if default_options
             actual_defaults = default_options.dup
@@ -144,8 +159,9 @@ module Gitlab
           text.start_with?(BINARY_NOTICE_PATTERN)
         end
       end
-      def initialize(raw_diff, expanded: true, replace_invalid_utf8_chars: true)
+      def initialize(raw_diff, expanded: true, replace_invalid_utf8_chars: true, generated: nil)
         @expanded = expanded
+        @generated = generated
 
         case raw_diff
         when Hash

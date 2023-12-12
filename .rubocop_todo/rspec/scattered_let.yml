@@ -15,7 +15,6 @@ RSpec/ScatteredLet:
     - 'ee/spec/lib/gitlab/code_owners/loader_spec.rb'
     - 'ee/spec/lib/gitlab/cycle_analytics/stage_summary_spec.rb'
     - 'ee/spec/lib/gitlab/elastic/bulk_indexer_spec.rb'
-    - 'ee/spec/lib/gitlab/geo/replication/blob_downloader_spec.rb'
     - 'ee/spec/lib/gitlab/git_access_spec.rb'
     - 'ee/spec/lib/gitlab/insights/reducers/count_per_label_reducer_spec.rb'
     - 'ee/spec/lib/gitlab/insights/reducers/label_count_per_period_reducer_spec.rb'

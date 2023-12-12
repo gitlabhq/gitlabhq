@@ -8,7 +8,6 @@
     .form-group
       = f.gitlab_ui_checkbox_component :"throttle_unauthenticated_#{setting_fragment}_enabled",
         _('Enable unauthenticated API request rate limit'),
-        checkbox_options: { data: { qa_selector: "throttle_unauthenticated_#{setting_fragment}_checkbox" } },
         label_options: { class: 'label-bold' }
     .form-group
       = f.label :"throttle_unauthenticated_#{setting_fragment}_requests_per_period", _('Maximum unauthenticated API requests per rate limit period per IP'), class: 'label-bold'
@@ -21,7 +20,6 @@
     .form-group
       = f.gitlab_ui_checkbox_component :"throttle_authenticated_#{setting_fragment}_enabled",
         _('Enable authenticated API request rate limit'),
-        checkbox_options: { data: { qa_selector: "throttle_authenticated_#{setting_fragment}_checkbox" } },
         label_options: { class: 'label-bold' }
     .form-group
       = f.label :"throttle_authenticated_#{setting_fragment}_requests_per_period", _('Maximum authenticated API requests per rate limit period per user'), class: 'label-bold'
@@ -30,4 +28,4 @@
       = f.label :"throttle_authenticated_#{setting_fragment}_period_in_seconds", _('Authenticated API rate limit period in seconds'), class: 'label-bold'
       = f.number_field :"throttle_authenticated_#{setting_fragment}_period_in_seconds", class: 'form-control gl-form-input'
 
-  = f.submit _('Save changes'), pajamas_button: true, data: { qa_selector: 'save_changes_button' }
+  = f.submit _('Save changes'), pajamas_button: true, data: { testid: 'save_changes_button' }

@@ -390,9 +390,10 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
   shared_examples_for 'merge request diffs' do
     let(:merge_request) { create(:merge_request) }
-    let!(:diff) { merge_request.merge_request_diff.reload }
 
     context 'when it was not cleaned by the system' do
+      let!(:diff) { merge_request.merge_request_diff.reload }
+
       it 'returns persisted diffs' do
         expect(diff).to receive(:load_diffs).and_call_original
 
@@ -401,6 +402,8 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     end
 
     context 'when diff was cleaned by the system' do
+      let!(:diff) { merge_request.merge_request_diff.reload }
+
       before do
         diff.clean!
       end
@@ -906,6 +909,57 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
           expect(diff_file.diff).to include(content)
         end
       end
+
+      context 'handling generated files' do
+        let(:project) { create(:project, :repository) }
+        let(:target_branch) { project.default_branch }
+        let(:source_branch) { 'test-generated-diff-file' }
+        let(:generated_file_name) { 'generated.txt' }
+        let(:regular_file_name) { 'regular.rb' }
+        let(:merge_request) do
+          create(
+            :merge_request,
+            target_project: project,
+            source_project: project,
+            source_branch: source_branch,
+            target_branch: target_branch
+          )
+        end
+
+        let(:diff_files) do
+          merge_request.merge_request_diff.merge_request_diff_files
+        end
+
+        before do
+          project.repository.update_file(
+            project.creator,
+            '.gitattributes',
+            '*.txt gitlab-generated',
+            message: 'Update',
+            branch_name: target_branch)
+
+          create_file_in_repo(project, target_branch, source_branch, generated_file_name, "generated text\n")
+          create_file_in_repo(project, source_branch, source_branch, regular_file_name, "something else\n")
+        end
+
+        context 'with collapse_generated_diff_files feature flag' do
+          it 'sets generated field correctly' do
+            expect(diff_files.find_by(new_path: generated_file_name)).to be_generated
+            expect(diff_files.find_by(new_path: regular_file_name)).not_to be_generated
+          end
+        end
+
+        context 'without collapse_generated_diff_files feature flag' do
+          before do
+            stub_feature_flags(collapse_generated_diff_files: false)
+          end
+
+          it 'sets generated field correctly' do
+            expect(diff_files.find_by(new_path: generated_file_name)).not_to be_generated
+            expect(diff_files.find_by(new_path: regular_file_name)).not_to be_generated
+          end
+        end
+      end
     end
   end
 
@@ -986,6 +1040,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     include_examples 'merge request diffs'
 
     it 'stores up-to-date diffs in the database' do
+      diff = merge_request.merge_request_diff.reload
       expect(diff).not_to be_stored_externally
     end
 
@@ -1002,7 +1057,8 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     end
 
     it 'stores diffs for old MR versions in external storage' do
-      old_diff = diff
+      old_diff = merge_request.merge_request_diff.reload
+
       merge_request.create_merge_request_diff
       old_diff.migrate_files_to_external_storage!
 

@@ -50,7 +50,7 @@ EOT
         let(:diff) { described_class.new(@raw_diff_hash) }
 
         it 'initializes the diff' do
-          expect(diff.to_hash).to eq(@raw_diff_hash)
+          expect(diff.to_hash).to eq(@raw_diff_hash.merge(generated: nil))
         end
 
         it 'does not prune the diff' do
@@ -87,7 +87,7 @@ EOT
         let(:raw_patch) { @raw_diff_hash[:diff] }
 
         it 'initializes the diff' do
-          expect(diff.to_hash).to eq(@raw_diff_hash)
+          expect(diff.to_hash).to eq(@raw_diff_hash.merge(generated: nil))
         end
 
         it 'does not prune the diff' do
@@ -173,7 +173,7 @@ EOT
       let(:diff) { described_class.new(commit_delta) }
 
       it 'initializes the diff' do
-        expect(diff.to_hash).to eq(@raw_diff_hash.merge(diff: ''))
+        expect(diff.to_hash).to eq(@raw_diff_hash.merge(diff: '', generated: nil))
       end
 
       it 'is not too large' do

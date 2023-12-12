@@ -7,4 +7,6 @@ feature_categories:
 description: Contains periodical DevOps Adoption data points.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47388
 milestone: '13.7'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces

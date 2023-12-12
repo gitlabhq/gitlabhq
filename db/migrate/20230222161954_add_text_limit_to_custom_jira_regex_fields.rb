@@ -10,6 +10,6 @@ class AddTextLimitToCustomJiraRegexFields < Gitlab::Database::Migration[2.1]
 
   def down
     remove_text_limit :jira_tracker_data, :jira_issue_regex
-    remove_text_limit :jira_tracker_data, :jira_issue_regex
+    remove_text_limit :jira_tracker_data, :jira_issue_prefix
   end
 end

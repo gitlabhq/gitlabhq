@@ -436,7 +436,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/gitlab/geo/log_cursor/events/hashed_storage_attachments_event_spec.rb'
     - 'ee/spec/lib/gitlab/geo/oauth/session_spec.rb'
     - 'ee/spec/lib/gitlab/geo/registry_batcher_spec.rb'
-    - 'ee/spec/lib/gitlab/geo/replication/blob_downloader_spec.rb'
     - 'ee/spec/lib/gitlab/geo/replication/blob_retriever_spec.rb'
     - 'ee/spec/lib/gitlab/geo/replicator_spec.rb'
     - 'ee/spec/lib/gitlab/geo/signed_data_spec.rb'

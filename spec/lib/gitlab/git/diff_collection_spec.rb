@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Git::DiffCollection do
+RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_management do
   before do
     stub_const('MutatingConstantIterator', Class.new)
 
@@ -531,6 +531,73 @@ RSpec.describe Gitlab::Git::DiffCollection do
   end
 
   describe '#each' do
+    context 'with Gitlab::GitalyClient::DiffStitcher' do
+      let(:collection) do
+        described_class.new(
+          iterator,
+          max_files: max_files,
+          max_lines: max_lines,
+          limits: limits,
+          expanded: expanded,
+          generated_files: generated_files
+        )
+      end
+
+      let(:iterator) { Gitlab::GitalyClient::DiffStitcher.new(diff_params) }
+      let(:diff_params) { [diff_1, diff_2] }
+      let(:diff_1) do
+        OpenStruct.new(
+          to_path: ".gitmodules",
+          from_path: ".gitmodules",
+          old_mode: 0100644,
+          new_mode: 0100644,
+          from_id: '357406f3075a57708d0163752905cc1576fceacc',
+          to_id: '8e5177d718c561d36efde08bad36b43687ee6bf0',
+          patch: 'a' * 10,
+          raw_patch_data: 'a' * 10,
+          end_of_patch: true
+        )
+      end
+
+      let(:diff_2) do
+        OpenStruct.new(
+          to_path: ".gitignore",
+          from_path: ".gitignore",
+          old_mode: 0100644,
+          new_mode: 0100644,
+          from_id: '357406f3075a57708d0163752905cc1576fceacc',
+          to_id: '8e5177d718c561d36efde08bad36b43687ee6bf0',
+          patch: 'a' * 20,
+          raw_patch_data: 'a' * 20,
+          end_of_patch: true
+        )
+      end
+
+      context 'with generated_files' do
+        let(:generated_files) { [diff_1.from_path] }
+
+        it 'sets generated files as generated' do
+          collection.each do |d|
+            if d.old_path == diff_1.from_path
+              expect(d.generated).to be true
+            else
+              expect(d.generated).to be false
+            end
+          end
+        end
+      end
+
+      context 'without generated_files' do
+        let(:generated_files) { nil }
+
+        it 'set generated as nil' do
+          collection.each do |d|
+            expect(d.generated).to be_nil
+          end
+        end
+      end
+    end
+
     context 'when diff are too large' do
       let(:collection) do
         described_class.new([{ diff: 'a' * 204800 }])

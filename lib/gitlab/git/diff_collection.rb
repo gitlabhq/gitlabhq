@@ -35,6 +35,7 @@ module Gitlab
 
       def initialize(iterator, options = {})
         @iterator = iterator
+        @generated_files = options.fetch(:generated_files, nil)
         @limits = self.class.limits(options)
         @enforce_limits = !!options.fetch(:limits, true)
         @expanded = !!options.fetch(:expanded, true)
@@ -164,7 +165,10 @@ module Gitlab
         i = @array.length
 
         @iterator.each do |raw|
-          diff = Gitlab::Git::Diff.new(raw, expanded: expand_diff?)
+          options = { expanded: expand_diff? }
+          options[:generated] = @generated_files.include?(raw.from_path) if @generated_files
+
+          diff = Gitlab::Git::Diff.new(raw, **options)
 
           if raw.overflow_marker
             @overflow = true

@@ -720,7 +720,7 @@ To gain insight into the errors, you can execute a GraphQL query using the follo
 1. Go to the pipeline details page.
 1. Append `.json` to the URL.
 1. Copy the `iid` of the pipeline.
-1. Go to [GraphiQL explorer](../../api/graphql/index.md#graphiql).
+1. Go to the [interactive GraphQL explorer](../../api/graphql/index.md#interactive-graphql-explorer).
 1. Run the following query:
 
    ```graphql

@@ -623,7 +623,6 @@ Style/IfUnlessModifier:
     - 'ee/spec/helpers/ee/users/callouts_helper_spec.rb'
     - 'ee/spec/lib/gitlab/analytics/cycle_analytics/data_collector_spec.rb'
     - 'ee/spec/lib/gitlab/elastic/search_results_spec.rb'
-    - 'ee/spec/lib/gitlab/geo/replication/blob_downloader_spec.rb'
     - 'ee/spec/models/concerns/elastic/note_spec.rb'
     - 'ee/spec/models/geo_node_status_spec.rb'
     - 'ee/spec/models/push_rule_spec.rb'

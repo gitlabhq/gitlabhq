@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GraphQL API **(FREE ALL)**
 
-> Enabled and [made generally available](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30444) in GitLab 12.1. [Feature flag `graphql`](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30444) removed.
-
 [GraphQL](https://graphql.org/) is a query language for APIs. You can use it to
 request the exact data you need, and therefore limit the number of requests you need.
 
@@ -15,38 +13,22 @@ GraphQL data is arranged in types, so your client can use
 [client-side GraphQL libraries](https://graphql.org/code/#graphql-clients)
 to consume the API and avoid manual parsing.
 
-There are no fixed endpoints and no data model, so you can add
-to the API without creating [breaking changes](../../development/deprecation_guidelines/index.md).
-This enables us to have a [versionless API](https://graphql.org/learn/best-practices/#versioning).
+The GraphQL API is [versionless](https://graphql.org/learn/best-practices/#versioning).
 
-## Vision
-
-We want the GraphQL API to be the **primary** means of interacting
-programmatically with GitLab. To achieve this, it needs full coverage - anything
-possible in the REST API should also be possible in the GraphQL API.
-
-To help us meet this vision, the frontend should use GraphQL in preference to
-the REST API for new features.
-
-There are no plans to deprecate the REST API. To reduce the technical burden of
-supporting two APIs in parallel, they should share implementations as much as
-possible.
-
-## Work with GraphQL
+## Getting started
 
 If you're new to the GitLab GraphQL API, see [Get started with GitLab GraphQL API](getting_started.md).
 
 You can view the available resources in the [GraphQL API reference](reference/index.md).
-The reference is automatically generated from the GitLab GraphQL schema and
-written to a Markdown file.
 
 The GitLab GraphQL API endpoint is located at `/api/graphql`.
 
-### GraphiQL
+### Interactive GraphQL explorer
 
-Explore the GraphQL API using the interactive [GraphiQL explorer](https://gitlab.com/-/graphql-explorer),
-or on your self-managed GitLab instance on
-`https://<your-gitlab-site.com>/-/graphql-explorer`.
+Explore the GraphQL API using the interactive GraphQL explorer, either:
+
+- [On GitLab.com](https://gitlab.com/-/graphql-explorer).
+- On your self-managed GitLab instance on `https://<your-gitlab-site.com>/-/graphql-explorer`.
 
 For more information, see [GraphiQL](getting_started.md#graphiql).
 
@@ -72,33 +54,44 @@ Global IDs are a convention used for caching and fetching in some client-side li
 GitLab Global IDs are subject to change. If changed, the use of the old Global ID as an argument is deprecated and supported according to the [deprecation and breaking change](#breaking-changes) process.
 You should not expect that a cached Global ID will be valid beyond the time of a GitLab GraphQL deprecation cycle.
 
+## Available top-level queries
+
+The top-level entry points for all queries are defined in the [`Query` type](reference/index.md#query-type) in the
+GraphQL reference.
+
+### Multiplex queries
+
+GitLab supports batching queries into a single request. For more information, see
+[Multiplex](https://graphql-ruby.org/queries/multiplex.html).
+
 ## Breaking changes
 
-The GitLab GraphQL API is [versionless](https://graphql.org/learn/best-practices/#versioning) and changes to the API are primarily backward-compatible.
+The GitLab GraphQL API is [versionless](https://graphql.org/learn/best-practices/#versioning) and changes to the API are
+primarily backward-compatible.
 
 However, GitLab sometimes changes the GraphQL API in a way that is not backward-compatible. These changes are considered breaking changes, and
 can include removing or renaming fields, arguments, or other parts of the schema.
 When creating a breaking change, GitLab follows a [deprecation and removal process](#deprecation-and-removal-process).
 
-To avoid having a breaking change affect your integrations, you should
-familiarize yourself with the [deprecation and removal process](#deprecation-and-removal-process) and
-frequently [verify your API calls against the future breaking-change schema](#verify-against-the-future-breaking-change-schema).
+To avoid having a breaking change affect your integrations, you should:
+
+- Familiarize yourself with the [deprecation and removal process](#deprecation-and-removal-process).
+- Frequently [verify your API calls against the future breaking-change schema](#verify-against-the-future-breaking-change-schema).
 
 For more information, see [Deprecating GitLab features](../../development/deprecation_guidelines/index.md).
 
 ### Breaking change exemptions
 
-Schema items
-[marked as alpha](../../development/api_graphql_styleguide.md#mark-schema-items-as-alpha)
-are exempt from the deprecation process, and can be removed or changed at any
+Schema items labeled as Experiments in the [GraphQL API reference](reference/index.md)
+are exempt from the deprecation process. These items can be removed or changed at any
 time without notice.
 
 Fields behind a feature flag and disabled by default do not follow the
-deprecation and removal process, and can be removed at any time without notice.
+deprecation and removal process. These fields can be removed at any time without notice.
 
 WARNING:
 GitLab makes all attempts to follow the [deprecation and removal process](#deprecation-and-removal-process).
-On rare occasions, GitLab might make immediate breaking changes to the GraphQL
+GitLab might make immediate breaking changes to the GraphQL
 API to patch critical security or performance concerns if the deprecation
 process would pose significant risk.
 
@@ -111,8 +104,8 @@ This way, you can verify API calls ahead of a [breaking-change release](#depreca
 before the items are actually removed from the schema.
 
 To make these calls, add a
-`remove_deprecated=true` query parameter to the GitLab GraphQL API endpoint (for example,
-`https://gitlab.com/api/graphql?remove_deprecated=true` for GitLab SaaS GraphQL).
+`remove_deprecated=true` query parameter to the GraphQL API endpoint. For example,
+`https://gitlab.com/api/graphql?remove_deprecated=true` for GraphQL on GitLab.com.
 
 ### Deprecation and removal process
 
@@ -134,10 +127,8 @@ Items are marked as deprecated in:
 The deprecation message provides an alternative for the deprecated schema item,
 if applicable.
 
-NOTE:
-If you use the GraphQL API, we recommend you remove the deprecated schema from your GraphQL
-API calls as soon as possible to avoid experiencing breaking changes.
-You should [verify your API calls against the schema without the deprecated schema items](#verify-against-the-future-breaking-change-schema).
+To avoid experiencing breaking changes, you should remove the deprecated schema from your GraphQL API calls as soon as
+possible. You should [verify your API calls against the schema without the deprecated schema items](#verify-against-the-future-breaking-change-schema).
 
 #### Deprecation example
 
@@ -145,7 +136,7 @@ The following fields are deprecated in different minor releases, but both
 removed in GitLab 14.0:
 
 | Field deprecated in | Reason |
-| ------------------- | ---    |
+|:--------------------|:-------|
 | 12.7                | GitLab traditionally has 12 minor releases per major release. To ensure the field is available for 6 more releases, it is removed in the 14.0 major release (and not 13.0). |
 | 13.6                | The removal in 14.0 allows for 6 months of availability. |
 
@@ -153,50 +144,21 @@ removed in GitLab 14.0:
 
 View the [list of items removed](removed_items.md) in previous releases.
 
-## Available queries
-
-The GraphQL API includes the following queries at the root level:
-
-Query         | Description
---------------|------------
-`project`     | Project information and many of its associations, such as issues and merge requests.
-`group`       | Basic group information and epics.
-`user`        | Information about a particular user.
-`namespace`   | The namespace and the `projects` in it.
-`currentUser` | Information about the authenticated user.
-`users`       | Information about a collection of users.
-`metaData`    | Metadata about GitLab and the GraphQL API.
-`snippets`    | Snippets visible to the authenticated user.
-
-New associations and root level objects are regularly added.
-See the [GraphQL API Reference](reference/index.md) for up-to-date information.
-
-Root-level queries are defined in
-[`app/graphql/types/query_type.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/types/query_type.rb).
-
-### Multiplex queries
-
-GitLab supports batching queries into a single request using
-[`@apollo/client/link/batch-http`](https://www.apollographql.com/docs/react/api/link/apollo-link-batch-http/). More
-information about multiplexed queries is also available for
-[GraphQL Ruby](https://graphql-ruby.org/queries/multiplex.html), the
-library GitLab uses on the backend.
-
 ## Limits
 
 The following limits apply to the GitLab GraphQL API.
 
-Limit                | Default
----------------------|---------------------------------------------------------------------
-Max page size        | 100 records (nodes) per page. Applies to most connections in the API. Particular connections may have different max page size limits that are higher or lower.
-[Max query complexity](#max-query-complexity) | `200` for unauthenticated requests and `250` for authenticated requests.
-Request timeout      | 30 seconds.
-Max query size       | 10,000 characters per query or mutation. If this limit is reached, use [variables](https://graphql.org/learn/queries/#variables) and [fragments](https://graphql.org/learn/queries/#fragments) to reduce the query or mutation size. Remove white spaces as last resort.
+| Limit                                                 | Default |
+|:------------------------------------------------------|:--------|
+| Maximum page size                                     | 100 records (nodes) per page. Applies to most connections in the API. Particular connections may have different max page size limits that are higher or lower. |
+| [Maximum query complexity](#maximum-query-complexity) | 200 for unauthenticated requests and 250 for authenticated requests. |
+| Request timeout                                       | 30 seconds. |
+| Maximum query size                                    | 10,000 characters per query or mutation. If this limit is reached, use [variables](https://graphql.org/learn/queries/#variables) and [fragments](https://graphql.org/learn/queries/#fragments) to reduce the query or mutation size. Remove white spaces as last resort. |
 
-### Max query complexity
+### Maximum query complexity
 
 The GitLab GraphQL API scores the _complexity_ of a query. Generally, larger
-queries have a higher complexity score. This limit is designed to protect
+queries have a higher complexity score. This limit is designed to protecting
 the API from performing queries that could negatively impact its overall performance.
 
 You can [query](getting_started.md#query-complexity) the complexity score of a query
@@ -209,13 +171,7 @@ In general, each field in a query adds `1` to the complexity score, although
 this can be higher or lower for particular fields. Sometimes, adding
 certain arguments may also increase the complexity of a query.
 
-NOTE:
-The complexity limits may be revised in future, and additionally, the complexity
-of a query may be altered.
-
 ## Resolve mutations detected as spam
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327360) in GitLab 13.11.
 
 GraphQL mutations can be detected as spam. If a mutation is detected as spam and:
 
