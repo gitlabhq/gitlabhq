@@ -29,7 +29,7 @@
 
   .issue-token:hover &,
   .issue-token-link:focus > & {
-    background-color: $border-gray-normal;
+    background-color: $gray-100;
   }
 }
 
@@ -41,7 +41,7 @@
   &:focus,
   .issue-token:hover &,
   .issue-token-link:focus + & {
-    background-color: $border-gray-normal;
+    background-color: $gray-100;
     outline: none;
   }
 }

@@ -24,7 +24,7 @@
   width: $award-emoji-width;
   font-size: 14px;
   background-color: $white;
-  border: 1px solid $border-white-light;
+  border: 1px solid $border-color;
   border-radius: $border-radius-base;
   box-shadow: 0 6px 12px $award-emoji-menu-shadow;
   pointer-events: none;
@@ -218,7 +218,7 @@
   }
 
   .award-control-icon {
-    color: $border-gray-normal;
+    color: $gray-100;
 
     svg {
       height: $default-icon-size;

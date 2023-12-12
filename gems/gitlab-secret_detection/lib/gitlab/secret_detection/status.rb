@@ -2,7 +2,7 @@
 
 module Gitlab
   module SecretDetection
-    # All the possible statuses emitted by the Scan operation
+    # All the possible statuses emitted by the scan operation
     class Status
       NOT_FOUND = 0 # When scan operation completes with zero findings
       FOUND = 1 # When scan operation completes with one or more findings

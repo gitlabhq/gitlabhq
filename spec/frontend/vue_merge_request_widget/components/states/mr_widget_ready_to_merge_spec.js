@@ -1,9 +1,10 @@
-import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import { GlSprintf } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import produce from 'immer';
+import { createMockSubscription as createMockApolloSubscription } from 'mock-apollo-client';
 import readyToMergeResponse from 'test_fixtures/graphql/merge_requests/states/ready_to_merge.query.graphql.json';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
@@ -15,6 +16,7 @@ import SquashBeforeMerge from '~/vue_merge_request_widget/components/states/squa
 import MergeFailedPipelineConfirmationDialog from '~/vue_merge_request_widget/components/states/merge_failed_pipeline_confirmation_dialog.vue';
 import { MWPS_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
 import eventHub from '~/vue_merge_request_widget/event_hub';
+import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/ready_to_merge.subscription.graphql';
 
 jest.mock('~/lib/utils/simple_poll', () =>
   jest.fn().mockImplementation(jest.requireActual('~/lib/utils/simple_poll').default),
@@ -79,6 +81,7 @@ Vue.use(VueApollo);
 let service;
 let wrapper;
 let readyToMergeResponseSpy;
+let mockedSubscription;
 
 const createReadyToMergeResponse = (customMr) => {
   return produce(readyToMergeResponse, (draft) => {
@@ -87,7 +90,21 @@ const createReadyToMergeResponse = (customMr) => {
 };
 
 const createComponent = (customConfig = {}, createState = true) => {
-  wrapper = shallowMount(ReadyToMerge, {
+  mockedSubscription = createMockApolloSubscription();
+  const apolloProvider = createMockApollo([[readyToMergeQuery, readyToMergeResponseSpy]]);
+  const subscriptionResponse = {
+    data: { mergeRequestMergeStatusUpdated: { ...readyToMergeResponse.data.project.mergeRequest } },
+  };
+  subscriptionResponse.data.mergeRequestMergeStatusUpdated.defaultMergeCommitMessage =
+    'New default merge commit message';
+
+  const subscriptionHandlers = [[readyToMergeSubscription, () => mockedSubscription]];
+
+  subscriptionHandlers.forEach(([query, stream]) => {
+    apolloProvider.defaultClient.setRequestHandler(query, stream);
+  });
+
+  wrapper = shallowMountExtended(ReadyToMerge, {
     propsData: {
       mr: createTestMr(customConfig),
       service,
@@ -109,7 +126,7 @@ const createComponent = (customConfig = {}, createState = true) => {
       CommitEdit,
       GlSprintf,
     },
-    apolloProvider: createMockApollo([[readyToMergeQuery, readyToMergeResponseSpy]]),
+    apolloProvider,
   });
 };
 
@@ -838,6 +855,62 @@ describe('ReadyToMerge', () => {
     it("doesn't show auto-merge hint when auto merge is not set", () => {
       createComponent({ mr: { autoMergeEnabled: false } });
       expect(wrapper.text()).not.toContain('Auto-merge enabled');
+    });
+  });
+
+  describe('commit message', () => {
+    it('updates commit message from subscription', async () => {
+      createComponent({ mr: { id: 1 } });
+
+      await waitForPromises();
+
+      await wrapper.findByTestId('widget_edit_commit_message').vm.$emit('input', true);
+
+      expect(wrapper.findByTestId('merge-commit-message').props('value')).not.toEqual(
+        'Updated commit message',
+      );
+
+      mockedSubscription.next({
+        data: {
+          mergeRequestMergeStatusUpdated: {
+            ...readyToMergeResponse.data.project.mergeRequest,
+            defaultMergeCommitMessage: 'Updated commit message',
+          },
+        },
+      });
+
+      await waitForPromises();
+
+      expect(wrapper.findByTestId('merge-commit-message').props('value')).toEqual(
+        'Updated commit message',
+      );
+    });
+
+    it('does not update commit message from subscription if commit message has been manually changed', async () => {
+      createComponent({ mr: { id: 1 } });
+
+      await waitForPromises();
+
+      await wrapper.findByTestId('widget_edit_commit_message').vm.$emit('input', true);
+
+      await wrapper
+        .findByTestId('merge-commit-message')
+        .vm.$emit('input', 'Manually updated commit message');
+
+      mockedSubscription.next({
+        data: {
+          mergeRequestMergeStatusUpdated: {
+            ...readyToMergeResponse.data.project.mergeRequest,
+            defaultMergeCommitMessage: 'Updated commit message',
+          },
+        },
+      });
+
+      await waitForPromises();
+
+      expect(wrapper.findByTestId('merge-commit-message').props('value')).toEqual(
+        'Manually updated commit message',
+      );
     });
   });
 });

@@ -49,6 +49,9 @@ RSpec.describe BulkImports::FinishBatchedPipelineWorker, feature_category: :impo
 
     it 'marks the tracker as finished' do
       expect_next_instance_of(BulkImports::Logger) do |logger|
+        expect(logger).to receive(:with_tracker).with(pipeline_tracker).and_call_original
+        expect(logger).to receive(:with_entity).with(entity).and_call_original
+
         expect(logger).to receive(:info).with(
           a_hash_including('message' => 'Tracker finished')
         )
@@ -96,6 +99,9 @@ RSpec.describe BulkImports::FinishBatchedPipelineWorker, feature_category: :impo
 
       it 'fails pipeline tracker and its batches' do
         expect_next_instance_of(BulkImports::Logger) do |logger|
+          expect(logger).to receive(:with_tracker).with(pipeline_tracker).and_call_original
+          expect(logger).to receive(:with_entity).with(entity).and_call_original
+
           expect(logger).to receive(:error).with(
             a_hash_including('message' => 'Batch stale. Failing batches and tracker')
           )

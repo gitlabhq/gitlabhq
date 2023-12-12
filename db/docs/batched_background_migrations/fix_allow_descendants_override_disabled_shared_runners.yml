@@ -1,6 +1,8 @@
 ---
 migration_job_name: FixAllowDescendantsOverrideDisabledSharedRunners
-description: Clears invalid combination of shared runners settings (fixes subgroup creation)
+description: Clears invalid combination of shared runners settings (fixes subgroup
+  creation)
 feature_category: runner_fleet
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128112
 milestone: '16.3'
+finalized_by: '20231207221159'

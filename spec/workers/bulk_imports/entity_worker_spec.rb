@@ -73,6 +73,8 @@ RSpec.describe BulkImports::EntityWorker, feature_category: :importers do
 
     it 'enqueues the pipeline workers from the next stage and re-enqueues itself' do
       expect_next_instance_of(BulkImports::Logger) do |logger|
+        expect(logger).to receive(:with_entity).with(entity).and_call_original
+
         expect(logger).to receive(:info).with(hash_including('message' => 'Stage starting', 'entity_stage' => 1))
       end
 

@@ -42,7 +42,9 @@ module BulkImports
 
       Gitlab::ErrorTracking.track_exception(
         exception,
-        log_params(message: "Request to export #{entity.source_type} failed")
+        {
+          message: "Request to export #{entity.source_type} failed"
+        }.merge(logger.default_attributes)
       )
 
       entity.fail_op!
@@ -94,35 +96,12 @@ module BulkImports
       log_info(message: lease_taken_message)
     end
 
-    def source_version
-      entity.bulk_import.source_version_info.to_s
-    end
-
     def logger
-      @logger ||= Logger.build
-    end
-
-    def log_exception(exception, payload)
-      Gitlab::ExceptionLogFormatter.format!(exception, payload)
-
-      logger.error(structured_payload(payload))
+      @logger ||= Logger.build.with_entity(entity)
     end
 
     def log_info(payload)
-      logger.info(structured_payload(log_params(payload)))
-    end
-
-    def log_params(extra)
-      defaults = {
-        bulk_import_entity_id: entity.id,
-        bulk_import_id: entity.bulk_import_id,
-        bulk_import_entity_type: entity.source_type,
-        source_full_path: entity.source_full_path,
-        source_version: source_version,
-        importer: Logger::IMPORTER_NAME
-      }
-
-      defaults.merge(extra)
+      logger.info(structured_payload(payload))
     end
   end
 end

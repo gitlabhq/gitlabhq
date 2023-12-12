@@ -96,10 +96,6 @@ module BulkImports
       retry_tracker(e)
     end
 
-    def source_version
-      entity.bulk_import.source_version_info.to_s
-    end
-
     def fail_pipeline(exception)
       pipeline_tracker.update!(status_event: 'fail_op', jid: jid)
 
@@ -120,7 +116,7 @@ module BulkImports
     end
 
     def logger
-      @logger ||= Logger.build
+      @logger ||= Logger.build.with_tracker(pipeline_tracker)
     end
 
     def re_enqueue(delay = FILE_EXTRACTION_PIPELINE_PERFORM_DELAY)
@@ -185,19 +181,7 @@ module BulkImports
     end
 
     def log_attributes(extra = {})
-      structured_payload(
-        {
-          bulk_import_entity_id: entity.id,
-          bulk_import_id: entity.bulk_import_id,
-          bulk_import_entity_type: entity.source_type,
-          source_full_path: entity.source_full_path,
-          pipeline_tracker_id: pipeline_tracker.id,
-          pipeline_class: pipeline_tracker.pipeline_name,
-          pipeline_tracker_state: pipeline_tracker.human_status_name,
-          source_version: source_version,
-          importer: Logger::IMPORTER_NAME
-        }.merge(extra)
-      )
+      logger.default_attributes.merge(extra)
     end
 
     def log_exception(exception, payload)

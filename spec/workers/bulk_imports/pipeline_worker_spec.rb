@@ -65,17 +65,9 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
 
   it 'runs the given pipeline successfully' do
     expect_next_instance_of(BulkImports::Logger) do |logger|
-      expect(logger)
-        .to receive(:info)
-        .with(
-          hash_including(
-            'pipeline_class' => 'FakePipeline',
-            'bulk_import_id' => entity.bulk_import_id,
-            'bulk_import_entity_id' => entity.id,
-            'bulk_import_entity_type' => entity.source_type,
-            'source_full_path' => entity.source_full_path
-          )
-        )
+      expect(logger).to receive(:with_tracker).with(pipeline_tracker).and_call_original
+      expect(logger).to receive(:with_entity).with(pipeline_tracker.entity).and_call_original
+      expect(logger).to receive(:info)
     end
 
     allow(worker).to receive(:jid).and_return('jid')
@@ -102,22 +94,9 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
       job = { 'args' => [pipeline_tracker.id, pipeline_tracker.stage, entity.id] }
 
       expect_next_instance_of(BulkImports::Logger) do |logger|
-        expect(logger)
-          .to receive(:error)
-          .with(
-            hash_including(
-              'pipeline_class' => 'FakePipeline',
-              'bulk_import_entity_id' => entity.id,
-              'bulk_import_id' => entity.bulk_import_id,
-              'bulk_import_entity_type' => entity.source_type,
-              'source_full_path' => entity.source_full_path,
-              'class' => 'BulkImports::PipelineWorker',
-              'exception.message' => 'Error!',
-              'message' => 'Pipeline failed',
-              'source_version' => entity.bulk_import.source_version_info.to_s,
-              'importer' => 'gitlab_migration'
-            )
-          )
+        expect(logger).to receive(:with_tracker).with(pipeline_tracker).and_call_original
+        expect(logger).to receive(:with_entity).with(pipeline_tracker.entity).and_call_original
+        expect(logger).to receive(:error)
       end
 
       expect(Gitlab::ErrorTracking)
@@ -125,13 +104,13 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
         .with(
           instance_of(StandardError),
           hash_including(
-            'bulk_import_entity_id' => entity.id,
-            'bulk_import_id' => entity.bulk_import.id,
-            'bulk_import_entity_type' => entity.source_type,
-            'source_full_path' => entity.source_full_path,
-            'pipeline_class' => pipeline_tracker.pipeline_name,
-            'importer' => 'gitlab_migration',
-            'source_version' => entity.bulk_import.source_version_info.to_s
+            bulk_import_entity_id: entity.id,
+            bulk_import_id: entity.bulk_import.id,
+            bulk_import_entity_type: entity.source_type,
+            source_full_path: entity.source_full_path,
+            pipeline_class: pipeline_tracker.pipeline_name,
+            importer: 'gitlab_migration',
+            source_version: entity.bulk_import.source_version_info.to_s
           )
         )
 
@@ -302,16 +281,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
 
           expect(logger)
             .to receive(:info)
-            .with(
-              hash_including(
-                'pipeline_class' => 'FakePipeline',
-                'bulk_import_entity_id' => entity.id,
-                'bulk_import_id' => entity.bulk_import_id,
-                'bulk_import_entity_type' => entity.source_type,
-                'source_full_path' => entity.source_full_path,
-                'message' => 'Skipping pipeline due to failed entity'
-              )
-            )
+            .with(hash_including(message: 'Skipping pipeline due to failed entity'))
         end
 
         worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
@@ -350,17 +320,9 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
         end
 
         expect_next_instance_of(BulkImports::Logger) do |logger|
-          expect(logger)
-            .to receive(:info)
-            .with(
-              hash_including(
-                'pipeline_class' => 'FakePipeline',
-                'bulk_import_entity_id' => entity.id,
-                'bulk_import_id' => entity.bulk_import_id,
-                'bulk_import_entity_type' => entity.source_type,
-                'source_full_path' => entity.source_full_path
-              )
-            )
+          expect(logger).to receive(:with_tracker).and_call_original
+          expect(logger).to receive(:with_entity).and_call_original
+          expect(logger).to receive(:info)
         end
 
         expect(described_class)

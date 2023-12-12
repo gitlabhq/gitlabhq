@@ -10,16 +10,13 @@ RSpec.describe BulkImports::Common::Pipelines::EntityFinisher, feature_category:
     subject = described_class.new(context)
 
     expect_next_instance_of(BulkImports::Logger) do |logger|
+      expect(logger).to receive(:with_entity).with(entity).and_call_original
+
       expect(logger)
         .to receive(:info)
         .with(
-          bulk_import_id: entity.bulk_import_id,
-          bulk_import_entity_id: entity.id,
-          bulk_import_entity_type: entity.source_type,
-          source_full_path: entity.source_full_path,
           pipeline_class: described_class.name,
-          message: 'Entity finished',
-          source_version: entity.bulk_import.source_version_info.to_s
+          message: 'Entity finished'
         )
     end
 

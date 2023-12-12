@@ -166,12 +166,8 @@ module BulkImports
       def log_params(extra)
         defaults = {
           bulk_import_id: context.bulk_import_id,
-          bulk_import_entity_id: context.entity.id,
-          bulk_import_entity_type: context.entity.source_type,
-          source_full_path: context.entity.source_full_path,
           pipeline_class: pipeline,
-          context_extra: context.extra,
-          source_version: context.entity.bulk_import.source_version_info.to_s
+          context_extra: context.extra
         }
 
         defaults
@@ -180,7 +176,7 @@ module BulkImports
       end
 
       def logger
-        @logger ||= Logger.build
+        @logger ||= Logger.build.with_entity(context.entity)
       end
 
       def log_exception(exception, payload)

@@ -119,7 +119,7 @@ class NotificationRecipient
   end
 
   def excluded_watcher_action?
-    return false unless @type == :watch
+    return false unless notification_level == :watch
     return false unless @custom_action
 
     NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(@custom_action)

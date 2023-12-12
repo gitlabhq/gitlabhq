@@ -542,6 +542,9 @@ msgstr ""
 msgid "%{authorsName}'s thread"
 msgstr ""
 
+msgid "%{author} has added you as an approver."
+msgstr ""
+
 msgid "%{author} requested to merge %{source_branch} %{copy_button} into %{target_branch} %{created_at}"
 msgstr ""
 
@@ -1182,6 +1185,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "%{strongStart}Tip:%{strongEnd} You can also %{linkStart}check out with merge request ID%{linkEnd}."
+msgstr ""
+
+msgid "%{strong_start}%{author}%{strong_end} has added you as an approver."
 msgstr ""
 
 msgid "%{strong_start}%{branch_count}%{strong_end} Branch"
@@ -4953,9 +4959,6 @@ msgstr ""
 msgid "Allows projects to track errors using an Opstrace integration."
 msgstr ""
 
-msgid "Allows you to add and manage Kubernetes clusters."
-msgstr ""
-
 msgid "Almost there"
 msgstr ""
 
@@ -5104,9 +5107,6 @@ msgid "An error occurred while disabling Service Desk."
 msgstr ""
 
 msgid "An error occurred while dismissing the alert. Refresh the page and try again."
-msgstr ""
-
-msgid "An error occurred while dismissing the feature highlight. Refresh the page and try dismissing again."
 msgstr ""
 
 msgid "An error occurred while drawing job relationship links."
@@ -10079,6 +10079,9 @@ msgstr ""
 msgid "Checkout|Confirming..."
 msgstr ""
 
+msgid "Checkout|Contact information"
+msgstr ""
+
 msgid "Checkout|Continue to billing"
 msgstr ""
 
@@ -10137,6 +10140,9 @@ msgid "Checkout|Group"
 msgstr ""
 
 msgid "Checkout|Invalid coupon code. Enter a valid coupon code."
+msgstr ""
+
+msgid "Checkout|Manage the subscription and billing contacts for your billing account in the %{customersPortalLinkStart}Customers Portal%{customersPortalLinkEnd}. Learn more about %{manageContactsLinkStart}how to manage your contacts%{manageContactsLinkEnd}."
 msgstr ""
 
 msgid "Checkout|Must be %{minimumNumberOfUsers} (your seats in use) or more."
@@ -22841,9 +22847,6 @@ msgstr ""
 msgid "Got it"
 msgstr ""
 
-msgid "Got it!"
-msgstr ""
-
 msgid "Grafana URL"
 msgstr ""
 
@@ -23180,9 +23183,6 @@ msgstr ""
 msgid "GroupSAML|Could not create SAML group link: %{errors}."
 msgstr ""
 
-msgid "GroupSAML|Custom roles"
-msgstr ""
-
 msgid "GroupSAML|Default membership role"
 msgstr ""
 
@@ -23280,9 +23280,6 @@ msgid "GroupSAML|Some branches are inaccessible because your SAML session has ex
 msgstr ""
 
 msgid "GroupSAML|Some to-do items may be hidden because your SAML session has expired. Select the group’s path to reauthenticate and view the hidden to-do items."
-msgstr ""
-
-msgid "GroupSAML|Standard roles"
 msgstr ""
 
 msgid "GroupSAML|The SCIM token is now hidden. To see the value of the token again, you need to %{linkStart}reset it%{linkEnd}."
@@ -32429,6 +32426,9 @@ msgid_plural "NotificationEmail|Reviewers: %{users}"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "NotificationEvent|Added as approver"
+msgstr ""
+
 msgid "NotificationEvent|Change reviewer merge request"
 msgstr ""
 
@@ -39252,9 +39252,6 @@ msgid "ProtectedTag|What are protected tags?"
 msgstr ""
 
 msgid "ProtectedTag|default"
-msgstr ""
-
-msgid "Protip: %{linkStart}Auto DevOps%{linkEnd} uses Kubernetes clusters to deploy your code!"
 msgstr ""
 
 msgid "Provide Feedback"
@@ -50777,6 +50774,9 @@ msgid "Todos|added a to-do item"
 msgstr ""
 
 msgid "Todos|has requested access to %{what} %{which}"
+msgstr ""
+
+msgid "Todos|have been added as an approver"
 msgstr ""
 
 msgid "Todos|mentioned %{who}"

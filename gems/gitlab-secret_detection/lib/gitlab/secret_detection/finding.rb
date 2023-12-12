@@ -18,6 +18,16 @@ module Gitlab
         self.class == other.class && other.state == state
       end
 
+      def to_h
+        {
+          blob_id: blob_id,
+          status: status,
+          line_number: line_number,
+          type: type,
+          description: description
+        }
+      end
+
       protected
 
       def state

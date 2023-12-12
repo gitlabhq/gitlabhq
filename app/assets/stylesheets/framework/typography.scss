@@ -89,7 +89,7 @@
     font-weight: $gl-font-weight-bold;
     margin: 24px 0 16px;
     padding-bottom: 0.3em;
-    border-bottom: 1px solid $white-dark;
+    border-bottom: 1px solid $gray-200;
     color: $gl-text-color;
 
     &:first-child {
@@ -102,7 +102,7 @@
     font-weight: $gl-font-weight-bold;
     margin: 24px 0 16px;
     padding-bottom: 0.3em;
-    border-bottom: 1px solid $white-dark;
+    border-bottom: 1px solid $gray-200;
     color: $gl-text-color;
   }
 
@@ -138,7 +138,7 @@
 
     &:dir(rtl) {
       border-left: 0;
-      border-right: 3px solid $white-dark;
+      border-right: 3px solid $gray-100;
     }
 
     p {

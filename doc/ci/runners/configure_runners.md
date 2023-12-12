@@ -174,6 +174,23 @@ After you reset the registration token, it is no longer valid and does not regis
 any new runners to the project. You should also update the registration token in tools
 you use to provision and register new values.
 
+## Authentication token security
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `enforce_runner_token_expires_at`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/377902) in GitLab 15.5. Feature flag `enforce_runner_token_expires_at` removed.
+
+Each runner has an [runner authentication token](../../api/runners.md#registration-and-authentication-tokens)
+to connect with the GitLab instance.
+
+To help prevent the token from being compromised, you can have the
+token rotate automatically at specified intervals. When the tokens are rotated,
+they are updated for each runner, regardless of the runner's status (`online` or `offline`).
+
+No manual intervention should be required, and no running jobs should be affected.
+
+If you need to manually update the runner authentication token, you can run a
+command to [reset the token](https://docs.gitlab.com/runner/commands/#gitlab-runner-reset-token).
+
 ### Reset the runner authentication token
 
 If a runner authentication token is revealed, an attacker could use the token to [clone a runner](https://docs.gitlab.com/runner/security/#cloning-a-runner).
@@ -1016,20 +1033,3 @@ setting.
 `FASTZIP_EXTRACTOR_CONCURRENCY` controls how many files are decompressed at once. Files from a zip archive can natively
 be read from concurrency, so no additional memory is allocated in addition to what the decompressor requires. This
 defaults to the number of CPUs available.
-
-## Authentication token security
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `enforce_runner_token_expires_at`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/377902) in GitLab 15.5. Feature flag `enforce_runner_token_expires_at` removed.
-
-Each runner has an [runner authentication token](../../api/runners.md#registration-and-authentication-tokens)
-to connect with the GitLab instance.
-
-To help prevent the token from being compromised, you can have the
-token rotate automatically at specified intervals. When the tokens are rotated,
-they are updated for each runner, regardless of the runner's status (`online` or `offline`).
-
-No manual intervention should be required, and no running jobs should be affected.
-
-If you need to manually update the runner authentication token, you can run a
-command to [reset the token](https://docs.gitlab.com/runner/commands/#gitlab-runner-reset-token).

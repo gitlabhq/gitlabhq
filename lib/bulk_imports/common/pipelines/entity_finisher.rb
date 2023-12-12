@@ -28,13 +28,8 @@ module BulkImports
           end
 
           logger.info(
-            bulk_import_id: entity.bulk_import_id,
-            bulk_import_entity_id: entity.id,
-            bulk_import_entity_type: entity.source_type,
-            source_full_path: entity.source_full_path,
             pipeline_class: self.class.name,
-            message: "Entity #{entity.status_name}",
-            source_version: entity.bulk_import.source_version_info.to_s
+            message: "Entity #{entity.status_name}"
           )
 
           ::BulkImports::FinishProjectImportWorker.perform_async(entity.project_id) if entity.project?
@@ -45,7 +40,7 @@ module BulkImports
         attr_reader :context, :entity, :trackers
 
         def logger
-          @logger ||= Logger.build
+          @logger ||= Logger.build.with_entity(entity)
         end
 
         def all_other_trackers_failed?

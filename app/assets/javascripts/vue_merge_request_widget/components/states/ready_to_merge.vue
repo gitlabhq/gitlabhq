@@ -120,6 +120,14 @@ export default {
         ) {
           if (mergeRequestMergeStatusUpdated) {
             this.state = mergeRequestMergeStatusUpdated;
+
+            if (!this.commitMessageIsTouched) {
+              this.commitMessage = mergeRequestMergeStatusUpdated.defaultMergeCommitMessage;
+            }
+
+            if (!this.squashCommitMessageIsTouched) {
+              this.squashCommitMessage = mergeRequestMergeStatusUpdated.defaultSquashCommitMessage;
+            }
           }
         },
       },
@@ -605,6 +613,7 @@ export default {
                     :label="__('Merge commit message')"
                     input-id="merge-message-edit"
                     class="gl-m-0! gl-p-0!"
+                    data-testid="merge-commit-message"
                     @input="setCommitMessage"
                   >
                     <template #header>

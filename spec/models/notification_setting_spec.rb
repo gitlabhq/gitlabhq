@@ -193,7 +193,11 @@ RSpec.describe NotificationSetting do
     end
 
     it 'includes EXCLUDED_WATCHER_EVENTS' do
-      expect(subject).to include(*described_class::EXCLUDED_WATCHER_EVENTS)
+      expect(subject).to include(
+        :push_to_merge_request,
+        :issue_due,
+        :success_pipeline
+      )
     end
   end
 

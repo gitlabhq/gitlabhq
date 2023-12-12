@@ -25,8 +25,8 @@
   background-color: $gray-light;
   padding: $gl-padding;
   margin-bottom: 0;
-  border-top: 1px solid $white-dark;
-  border-bottom: 1px solid $white-dark;
+  border-top: 1px solid $border-color;
+  border-bottom: 1px solid $border-color;
   color: $gl-text-color;
 
   &.white {
@@ -76,14 +76,14 @@
 
 .sub-header-block {
   background-color: $white;
-  border-bottom: 1px solid $white-dark;
+  border-bottom: 1px solid $border-color;
   padding: 11px 0;
   margin-bottom: 11px;
 }
 
 .content-block {
   padding: $gl-padding 0;
-  border-bottom: 1px solid $white-dark;
+  border-bottom: 1px solid $border-color;
 
   > .controls {
     float: right;

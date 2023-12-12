@@ -87,8 +87,6 @@ $size-scale: (
 // Color schema
 $darken-normal-factor: 7% !default;
 $darken-dark-factor: 10% !default;
-$darken-border-factor: 5% !default;
-$darken-border-dashed-factor: 25% !default;
 
 $purple: #6d49cb !default;
 $purple-light: #ede8fb !default;
@@ -115,15 +113,6 @@ $t-gray-a-06: rgba(31, 30, 36, 0.06) !default;
 $t-gray-a-08: rgba(31, 30, 36, 0.08) !default;
 $t-gray-a-16: rgba(31, 30, 36, 0.16) !default;
 $t-gray-a-24: rgba(31, 30, 36, 0.24) !default;
-
-$white-dark: darken($gray-50, 2) !default;
-
-$border-white-light: darken($white, $darken-border-factor) !default;
-$border-white-normal: darken($gray-50, $darken-border-factor) !default;
-
-$border-gray-light: darken($gray-light, $darken-border-factor);
-$border-gray-normal: darken($gray-normal, $darken-border-factor);
-$border-gray-normal-dashed: darken($gray-normal, $darken-border-dashed-factor);
 
 /*
  * UI elements

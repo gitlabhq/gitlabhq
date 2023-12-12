@@ -141,7 +141,7 @@ table.pipeline-project-metrics tr td {
       top: 5px;
       bottom: 0;
       left: -16px;
-      border-left: 2px solid $border-white-normal;
+      border-left: 2px solid $border-color;
     }
 
     .group-row {
@@ -152,7 +152,7 @@ table.pipeline-project-metrics tr td {
         display: block;
         width: 10px;
         height: 0;
-        border-top: 2px solid $border-white-normal;
+        border-top: 2px solid $border-color;
         position: absolute;
         top: 30px;
         left: -16px;

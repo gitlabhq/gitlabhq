@@ -192,7 +192,7 @@ RSpec.describe BulkImports::Common::Pipelines::LfsObjectsPipeline, feature_categ
             allow(object).to receive(:persisted?).and_return(false)
           end
 
-          expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+          expect_next_instance_of(BulkImports::Logger) do |logger|
             expect(logger)
               .to receive(:warn)
               .with(project_id: portable.id,

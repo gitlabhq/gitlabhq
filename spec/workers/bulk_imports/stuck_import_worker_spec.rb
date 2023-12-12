@@ -48,16 +48,12 @@ RSpec.describe BulkImports::StuckImportWorker, feature_category: :importers do
     it 'updates the status of bulk import entities to timeout' do
       expect_next_instance_of(BulkImports::Logger) do |logger|
         allow(logger).to receive(:error)
-        expect(logger).to receive(:error).with(
-          message: 'BulkImports::Entity stale',
-          bulk_import_entity_id: stale_created_bulk_import_entity.id,
-          bulk_import_id: stale_created_bulk_import_entity.bulk_import_id
-        )
-        expect(logger).to receive(:error).with(
-          message: 'BulkImports::Entity stale',
-          bulk_import_entity_id: stale_started_bulk_import_entity.id,
-          bulk_import_id: stale_started_bulk_import_entity.bulk_import_id
-        )
+
+        expect(logger).to receive(:with_entity).with(stale_created_bulk_import_entity).and_call_original
+        expect(logger).to receive(:error).with(message: 'BulkImports::Entity stale')
+
+        expect(logger).to receive(:with_entity).with(stale_started_bulk_import_entity).and_call_original
+        expect(logger).to receive(:error).with(message: 'BulkImports::Entity stale')
       end
 
       expect { subject }.to change { stale_created_bulk_import_entity.reload.status_name }.from(:created).to(:timeout)

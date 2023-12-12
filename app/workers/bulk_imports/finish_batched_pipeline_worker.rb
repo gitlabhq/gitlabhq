@@ -58,18 +58,11 @@ module BulkImports
     end
 
     def logger
-      @logger ||= Logger.build
+      @logger ||= Logger.build.with_tracker(tracker)
     end
 
     def log_attributes(extra = {})
-      structured_payload(
-        {
-          tracker_id: tracker.id,
-          bulk_import_id: tracker.entity.id,
-          bulk_import_entity_id: tracker.entity.bulk_import_id,
-          pipeline_class: tracker.pipeline_name
-        }.merge(extra)
-      )
+      structured_payload(extra)
     end
   end
 end

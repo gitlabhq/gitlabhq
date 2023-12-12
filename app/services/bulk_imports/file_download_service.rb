@@ -96,7 +96,6 @@ module BulkImports
         message: message,
         response_code: response_code,
         response_headers: response_headers,
-        importer: 'gitlab_migration',
         last_chunk_context: last_chunk_context
       )
 

@@ -20,10 +20,8 @@ module BulkImports
 
       BulkImports::Entity.includes(:trackers).stale.find_each do |entity| # rubocop: disable CodeReuse/ActiveRecord
         ApplicationRecord.transaction do
-          logger.error(
-            message: 'BulkImports::Entity stale',
-            bulk_import_id: entity.bulk_import_id,
-            bulk_import_entity_id: entity.id
+          logger.with_entity(entity).error(
+            message: 'BulkImports::Entity stale'
           )
 
           entity.cleanup_stale

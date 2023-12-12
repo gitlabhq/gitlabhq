@@ -118,7 +118,7 @@
 }
 
 @mixin btn-white {
-  @include btn-color($white, $border-color, $gray-50, $border-white-normal, $white-dark, $border-white-normal, $gl-text-color);
+  @include btn-color($white, $gray-200, $gray-50, $gray-200, $gray-100, $gray-300, $gl-text-color);
 }
 
 @mixin btn-purple {
@@ -276,7 +276,7 @@
   .active {
     box-shadow: $gl-btn-active-background;
 
-    border: 1px solid $border-white-normal !important;
+    border: 1px solid $gray-100 !important;
     background-color: $btn-active-gray-light !important;
   }
 }

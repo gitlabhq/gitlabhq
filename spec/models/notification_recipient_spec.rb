@@ -440,8 +440,8 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
             described_class.new(user, :participating, custom_action: :issue_due, target: target, project: project)
           end
 
-          it 'returns true' do
-            expect(recipient.suitable_notification_level?).to eq true
+          it 'returns false' do
+            expect(recipient.suitable_notification_level?).to eq false
           end
         end
       end

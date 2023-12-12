@@ -807,6 +807,7 @@ RSpec/ContextWording:
     - 'ee/spec/support/shared_contexts/lib/gitlab/insights/reducers/reducers_shared_contexts.rb'
     - 'ee/spec/support/shared_contexts/lib/gitlab/insights/serializers/serializers_shared_context.rb'
     - 'ee/spec/support/shared_contexts/push_rules_checks_shared_context.rb'
+    - 'ee/spec/support/shared_contexts/secrets_check_shared_contexts.rb'
     - 'ee/spec/support/shared_contexts/requests/api/members_shared_contexts.rb'
     - 'ee/spec/support/shared_contexts/status_page/status_page_enabled_context.rb'
     - 'ee/spec/support/shared_contexts/status_page/status_page_list_objects.rb'

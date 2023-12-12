@@ -1,0 +1,48 @@
+---
+stage: Manage
+group: Import and Integrate
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+---
+
+# Troubleshooting GitLab for Slack app **(FREE ALL)**
+
+When configuring the GitLab for Slack app on GitLab.com, you might encounter the following issues.
+
+For self-managed GitLab, see [GitLab for Slack app administration](../../../administration/settings/slack_app.md#troubleshooting).
+
+## The app does not appear in the list of integrations
+
+The GitLab for Slack app might not appear in the list of integrations. To have the GitLab for Slack app on your self-managed instance, an administrator must [enable the integration](../../../administration/settings/slack_app.md). On GitLab.com, the GitLab for Slack app is available by default.
+
+The GitLab for Slack app is enabled at the project level only. Support for the app at the group and instance levels is proposed in [issue 391526](https://gitlab.com/gitlab-org/gitlab/-/issues/391526).
+
+## Project or alias not found
+
+Some Slack commands must have a project full path or alias and fail with the following error
+if the project cannot be found:
+
+```plaintext
+GitLab error: project or alias not found
+```
+
+To resolve this issue, ensure:
+
+- The project full path is correct.
+- If using a [project alias](gitlab_slack_application.md#create-a-project-alias-for-slash-commands), the alias is correct.
+- The GitLab for Slack app is [enabled for the project](gitlab_slack_application.md#from-project-integration-settings).
+
+## Slash commands return an error in Slack
+
+Slash commands might return `/gitlab failed with the error "dispatch_failed"` in Slack.
+To resolve this issue, ensure an administrator has properly configured the [GitLab for Slack app settings](../../../administration/settings/slack_app.md) on your self-managed instance.
+
+## Notifications are not received to a channel
+
+If you're not receiving notifications to a Slack channel, ensure:
+
+- The channel name you configured is correct.
+- If the channel is private, you've [added the GitLab for Slack app to the channel](gitlab_slack_application.md#receive-notifications-to-a-private-channel).
+
+## The App Home does not display properly
+
+If the [App Home](https://api.slack.com/start/overview#app_home) does not display properly, ensure your [app is up to date](gitlab_slack_application.md#update-the-gitlab-for-slack-app).

@@ -7,7 +7,7 @@
   background: none;
   word-break: normal;
   overflow-x: auto;
-  border-left: 3px solid $white-dark;
+  border-left: 3px solid $gray-100;
   color: $gl-text-color-secondary;
 }
 
@@ -93,7 +93,7 @@
   color: $gl-text-color-secondary;
   padding: 1px $gl-padding-4;
   cursor: pointer;
-  border: 1px solid $border-white-normal;
+  border: 1px solid $gray-100;
   border-radius: $border-radius-default;
   margin-left: 5px;
   font-size: 12px;

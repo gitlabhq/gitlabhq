@@ -1059,6 +1059,7 @@ Gitlab/NamespacedClass:
     - 'ee/lib/gitlab/proxy.rb'
     - 'ee/lib/gitlab/return_to_location.rb'
     - 'ee/lib/gitlab/update_mirror_service_json_logger.rb'
+    - 'ee/lib/gitlab/secret_detection_logger.rb'
     - 'ee/spec/support/elastic_query_name_inspector.rb'
     - 'ee/spec/support/test_license.rb'
     - 'lib/carrier_wave_string_file.rb'

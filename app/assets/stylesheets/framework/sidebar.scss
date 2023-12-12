@@ -108,7 +108,7 @@
 }
 
 .right-sidebar {
-  border-left: 1px solid $gray-50;
+  border-left: 1px solid $border-color;
 
   &.right-sidebar-merge-requests {
     @include media-breakpoint-up(lg) {
@@ -411,7 +411,7 @@
   .issuable-sidebar-header {
     @include clearfix;
     padding: $gl-spacing-scale-4 0 $gl-spacing-scale-5;
-    border-bottom: 1px solid $border-gray-normal;
+    border-bottom: 1px solid $border-color;
     // This prevents the mess when resizing the sidebar
     // of elements repositioning themselves..
     width: $right-sidebar-inner-width;
@@ -587,7 +587,7 @@
     }
 
     .participants {
-      border-bottom: 1px solid $border-gray-normal;
+      border-bottom: 1px solid $border-color;
     }
 
     .hide-collapsed {
@@ -598,7 +598,7 @@
       width: 100%;
       height: $sidebar-toggle-height;
       margin-left: 0;
-      border-bottom: 1px solid $border-white-normal;
+      border-bottom: 1px solid $border-color;
       border-radius: 0;
     }
 

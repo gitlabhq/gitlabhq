@@ -21,7 +21,6 @@ import { localTimeAgo } from './lib/utils/datetime/timeago_utility';
 import { getLocationHash, visitUrl, mergeUrlParams } from './lib/utils/url_utility';
 
 // everything else
-import initFeatureHighlight from './feature_highlight';
 import LazyLoader from './lazy_loader';
 import initLogoAnimation from './logo';
 import initBreadcrumbs from './breadcrumb';
@@ -88,7 +87,6 @@ function deferredInitialisation() {
   initBroadcastNotifications();
   initPersistentUserCallouts();
   initDefaultTrackers();
-  initFeatureHighlight();
   initCopyCodeButton();
   initGitlabVersionCheck();
 

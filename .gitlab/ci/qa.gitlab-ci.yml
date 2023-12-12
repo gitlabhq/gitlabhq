@@ -53,15 +53,6 @@ qa:internal-as-if-foss:
     - .qa:rules:internal-as-if-foss
     - .as-if-foss
 
-qa:master-auto-quarantine-dequarantine:
-  extends:
-    - .qa-job-base
-  rules:
-    - if: '$QA_TRIGGER_AUTO_QUARANTINE =~ /true|yes|1/i'
-  script:
-    - bundle exec confiner -r .confiner/master.yml
-  allow_failure: true
-
 cache-qa-gems:
   extends:
     - .qa-job-base

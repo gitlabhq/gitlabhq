@@ -34,9 +34,9 @@ module Gitlab
       # in case the compilation fails.
       def initialize(logger: Logger.new($stdout), ruleset_path: RULESET_FILE_PATH)
         @logger = logger
-        @rules = parse_ruleset ruleset_path
-        @keywords = create_keywords @rules
-        @matcher = build_pattern_matcher @rules
+        @rules = parse_ruleset(ruleset_path)
+        @keywords = create_keywords(rules)
+        @pattern_matcher = build_pattern_matcher(rules)
       end
 
       # Runs Secret Detection scan on the list of given blobs. Both the total scan duration and
@@ -52,49 +52,51 @@ module Gitlab
       #     status: One of the SecretDetection::Status values
       #     results: [SecretDetection::Finding]
       # }
-      #
-      #
       def secrets_scan(blobs, timeout: DEFAULT_SCAN_TIMEOUT_SECS, blob_timeout: DEFAULT_BLOB_TIMEOUT_SECS)
         return SecretDetection::Response.new(SecretDetection::Status::INPUT_ERROR) unless validate_scan_input(blobs)
 
-        Timeout.timeout timeout do
+        Timeout.timeout(timeout) do
           matched_blobs = filter_by_keywords(blobs)
 
           next SecretDetection::Response.new(SecretDetection::Status::NOT_FOUND) if matched_blobs.empty?
 
           secrets = find_secrets_bulk(matched_blobs, blob_timeout)
 
-          scan_status = overall_scan_status secrets
+          scan_status = overall_scan_status(secrets)
 
           SecretDetection::Response.new(scan_status, secrets)
         end
       rescue Timeout::Error => e
-        @logger.error "Secret Detection operation timed out: #{e}"
+        logger.error "Secret detection operation timed out: #{e}"
+
         SecretDetection::Response.new(SecretDetection::Status::SCAN_TIMEOUT)
       end
 
       private
 
-      attr_reader :logger, :rules, :keywords, :matcher
+      attr_reader :logger, :rules, :keywords, :pattern_matcher
 
       # parses given ruleset file and returns the parsed rules
       def parse_ruleset(ruleset_file_path)
         rules_data = TomlRB.load_file(ruleset_file_path)
         rules_data['rules']
       rescue StandardError => e
-        logger.error "Failed to parse Secret Detection ruleset from '#{ruleset_file_path}' path: #{e}"
+        logger.error "Failed to parse secret detection ruleset from '#{ruleset_file_path}' path: #{e}"
+
         raise RulesetParseError
       end
 
       # builds RE2::Set pattern matcher for the given rules
       def build_pattern_matcher(rules)
         matcher = RE2::Set.new
+
         rules.each do |rule|
-          matcher.add(rule['regex'])
+          matcher.add(rule["regex"])
         end
 
         unless matcher.compile
-          logger.error "Failed to compile Secret Detection rulesets in RE::Set"
+          logger.error "Failed to compile secret detection rulesets in RE::Set"
+
           raise RulesetCompilationError
         end
 
@@ -104,8 +106,9 @@ module Gitlab
       # creates and returns the unique set of rule matching keywords
       def create_keywords(rules)
         secrets_keywords = []
+
         rules.each do |rule|
-          secrets_keywords << rule['keywords']
+          secrets_keywords << rule["keywords"]
         end
 
         secrets_keywords.flatten.compact.to_set
@@ -126,14 +129,16 @@ module Gitlab
       # finds secrets in the given list of blobs
       def find_secrets_bulk(blobs, blob_timeout)
         found_secrets = []
+
         blobs.each do |blob|
-          found_secrets << Timeout.timeout(blob_timeout) do
-            find_secrets(blob)
-          end
+          found_secrets << Timeout.timeout(blob_timeout) { find_secrets(blob) }
         rescue Timeout::Error => e
-          logger.error "Secret Detection scan timed out on the blob(id:#{blob.id}): #{e}"
-          found_secrets << SecretDetection::Finding.new(blob.id,
-            SecretDetection::Status::BLOB_TIMEOUT)
+          logger.error "Secret detection scan timed out on the blob(id:#{blob.id}): #{e}"
+
+          found_secrets << SecretDetection::Finding.new(
+            blob.id,
+            SecretDetection::Status::BLOB_TIMEOUT
+          )
         end
 
         found_secrets.flatten.freeze
@@ -147,20 +152,28 @@ module Gitlab
           # ignore the line scan if it is suffixed with '#gitleaks:allow'
           next if line.end_with?(GITLEAKS_KEYWORD_IGNORE)
 
-          patterns = matcher.match(line, :exception => false)
+          patterns = pattern_matcher.match(line, :exception => false)
           next unless patterns.any?
 
-          line_no = index + 1
+          line_number = index + 1
           patterns.each do |pattern|
-            type = rules[pattern]['id']
-            description = rules[pattern]['description']
-            secrets << SecretDetection::Finding.new(blob.id, SecretDetection::Status::FOUND, line_no, type,
-              description)
+            type = rules[pattern]["id"]
+            description = rules[pattern]["description"]
+
+            secrets << SecretDetection::Finding.new(
+              blob.id,
+              SecretDetection::Status::FOUND,
+              line_number,
+              type,
+              description
+            )
           end
         end
+
         secrets
       rescue StandardError => e
-        logger.error "Secret Detection scan failed on the blob(id:#{blob.id}): #{e}"
+        logger.error "Secret detection scan failed on the blob(id:#{blob.id}): #{e}"
+
         SecretDetection::Finding.new(blob.id, SecretDetection::Status::SCAN_ERROR)
       end
 

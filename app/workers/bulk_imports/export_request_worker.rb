@@ -75,16 +75,7 @@ module BulkImports
 
       ::GlobalID.parse(response.dig(*entity_query.data_path, 'id')).model_id
     rescue StandardError => e
-      log_exception(e,
-        {
-          message: 'Failed to fetch source entity id',
-          bulk_import_entity_id: entity.id,
-          bulk_import_id: entity.bulk_import_id,
-          bulk_import_entity_type: entity.source_type,
-          source_full_path: entity.source_full_path,
-          source_version: entity.bulk_import.source_version_info.to_s
-        }
-      )
+      log_exception(e, message: 'Failed to fetch source entity id')
 
       nil
     end
@@ -98,7 +89,7 @@ module BulkImports
     end
 
     def logger
-      @logger ||= Logger.build
+      @logger ||= Logger.build.with_entity(entity)
     end
 
     def log_exception(exception, payload)
@@ -108,16 +99,7 @@ module BulkImports
     end
 
     def log_and_fail(exception)
-      log_exception(exception,
-        {
-          bulk_import_entity_id: entity.id,
-          bulk_import_id: entity.bulk_import_id,
-          bulk_import_entity_type: entity.source_type,
-          source_full_path: entity.source_full_path,
-          message: "Request to export #{entity.source_type} failed",
-          source_version: entity.bulk_import.source_version_info.to_s
-        }
-      )
+      log_exception(exception, message: "Request to export #{entity.source_type} failed")
 
       BulkImports::Failure.create(failure_attributes(exception))
 

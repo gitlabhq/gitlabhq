@@ -461,6 +461,8 @@
   - 1
 - - merge_requests_mergeability_check_batch
   - 1
+- - merge_requests_notify_approvers
+  - 1
 - - merge_requests_process_approval_auto_merge
   - 1
 - - merge_requests_remove_user_approval_rules

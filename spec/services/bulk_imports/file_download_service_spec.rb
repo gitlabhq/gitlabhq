@@ -95,7 +95,6 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
           message: 'Invalid content type',
           response_code: chunk_code,
           response_headers: headers,
-          importer: 'gitlab_migration',
           last_chunk_context: 'some chunk context'
         )
 

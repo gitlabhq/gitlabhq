@@ -104,7 +104,7 @@ To enable the GitLab for Slack app functionality, your network must allow inboun
 
 When administering the GitLab for Slack app for self-managed instances, you might encounter the following issues.
 
-For GitLab.com, see [GitLab for Slack app](../../user/project/integrations/gitlab_slack_application.md#troubleshooting).
+For GitLab.com, see [GitLab for Slack app](../../user/project/integrations/gitlab_slack_app_troubleshooting.md).
 
 ### Slash commands return an error in Slack
 

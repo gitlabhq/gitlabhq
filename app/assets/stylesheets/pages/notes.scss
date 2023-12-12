@@ -986,7 +986,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 .disabled-comment {
   background-color: $gray-light;
   border-radius: $border-radius-base;
-  border: 1px solid $border-gray-normal;
+  border: 1px solid $border-color;
   color: $note-disabled-comment-color;
   padding: $gl-padding-8 0;
 

@@ -147,7 +147,7 @@
   .nav-links,
   .gl-tabs-nav,
   .common-note-form .md-area.is-focused .nav-links {
-    border-color: var(--ide-border-color-alt, $white-dark);
+    border-color: var(--ide-border-color-alt, $border-color);
   }
 
   pre {
@@ -291,14 +291,14 @@
 
     &:hover,
     &:focus {
-      border-color: var(--ide-btn-default-hover-border, $border-white-normal) !important;
+      border-color: var(--ide-btn-default-hover-border, $border-color) !important;
       background-color: var(--ide-btn-default-background, $gray-50) !important;
     }
 
     &:active,
     .active {
-      border-color: var(--ide-btn-default-hover-border, $border-white-normal) !important;
-      background-color: var(--ide-btn-default-background, $white-dark) !important;
+      border-color: var(--ide-btn-default-hover-border, $border-color) !important;
+      background-color: var(--ide-btn-default-background, $border-color) !important;
     }
   }
 

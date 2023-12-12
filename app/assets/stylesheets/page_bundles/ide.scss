@@ -74,15 +74,15 @@ $ide-commit-header-height: 48px;
   display: flex;
   flex-direction: column;
   flex: 1;
-  border-left: 1px solid var(--ide-border-color, $white-dark);
-  border-right: 1px solid var(--ide-border-color, $white-dark);
+  border-left: 1px solid var(--ide-border-color, $border-color);
+  border-right: 1px solid var(--ide-border-color, $border-color);
   overflow: hidden;
 }
 
 .multi-file-tabs {
   display: flex;
   background-color: var(--ide-background, $gray-light);
-  box-shadow: inset 0 -1px var(--ide-border-color, $white-dark);
+  box-shadow: inset 0 -1px var(--ide-border-color, $border-color);
 
   > ul {
     display: flex;
@@ -94,8 +94,8 @@ $ide-commit-header-height: 48px;
     align-items: center;
     padding: $grid-size $gl-padding;
     background-color: var(--ide-background-hover, $gray-normal);
-    border-right: 1px solid var(--ide-border-color, $white-dark);
-    border-bottom: 1px solid var(--ide-border-color, $white-dark);
+    border-right: 1px solid var(--ide-border-color, $border-color);
+    border-bottom: 1px solid var(--ide-border-color, $border-color);
 
     &.active,
     .gl-tab-nav-item-active {
@@ -136,12 +136,12 @@ $ide-commit-header-height: 48px;
         font-weight: normal !important;
 
         background-color: var(--ide-background-hover, $gray-normal);
-        border-right: 1px solid var(--ide-border-color, $white-dark);
-        border-bottom: 1px solid var(--ide-border-color, $white-dark);
+        border-right: 1px solid var(--ide-border-color, $border-color);
+        border-bottom: 1px solid var(--ide-border-color, $border-color);
 
         &.gl-tab-nav-item-active {
           background-color: var(--ide-highlight-background, $white);
-          border-color: var(--ide-border-color, $white-dark);
+          border-color: var(--ide-border-color, $border-color);
           border-bottom-color: transparent;
         }
 
@@ -245,7 +245,7 @@ $ide-commit-header-height: 48px;
 }
 
 .ide-mode-tabs {
-  border-bottom: 1px solid var(--ide-border-color, $white-dark);
+  border-bottom: 1px solid var(--ide-border-color, $border-color);
 
   li a {
     padding: $gl-padding-8 $gl-padding;
@@ -260,7 +260,7 @@ $ide-commit-header-height: 48px;
 
 .ide-status-bar {
   color: var(--ide-text-color, $gl-text-color);
-  border-top: 1px solid var(--ide-border-color, $white-dark);
+  border-top: 1px solid var(--ide-border-color, $border-color);
   padding: 2px $gl-padding-8 0;
   background-color: var(--ide-footer-background, $white);
   display: flex;
@@ -358,8 +358,8 @@ $ide-commit-header-height: 48px;
     flex: 1;
     flex-direction: column;
     background-color: var(--ide-highlight-background, $white);
-    border-left: 1px solid var(--ide-border-color, $white-dark);
-    border-top: 1px solid var(--ide-border-color, $white-dark);
+    border-left: 1px solid var(--ide-border-color, $border-color);
+    border-top: 1px solid var(--ide-border-color, $border-color);
     border-top-left-radius: $border-radius-small;
     min-height: 0; // firefox fix
   }
@@ -384,7 +384,7 @@ $ide-commit-header-height: 48px;
 
 .multi-file-commit-panel-header {
   height: $ide-commit-header-height;
-  border-bottom: 1px solid var(--ide-border-color-alt, $white-dark);
+  border-bottom: 1px solid var(--ide-border-color-alt, $border-color);
   padding: 12px 0;
 }
 
@@ -465,7 +465,7 @@ $ide-commit-header-height: 48px;
 .multi-file-commit-form {
   position: relative;
   background-color: var(--ide-highlight-background, $white);
-  border-left: 1px solid var(--ide-border-color, $white-dark);
+  border-left: 1px solid var(--ide-border-color, $border-color);
   transition: all 0.3s ease;
 
   > form,
@@ -473,7 +473,7 @@ $ide-commit-header-height: 48px;
     padding: $gl-padding 0;
     margin-left: $gl-padding;
     margin-right: $gl-padding;
-    border-top: 1px solid var(--ide-border-color-alt, $white-dark);
+    border-top: 1px solid var(--ide-border-color-alt, $border-color);
   }
 
   .btn {
@@ -544,7 +544,7 @@ $ide-commit-header-height: 48px;
   margin-right: $gl-padding;
 
   &.is-first {
-    border-bottom: 1px solid var(--ide-border-color-alt, $white-dark);
+    border-bottom: 1px solid var(--ide-border-color-alt, $border-color);
   }
 }
 
@@ -603,8 +603,8 @@ $ide-commit-header-height: 48px;
     width: calc(100% + 1px);
     padding-right: $gl-padding + 1px;
     background-color: var(--ide-highlight-background, $white);
-    border-top-color: var(--ide-border-color, $white-dark);
-    border-bottom-color: var(--ide-border-color, $white-dark);
+    border-top-color: var(--ide-border-color, $border-color);
+    border-bottom-color: var(--ide-border-color, $border-color);
 
     &::after {
       content: '';
@@ -714,7 +714,7 @@ $ide-commit-header-height: 48px;
   padding: 12px 0;
   margin-left: $ide-tree-padding;
   margin-right: $ide-tree-padding;
-  border-bottom: 1px solid var(--ide-border-color-alt, $white-dark);
+  border-bottom: 1px solid var(--ide-border-color-alt, $border-color);
 
   svg {
     color: var(--ide-text-color-secondary, $gray-500);
@@ -906,7 +906,7 @@ $ide-commit-header-height: 48px;
   .multi-file-commit-panel-inner {
     padding: $grid-size 0;
     background-color: var(--ide-highlight-background, $white);
-    border-right: 1px solid var(--ide-border-color, $white-dark);
+    border-right: 1px solid var(--ide-border-color, $border-color);
   }
 
   .ide-right-sidebar-jobs-detail {
@@ -1092,7 +1092,7 @@ $ide-commit-header-height: 48px;
 .ide-file-templates {
   padding: $grid-size $gl-padding;
   background-color: var(--ide-background, $gray-light);
-  border-bottom: 1px solid var(--ide-border-color, $white-dark);
+  border-bottom: 1px solid var(--ide-border-color, $border-color);
 
   .dropdown {
     min-width: 180px;
@@ -1107,7 +1107,7 @@ $ide-commit-header-height: 48px;
   height: 65px;
   padding: 8px 16px;
   background-color: var(--ide-background, $gray-10);
-  box-shadow: inset 0 -1px var(--ide-border-color, $white-dark);
+  box-shadow: inset 0 -1px var(--ide-border-color, $border-color);
 }
 
 .ide-commit-list-changed-icon {
