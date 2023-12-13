@@ -69,6 +69,10 @@ If you already have a working GDK, you should
 
 ### Using Gitpod
 
+If you want to contribute without the overhead of setting up a local development environment,
+you can use [Gitpod](../../integration/gitpod.md).
+Gitpod runs a virtual instance of the GDK.
+
 Set aside about 15 minutes to launch the GDK in Gitpod.
 
 1. Launch the GDK in [Gitpod](https://gitpod.io/#https://gitlab.com/gitlab-community/gitlab/-/tree/master/).
@@ -185,12 +189,6 @@ To confirm it was successful:
 If you get errors, run `gdk doctor` to troubleshoot. For more advanced troubleshooting, see
 [the troubleshooting docs](https://gitlab.com/gitlab-org/gitlab-development-kit/-/tree/main/doc/troubleshooting).
 
-### Gitpod
-
-If you want to contribute without the overhead of setting up a local development environment,
-you can use [Gitpod](../../integration/gitpod.md) instead.
-Gitpod runs a virtual instance of the GDK.
-
 ## Step 2: Change the code
 
 [View an interactive demo of this step](https://gitlab.navattic.com/uu5a0dc5).
@@ -205,6 +203,9 @@ I want to change this text:
 
 Other settings on the page start with the word `Customize` and skip the `This setting allows you to` part.
 I'll update this phrase to match the others.
+
+NOTE:
+As this text has already been [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116472) when developing this tutorial, you can instead search for `Customize the appearance of the syntax` to find the files that were changed.
 
 1. Search the `gitlab-development-kit/gitlab` directory for the string `This setting allows you to customize`.
 

@@ -289,3 +289,9 @@ export const mockStatefulSetsTableItems = [
     kind: 'StatefulSet',
   },
 ];
+
+export const k8sReplicaSetsMock = [readyStatefulSet, readyStatefulSet, failedStatefulSet];
+
+export const mockReplicaSetsTableItems = mockStatefulSetsTableItems.map((item) => {
+  return { ...item, kind: 'ReplicaSet' };
+});

@@ -2,6 +2,7 @@
 
 module BitbucketServer
   class Paginator
+    # Should be kept in-sync with `BITBUCKET_SERVER_PAGE_LENGTH` in app/assets/javascripts/import_entities/constants.js
     PAGE_LENGTH = 25
 
     attr_reader :page_offset

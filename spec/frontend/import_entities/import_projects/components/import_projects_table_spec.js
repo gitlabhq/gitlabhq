@@ -36,6 +36,7 @@ describe('ImportProjectsTable', () => {
       .filter((w) => w.props().variant === 'confirm')
       .at(0);
   const findImportAllModal = () => wrapper.findComponent({ ref: 'importAllModal' });
+  const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
 
   const importAllFn = jest.fn();
   const importAllModalShowFn = jest.fn();
@@ -203,41 +204,14 @@ describe('ImportProjectsTable', () => {
   describe('when paginatable is set to true', () => {
     const initState = {
       namespaces: [{ fullPath: 'path' }],
-      pageInfo: { page: 1, hasNextPage: true },
+      pageInfo: { page: 1, hasNextPage: false },
       repositories: [
         { importSource: { id: 1 }, importedProject: null, importStatus: STATUSES.NONE },
       ],
     };
 
-    describe('with hasNextPage true', () => {
-      beforeEach(() => {
-        createComponent({
-          state: initState,
-          paginatable: true,
-        });
-      });
-
-      it('does not call fetchRepos on mount', () => {
-        expect(fetchReposFn).not.toHaveBeenCalled();
-      });
-
-      it('renders intersection observer component', () => {
-        expect(wrapper.findComponent(GlIntersectionObserver).exists()).toBe(true);
-      });
-
-      it('calls fetchRepos when intersection observer appears', async () => {
-        wrapper.findComponent(GlIntersectionObserver).vm.$emit('appear');
-
-        await nextTick();
-
-        expect(fetchReposFn).toHaveBeenCalled();
-      });
-    });
-
     describe('with hasNextPage false', () => {
       beforeEach(() => {
-        initState.pageInfo.hasNextPage = false;
-
         createComponent({
           state: initState,
           paginatable: true,
@@ -245,7 +219,30 @@ describe('ImportProjectsTable', () => {
       });
 
       it('does not render intersection observer component', () => {
-        expect(wrapper.findComponent(GlIntersectionObserver).exists()).toBe(false);
+        expect(findIntersectionObserver().exists()).toBe(false);
+      });
+    });
+
+    describe('with hasNextPage true', () => {
+      beforeEach(() => {
+        initState.pageInfo.hasNextPage = true;
+
+        createComponent({
+          state: initState,
+          paginatable: true,
+        });
+      });
+
+      it('renders intersection observer component', () => {
+        expect(findIntersectionObserver().exists()).toBe(true);
+      });
+
+      it('calls fetchRepos again when intersection observer appears', async () => {
+        findIntersectionObserver().vm.$emit('appear');
+
+        await nextTick();
+
+        expect(fetchReposFn).toHaveBeenCalledTimes(2);
       });
     });
   });

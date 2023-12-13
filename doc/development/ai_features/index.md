@@ -75,7 +75,7 @@ RAILS_ENV=development bundle exec rake gitlab:duo:setup['<test-group-name>']
 1. You can use Rake task `rake gitlab:duo:enable_feature_flags` to enable all feature flags that are assigned to group AI Framework
 1. Set the required access token. To receive an access token:
    1. For Vertex, follow the [instructions below](#configure-gcp-vertex-access).
-   1. For all other providers, like Anthropic, create an access request where `@m_gill`, `@wayne`, and `@timzallmann` are the tech stack owners.
+   1. For Anthropic, create an access request
 
 ### Set up the embedding database
 

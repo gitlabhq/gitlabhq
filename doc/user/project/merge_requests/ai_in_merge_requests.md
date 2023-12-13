@@ -61,8 +61,7 @@ This feature is an [Experiment](../../../policy/experiment-beta-support.md) on G
 When you've completed your review of a merge request and are ready to [submit your review](reviews/index.md#submit-a-review), generate a GitLab Duo Code review summary:
 
 1. When you are ready to submit your review, select **Finish review**.
-1. Select **AI Actions** (**{tanuki}**).
-1. Select **Summarize my code review**.
+1. Select **Summarize my pending comments**.
 
 The summary is displayed in the comment box. You can edit and refine the summary prior to submitting your review.
 

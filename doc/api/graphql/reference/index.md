@@ -31553,6 +31553,7 @@ Possible identifier types for a measurement.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="valuestreamdashboardmetriccontributors"></a>`CONTRIBUTORS` | Contributor count. EXPERIMENTAL: Only available on the SaaS version of GitLab when the ClickHouse database backend is enabled. |
 | <a id="valuestreamdashboardmetricgroups"></a>`GROUPS` | Group count. |
 | <a id="valuestreamdashboardmetricissues"></a>`ISSUES` | Issue count. |
 | <a id="valuestreamdashboardmetricmerge_requests"></a>`MERGE_REQUESTS` | Merge request count. |

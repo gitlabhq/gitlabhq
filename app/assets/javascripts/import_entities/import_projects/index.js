@@ -21,7 +21,6 @@ export function initStoreFromElement(element) {
     importPath,
     cancelPath,
     defaultTargetNamespace,
-    paginatable,
   } = element.dataset;
 
   return createStore({
@@ -37,7 +36,6 @@ export function initStoreFromElement(element) {
       importPath,
       cancelPath,
     },
-    hasPagination: parseBoolean(paginatable),
   });
 }
 

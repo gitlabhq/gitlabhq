@@ -27919,6 +27919,12 @@ msgstr ""
 msgid "KubernetesDashboard|Ready"
 msgstr ""
 
+msgid "KubernetesDashboard|ReplicaSet"
+msgstr ""
+
+msgid "KubernetesDashboard|ReplicaSets"
+msgstr ""
+
 msgid "KubernetesDashboard|Running"
 msgstr ""
 

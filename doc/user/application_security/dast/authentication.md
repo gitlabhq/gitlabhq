@@ -52,7 +52,7 @@ To run a DAST authenticated scan:
 #### Form authentication
 
 - You are using either the [DAST proxy-based analyzer](proxy-based.md) or the [DAST browser-based analyzer](browser_based.md).
-- You know the URL of the login form of your application. Alternatively, you know how to go to the login form from the authentication URL (see [clicking to go to the login form](#clicking-to-go-to-the-login-form)).
+- You know the URL of the login form of your application. Alternatively, you know how to go to the login form from the authentication URL (see [clicking to go to the login form](#click-to-go-to-the-login-form)).
 - You know the [selectors](#finding-an-elements-selector) of the username and password HTML fields that DAST uses to input the respective values.
 - You know the element's [selector](#finding-an-elements-selector) that submits the login form when selected.
 
@@ -80,6 +80,7 @@ To run a DAST authenticated scan:
 | `DAST_USERNAME` <sup>1</sup>                   | string                                    | The username to authenticate to in the website. Example: `admin`                                                                                                                                                                                                                                |
 | `DAST_USERNAME_FIELD` <sup>1</sup>             | [selector](#finding-an-elements-selector) | A selector describing the element used to enter the username on the login form. Example: `name:username`                                                                                                                                                                                    |
 | `DAST_AUTH_DISABLE_CLEAR_FIELDS`               | boolean                                   | Disables clearing of username and password fields before attempting manual login. Set to `false` by default.                                                                                                                                                                                    |
+| `DAST_AFTER_LOGIN_ACTIONS`                     | string                                    | Comma separated list of actions to be run after login but before login verification. Currently supports "click" actions. Example: `click(on=id:change_to_bar_graph),click(on=css:input[name=username])`                                                                                                             |                                                                                                                                                                          |
 
 1. Available to an on-demand proxy-based DAST scan.
 1. Not available to proxy-based scans.
@@ -191,7 +192,7 @@ authentication using the [single-step](#configuration-for-a-single-step-login-fo
 DAST supports authentication processes where a user is redirected to an external Identity Provider's site to log in.
 Check the [known limitations](#known-limitations) of DAST authentication to determine if your SSO authentication process is supported.
 
-### Clicking to go to the login form
+### Click to go to the login form
 
 Define `DAST_BROWSER_PATH_TO_LOGIN_FORM` to provide a path of elements to click on from the `DAST_AUTH_URL` so that DAST can access the
 login form. This method is suitable for applications that show the login form in a pop-up (modal) window or when the login form does not
@@ -208,6 +209,25 @@ dast:
     DAST_WEBSITE: "https://example.com"
     DAST_AUTH_URL: "https://example.com/login"
     DAST_BROWSER_PATH_TO_LOGIN_FORM: "css:.navigation-menu,css:.login-menu-item"
+```
+
+### Perform additional actions after submitting the username and password
+
+Define `DAST_AFTER_LOGIN_ACTIONS` to provide a sequence of actions required to complete the login process after the username and password forms have been submitted. For example, this can be used to dismiss a modal dialog (such as a "keep me signed in?" prompt) that appears after the submit button is pressed.
+
+DAST verifies authentication is successful and records authentication tokens once after-login actions have been executed.
+
+For example:
+
+```yaml
+include:
+  - template: DAST.gitlab-ci.yml
+
+dast:
+  variables:
+    DAST_WEBSITE: "https://example.com"
+    DAST_AUTH_URL: "https://example.com/login"
+    DAST_AFTER_LOGIN_ACTIONS: "click(on=id:modal-yes)"
 ```
 
 ### Excluding logout URLs

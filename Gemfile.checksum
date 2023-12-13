@@ -643,7 +643,7 @@
 {"name":"term-ansicolor","version":"1.7.1","platform":"ruby","checksum":"92339ffec77c4bddc786a29385c91601dd52fc68feda23609bba0491229b05f7"},
 {"name":"terminal-table","version":"3.0.2","platform":"ruby","checksum":"f951b6af5f3e00203fb290a669e0a85c5dd5b051b3b023392ccfd67ba5abae91"},
 {"name":"terser","version":"1.0.2","platform":"ruby","checksum":"80c2e0bc7e2db4e12e8529658f9e0820e13d685ae67d745bf981f269743bb28e"},
-{"name":"test-prof","version":"1.3.0","platform":"ruby","checksum":"6092032f15810063a7b83595ce102398fbf3d684b9d3c71fb7b9c1d6464b2c17"},
+{"name":"test-prof","version":"1.3.1","platform":"ruby","checksum":"aa35cd06eae4e6545d7b1310181875e61ad0e9e08c31223fb1aafd50da187523"},
 {"name":"test_file_finder","version":"0.2.1","platform":"ruby","checksum":"a5e9b369d80c76aefbb609acf5e11d89a048f35e565de3cc261c20112f0fcdb3"},
 {"name":"text","version":"1.3.1","platform":"ruby","checksum":"2fbbbc82c1ce79c4195b13018a87cbb00d762bda39241bb3cdc32792759dd3f4"},
 {"name":"thor","version":"1.3.0","platform":"ruby","checksum":"1adc7f9e5b3655a68c71393fee8bd0ad088d14ee8e83a0b73726f23cbb3ca7c3"},

@@ -41,18 +41,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:moved_mr_sidebar, project)
     push_frontend_feature_flag(:sast_reports_in_inline_diff, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
-    push_force_frontend_feature_flag(:summarize_my_code_review, summarize_my_code_review_enabled?)
     push_frontend_feature_flag(:ci_job_failures_in_mr, project)
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_frontend_feature_flag(:mr_request_changes, current_user)
     push_frontend_feature_flag(:merge_blocked_component, current_user)
-  end
-
-  before_action only: [:edit] do
-    if can?(current_user, :fill_in_merge_request_template, project)
-      push_frontend_feature_flag(:fill_in_mr_template, project)
-    end
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :discussions]
@@ -637,16 +630,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def convert_date_to_epoch(date)
     Date.strptime(date, "%Y-%m-%d")&.to_time&.to_i if date
   rescue Date::Error, TypeError
-  end
-
-  def summarize_my_code_review_enabled?
-    namespace = project&.group&.root_ancestor
-    return false if namespace.nil?
-
-    Feature.enabled?(:summarize_my_code_review, current_user) &&
-      namespace.group_namespace? &&
-      namespace.licensed_feature_available?(:summarize_my_mr_code_review) &&
-      Gitlab::Llm::StageCheck.available?(namespace, :summarize_my_mr_code_review)
   end
 end
 

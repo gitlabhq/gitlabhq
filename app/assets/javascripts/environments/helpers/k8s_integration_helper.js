@@ -80,10 +80,10 @@ export function getStatefulSetStatuses(items) {
 
 export function getReplicaSetStatuses(items) {
   const failed = items.filter((item) => {
-    return item.status?.readyReplicas < item.spec?.replicas;
+    return calculateStatefulSetStatus(item) === STATUS_FAILED;
   });
   const ready = items.filter((item) => {
-    return item.status?.readyReplicas === item.spec?.replicas;
+    return calculateStatefulSetStatus(item) === STATUS_READY;
   });
 
   return {

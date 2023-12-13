@@ -3,7 +3,13 @@ import { resolvers } from '~/kubernetes_dashboard/graphql/resolvers';
 import k8sDashboardPodsQuery from '~/kubernetes_dashboard/graphql/queries/k8s_dashboard_pods.query.graphql';
 import k8sDashboardDeploymentsQuery from '~/kubernetes_dashboard/graphql/queries/k8s_dashboard_deployments.query.graphql';
 import k8sDashboardStatefulSetsQuery from '~/kubernetes_dashboard/graphql/queries/k8s_dashboard_stateful_sets.query.graphql';
-import { k8sPodsMock, k8sDeploymentsMock, k8sStatefulSetsMock } from '../mock_data';
+import k8sDashboardReplicaSetsQuery from '~/kubernetes_dashboard/graphql/queries/k8s_dashboard_replica_sets.query.graphql';
+import {
+  k8sPodsMock,
+  k8sDeploymentsMock,
+  k8sStatefulSetsMock,
+  k8sReplicaSetsMock,
+} from '../mock_data';
 
 describe('~/frontend/environments/graphql/resolvers', () => {
   let mockResolvers;
@@ -273,6 +279,94 @@ describe('~/frontend/environments/graphql/resolvers', () => {
 
       await expect(
         mockResolvers.Query.k8sStatefulSets(null, { configuration }, { client }),
+      ).rejects.toThrow('API error');
+    });
+  });
+
+  describe('k8sReplicaSets', () => {
+    const client = { writeQuery: jest.fn() };
+
+    const mockWatcher = WatchApi.prototype;
+    const mockReplicaSetsListWatcherFn = jest.fn().mockImplementation(() => {
+      return Promise.resolve(mockWatcher);
+    });
+
+    const mockOnDataFn = jest.fn().mockImplementation((eventName, callback) => {
+      if (eventName === 'data') {
+        callback([]);
+      }
+    });
+
+    const mockReplicaSetsListFn = jest.fn().mockImplementation(() => {
+      return Promise.resolve({
+        items: k8sReplicaSetsMock,
+      });
+    });
+
+    const mockAllReplicaSetsListFn = jest.fn().mockImplementation(mockReplicaSetsListFn);
+
+    describe('when the ReplicaSets data is present', () => {
+      beforeEach(() => {
+        jest
+          .spyOn(AppsV1Api.prototype, 'listAppsV1ReplicaSetForAllNamespaces')
+          .mockImplementation(mockAllReplicaSetsListFn);
+        jest
+          .spyOn(mockWatcher, 'subscribeToStream')
+          .mockImplementation(mockReplicaSetsListWatcherFn);
+        jest.spyOn(mockWatcher, 'on').mockImplementation(mockOnDataFn);
+      });
+
+      it('should request all ReplicaSets from the cluster_client library and watch the events', async () => {
+        const ReplicaSets = await mockResolvers.Query.k8sReplicaSets(
+          null,
+          {
+            configuration,
+          },
+          { client },
+        );
+
+        expect(mockAllReplicaSetsListFn).toHaveBeenCalled();
+        expect(mockReplicaSetsListWatcherFn).toHaveBeenCalled();
+
+        expect(ReplicaSets).toEqual(k8sReplicaSetsMock);
+      });
+
+      it('should update cache with the new data when received from the library', async () => {
+        await mockResolvers.Query.k8sReplicaSets(
+          null,
+          { configuration, namespace: '' },
+          { client },
+        );
+
+        expect(client.writeQuery).toHaveBeenCalledWith({
+          query: k8sDashboardReplicaSetsQuery,
+          variables: { configuration, namespace: '' },
+          data: { k8sReplicaSets: [] },
+        });
+      });
+    });
+
+    it('should not watch ReplicaSets from the cluster_client library when the ReplicaSets data is not present', async () => {
+      jest.spyOn(AppsV1Api.prototype, 'listAppsV1ReplicaSetForAllNamespaces').mockImplementation(
+        jest.fn().mockImplementation(() => {
+          return Promise.resolve({
+            items: [],
+          });
+        }),
+      );
+
+      await mockResolvers.Query.k8sReplicaSets(null, { configuration }, { client });
+
+      expect(mockReplicaSetsListWatcherFn).not.toHaveBeenCalled();
+    });
+
+    it('should throw an error if the API call fails', async () => {
+      jest
+        .spyOn(AppsV1Api.prototype, 'listAppsV1ReplicaSetForAllNamespaces')
+        .mockRejectedValue(new Error('API error'));
+
+      await expect(
+        mockResolvers.Query.k8sReplicaSets(null, { configuration }, { client }),
       ).rejects.toThrow('API error');
     });
   });

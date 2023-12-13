@@ -17,6 +17,7 @@ import {
   SET_PAGE,
   SET_FILTER,
   SET_PAGE_CURSORS,
+  SET_HAS_NEXT_PAGE,
 } from '~/import_entities/import_projects/store/mutation_types';
 import state from '~/import_entities/import_projects/store/state';
 import axios from '~/lib/utils/axios_utils';
@@ -141,6 +142,44 @@ describe('import_projects store actions', () => {
             ],
             [],
           );
+        });
+      });
+
+      describe('when provider is BITBUCKET_SERVER', () => {
+        beforeEach(() => {
+          localState.provider = PROVIDERS.BITBUCKET_SERVER;
+        });
+
+        describe.each`
+          reposLength | expectedHasNextPage
+          ${0}        | ${false}
+          ${12}       | ${false}
+          ${20}       | ${false}
+          ${25}       | ${true}
+        `('when reposLength is $reposLength', ({ reposLength, expectedHasNextPage }) => {
+          beforeEach(() => {
+            payload.provider_repos = Array(reposLength).fill({});
+
+            mock.onGet(MOCK_ENDPOINT).reply(HTTP_STATUS_OK, payload);
+          });
+
+          it('commits SET_HAS_NEXT_PAGE', () => {
+            return testAction(
+              fetchRepos,
+              null,
+              localState,
+              [
+                { type: REQUEST_REPOS },
+                { type: SET_PAGE, payload: 1 },
+                { type: SET_HAS_NEXT_PAGE, payload: expectedHasNextPage },
+                {
+                  type: RECEIVE_REPOS_SUCCESS,
+                  payload: convertObjectPropsToCamelCase(payload, { deep: true }),
+                },
+              ],
+              [],
+            );
+          });
         });
       });
     });
