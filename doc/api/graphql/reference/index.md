@@ -17536,7 +17536,7 @@ Relationship between an epic and an issue.
 | <a id="epicissuetimelogs"></a>`timelogs` | [`TimelogConnection!`](#timelogconnection) | Timelogs on the issue. (see [Connections](#connections)) |
 | <a id="epicissuetitle"></a>`title` | [`String!`](#string) | Title of the issue. |
 | <a id="epicissuetitlehtml"></a>`titleHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `title`. |
-| <a id="epicissuetotaltimespent"></a>`totalTimeSpent` | [`Int!`](#int) | Total time reported as spent on the issue. |
+| <a id="epicissuetotaltimespent"></a>`totalTimeSpent` | [`Int!`](#int) | Total time (in seconds) reported as spent on the issue. |
 | <a id="epicissuetype"></a>`type` | [`IssueType`](#issuetype) | Type of the issue. |
 | <a id="epicissueupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the issue was last updated. |
 | <a id="epicissueupdatedby"></a>`updatedBy` | [`UserCore`](#usercore) | User that last updated the issue. |
@@ -19899,7 +19899,7 @@ Describes an issuable resource link for incident issues.
 | <a id="issuetimelogs"></a>`timelogs` | [`TimelogConnection!`](#timelogconnection) | Timelogs on the issue. (see [Connections](#connections)) |
 | <a id="issuetitle"></a>`title` | [`String!`](#string) | Title of the issue. |
 | <a id="issuetitlehtml"></a>`titleHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `title`. |
-| <a id="issuetotaltimespent"></a>`totalTimeSpent` | [`Int!`](#int) | Total time reported as spent on the issue. |
+| <a id="issuetotaltimespent"></a>`totalTimeSpent` | [`Int!`](#int) | Total time (in seconds) reported as spent on the issue. |
 | <a id="issuetype"></a>`type` | [`IssueType`](#issuetype) | Type of the issue. |
 | <a id="issueupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the issue was last updated. |
 | <a id="issueupdatedby"></a>`updatedBy` | [`UserCore`](#usercore) | User that last updated the issue. |
@@ -20443,7 +20443,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequesttimelogs"></a>`timelogs` | [`TimelogConnection!`](#timelogconnection) | Timelogs on the merge request. (see [Connections](#connections)) |
 | <a id="mergerequesttitle"></a>`title` | [`String!`](#string) | Title of the merge request. |
 | <a id="mergerequesttitlehtml"></a>`titleHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `title`. |
-| <a id="mergerequesttotaltimespent"></a>`totalTimeSpent` | [`Int!`](#int) | Total time reported as spent on the merge request. |
+| <a id="mergerequesttotaltimespent"></a>`totalTimeSpent` | [`Int!`](#int) | Total time (in seconds) reported as spent on the merge request. |
 | <a id="mergerequestupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the merge request was last updated. |
 | <a id="mergerequestupvotes"></a>`upvotes` | [`Int!`](#int) | Number of upvotes for the merge request. |
 | <a id="mergerequestuserdiscussionscount"></a>`userDiscussionsCount` | [`Int`](#int) | Number of user discussions in the merge request. |

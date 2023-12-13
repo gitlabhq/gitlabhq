@@ -219,11 +219,16 @@ module API
                                    documentation: { default: 'env_var' }
         end
         post ':id/pipeline_schedules/:pipeline_schedule_id/variables' do
+          authorize! :set_pipeline_variables, user_project
           authorize! :update_pipeline_schedule, pipeline_schedule
 
-          variable_params = declared_params(include_missing: false)
-          variable = pipeline_schedule.variables.create(variable_params)
-          if variable.persisted?
+          response = ::Ci::PipelineSchedules::VariablesCreateService
+            .new(pipeline_schedule, current_user, declared_params(include_missing: false))
+            .execute
+
+          variable = response.payload
+
+          if response.success?
             present variable, with: Entities::Ci::Variable
           else
             render_validation_error!(variable)
@@ -247,9 +252,14 @@ module API
                                    documentation: { default: 'env_var' }
         end
         put ':id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
+          authorize! :set_pipeline_variables, user_project
           authorize! :update_pipeline_schedule, pipeline_schedule
 
-          if pipeline_schedule_variable.update(declared_params(include_missing: false))
+          response = ::Ci::PipelineSchedules::VariablesUpdateService
+            .new(pipeline_schedule_variable, current_user, declared_params(include_missing: false))
+            .execute
+
+          if response.success?
             present pipeline_schedule_variable, with: Entities::Ci::Variable
           else
             render_validation_error!(pipeline_schedule_variable)
@@ -269,6 +279,7 @@ module API
           requires :key, type: String, desc: 'The key of the variable', documentation: { example: 'NEW_VARIABLE' }
         end
         delete ':id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
+          authorize! :set_pipeline_variables, user_project
           authorize! :admin_pipeline_schedule, pipeline_schedule
 
           status :accepted

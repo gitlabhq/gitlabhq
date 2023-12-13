@@ -628,17 +628,89 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
     context 'authenticated user with valid permissions' do
       context 'with required parameters' do
-        it 'creates pipeline_schedule_variable' do
-          expect do
-            post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables", developer),
-              params: params.merge(variable_type: 'file')
-          end.to change { pipeline_schedule.variables.count }.by(1)
+        let(:pipeline_schedule) do
+          create(:ci_pipeline_schedule, project: project, owner: api_user)
+        end
 
-          expect(response).to have_gitlab_http_status(:created)
-          expect(response).to match_response_schema('pipeline_schedule_variable')
-          expect(json_response['key']).to eq(params[:key])
-          expect(json_response['value']).to eq(params[:value])
-          expect(json_response['variable_type']).to eq('file')
+        let_it_be(:maintainer) { create(:user) }
+        let_it_be(:project_owner) { create(:user) }
+
+        before do
+          project.add_maintainer(maintainer)
+          project.add_owner(project_owner)
+        end
+
+        shared_examples 'creates pipeline_schedule_variables' do
+          it do
+            expect do
+              post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables", api_user),
+                params: params.merge(variable_type: 'file')
+            end.to change { pipeline_schedule.variables.count }.by(1)
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(response).to match_response_schema('pipeline_schedule_variable')
+            expect(json_response['key']).to eq(params[:key])
+            expect(json_response['value']).to eq(params[:value])
+            expect(json_response['variable_type']).to eq('file')
+          end
+        end
+
+        shared_examples 'fails to create pipeline_schedule_variables' do
+          it do
+            post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables", api_user),
+              params: params.merge(variable_type: 'file')
+
+            expect(pipeline_schedule.variables.count).to eq(0)
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+
+        context 'when project restricts use of user defined variables' do
+          before do
+            project.update!(restrict_user_defined_variables: true)
+          end
+
+          context 'as developer' do
+            let(:api_user) { developer }
+
+            it_behaves_like 'fails to create pipeline_schedule_variables'
+          end
+
+          context 'as maintainer' do
+            let(:api_user) { maintainer }
+
+            it_behaves_like 'creates pipeline_schedule_variables'
+          end
+
+          context 'as owner' do
+            let(:api_user) { project_owner }
+
+            it_behaves_like 'creates pipeline_schedule_variables'
+          end
+        end
+
+        context 'when project does not restrict use of user defined variables' do
+          before do
+            project.update!(restrict_user_defined_variables: false)
+          end
+
+          context 'as developer' do
+            let(:api_user) { developer }
+
+            it_behaves_like 'creates pipeline_schedule_variables'
+          end
+
+          context 'as maintainer' do
+            let(:api_user) { maintainer }
+
+            it_behaves_like 'creates pipeline_schedule_variables'
+          end
+
+          context 'as owner' do
+            let(:api_user) { project_owner }
+
+            it_behaves_like 'creates pipeline_schedule_variables'
+          end
         end
       end
 
@@ -688,14 +760,85 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
     end
 
     context 'authenticated user with valid permissions' do
-      it 'updates pipeline_schedule_variable' do
-        put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}", developer),
-          params: { value: 'updated_value', variable_type: 'file' }
+      let(:pipeline_schedule) do
+        create(:ci_pipeline_schedule, project: project, owner: api_user)
+      end
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to match_response_schema('pipeline_schedule_variable')
-        expect(json_response['value']).to eq('updated_value')
-        expect(json_response['variable_type']).to eq('file')
+      let_it_be(:maintainer) { create(:user) }
+      let_it_be(:project_owner) { create(:user) }
+
+      before do
+        project.add_maintainer(maintainer)
+        project.add_owner(project_owner)
+      end
+
+      shared_examples 'updates pipeline_schedule_variable' do
+        it do
+          put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}", api_user),
+            params: { value: 'updated_value', variable_type: 'file' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('pipeline_schedule_variable')
+          expect(json_response['value']).to eq('updated_value')
+          expect(json_response['variable_type']).to eq('file')
+        end
+      end
+
+      shared_examples 'fails to update pipeline_schedule_variable' do
+        it do
+          put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}", api_user),
+            params: { value: 'updated_value', variable_type: 'file' }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'when project restricts use of user defined variables' do
+        before do
+          project.update!(restrict_user_defined_variables: true)
+        end
+
+        context 'as developer' do
+          let(:api_user) { developer }
+
+          it_behaves_like 'fails to update pipeline_schedule_variable'
+        end
+
+        context 'as maintainer' do
+          let(:api_user) { maintainer }
+
+          it_behaves_like 'updates pipeline_schedule_variable'
+        end
+
+        context 'as owner' do
+          let(:api_user) { project_owner }
+
+          it_behaves_like 'updates pipeline_schedule_variable'
+        end
+      end
+
+      context 'when project does not restrict use of user defined variables' do
+        before do
+          project.update!(restrict_user_defined_variables: false)
+        end
+
+        context 'as developer' do
+          let(:api_user) { developer }
+
+          it_behaves_like 'updates pipeline_schedule_variable'
+        end
+
+        context 'as maintainer' do
+          let(:api_user) { maintainer }
+
+          it_behaves_like 'updates pipeline_schedule_variable'
+        end
+
+        context 'as owner' do
+          let(:api_user) { project_owner }
+
+          it_behaves_like 'updates pipeline_schedule_variable'
+        end
       end
     end
 
@@ -732,19 +875,93 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
     end
 
     context 'authenticated user with valid permissions' do
-      it 'deletes pipeline_schedule_variable' do
-        expect do
-          delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}", maintainer)
-        end.to change { Ci::PipelineScheduleVariable.count }.by(-1)
-
-        expect(response).to have_gitlab_http_status(:accepted)
-        expect(response).to match_response_schema('pipeline_schedule_variable')
+      let(:pipeline_schedule) do
+        create(:ci_pipeline_schedule, project: project, owner: api_user)
       end
 
-      it 'responds with 404 Not Found if requesting non-existing pipeline_schedule_variable' do
-        delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/____", maintainer)
+      let_it_be(:project_owner) { create(:user) }
 
-        expect(response).to have_gitlab_http_status(:not_found)
+      before do
+        project.add_owner(project_owner)
+      end
+
+      shared_examples 'deletes pipeline_schedule_variable' do
+        it do
+          expect do
+            delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}", api_user)
+          end.to change { Ci::PipelineScheduleVariable.count }.by(-1)
+
+          expect(response).to have_gitlab_http_status(:accepted)
+          expect(response).to match_response_schema('pipeline_schedule_variable')
+        end
+      end
+
+      shared_examples 'fails to delete pipeline_schedule_variable' do
+        it do
+          expect do
+            delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}", api_user)
+          end.not_to change { Ci::PipelineScheduleVariable.count }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'when project restricts use of user defined variables' do
+        before do
+          project.update!(restrict_user_defined_variables: true)
+        end
+
+        context 'as developer' do
+          let(:api_user) { developer }
+
+          it_behaves_like 'fails to delete pipeline_schedule_variable'
+        end
+
+        context 'as maintainer' do
+          let(:api_user) { maintainer }
+
+          it_behaves_like 'deletes pipeline_schedule_variable'
+        end
+
+        context 'as owner' do
+          let(:api_user) { project_owner }
+
+          it_behaves_like 'deletes pipeline_schedule_variable'
+        end
+      end
+
+      context 'when project does not restrict use of user defined variables' do
+        before do
+          project.update!(restrict_user_defined_variables: false)
+        end
+
+        context 'as developer' do
+          let(:api_user) { developer }
+
+          it_behaves_like 'deletes pipeline_schedule_variable'
+        end
+
+        context 'as maintainer' do
+          let(:api_user) { maintainer }
+
+          it_behaves_like 'deletes pipeline_schedule_variable'
+        end
+
+        context 'as owner' do
+          let(:api_user) { project_owner }
+
+          it_behaves_like 'deletes pipeline_schedule_variable'
+        end
+      end
+
+      context 'as developer' do
+        let(:api_user) { developer }
+
+        it 'responds with 404 Not Found if requesting non-existing pipeline_schedule_variable' do
+          delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/____", maintainer)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 

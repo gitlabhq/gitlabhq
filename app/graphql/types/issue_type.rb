@@ -111,7 +111,7 @@ module Types
     field :time_estimate, GraphQL::Types::Int, null: false,
                                                description: 'Time estimate of the issue.'
     field :total_time_spent, GraphQL::Types::Int, null: false,
-                                                  description: 'Total time reported as spent on the issue.'
+                                                  description: 'Total time (in seconds) reported as spent on the issue.'
 
     field :closed_at, Types::TimeType, null: true,
                                        description: 'Timestamp of when the issue was closed.'

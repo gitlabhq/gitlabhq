@@ -55,6 +55,33 @@ RSpec.describe Oauth::TokensController, feature_category: :system_access do
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(user.reload.failed_attempts).to eq(0)
         end
+
+        context 'when the user has an identity matching a provider that is not password-based' do
+          before do
+            create(:identity, provider: 'google_oauth2', user: user)
+          end
+
+          it 'fails to authenticate and does not call GitLab::Auth' do
+            expect(::Gitlab::Auth).not_to receive(:find_with_user_password)
+
+            authenticate(password)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(user.reload.failed_attempts).to eq(0)
+          end
+        end
+
+        context 'when the user is a password-based omniauth user' do
+          before do
+            create(:identity, provider: 'ldapmain', user: user)
+          end
+
+          it 'forwards the request to Gitlab::Auth' do
+            expect(::Gitlab::Auth).to receive(:find_with_user_password)
+
+            authenticate(password)
+          end
+        end
       end
     end
   end
