@@ -2306,7 +2306,6 @@ RSpec/ContextWording:
     - 'spec/requests/api/graphql/mutations/todos/create_spec.rb'
     - 'spec/requests/api/graphql/mutations/work_items/create_from_task_spec.rb'
     - 'spec/requests/api/graphql/mutations/work_items/create_spec.rb'
-    - 'spec/requests/api/graphql/mutations/work_items/delete_task_spec.rb'
     - 'spec/requests/api/graphql/mutations/work_items/update_spec.rb'
     - 'spec/requests/api/graphql/mutations/work_items/update_task_spec.rb'
     - 'spec/requests/api/graphql/namespace_query_spec.rb'

@@ -3267,37 +3267,46 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   describe 'read_model_registry' do
-    let(:project_with_feature) { project }
-    let(:current_user) { owner }
+    using RSpec::Parameterized::TableSyntax
 
-    before do
-      stub_feature_flags(model_registry: false)
-      stub_feature_flags(model_registry: project_with_feature) if project_with_feature
+    where(:feature_flag_enabled, :current_user, :access_level, :allowed) do
+      false | ref(:owner)      | Featurable::ENABLED  | false
+      true  | ref(:guest)      | Featurable::ENABLED  | true
+      true  | ref(:guest)      | Featurable::PRIVATE  | true
+      true  | ref(:guest)      | Featurable::DISABLED | false
+      true  | ref(:non_member) | Featurable::ENABLED  | true
+      true  | ref(:non_member) | Featurable::PRIVATE  | false
+      true  | ref(:non_member) | Featurable::DISABLED | false
     end
+    with_them do
+      before do
+        stub_feature_flags(model_registry: feature_flag_enabled)
+        project.project_feature.update!(model_registry_access_level: access_level)
+      end
 
-    context 'feature flag is enabled' do
-      specify { is_expected.to be_allowed(:read_model_registry) }
-    end
-
-    context 'feature flag is disabled' do
-      let(:project_with_feature) { nil }
-
-      specify { is_expected.not_to be_allowed(:read_model_registry) }
+      if params[:allowed]
+        it { expect_allowed(:read_model_registry) }
+      else
+        it { expect_disallowed(:read_model_registry) }
+      end
     end
   end
 
   describe 'write_model_registry' do
     using RSpec::Parameterized::TableSyntax
 
-    where(:ff_model_registry_enabled, :current_user, :allowed) do
-      true  | ref(:reporter)   | true
-      true  | ref(:guest)      | false
-      false | ref(:owner)      | false
+    where(:feature_flag_enabled, :current_user, :access_level, :allowed) do
+      false | ref(:owner)      | Featurable::ENABLED  | false
+      true  | ref(:reporter)   | Featurable::ENABLED  | true
+      true  | ref(:reporter)   | Featurable::PRIVATE  | true
+      true  | ref(:reporter)   | Featurable::DISABLED | false
+      true  | ref(:guest)      | Featurable::ENABLED  | false
+      true  | ref(:non_member) | Featurable::ENABLED  | false
     end
     with_them do
       before do
-        stub_feature_flags(model_registry: false)
-        stub_feature_flags(model_registry: project) if ff_model_registry_enabled
+        stub_feature_flags(model_registry: feature_flag_enabled)
+        project.project_feature.update!(model_registry_access_level: access_level)
       end
 
       if params[:allowed]

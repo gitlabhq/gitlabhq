@@ -8,15 +8,19 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
 
     subject(:response) { described_class.new(token.user, token).execute }
 
-    it "rotates user's own token", :freeze_time do
-      expect(response).to be_success
+    shared_examples_for 'rotates token succesfully' do
+      it "rotates user's own token", :freeze_time do
+        expect(response).to be_success
 
-      new_token = response.payload[:personal_access_token]
+        new_token = response.payload[:personal_access_token]
 
-      expect(new_token.token).not_to eq(token.token)
-      expect(new_token.expires_at).to eq(Date.today + 1.week)
-      expect(new_token.user).to eq(token.user)
+        expect(new_token.token).not_to eq(token.token)
+        expect(new_token.expires_at).to eq(Date.today + 1.week)
+        expect(new_token.user).to eq(token.user)
+      end
     end
+
+    it_behaves_like "rotates token succesfully"
 
     it 'revokes the previous token' do
       expect { response }.to change { token.reload.revoked? }.from(false).to(true)
@@ -30,34 +34,6 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
 
       new_token = response.payload[:personal_access_token]
       expect(new_token.previous_personal_access_token).to eql(token)
-    end
-
-    context 'when token user has a membership' do
-      context 'when its not a bot user' do
-        let_it_be(:user_membership) do
-          create(:project_member, :developer, user: token.user, project: create(:project))
-        end
-
-        it 'does not update membership expires at' do
-          expect { response }.not_to change { user_membership.reload.expires_at }
-        end
-      end
-
-      context 'when its a bot user' do
-        let_it_be(:bot_user) { create(:user, :project_bot) }
-        let_it_be(:bot_user_membership) do
-          create(:project_member, :developer, user: bot_user, project: create(:project))
-        end
-
-        let_it_be(:token, reload: true) { create(:personal_access_token, user: bot_user) }
-
-        it 'updates membership expires at' do
-          response
-
-          new_token = response.payload[:personal_access_token]
-          expect(bot_user_membership.reload.expires_at).to eq(new_token.expires_at)
-        end
-      end
     end
 
     context 'when user tries to rotate already revoked token' do

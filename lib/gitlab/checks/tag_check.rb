@@ -12,6 +12,7 @@ module Gitlab
         create_protected_tag: 'You are not allowed to create this tag as it is protected.',
         default_branch_collision: 'You cannot use default branch name to create a tag',
         prohibited_tag_name: 'You cannot create a tag with a prohibited pattern.',
+        prohibited_sha_tag_name: 'You cannot create a tag with a SHA-1 or SHA-256 tag name.',
         prohibited_tag_name_encoding: 'Tag names must be valid when converted to UTF-8 encoding'
       }.freeze
 
@@ -20,6 +21,8 @@ module Gitlab
         default_branch_collision_check: "Checking if you are providing a valid tag name...",
         protected_tag_checks: "Checking if you are creating, updating or deleting a protected tag..."
       }.freeze
+
+      STARTS_WITH_SHA_REGEX = %r{\A#{Gitlab::Git::Commit::RAW_FULL_SHA_PATTERN}}o
 
       def validate!
         return unless tag_name
@@ -52,6 +55,7 @@ module Gitlab
         validate_encoding!
         validate_valid_tag_name!
         validate_tag_name_not_fully_qualified!
+        validate_tag_name_not_sha_like!
       end
 
       def protected_tag_checks
@@ -103,6 +107,12 @@ module Gitlab
         return if user_access.can_create_tag?(tag_name)
 
         raise GitAccess::ForbiddenError, ERROR_MESSAGES[:create_protected_tag]
+      end
+
+      def validate_tag_name_not_sha_like!
+        return unless STARTS_WITH_SHA_REGEX.match?(tag_name)
+
+        raise GitAccess::ForbiddenError, ERROR_MESSAGES[:prohibited_sha_tag_name]
       end
     end
   end

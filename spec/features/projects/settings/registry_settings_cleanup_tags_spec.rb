@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Project > Settings > Packages and registries > Container registry tag expiration policy',
-  feature_category: :groups_and_projects do
+  feature_category: :container_registry do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, namespace: user.namespace) }
 

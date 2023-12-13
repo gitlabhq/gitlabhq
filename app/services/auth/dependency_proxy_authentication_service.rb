@@ -5,10 +5,11 @@ module Auth
     AUDIENCE = 'dependency_proxy'
     HMAC_KEY = 'gitlab-dependency-proxy'
     DEFAULT_EXPIRE_TIME = 1.minute
+    REQUIRED_ABILITIES = %i[read_container_image create_container_image].freeze
 
     def execute(authentication_abilities:)
       return error('dependency proxy not enabled', 404) unless ::Gitlab.config.dependency_proxy.enabled
-      return error('access forbidden', 403) unless valid_user_actor?
+      return error('access forbidden', 403) unless valid_user_actor?(authentication_abilities)
 
       { token: authorized_token.encoded }
     end
@@ -33,8 +34,27 @@ module Auth
 
     private
 
-    def valid_user_actor?
-      current_user || valid_deploy_token?
+    def valid_user_actor?(authentication_abilities)
+      feature_user = deploy_token&.user || current_user
+      if Feature.enabled?(:packages_dependency_proxy_containers_scope_check, feature_user)
+        if deploy_token
+          deploy_token.valid_for_dependency_proxy?
+        elsif current_user&.project_bot?
+          group_access_token&.active? && has_required_abilities?(authentication_abilities)
+        else
+          current_user
+        end
+      else
+        current_user || valid_deploy_token?
+      end
+    end
+
+    def has_required_abilities?(authentication_abilities)
+      (REQUIRED_ABILITIES & authentication_abilities).size == REQUIRED_ABILITIES.size
+    end
+
+    def group_access_token
+      PersonalAccessTokensFinder.new(state: 'active').find_by_token(raw_token)
     end
 
     def valid_deploy_token?
@@ -51,6 +71,10 @@ module Auth
 
     def deploy_token
       params[:deploy_token]
+    end
+
+    def raw_token
+      params[:raw_token]
     end
   end
 end

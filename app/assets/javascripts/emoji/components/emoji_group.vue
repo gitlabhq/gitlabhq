@@ -1,10 +1,10 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { compatFunctionalMixin } from '~/lib/utils/vue3compat/compat_functional_mixin';
 
 export default {
-  components: {
-    GlButton,
-  },
+  // Temporary mixin for migration from Vue.js 2 to @vue/compat
+  mixins: [compatFunctionalMixin],
+
   props: {
     emojis: {
       type: Array,
@@ -14,33 +14,28 @@ export default {
       type: Boolean,
       required: true,
     },
-  },
-  methods: {
-    clickEmoji(emoji) {
-      this.$emit('emoji-click', emoji);
+    clickEmoji: {
+      type: Function,
+      required: true,
     },
   },
 };
 </script>
 
-<template>
+<!-- eslint-disable-next-line vue/no-deprecated-functional-template -->
+<template functional>
   <div class="gl-display-flex gl-flex-wrap gl-mb-2">
-    <template v-if="renderGroup">
-      <gl-button
-        v-for="emoji in emojis"
+    <template v-if="props.renderGroup">
+      <button
+        v-for="emoji in props.emojis"
         :key="emoji"
         type="button"
-        category="tertiary"
-        class="emoji-picker-emoji"
-        :aria-label="emoji"
+        class="gl-border-0 gl-bg-transparent gl-px-0 gl-py-2 gl-text-center emoji-picker-emoji"
         data-testid="emoji-button"
-        button-text-classes="gl-display-none!"
-        @click="clickEmoji(emoji)"
+        @click="props.clickEmoji(emoji)"
       >
-        <template #emoji>
-          <gl-emoji :data-name="emoji" class="gl-mr-0!" />
-        </template>
-      </gl-button>
+        <gl-emoji :data-name="emoji" />
+      </button>
     </template>
   </div>
 </template>

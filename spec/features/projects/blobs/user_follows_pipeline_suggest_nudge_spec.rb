@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User follows pipeline suggest nudge spec when feature is enabled', :js, feature_category: :groups_and_projects do
+RSpec.describe 'User follows pipeline suggest nudge spec when feature is enabled', :js, feature_category: :source_code_management do
   include CookieHelper
 
   let(:project) { create(:project, :empty_repo) }

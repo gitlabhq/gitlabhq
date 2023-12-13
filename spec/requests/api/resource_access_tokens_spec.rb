@@ -481,24 +481,74 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
 
       let(:path) { "/#{source_type}s/#{resource_id}/access_tokens/#{token_id}/rotate" }
 
-      before do
-        resource.add_maintainer(project_bot)
-        resource.add_owner(user)
-      end
-
       subject(:rotate_token) { post(api(path, user), params: params) }
 
-      it "allows owner to rotate token", :freeze_time do
-        rotate_token
+      context 'when user is owner' do
+        before do
+          resource.add_maintainer(project_bot)
+          resource.add_owner(user)
+        end
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['token']).not_to eq(token.token)
-        expect(json_response['expires_at']).to eq((Date.today + 1.week).to_s)
+        it "allows owner to rotate token", :freeze_time do
+          rotate_token
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['token']).not_to eq(token.token)
+          expect(json_response['expires_at']).to eq((Date.today + 1.week).to_s)
+        end
+      end
+
+      context 'when user is maintainer' do
+        before do
+          resource.add_maintainer(user)
+        end
+
+        context "when token has owner access level" do
+          let(:error_message) { 'Not eligible to rotate token with access level higher than the user' }
+
+          before do
+            resource.add_owner(project_bot)
+          end
+
+          it "raises error" do
+            rotate_token
+
+            if source_type == 'project'
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(json_response['message']).to eq("400 Bad request - #{error_message}")
+            else
+              expect(response).to have_gitlab_http_status(:unauthorized)
+            end
+          end
+        end
+
+        context 'when token has maintainer access level' do
+          before do
+            resource.add_maintainer(project_bot)
+          end
+
+          it "rotates token", :freeze_time do
+            rotate_token
+
+            if source_type == 'project'
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response['token']).not_to eq(token.token)
+              expect(json_response['expires_at']).to eq((Date.today + 1.week).to_s)
+            else
+              expect(response).to have_gitlab_http_status(:unauthorized)
+            end
+          end
+        end
       end
 
       context 'when expiry is defined' do
         let(:expiry_date) { Date.today + 1.month }
         let(:params) { { expires_at: expiry_date } }
+
+        before do
+          resource.add_maintainer(project_bot)
+          resource.add_owner(user)
+        end
 
         it "allows owner to rotate token", :freeze_time do
           rotate_token
@@ -510,6 +560,11 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
       end
 
       context 'without permission' do
+        before do
+          resource.add_maintainer(project_bot)
+          resource.add_owner(user)
+        end
+
         it 'returns an error message' do
           another_user = create(:user)
           resource.add_developer(another_user)
@@ -522,10 +577,21 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
 
       context 'when service raises an error' do
         let(:error_message) { 'boom!' }
+        let(:personal_token_service) { PersonalAccessTokens::RotateService }
+        let(:project_token_service) { ProjectAccessTokens::RotateService }
 
         before do
-          allow_next_instance_of(PersonalAccessTokens::RotateService) do |service|
-            allow(service).to receive(:execute).and_return(ServiceResponse.error(message: error_message))
+          resource.add_maintainer(project_bot)
+          resource.add_owner(user)
+
+          if source_type == 'project'
+            allow_next_instance_of(project_token_service) do |service|
+              allow(service).to receive(:execute).and_return(ServiceResponse.error(message: error_message))
+            end
+          else
+            allow_next_instance_of(personal_token_service) do |service|
+              allow(service).to receive(:execute).and_return(ServiceResponse.error(message: error_message))
+            end
           end
         end
 

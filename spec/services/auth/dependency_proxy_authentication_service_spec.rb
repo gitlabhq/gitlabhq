@@ -6,6 +6,7 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :de
   let_it_be(:user) { create(:user) }
   let_it_be(:params) { {} }
 
+  let(:authentication_abilities) { nil }
   let(:service) { described_class.new(nil, user, params) }
 
   before do
@@ -13,7 +14,7 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :de
   end
 
   describe '#execute' do
-    subject { service.execute(authentication_abilities: nil) }
+    subject { service.execute(authentication_abilities: authentication_abilities) }
 
     shared_examples 'returning' do |status:, message:|
       it "returns #{message}", :aggregate_failures do
@@ -65,6 +66,48 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :de
           end
 
           it_behaves_like 'returning a token with an encoded field', 'user_id'
+        end
+      end
+    end
+
+    context 'with a group access token' do
+      let_it_be(:user) { create(:user, :project_bot) }
+      let_it_be_with_reload(:token) { create(:personal_access_token, user: user) }
+
+      context 'with insufficient authentication abilities' do
+        it_behaves_like 'returning', status: 403, message: 'access forbidden'
+
+        context 'packages_dependency_proxy_containers_scope_check disabled' do
+          before do
+            stub_feature_flags(packages_dependency_proxy_containers_scope_check: false)
+          end
+
+          it_behaves_like 'returning a token with an encoded field', 'user_id'
+        end
+      end
+
+      context 'with sufficient authentication abilities' do
+        let_it_be(:authentication_abilities) { Auth::DependencyProxyAuthenticationService::REQUIRED_ABILITIES }
+        let_it_be(:params) { { raw_token: token.token } }
+
+        subject { service.execute(authentication_abilities: authentication_abilities) }
+
+        it_behaves_like 'returning a token with an encoded field', 'user_id'
+
+        context 'revoked' do
+          before do
+            token.revoke!
+          end
+
+          it_behaves_like 'returning', status: 403, message: 'access forbidden'
+        end
+
+        context 'expired' do
+          before do
+            token.update_column(:expires_at, 1.day.ago)
+          end
+
+          it_behaves_like 'returning', status: 403, message: 'access forbidden'
         end
       end
     end

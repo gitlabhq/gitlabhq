@@ -740,7 +740,8 @@ Do not use **Dedicated** by itself. Always use **GitLab Dedicated**.
 
 Do not use **Duo** by itself. Always use **GitLab Duo**.
 
-On first use on a page, use **GitLab Duo `<featurename>`**. For example:
+On first use on a page, use **GitLab Duo `<featurename>`**. As of Dec, 2023,
+the following are the names of GitLab Duo features:
 
 - GitLab Duo Chat
 - GitLab Duo Code Suggestions
@@ -751,6 +752,7 @@ On first use on a page, use **GitLab Duo `<featurename>`**. For example:
 - GitLab Duo Code review summary
 - GitLab Duo Code explanation
 - GitLab Duo Vulnerability summary
+- GitLab Duo Vulnerability resolution
 - GitLab Duo Test generation
 - GitLab Duo Git suggestions
 - GitLab Duo Root cause analysis
@@ -1900,6 +1902,13 @@ Thereafter, use **Value stream forecasting** by itself.
 ## via
 
 Do not use Latin abbreviations. Use **with**, **through**, or **by using** instead. ([Vale](../testing.md#vale) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml))
+
+## Vulnerability resolution
+
+Use sentence case for **Vulnerability resolution**.
+
+On first mention on a page, use **GitLab Duo Vulnerability resolution**.
+Thereafter, use **Vulnerability resolution** by itself.
 
 ## Vulnerability summary
 

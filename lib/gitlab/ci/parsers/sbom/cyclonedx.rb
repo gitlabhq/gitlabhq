@@ -5,8 +5,6 @@ module Gitlab
     module Parsers
       module Sbom
         class Cyclonedx
-          SUPPORTED_SPEC_VERSIONS = %w[1.4].freeze
-
           def parse!(blob, sbom_report)
             @report = sbom_report
             @data = Gitlab::Json.parse(blob)
@@ -27,18 +25,7 @@ module Gitlab
           end
 
           def valid?
-            valid_schema? && supported_spec_version?
-          end
-
-          def supported_spec_version?
-            return true if SUPPORTED_SPEC_VERSIONS.include?(data['specVersion'])
-
-            report.add_error(
-              "Unsupported CycloneDX spec version. Must be one of: %{versions}" \
-              % { versions: SUPPORTED_SPEC_VERSIONS.join(', ') }
-            )
-
-            false
+            valid_schema?
           end
 
           def valid_schema?

@@ -17,26 +17,11 @@ RSpec.describe Gitlab::GitalyClient::ConflictsService do
   describe '#conflicts' do
     subject(:conflicts) { client.conflicts? }
 
-    context "with the `skip_conflict_files_in_gitaly` feature flag on" do
-      it 'calls list_conflict_files with `skip_content: true`' do
-        expect_any_instance_of(described_class).to receive(:list_conflict_files)
-          .with(skip_content: true).and_return(["let's pretend i'm a conflicted file"])
+    it 'calls list_conflict_files with no parameters' do
+      expect_any_instance_of(described_class).to receive(:list_conflict_files)
+          .and_return(["let's pretend i'm a conflicted file"])
 
-        conflicts
-      end
-    end
-
-    context "with the `skip_conflict_files_in_gitaly` feature flag off" do
-      before do
-        stub_feature_flags(skip_conflict_files_in_gitaly: false)
-      end
-
-      it 'calls list_conflict_files with no parameters' do
-        expect_any_instance_of(described_class).to receive(:list_conflict_files)
-          .with(skip_content: false).and_return(["let's pretend i'm a conflicted file"])
-
-        conflicts
-      end
+      conflicts
     end
   end
 

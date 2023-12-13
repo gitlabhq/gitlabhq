@@ -223,10 +223,6 @@ See [Elasticsearch Index Scopes](elasticsearch.md#advanced-search-index-scopes) 
 
 You must re-run all the Rake tasks to reindex the database, repositories, and wikis.
 
-### The indexing process is taking a very long time
-
-The more data present in your GitLab instance, the longer the indexing process takes.
-
 ### There are some projects that weren't indexed, but you don't know which ones
 
 You can run `sudo gitlab-rake gitlab:elastic:projects_not_indexed` to display projects that aren't indexed.
@@ -364,6 +360,33 @@ dig further into these.
 
 Feel free to reach out to GitLab support, but this is likely to be something a skilled
 Elasticsearch administrator has more experience with.
+
+### Slow initial indexing
+
+The more data your GitLab instance has, the longer the indexing takes.
+You can estimate cluster size with the Rake task `sudo gitlab-rake gitlab:elastic:estimate_cluster_size`.
+
+#### For code documents
+
+Ensure you have enough Sidekiq nodes and processes to efficiently index code, commits, and wikis.
+If your initial indexing is slow, consider [dedicated Sidekiq nodes or processes](../../integration/advanced_search/elasticsearch.md#index-large-instances-with-dedicated-sidekiq-nodes-or-processes).
+
+#### For non-code documents
+
+If the initial indexing is slow but Sidekiq has enough nodes and processes,
+you can adjust advanced search worker settings in GitLab.
+For **Requeue indexing workers**, the default value is `false`.
+For **Number of shards for non-code indexing**, the default value is `2`.
+These settings limit indexing to 2000 documents per minute.
+
+To adjust worker settings:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Advanced Search**.
+1. Expand **Advanced Search**.
+1. Select the **Requeue indexing workers** checkbox.
+1. In the **Number of shards for non-code indexing** text box, enter a value higher than `2`.
+1. Select **Save changes**.
 
 ## Issues with migrations
 

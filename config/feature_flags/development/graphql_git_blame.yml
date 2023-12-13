@@ -2,7 +2,7 @@
 name: graphql_git_blame
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128103
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/419808
-milestone: "16.3"
+milestone: '16.3'
 type: development
 group: group::source code
-default_enabled: false
+default_enabled: true

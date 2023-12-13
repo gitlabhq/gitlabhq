@@ -37,7 +37,6 @@ Gitlab/ServiceResponse:
     - 'app/services/timelogs/base_service.rb'
     - 'app/services/work_items/create_and_link_service.rb'
     - 'app/services/work_items/create_from_task_service.rb'
-    - 'app/services/work_items/delete_task_service.rb'
     - 'ee/app/services/analytics/cycle_analytics/value_streams/create_service.rb'
     - 'ee/app/services/app_sec/dast/profiles/destroy_service.rb'
     - 'ee/app/services/app_sec/dast/scanner_profiles/destroy_service.rb'

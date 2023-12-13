@@ -68,6 +68,8 @@ As you work, you can log the time you've spent.
 Every new time spent entry is added to the current total time spent for the
 issue or the merge request.
 
+The total amount of time spent on an issue or merge request cannot exceed a year.
+
 ### Add time spent
 
 Prerequisites:
@@ -163,7 +165,7 @@ To view a time tracking report:
 
 ![Time tracking report](img/time_tracking_report_v15_1.png)
 
-The breakdown of spent time is limited to a maximum of 100 entries.
+The breakdown of spent time displayed is limited to a maximum of 100 entries.
 
 ## Available time units
 

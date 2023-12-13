@@ -434,7 +434,7 @@ group :development, :test do
 
   gem 'gitlab-styles', '~> 11.0.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
-  gem 'haml_lint', '~> 0.51', require: false # rubocop:todo Gemfile/MissingFeatureCategory
+  gem 'haml_lint', '~> 0.52', require: false # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'bundler-audit', '~> 0.9.1', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
   # Benchmarking & profiling

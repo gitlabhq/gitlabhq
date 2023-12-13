@@ -67,10 +67,6 @@ To create a key result, [add it as a child](#add-a-child-key-result) to an exist
 
 ## View an objective
 
-Prerequisites:
-
-- You must have at least the Guest role for the project.
-
 To view an objective:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -80,10 +76,6 @@ for `Type = objective`.
 1. Select the title of an objective from the list.
 
 ## View a key result
-
-Prerequisites:
-
-- You must have at least the Guest role for the project.
 
 To view a key result:
 
@@ -122,12 +114,12 @@ Prerequisites:
 
 - You must have at least the Reporter role for the project.
 
-You can view all the system notes related to the task. By default they are sorted by **Oldest first**.
+You can view all the [system notes](project/system_notes.md) related to the OKR. By default they are sorted by **Oldest first**.
 You can always change the sorting order to **Newest first**, which is remembered across sessions.
 
 ## Comments and threads
 
-You can add [comments](discussions/index.md) and reply to threads in tasks.
+You can add [comments](discussions/index.md) and reply to threads in OKRs.
 
 ## Assign users
 
@@ -427,6 +419,15 @@ leaking out.
 By default, OKRs are public.
 You can make an OKR confidential when you create or edit it.
 
+#### In a new OKR
+
+When you create a new objective, a checkbox right below the text area is available to mark the
+OKR as confidential.
+
+Select that checkbox and then select **Create objective** or **Create key result** to create the OKR.
+
+#### In an existing OKR
+
 Prerequisites:
 
 - You must have at least the Reporter role for the project.
@@ -439,20 +440,11 @@ Prerequisites:
   - To add child objectives or key results to a confidential objective, you must first make them
     confidential.
 
-#### In a new OKR
-
-When you create a new objective, a checkbox right below the text area is available to mark the
-OKR as confidential.
-
-Check that box and select **Create objective** or **Create key result** to create the OKR.
-
-#### In an existing OKR
-
 To change the confidentiality of an existing OKR:
 
 1. [Open the objective](#view-an-objective) or [key result](#view-a-key-result).
 1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**).
-1. Select **Turn on confidentiality**.
+1. Select **Turn on confidentiality** or **Turn off confidentiality**.
 
 ### Who can see confidential OKRs
 

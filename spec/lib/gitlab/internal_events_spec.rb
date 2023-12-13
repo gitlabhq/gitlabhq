@@ -273,6 +273,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     let(:app_id) { 'foobar' }
     let(:url) { 'http://localhost:4000' }
     let(:sdk_client) { instance_double('GitlabSDK::Client') }
+    let(:event_kwargs) { { user: user, project: project } }
 
     before do
       described_class.clear_memoization(:gitlab_sdk_client)
@@ -281,7 +282,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       stub_env('GITLAB_ANALYTICS_URL', url)
     end
 
-    subject(:track_event) { described_class.track_event(event_name, user: user) }
+    subject(:track_event) { described_class.track_event(event_name, **event_kwargs) }
 
     shared_examples 'does not send a Product Analytics event' do
       it 'does not call the Product Analytics Ruby SDK' do
@@ -303,7 +304,8 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
 
       it 'calls Product Analytics Ruby SDK', :aggregate_failures do
         expect(sdk_client).to receive(:identify).with(user.id)
-        expect(sdk_client).to receive(:track).with(event_name, nil)
+        expect(sdk_client).to receive(:track)
+          .with(event_name, { project_id: project.id, namespace_id: project.namespace.id })
 
         track_event
       end

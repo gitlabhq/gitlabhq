@@ -142,7 +142,7 @@ Lastly, keep the following in mind when submitting merge requests:
 ## Contributing to Premium/Ultimate features with an Enterprise Edition license
 
 If you would like to work on GitLab features that are within a paid tier, also known as the code that lives in the [EE folder](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee), it requires a GitLab Enterprise Edition license.
-Request an Enterprise Edition Developers License according to the [documented process](https://about.gitlab.com/handbook/marketing/developer-relations/contributor-success/community-contributors-workflows.html#contributing-to-the-gitlab-enterprise-edition-ee).
+Request an Enterprise Edition Developers License according to the [documented process](https://about.gitlab.com/handbook/marketing/developer-relations/contributor-success/community-contributors-workflows#contributing-to-the-gitlab-enterprise-edition-ee).
 
 ## Get help
 

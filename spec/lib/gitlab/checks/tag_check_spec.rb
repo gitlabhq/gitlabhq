@@ -60,6 +60,7 @@ RSpec.describe Gitlab::Checks::TagCheck, feature_category: :source_code_manageme
       context "when prohibited_tag_name_encoding_check feature flag is disabled" do
         before do
           stub_feature_flags(prohibited_tag_name_encoding_check: false)
+          allow(change_check).to receive(:validate_tag_name_not_sha_like!)
         end
 
         it "doesn't prohibit tag names that include characters incompatible with UTF-8" do
@@ -82,6 +83,66 @@ RSpec.describe Gitlab::Checks::TagCheck, feature_category: :source_code_manageme
         it "doesn't prohibit the deletion of a refs/tags/ tag name" do
           expect { change_check.validate! }.not_to raise_error
         end
+      end
+
+      it "forbids SHA-1 values" do
+        allow(change_check)
+          .to receive(:tag_name)
+          .and_return("267208abfe40e546f5e847444276f7d43a39503e")
+
+        expect { change_check.validate! }.to raise_error(
+          Gitlab::GitAccess::ForbiddenError,
+          "You cannot create a tag with a SHA-1 or SHA-256 tag name."
+        )
+      end
+
+      it "forbids SHA-256 values" do
+        allow(change_check)
+          .to receive(:tag_name)
+          .and_return("09b9fd3ea68e9b95a51b693a29568c898e27d1476bbd83c825664f18467fc175")
+
+        expect { change_check.validate! }.to raise_error(
+          Gitlab::GitAccess::ForbiddenError,
+          "You cannot create a tag with a SHA-1 or SHA-256 tag name."
+        )
+      end
+
+      it "forbids '{SHA-1}{+anything}' values" do
+        allow(change_check)
+          .to receive(:tag_name)
+          .and_return("267208abfe40e546f5e847444276f7d43a39503e-")
+
+        expect { change_check.validate! }.to raise_error(
+          Gitlab::GitAccess::ForbiddenError,
+          "You cannot create a tag with a SHA-1 or SHA-256 tag name."
+        )
+      end
+
+      it "forbids '{SHA-256}{+anything} values" do
+        allow(change_check)
+          .to receive(:tag_name)
+          .and_return("09b9fd3ea68e9b95a51b693a29568c898e27d1476bbd83c825664f18467fc175-")
+
+        expect { change_check.validate! }.to raise_error(
+          Gitlab::GitAccess::ForbiddenError,
+          "You cannot create a tag with a SHA-1 or SHA-256 tag name."
+        )
+      end
+
+      it "allows SHA-1 values to be appended to the tag name" do
+        allow(change_check)
+          .to receive(:tag_name)
+          .and_return("fix-267208abfe40e546f5e847444276f7d43a39503e")
+
+        expect { change_check.validate! }.not_to raise_error
+      end
+
+      it "allows SHA-256 values to be appended to the tag name" do
+        allow(change_check)
+          .to receive(:tag_name)
+          .and_return("fix-09b9fd3ea68e9b95a51b693a29568c898e27d1476bbd83c825664f18467fc175")
+
+        expect { change_check.validate! }.not_to raise_error
       end
     end
 

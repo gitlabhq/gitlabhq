@@ -319,7 +319,6 @@ Style/IfUnlessModifier:
     - 'app/services/users/build_service.rb'
     - 'app/services/users/respond_to_terms_service.rb'
     - 'app/services/wikis/create_attachment_service.rb'
-    - 'app/services/work_items/task_list_reference_removal_service.rb'
     - 'app/services/work_items/task_list_reference_replacement_service.rb'
     - 'app/uploaders/file_mover.rb'
     - 'app/uploaders/object_storage.rb'

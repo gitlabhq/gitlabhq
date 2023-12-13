@@ -1046,6 +1046,11 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
   end
 
+  it_behaves_like 'a time trackable' do
+    let(:trackable) { create(:issue) }
+    let(:timelog) { create(:issue_timelog, issue: trackable) }
+  end
+
   it_behaves_like 'an editable mentionable' do
     subject { create(:issue, project: create(:project, :repository)) }
 

@@ -163,6 +163,9 @@ You can configure GitLab to reopen closed issues when an external participant ad
 a new comment on an issue by email. This also adds an internal comment that mentions
 the assignees of the issue and creates to-do items for them.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a walkthrough, see [a short showcase video](https://youtu.be/163wDM1e43o).
+
 Prerequisites:
 
 - You must have at least the Maintainer role for the project.

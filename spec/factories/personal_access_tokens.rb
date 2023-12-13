@@ -36,5 +36,11 @@ FactoryBot.define do
     trait :no_prefix do
       after(:build) { |personal_access_token| personal_access_token.set_token(Devise.friendly_token) }
     end
+
+    trait :dependency_proxy_scopes do
+      before(:create) do |personal_access_token|
+        personal_access_token.scopes = (personal_access_token.scopes + Gitlab::Auth::REPOSITORY_SCOPES).uniq
+      end
+    end
   end
 end

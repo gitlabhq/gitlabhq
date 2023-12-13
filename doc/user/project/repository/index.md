@@ -290,7 +290,7 @@ When you [rename a user](../../profile/index.md#change-your-username),
 After you change a path, you must update the existing URL in the following resources,
 because they can't follow redirects:
 
-- [Include statements](../../../ci/yaml/includes.md), otherwise pipelines fail with a syntax error.
+- [Include statements](../../../ci/yaml/includes.md) except [`include:component`](../../../ci/components/index.md), otherwise pipelines fail with a syntax error. CI/CD component references can follow redirects.
 - Namespaced API calls that use the [encoded path](../../../api/rest/index.md#namespaced-path-encoding) instead of the numeric namespace and project IDs.
 - [Docker image references](../../../ci/yaml/index.md#image).
 - Variables that specify a project or namespace.

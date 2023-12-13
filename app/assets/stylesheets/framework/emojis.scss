@@ -41,16 +41,6 @@ gl-emoji {
   &:focus {
     transform: scale(1.3);
   }
-
-  &:focus {
-    @include gl-z-index-2;
-    mix-blend-mode: normal !important;
-  }
-
-  gl-emoji {
-    width: px-to-rem($gl-padding);
-    top: -1px;
-  }
 }
 
 .emoji-picker .gl-dropdown .dropdown-menu {

@@ -317,7 +317,7 @@ In 16.3, the names of these settings were changed to clarify their meanings: the
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Dependency Proxy: group access tokens to have additional scope checks for service accounts
+### Dependency Proxy: Access tokens to have additional scope checks
 
 <div class="deprecation-notes">
 - Announced in GitLab <span class="milestone">16.7</span>
@@ -325,11 +325,11 @@ In 16.3, the names of these settings were changed to clarify their meanings: the
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/431386).
 </div>
 
-When using the Dependency Proxy for containers with a group access token, `docker login` and `docker pull` requests with insufficient scopes for Dependency Proxy are not rejected.
+When using the Dependency Proxy for containers with a group access token or personal access token, `docker login` and `docker pull` requests with insufficient scopes for Dependency Proxy are not rejected.
 
-GitLab 16.7 adds checks for group access tokens authenticating for the dependency proxy for containers. This is a breaking change, because tokens without the required scopes will fail.
+GitLab 17.0 adds checks for group or personal access tokens authenticating with the dependency proxy for containers. This is a breaking change, because tokens without the required scopes will fail.
 
-To help avoid being impacted by this breaking change, create new group access tokens with the [required scopes](https://docs.gitlab.com/ee/user/packages/dependency_proxy/#authenticate-with-the-dependency-proxy), and update your workflow variables and scripts with those new tokens.
+To help avoid being impacted by this breaking change, create new access tokens with the [required scopes](https://docs.gitlab.com/ee/user/packages/dependency_proxy/#authenticate-with-the-dependency-proxy), and update your workflow variables and scripts with those new tokens.
 
 </div>
 

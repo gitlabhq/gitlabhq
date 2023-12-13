@@ -872,7 +872,7 @@ GEM
     haml (5.2.2)
       temple (>= 0.8.0)
       tilt
-    haml_lint (0.51.0)
+    haml_lint (0.52.0)
       haml (>= 4.0)
       parallel (~> 1.10)
       rainbow
@@ -1923,7 +1923,7 @@ DEPENDENCIES
   grpc (~> 1.58.0)
   gssapi (~> 1.3.1)
   guard-rspec
-  haml_lint (~> 0.51)
+  haml_lint (~> 0.52)
   hamlit (~> 2.15.0)
   hashie (~> 5.0.0)
   health_check (~> 3.0)

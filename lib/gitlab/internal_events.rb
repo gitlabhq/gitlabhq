@@ -111,7 +111,7 @@ module Gitlab
         user = kwargs[:user]
 
         gitlab_sdk_client.identify(user&.id)
-        gitlab_sdk_client.track(event_name, nil)
+        gitlab_sdk_client.track(event_name, { project_id: kwargs[:project]&.id, namespace_id: kwargs[:namespace]&.id })
       end
 
       def gitlab_sdk_client

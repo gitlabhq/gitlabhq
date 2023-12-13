@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Two factor auths', feature_category: :user_profile do
+RSpec.describe 'Two factor auths', feature_category: :system_access do
   include Spec::Support::Helpers::ModalHelpers
 
   context 'when signed in' do

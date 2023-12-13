@@ -196,7 +196,6 @@ RSpec/ScatteredLet:
     - 'spec/requests/api/graphql/group/work_item_types_spec.rb'
     - 'spec/requests/api/graphql/milestone_spec.rb'
     - 'spec/requests/api/graphql/mutations/boards/create_spec.rb'
-    - 'spec/requests/api/graphql/mutations/work_items/delete_task_spec.rb'
     - 'spec/requests/api/graphql/namespace/projects_spec.rb'
     - 'spec/requests/api/graphql/project/deployment_spec.rb'
     - 'spec/requests/api/graphql/project/environments_spec.rb'

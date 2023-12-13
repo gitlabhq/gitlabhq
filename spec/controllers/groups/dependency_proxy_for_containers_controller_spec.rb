@@ -60,6 +60,42 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
       it { is_expected.to have_gitlab_http_status(:not_found) }
     end
 
+    context 'with invalid group access token' do
+      let_it_be(:user) { create(:user, :project_bot) }
+
+      context 'not under the group' do
+        it { is_expected.to have_gitlab_http_status(:not_found) }
+      end
+
+      context 'with sufficient scopes, but not active' do
+        %i[expired revoked].each do |status|
+          context status.to_s do
+            let_it_be(:pat) do
+              create(:personal_access_token, status, user: user).tap do |pat|
+                pat.update_column(:scopes, Gitlab::Auth::REGISTRY_SCOPES)
+              end
+            end
+
+            it { is_expected.to have_gitlab_http_status(:not_found) }
+          end
+        end
+      end
+
+      context 'with insufficient scopes' do
+        let_it_be(:pat) { create(:personal_access_token, user: user, scopes: [Gitlab::Auth::READ_API_SCOPE]) }
+
+        it { is_expected.to have_gitlab_http_status(:not_found) }
+
+        context 'packages_dependency_proxy_containers_scope_check disabled' do
+          before do
+            stub_feature_flags(packages_dependency_proxy_containers_scope_check: false)
+          end
+
+          it { is_expected.to have_gitlab_http_status(:not_found) }
+        end
+      end
+    end
+
     context 'with deploy token from a different group,' do
       let_it_be(:user) { create(:deploy_token, :group, :dependency_proxy_scopes) }
 
@@ -152,6 +188,10 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
     context 'with a valid group access token' do
       let_it_be(:user) { create(:user, :project_bot) }
       let_it_be_with_reload(:token) { create(:personal_access_token, user: user) }
+
+      before do
+        token.update_column(:scopes, Gitlab::Auth::REGISTRY_SCOPES)
+      end
 
       it_behaves_like 'sends Workhorse instructions'
     end
@@ -294,6 +334,18 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
 
           it_behaves_like 'a successful manifest pull'
         end
+      end
+
+      context 'a valid group access token' do
+        let_it_be(:user) { create(:user, :project_bot) }
+        let_it_be(:token) { create(:personal_access_token, :dependency_proxy_scopes, user: user) }
+
+        before do
+          group.add_guest(user)
+        end
+
+        it_behaves_like 'a successful manifest pull'
+        it_behaves_like 'a package tracking event', described_class.name, 'pull_manifest', false
       end
     end
 

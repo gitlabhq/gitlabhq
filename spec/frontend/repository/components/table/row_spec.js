@@ -146,10 +146,11 @@ describe('Repository table row component', () => {
   });
 
   it.each`
-    path
-    ${'test#'}
-    ${'Änderungen'}
-  `('renders link for $path', ({ path }) => {
+    path                   | encodedPath
+    ${'test#'}             | ${'test%23'}
+    ${'Änderungen'}        | ${'%C3%84nderungen'}
+    ${'dir%2f_hello__.sh'} | ${'dir%252f_hello__.sh'}
+  `('renders link for $path', ({ path, encodedPath }) => {
     factory({
       propsData: {
         id: '1',
@@ -161,7 +162,7 @@ describe('Repository table row component', () => {
     });
 
     expect(wrapper.findComponent({ ref: 'link' }).props('to')).toBe(
-      `/-/tree/main/${encodeURIComponent(path)}?ref_type=heads`,
+      `/-/tree/main/${encodedPath}?ref_type=heads`,
     );
   });
 

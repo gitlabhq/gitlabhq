@@ -45,14 +45,31 @@ module Gitlab
 
         private
 
-        attr_reader :version
+        attr_reader :version, :component_name
 
-        # Given a path like "my-org/sub-group/the-project/path/to/component"
-        # find the project "my-org/sub-group/the-project" by looking at all possible paths.
         def find_project_by_component_path(path)
+          if Feature.enabled?(:ci_redirect_component_project, Feature.current_request)
+            project_full_path = extract_project_path(path)
+
+            Project.find_by_full_path(project_full_path, follow_redirects: true).tap do |project|
+              next unless project
+
+              @component_name = extract_component_name(project_full_path)
+            end
+          else
+            legacy_finder(path).tap do |project|
+              next unless project
+
+              @component_name = extract_component_name(project.full_path)
+            end
+          end
+        end
+
+        def legacy_finder(path)
           return if path.start_with?('/') # exit early if path starts with `/` or it will loop forever.
 
           possible_paths = [path]
+
           index = nil
 
           loop_until(limit: 20) do
@@ -68,14 +85,25 @@ module Gitlab
           ::Project.where_full_path_in(possible_paths).take # rubocop: disable CodeReuse/ActiveRecord
         end
 
+        # Given a path like "my-org/sub-group/the-project/the-component"
+        # we expect that the last `/` is the separator between the project full path and the
+        # component name.
+        def extract_project_path(path)
+          return if path.start_with?('/') # invalid project full path.
+
+          index = path.rindex('/') # find index of last `/` in the path
+          return unless index
+
+          path[0..index - 1]
+        end
+
         def instance_path
           @full_path.delete_prefix(host)
         end
 
-        def component_name
-          instance_path.delete_prefix(project.full_path).delete_prefix('/')
+        def extract_component_name(project_path)
+          instance_path.delete_prefix(project_path).delete_prefix('/')
         end
-        strong_memoize_attr :component_name
 
         def latest_version_sha
           if project.catalog_resource
