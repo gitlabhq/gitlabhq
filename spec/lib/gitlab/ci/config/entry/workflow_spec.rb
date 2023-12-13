@@ -123,7 +123,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Workflow, feature_category: :pipeline_
     let(:workflow_hash) do
       {
         auto_cancel: {
-          on_new_commit: 'interruptible'
+          on_new_commit: 'interruptible',
+          on_job_failure: 'none'
         }
       }
     end

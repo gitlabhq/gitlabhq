@@ -10,6 +10,11 @@ module Ci
       disabled: 2
     }, _prefix: true
 
+    enum auto_cancel_on_job_failure: {
+      none: 0,
+      all: 1
+    }, _prefix: true
+
     belongs_to :pipeline, class_name: "Ci::Pipeline", inverse_of: :pipeline_metadata
     belongs_to :project, class_name: "Project", inverse_of: :pipeline_metadata
 

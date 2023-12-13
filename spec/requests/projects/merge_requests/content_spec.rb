@@ -29,13 +29,5 @@ RSpec.describe 'merge request content spec', feature_category: :code_review_work
 
   describe 'GET cached_widget' do
     it_behaves_like 'cached widget request'
-
-    context 'with non_public_artifacts disabled' do
-      before do
-        stub_feature_flags(non_public_artifacts: false)
-      end
-
-      it_behaves_like 'cached widget request'
-    end
   end
 end

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlSkeletonLoader, GlTab } from '@gitlab/ui';
+import { GlSkeletonLoader, GlTab, GlPagination } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import EnvironmentsFolderAppComponent from '~/environments/folder/environments_folder_app.vue';
 import EnvironmentItem from '~/environments/components/new_environment_item.vue';
@@ -62,6 +62,7 @@ describe('EnvironmentsFolderAppComponent', () => {
         folderName: mockFolderName,
         folderPath: '/gitlab-org/test-project/-/environments/folder/dev',
         scope: 'active',
+        page: 1,
       },
     });
   };
@@ -118,6 +119,13 @@ describe('EnvironmentsFolderAppComponent', () => {
       expect(modal.exists()).toBe(true);
       expect(modal.props().environment).toEqual(resolvedEnvironment);
       expect(modal.props().weight).toBe(1);
+    });
+
+    it('should render pagination component', () => {
+      const pagination = wrapper.findComponent(GlPagination);
+
+      expect(pagination.props().perPage).toBe(20);
+      expect(pagination.props().totalItems).toBe(2);
     });
   });
 });

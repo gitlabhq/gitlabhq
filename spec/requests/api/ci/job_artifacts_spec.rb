@@ -197,21 +197,6 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :build_artifacts do
 
             expect(response).to have_gitlab_http_status(:forbidden)
           end
-
-          context 'with the non_public_artifacts feature flag disabled' do
-            before do
-              stub_feature_flags(non_public_artifacts: false)
-            end
-
-            it 'allows access to artifacts' do
-              project.update_column(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
-              project.update_column(:public_builds, true)
-
-              get_artifact_file(artifact)
-
-              expect(response).to have_gitlab_http_status(:ok)
-            end
-          end
         end
 
         context 'when project is public with builds access disabled' do
@@ -445,17 +430,6 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :build_artifacts do
           it 'rejects access and hides existence of artifacts' do
             expect(response).to have_gitlab_http_status(:forbidden)
           end
-
-          context 'with the non_public_artifacts feature flag disabled' do
-            before do
-              stub_feature_flags(non_public_artifacts: false)
-              get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
-            end
-
-            it 'allows access to artifacts' do
-              expect(response).to have_gitlab_http_status(:ok)
-            end
-          end
         end
 
         it 'does not return job artifacts if not uploaded' do
@@ -650,18 +624,6 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :build_artifacts do
             expect(json_response).to have_key('message')
             expect(response.headers.to_h)
               .not_to include('Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
-          end
-
-          context 'with the non_public_artifacts feature flag disabled' do
-            before do
-              stub_feature_flags(non_public_artifacts: false)
-            end
-
-            it 'allows access to artifacts', :sidekiq_might_not_need_inline do
-              get_artifact_file(artifact)
-
-              expect(response).to have_gitlab_http_status(:ok)
-            end
           end
         end
 

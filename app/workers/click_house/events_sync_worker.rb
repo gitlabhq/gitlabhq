@@ -99,7 +99,7 @@ module ClickHouse
     strong_memoize_attr :last_event_id_in_postgresql
 
     def enabled?
-      ClickHouse::Client.configuration.databases[:main].present? && Feature.enabled?(:event_sync_worker_for_click_house)
+      ClickHouse::Client.database_configured?(:main) && Feature.enabled?(:event_sync_worker_for_click_house)
     end
 
     def next_batch

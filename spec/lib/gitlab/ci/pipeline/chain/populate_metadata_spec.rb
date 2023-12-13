@@ -133,9 +133,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::PopulateMetadata, feature_category: 
   end
 
   context 'with auto_cancel' do
-    let(:config) do
-      { workflow: { auto_cancel: { on_new_commit: 'interruptible' } }, rspec: { script: 'rspec' } }
-    end
+    let(:on_new_commit) { 'interruptible' }
+    let(:on_job_failure) { 'all' }
+    let(:auto_cancel) { { on_new_commit: on_new_commit, on_job_failure: on_job_failure } }
+    let(:config) { { workflow: { auto_cancel: auto_cancel }, rspec: { script: 'rspec' } } }
 
     it_behaves_like 'not breaking the chain'
 
@@ -143,6 +144,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::PopulateMetadata, feature_category: 
       run_chain
 
       expect(pipeline.pipeline_metadata.auto_cancel_on_new_commit).to eq('interruptible')
+      expect(pipeline.pipeline_metadata.auto_cancel_on_job_failure).to eq('all')
       expect(pipeline.pipeline_metadata).not_to be_persisted
     end
 
@@ -155,19 +157,88 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::PopulateMetadata, feature_category: 
     end
 
     context 'with auto_cancel: nil' do
-      let(:config) do
-        { workflow: { auto_cancel: nil }, rspec: { script: 'rspec' } }
-      end
+      let(:auto_cancel) { nil }
 
       it_behaves_like 'not saving pipeline metadata'
     end
 
-    context 'with auto_cancel_on_new_commit: nil' do
-      let(:config) do
-        { workflow: { auto_cancel: { on_new_commit: nil } }, rspec: { script: 'rspec' } }
+    context 'with auto_cancel_on_new_commit and no auto_cancel_on_job_failure' do
+      let(:auto_cancel) { { on_new_commit: on_new_commit } }
+
+      it 'builds pipeline_metadata' do
+        run_chain
+
+        expect(pipeline.pipeline_metadata.auto_cancel_on_new_commit).to eq('interruptible')
+        expect(pipeline.pipeline_metadata.auto_cancel_on_job_failure).to eq('none')
+        expect(pipeline.pipeline_metadata).not_to be_persisted
       end
+    end
+
+    context 'with auto_cancel_on_job_failure and no auto_cancel_on_new_commit' do
+      let(:auto_cancel) { { on_job_failure: on_job_failure } }
+
+      it 'builds pipeline_metadata' do
+        run_chain
+
+        expect(pipeline.pipeline_metadata.auto_cancel_on_new_commit).to eq('conservative')
+        expect(pipeline.pipeline_metadata.auto_cancel_on_job_failure).to eq('all')
+        expect(pipeline.pipeline_metadata).not_to be_persisted
+      end
+    end
+
+    context 'with auto_cancel_on_new_commit: nil and auto_cancel_on_job_failure: nil' do
+      let(:on_new_commit) { nil }
+      let(:on_job_failure) { nil }
 
       it_behaves_like 'not saving pipeline metadata'
+    end
+
+    context 'with auto_cancel_on_new_commit valid and auto_cancel_on_job_failure: nil' do
+      let(:on_job_failure) { nil }
+
+      it 'builds pipeline_metadata' do
+        run_chain
+
+        expect(pipeline.pipeline_metadata.auto_cancel_on_new_commit).to eq('interruptible')
+        expect(pipeline.pipeline_metadata.auto_cancel_on_job_failure).to eq('none')
+        expect(pipeline.pipeline_metadata).not_to be_persisted
+      end
+    end
+
+    context 'with auto_cancel_on_new_commit: nil and auto_cancel_on_job_failure valid' do
+      let(:on_new_commit) { nil }
+
+      it 'builds pipeline_metadata' do
+        run_chain
+
+        expect(pipeline.pipeline_metadata.auto_cancel_on_new_commit).to eq('conservative')
+        expect(pipeline.pipeline_metadata.auto_cancel_on_job_failure).to eq('all')
+        expect(pipeline.pipeline_metadata).not_to be_persisted
+      end
+    end
+
+    context 'when auto_cancel_on_job_failure: none' do
+      let(:on_job_failure) { 'none' }
+
+      it 'builds pipeline_metadata' do
+        run_chain
+
+        expect(pipeline.pipeline_metadata.auto_cancel_on_job_failure).to eq('none')
+        expect(pipeline.pipeline_metadata).not_to be_persisted
+      end
+    end
+
+    context 'when auto_cancel_pipeline_on_job_failure feature is disabled' do
+      before do
+        stub_feature_flags(auto_cancel_pipeline_on_job_failure: false)
+      end
+
+      it 'ignores the auto_cancel_on_job_failure value' do
+        run_chain
+
+        expect(pipeline.pipeline_metadata.auto_cancel_on_job_failure).to eq('none')
+        expect(pipeline.pipeline_metadata).not_to be_persisted
+      end
     end
   end
 
@@ -176,7 +247,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::PopulateMetadata, feature_category: 
       {
         workflow: {
           name: 'Pipeline name',
-          auto_cancel: { on_new_commit: 'interruptible' }
+          auto_cancel: {
+            on_new_commit: 'interruptible',
+            on_job_failure: 'none'
+          }
         },
         rspec: { script: 'rspec' }
       }
@@ -189,6 +263,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::PopulateMetadata, feature_category: 
 
       expect(pipeline.pipeline_metadata.name).to eq('Pipeline name')
       expect(pipeline.pipeline_metadata.auto_cancel_on_new_commit).to eq('interruptible')
+      expect(pipeline.pipeline_metadata.auto_cancel_on_job_failure).to eq('none')
       expect(pipeline.pipeline_metadata).not_to be_persisted
     end
   end

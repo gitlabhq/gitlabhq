@@ -263,7 +263,7 @@ module QA
               rows: group_specs.map do |name, result|
                 [
                   name_column(name: name, file: result[:file], link: result[:link],
-                    exceptions_and_job_urls: result[:exceptions_and_job_urls], markdown: markdown),
+                    exceptions_and_related_urls: result[:exceptions_and_related_urls], markdown: markdown),
                   *table_params(result.values)
                 ]
               end
@@ -345,12 +345,13 @@ module QA
       # @param [String] name
       # @param [String] file
       # @param [String] link
-      # @param [Hash] exceptions_and_job_urls
+      # @param [Hash] exceptions_and_related_urls
       # @param [Boolean] markdown
       # @return [String]
-      def name_column(name:, file:, link:, exceptions_and_job_urls:, markdown: false)
+      def name_column(name:, file:, link:, exceptions_and_related_urls:, markdown: false)
         if markdown
-          return "**Name**: #{name}<br>**File**: [#{file}](#{link})#{exceptions_markdown(exceptions_and_job_urls)}"
+          return "**Name**: #{name}<br>**File**: " \
+                 "[#{file}](#{link})#{exceptions_markdown(exceptions_and_related_urls)}"
         end
 
         wrapped_name = name.length > 150 ? "#{name} ".scan(/.{1,150} /).map(&:strip).join("\n") : name
@@ -359,13 +360,13 @@ module QA
 
       # Formatted exceptions with link to job url
       #
-      # @param [Hash] exceptions_and_job_urls
+      # @param [Hash] exceptions_and_related_urls
       # @return [String]
-      def exceptions_markdown(exceptions_and_job_urls)
-        return '' if exceptions_and_job_urls.empty?
+      def exceptions_markdown(exceptions_and_related_urls)
+        return '' if exceptions_and_related_urls.empty?
 
-        "<br>**Exceptions**:#{exceptions_and_job_urls.keys.map do |e|
-          "<br>- [`#{e.truncate(250).tr('`', "'")}`](#{exceptions_and_job_urls[e]})"
+        "<br>**Exceptions**:#{exceptions_and_related_urls.keys.map do |e|
+          "<br>- [`#{e.truncate(250).tr('`', "'")}`](#{exceptions_and_related_urls[e]})"
         end.join('')}"
       end
 
@@ -398,26 +399,32 @@ module QA
 
           failure_rate = (failed.to_f / runs) * 100
 
-          records_with_exception = records.reject { |r| !r.values["failure_exception"] }
-
-          # Since exception is the key in the below hash, only one instance of an occurrence is kept
-          exceptions_and_job_urls = records_with_exception.to_h do |r|
-            [r.values["failure_exception"], r.values["job_url"]]
-          end
-
           result[stage][product_group] ||= {}
           result[stage][product_group][name] = {
             file: file,
             link: link,
             runs: runs,
             failed: failed,
-            exceptions_and_job_urls: exceptions_and_job_urls,
+            exceptions_and_related_urls: exceptions_and_related_urls(records),
             failure_rate: failure_rate == 0 ? failure_rate.round(0) : failure_rate.round(2)
           }
         end
       end
 
       # rubocop:enable Metrics/AbcSize
+
+      # Return hash of exceptions as key and failure_issue or job_url urls as value
+      #
+      # @param [Array<InfluxDB2::FluxRecord>] records
+      # @return [Hash]
+      def exceptions_and_related_urls(records)
+        records_with_exception = records.reject { |r| !r.values["failure_exception"] }
+
+        # Since exception is the key in the below hash, only one instance of an occurrence is kept
+        records_with_exception.to_h do |r|
+          [r.values["failure_exception"], r.values["failure_issue"] || r.values["job_url"]]
+        end
+      end
 
       # Check if failure is allowed
       #
@@ -465,7 +472,8 @@ module QA
             )
             |> filter(fn: (r) => r["_field"] == "job_url" or
               r["_field"] == "failure_exception" or
-              r["_field"] == "id"
+              r["_field"] == "id" or
+              r["_field"] == "failure_issue"
             )
             |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
             |> group(columns: ["name"])

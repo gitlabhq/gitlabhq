@@ -18,5 +18,13 @@ RSpec.describe Ci::PipelineMetadata, feature_category: :pipeline_composition do
         conservative: 0, interruptible: 1, disabled: 2
       ).with_prefix
     end
+
+    it do
+      is_expected.to define_enum_for(
+        :auto_cancel_on_job_failure
+      ).with_values(
+        none: 0, all: 1
+      ).with_prefix
+    end
   end
 end

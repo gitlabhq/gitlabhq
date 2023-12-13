@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlDrawer, GlIcon, GlLink } from '@gitlab/ui';
+import { GlBadge, GlDrawer, GlLink, GlButton, GlIcon } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getSeverity } from '~/ci/reports/utils';
@@ -27,7 +27,7 @@ export const codeQuality = 'codeQuality';
 export default {
   i18n,
   codeQuality,
-  components: { GlBadge, GlDrawer, GlIcon, GlLink, DrawerItem },
+  components: { GlBadge, GlDrawer, GlLink, GlButton, GlIcon, DrawerItem },
   props: {
     drawer: {
       type: Object,
@@ -39,22 +39,50 @@ export default {
       default: () => {},
     },
   },
+  data() {
+    return {
+      activeIndex: 0,
+    };
+  },
   computed: {
     getDrawerHeaderHeight() {
       return getContentWrapperHeight();
     },
     isCodeQuality() {
-      return this.drawer.scale === this.$options.codeQuality;
+      return this.activeElement.scale === this.$options.codeQuality;
+    },
+    activeElement() {
+      return this.drawer.findings[this.activeIndex];
     },
     findingsStatus() {
-      return this.drawer.state === SAST_FINDING_DISMISSED ? 'muted' : 'warning';
+      return this.activeElement.state === SAST_FINDING_DISMISSED ? 'muted' : 'warning';
     },
   },
   DRAWER_Z_INDEX,
+  watch: {
+    drawer(newVal) {
+      this.activeIndex = newVal.index;
+    },
+  },
   methods: {
     getSeverity,
+    prev() {
+      if (this.activeIndex === 0) {
+        this.activeIndex = this.drawer.findings.length - 1;
+      } else {
+        this.activeIndex -= 1;
+      }
+    },
+    next() {
+      if (this.activeIndex === this.drawer.findings.length - 1) {
+        this.activeIndex = 0;
+      } else {
+        this.activeIndex += 1;
+      }
+    },
+
     concatIdentifierName(name, index) {
-      return name + (index !== this.drawer.identifiers.length - 1 ? ', ' : '');
+      return name + (index !== this.activeElement.identifiers.length - 1 ? ', ' : '');
     },
   },
 };
@@ -68,38 +96,51 @@ export default {
     @close="$emit('close')"
   >
     <template #title>
-      <h2 class="drawer-heading gl-font-base gl-mt-0 gl-mb-0">
+      <h2 class="drawer-heading gl-font-base gl-mt-0 gl-mb-0 gl-w-28">
         <gl-icon
           :size="12"
-          :name="getSeverity(drawer).name"
-          :class="getSeverity(drawer).class"
+          :name="getSeverity(activeElement).name"
+          :class="getSeverity(activeElement).class"
           class="inline-findings-severity-icon gl-vertical-align-baseline!"
         />
-        <span class="drawer-heading-severity">{{ drawer.severity }}</span>
+        <span class="drawer-heading-severity">{{ activeElement.severity }}</span>
         {{ isCodeQuality ? $options.i18n.codeQualityFinding : $options.i18n.sastFinding }}
       </h2>
+      <div v-if="drawer.findings.length > 1">
+        <gl-button data-testid="findings-drawer-prev-button" class="gl-p-1!" @click="prev">
+          <gl-icon :size="24" name="chevron-left" />
+        </gl-button>
+        <gl-button class="gl-p-1!" @click="next">
+          <gl-icon data-testid="findings-drawer-next-button" :size="24" name="chevron-right" />
+        </gl-button>
+      </div>
     </template>
 
     <template #default>
       <ul class="gl-list-style-none gl-border-b-initial gl-mb-0 gl-pb-0!">
-        <drawer-item v-if="drawer.title" :description="$options.i18n.name" :value="drawer.title" />
+        <drawer-item
+          v-if="activeElement.title"
+          :description="$options.i18n.name"
+          :value="activeElement.title"
+          data-testid="findings-drawer-title"
+        />
 
-        <drawer-item v-if="drawer.state" :description="$options.i18n.status">
+        <drawer-item v-if="activeElement.state" :description="$options.i18n.status">
           <template #value>
             <gl-badge :variant="findingsStatus" class="text-capitalize">{{
-              drawer.state
+              activeElement.state
             }}</gl-badge>
           </template>
         </drawer-item>
 
         <drawer-item
-          v-if="drawer.description"
+          v-if="activeElement.description"
           :description="$options.i18n.description"
-          :value="drawer.description"
+          :value="activeElement.description"
         />
 
         <drawer-item
-          v-if="project && drawer.scale !== $options.codeQuality"
+          v-if="project && activeElement.scale !== $options.codeQuality"
           :description="$options.i18n.project"
         >
           <template #value>
@@ -107,23 +148,31 @@ export default {
           </template>
         </drawer-item>
 
-        <drawer-item v-if="drawer.location || drawer.webUrl" :description="$options.i18n.file">
+        <drawer-item
+          v-if="activeElement.location || activeElement.webUrl"
+          :description="$options.i18n.file"
+        >
           <template #value>
-            <span v-if="drawer.webUrl && drawer.filePath && drawer.line">
-              <gl-link :href="drawer.webUrl">{{ drawer.filePath }}:{{ drawer.line }}</gl-link>
+            <span v-if="activeElement.webUrl && activeElement.filePath && activeElement.line">
+              <gl-link :href="activeElement.webUrl"
+                >{{ activeElement.filePath }}:{{ activeElement.line }}</gl-link
+              >
             </span>
-            <span v-else-if="drawer.location">
-              {{ drawer.location.file }}:{{ drawer.location.startLine }}
+            <span v-else-if="activeElement.location">
+              {{ activeElement.location.file }}:{{ activeElement.location.startLine }}
             </span>
           </template>
         </drawer-item>
 
         <drawer-item
-          v-if="drawer.identifiers && drawer.identifiers.length"
+          v-if="activeElement.identifiers && activeElement.identifiers.length"
           :description="$options.i18n.identifiers"
         >
           <template #value>
-            <span v-for="(identifier, index) in drawer.identifiers" :key="identifier.externalId">
+            <span
+              v-for="(identifier, index) in activeElement.identifiers"
+              :key="identifier.externalId"
+            >
               <gl-link v-if="identifier.url" :href="identifier.url">
                 {{ concatIdentifierName(identifier.name, index) }}
               </gl-link>
@@ -135,15 +184,15 @@ export default {
         </drawer-item>
 
         <drawer-item
-          v-if="drawer.scale"
+          v-if="activeElement.scale"
           :description="$options.i18n.tool"
           :value="isCodeQuality ? $options.i18n.codeQuality : $options.i18n.sast"
         />
 
         <drawer-item
-          v-if="drawer.engineName"
+          v-if="activeElement.engineName"
           :description="$options.i18n.engine"
-          :value="drawer.engineName"
+          :value="activeElement.engineName"
         />
       </ul>
     </template>

@@ -38,6 +38,8 @@ import SecretsYaml from './yaml_tests/positive_tests/secrets.yml';
 import ServicesYaml from './yaml_tests/positive_tests/services.yml';
 import NeedsParallelMatrixYaml from './yaml_tests/positive_tests/needs_parallel_matrix.yml';
 import ScriptYaml from './yaml_tests/positive_tests/script.yml';
+import AutoCancelPipelineOnJobFailureAllYaml from './yaml_tests/positive_tests/auto_cancel_pipeline/on_job_failure/all.yml';
+import AutoCancelPipelineOnJobFailureNoneYaml from './yaml_tests/positive_tests/auto_cancel_pipeline/on_job_failure/none.yml';
 
 // YAML NEGATIVE TEST
 import ArtifactsNegativeYaml from './yaml_tests/negative_tests/artifacts.yml';
@@ -64,6 +66,7 @@ import NeedsParallelMatrixNumericYaml from './yaml_tests/negative_tests/needs/pa
 import NeedsParallelMatrixWrongParallelValueYaml from './yaml_tests/negative_tests/needs/parallel_matrix/wrong_parallel_value.yml';
 import NeedsParallelMatrixWrongMatrixValueYaml from './yaml_tests/negative_tests/needs/parallel_matrix/wrong_matrix_value.yml';
 import ScriptNegativeYaml from './yaml_tests/negative_tests/script.yml';
+import AutoCancelPipelineNegativeYaml from './yaml_tests/negative_tests/auto_cancel_pipeline.yml';
 
 const ajv = new Ajv({
   strictTypes: false,
@@ -107,6 +110,8 @@ describe('positive tests', () => {
       SecretsYaml,
       NeedsParallelMatrixYaml,
       ScriptYaml,
+      AutoCancelPipelineOnJobFailureAllYaml,
+      AutoCancelPipelineOnJobFailureNoneYaml,
     }),
   )('schema validates %s', (_, input) => {
     // We construct a new "JSON" from each main key that is inside a
@@ -152,6 +157,7 @@ describe('negative tests', () => {
       NeedsParallelMatrixWrongParallelValueYaml,
       NeedsParallelMatrixWrongMatrixValueYaml,
       ScriptNegativeYaml,
+      AutoCancelPipelineNegativeYaml,
     }),
   )('schema validates %s', (_, input) => {
     // We construct a new "JSON" from each main key that is inside a

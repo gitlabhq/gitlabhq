@@ -5,12 +5,10 @@ module Ci
     include RequestAwareEntity
 
     expose :artifacts do |pipeline, options|
-      artifacts = pipeline.downloadable_artifacts
+      downloadable_artifacts = pipeline.downloadable_artifacts
       project = pipeline.project
 
-      if Feature.enabled?(:non_public_artifacts, project)
-        artifacts = artifacts.select { |artifact| can?(request.current_user, :read_job_artifacts, artifact) }
-      end
+      artifacts = downloadable_artifacts.select { |artifact| can?(request.current_user, :read_job_artifacts, artifact) }
 
       BuildArtifactEntity.represent(artifacts, options.merge(project: project))
     end

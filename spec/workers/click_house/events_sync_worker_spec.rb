@@ -151,7 +151,7 @@ RSpec.describe ClickHouse::EventsSyncWorker, feature_category: :value_stream_man
 
     context 'when clickhouse is not configured' do
       before do
-        allow(ClickHouse::Client.configuration).to receive(:databases).and_return({})
+        allow(ClickHouse::Client).to receive(:database_configured?).and_return(false)
       end
 
       it 'skips execution' do
@@ -165,7 +165,7 @@ RSpec.describe ClickHouse::EventsSyncWorker, feature_category: :value_stream_man
   context 'when exclusive lease error happens' do
     it 'skips execution' do
       stub_feature_flags(event_sync_worker_for_click_house: true)
-      allow(ClickHouse::Client.configuration).to receive(:databases).and_return({ main: :some_db })
+      allow(ClickHouse::Client).to receive(:database_configured?).with(:main).and_return(true)
 
       expect(worker).to receive(:in_lock).and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
       expect(worker).to receive(:log_extra_metadata_on_done).with(:result, { status: :skipped })

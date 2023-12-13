@@ -82,7 +82,7 @@ Prerequisites:
 
 To add a time entry using the user interface:
 
-1. In the **Time tracking** section of the sidebar, select **Add time entry** (**{plus}**). A modal opens.
+1. In the **Time tracking** section of the sidebar, select **Add time entry** (**{plus}**). A dialog opens.
 1. Enter:
 
    - The amount of time spent.
@@ -154,11 +154,9 @@ To delete all the time spent at once, use the `/remove_time_spent` [quick action
 
 ## View a time tracking report
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271409) in GitLab 13.12.
+### For an issue or merge request
 
-You can view a breakdown of time spent on an issue or merge request.
-
-To view a time tracking report:
+To view a time tracking report of time spent on an issue or merge request:
 
 1. Go to an issue or a merge request.
 1. In the right sidebar, select **Time tracking report**.
@@ -167,21 +165,45 @@ To view a time tracking report:
 
 The breakdown of spent time displayed is limited to a maximum of 100 entries.
 
+### Global time tracking report **(EXPERIMENT)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344002) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `global_time_tracking_report`. Disabled by default.
+> - Enabled on GitLab.com in GitLab 16.5.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `global_time_tracking_report`.
+On GitLab.com, this feature is available.
+This feature is not ready for production use.
+
+View a report of time spent in issues and merge requests across all of GitLab.
+
+This feature is an [Experiment](../../policy/experiment-beta-support.md).
+If you find a bug, let us know in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/435222).
+
+To view the global time tracking report:
+
+1. In your browser, enter the global report's URL:
+   - For self-managed, add `/-/timelogs` to your base URL. For example, `https://gitlab.example.com/-/timelogs`.
+   - For GitLab.com, go to <https://gitlab.com/-/timelogs>.
+1. Optional. To filter by a specific user, enter their username without the `@` symbol.
+1. Select start and end dates.
+1. Select **Run report**.
+
+![global time tracking report](img/global_time_report_v16_5.png)
+
 ## Available time units
 
 The following time units are available:
 
 | Time unit | What to type                | Conversion rate |
 | --------- | --------------------------- | --------------- |
-| Month     | `mo`, `month`, or `months`  | 4 w (160 h)      |
-| Week      | `w`, `week`, or `weeks`     | 5 d (40 h)       |
-| Day       | `d`, `day`, or `days`       | 8 h              |
-| Hour      | `h`, `hour`, or `hours`     | 60 m             |
+| Month     | `mo`, `month`, or `months`  | 4 w (160 h)     |
+| Week      | `w`, `week`, or `weeks`     | 5 d (40 h)      |
+| Day       | `d`, `day`, or `days`       | 8 h             |
+| Hour      | `h`, `hour`, or `hours`     | 60 m            |
 | Minute    | `m`, `minute`, or `minutes` |                 |
 
 ### Limit displayed units to hours **(FREE SELF)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29469/) in GitLab 12.1.
 
 In GitLab self-managed instances, you can limit the display of time units to hours.
 To do so:

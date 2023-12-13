@@ -118,7 +118,8 @@ describe QA::Tools::ReliableReport do
           )
           |> filter(fn: (r) => r["_field"] == "job_url" or
             r["_field"] == "failure_exception" or
-            r["_field"] == "id"
+            r["_field"] == "id" or
+            r["_field"] == "failure_issue"
           )
           |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
           |> group(columns: ["name"])
@@ -151,12 +152,12 @@ describe QA::Tools::ReliableReport do
       )
     end
 
-    def name_column(spec_name, exceptions_and_job_urls = {})
-      "**Name**: #{spec_name}<br>**File**: [spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/specs/features/some/spec.rb)#{exceptions_markdown(exceptions_and_job_urls)}"
+    def name_column(spec_name, exceptions_and_related_urls = {})
+      "**Name**: #{spec_name}<br>**File**: [spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/specs/features/some/spec.rb)#{exceptions_markdown(exceptions_and_related_urls)}"
     end
 
-    def exceptions_markdown(exceptions_and_job_urls)
-      exceptions_and_job_urls.empty? ? '' : "<br>**Exceptions**:<br>- [`#{failure_message}`](https://job/url)"
+    def exceptions_markdown(exceptions_and_related_urls)
+      exceptions_and_related_urls.empty? ? '' : "<br>**Exceptions**:<br>- [`#{failure_message}`](https://job/url)"
     end
 
     before do
@@ -371,6 +372,61 @@ describe QA::Tools::ReliableReport do
     it "returns false for disallowed failure" do
       expect(reliable_report.send(:allowed_failure?,
         %q([Unable to find css "[data-testid=\"user_action_dropdown\"]"]))).to be false
+    end
+  end
+
+  describe "#exceptions_and_related_urls" do
+    subject(:reliable_report) { described_class.new(14) }
+
+    let(:failure_message) { "This is a failure exception" }
+    let(:job_url) { "https://example.com/job/url" }
+    let(:failure_issue_url) { "https://example.com/failure/issue" }
+
+    let(:records) do
+      [instance_double("InfluxDB2::FluxRecord", values: values)]
+    end
+
+    context "without failure_exception" do
+      let(:values) do
+        {
+          "failure_exception" => nil,
+          "job_url" => job_url,
+          "failure_issue" => failure_issue_url
+        }
+      end
+
+      it "returns an empty hash" do
+        expect(reliable_report.send(:exceptions_and_related_urls, records)).to be_empty
+      end
+
+      context "with failure_exception" do
+        context "without failure_issue" do
+          let(:values) do
+            {
+              "failure_exception" => failure_message,
+              "job_url" => job_url
+            }
+          end
+
+          it "returns job_url as value" do
+            expect(reliable_report.send(:exceptions_and_related_urls, records).values).to eq([job_url])
+          end
+        end
+
+        context "with failure_issue and job_url" do
+          let(:values) do
+            {
+              "failure_exception" => failure_message,
+              "failure_issue" => failure_issue_url,
+              "job_url" => job_url
+            }
+          end
+
+          it "returns failure_issue as value" do
+            expect(reliable_report.send(:exceptions_and_related_urls, records).values).to eq([failure_issue_url])
+          end
+        end
+      end
     end
   end
 end

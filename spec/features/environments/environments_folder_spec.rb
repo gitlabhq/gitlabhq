@@ -99,6 +99,30 @@ RSpec.describe 'Environments Folder page', :js, feature_category: :environment_m
         expect(page).not_to have_content(get_env_name(stopped_env))
       end
     end
+
+    describe 'pagination' do
+      # rubocop:disable RSpec/FactoryBot/ExcessiveCreateList -- need >20 items to test pagination
+      let!(:envs) { create_list(:environment, 25, :with_folders, project: project, folder: folder_name) }
+
+      # rubocop:enable RSpec/FactoryBot/ExcessiveCreateList
+      it 'shows pagination' do
+        pagination = find('.pagination')
+
+        expect(pagination).to have_content('2')
+      end
+
+      it 'can navigate to the next page and updates the url' do
+        pagination = find('.pagination')
+        pagination.scroll_to(:bottom)
+        within(pagination) do
+          click_link 'Next'
+        end
+
+        wait_for_requests
+
+        expect(current_url).to include('page=2')
+      end
+    end
   end
 
   describe 'legacy folders page' do

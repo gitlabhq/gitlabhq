@@ -78,7 +78,9 @@ module CsvBuilder
 
     def row(object)
       attributes.map do |attribute|
-        if attribute.respond_to?(:call)
+        if object.is_a?(Hash)
+          excel_sanitize(object[attribute])
+        elsif attribute.respond_to?(:call)
           excel_sanitize(attribute.call(object))
         else
           excel_sanitize(object.public_send(attribute)) # rubocop:disable GitlabSecurity/PublicSend

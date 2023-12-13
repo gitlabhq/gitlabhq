@@ -3,8 +3,10 @@ query getEnvironmentFolder(
   $scope: String
   $search: String
   $perPage: Int
+  $page: Int
 ) {
-  folder(environment: $environment, scope: $scope, search: $search, perPage: $perPage) @client {
+  folder(environment: $environment, scope: $scope, search: $search, perPage: $perPage, page: $page)
+    @client {
     activeCount
     environments
     stoppedCount

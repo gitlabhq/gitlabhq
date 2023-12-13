@@ -155,52 +155,6 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
         end
       end
 
-      context 'when non_public_artifacts flag is disabled' do
-        before do
-          stub_feature_flags(non_public_artifacts: false)
-        end
-
-        it_behaves_like 'public accessibility'
-      end
-
-      context 'when non_public_artifacts flag is enabled' do
-        context 'and accessibility is defined in the params' do
-          context 'and is passed as private' do
-            before do
-              params.merge!('accessibility' => 'private')
-            end
-
-            it_behaves_like 'private accessibility'
-          end
-
-          context 'and is passed as public' do
-            before do
-              params.merge!('accessibility' => 'public')
-            end
-
-            it_behaves_like 'public accessibility'
-          end
-        end
-
-        context 'and accessibility is not defined in the params' do
-          context 'and job has no public artifacts defined in its CI config' do
-            it_behaves_like 'public accessibility'
-          end
-
-          context 'and job artifacts defined as private in the CI config' do
-            let(:job) { create(:ci_build, :with_private_artifacts_config, project: project) }
-
-            it_behaves_like 'private accessibility'
-          end
-
-          context 'and job artifacts defined as public in the CI config' do
-            let(:job) { create(:ci_build, :with_public_artifacts_config, project: project) }
-
-            it_behaves_like 'public accessibility'
-          end
-        end
-      end
-
       context 'when accessibility passed as invalid value' do
         before do
           params.merge!('accessibility' => 'foo')

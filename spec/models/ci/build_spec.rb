@@ -987,24 +987,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe '#artifacts_public?' do
     subject { build.artifacts_public? }
 
-    context 'when non_public_artifacts flag is disabled' do
-      before do
-        stub_feature_flags(non_public_artifacts: false)
-      end
-
-      context 'artifacts with defaults - public' do
-        let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
-
-        it { is_expected.to be_truthy }
-      end
-
-      context 'non public artifacts' do
-        let(:build) { create(:ci_build, :private_artifacts, pipeline: pipeline) }
-
-        it { is_expected.to be_truthy }
-      end
-    end
-
     context 'artifacts with defaults - public' do
       let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
@@ -1026,30 +1008,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   describe '#artifact_is_public_in_config?' do
     subject { build.artifact_is_public_in_config? }
-
-    context 'when non_public_artifacts flag is disabled' do
-      before do
-        stub_feature_flags(non_public_artifacts: false)
-      end
-
-      context 'artifacts with defaults' do
-        let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
-
-        it { is_expected.to be_truthy }
-      end
-
-      context 'non public artifacts' do
-        let(:build) { create(:ci_build, :with_private_artifacts_config, pipeline: pipeline) }
-
-        it { is_expected.to be_truthy }
-      end
-
-      context 'public artifacts' do
-        let(:build) { create(:ci_build, :with_public_artifacts_config, pipeline: pipeline) }
-
-        it { is_expected.to be_truthy }
-      end
-    end
 
     context 'artifacts with defaults' do
       let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
@@ -5270,7 +5228,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe '.with_project_and_metadata' do
     it 'does not join across databases' do
       with_cross_joins_prevented do
-        ::Ci::Build.with_project_and_metadata(project).to_a
+        ::Ci::Build.with_project_and_metadata.to_a
       end
     end
   end

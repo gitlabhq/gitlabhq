@@ -36,11 +36,29 @@ module Gitlab
 
           def set_auto_cancel
             auto_cancel = @command.yaml_processor_result.workflow_auto_cancel
-            auto_cancel_on_new_commit = auto_cancel&.dig(:on_new_commit)
+
+            return if auto_cancel.blank?
+
+            set_auto_cancel_on_new_commit(auto_cancel)
+            set_auto_cancel_on_job_failure(auto_cancel)
+          end
+
+          def set_auto_cancel_on_new_commit(auto_cancel)
+            auto_cancel_on_new_commit = auto_cancel[:on_new_commit]
 
             return if auto_cancel_on_new_commit.blank?
 
             assign_to_metadata(auto_cancel_on_new_commit: auto_cancel_on_new_commit)
+          end
+
+          def set_auto_cancel_on_job_failure(auto_cancel)
+            return if Feature.disabled?(:auto_cancel_pipeline_on_job_failure, pipeline.project)
+
+            auto_cancel_on_job_failure = auto_cancel[:on_job_failure]
+
+            return if auto_cancel_on_job_failure.blank?
+
+            assign_to_metadata(auto_cancel_on_job_failure: auto_cancel_on_job_failure)
           end
 
           def global_context

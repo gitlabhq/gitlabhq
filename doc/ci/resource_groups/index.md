@@ -259,19 +259,25 @@ Sometimes, a job hangs with the message `Waiting for resource: <resource_group>`
 first check that the resource group is working correctly:
 
 1. Go to the job details page.
-1. Select **View job currently using resource**.
-1. Check the job status:
-   - If the status is `running` or `pending`, the feature is working correctly. Wait until the job finishes and releases the resource.
-   - If the status is `created` and the [process mode](#process-modes) is either **Oldest first** or **Newest first**, the feature is working correctly.
-     Visit the pipeline page of the job and check which upstream stage or job is blocking the execution.
-   - If none of the above conditions are met, the feature might not be working correctly.
-     [Open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) with the following information:
-     - The job ID.
-     - The job status.
-     - How often the problem occurs.
-     - Steps to reproduce the problem.
+1. If the resource is assigned to a job, select **View job currently using resource** and check the job status.
 
-You can also get job information from the GraphQL API. You should use the GraphQL API if you use [pipeline-level concurrency control with cross-project/parent-child pipelines](#pipeline-level-concurrency-control-with-cross-projectparent-child-pipelines) because the trigger jobs are not accessible from the UI.
+    - If the status is `running` or `pending`, the feature is working correctly. Wait until the job finishes and releases the resource.
+    - If the status is `created` and the [process mode](#process-modes) is either **Oldest first** or **Newest first**, the feature is working correctly.
+     Visit the pipeline page of the job and check which upstream stage or job is blocking the execution.
+    - If none of the above conditions are met, the feature might not be working correctly. [Report the issue to GitLab](#report-an-issue).
+
+1. If **View job currently using resource** is not available, the resource is not assigned to a job. Instead, check the resource's upcoming jobs.
+
+    1. Get the resource's upcoming jobs with the [REST API](../../api/resource_groups.md#list-upcoming-jobs-for-a-specific-resource-group).
+    1. Verify that the job's [process mode](#process-modes) is **Oldest first**.
+    1. Find the first job in the list of upcoming jobs, and get the job details [with GraphQL](#get-job-details-through-graphql).
+    1. If the first job's pipeline is an older pipeline, try to cancel the pipeline or the job itself.
+    1. Optional. Repeat this process if the next upcoming job is still in an older pipeline that should no longer run.
+    1. If the problem persists, [report the issue to GitLab](#report-an-issue).
+
+#### Get job details through GraphQL
+
+You can get job information from the GraphQL API. You should use the GraphQL API if you use [pipeline-level concurrency control with cross-project/parent-child pipelines](#pipeline-level-concurrency-control-with-cross-projectparent-child-pipelines) because the trigger jobs are not accessible from the UI.
 
 To get job information from the GraphQL API:
 
@@ -284,8 +290,9 @@ To get job information from the GraphQL API:
     {
       project(fullPath: "<fullpath-to-your-project>") {
         name
-        job(id: "gid://gitlab/Ci::Bridge/<job-id>") {
+        job(id: "gid://gitlab/Ci::Build/<job-id>") {
           name
+          status
           detailedStatus {
             action {
               path
@@ -305,7 +312,7 @@ To get job information from the GraphQL API:
     {
       project(fullPath: "<fullpath-to-your-project>") {
         name
-        job(id: "gid://gitlab/Ci::Bridge/<job-id-currently-using-the-resource>") {
+        job(id: "gid://gitlab/Ci::Build/<job-id-currently-using-the-resource>") {
           name
           status
           pipeline {
@@ -316,4 +323,13 @@ To get job information from the GraphQL API:
     }
     ```
 
-    If the status is not `running` or `pending`, [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and [contact support](https://about.gitlab.com/support/#contact-support) so they can apply the correct labels to the issue.
+### Report an issue
+
+[Open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) with the following information:
+
+- The ID of the affected job.
+- The job status.
+- How often the problem occurs.
+- Steps to reproduce the problem.
+
+  You can also [contact support](https://about.gitlab.com/support/#contact-support) for further assistance, or to get in touch with the development team.

@@ -252,7 +252,7 @@ were introduced by the changes made in the merge request.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `sast_reports_in_inline_diff`.
-On GitLab.com, this feature is not available.
+On GitLab.com, this feature is available.
 
 SAST results display in the merge request **Changes** view. Lines containing SAST
 issues are marked by a symbol beside the gutter. Select the symbol to see the list of issues, then select an issue to see its details.

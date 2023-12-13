@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`FindingsDrawer matches the snapshot with detected badge 1`] = `
+exports[`FindingsDrawer General Rendering matches the snapshot with detected badge 1`] = `
 <transition-stub
   class="findings-drawer"
   name="gl-drawer"
@@ -16,7 +16,7 @@ exports[`FindingsDrawer matches the snapshot with detected badge 1`] = `
         class="gl-drawer-title"
       >
         <h2
-          class="drawer-heading gl-font-base gl-mb-0 gl-mt-0"
+          class="drawer-heading gl-font-base gl-mb-0 gl-mt-0 gl-w-28"
         >
           <svg
             aria-hidden="true"
@@ -61,6 +61,7 @@ exports[`FindingsDrawer matches the snapshot with detected badge 1`] = `
       >
         <li
           class="gl-mb-4"
+          data-testid="findings-drawer-title"
         >
           <p
             class="gl-line-height-20"
@@ -219,7 +220,7 @@ exports[`FindingsDrawer matches the snapshot with detected badge 1`] = `
 </transition-stub>
 `;
 
-exports[`FindingsDrawer matches the snapshot with dismissed badge 1`] = `
+exports[`FindingsDrawer General Rendering matches the snapshot with dismissed badge 1`] = `
 <transition-stub
   class="findings-drawer"
   name="gl-drawer"
@@ -235,7 +236,7 @@ exports[`FindingsDrawer matches the snapshot with dismissed badge 1`] = `
         class="gl-drawer-title"
       >
         <h2
-          class="drawer-heading gl-font-base gl-mb-0 gl-mt-0"
+          class="drawer-heading gl-font-base gl-mb-0 gl-mt-0 gl-w-28"
         >
           <svg
             aria-hidden="true"
@@ -280,6 +281,7 @@ exports[`FindingsDrawer matches the snapshot with dismissed badge 1`] = `
       >
         <li
           class="gl-mb-4"
+          data-testid="findings-drawer-title"
         >
           <p
             class="gl-line-height-20"
@@ -310,9 +312,9 @@ exports[`FindingsDrawer matches the snapshot with dismissed badge 1`] = `
               Status
             </span>
             <span
-              class="badge badge-muted badge-pill gl-badge md text-capitalize"
+              class="badge badge-pill badge-warning gl-badge md text-capitalize"
             >
-              dismissed
+              detected
             </span>
           </p>
         </li>

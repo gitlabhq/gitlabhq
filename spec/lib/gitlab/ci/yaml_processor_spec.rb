@@ -502,6 +502,7 @@ module Gitlab
               workflow:
                 auto_cancel:
                   on_new_commit: interruptible
+                  on_job_failure: all
 
               hello:
                 script: echo world
@@ -509,7 +510,10 @@ module Gitlab
           end
 
           it 'parses the workflow:auto_cancel as workflow_auto_cancel' do
-            expect(subject.workflow_auto_cancel).to eq(on_new_commit: 'interruptible')
+            expect(subject.workflow_auto_cancel).to eq({
+              on_new_commit: 'interruptible',
+              on_job_failure: 'all'
+            })
           end
         end
       end

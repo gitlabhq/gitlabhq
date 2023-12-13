@@ -1251,6 +1251,7 @@ job:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223273) in GitLab 13.8 [with a flag](../../user/feature_flags.md) named `non_public_artifacts`, disabled by default.
 > - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/322454) in GitLab 15.10. Artifacts created with `artifacts:public` before 15.10 are not guaranteed to remain private after this update.
+> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/294503) in GitLab 16.7. Rolled out and removed a feature flag named `non_public_artifacts`
 
 WARNING:
 On self-managed GitLab, by default this feature is not available. To make it available,

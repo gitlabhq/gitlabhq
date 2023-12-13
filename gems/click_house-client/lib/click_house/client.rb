@@ -30,6 +30,10 @@ module ClickHouse
     DatabaseError = Class.new(Error)
     QueryError = Class.new(Error)
 
+    def self.database_configured?(database, configuration = self.configuration)
+      !!configuration.databases[database]
+    end
+
     # Executes a SELECT database query
     def self.select(query, database, configuration = self.configuration)
       instrumented_execute(query, database, configuration) do |response, instrument|

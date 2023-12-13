@@ -1,5 +1,5 @@
 <script>
-import { GlSkeletonLoader, GlTabs, GlTab, GlBadge } from '@gitlab/ui';
+import { GlSkeletonLoader, GlTabs, GlTab, GlBadge, GlPagination } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import folderQuery from '../graphql/queries/folder.query.graphql';
 import environmentToDeleteQuery from '../graphql/queries/environment_to_delete.query.graphql';
@@ -15,6 +15,7 @@ import { ENVIRONMENTS_SCOPE } from '../constants';
 
 export default {
   components: {
+    GlPagination,
     GlBadge,
     GlTabs,
     GlTab,
@@ -39,6 +40,10 @@ export default {
       required: true,
       default: ENVIRONMENTS_SCOPE.ACTIVE,
     },
+    page: {
+      type: Number,
+      required: true,
+    },
   },
   data() {
     return {
@@ -47,6 +52,7 @@ export default {
       environmentToStop: {},
       environmentToChangeCanary: {},
       weight: 0,
+      lastRowCount: 3,
     };
   },
   apollo: {
@@ -57,7 +63,8 @@ export default {
           environment: this.environmentQueryData,
           scope: this.scope,
           search: '',
-          perPage: 10,
+          perPage: this.$options.perPage,
+          page: this.page,
         };
       },
       pollInterval: 3000,
@@ -97,6 +104,70 @@ export default {
     activeTab() {
       return this.scope === ENVIRONMENTS_SCOPE.ACTIVE ? 0 : 1;
     },
+    totalItems() {
+      const environmentsCount =
+        this.scope === ENVIRONMENTS_SCOPE.ACTIVE
+          ? this.folder?.activeCount
+          : this.folder?.stoppedCount;
+      return Number(environmentsCount);
+    },
+    totalPages() {
+      return Math.ceil(this.totalItems / this.$options.perPage);
+    },
+    hasNextPage() {
+      return this.page !== this.totalPages;
+    },
+    hasPreviousPage() {
+      return this.page > 1;
+    },
+    pageNumber: {
+      get() {
+        return this.page;
+      },
+      set(newPageNumber) {
+        if (newPageNumber !== this.page) {
+          const query = { ...this.$route.query, page: newPageNumber };
+          this.$router.push({ query });
+        }
+      },
+    },
+  },
+  watch: {
+    environments(newEnvironments) {
+      if (newEnvironments?.length) {
+        this.lastRowCount = newEnvironments.length;
+      }
+
+      // When we load a page, if there's next and/or previous pages existing,
+      // we'll load their data as well to improve percepted performance.
+      // The page data is cached by apollo client and is immediately accessible
+      // and won't trigger additional requests
+      if (this.hasNextPage) {
+        this.$apollo.query({
+          query: folderQuery,
+          variables: {
+            environment: this.environmentQueryData,
+            scope: this.scope,
+            search: '',
+            perPage: this.$options.perPage,
+            page: this.page + 1,
+          },
+        });
+      }
+
+      if (this.hasPreviousPage) {
+        this.$apollo.query({
+          query: folderQuery,
+          variables: {
+            environment: this.environmentQueryData,
+            scope: this.scope,
+            search: '',
+            perPage: this.$options.perPage,
+            page: this.page - 1,
+          },
+        });
+      }
+    },
   },
   methods: {
     setScope(scope) {
@@ -110,6 +181,7 @@ export default {
     active: __('Active'),
     stopped: __('Stopped'),
   },
+  perPage: 20,
   ENVIRONMENTS_SCOPE,
 };
 </script>
@@ -149,7 +221,7 @@ export default {
     </gl-tabs>
     <div v-if="isLoading">
       <div
-        v-for="n in 3"
+        v-for="n in lastRowCount"
         :key="`skeleton-box-${n}`"
         class="gl-border-gray-100 gl-border-t-solid gl-border-1 gl-py-5 gl-md-pl-7"
       >
@@ -157,14 +229,28 @@ export default {
       </div>
     </div>
     <div v-else>
+      <!--
+        We assign each element's key as index intentionally here.
+        Creation and destruction of "environments-item" component is quite taxing and leads
+        to noticeable blocking rendering times for lists of more than 10 items.
+        By assigning indexes we avoid destroying and re-creating the components when page changes,
+        thus getting a much better performance.
+        Correct component state is ensured by deep data-binding of "environment" prop
+      -->
       <environment-item
-        v-for="environment in environments"
+        v-for="(environment, index) in environments"
         :id="environment.name"
-        :key="environment.name"
+        :key="index"
         :environment="environment"
         class="gl-border-gray-100 gl-border-t-solid gl-border-1 gl-pt-3"
         in-folder
       />
     </div>
+    <gl-pagination
+      v-model="pageNumber"
+      :per-page="$options.perPage"
+      :total-items="totalItems"
+      align="center"
+    />
   </div>
 </template>

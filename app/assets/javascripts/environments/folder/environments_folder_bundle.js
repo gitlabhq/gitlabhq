@@ -35,6 +35,7 @@ export default () => {
           component: EnvironmentsFolderApp,
           props: (route) => ({
             scope: route.query.scope,
+            page: Number(route.query.page || '1'),
             folderName,
             folderPath,
           }),

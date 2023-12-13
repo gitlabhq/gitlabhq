@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillVsCodeSettingsUuid
+description: Backfills the uuid column of existing vs_code_settings records
+feature_category: web_ide
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138355
+milestone: '16.7'
+queued_migration_version: 20231130140901
+finalize_after: '2023-12-17'
+finalized_by: # version of the migration that finalized this BBM

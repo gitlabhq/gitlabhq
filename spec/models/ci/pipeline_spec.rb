@@ -86,6 +86,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   it { is_expected.to respond_to :short_sha }
   it { is_expected.to delegate_method(:full_path).to(:project).with_prefix }
   it { is_expected.to delegate_method(:name).to(:pipeline_metadata).allow_nil }
+  it { is_expected.to delegate_method(:auto_cancel_on_job_failure).to(:pipeline_metadata).allow_nil }
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:sha) }

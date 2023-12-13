@@ -286,16 +286,6 @@ RSpec.describe BuildDetailsEntity do
         it 'does not expose non public artifacts' do
           expect(subject.keys).not_to include(:artifact)
         end
-
-        context 'with the non_public_artifacts feature flag disabled' do
-          before do
-            stub_feature_flags(non_public_artifacts: false)
-          end
-
-          it 'exposes artifact details' do
-            expect(subject[:artifact].keys).to include(:download_path, :browse_path, :locked)
-          end
-        end
       end
     end
 

@@ -25005,6 +25005,9 @@ msgstr ""
 msgid "Import|There is not a valid Git repository at this URL. If your HTTP repository is not publicly accessible, verify your credentials."
 msgstr ""
 
+msgid "Import|This project is being imported. Do not make any changes to the project until the import is complete."
+msgstr ""
+
 msgid "Import|Timeout for decompressing archived files (seconds)"
 msgstr ""
 
