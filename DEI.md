@@ -67,7 +67,7 @@ Inclusive leadership is addressed in our project through a variety of different 
 - One or more project maintainers in the GitLab organization have completed neurodiversity and other DEI training.
 - One or more project maintainers in the GitLab organization are a member of a working group related to a DEI initiative.
 - One or more project maintainers in the GitLab organization participate in DEI group meetings or events.
-- GitLab's hiring managers ensure a diverse candidate slate and interview panel.
+- GitLab's hiring managers seek candidates from a diverse range of candidate pools to ensure the most qualified candidate is hired and GitLab's interview panels are representative of GitLab and society's diversity.
 
 Our project recognizes that the inclusion of the DEI.md file and the provided reflection on the specific DEI metrics does not ensure community safety nor community inclusiveness. The inclusion of the DEI.md file signals that we, as a project, are committed to centering DEI in our project and regularly reviewing and reflecting on our project DEI practices.
 

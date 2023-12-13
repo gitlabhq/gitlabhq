@@ -30452,7 +30452,7 @@ Issue type.
 | <a id="issuetypekey_result"></a>`KEY_RESULT` **{warning-solid}** | **Introduced** in 15.7. This feature is an Experiment. It can be changed or removed at any time. Key Result issue type. Available only when feature flag `okrs_mvc` is enabled. |
 | <a id="issuetypeobjective"></a>`OBJECTIVE` **{warning-solid}** | **Introduced** in 15.6. This feature is an Experiment. It can be changed or removed at any time. Objective issue type. Available only when feature flag `okrs_mvc` is enabled. |
 | <a id="issuetyperequirement"></a>`REQUIREMENT` | Requirement issue type. |
-| <a id="issuetypetask"></a>`TASK` **{warning-solid}** | **Introduced** in 15.2. This feature is an Experiment. It can be changed or removed at any time. Task issue type. |
+| <a id="issuetypetask"></a>`TASK` | Task issue type. |
 | <a id="issuetypetest_case"></a>`TEST_CASE` | Test Case issue type. |
 
 ### `IterationSearchableField`

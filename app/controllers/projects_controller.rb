@@ -467,6 +467,7 @@ class ProjectsController < Projects::ApplicationController
       monitor_access_level
       infrastructure_access_level
       model_experiments_access_level
+      model_registry_access_level
     ]
   end
 

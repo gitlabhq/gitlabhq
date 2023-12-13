@@ -336,7 +336,7 @@ cannot change them:
   non-modifiable and are always run.
 - Explicitly set any [variables](../../ci/yaml/index.md#variables) the job references. This:
   - Ensures that project-level pipeline configurations do not set them and alter their
-    behavior.
+    behavior. For example, see `before_script` and `after_script` configuration in the [example configuration](#example-configuration).
   - Includes any jobs that drive the logic of your job.
 - Explicitly set the [container image](../../ci/yaml/index.md#image) to run the job in. This ensures that your script
   steps execute in the correct environment.

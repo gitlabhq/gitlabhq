@@ -27,8 +27,10 @@ which you can customize to meet the specific needs of each project.
   - Verify that a [default storage class](https://kubernetes.io/docs/concepts/storage/storage-classes/)
   is defined so that volumes can be dynamically provisioned for each workspace.
   - Install an Ingress controller of your choice (for example, `ingress-nginx`) and make
-  that controller accessible over a domain. For example, point `*.workspaces.example.dev`
-  and `workspaces.example.dev` to the load balancer exposed by the Ingress controller.
+  that controller accessible over a domain.
+    - In development environments, add an entry to the `/etc/hosts` file or update your DNS records.
+    - In production environments, point `*.<workspaces.example.dev>` and `<workspaces.example.dev>`
+    to the load balancer exposed by the Ingress controller.
   - [Install `gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy#installation-instructions).
   - [Install](../clusters/agent/install/index.md) and [configure](gitlab_agent_configuration.md) the GitLab agent.
 - You must have at least the Developer role in the root group.

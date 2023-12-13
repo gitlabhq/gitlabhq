@@ -172,6 +172,11 @@ msgid_plural "%d authors"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d candidate"
+msgid_plural "%d candidates"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d changed file"
 msgid_plural "%d changed files"
 msgstr[0] ""
@@ -30925,7 +30930,10 @@ msgstr ""
 msgid "MlModelRegistry|Experiment"
 msgstr ""
 
-msgid "MlModelRegistry|Failed to load model versions"
+msgid "MlModelRegistry|Failed to load model candidates with error: %{message}"
+msgstr ""
+
+msgid "MlModelRegistry|Failed to load model versions with error: %{message}"
 msgstr ""
 
 msgid "MlModelRegistry|ID"
@@ -30971,6 +30979,9 @@ msgid "MlModelRegistry|Parameters"
 msgstr ""
 
 msgid "MlModelRegistry|Status"
+msgstr ""
+
+msgid "MlModelRegistry|This model has no candidates"
 msgstr ""
 
 msgid "MlModelRegistry|This model has no versions"
@@ -38014,6 +38025,9 @@ msgstr ""
 msgid "ProjectSettings|Make sure this pattern does not contradict the %{link_start}Push rules &gt; Branch name%{link_end} setting."
 msgstr ""
 
+msgid "ProjectSettings|Manage machine learning models."
+msgstr ""
+
 msgid "ProjectSettings|Manage who can see the project in the public access directory."
 msgstr ""
 
@@ -38057,6 +38071,9 @@ msgid "ProjectSettings|Merging is only allowed when the source branch is up-to-d
 msgstr ""
 
 msgid "ProjectSettings|Model experiments"
+msgstr ""
+
+msgid "ProjectSettings|Model registry"
 msgstr ""
 
 msgid "ProjectSettings|Monitor"

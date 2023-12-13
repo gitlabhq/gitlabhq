@@ -2,13 +2,15 @@ import { GlLink, GlSprintf, GlTruncate } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import ModelVersionRow from '~/ml/model_registry/components/model_version_row.vue';
-import { graphqlModelVersions } from '../graphql_mock_data';
+import CandidateListRow from '~/ml/model_registry/components/candidate_list_row.vue';
+import { graphqlCandidates } from '../graphql_mock_data';
+
+const CANDIDATE = graphqlCandidates[0];
 
 let wrapper;
-const createWrapper = (modelVersion = graphqlModelVersions[0]) => {
-  wrapper = shallowMount(ModelVersionRow, {
-    propsData: { modelVersion },
+const createWrapper = (candidate = CANDIDATE) => {
+  wrapper = shallowMount(CandidateListRow, {
+    propsData: { candidate },
     stubs: {
       GlSprintf,
       GlTruncate,
@@ -21,17 +23,17 @@ const findLink = () => findListItem().findComponent(GlLink);
 const findTruncated = () => findLink().findComponent(GlTruncate);
 const findTooltip = () => findListItem().findComponent(TimeAgoTooltip);
 
-describe('ModelVersionRow', () => {
+describe('ml/model_registry/components/candidate_list_row.vue', () => {
   beforeEach(() => {
     createWrapper();
   });
 
-  it('Has a link to the model version', () => {
-    expect(findTruncated().props('text')).toBe(graphqlModelVersions[0].version);
-    expect(findLink().attributes('href')).toBe(graphqlModelVersions[0]._links.showPath);
+  it('Has a link to the candidate', () => {
+    expect(findTruncated().props('text')).toBe(CANDIDATE.name);
+    expect(findLink().attributes('href')).toBe(CANDIDATE._links.showPath);
   });
 
   it('Shows created at', () => {
-    expect(findTooltip().props('time')).toBe(graphqlModelVersions[0].createdAt);
+    expect(findTooltip().props('time')).toBe(CANDIDATE.createdAt);
   });
 });

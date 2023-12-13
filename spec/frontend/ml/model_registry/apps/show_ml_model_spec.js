@@ -1,16 +1,28 @@
 import { GlBadge, GlTab } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { ShowMlModel } from '~/ml/model_registry/apps';
 import ModelVersionList from '~/ml/model_registry/components/model_version_list.vue';
+import CandidateList from '~/ml/model_registry/components/candidate_list.vue';
 import ModelVersionDetail from '~/ml/model_registry/components/model_version_detail.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import { NO_VERSIONS_LABEL } from '~/ml/model_registry/translations';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { MODEL, makeModel } from '../mock_data';
 
+const apolloProvider = createMockApollo([]);
 let wrapper;
+
+Vue.use(VueApollo);
+
 const createWrapper = (model = MODEL) => {
-  wrapper = shallowMount(ShowMlModel, { propsData: { model }, stubs: { GlTab } });
+  wrapper = shallowMount(ShowMlModel, {
+    apolloProvider,
+    propsData: { model },
+    stubs: { GlTab },
+  });
 };
 
 const findDetailTab = () => wrapper.findAllComponents(GlTab).at(0);
@@ -19,6 +31,7 @@ const findVersionsCountBadge = () => findVersionsTab().findComponent(GlBadge);
 const findModelVersionList = () => findVersionsTab().findComponent(ModelVersionList);
 const findModelVersionDetail = () => findDetailTab().findComponent(ModelVersionDetail);
 const findCandidateTab = () => wrapper.findAllComponents(GlTab).at(2);
+const findCandidateList = () => findCandidateTab().findComponent(CandidateList);
 const findCandidatesCountBadge = () => findCandidateTab().findComponent(GlBadge);
 const findTitleArea = () => wrapper.findComponent(TitleArea);
 const findVersionCountMetadataItem = () => findTitleArea().findComponent(MetadataItem);
@@ -89,6 +102,10 @@ describe('ShowMlModel', () => {
 
     it('shows the number of candidates in the tab', () => {
       expect(findCandidatesCountBadge().text()).toBe(MODEL.candidateCount.toString());
+    });
+
+    it('shows a list of candidates', () => {
+      expect(findCandidateList().props('modelId')).toBe(MODEL.id);
     });
   });
 });

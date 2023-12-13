@@ -2,14 +2,14 @@
 import { GlTab, GlTabs, GlBadge } from '@gitlab/ui';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
-import ModelVersionList from '~/ml/model_registry/components/model_version_list.vue';
 import ModelVersionDetail from '~/ml/model_registry/components/model_version_detail.vue';
 import * as i18n from '../translations';
 
 export default {
   name: 'ShowMlModelApp',
   components: {
-    ModelVersionList,
+    ModelVersionList: () => import('../components/model_version_list.vue'),
+    CandidateList: () => import('../components/candidate_list.vue'),
     TitleArea,
     GlTabs,
     GlTab,
@@ -74,6 +74,8 @@ export default {
           {{ $options.i18n.MODEL_CANDIDATES_TAB_LABEL }}
           <gl-badge size="sm" class="gl-tab-counter-badge">{{ candidateCount }}</gl-badge>
         </template>
+
+        <candidate-list :model-id="model.id" />
       </gl-tab>
     </gl-tabs>
   </div>

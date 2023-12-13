@@ -1231,6 +1231,7 @@ lib/gitlab/checks/**
 /lib/tasks/gitlab/password.rake
 /lib/tasks/tokens.rake
 
+# Necessary for GitLab availability
 [Verify] @gitlab-org/maintainers/cicd-verify @shinya.maeda @stanhu @ayufan
 # With these catch-all rules we will require backend approval and use it as an
 # opportunity to refine specific rules defined in this section.
@@ -1382,6 +1383,7 @@ lib/gitlab/checks/**
 /lib/gitlab/ci/templates/Jobs/SAST.*.yml @gitlab-org/secure/static-analysis
 /lib/gitlab/ci/templates/Jobs/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
 
+# Require approvals for Project API entities affecting availability
 [Data Stores::Tenant Scale] @abdwdd @alexpooley @manojmj
 lib/api/entities/basic_project_details.rb
 lib/api/entities/project_with_access.rb
@@ -1440,17 +1442,18 @@ ee/lib/ee/api/entities/project.rb
 /ee/app/assets/javascripts/usage_quotas/seats/
 /ee/app/assets/javascripts/usage_quotas/storage/
 
-[Manage::Foundations] @gitlab-org/manage/foundations/engineering
+^[Manage::Foundations] @gitlab-org/manage/foundations/engineering
 /lib/sidebars/
 /ee/lib/sidebars/
 /ee/lib/ee/sidebars/
 
+# Necessary for availablity, similar to DB migrations
 [Global Search] @gitlab-org/search-team/migration-maintainers
 /ee/elastic/migrate/
 /ee/spec/elastic/migrate/
 /ee/spec/support/elastic.rb
 
-[Create::IDE - Remote Development Backend] @gitlab-org/maintainers/remote-development/backend
+^[Create::IDE - Remote Development Backend] @gitlab-org/maintainers/remote-development/backend
 /ee/app/models/remote_development/
 /ee/app/policies/remote_development/
 /ee/app/finders/remote_development/
@@ -1476,14 +1479,14 @@ ee/lib/ee/api/entities/project.rb
 /ee/spec/services/remote_development/
 /qa/qa/specs/features/**/remote_development/ @gitlab-org/maintainers/remote-development/backend @gl-quality/qe-maintainers
 
-[Create::IDE - Remote Development Frontend] @gitlab-org/maintainers/remote-development/frontend
+^[Create::IDE - Remote Development Frontend] @gitlab-org/maintainers/remote-development/frontend
 /ee/app/assets/remote_development/
 /ee/app/assets/**/remote_development/
 /ee/app/views/remote_development/
 /ee/spec/frontend/remote_development/
 /ee/spec/frontend/**/remote_development/
 
-[Govern::Anti-abuse] @gitlab-org/modelops/anti-abuse
+^[Govern::Anti-abuse] @gitlab-org/modelops/anti-abuse
 /ee/app/controllers/users/identity_verification_controller.rb
 /ee/app/models/concerns/identity_verifiable.rb
 /ee/config/routes/identity_verification.rb

@@ -15,7 +15,7 @@ module Gitlab
         end
 
         def execute
-          return unless project.import_data
+          return unless import_data_valid?
 
           log_info(import_stage: 'import_pull_request_notes', message: 'starting', iid: object[:iid])
 
@@ -44,6 +44,10 @@ module Gitlab
         private
 
         attr_reader :object, :project, :formatter, :user_finder
+
+        def import_data_valid?
+          project.import_data&.credentials && project.import_data&.data
+        end
 
         # rubocop: disable CodeReuse/ActiveRecord
         def import_merge_event(merge_request, merge_event)

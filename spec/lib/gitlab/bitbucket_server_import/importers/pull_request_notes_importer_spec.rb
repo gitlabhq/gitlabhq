@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporter, feature_category: :importers do
   include AfterNextHelpers
 
-  let_it_be(:project) do
+  let_it_be_with_reload(:project) do
     create(:project, :repository, :import_started,
       import_data_attributes: {
         data: { 'project_key' => 'key', 'repo_slug' => 'slug' },
@@ -82,19 +82,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
   subject(:importer) { described_class.new(project.reload, pull_request.to_hash) }
 
   describe '#execute' do
-    context 'when the project has been marked as failed' do
-      before do
-        project.import_state.mark_as_failed('error')
-      end
-
-      it 'does not log and does not import notes' do
-        expect(Gitlab::BitbucketServerImport::Logger)
-          .not_to receive(:info).with(include(import_stage: 'import_pull_request_notes', message: 'starting'))
-
-        expect { importer.execute }.not_to change { Note.count }
-      end
-    end
-
     context 'when a matching merge request is not found' do
       it 'does nothing' do
         expect { importer.execute }.not_to change { Note.count }
@@ -311,6 +298,41 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
           end
         end
       end
+    end
+
+    shared_examples 'import is skipped' do
+      it 'does not log and does not import notes' do
+        expect(Gitlab::BitbucketServerImport::Logger)
+          .not_to receive(:info).with(include(import_stage: 'import_pull_request_notes', message: 'starting'))
+
+        expect { importer.execute }.not_to change { Note.count }
+      end
+    end
+
+    context 'when the project has been marked as failed' do
+      before do
+        project.import_state.mark_as_failed('error')
+      end
+
+      include_examples 'import is skipped'
+    end
+
+    context 'when the import data does not have credentials' do
+      before do
+        project.import_data.credentials = nil
+        project.import_data.save!
+      end
+
+      include_examples 'import is skipped'
+    end
+
+    context 'when the import data does not have data' do
+      before do
+        project.import_data.data = nil
+        project.import_data.save!
+      end
+
+      include_examples 'import is skipped'
     end
   end
 end

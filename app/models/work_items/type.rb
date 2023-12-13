@@ -93,7 +93,7 @@ module WorkItems
     end
 
     def self.allowed_types_for_issues
-      base_types.keys.excluding('task', 'objective', 'key_result', 'epic', 'ticket')
+      base_types.keys.excluding('objective', 'key_result', 'epic', 'ticket')
     end
 
     def default?

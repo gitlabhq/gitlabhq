@@ -1079,10 +1079,10 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     context 'when trying to create a task' do
-      it 'defaults to issue type' do
+      it 'sets the correct issue_type' do
         issue = post_new_issue(issue_type: 'task')
 
-        expect(issue.work_item_type.base_type).to eq('issue')
+        expect(issue.work_item_type.base_type).to eq('task')
       end
     end
 

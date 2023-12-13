@@ -1,45 +1,43 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlAlert } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import ModelVersionList from '~/ml/model_registry/components/model_version_list.vue';
+import CandidateList from '~/ml/model_registry/components/candidate_list.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
-import ModelVersionRow from '~/ml/model_registry/components/model_version_row.vue';
-import getModelVersionsQuery from '~/ml/model_registry/graphql/queries/get_model_versions.query.graphql';
-import { NO_VERSIONS_LABEL } from '~/ml/model_registry/translations';
+import CandidateListRow from '~/ml/model_registry/components/candidate_list_row.vue';
+import getModelCandidatesQuery from '~/ml/model_registry/graphql/queries/get_model_candidates.query.graphql';
 import { GRAPHQL_PAGE_SIZE } from '~/ml/model_registry/constants';
 import {
-  emptyModelVersionsQuery,
-  modelVersionsQuery,
-  graphqlModelVersions,
+  emptyCandidateQuery,
+  modelCandidatesQuery,
+  graphqlCandidates,
   graphqlPageInfo,
 } from '../graphql_mock_data';
 
 Vue.use(VueApollo);
 
-describe('ModelVersionList', () => {
+describe('ml/model_registry/components/candidate_list.vue', () => {
   let wrapper;
   let apolloProvider;
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findLoader = () => wrapper.findComponent(PackagesListLoader);
   const findRegistryList = () => wrapper.findComponent(RegistryList);
-  const findEmptyMessage = () => wrapper.findByText(NO_VERSIONS_LABEL);
-  const findListRow = () => wrapper.findComponent(ModelVersionRow);
-  const findAllRows = () => wrapper.findAllComponents(ModelVersionRow);
+  const findListRow = () => wrapper.findComponent(CandidateListRow);
+  const findAllRows = () => wrapper.findAllComponents(CandidateListRow);
 
   const mountComponent = ({
     props = {},
-    resolver = jest.fn().mockResolvedValue(modelVersionsQuery()),
+    resolver = jest.fn().mockResolvedValue(modelCandidatesQuery()),
   } = {}) => {
-    const requestHandlers = [[getModelVersionsQuery, resolver]];
+    const requestHandlers = [[getModelCandidatesQuery, resolver]];
     apolloProvider = createMockApollo(requestHandlers);
 
-    wrapper = shallowMountExtended(ModelVersionList, {
+    wrapper = shallowMount(CandidateList, {
       apolloProvider,
       propsData: {
         modelId: 2,
@@ -56,14 +54,14 @@ describe('ModelVersionList', () => {
   });
 
   describe('when list is loaded and has no data', () => {
-    const resolver = jest.fn().mockResolvedValue(emptyModelVersionsQuery);
+    const resolver = jest.fn().mockResolvedValue(emptyCandidateQuery);
     beforeEach(async () => {
       mountComponent({ resolver });
       await waitForPromises();
     });
 
     it('displays empty slot message', () => {
-      expect(findEmptyMessage().exists()).toBe(true);
+      expect(wrapper.text()).toContain('This model has no candidates');
     });
 
     it('does not display loader', () => {
@@ -96,7 +94,7 @@ describe('ModelVersionList', () => {
     });
 
     it('shows error message', () => {
-      expect(findAlert().text()).toContain('Failed to load model versions with error: Failure!');
+      expect(findAlert().text()).toContain('Failed to load model candidates with error: Failure!');
     });
 
     it('is not dismissible', () => {
@@ -124,25 +122,25 @@ describe('ModelVersionList', () => {
 
     it('binds the right props', () => {
       expect(findRegistryList().props()).toMatchObject({
-        items: graphqlModelVersions,
+        items: graphqlCandidates,
         pagination: {},
         isLoading: false,
         hiddenDelete: true,
       });
     });
 
-    it('displays package version rows', () => {
+    it('displays candidate rows', () => {
       expect(findAllRows().exists()).toEqual(true);
-      expect(findAllRows()).toHaveLength(graphqlModelVersions.length);
+      expect(findAllRows()).toHaveLength(graphqlCandidates.length);
     });
 
     it('binds the correct props', () => {
       expect(findAllRows().at(0).props()).toMatchObject({
-        modelVersion: expect.objectContaining(graphqlModelVersions[0]),
+        candidate: expect.objectContaining(graphqlCandidates[0]),
       });
 
       expect(findAllRows().at(1).props()).toMatchObject({
-        modelVersion: expect.objectContaining(graphqlModelVersions[1]),
+        candidate: expect.objectContaining(graphqlCandidates[1]),
       });
     });
 
@@ -151,12 +149,12 @@ describe('ModelVersionList', () => {
     });
 
     it('does not display empty message', () => {
-      expect(findEmptyMessage().exists()).toBe(false);
+      expect(findAlert().exists()).toBe(false);
     });
   });
 
   describe('when user interacts with pagination', () => {
-    const resolver = jest.fn().mockResolvedValue(modelVersionsQuery());
+    const resolver = jest.fn().mockResolvedValue(modelCandidatesQuery());
 
     beforeEach(async () => {
       mountComponent({ resolver });

@@ -4,16 +4,17 @@ import { n__ } from '~/locale';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { makeLoadVersionsErrorMessage, NO_VERSIONS_LABEL } from '~/ml/model_registry/translations';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import getModelVersionsQuery from '../graphql/queries/get_model_versions.query.graphql';
+import CandidateListRow from '~/ml/model_registry/components/candidate_list_row.vue';
+import { makeLoadCandidatesErrorMessage, NO_CANDIDATES_LABEL } from '../translations';
+import getModelCandidatesQuery from '../graphql/queries/get_model_candidates.query.graphql';
 import { GRAPHQL_PAGE_SIZE } from '../constants';
-import ModelVersionRow from './model_version_row.vue';
 
 export default {
+  name: 'MlCandidateList',
   components: {
     GlAlert,
-    ModelVersionRow,
+    CandidateListRow,
     PackagesListLoader,
     RegistryList,
   },
@@ -30,16 +31,16 @@ export default {
     };
   },
   apollo: {
-    modelVersions: {
-      query: getModelVersionsQuery,
+    candidates: {
+      query: getModelCandidatesQuery,
       variables() {
         return this.queryVariables;
       },
       update(data) {
-        return data.mlModel?.versions ?? {};
+        return data.mlModel?.candidates ?? {};
       },
       error(error) {
-        this.errorMessage = makeLoadVersionsErrorMessage(error.message);
+        this.errorMessage = makeLoadCandidatesErrorMessage(error.message);
         Sentry.captureException(error);
       },
     },
@@ -52,13 +53,13 @@ export default {
       return this.count === 0;
     },
     isLoading() {
-      return this.$apollo.queries.modelVersions.loading;
+      return this.$apollo.queries.candidates.loading;
     },
     pageInfo() {
-      return this.modelVersions?.pageInfo ?? {};
+      return this.candidates?.pageInfo ?? {};
     },
     listTitle() {
-      return n__('%d version', '%d versions', this.versions.length);
+      return n__('%d candidate', '%d candidates', this.count);
     },
     queryVariables() {
       return {
@@ -66,46 +67,45 @@ export default {
         first: GRAPHQL_PAGE_SIZE,
       };
     },
-    versions() {
-      return this.modelVersions?.nodes ?? [];
+    items() {
+      return this.candidates?.nodes ?? [];
     },
     count() {
-      return this.modelVersions?.count ?? 0;
+      return this.candidates?.count ?? 0;
     },
   },
   methods: {
-    fetchPreviousVersionsPage() {
+    fetchPage({ first = null, last = null, before = null, after = null } = {}) {
       const variables = {
         ...this.queryVariables,
-        first: null,
-        last: GRAPHQL_PAGE_SIZE,
-        before: this.pageInfo?.startCursor,
+        first,
+        last,
+        before,
+        after,
       };
-      this.$apollo.queries.modelVersions.fetchMore({
+
+      this.$apollo.queries.candidates.fetchMore({
         variables,
         updateQuery: (previousResult, { fetchMoreResult }) => {
           return fetchMoreResult;
         },
       });
     },
-    fetchNextVersionsPage() {
-      const variables = {
-        ...this.queryVariables,
+    fetchPreviousCandidatesPage() {
+      this.fetchPage({
+        last: GRAPHQL_PAGE_SIZE,
+        before: this.pageInfo?.startCursor,
+      });
+    },
+    fetchNextCandidatesPage() {
+      this.fetchPage({
         first: GRAPHQL_PAGE_SIZE,
-        last: null,
         after: this.pageInfo?.endCursor,
-      };
-
-      this.$apollo.queries.modelVersions.fetchMore({
-        variables,
-        updateQuery: (previousResult, { fetchMoreResult }) => {
-          return fetchMoreResult;
-        },
       });
     },
   },
   i18n: {
-    NO_VERSIONS_LABEL,
+    NO_CANDIDATES_LABEL,
   },
 };
 </script>
@@ -118,20 +118,20 @@ export default {
       errorMessage
     }}</gl-alert>
     <div v-else-if="isListEmpty" class="gl-text-secondary">
-      {{ $options.i18n.NO_VERSIONS_LABEL }}
+      {{ $options.i18n.NO_CANDIDATES_LABEL }}
     </div>
     <div v-else>
       <registry-list
         :hidden-delete="true"
         :is-loading="isLoading"
-        :items="versions"
+        :items="items"
         :pagination="pageInfo"
         :title="listTitle"
-        @prev-page="fetchPreviousVersionsPage"
-        @next-page="fetchNextVersionsPage"
+        @prev-page="fetchPreviousCandidatesPage"
+        @next-page="fetchNextCandidatesPage"
       >
         <template #default="{ item }">
-          <model-version-row :model-version="item" />
+          <candidate-list-row :candidate="item" />
         </template>
       </registry-list>
     </div>

@@ -88,31 +88,43 @@ linters:
       # These cops are incredibly noisy when it comes to HAML templates, so we
       # ignore them.
       - Layout/BlockAlignment
-      - Layout/EndAlignment
+      - Layout/HashAlignment
+      - Layout/IndentationConsistency
+      - Layout/IndentationWidth
       - Layout/LineLength
+      - Layout/TrailingWhitespace
       - Lint/Void
       - Naming/FileName
-      - Style/AlignParameters
-      - Style/BlockNesting
-      - Style/ElseAlignment
-      - Style/FileName
-      - Style/FinalNewline
+      - Layout/ElseAlignment
       - Style/FrozenStringLiteralComment
       - Style/IfUnlessModifier
-      - Style/IndentationWidth
       - Style/Next
       - Style/SoleNestedConditional
-      - Style/TrailingWhitespace
+      - Style/StringLiteralsInInterpolation
       - Style/WhileUntilModifier
       - Cop/StaticTranslationDefinition
 
       # These cops should eventually get enabled
+
+      # haml-lint force enables these: https://github.com/sds/haml-lint/blob/v0.51.0/config/forced_rubocop_config.yml
+      - Layout/ArgumentAlignment
+      - Layout/ArrayAlignment
+      - Layout/EndAlignment
+
       - Cop/LineBreakAfterGuardClauses
+      - Cop/LineBreakAroundConditionalBlock
       - Cop/ProjectPathHelper
+      - Gitlab/FeatureAvailableUsage
       - Gitlab/Json
       - GitlabSecurity/PublicSend
+      - Layout/FirstHashElementIndentation
       - Layout/EmptyLineAfterGuardClause
+      - Layout/EmptyLines
+      - Layout/EmptyLinesAroundBlockBody
+      - Layout/ExtraSpacing
+      - Layout/InitialIndentation
       - Layout/LeadingCommentSpace
+      - Layout/MultilineHashBraceLayout
       - Layout/SpaceAroundOperators
       - Layout/SpaceBeforeComma
       - Layout/SpaceBeforeFirstArg
@@ -123,6 +135,7 @@ linters:
       - Lint/AssignmentInCondition
       - Lint/LiteralInInterpolation
       - Lint/ParenthesesAsGroupedExpression
+      - Lint/RedundantStringCoercion
       - Lint/SafeNavigationConsistency
       - Lint/SymbolConversion
       - Lint/UnusedBlockArgument
@@ -140,6 +153,7 @@ linters:
       - Style/IdenticalConditionalBranches
       - Style/IfInsideElse
       - Style/InlineDisableAnnotation
+      - Style/MultilineTernaryOperator
       - Style/NegatedIf
       - Style/NestedTernaryOperator
       - Style/RedundantInterpolation
@@ -148,7 +162,6 @@ linters:
       - Style/TernaryParentheses
       - Style/TrailingCommaInHashLiteral
       - Style/UnlessElse
-      - Style/UnneededCondition
       - Style/WordArray
       - Style/ZeroLengthPredicate
 
@@ -177,6 +190,9 @@ linters:
 
   TagName:
     enabled: true
+
+  TrailingEmptyLines:
+    enabled: false
 
   TrailingWhitespace:
     enabled: true

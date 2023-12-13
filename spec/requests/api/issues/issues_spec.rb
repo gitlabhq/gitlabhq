@@ -20,7 +20,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
   let_it_be(:milestone) { create(:milestone, title: '1.0.0', project: project) }
   let_it_be(:empty_milestone) { create(:milestone, title: '2.0.0', project: project) }
-  let_it_be(:task) { create(:issue, :task, author: user, project: project) }
+  let_it_be(:objective) { create(:issue, :objective, author: user, project: project) }
 
   let_it_be(:closed_issue) do
     create :closed_issue,

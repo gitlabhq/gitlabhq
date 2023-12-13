@@ -137,6 +137,7 @@ describe('Settings Panel', () => {
   const findMonitorSettings = () => wrapper.findComponent({ ref: 'monitor-settings' });
   const findModelExperimentsSettings = () =>
     wrapper.findComponent({ ref: 'model-experiments-settings' });
+  const findModelRegistrySettings = () => wrapper.findComponent({ ref: 'model-registry-settings' });
 
   describe('Project Visibility', () => {
     it('should set the project visibility help path', () => {
@@ -756,6 +757,13 @@ describe('Settings Panel', () => {
       wrapper = mountComponent({});
 
       expect(findModelExperimentsSettings().exists()).toBe(true);
+    });
+  });
+  describe('Model registry', () => {
+    it('shows model registry toggle', () => {
+      wrapper = mountComponent({});
+
+      expect(findModelRegistrySettings().exists()).toBe(true);
     });
   });
 });
