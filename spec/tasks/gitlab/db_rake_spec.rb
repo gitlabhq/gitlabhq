@@ -6,6 +6,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   before(:all) do
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/seed_fu'
+    Rake.application.rake_require 'tasks/gitlab/click_house/migration'
     Rake.application.rake_require 'tasks/gitlab/db'
     Rake.application.rake_require 'tasks/gitlab/db/lock_writes'
   end
@@ -355,6 +356,43 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
           run_rake_task('gitlab:db:configure')
         end
+      end
+    end
+
+    describe 'clickhouse migrations' do
+      let(:connection) { Gitlab::Database.database_base_models[:main].connection }
+      let(:main_config) { double(:config, name: 'main') }
+
+      before do
+        # stub normal migrations
+        allow(ActiveRecord::Base).to receive_message_chain('configurations.configs_for').and_return([main_config])
+        allow(connection).to receive(:tables).and_return(%w[table1 table2])
+        allow(Rake::Task['db:migrate']).to receive(:invoke)
+      end
+
+      it 'migrates clickhouse database' do
+        expect(Rake::Task['gitlab:clickhouse:migrate']).to receive(:invoke).with(true)
+
+        run_rake_task('gitlab:db:configure')
+      end
+
+      it 'does not run clickhouse migrations if feature flag is disabled' do
+        stub_feature_flags(run_clickhouse_migrations_automatically: false)
+
+        expect(Rake::Task['gitlab:clickhouse:migrate']).not_to receive(:invoke)
+
+        run_rake_task('gitlab:db:configure')
+      end
+
+      it 'does not fail if clickhouse is not configured' do
+        allow(::ClickHouse::Client).to receive(:configuration).and_return(::ClickHouse::Client::Configuration.new)
+
+        Rake::Task['gitlab:clickhouse:migrate'].reenable
+        Rake::Task['gitlab:clickhouse:migrate:main'].reenable
+
+        expect do
+          run_rake_task('gitlab:db:configure')
+        end.to output(/The 'main' ClickHouse database is not configured, skipping migrations/).to_stdout
       end
     end
   end

@@ -10,8 +10,8 @@ import PackagesListLoader from '~/packages_and_registries/shared/components/pack
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
 import ModelVersionRow from '~/ml/model_registry/components/model_version_row.vue';
 import getModelVersionsQuery from '~/ml/model_registry/graphql/queries/get_model_versions.query.graphql';
-import { NO_VERSIONS_LABEL } from '~/ml/model_registry/translations';
-import { GRAPHQL_PAGE_SIZE } from '~/ml/model_registry/constants';
+import EmptyState from '~/ml/model_registry/components/empty_state.vue';
+import { GRAPHQL_PAGE_SIZE, MODEL_ENTITIES } from '~/ml/model_registry/constants';
 import {
   emptyModelVersionsQuery,
   modelVersionsQuery,
@@ -28,7 +28,7 @@ describe('ModelVersionList', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findLoader = () => wrapper.findComponent(PackagesListLoader);
   const findRegistryList = () => wrapper.findComponent(RegistryList);
-  const findEmptyMessage = () => wrapper.findByText(NO_VERSIONS_LABEL);
+  const findEmptyState = () => wrapper.findComponent(EmptyState);
   const findListRow = () => wrapper.findComponent(ModelVersionRow);
   const findAllRows = () => wrapper.findAllComponents(ModelVersionRow);
 
@@ -62,8 +62,8 @@ describe('ModelVersionList', () => {
       await waitForPromises();
     });
 
-    it('displays empty slot message', () => {
-      expect(findEmptyMessage().exists()).toBe(true);
+    it('shows empty state', () => {
+      expect(findEmptyState().props('entityType')).toBe(MODEL_ENTITIES.modelVersion);
     });
 
     it('does not display loader', () => {
@@ -150,8 +150,8 @@ describe('ModelVersionList', () => {
       expect(findLoader().exists()).toBe(false);
     });
 
-    it('does not display empty message', () => {
-      expect(findEmptyMessage().exists()).toBe(false);
+    it('does not display empty state', () => {
+      expect(findEmptyState().exists()).toBe(false);
     });
   });
 

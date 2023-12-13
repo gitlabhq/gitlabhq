@@ -91,12 +91,17 @@ namespace :gitlab do
 
     desc 'GitLab | DB | Configures the database by running migrate, or by loading the schema and seeding if needed'
     task configure: :environment do
+      configure_pg_databases
+      configure_clickhouse_databases
+    end
+
+    def configure_pg_databases
       databases_with_tasks = ActiveRecord::Base.configurations.configs_for(env_name: Rails.env)
 
       databases_loaded = []
 
       if databases_with_tasks.size == 1
-        next unless databases_with_tasks.first.name == 'main'
+        return unless databases_with_tasks.first.name == 'main'
 
         connection = Gitlab::Database.database_base_models['main'].connection
         databases_loaded << configure_database(connection)
@@ -108,10 +113,16 @@ namespace :gitlab do
         end
       end
 
-      if databases_loaded.present? && databases_loaded.all?
-        Rake::Task["gitlab:db:lock_writes"].invoke
-        Rake::Task['db:seed_fu'].invoke
-      end
+      return unless databases_loaded.present? && databases_loaded.all?
+
+      Rake::Task["gitlab:db:lock_writes"].invoke
+      Rake::Task['db:seed_fu'].invoke
+    end
+
+    def configure_clickhouse_databases
+      return unless Feature.enabled?(:run_clickhouse_migrations_automatically, type: :ops)
+
+      Rake::Task['gitlab:clickhouse:migrate'].invoke(true)
     end
 
     def configure_database(connection, database_name: nil)

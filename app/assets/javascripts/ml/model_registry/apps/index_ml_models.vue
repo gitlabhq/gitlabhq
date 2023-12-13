@@ -5,8 +5,9 @@ import Pagination from '~/vue_shared/components/incubation/pagination.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import EmptyState from '../components/empty_state.vue';
 import * as i18n from '../translations';
-import { BASE_SORT_FIELDS } from '../constants';
+import { BASE_SORT_FIELDS, MODEL_ENTITIES } from '../constants';
 import SearchBar from '../components/search_bar.vue';
 import ModelRow from '../components/model_row.vue';
 
@@ -19,6 +20,7 @@ export default {
     MetadataItem,
     TitleArea,
     GlBadge,
+    EmptyState,
   },
   props: {
     models: {
@@ -43,6 +45,7 @@ export default {
   i18n,
   sortableFields: BASE_SORT_FIELDS,
   docHref: helpPagePath('user/project/ml/model_registry/index.md'),
+  modelEntity: MODEL_ENTITIES.model,
 };
 </script>
 
@@ -67,6 +70,6 @@ export default {
       <pagination v-bind="pageInfo" />
     </template>
 
-    <p v-else class="gl-text-secondary">{{ $options.i18n.NO_MODELS_LABEL }}</p>
+    <empty-state v-else :entity-type="$options.modelEntity" />
   </div>
 </template>

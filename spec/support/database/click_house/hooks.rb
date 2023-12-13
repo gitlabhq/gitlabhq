@@ -26,9 +26,12 @@ class ClickHouseTestRunner
     clear_db
 
     # run the schema SQL files
-    migrations_paths = ClickHouse::MigrationSupport::Migrator.migrations_paths
-    schema_migration = ClickHouse::MigrationSupport::SchemaMigration
-    migration_context = ClickHouse::MigrationSupport::MigrationContext.new(migrations_paths, schema_migration)
+    migrations_paths = ClickHouse::MigrationSupport::Migrator.migrations_paths(:main)
+    connection = ::ClickHouse::Connection.new(:main)
+    schema_migration = ClickHouse::MigrationSupport::SchemaMigration.new(connection)
+    schema_migration.ensure_table
+    migration_context = ClickHouse::MigrationSupport::MigrationContext.new(connection,
+      migrations_paths, schema_migration)
     migrate(migration_context, nil)
 
     @ensure_schema = true
@@ -38,7 +41,7 @@ class ClickHouseTestRunner
 
   def tables_for(db)
     @tables ||= {}
-    @tables[db] ||= lookup_tables(db) - [ClickHouse::MigrationSupport::SchemaMigration.table_name]
+    @tables[db] ||= lookup_tables(db) - %w[schema_migrations]
   end
 end
 # rubocop: enable Gitlab/NamespacedClass

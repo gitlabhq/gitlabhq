@@ -5,41 +5,27 @@ module ClickHouse
     cattr_accessor :verbose, :client_configuration
     attr_accessor :name, :version
 
-    class << self
-      attr_accessor :delegate
-    end
-
-    def initialize(name = self.class.name, version = nil)
+    def initialize(connection, name = self.class.name, version = nil)
+      @connection = connection
       @name    = name
       @version = version
     end
 
-    self.client_configuration = ClickHouse::Client.configuration
     self.verbose = true
-    # instantiate the delegate object after initialize is defined
-    self.delegate = new
 
     MIGRATION_FILENAME_REGEXP = /\A([0-9]+)_([_a-z0-9]*)\.?([_a-z0-9]*)?\.rb\z/
 
-    def database
-      self.class.constants.include?(:SCHEMA) ? self.class.const_get(:SCHEMA, false) : :main
-    end
-
     def execute(query)
-      ClickHouse::Client.execute(query, database, self.class.client_configuration)
+      connection.execute(query)
     end
 
     def up
-      self.class.delegate = self
-
       return unless self.class.respond_to?(:up)
 
       self.class.up
     end
 
     def down
-      self.class.delegate = self
-
       return unless self.class.respond_to?(:down)
 
       self.class.down
@@ -67,6 +53,8 @@ module ClickHouse
     end
 
     private
+
+    attr_reader :connection
 
     def exec_migration(direction)
       # noinspection RubyCaseWithoutElseBlockInspection

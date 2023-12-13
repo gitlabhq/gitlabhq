@@ -13,3 +13,8 @@ export const BASE_SORT_FIELDS = Object.freeze([
 ]);
 
 export const GRAPHQL_PAGE_SIZE = 30;
+
+export const MODEL_ENTITIES = {
+  model: 'model',
+  modelVersion: 'modelVersion',
+};

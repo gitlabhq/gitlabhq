@@ -305,7 +305,7 @@ rspec-ee unit clickhouse:
     - .rspec-base-pg14-clickhouse23
     - .rails:rules:clickhouse-changes
 
-gitlab:clickhouse:rollback:
+gitlab:clickhouse:rollback:main:
   extends:
     - .rspec-base
     - .production  # Disable webmock from test environment
@@ -317,7 +317,7 @@ gitlab:clickhouse:rollback:
     - 'sed -i "s|test:$|production:|g" config/click_house.yml'
     - !reference [.base-script, script]
     - bundle exec rake gitlab:clickhouse:migrate &&
-      bundle exec rake gitlab:clickhouse:rollback VERSION=0
+      bundle exec rake gitlab:clickhouse:rollback:main VERSION=0
 
 gitlab:setup:
   extends: .db-job-base

@@ -8,53 +8,73 @@ RSpec.describe 'gitlab:clickhouse', click_house: :without_migrations, feature_ca
   # We don't need to delete data since we don't modify Postgres data
   self.use_transactional_tests = false
 
-  let(:verbose) { nil }
-  let(:target_version) { nil }
-  let(:step) { nil }
-
   before(:all) do
     Rake.application.rake_require 'tasks/gitlab/click_house/migration'
   end
 
-  before do
-    stub_env('VERBOSE', verbose) if verbose
-    stub_env('VERSION', target_version) if target_version
-    stub_env('STEP', step.to_s) if step
+  it 'migrates and rolls back the database' do
+    expect { run_rake_task('gitlab:clickhouse:migrate:main') }.to change { active_schema_migrations_count }.from(0)
+      .and output.to_stdout
+
+    expect { run_rake_task('gitlab:clickhouse:rollback:main') }.to change { active_schema_migrations_count }.by(-1)
+      .and output.to_stdout
+
+    stub_env('VERSION', 0)
+    expect { run_rake_task('gitlab:clickhouse:rollback:main') }.to change { active_schema_migrations_count }.to(0)
+      .and output.to_stdout
   end
 
-  context 'with real migrations' do
-    let(:migrations_dir) { File.expand_path(rails_root_join('db', 'click_house', 'migrate')) }
-
+  context 'when clickhouse database is not configured' do
     before do
-      ClickHouse::MigrationSupport::Migrator.migrations_paths = [migrations_dir]
+      allow(::ClickHouse::Client).to receive(:configuration).and_return(::ClickHouse::Client::Configuration.new)
     end
 
-    it 'runs migrations and rollbacks' do
-      expect { run_rake_task('gitlab:clickhouse:migrate') }.to change { active_schema_migrations_count }.from(0)
-        .and output.to_stdout
+    it 'raises an error' do
+      expect { run_rake_task('gitlab:clickhouse:migrate:main') }.to raise_error(ClickHouse::Client::ConfigurationError)
+    end
 
-      expect { run_rake_task('gitlab:clickhouse:rollback') }.to change { active_schema_migrations_count }.by(-1)
-        .and output.to_stdout
-
-      stub_env('VERSION', 0)
-      expect { run_rake_task('gitlab:clickhouse:rollback') }.to change { active_schema_migrations_count }.to(0)
+    it 'prints the error message and exits successfully if skip_unless_configured is passed' do
+      expect do
+        run_rake_task('gitlab:clickhouse:migrate:main', true)
+      end.to output(/The 'main' ClickHouse database is not configured, skipping migrations/).to_stdout
     end
   end
 
-  context 'with migration fixtures' do
+  describe 'gitlab:clickhouse:migrate' do
+    it 'delegates to gitlab:clickhouse:migrate:main' do
+      task = Rake::Task['gitlab:clickhouse:migrate:main']
+      task.reenable # re-enabling task in case other tests already run it
+      expect(task).to receive(:invoke).with("true").and_call_original
+
+      expect do
+        run_rake_task('gitlab:clickhouse:migrate', true)
+      end.to change { active_schema_migrations_count }.from(0).and output.to_stdout
+    end
+  end
+
+  context 'with migration fixtures', :silence_stdout do
     let(:migrations_base_dir) { 'click_house/migrations' }
     let(:migrations_dirname) { 'undefined' }
     let(:migrations_dir) { expand_fixture_path("#{migrations_base_dir}/#{migrations_dirname}") }
 
-    describe 'migrate' do
-      subject(:migration) { run_rake_task('gitlab:clickhouse:migrate') }
+    describe 'migrate:main' do
+      subject(:migration) { run_rake_task('gitlab:clickhouse:migrate:main') }
 
-      around do |example|
-        ClickHouse::MigrationSupport::Migrator.migrations_paths = [migrations_dir]
+      let(:verbose) { nil }
+      let(:target_version) { nil }
+      let(:step) { nil }
 
-        example.run
+      before do
+        allow(ClickHouse::MigrationSupport::Migrator).to receive(:migrations_paths).with(:main)
+          .and_return(migrations_dir)
 
-        clear_consts(expand_fixture_path(migrations_base_dir))
+        stub_env('VERBOSE', verbose) if verbose
+        stub_env('VERSION', target_version) if target_version
+        stub_env('STEP', step.to_s) if step
+      end
+
+      after do
+        unload_click_house_migration_classes(expand_fixture_path(migrations_dir))
       end
 
       describe 'when creating a table' do
@@ -92,7 +112,7 @@ RSpec.describe 'gitlab:clickhouse', click_house: :without_migrations, feature_ca
 
           it 'drops table' do
             stub_env('VERSION', 1)
-            run_rake_task('gitlab:clickhouse:migrate')
+            run_rake_task('gitlab:clickhouse:migrate:main')
 
             expect(table_names).to include('some')
 
@@ -155,20 +175,25 @@ RSpec.describe 'gitlab:clickhouse', click_house: :without_migrations, feature_ca
       end
     end
 
-    describe 'rollback' do
-      subject(:migration) { run_rake_task('gitlab:clickhouse:rollback') }
+    describe 'rollback:main' do
+      subject(:migration) { run_rake_task('gitlab:clickhouse:rollback:main') }
 
+      let(:target_version) { nil }
+      let(:rollback_step) { nil }
       let(:migrations_dirname) { 'table_creation_with_down_method' }
 
-      around do |example|
-        ClickHouse::MigrationSupport::Migrator.migrations_paths = [migrations_dir]
-        # Ensure we start with all migrations up
-        schema_migration = ClickHouse::MigrationSupport::SchemaMigration
-        migrate(ClickHouse::MigrationSupport::MigrationContext.new(migrations_dir, schema_migration), nil)
+      before do
+        allow(ClickHouse::MigrationSupport::Migrator).to receive(:migrations_paths).with(:main)
+          .and_return(migrations_dir)
 
-        example.run
+        run_rake_task('gitlab:clickhouse:migrate:main')
 
-        clear_consts(expand_fixture_path(migrations_base_dir))
+        stub_env('VERSION', target_version) if target_version
+        stub_env('STEP', rollback_step.to_s) if rollback_step
+      end
+
+      after do
+        unload_click_house_migration_classes(expand_fixture_path(migrations_dir))
       end
 
       context 'with VERSION set' do
@@ -183,7 +208,7 @@ RSpec.describe 'gitlab:clickhouse', click_house: :without_migrations, feature_ca
           end
 
           context 'with STEP also set' do
-            let(:step) { 1 }
+            let(:rollback_step) { 1 }
 
             it 'ignores STEP and rolls back all migrations' do
               expect(table_names).to include('some', 'another')
@@ -196,26 +221,14 @@ RSpec.describe 'gitlab:clickhouse', click_house: :without_migrations, feature_ca
       end
 
       context 'with STEP set to 1' do
-        let(:step) { 1 }
+        let(:rollback_step) { 1 }
 
         it 'executes only first step and drops "another" table' do
-          run_rake_task('gitlab:clickhouse:rollback')
+          run_rake_task('gitlab:clickhouse:rollback:main')
 
           expect(table_names).to include('some')
           expect(table_names).not_to include('another')
         end
-      end
-    end
-  end
-
-  %w[gitlab:clickhouse:migrate].each do |task|
-    context "when running #{task}" do
-      it "does run gitlab:clickhouse:prepare_schema_migration_table before" do
-        expect(Rake::Task['gitlab:clickhouse:prepare_schema_migration_table']).to receive(:execute).and_return(true)
-        expect(Rake::Task[task]).to receive(:execute).and_return(true)
-
-        Rake::Task['gitlab:clickhouse:prepare_schema_migration_table'].reenable
-        run_rake_task(task)
       end
     end
   end

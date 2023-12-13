@@ -3,13 +3,11 @@
 module ClickHouse
   module MigrationSupport
     class Migrator
-      class << self
-        attr_accessor :migrations_paths
-      end
-
       attr_accessor :logger
 
-      self.migrations_paths = ["db/click_house/migrate"]
+      def self.migrations_paths(database_name)
+        File.join("db/click_house/migrate", database_name.to_s)
+      end
 
       def initialize(
         direction, migrations, schema_migration, target_version = nil, step = nil,
@@ -18,7 +16,6 @@ module ClickHouse
         @direction         = direction
         @target_version    = target_version
         @step              = step
-        @migrated_versions = {}
         @migrations        = migrations
         @schema_migration  = schema_migration
         @logger            = logger
@@ -27,7 +24,7 @@ module ClickHouse
       end
 
       def current_version
-        @migrated_versions.values.flatten.max || 0
+        migrated.max || 0
       end
 
       def current_migration
@@ -60,29 +57,15 @@ module ClickHouse
         down? ? @migrations.reverse : @migrations.sort_by(&:version)
       end
 
-      def pending_migrations(database)
-        already_migrated = migrated(database)
-
-        migrations.reject { |m| already_migrated.include?(m.version) }
+      def migrated
+        @migrated_versions || load_migrated
       end
 
-      def migrated(database)
-        @migrated_versions[database] || load_migrated(database)
-      end
-
-      def load_migrated(database)
-        ensure_schema_migration_table(database)
-
-        @migrated_versions[database] = Set.new(@schema_migration.all_versions(database).map(&:to_i))
+      def load_migrated
+        @migrated_versions = Set.new(@schema_migration.all_versions.map(&:to_i))
       end
 
       private
-
-      def ensure_schema_migration_table(database)
-        return if @migrated_versions[database]
-
-        @schema_migration.create_table(database)
-      end
 
       # Used for running multiple migrations up to or down to a certain value.
       def migrate_without_lock
@@ -92,7 +75,7 @@ module ClickHouse
       end
 
       def ran?(migration)
-        migrated(migration.database).include?(migration.version.to_i)
+        migrated.include?(migration.version.to_i)
       end
 
       # Return true if a valid version is not provided.
@@ -104,15 +87,13 @@ module ClickHouse
       end
 
       def execute_migration(migration)
-        database = migration.database
-
-        return if down? && migrated(database).exclude?(migration.version.to_i)
-        return if up? && migrated(database).include?(migration.version.to_i)
+        return if down? && migrated.exclude?(migration.version.to_i)
+        return if up? && migrated.include?(migration.version.to_i)
 
         logger.info "Migrating to #{migration.name} (#{migration.version})" if logger
 
         migration.migrate(@direction)
-        record_version_state_after_migrating(database, migration.version)
+        record_version_state_after_migrating(migration.version)
       rescue StandardError => e
         msg = "An error has occurred, all later migrations canceled:\n\n#{e}"
         raise StandardError, msg, e.backtrace
@@ -138,13 +119,13 @@ module ClickHouse
         raise ClickHouse::MigrationSupport::Errors::DuplicateMigrationVersionError, version if version
       end
 
-      def record_version_state_after_migrating(database, version)
+      def record_version_state_after_migrating(version)
         if down?
-          migrated(database).delete(version)
-          @schema_migration.create!(database, version: version.to_s, active: 0)
+          migrated.delete(version)
+          @schema_migration.create!(version: version.to_s, active: 0)
         else
-          migrated(database) << version
-          @schema_migration.create!(database, version: version.to_s)
+          migrated << version
+          @schema_migration.create!(version: version.to_s)
         end
       end
 

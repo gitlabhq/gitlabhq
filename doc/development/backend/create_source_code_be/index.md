@@ -4,16 +4,14 @@ group: Source Code
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
-# Create: Source Code backend
+# Source Code Management
 
-The Create: Source Code backend (BE) team focuses on the GitLab suite of Source Code Management
-(SCM) tools. It is responsible for all backend aspects of the product categories
+The Source Code Management team is responsible for all backend aspects of the product categories
 that fall under the [Source Code group](https://about.gitlab.com/handbook/product/categories/#source-code-group)
 of the [Create stage](https://about.gitlab.com/handbook/product/categories/#create-stage)
 of the [DevOps lifecycle](https://about.gitlab.com/handbook/product/categories/#devops-stages).
 
-We interface with the Gitaly and Code Review teams, and work closely with the
-[Create: Source Code frontend team](https://about.gitlab.com/handbook/engineering/development/dev/create/create-source-code-fe/). The features
+We interface with the Gitaly and Code Review teams. The features
 we work with are listed on the
 [Features by Group Page](https://about.gitlab.com/handbook/product/categories/features/#createsource-code-group).
 
@@ -35,17 +33,28 @@ For more information, refer to the [GitLab Shell documentation](../../gitlab_she
 To learn about the reasoning behind our creation of `gitlab-sshd`, read the blog post
 [Why we implemented our own SSHD solution](https://about.gitlab.com/blog/2022/08/17/why-we-have-implemented-our-own-sshd-solution-on-gitlab-sass/).
 
+## CODEOWNERS
+
+Source Code Management shares ownership of [Code Owners](../../code_owners/index.md) with the Code Review group.
+
 ## GitLab Rails
 
 ### Gitaly touch points
 
-Gitaly is a Go RPC service which handles all the `git` calls made by GitLab.
-GitLab is not exposed directly, and all traffic comes through Create: Source Code.
-For more information, read [Gitaly touch points](gitaly_touch_points.md).
+[Gitaly](../../../administration/gitaly/index.md) provides high-level RPC access to Git repositories.
+It is present in every GitLab installation and coordinates Git repository storage and retrieval.
+Gitaly implements a client-server architecture with Gitaly as the server and Gitaly clients, also
+known as _Gitaly consumers_, including:
 
-### Source Code REST API Endpoints
+- GitLab Rails
+- GitLab Shell
+- GitLab Workhorse
 
-Create: Source Code has over 100 REST endpoints, being a mixture of Grape API endpoints and Rails controller endpoints.
-For a detailed list, refer to [Source Code REST Endpoints](rest_endpoints.md).
+Gitaly Rails provides API endpoints that are counterparts of Gitaly RPCs. For more information, read [Gitaly touch points](gitaly_touch_points.md).
 
-An alternative list of the [Source Code endpoints and other owned objects](https://gitlab-com.gitlab.io/gl-infra/platform/stage-groups-index/source-code.html) is available.
+### Annotated Rails Source Code
+
+The `:source_code_management` annotation indicates which code belongs to the Source Code Management
+group in the Rails codebase. The annotated objects are presented on
+[this page](https://gitlab-com.gitlab.io/gl-infra/platform/stage-groups-index/source-code.html) along
+with the [Error Budgets dashboards](https://dashboards.gitlab.net/d/stage-groups-source_code/stage-groups3a-source-code3a-group-dashboard?orgId=1).

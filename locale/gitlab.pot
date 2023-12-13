@@ -30921,6 +30921,9 @@ msgid_plural "MlModelRegistry|%d versions"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "MlModelRegistry|Add a model"
+msgstr ""
+
 msgid "MlModelRegistry|Artifacts"
 msgstr ""
 
@@ -30928,6 +30931,9 @@ msgid "MlModelRegistry|CI Info"
 msgstr ""
 
 msgid "MlModelRegistry|Candidate not linked to a CI build"
+msgstr ""
+
+msgid "MlModelRegistry|Create a model version"
 msgstr ""
 
 msgid "MlModelRegistry|Details"
@@ -30954,6 +30960,9 @@ msgstr ""
 msgid "MlModelRegistry|MLflow run ID"
 msgstr ""
 
+msgid "MlModelRegistry|Manage versions of your machine learning model"
+msgstr ""
+
 msgid "MlModelRegistry|Metadata"
 msgstr ""
 
@@ -30975,25 +30984,28 @@ msgstr ""
 msgid "MlModelRegistry|No logged parameters"
 msgstr ""
 
-msgid "MlModelRegistry|No models registered in this project"
-msgstr ""
-
 msgid "MlModelRegistry|No registered versions"
 msgstr ""
 
 msgid "MlModelRegistry|Parameters"
 msgstr ""
 
+msgid "MlModelRegistry|Start tracking your machine learning models"
+msgstr ""
+
 msgid "MlModelRegistry|Status"
+msgstr ""
+
+msgid "MlModelRegistry|Store and manage your machine learning models and versions"
 msgstr ""
 
 msgid "MlModelRegistry|This model has no candidates"
 msgstr ""
 
-msgid "MlModelRegistry|This model has no versions"
+msgid "MlModelRegistry|Triggered by"
 msgstr ""
 
-msgid "MlModelRegistry|Triggered by"
+msgid "MlModelRegistry|Use versions to track performance, parameters, and metadata"
 msgstr ""
 
 msgid "MlModelRegistry|Version candidates"

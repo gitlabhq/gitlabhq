@@ -25,7 +25,7 @@ class CreateAuditEvents < ClickHouse::Migration
 
     execute <<~SQL
       ALTER TABLE audit_events
-      ADD PROJECTION by_id (SELECT * ORDER BY id);
+      ADD PROJECTION IF NOT EXISTS by_id (SELECT * ORDER BY id);
     SQL
   end
 

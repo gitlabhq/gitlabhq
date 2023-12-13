@@ -23,7 +23,7 @@ Use a project access token to authenticate:
   - The project access token as the password.
 
 Project access tokens are similar to [group access tokens](../../group/settings/group_access_tokens.md)
-and [personal access tokens](../../profile/personal_access_tokens.md).
+and [personal access tokens](../../profile/personal_access_tokens.md), but project access tokens are scoped to a project, so you cannot use them to access resources from other projects.
 
 In self-managed instances, project access tokens are subject to the same [maximum lifetime limits](../../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) as personal access tokens if the limit is set.
 

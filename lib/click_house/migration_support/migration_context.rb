@@ -10,9 +10,8 @@ module ClickHouse
     # sufficient. Multiple database applications need a +SchemaMigration+
     # per primary database.
     class MigrationContext
-      attr_reader :migrations_paths, :schema_migration
-
-      def initialize(migrations_paths, schema_migration)
+      def initialize(connection, migrations_paths, schema_migration)
+        @connection = connection
         @migrations_paths = migrations_paths
         @schema_migration = schema_migration
       end
@@ -30,6 +29,8 @@ module ClickHouse
       end
 
       private
+
+      attr_reader :migrations_paths, :schema_migration, :connection
 
       def migrate(direction, selected_migrations, target_version = nil, step = nil)
         ClickHouse::MigrationSupport::Migrator.new(
@@ -50,7 +51,7 @@ module ClickHouse
           version = version.to_i
           name = name.camelize
 
-          MigrationProxy.new(name, version, file, scope)
+          MigrationProxy.new(connection, name, version, file, scope)
         end
 
         migrations.sort_by(&:version)
@@ -68,9 +69,16 @@ module ClickHouse
 
     # MigrationProxy is used to defer loading of the actual migration classes
     # until they are needed
-    MigrationProxy = Struct.new(:name, :version, :filename, :scope) do
-      def initialize(name, version, filename, scope)
-        super
+    class MigrationProxy
+      attr_reader :name, :version, :filename, :scope
+
+      def initialize(connection, name, version, filename, scope)
+        @connection = connection
+        @name = name
+        @version = version
+        @filename = filename
+        @scope = scope
+
         @migration = nil
       end
 
@@ -88,7 +96,7 @@ module ClickHouse
 
       def load_migration
         require(File.expand_path(filename))
-        name.constantize.new(name, version)
+        name.constantize.new(@connection, name, version)
       end
     end
   end

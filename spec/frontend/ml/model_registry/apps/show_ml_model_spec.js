@@ -6,10 +6,11 @@ import { ShowMlModel } from '~/ml/model_registry/apps';
 import ModelVersionList from '~/ml/model_registry/components/model_version_list.vue';
 import CandidateList from '~/ml/model_registry/components/candidate_list.vue';
 import ModelVersionDetail from '~/ml/model_registry/components/model_version_detail.vue';
+import EmptyState from '~/ml/model_registry/components/empty_state.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
-import { NO_VERSIONS_LABEL } from '~/ml/model_registry/translations';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { MODEL_ENTITIES } from '~/ml/model_registry/constants';
 import { MODEL, makeModel } from '../mock_data';
 
 const apolloProvider = createMockApollo([]);
@@ -34,6 +35,7 @@ const findCandidateTab = () => wrapper.findAllComponents(GlTab).at(2);
 const findCandidateList = () => findCandidateTab().findComponent(CandidateList);
 const findCandidatesCountBadge = () => findCandidateTab().findComponent(GlBadge);
 const findTitleArea = () => wrapper.findComponent(TitleArea);
+const findEmptyState = () => wrapper.findComponent(EmptyState);
 const findVersionCountMetadataItem = () => findTitleArea().findComponent(MetadataItem);
 
 describe('ShowMlModel', () => {
@@ -75,8 +77,8 @@ describe('ShowMlModel', () => {
         createWrapper(makeModel({ latestVersion: null }));
       });
 
-      it('shows no version message', () => {
-        expect(findDetailTab().text()).toContain(NO_VERSIONS_LABEL);
+      it('shows empty state', () => {
+        expect(findEmptyState().props('entityType')).toBe(MODEL_ENTITIES.modelVersion);
       });
 
       it('does not render model version detail', () => {

@@ -58,7 +58,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
       let(:clone_accessors) do
         %i[pipeline project ref tag options name allow_failure stage stage_idx trigger_request yaml_variables
            when environment coverage_regex description tag_list protected needs_attributes job_variables_attributes
-           resource_group scheduling_type ci_stage partition_id id_tokens]
+           resource_group scheduling_type ci_stage partition_id id_tokens interruptible]
       end
 
       let(:reject_accessors) do
@@ -114,7 +114,8 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
 
     shared_examples_for 'clones the processable' do
       before_all do
-        processable.update!(stage: 'test', stage_id: stage.id)
+        processable.assign_attributes(stage: 'test', stage_id: stage.id, interruptible: true)
+        processable.save!
 
         create(:ci_build_need, build: processable)
       end
@@ -187,7 +188,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
           Ci::Build.attribute_names.map(&:to_sym) +
           Ci::Build.attribute_aliases.keys.map(&:to_sym) +
           Ci::Build.reflect_on_all_associations.map(&:name) +
-          [:tag_list, :needs_attributes, :job_variables_attributes, :id_tokens]
+          [:tag_list, :needs_attributes, :job_variables_attributes, :id_tokens, :interruptible]
 
         current_accessors.uniq!
 

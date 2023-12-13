@@ -1,21 +1,39 @@
 # frozen_string_literal: true
 
+click_house_database_names = %i[main]
+
 namespace :gitlab do
   namespace :clickhouse do
-    task :prepare_schema_migration_table, [:database] => :environment do |_t, args|
-      require_relative '../../../../lib/click_house/migration_support/schema_migration'
+    namespace :migrate do
+      click_house_database_names.each do |database|
+        desc "GitLab | ClickHouse | Migrate the #{database} database (options: VERSION=x, VERBOSE=false, SCOPE=y)"
+        task database, [:skip_unless_configured] => :environment do |_t, args|
+          if args[:skip_unless_configured] && !::ClickHouse::Client.configuration.databases[database]
+            puts "The '#{database}' ClickHouse database is not configured, skipping migrations"
+            next
+          end
 
-      ClickHouse::MigrationSupport::SchemaMigration.create_table(args.database&.to_sym || :main)
+          migrate(:up, database)
+        end
+      end
     end
 
-    desc 'GitLab | ClickHouse | Migrate the database (options: VERSION=x, VERBOSE=false, SCOPE=y)'
-    task migrate: [:prepare_schema_migration_table] do
-      migrate(:up)
+    namespace :rollback do
+      click_house_database_names.each do |database|
+        desc "GitLab | ClickHouse | Rolls the #{database} database back to the previous version " \
+             "(specify steps w/ STEP=n)"
+        task database => :environment do
+          migrate(:down, database)
+        end
+      end
     end
 
-    desc 'GitLab | ClickHouse | Rolls the schema back to the previous version (specify steps w/ STEP=n)'
-    task rollback: [:prepare_schema_migration_table] do
-      migrate(:down)
+    desc 'GitLab | ClickHouse | Migrate the databases (options: VERSION=x, VERBOSE=false, SCOPE=y)'
+    task :migrate, [:skip_unless_configured] => :environment do |_t, args|
+      click_house_database_names.each do |database|
+        puts "Running gitlab:clickhouse:migrate:#{database} rake task"
+        Rake::Task["gitlab:clickhouse:migrate:#{database}"].invoke(args[:skip_unless_configured])
+      end
     end
 
     private
@@ -34,7 +52,7 @@ namespace :gitlab do
       ENV['VERSION'].to_i if ENV['VERSION'] && !ENV['VERSION'].empty?
     end
 
-    def migrate(direction)
+    def migrate(direction, database)
       require_relative '../../../../lib/click_house/migration_support/schema_migration'
       require_relative '../../../../lib/click_house/migration_support/migration_context'
       require_relative '../../../../lib/click_house/migration_support/migrator'
@@ -46,12 +64,17 @@ namespace :gitlab do
       step = 1 if step.nil? && direction == :down
       raise ArgumentError, 'STEP should be a positive number' if step.present? && step < 1
 
-      verbose_was = ClickHouse::Migration.verbose
+      verbose_was = ::ClickHouse::Migration.verbose
       ClickHouse::Migration.verbose = ENV['VERBOSE'] ? ENV['VERBOSE'] != 'false' : true
 
-      migrations_paths = ClickHouse::MigrationSupport::Migrator.migrations_paths
-      schema_migration = ClickHouse::MigrationSupport::SchemaMigration
-      migration_context = ClickHouse::MigrationSupport::MigrationContext.new(migrations_paths, schema_migration)
+      migrations_paths = ::ClickHouse::MigrationSupport::Migrator.migrations_paths(database)
+      connection = ::ClickHouse::Connection.new(database)
+      schema_migration = ClickHouse::MigrationSupport::SchemaMigration.new(connection)
+      schema_migration.ensure_table
+
+      migration_context = ClickHouse::MigrationSupport::MigrationContext.new(connection, migrations_paths,
+        schema_migration)
+
       migrations_ran = migration_context.public_send(direction, target_version, step) do |migration|
         scope.blank? || scope == migration.scope
       end

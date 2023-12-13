@@ -4,14 +4,16 @@ import { n__ } from '~/locale';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { makeLoadVersionsErrorMessage, NO_VERSIONS_LABEL } from '~/ml/model_registry/translations';
+import { makeLoadVersionsErrorMessage } from '~/ml/model_registry/translations';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import getModelVersionsQuery from '../graphql/queries/get_model_versions.query.graphql';
-import { GRAPHQL_PAGE_SIZE } from '../constants';
+import { GRAPHQL_PAGE_SIZE, MODEL_ENTITIES } from '../constants';
+import EmptyState from './empty_state.vue';
 import ModelVersionRow from './model_version_row.vue';
 
 export default {
   components: {
+    EmptyState,
     GlAlert,
     ModelVersionRow,
     PackagesListLoader,
@@ -104,9 +106,7 @@ export default {
       });
     },
   },
-  i18n: {
-    NO_VERSIONS_LABEL,
-  },
+  modelVersionEntity: MODEL_ENTITIES.modelVersion,
 };
 </script>
 <template>
@@ -117,9 +117,7 @@ export default {
     <gl-alert v-else-if="errorMessage" variant="danger" :dismissible="false">{{
       errorMessage
     }}</gl-alert>
-    <div v-else-if="isListEmpty" class="gl-text-secondary">
-      {{ $options.i18n.NO_VERSIONS_LABEL }}
-    </div>
+    <empty-state v-else-if="isListEmpty" :entity-type="$options.modelVersionEntity" />
     <div v-else>
       <registry-list
         :hidden-delete="true"

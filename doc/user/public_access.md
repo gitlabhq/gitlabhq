@@ -69,7 +69,7 @@ Prerequisites:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
-1. Change **Project visibility** to either **Private**, **Internal**, or **Public**.
+1. From the **Project visibility** dropdown list, select an option.
    The visibility setting for a project must be at least as restrictive
    as the visibility of its parent group.
 1. Select **Save changes**.
@@ -85,7 +85,7 @@ Prerequisites:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
-1. Use the toggle by each feature you want to turn on or off, or change access for.
+1. To enable or disable a feature, turn on or off the feature toggle.
 1. Select **Save changes**.
 
 ## Change group visibility
@@ -102,7 +102,7 @@ Prerequisites:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Naming, visibility**.
-1. Under **Visibility level** select either **Private**, **Internal**, or **Public**.
+1. For **Visibility level**, select an option.
    The visibility setting for a project must be at least as restrictive
    as the visibility of its parent group.
 1. Select **Save changes**.
