@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.6.2 (2023-12-13)
+
+### Fixed (1 change)
+
+- [Fix adding confidential child tasks](gitlab-org/security/gitlab@1e67ddffca37e733aee2c3b118c2f9510fc094c0)
+
+### Security (8 changes)
+
+- [Prevent tag names starting with SHA-1 and SHA-256 values](gitlab-org/security/gitlab@d942166b879e8986d9deb45ab1732fa563e715c2) ([merge request](gitlab-org/security/gitlab!3746))
+- [Pass encoded file paths to router](gitlab-org/security/gitlab@1e414bb90ec85c818955bb241934bd43137adb4d) ([merge request](gitlab-org/security/gitlab!3735))
+- [Validate access level of user while rotating token](gitlab-org/security/gitlab@a8267a4facee6ba922897fa2a1f358636d24fb09) ([merge request](gitlab-org/security/gitlab!3750))
+- [Fix large time_spent value causing GraphQL error `Integer out of bounds`](gitlab-org/security/gitlab@6a48b4b8d58daf75a1d1da192b69c790435427bc) ([merge request](gitlab-org/security/gitlab!3745))
+- [Restrict Protected branch access via group to direct members](gitlab-org/security/gitlab@dde50268150c2ef4653c7024eb8357321042ec94) ([merge request](gitlab-org/security/gitlab!3726))
+- [Remove the ability to fork and create MR for auditors](gitlab-org/security/gitlab@c1a532527ee764c32f9c0779fa787a31b6d481f4) ([merge request](gitlab-org/security/gitlab!3738))
+- [Restrict passing variables on the pipeline schedule API](gitlab-org/security/gitlab@0f12c83c9be495e37a04594c678a500643deb410) ([merge request](gitlab-org/security/gitlab!3723))
+- [Smartcard auth: encrypt client cert in params](gitlab-org/security/gitlab@180374e354da080d90c70500aef9e574cc371e9e) ([merge request](gitlab-org/security/gitlab!3729))
+
 ## 16.6.1 (2023-11-30)
 
 ### Fixed (3 changes)

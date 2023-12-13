@@ -46,6 +46,53 @@ RSpec.describe Timelog, feature_category: :team_planning do
       expect(subject).to be_valid
     end
 
+    describe 'check if total time spent would be within the set range' do
+      let_it_be(:time_already_spent) { 1.minute.to_i }
+
+      before_all do
+        create(:issue_timelog, issue: issue, time_spent: time_already_spent)
+      end
+
+      it 'is valid when a negative time spent offsets the time already spent' do
+        timelog = build(:issue_timelog, issue: issue, time_spent: -time_already_spent)
+
+        expect(timelog).to be_valid
+      end
+
+      context 'when total time spent is within the allowed range' do
+        before_all do
+          # Offset the time already spent
+          create(:issue_timelog, issue: issue, time_spent: -time_already_spent)
+        end
+
+        it 'is valid' do
+          timelog = build(:issue_timelog, issue: issue, time_spent: 1.minute.to_i)
+
+          expect(timelog).to be_valid
+        end
+      end
+
+      context 'when total time spent is outside the allowed range' do
+        it 'adds an error if total time spent would exceed a year' do
+          time_to_spend = described_class::MAX_TOTAL_TIME_SPENT - time_already_spent + 1.second.to_i
+          timelog = build(:issue_timelog, issue: issue, time_spent: time_to_spend)
+
+          expect { timelog.save! }
+            .to raise_error(ActiveRecord::RecordInvalid,
+              _('Validation failed: Total time spent cannot exceed a year.'))
+        end
+
+        it 'adds an error if total time spent would be negative' do
+          time_to_spend = -time_already_spent - 1.second.to_i
+          timelog = build(:issue_timelog, issue: issue, time_spent: time_to_spend)
+
+          expect { timelog.save! }
+            .to raise_error(ActiveRecord::RecordInvalid,
+              _('Validation failed: Total time spent cannot be negative.'))
+        end
+      end
+    end
+
     describe 'when importing' do
       it 'is valid if issue_id and merge_request_id are missing' do
         subject.attributes = { issue: nil, merge_request: nil, importing: true }

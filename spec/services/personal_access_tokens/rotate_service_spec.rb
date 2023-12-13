@@ -8,15 +8,19 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
 
     subject(:response) { described_class.new(token.user, token).execute }
 
-    it "rotates user's own token", :freeze_time do
-      expect(response).to be_success
+    shared_examples_for 'rotates token succesfully' do
+      it "rotates user's own token", :freeze_time do
+        expect(response).to be_success
 
-      new_token = response.payload[:personal_access_token]
+        new_token = response.payload[:personal_access_token]
 
-      expect(new_token.token).not_to eq(token.token)
-      expect(new_token.expires_at).to eq(Date.today + 1.week)
-      expect(new_token.user).to eq(token.user)
+        expect(new_token.token).not_to eq(token.token)
+        expect(new_token.expires_at).to eq(Date.today + 1.week)
+        expect(new_token.user).to eq(token.user)
+      end
     end
+
+    it_behaves_like "rotates token succesfully"
 
     it 'revokes the previous token' do
       expect { response }.to change { token.reload.revoked? }.from(false).to(true)

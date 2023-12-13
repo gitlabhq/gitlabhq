@@ -199,7 +199,7 @@ module Types
     field :time_estimate, GraphQL::Types::Int, null: false,
                                                description: 'Time estimate of the merge request.'
     field :total_time_spent, GraphQL::Types::Int, null: false,
-                                                  description: 'Total time reported as spent on the merge request.'
+                                                  description: 'Total time (in seconds) reported as spent on the merge request.'
 
     field :approved, GraphQL::Types::Boolean,
           method: :approved?,

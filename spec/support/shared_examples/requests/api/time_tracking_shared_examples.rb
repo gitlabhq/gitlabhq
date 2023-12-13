@@ -169,6 +169,8 @@ RSpec.shared_examples 'time tracking endpoints' do |issuable_name|
     end
 
     it "resets spent time for #{issuable_name}" do
+      issuable.update!(spend_time: { duration: 60, user_id: user.id })
+
       travel_to(2.minutes.from_now) do
         expect do
           post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/reset_spent_time", user)
