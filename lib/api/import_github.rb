@@ -33,11 +33,6 @@ module API
       optional :optional_stages, type: Hash, desc: 'Optional stages of import to be performed'
       optional :timeout_strategy, type: String, values: ::ProjectImportData::TIMEOUT_STRATEGIES,
         desc: 'Strategy for behavior on timeouts'
-      optional :additional_access_tokens,
-        type: Array[String],
-        coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
-        desc: 'Additional list of personal access tokens',
-        documentation: { example: 'foo,bar' }
     end
     post 'import/github' do
       result = Import::GithubService.new(client, current_user, params).execute(access_params, provider)

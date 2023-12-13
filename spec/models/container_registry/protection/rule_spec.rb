@@ -38,9 +38,9 @@ RSpec.describe ContainerRegistry::Protection::Rule, type: :model, feature_catego
   describe 'validations' do
     subject { build(:container_registry_protection_rule) }
 
-    describe '#container_path_pattern' do
-      it { is_expected.to validate_presence_of(:container_path_pattern) }
-      it { is_expected.to validate_length_of(:container_path_pattern).is_at_most(255) }
+    describe '#repository_path_pattern' do
+      it { is_expected.to validate_presence_of(:repository_path_pattern) }
+      it { is_expected.to validate_length_of(:repository_path_pattern).is_at_most(255) }
     end
 
     describe '#delete_protected_up_to_access_level' do

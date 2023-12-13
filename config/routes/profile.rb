@@ -6,7 +6,7 @@ devise_for :emails, path: 'profile/emails', controllers: { confirmations: :confi
 resource :profile, only: [:show, :update] do
   member do
     get :audit_log, to: redirect('-/user_settings/authentication_log')
-    get :applications, to: 'oauth/applications#index'
+    get :applications, to: redirect('-/user_settings/applications')
 
     put :reset_incoming_email_token
     put :reset_feed_token

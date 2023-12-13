@@ -76,7 +76,7 @@ RSpec.describe Projects::DeployKeysController, feature_category: :continuous_del
       it 'returns only enabled keys' do
         get :enabled_keys, params: params.merge(format: :json)
 
-        expect(json_response.pluck("id")).to match_array([deploy_key_for_target_project.deploy_key_id])
+        expect(json_response['keys'].pluck("id")).to match_array([deploy_key_for_target_project.deploy_key_id])
       end
     end
 
@@ -88,7 +88,7 @@ RSpec.describe Projects::DeployKeysController, feature_category: :continuous_del
       it 'returns available project keys' do
         get :available_project_keys, params: params.merge(format: :json)
 
-        expect(json_response.pluck("id")).to match_array([deploy_key_for_accessible_project.deploy_key_id])
+        expect(json_response['keys'].pluck("id")).to match_array([deploy_key_for_accessible_project.deploy_key_id])
       end
     end
 
@@ -100,7 +100,7 @@ RSpec.describe Projects::DeployKeysController, feature_category: :continuous_del
       it 'returns available public keys' do
         get :available_public_keys, params: params.merge(format: :json)
 
-        expect(json_response.pluck("id")).to match_array([deploy_key_public.id])
+        expect(json_response['keys'].pluck("id")).to match_array([deploy_key_public.id])
       end
     end
   end

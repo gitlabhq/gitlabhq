@@ -502,10 +502,6 @@ module QA
         ENV['QA_GITHUB_ACCESS_TOKEN'].to_s.strip
       end
 
-      def github_additional_access_tokens
-        ENV['QA_ADDITIONAL_GITHUB_ACCESS_TOKENS']
-      end
-
       def require_github_access_token!
         return unless github_access_token.empty?
 

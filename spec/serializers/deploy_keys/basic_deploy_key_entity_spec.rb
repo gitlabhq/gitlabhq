@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DeployKeys::BasicDeployKeyEntity do
+RSpec.describe DeployKeys::BasicDeployKeyEntity, feature_category: :continuous_delivery do
   include RequestAwareEntity
 
   let(:user) { create(:user) }
@@ -56,7 +56,18 @@ RSpec.describe DeployKeys::BasicDeployKeyEntity do
     end
 
     context 'project deploy key' do
+      let(:options) { { user: user, project: project } }
+
       it { expect(entity.as_json).to include(can_edit: true) }
+      it { expect(entity.as_json).to include(edit_path: edit_project_deploy_key_path(options[:project], deploy_key)) }
+
+      it do
+        expect(entity.as_json).to include(enable_path: enable_project_deploy_key_path(options[:project], deploy_key))
+      end
+
+      it do
+        expect(entity.as_json).to include(disable_path: disable_project_deploy_key_path(options[:project], deploy_key))
+      end
     end
 
     context 'public deploy key' do

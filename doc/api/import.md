@@ -53,7 +53,6 @@ curl --request POST \
       "attachments_import": true,
       "collaborators_import": true
     },
-    "additional_access_tokens": "foo,bar"
 }'
 ```
 
@@ -65,8 +64,6 @@ The following keys are available for `optional_stages`:
 - `collaborators_import`, for importing direct repository collaborators who are not outside collaborators.
 
 For more information, see [Select additional items to import](../user/project/import/github.md#select-additional-items-to-import).
-
-You can supply multiple personal access tokens in `additional_access_tokens` from different user accounts to import projects faster.
 
 Example response:
 

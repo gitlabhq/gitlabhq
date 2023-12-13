@@ -4,7 +4,7 @@ module ContainerRegistry
   module Protection
     class CreateRuleService < BaseService
       ALLOWED_ATTRIBUTES = %i[
-        container_path_pattern
+        repository_path_pattern
         push_protected_up_to_access_level
         delete_protected_up_to_access_level
       ].freeze

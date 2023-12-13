@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe BulkImport, type: :model, feature_category: :importers do
-  let_it_be(:created_bulk_import) { create(:bulk_import, :created) }
-  let_it_be(:started_bulk_import) { create(:bulk_import, :started) }
-  let_it_be(:finished_bulk_import) { create(:bulk_import, :finished) }
+  let_it_be(:created_bulk_import) { create(:bulk_import, :created, updated_at: 2.hours.ago) }
+  let_it_be(:started_bulk_import) { create(:bulk_import, :started, updated_at: 3.hours.ago) }
+  let_it_be(:finished_bulk_import) { create(:bulk_import, :finished, updated_at: 1.hour.ago) }
   let_it_be(:failed_bulk_import) { create(:bulk_import, :failed) }
   let_it_be(:stale_created_bulk_import) { create(:bulk_import, :created, updated_at: 3.days.ago) }
-  let_it_be(:stale_started_bulk_import) { create(:bulk_import, :started, updated_at: 3.days.ago) }
+  let_it_be(:stale_started_bulk_import) { create(:bulk_import, :started, updated_at: 2.days.ago) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:user).required }
@@ -23,10 +23,27 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
     it { is_expected.to define_enum_for(:source_type).with_values(%i[gitlab]) }
   end
 
-  describe '.stale scope' do
-    subject { described_class.stale }
+  describe 'scopes' do
+    describe '.stale' do
+      subject { described_class.stale }
 
-    it { is_expected.to contain_exactly(stale_created_bulk_import, stale_started_bulk_import) }
+      it { is_expected.to contain_exactly(stale_created_bulk_import, stale_started_bulk_import) }
+    end
+
+    describe '.order_by_updated_at_and_id' do
+      subject { described_class.order_by_updated_at_and_id(:desc) }
+
+      it 'sorts by given direction' do
+        is_expected.to eq([
+          failed_bulk_import,
+          finished_bulk_import,
+          created_bulk_import,
+          started_bulk_import,
+          stale_started_bulk_import,
+          stale_created_bulk_import
+        ])
+      end
+    end
   end
 
   describe '.all_human_statuses' do

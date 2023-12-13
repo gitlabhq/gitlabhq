@@ -3,6 +3,7 @@
 namespace :user_settings do
   scope module: 'user_settings' do
     get :authentication_log
+    get :applications, to: '/oauth/applications#index'
   end
   resources :active_sessions, only: [:index, :destroy]
 end

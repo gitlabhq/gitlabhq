@@ -201,25 +201,22 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
       expect(project.import_failures.last.exception_message).to eq('some error')
     end
 
-    context 'without github_identifiers defined' do
+    context 'when a NoMethod error is raised' do
       let(:stubbed_representation) { representation_class.instance_eval { undef_method :github_identifiers } }
 
-      it 'logs error when representation does not have a github_id' do
-        expect(importer_class).not_to receive(:new)
-
+      it 'logs the error but does not re-raise it, so the worker does not retry' do
         expect(Gitlab::Import::ImportFailureService)
           .to receive(:track)
           .with(
             project_id: project.id,
             exception: a_kind_of(NoMethodError),
             error_source: 'klass_name',
-            fail_import: true,
+            fail_import: false,
             external_identifiers: { object_type: 'dummy' }
           )
           .and_call_original
 
-        expect { worker.import(project, client, { 'number' => 10 }) }
-          .to raise_error(NoMethodError, /^undefined method `github_identifiers/)
+        worker.import(project, client, { 'number' => 10 })
       end
     end
 
@@ -237,7 +234,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
           .and_raise(exception)
       end
 
-      it 'logs an error' do
+      it 'logs the error but does not re-raise it, so the worker does not retry' do
         expect(Gitlab::GithubImport::Logger)
           .to receive(:info)
           .with(

@@ -200,6 +200,15 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
         expect(described_class.stale).to contain_exactly(entity_1)
       end
     end
+
+    describe '.order_by_updated_at_and_id' do
+      it 'returns entities ordered by updated_at and id' do
+        entity_1 = create(:bulk_import_entity, updated_at: 3.days.ago)
+        entity_2 = create(:bulk_import_entity, updated_at: 2.days.ago)
+
+        expect(described_class.order_by_updated_at_and_id(:desc)).to eq([entity_2, entity_1])
+      end
+    end
   end
 
   describe '.all_human_statuses' do

@@ -67,6 +67,7 @@ include:
     RECORD_DEPRECATIONS: "true"
     GEO_SECONDARY_PROXY: 0
     SUCCESSFULLY_RETRIED_TEST_EXIT_CODE: 137
+    EVENT_PROF: "sql.active_record"
   needs:
     - job: "setup-test-env"
     - job: "retrieve-tests-metadata"

@@ -17,6 +17,7 @@ class BulkImport < ApplicationRecord
   enum source_type: { gitlab: 0 }
 
   scope :stale, -> { where('updated_at < ?', 24.hours.ago).where(status: [0, 1]) }
+  scope :order_by_updated_at_and_id, ->(direction) { order(updated_at: direction, id: :asc) }
   scope :order_by_created_at, ->(direction) { order(created_at: direction) }
 
   state_machine :status, initial: :created do

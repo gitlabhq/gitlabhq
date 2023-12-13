@@ -53,7 +53,7 @@ Refer to the [OAuth RFC](https://www.rfc-editor.org/rfc/rfc6749) to find out
 how all those flows work and pick the right one for your use case.
 
 Authorization code (with or without PKCE) flow requires `application` to be
-registered first via the `/profile/applications` page in your user's account.
+registered first via the `/user_settings/applications` page in your user's account.
 During registration, by enabling proper scopes, you can limit the range of
 resources which the `application` can access. Upon creation, you obtain the
 `application` credentials: _Application ID_ and _Client Secret_. The _Client Secret_

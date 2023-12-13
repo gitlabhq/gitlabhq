@@ -41,7 +41,7 @@ RSpec.describe 'Deleting a container registry protection rule', :aggregate_failu
       'errors' => be_blank,
       'containerRegistryProtectionRule' => {
         'id' => container_protection_rule.to_global_id.to_s,
-        'containerPathPattern' => container_protection_rule.container_path_pattern,
+        'repositoryPathPattern' => container_protection_rule.repository_path_pattern,
         'deleteProtectedUpToAccessLevel' => container_protection_rule.delete_protected_up_to_access_level.upcase,
         'pushProtectedUpToAccessLevel' => container_protection_rule.push_protected_up_to_access_level.upcase
       }
@@ -50,7 +50,7 @@ RSpec.describe 'Deleting a container registry protection rule', :aggregate_failu
 
   context 'with existing container registry protection rule belonging to other project' do
     let_it_be(:container_protection_rule) do
-      create(:container_registry_protection_rule, container_path_pattern: 'protection_rule_other_project')
+      create(:container_registry_protection_rule, repository_path_pattern: 'protection_rule_other_project')
     end
 
     it_behaves_like 'an erroneous reponse'
@@ -61,7 +61,7 @@ RSpec.describe 'Deleting a container registry protection rule', :aggregate_failu
   context 'with deleted container registry protection rule' do
     let!(:container_protection_rule) do
       create(:container_registry_protection_rule, project: project,
-        container_path_pattern: 'protection_rule_deleted').destroy!
+        repository_path_pattern: 'protection_rule_deleted').destroy!
     end
 
     it_behaves_like 'an erroneous reponse'

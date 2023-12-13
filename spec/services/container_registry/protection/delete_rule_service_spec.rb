@@ -58,7 +58,7 @@ RSpec.describe ContainerRegistry::Protection::DeleteRuleService, '#execute', fea
   context 'with deleted container registry protection rule' do
     let!(:container_registry_protection_rule) do
       create(:container_registry_protection_rule, project: project,
-        container_path_pattern: 'protection_rule_deleted').destroy!
+        repository_path_pattern: 'protection_rule_deleted').destroy!
     end
 
     it_behaves_like 'a successful service response'

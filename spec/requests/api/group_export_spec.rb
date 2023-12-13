@@ -311,6 +311,8 @@ RSpec.describe API::GroupExport, feature_category: :importers do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.pluck('relation')).to contain_exactly('labels', 'milestones', 'badges')
         expect(json_response.pluck('status')).to contain_exactly(-1, 0, 1)
+        expect(json_response.pluck('batched')).to all(eq(false))
+        expect(json_response.pluck('batches_count')).to all(eq(0))
       end
 
       context 'when relation is specified' do
@@ -320,6 +322,36 @@ RSpec.describe API::GroupExport, feature_category: :importers do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['relation']).to eq('labels')
           expect(json_response['status']).to eq(0)
+        end
+      end
+
+      context 'when there is a batched export' do
+        let_it_be(:batched_export) do
+          create(:bulk_import_export, :started, :batched, group: group, relation: 'boards', batches_count: 1)
+        end
+
+        let_it_be(:batch) { create(:bulk_import_export_batch, objects_count: 5, export: batched_export) }
+
+        it 'returns a list of batched relation export statuses' do
+          get api(status_path, user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to include(
+            hash_including(
+              'relation' => batched_export.relation,
+              'batched' => true,
+              'batches_count' => 1,
+              'batches' => contain_exactly(
+                {
+                  'batch_number' => 1,
+                  'error' => nil,
+                  'objects_count' => batch.objects_count,
+                  'status' => batch.status,
+                  'updated_at' => batch.updated_at.as_json
+                }
+              )
+            )
+          )
         end
       end
     end

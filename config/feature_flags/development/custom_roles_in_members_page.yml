@@ -1,8 +1,0 @@
----
-name: custom_roles_in_members_page
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128491
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/422897
-milestone: '16.3'
-type: development
-group: group::authorization
-default_enabled: false

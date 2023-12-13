@@ -15203,8 +15203,9 @@ CREATE TABLE container_registry_protection_rules (
     updated_at timestamp with time zone NOT NULL,
     delete_protected_up_to_access_level smallint NOT NULL,
     push_protected_up_to_access_level smallint NOT NULL,
-    container_path_pattern text NOT NULL,
-    CONSTRAINT check_96811ef9dc CHECK ((char_length(container_path_pattern) <= 255))
+    repository_path_pattern text,
+    CONSTRAINT check_3658b31291 CHECK ((repository_path_pattern IS NOT NULL)),
+    CONSTRAINT check_d53a270af5 CHECK ((char_length(repository_path_pattern) <= 255))
 );
 
 CREATE SEQUENCE container_registry_protection_rules_id_seq
@@ -31408,7 +31409,7 @@ CREATE INDEX i_compliance_violations_on_project_id_severity_and_id ON merge_requ
 
 CREATE INDEX i_compliance_violations_on_project_id_title_and_id ON merge_requests_compliance_violations USING btree (target_project_id, title, id);
 
-CREATE UNIQUE INDEX i_container_protection_unique_project_id_container_path_pattern ON container_registry_protection_rules USING btree (project_id, container_path_pattern);
+CREATE UNIQUE INDEX i_container_protection_unique_project_repository_path_pattern ON container_registry_protection_rules USING btree (project_id, repository_path_pattern);
 
 CREATE INDEX i_custom_email_verifications_on_triggered_at_and_state_started ON service_desk_custom_email_verifications USING btree (triggered_at) WHERE (state = 0);
 

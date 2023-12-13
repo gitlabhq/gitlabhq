@@ -57,12 +57,7 @@ module Gitlab
         end
 
         info(project.id, message: 'importer finished')
-      rescue NoMethodError => e
-        # This exception will be more useful in development when a new
-        # Representation is created but the developer forgot to add a
-        # `#github_identifiers` method.
-        track_and_raise_exception(project, e, fail_import: true)
-      rescue ActiveRecord::RecordInvalid, NotRetriableError => e
+      rescue ActiveRecord::RecordInvalid, NotRetriableError, NoMethodError => e
         # We do not raise exception to prevent job retry
         track_exception(project, e)
       rescue StandardError => e

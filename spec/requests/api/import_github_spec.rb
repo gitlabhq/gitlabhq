@@ -5,8 +5,7 @@ require 'spec_helper'
 RSpec.describe API::ImportGithub, feature_category: :importers do
   let(:token) { "asdasd12345" }
   let(:provider) { :github }
-  let(:access_params) { { github_access_token: token, additional_access_tokens: additional_access_tokens } }
-  let(:additional_access_tokens) { nil }
+  let(:access_params) { { github_access_token: token } }
   let(:provider_username) { user.username }
   let(:provider_user) { double('provider', login: provider_username).as_null_object }
   let(:provider_repo) do
@@ -132,28 +131,6 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
         }
 
         expect(response).to have_gitlab_http_status(:bad_request)
-      end
-    end
-
-    context 'when additional access tokens are provided' do
-      let(:additional_access_tokens) { 'token1,token2' }
-
-      it 'returns 201' do
-        expected_access_params = { github_access_token: token, additional_access_tokens: %w[token1 token2] }
-
-        expect(Gitlab::LegacyGithubImport::ProjectCreator)
-          .to receive(:new)
-          .with(provider_repo, provider_repo[:name], user.namespace, user, type: provider, **expected_access_params)
-          .and_return(double(execute: project))
-
-        post api("/import/github", user), params: {
-          target_namespace: user.namespace_path,
-          personal_access_token: token,
-          repo_id: non_existing_record_id,
-          additional_access_tokens: 'token1,token2'
-        }
-
-        expect(response).to have_gitlab_http_status(:created)
       end
     end
   end

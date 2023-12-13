@@ -2,6 +2,8 @@
 
 module DeployKeys
   class BasicDeployKeyEntity < Grape::Entity
+    include RequestAwareEntity
+
     expose :id
     expose :user_id
     expose :title
@@ -14,6 +16,17 @@ module DeployKeys
     expose :updated_at
     expose :can_edit
     expose :user, as: :owner, using: ::API::Entities::UserBasic, if: -> (_, opts) { can_read_owner?(opts) }
+    expose :edit_path, if: -> (_, opts) { opts[:project] } do |deploy_key|
+      edit_project_deploy_key_path(options[:project], deploy_key)
+    end
+
+    expose :enable_path, if: -> (_, opts) { opts[:project] } do |deploy_key|
+      enable_project_deploy_key_path(options[:project], deploy_key)
+    end
+
+    expose :disable_path, if: -> (_, opts) { opts[:project] } do |deploy_key|
+      disable_project_deploy_key_path(options[:project], deploy_key)
+    end
 
     private
 

@@ -57,16 +57,13 @@ module Gitlab
         user_settings = user_settings.to_h.with_indifferent_access
 
         optional_stages = fetch_stages_from_params(user_settings[:optional_stages])
-        credentials = project.import_data&.credentials&.merge(
-          additional_access_tokens: user_settings[:additional_access_tokens]
-        )
 
         import_data = project.build_or_assign_import_data(
           data: {
             optional_stages: optional_stages,
             timeout_strategy: user_settings[:timeout_strategy]
           },
-          credentials: credentials
+          credentials: project.import_data&.credentials
         )
 
         import_data.save!

@@ -57,6 +57,8 @@ class BulkImports::Entity < ApplicationRecord
   scope :stale, -> { where('updated_at < ?', 24.hours.ago).where(status: [0, 1]) }
   scope :by_bulk_import_id, ->(bulk_import_id) { where(bulk_import_id: bulk_import_id) }
   scope :order_by_created_at, ->(direction) { order(created_at: direction) }
+  scope :order_by_updated_at_and_id, ->(direction) { order(updated_at: direction, id: :asc) }
+  scope :with_trackers, -> { includes(:trackers) }
 
   alias_attribute :destination_slug, :destination_name
 

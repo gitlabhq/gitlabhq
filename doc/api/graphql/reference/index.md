@@ -2555,10 +2555,10 @@ Input type: `CreateContainerRegistryProtectionRuleInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatecontainerregistryprotectionrulecontainerpathpattern"></a>`containerPathPattern` | [`String!`](#string) | ContainerRegistryname protected by the protection rule. For example `@my-scope/my-container-*`. Wildcard character `*` allowed. |
 | <a id="mutationcreatecontainerregistryprotectionruledeleteprotecteduptoaccesslevel"></a>`deleteProtectedUpToAccessLevel` | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | Max GitLab access level to prevent from deleting container images in the container registry. For example `DEVELOPER`, `MAINTAINER`, `OWNER`. |
 | <a id="mutationcreatecontainerregistryprotectionruleprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project where a protection rule is located. |
 | <a id="mutationcreatecontainerregistryprotectionrulepushprotecteduptoaccesslevel"></a>`pushProtectedUpToAccessLevel` | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | Max GitLab access level to prevent from pushing container images to the container registry. For example `DEVELOPER`, `MAINTAINER`, `OWNER`. |
+| <a id="mutationcreatecontainerregistryprotectionrulerepositorypathpattern"></a>`repositoryPathPattern` | [`String!`](#string) | Container repository path pattern protected by the protection rule. For example `my-project/my-container-*`. Wildcard character `*` allowed. |
 
 #### Fields
 
@@ -16496,10 +16496,10 @@ A container registry protection rule designed to prevent users with a certain ac
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="containerregistryprotectionrulecontainerpathpattern"></a>`containerPathPattern` | [`String!`](#string) | Container repository path pattern protected by the protection rule. For example `@my-scope/my-container-*`. Wildcard character `*` allowed. |
 | <a id="containerregistryprotectionruledeleteprotecteduptoaccesslevel"></a>`deleteProtectedUpToAccessLevel` | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | Max GitLab access level to prevent from pushing container images to the container registry. For example `DEVELOPER`, `MAINTAINER`, `OWNER`. |
 | <a id="containerregistryprotectionruleid"></a>`id` | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | ID of the container registry protection rule. |
 | <a id="containerregistryprotectionrulepushprotecteduptoaccesslevel"></a>`pushProtectedUpToAccessLevel` | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | Max GitLab access level to prevent from pushing container images to the container registry. For example `DEVELOPER`, `MAINTAINER`, `OWNER`. |
+| <a id="containerregistryprotectionrulerepositorypathpattern"></a>`repositoryPathPattern` | [`String!`](#string) | Container repository path pattern protected by the protection rule. For example `my-project/my-container-*`. Wildcard character `*` allowed. |
 
 ### `ContainerRepository`
 

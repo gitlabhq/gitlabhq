@@ -9,8 +9,7 @@ module API
 
       def access_params
         {
-          github_access_token: params[:personal_access_token],
-          additional_access_tokens: params[:additional_access_tokens]
+          github_access_token: params[:personal_access_token]
         }
       end
 

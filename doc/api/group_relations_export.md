@@ -64,10 +64,6 @@ The status can be one of the following:
 - `1`: `finished`
 - `-1`: `failed`
 
-- `0` - `started`
-- `1` - `finished`
-- `-1` - `failed`
-
 ```json
 [
   {
@@ -76,6 +72,7 @@ The status can be one of the following:
     "error": null,
     "updated_at": "2021-05-04T11:25:20.423Z",
     "batched": true,
+    "batches_count": 1,
     "batches": [
       {
         "status": 1,
@@ -91,7 +88,8 @@ The status can be one of the following:
     "status": 1,
     "error": null,
     "updated_at": "2021-05-04T11:25:20.085Z",
-    "batched": false
+    "batched": false,
+    "batches_count": 0
   }
 ]
 ```

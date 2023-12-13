@@ -6,8 +6,7 @@ module QA
       attr_accessor :issue_events_import,
         :full_notes_import,
         :attachments_import,
-        :allow_partial_import,
-        :additional_access_tokens
+        :allow_partial_import
 
       attribute :github_repo_id do
         github_client.repository(github_repository_path).id
@@ -62,7 +61,6 @@ module QA
           new_name: name,
           target_namespace: @personal_namespace || group.full_path,
           personal_access_token: github_personal_access_token,
-          additional_access_tokens: additional_access_tokens,
           ci_cd_only: false,
           optional_stages: {
             single_endpoint_issue_events_import: issue_events_import,

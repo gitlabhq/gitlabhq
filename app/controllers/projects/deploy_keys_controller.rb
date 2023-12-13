@@ -26,7 +26,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
     respond_to do |format|
       format.json do
         enabled_keys = find_keys(filter: :enabled_keys)
-        render json: serialize(enabled_keys)
+        render json: { keys: serialize(enabled_keys) }
       end
     end
   end
@@ -35,7 +35,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
     respond_to do |format|
       format.json do
         available_project_keys = find_keys(filter: :available_project_keys)
-        render json: serialize(available_project_keys)
+        render json: { keys: serialize(available_project_keys) }
       end
     end
   end
@@ -45,7 +45,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
       format.json do
         available_public_keys = find_keys(filter: :available_public_keys)
 
-        render json: serialize(available_public_keys)
+        render json: { keys: serialize(available_public_keys) }
       end
     end
   end
