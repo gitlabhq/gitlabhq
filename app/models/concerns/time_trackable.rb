@@ -45,7 +45,13 @@ module TimeTrackable
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def total_time_spent
-    timelogs.sum(:time_spent)
+    sum = timelogs.sum(:time_spent)
+
+    # A new restriction has been introduced to limit total time spent to -
+    # Timelog::MAX_TOTAL_TIME_SPENT or 3.154e+7 seconds (approximately a year, a generous limit)
+    # Since there could be existing records that breach the limit, check and return the maximum/minimum allowed value.
+    # (some issuable might have total time spent that's negative because a validation was missing.)
+    sum.clamp(-Timelog::MAX_TOTAL_TIME_SPENT, Timelog::MAX_TOTAL_TIME_SPENT)
   end
 
   def human_total_time_spent

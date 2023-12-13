@@ -97,6 +97,19 @@ To create a tag from the GitLab UI:
    create a lightweight tag.
 1. Select **Create tag**.
 
+## Name your tag
+
+Git enforces [tag name rules](https://git-scm.com/docs/git-check-ref-format)
+to help ensure tag names remain compatible with other tools. GitLab
+adds extra requirements for tag names, and provides benefits for well-structured tag names.
+
+GitLab enforces these additional rules on all tags:
+
+- No spaces are allowed in tag names.
+- Tag names starting with 40 or 64 hexadecimal characters are prohibited, because they are similar to Git commit hashes.
+- Tag names cannot start with `-`, `refs/heads`, `refs/tags`, or `refs/remotes`
+- Tag names are case-sensitive.
+
 ## Prevent tag deletion **(PREMIUM ALL)**
 
 To prevent users from removing a tag with `git push`, create a [push rule](../push_rules.md).
