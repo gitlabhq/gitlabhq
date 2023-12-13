@@ -804,8 +804,6 @@ Layout/LineLength:
     - 'ee/app/graphql/types/vulnerability_detail_type.rb'
     - 'ee/app/graphql/types/vulnerability_type.rb'
     - 'ee/app/helpers/admin/emails_helper.rb'
-    - 'ee/app/helpers/admin/ip_restriction_helper.rb'
-    - 'ee/app/helpers/admin/repo_size_limit_helper.rb'
     - 'ee/app/helpers/analytics/code_review_helper.rb'
     - 'ee/app/helpers/billing_plans_helper.rb'
     - 'ee/app/helpers/ee/application_helper.rb'

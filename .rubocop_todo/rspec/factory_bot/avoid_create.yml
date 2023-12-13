@@ -9,7 +9,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/components/namespaces/storage/project_pre_enforcement_alert_component_spec.rb'
     - 'ee/spec/components/namespaces/storage/subgroup_pre_enforcement_alert_component_spec.rb'
     - 'ee/spec/components/namespaces/storage/user_pre_enforcement_alert_component_spec.rb'
-    - 'ee/spec/helpers/admin/ip_restriction_helper_spec.rb'
     - 'ee/spec/helpers/application_helper_spec.rb'
     - 'ee/spec/helpers/billing_plans_helper_spec.rb'
     - 'ee/spec/helpers/boards_helper_spec.rb'

@@ -863,8 +863,6 @@
 - './ee/spec/graphql/types/work_items/type_spec.rb'
 - './ee/spec/graphql/types/work_items/widget_interface_spec.rb'
 - './ee/spec/helpers/admin/emails_helper_spec.rb'
-- './ee/spec/helpers/admin/ip_restriction_helper_spec.rb'
-- './ee/spec/helpers/admin/repo_size_limit_helper_spec.rb'
 - './ee/spec/helpers/analytics/code_review_helper_spec.rb'
 - './ee/spec/helpers/application_helper_spec.rb'
 - './ee/spec/helpers/audit_events_helper_spec.rb'

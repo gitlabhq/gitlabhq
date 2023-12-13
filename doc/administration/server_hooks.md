@@ -18,8 +18,13 @@ on the GitLab server. You can use them to run Git-related tasks such as:
 Git server hooks use `pre-receive`, `post-receive`, and `update`
 [Git server-side hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks#_server_side_hooks).
 
-GitLab administrators configure server hooks through the Gitaly CLI, which connects to the Gitaly gRPC API.
-If you don't have access to the Gitaly CLI, alternatives to server hooks include:
+GitLab administrators configure server hooks using the `gitaly` command, which also:
+
+- Is used to launch a Gitaly server.
+- Provides several subcommands.
+- Connects to the Gitaly gRPC API.
+
+If you don't have access to the `gitaly` command, alternatives to server hooks include:
 
 - [Webhooks](../user/project/integrations/webhooks.md).
 - [GitLab CI/CD](../ci/index.md).

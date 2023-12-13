@@ -1,0 +1,56 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'optparse'
+require 'yaml'
+require_relative '../lib/tooling/api/pipeline'
+
+options = {}
+
+# Define the options and their default values
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{File.basename($PROGRAM_NAME)} [options]"
+
+  opts.on('-t', '--api-token TOKEN', String, 'API Token') do |token|
+    options[:api_token] = token
+  end
+
+  opts.on('-p', '--project-id ID', Integer, 'Project ID') do |project_id|
+    options[:project_id] = project_id
+  end
+
+  opts.on('-l', '--pipeline-id ID', Integer, 'Pipeline ID') do |pipeline_id|
+    options[:pipeline_id] = pipeline_id
+  end
+
+  opts.on('-o', '--output FILENAME', String, 'Output to YAML file') do |output|
+    options[:output_file] = output
+  end
+
+  opts.on('-d', '--debug', 'Print debug information') do |debug|
+    Tooling::Debug.debug = debug
+  end
+
+  opts.on_tail('-h', '--help', 'Prints this help') do
+    puts opts
+    exit
+  end
+end.parse!
+
+# Check if all required options are provided
+unless options[:api_token] && options[:project_id] && options[:pipeline_id]
+  puts "Error: Missing required parameters. Use -h or --help for usage information."
+  exit 1
+end
+
+pipeline = Tooling::API::Pipeline.new(options[:api_token], options[:project_id], options[:pipeline_id])
+failed_spec_files = pipeline.failed_spec_files
+
+output_file = options[:output_file]
+if output_file
+  File.open(output_file, 'w') do |file|
+    file.write(failed_spec_files.to_yaml)
+  end
+
+  puts "Wrote #{failed_spec_files.count} files to #{output_file}"
+end

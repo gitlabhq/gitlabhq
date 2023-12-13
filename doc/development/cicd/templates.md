@@ -6,6 +6,17 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Development guide for GitLab CI/CD templates
 
+NOTE:
+With the introduction of the [CI/CD Catalog](../../ci/components/index.md#cicd-catalog),
+GitLab is no longer accepting contributions of new CI/CD templates to the codebase. Instead,
+we encourage team members to create [CI/CD components](../../ci/components/index.md)
+for the catalog. This transition enhances the modularity and maintainability of our
+shared CI/CD resources, and avoids the complexities of contributing new CI/CD templates.
+If you need to update an existing template, you must also update the matching CI/CD component.
+If no component exists that matches the CI/CD template yet, consider creating the matching component.
+This ensures that template and component functionality remain in sync, aligning with
+our new development practices.
+
 This document explains how to develop [GitLab CI/CD templates](../../ci/examples/index.md#cicd-templates).
 
 ## Requirements for CI/CD templates
