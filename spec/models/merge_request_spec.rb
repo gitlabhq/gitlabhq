@@ -2045,6 +2045,11 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  it_behaves_like 'a time trackable' do
+    let(:trackable) { create(:merge_request, :simple, source_project: create(:project, :repository)) }
+    let(:timelog) { create(:merge_request_timelog, merge_request: trackable) }
+  end
+
   it_behaves_like 'an editable mentionable' do
     subject { create(:merge_request, :simple, source_project: create(:project, :repository)) }
 

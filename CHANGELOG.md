@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.5.4 (2023-12-13)
+
+### Fixed (1 change)
+
+- [Truncate verification failure message to 255](gitlab-org/security/gitlab@640f8fa1b9ac91767b25992be646b8369fe41e09) **GitLab Enterprise Edition**
+
+### Security (8 changes)
+
+- [Prevent tag names starting with SHA-1 and SHA-256 values](gitlab-org/security/gitlab@2a67d2efe432eeb1264ffe3dd5e0625c364d3d4b) ([merge request](gitlab-org/security/gitlab!3747))
+- [Pass encoded file paths to router](gitlab-org/security/gitlab@7299f46a651db01f451694bf7b801ae8af672592) ([merge request](gitlab-org/security/gitlab!3736))
+- [Validate access level of user while rotating token](gitlab-org/security/gitlab@4a1ca1e3f95d858966ef1f985925c57f70923e17) ([merge request](gitlab-org/security/gitlab!3751))
+- [Fix large time_spent value causing GraphQL error `Integer out of bounds`](gitlab-org/security/gitlab@a87f5d04de526fbed7ecbf6ed8d44db356076826) ([merge request](gitlab-org/security/gitlab!3744))
+- [Restrict Protected branch access via group to direct members](gitlab-org/security/gitlab@22fd1a0d19f49c761fb20f80c326fa8658c962f7) ([merge request](gitlab-org/security/gitlab!3727))
+- [Remove the ability to fork and create MR for auditors](gitlab-org/security/gitlab@1a9d9490b3cf0e91321a90333d3f79ed275df4c0) ([merge request](gitlab-org/security/gitlab!3739))
+- [Restrict passing variables on the pipeline schedule API](gitlab-org/security/gitlab@eeb86c57a3b09b04659cb3d1300e396bdd51db58) ([merge request](gitlab-org/security/gitlab!3724))
+- [Smartcard auth: encrypt client cert in params](gitlab-org/security/gitlab@4ca907081651de95bcb392ee2ca2626dd7679f36) ([merge request](gitlab-org/security/gitlab!3730))
+
 ## 16.5.3 (2023-11-30)
 
 ### Security (11 changes)
