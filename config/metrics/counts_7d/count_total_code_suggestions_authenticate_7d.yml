@@ -1,0 +1,27 @@
+---
+key_path: count_total_code_suggestions_authenticate_7d
+description: Tracks the number of authentication requests to the `POST /code_suggestions/tokens` API endpoint in the last 7 days.
+product_section: dev
+product_stage: create
+product_group: code_creation
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: "16.7"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138848
+time_frame: 7d
+data_source: internal_events
+data_category: optional
+instrumentation_class: TotalCountMetric
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+options:
+  events:
+    - code_suggestions_authenticate
+events:
+  - name: code_suggestions_authenticate

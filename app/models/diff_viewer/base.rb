@@ -72,6 +72,10 @@ module DiffViewer
       !@initially_binary && diff_file.binary_in_repo?
     end
 
+    def generated?
+      diff_file.generated?
+    end
+
     # This method is used on the server side to check whether we can attempt to
     # render the diff_file at all. The human-readable error message can be
     # retrieved by #render_error_message.

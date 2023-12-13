@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Diff::File do
   include RepoHelpers
 
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
   let(:commit) { project.commit(sample_commit.id) }
   let(:diff) { commit.raw_diffs.first }
   let(:diff_file) { described_class.new(diff, diff_refs: commit.diff_refs, repository: project.repository) }
@@ -49,6 +49,31 @@ RSpec.describe Gitlab::Diff::File do
     ).execute
 
     project.commit(branch_name).diffs.diff_files.first
+  end
+
+  describe 'delegated methods' do
+    subject { diff_file }
+
+    %i[
+      new_file?
+      deleted_file?
+      renamed_file?
+      unidiff
+      old_path
+      new_path
+      a_mode
+      b_mode
+      mode_changed?
+      submodule?
+      expanded?
+      too_large?
+      collapsed?
+      line_count
+      has_binary_notice?
+      generated?
+    ].each do |method|
+      it { is_expected.to delegate_method(method).to(:diff) }
+    end
   end
 
   describe '#initialize' do

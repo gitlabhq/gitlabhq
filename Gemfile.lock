@@ -1462,7 +1462,7 @@ GEM
     ruby-fogbugz (0.3.0)
       crack (~> 0.4)
       multipart-post (~> 2.0)
-    ruby-lsp (0.13.0)
+    ruby-lsp (0.13.1)
       language_server-protocol (~> 3.17.0)
       prism (>= 0.18.0, < 0.19)
       sorbet-runtime (>= 0.5.5685)
@@ -2042,7 +2042,7 @@ DEPENDENCIES
   rspec_profiling (~> 0.0.6)
   rubocop
   ruby-fogbugz (~> 0.3.0)
-  ruby-lsp (~> 0.13.0)
+  ruby-lsp (~> 0.13.1)
   ruby-lsp-rails (~> 0.2.8)
   ruby-lsp-rspec (~> 0.1.8)
   ruby-magic (~> 0.6)

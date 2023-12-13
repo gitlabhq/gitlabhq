@@ -4,7 +4,8 @@ classes:
 - Ci::Editor::AiConversation::Message
 feature_categories:
 - pipeline_composition
-description: "Represents an ai message for a user and project for the pipeline editor bot."
+description: Represents an ai message for a user and project for the pipeline editor
+  bot.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119840
 milestone: '16.0'
 gitlab_schema: gitlab_ci

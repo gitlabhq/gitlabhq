@@ -4,3 +4,4 @@ description: It seeks duplicate npm packages and marks them for destruction.
 feature_category: package_registry
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114695
 milestone: '16.1'
+finalized_by: '20231207221219'

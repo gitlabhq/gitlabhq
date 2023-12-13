@@ -5,7 +5,7 @@ module Sidekiq
     # We want the fetch operation to timeout every few seconds so the thread
     # can check if the process is shutting down. This constant is only used
     # for semi-reliable fetch.
-    DEFAULT_SEMI_RELIABLE_FETCH_TIMEOUT = 2 # seconds
+    DEFAULT_SEMI_RELIABLE_FETCH_TIMEOUT = 5 # seconds
 
     def initialize(options)
       super

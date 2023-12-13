@@ -100,6 +100,28 @@ RSpec.describe DiffViewer::Base do
     end
   end
 
+  describe '#generated?' do
+    before do
+      allow(diff_file).to receive(:generated?).and_return(generated)
+    end
+
+    context 'when the diff file is generated' do
+      let(:generated) { true }
+
+      it 'returns true' do
+        expect(viewer.generated?).to be_truthy
+      end
+    end
+
+    context 'when the diff file is not generated' do
+      let(:generated) { false }
+
+      it 'returns true' do
+        expect(viewer.generated?).to be_falsey
+      end
+    end
+  end
+
   describe '#render_error' do
     context 'when the combined blob size is larger than the size limit' do
       before do
