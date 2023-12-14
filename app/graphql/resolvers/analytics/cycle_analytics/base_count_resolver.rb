@@ -32,6 +32,25 @@ module Resolvers
 
           super
         end
+
+        # :project level: no customization, returning the original resolver
+        # :group level: add the project_ids argument
+        def self.[](context = :project)
+          case context
+          when :project
+            self
+          when :group
+            Class.new(self) do
+              argument :project_ids, [GraphQL::Types::ID],
+                required: false,
+                description: 'Project IDs within the group hierarchy.'
+
+              define_method :finder_params do
+                { group_id: object.id, include_subgroups: true }
+              end
+            end
+          end
+        end
       end
     end
   end

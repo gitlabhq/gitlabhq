@@ -9,6 +9,8 @@ module Support
     class RSpecFormatter < RSpec::Core::Formatters::BaseFormatter
       include Tooling::Helpers::DurationFormatter
 
+      TIME_LIMIT_IN_MINUTES = 80
+
       RSpec::Core::Formatters.register self, :example_group_started, :example_group_finished
 
       def start(_notification)
@@ -20,6 +22,11 @@ module Support
       end
 
       def example_group_started(notification)
+        if @last_elapsed_seconds && @last_elapsed_seconds > TIME_LIMIT_IN_MINUTES * 60
+          RSpec::Expectations.fail_with(
+            "Rspec suite is exceeding the #{TIME_LIMIT_IN_MINUTES} minute limit and is forced to exit with error.")
+        end
+
         if @group_level == 0
           @current_group_start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
           file_path = spec_file_path(notification)
@@ -37,7 +44,8 @@ module Support
           time_now = Process.clock_gettime(Process::CLOCK_MONOTONIC)
           actual_duration = time_now - @current_group_start_time
 
-          output.puts "\n# [RSpecRunTime] #{file_path} took #{readable_duration(actual_duration)}. " \
+          output.puts "\n# [RSpecRunTime] Finishing example group #{file_path}. " \
+                      "It took #{readable_duration(actual_duration)}. " \
                       "#{expected_run_time(file_path)}"
         end
 

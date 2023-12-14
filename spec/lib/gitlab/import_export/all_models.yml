@@ -422,6 +422,7 @@ builds:
 - job_artifacts_cluster_image_scanning
 - job_artifacts_cyclonedx
 - job_artifacts_requirements_v2
+- job_artifacts_repository_xray
 - runner_manager
 - runner_manager_build
 - runner_session
@@ -833,6 +834,7 @@ project:
 - target_branch_rules
 - organization
 - dora_performance_scores
+- xray_reports
 award_emoji:
 - awardable
 - user

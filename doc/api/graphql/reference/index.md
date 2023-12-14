@@ -20466,6 +20466,24 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | <a id="groupvaluestreamanalyticsflowmetricsleadtimeto"></a>`to` | [`Time!`](#time) | Timestamp marking the end date and time. |
 | <a id="groupvaluestreamanalyticsflowmetricsleadtimeweight"></a>`weight` | [`Int`](#int) | Weight applied to the issue. |
 
+##### `GroupValueStreamAnalyticsFlowMetrics.timeToMerge`
+
+Median time from merge request creation to merge request merged.
+
+Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupvaluestreamanalyticsflowmetricstimetomergeassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
+| <a id="groupvaluestreamanalyticsflowmetricstimetomergeauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the merge request. |
+| <a id="groupvaluestreamanalyticsflowmetricstimetomergefrom"></a>`from` | [`Time!`](#time) | Timestamp marking the start date and time. |
+| <a id="groupvaluestreamanalyticsflowmetricstimetomergelabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the merge request. |
+| <a id="groupvaluestreamanalyticsflowmetricstimetomergemilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the merge request. |
+| <a id="groupvaluestreamanalyticsflowmetricstimetomergeprojectids"></a>`projectIds` | [`[ID!]`](#id) | Project IDs within the group hierarchy. |
+| <a id="groupvaluestreamanalyticsflowmetricstimetomergeto"></a>`to` | [`Time!`](#time) | Timestamp marking the end date and time. |
+
 ### `GroupWikiRepositoryRegistry`
 
 Represents the Geo sync and verification state of a group wiki repository.
@@ -25914,6 +25932,23 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | <a id="projectvaluestreamanalyticsflowmetricsleadtimeto"></a>`to` | [`Time!`](#time) | Timestamp marking the end date and time. |
 | <a id="projectvaluestreamanalyticsflowmetricsleadtimeweight"></a>`weight` | [`Int`](#int) | Weight applied to the issue. |
 
+##### `ProjectValueStreamAnalyticsFlowMetrics.timeToMerge`
+
+Median time from merge request creation to merge request merged.
+
+Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectvaluestreamanalyticsflowmetricstimetomergeassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
+| <a id="projectvaluestreamanalyticsflowmetricstimetomergeauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the merge request. |
+| <a id="projectvaluestreamanalyticsflowmetricstimetomergefrom"></a>`from` | [`Time!`](#time) | Timestamp marking the start date and time. |
+| <a id="projectvaluestreamanalyticsflowmetricstimetomergelabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the merge request. |
+| <a id="projectvaluestreamanalyticsflowmetricstimetomergemilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the merge request. |
+| <a id="projectvaluestreamanalyticsflowmetricstimetomergeto"></a>`to` | [`Time!`](#time) | Timestamp marking the end date and time. |
+
 ### `ProjectWikiRepositoryRegistry`
 
 Represents the Geo replication and verification state of a project_wiki_repository.
@@ -30502,6 +30537,7 @@ Iteration ID wildcard values.
 | <a id="jobartifactfiletypemetrics_referee"></a>`METRICS_REFEREE` | METRICS REFEREE job artifact file type. |
 | <a id="jobartifactfiletypenetwork_referee"></a>`NETWORK_REFEREE` | NETWORK REFEREE job artifact file type. |
 | <a id="jobartifactfiletypeperformance"></a>`PERFORMANCE` | PERFORMANCE job artifact file type. |
+| <a id="jobartifactfiletyperepository_xray"></a>`REPOSITORY_XRAY` | REPOSITORY XRAY job artifact file type. |
 | <a id="jobartifactfiletyperequirements"></a>`REQUIREMENTS` | REQUIREMENTS job artifact file type. |
 | <a id="jobartifactfiletyperequirements_v2"></a>`REQUIREMENTS_V2` | REQUIREMENTS V2 job artifact file type. |
 | <a id="jobartifactfiletypesast"></a>`SAST` | SAST job artifact file type. |

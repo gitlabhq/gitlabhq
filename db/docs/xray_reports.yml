@@ -1,0 +1,12 @@
+---
+table_name: xray_reports
+classes:
+- Projects::XrayReport
+feature_categories:
+- code_suggestions
+description: The stored JSON output of repository X-Ray for a project
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138220
+milestone: '16.7'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects

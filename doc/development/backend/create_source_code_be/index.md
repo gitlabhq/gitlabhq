@@ -11,31 +11,41 @@ that fall under the [Source Code group](https://about.gitlab.com/handbook/produc
 of the [Create stage](https://about.gitlab.com/handbook/product/categories/#create-stage)
 of the [DevOps lifecycle](https://about.gitlab.com/handbook/product/categories/#devops-stages).
 
-We interface with the Gitaly and Code Review teams. The features
-we work with are listed on the
+The Source Code Management team interfaces with the Gitaly and Code Review teams and works across three codebases: Workhorse, GitLab Shell and GitLab Rails.
+
+## Source Code Features Reference
+
+Features owned by the Source Code Management group are listed on the
 [Features by Group Page](https://about.gitlab.com/handbook/product/categories/features/#createsource-code-group).
 
-The team works across three codebases: Workhorse, GitLab Shell and GitLab Rails.
+### Code Owners
 
-## Workhorse
+Source Code Management shares ownership of Code Owners with the Code Review group.
 
-[GitLab Workhorse](../../workhorse/index.md) is a smart reverse proxy for GitLab. It handles "large" HTTP
-requests such as file downloads, file uploads, `git push`, `git pull` and `git` archive downloads.
+- [Feature homepage](../../../user/project/codeowners/index.md)
+- [Developer Reference](../../code_owners/index.md)
 
-Workhorse itself is not a feature, but there are several features in GitLab
-that would not work efficiently without Workhorse.
+### Approval Rules
 
-## GitLab Shell
+- [Approval Rules](../../merge_request_concepts/approval_rules.md)
 
-GitLab Shell handles Git SSH sessions for GitLab and modifies the list of authorized keys.
-For more information, refer to the [GitLab Shell documentation](../../gitlab_shell/index.md).
+### Protected Branches
 
-To learn about the reasoning behind our creation of `gitlab-sshd`, read the blog post
-[Why we implemented our own SSHD solution](https://about.gitlab.com/blog/2022/08/17/why-we-have-implemented-our-own-sshd-solution-on-gitlab-sass/).
+Details about Protected Branches models can be found in the [Code Owners](../../code_owners/index.md#related-models) technical reference page.
 
-## CODEOWNERS
+### Repositories
 
-Source Code Management shares ownership of [Code Owners](../../code_owners/index.md) with the Code Review group.
+- [Project Repository Storage Moves](../../repository_storage_moves/index.md)
+
+### Project Templates
+
+- [Custom group-level project templates development guidelines](../../project_templates/index.md)
+
+### Git LFS
+
+- [Git LFS Development guidelines](../../lfs.md)
+
+## Technical Stack
 
 ## GitLab Rails
 
@@ -58,3 +68,19 @@ The `:source_code_management` annotation indicates which code belongs to the Sou
 group in the Rails codebase. The annotated objects are presented on
 [this page](https://gitlab-com.gitlab.io/gl-infra/platform/stage-groups-index/source-code.html) along
 with the [Error Budgets dashboards](https://dashboards.gitlab.net/d/stage-groups-source_code/stage-groups3a-source-code3a-group-dashboard?orgId=1).
+
+## GitLab Workhorse
+
+[GitLab Workhorse](../../workhorse/index.md) is a smart reverse proxy for GitLab. It handles "large" HTTP
+requests such as file downloads, file uploads, `git push`, `git pull` and `git` archive downloads.
+
+Workhorse itself is not a feature, but there are several features in GitLab
+that would not work efficiently without Workhorse.
+
+## GitLab Shell
+
+GitLab Shell handles Git SSH sessions for GitLab and modifies the list of authorized keys.
+For more information, refer to the [GitLab Shell documentation](../../gitlab_shell/index.md).
+
+To learn about the reasoning behind our creation of `gitlab-sshd`, read the blog post
+[Why we implemented our own SSHD solution](https://about.gitlab.com/blog/2022/08/17/why-we-have-implemented-our-own-sshd-solution-on-gitlab-sass/).

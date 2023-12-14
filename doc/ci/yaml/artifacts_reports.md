@@ -312,6 +312,10 @@ artifact and existing [requirements](../../user/project/requirements/index.md) a
 GitLab can display the results of one or more reports in the
 [project requirements](../../user/project/requirements/index.md#view-a-requirement).
 
+## `artifacts:reports:repository_xray` **(ULTIMATE ALL)**
+
+The `repository_xray` report collects information about your repository for use by AI in code suggestions.
+
 ## `artifacts:reports:sast`
 
 > [Moved](https://gitlab.com/groups/gitlab-org/-/epics/2098) from GitLab Ultimate to GitLab Free in 13.3.

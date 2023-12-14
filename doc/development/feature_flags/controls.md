@@ -509,5 +509,5 @@ record still exists in the database that the flag was deployed too.
 The record can be deleted once the MR is deployed to all the environments:
 
 ```shell
-/chatops run feature delete <feature-flag-name> --dev --ops --pre --staging --staging-ref --production
+/chatops run feature delete <feature-flag-name> --dev --pre --staging --staging-ref --production
 ```

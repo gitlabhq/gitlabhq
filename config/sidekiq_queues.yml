@@ -33,6 +33,8 @@
   - 1
 - - admin_emails
   - 1
+- - ai_store_repository_xray
+  - 1
 - - analytics_code_review_metrics
   - 1
 - - analytics_devops_adoption_create_snapshot

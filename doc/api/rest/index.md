@@ -374,7 +374,7 @@ This resource has been moved permanently to https://gitlab.example.com/api/v4/pr
 GitLab supports the following pagination methods:
 
 - Offset-based pagination. The default method and available on all endpoints except,
-  in GitLab 16.5 and later, the `\users` endpoint.
+  in GitLab 16.5 and later, the `users` endpoint.
 - Keyset-based pagination. Added to selected endpoints but being
   [progressively rolled out](https://gitlab.com/groups/gitlab-org/-/epics/2039).
 
@@ -383,7 +383,7 @@ For large collections, you should use keyset pagination
 
 ### Offset-based pagination
 
-> The `\users` endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/426547) for offset-based pagination in GitLab 16.5 and is planned for removal in 17.0. This change is a breaking change. Use keyset-based pagination for this endpoint instead.
+> The `users` endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/426547) for offset-based pagination in GitLab 16.5 and is planned for removal in 17.0. This change is a breaking change. Use keyset-based pagination for this endpoint instead.
 
 Sometimes, the returned result spans many pages. When listing resources, you can
 pass the following parameters:

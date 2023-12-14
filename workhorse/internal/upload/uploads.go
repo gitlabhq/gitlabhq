@@ -69,13 +69,14 @@ func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Hand
 				return
 			}
 
-			var protocolErr textproto.ProtocolError
-			if errors.As(err, &protocolErr) {
+			switch t := err.(type) {
+			case textproto.ProtocolError:
 				fail.Request(w, r, err, fail.WithStatus(http.StatusBadRequest))
-				return
+			case *api.PreAuthorizeFixedPathError:
+				fail.Request(w, r, err, fail.WithStatus(t.StatusCode), fail.WithBody(t.Status))
+			default:
+				fail.Request(w, r, fmt.Errorf("handleFileUploads: extract files from multipart: %v", err))
 			}
-
-			fail.Request(w, r, fmt.Errorf("handleFileUploads: extract files from multipart: %v", err))
 		}
 		return
 	}

@@ -21110,7 +21110,8 @@ CREATE TABLE plan_limits (
     ci_job_annotations_size integer DEFAULT 81920 NOT NULL,
     ci_job_annotations_num integer DEFAULT 20 NOT NULL,
     file_size_limit_mb double precision DEFAULT 100.0 NOT NULL,
-    audit_events_amazon_s3_configurations integer DEFAULT 5 NOT NULL
+    audit_events_amazon_s3_configurations integer DEFAULT 5 NOT NULL,
+    ci_max_artifact_size_repository_xray bigint DEFAULT 1073741824 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq
@@ -25765,6 +25766,26 @@ CREATE SEQUENCE x509_issuers_id_seq
 
 ALTER SEQUENCE x509_issuers_id_seq OWNED BY x509_issuers.id;
 
+CREATE TABLE xray_reports (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    lang text NOT NULL,
+    payload jsonb NOT NULL,
+    file_checksum bytea NOT NULL,
+    CONSTRAINT check_6da5a3b473 CHECK ((char_length(lang) <= 255))
+);
+
+CREATE SEQUENCE xray_reports_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE xray_reports_id_seq OWNED BY xray_reports.id;
+
 CREATE TABLE zentao_tracker_data (
     id bigint NOT NULL,
     integration_id bigint NOT NULL,
@@ -27454,6 +27475,8 @@ ALTER TABLE ONLY x509_certificates ALTER COLUMN id SET DEFAULT nextval('x509_cer
 ALTER TABLE ONLY x509_commit_signatures ALTER COLUMN id SET DEFAULT nextval('x509_commit_signatures_id_seq'::regclass);
 
 ALTER TABLE ONLY x509_issuers ALTER COLUMN id SET DEFAULT nextval('x509_issuers_id_seq'::regclass);
+
+ALTER TABLE ONLY xray_reports ALTER COLUMN id SET DEFAULT nextval('xray_reports_id_seq'::regclass);
 
 ALTER TABLE ONLY zentao_tracker_data ALTER COLUMN id SET DEFAULT nextval('zentao_tracker_data_id_seq'::regclass);
 
@@ -30161,6 +30184,9 @@ ALTER TABLE ONLY x509_commit_signatures
 
 ALTER TABLE ONLY x509_issuers
     ADD CONSTRAINT x509_issuers_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY xray_reports
+    ADD CONSTRAINT xray_reports_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY zentao_tracker_data
     ADD CONSTRAINT zentao_tracker_data_pkey PRIMARY KEY (id);
@@ -35271,6 +35297,8 @@ CREATE INDEX index_x509_commit_signatures_on_x509_certificate_id ON x509_commit_
 
 CREATE INDEX index_x509_issuers_on_subject_key_identifier ON x509_issuers USING btree (subject_key_identifier);
 
+CREATE UNIQUE INDEX index_xray_reports_on_project_id_and_lang ON xray_reports USING btree (project_id, lang);
+
 CREATE INDEX index_zentao_tracker_data_on_integration_id ON zentao_tracker_data USING btree (integration_id);
 
 CREATE INDEX index_zoekt_indexed_namespaces_on_namespace_id ON zoekt_indexed_namespaces USING btree (namespace_id);
@@ -38671,6 +38699,9 @@ ALTER TABLE ONLY reviews
 
 ALTER TABLE ONLY draft_notes
     ADD CONSTRAINT fk_rails_2a8dac9901 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY xray_reports
+    ADD CONSTRAINT fk_rails_2b13fbecf9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dependency_proxy_image_ttl_group_policies
     ADD CONSTRAINT fk_rails_2b1896d021 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

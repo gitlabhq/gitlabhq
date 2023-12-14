@@ -42,7 +42,7 @@ Are there any other stages or teams involved that need to be kept in the loop?
       the feature can be officially announced in a release blog post.
     - [ ] `/chatops run auto_deploy status <merge-commit-of-cleanup-mr>`
 - [ ] Close [the feature issue](ISSUE LINK) to indicate the feature will be released in the current milestone.
-- [ ] If not already done, clean up the feature flag from all environments by running these chatops command in `#production` channel: `/chatops run feature delete <feature-flag-name> --dev --ops --pre --staging --staging-ref --production`
+- [ ] If not already done, clean up the feature flag from all environments by running these chatops command in `#production` channel: `/chatops run feature delete <feature-flag-name> --dev --pre --staging --staging-ref --production`
 - [ ] Close this rollout issue.
 
 

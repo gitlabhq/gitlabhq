@@ -38,6 +38,15 @@ type API struct {
 	Version string
 }
 
+type PreAuthorizeFixedPathError struct {
+	StatusCode int
+	Status     string
+}
+
+func (p *PreAuthorizeFixedPathError) Error() string {
+	return fmt.Sprintf("no api response: status %d", p.StatusCode)
+}
+
 var (
 	requestsCounter = promauto.NewCounterVec(
 		prometheus.CounterOpts{
@@ -326,7 +335,7 @@ func (api *API) PreAuthorizeFixedPath(r *http.Request, method string, path strin
 	failureResponse.Body.Close()
 
 	if apiResponse == nil {
-		return nil, fmt.Errorf("no api response: status %d", failureResponse.StatusCode)
+		return nil, &PreAuthorizeFixedPathError{StatusCode: failureResponse.StatusCode, Status: failureResponse.Status}
 	}
 
 	return apiResponse, nil

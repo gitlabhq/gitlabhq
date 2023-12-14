@@ -63,7 +63,7 @@ Supported attributes:
 | `health_status` **(ULTIMATE ALL)**  | string        | No         | Return issues with the specified `health_status`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370721) in GitLab 15.4)._ In [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/370721), `None` returns issues with no health status assigned, and `Any` returns issues with a health status assigned.
 | `iids[]`                        | integer array | No         | Return only the issues having the given `iid`.                                                                                                       |
 | `in`                            | string        | No         | Modify the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description`.             |
-| `issue_type`                    | string        | No         | Filter to a given type of issue. One of `issue`, `incident`, or `test_case`. |
+| `issue_type`                    | string        | No         | Filter to a given type of issue. One of `issue`, `incident`, `test_case` or `task`. |
 | `iteration_id` **(PREMIUM ALL)**    | integer       | No         | Return issues assigned to the given iteration ID. `None` returns issues that do not belong to an iteration. `Any` returns issues that belong to an iteration. Mutually exclusive with `iteration_title`. |
 | `iteration_title` **(PREMIUM ALL)** | string        | No       | Return issues assigned to the iteration with the given title. Similar to `iteration_id` and mutually exclusive with `iteration_id`. |
 | `labels`                        | string        | No         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
@@ -295,7 +295,7 @@ Supported attributes:
 | `due_date`          | string           | No         | Return issues that have no due date, are overdue, or whose due date is this week, this month, or between two weeks ago and next month. Accepts: `0` (no due date), `any`, `today`, `tomorrow`, `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. |
 | `epic_id` **(PREMIUM ALL)** | integer      | No         | Return issues associated with the given epic ID. `None` returns issues that are not associated with an epic. `Any` returns issues that are associated with an epic. |
 | `iids[]`            | integer array    | No         | Return only the issues having the given `iid`.                                                                                 |
-| `issue_type`        | string           | No         | Filter to a given type of issue. One of `issue`, `incident`, or `test_case`. |
+| `issue_type`        | string           | No         | Filter to a given type of issue. One of `issue`, `incident`, `test_case` or `task`. |
 | `iteration_id` **(PREMIUM ALL)** | integer | No         | Return issues assigned to the given iteration ID. `None` returns issues that do not belong to an iteration. `Any` returns issues that belong to an iteration. Mutually exclusive with `iteration_title`. |
 | `iteration_title` **(PREMIUM ALL)** | string | No       | Return issues assigned to the iteration with the given title. Similar to `iteration_id` and mutually exclusive with `iteration_id`. |
 | `labels`            | string           | No         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
@@ -502,7 +502,7 @@ Supported attributes:
 | `due_date`          | string           | No         | Return issues that have no due date, are overdue, or whose due date is this week, this month, or between two weeks ago and next month. Accepts: `0` (no due date), `any`, `today`, `tomorrow`, `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. |
 | `epic_id` **(PREMIUM ALL)** | integer      | No         | Return issues associated with the given epic ID. `None` returns issues that are not associated with an epic. `Any` returns issues that are associated with an epic. |
 | `iids[]`            | integer array    | No         | Return only the issues having the given `iid`.                                                                              |
-| `issue_type`        | string           | No         | Filter to a given type of issue. One of `issue`, `incident`, or `test_case`. |
+| `issue_type`        | string           | No         | Filter to a given type of issue. One of `issue`, `incident`, `test_case` or `task`. |
 | `iteration_id` **(PREMIUM ALL)** | integer | No         | Return issues assigned to the given iteration ID. `None` returns issues that do not belong to an iteration. `Any` returns issues that belong to an iteration. Mutually exclusive with `iteration_title`. |
 | `iteration_title` **(PREMIUM ALL)** | string | No       | Return issues assigned to the iteration with the given title. Similar to `iteration_id` and mutually exclusive with `iteration_id`. |
 | `labels`            | string           | No         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
@@ -1030,7 +1030,7 @@ Supported attributes:
 | `epic_id` **(PREMIUM ALL)** | integer | No | ID of the epic to add the issue to. Valid values are greater than or equal to 0. |
 | `epic_iid` **(PREMIUM ALL)** | integer | No | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5). |
 | `iid`                                     | integer/string | No       | The internal ID of the project's issue (requires administrator or project owner rights). |
-| `issue_type`                              | string         | No       | The type of issue. One of `issue`, `incident`, or `test_case`. Default is `issue`. |
+| `issue_type`                              | string         | No       | The type of issue. One of `issue`, `incident`, `test_case` or `task`. Default is `issue`. |
 | `labels`                                  | string         | No       | Comma-separated label names for an issue.  |
 | `merge_request_to_resolve_discussions_of` | integer        | No       | The IID of a merge request in which to resolve all issues. This fills out the issue with a default description and mark all discussions as resolved. When passing a description or title, these values take precedence over the default values.|
 | `milestone_id`                            | integer        | No       | The global ID of a milestone to assign issue. To find the `milestone_id` associated with a milestone, view an issue with the milestone assigned and [use the API](#single-project-issue) to retrieve the issue's details. |
@@ -1201,7 +1201,7 @@ Supported attributes:
 | `due_date`     | string  | No       | The due date. Date time string in the format `YYYY-MM-DD`, for example `2016-03-11`.                                           |
 | `epic_id` **(PREMIUM ALL)** | integer | No | ID of the epic to add the issue to. Valid values are greater than or equal to 0. |
 | `epic_iid` **(PREMIUM ALL)** | integer | No | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5). |
-| `issue_type`   | string  | No       | Updates the type of issue. One of `issue`, `incident`, or `test_case`. |
+| `issue_type`   | string  | No       | Updates the type of issue. One of `issue`, `incident`, `test_case` or `task`. |
 | `labels`       | string  | No       | Comma-separated label names for an issue. Set to an empty string to unassign all labels.                   |
 | `milestone_id` | integer | No       | The global ID of a milestone to assign the issue to. Set to `0` or provide an empty value to unassign a milestone.|
 | `remove_labels`| string  | No       | Comma-separated label names to remove from an issue.                                                       |

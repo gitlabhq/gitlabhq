@@ -178,7 +178,7 @@ RSpec.shared_examples 'submits edit runner form' do
 
   context 'when a runner is updated', :js do
     before do
-      fill_in s_('Runners|Runner description'), with: 'new-runner-description'
+      fill_in s_('Runners|Runner description'), with: 'new-runner-description', fill_options: { clear: :backspace }
 
       click_on _('Save changes')
     end

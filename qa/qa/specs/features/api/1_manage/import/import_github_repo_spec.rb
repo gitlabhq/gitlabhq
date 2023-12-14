@@ -168,19 +168,6 @@ module QA
               { name: "add_milestone", label: "0.0.1" }
             ]
           )
-          # TODO: reenable once https://gitlab.com/gitlab-org/gitlab/-/issues/386714 fixed
-          # currently this doesn't work as expected if reviewer is not matched by public email
-          # event for assigning approver is created with reviewer being user doing import but mr actually doesn't
-          # contain reviewers or the approved state
-          #
-          # reviews = merge_request.reviews.map do |review|
-          #   {
-          #     id: review.dig(:user, :id),
-          #     username: review.dig(:user, :username),
-          #     state: review[:state]
-          #   }
-          # end
-          # expect(reviews).to eq([{ id: user.id, username: user.username, state: "approved" }])
         end
 
         def verify_release_import
