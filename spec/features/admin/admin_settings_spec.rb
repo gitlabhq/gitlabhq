@@ -13,7 +13,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
     before do
       stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
       sign_in(admin)
-      gitlab_enable_admin_mode_sign_in(admin)
+      gitlab_enable_admin_mode_sign_in(admin, use_mock_admin_mode: false)
     end
 
     context 'General page' do

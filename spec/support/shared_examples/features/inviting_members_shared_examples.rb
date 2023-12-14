@@ -181,6 +181,7 @@ RSpec.shared_examples 'inviting members' do |snowplow_invite_label|
           visit subentity_members_page_path
 
           click_on _('Invite members')
+          wait_for_requests
 
           page.within invite_modal_selector do
             choose_options(role, nil)

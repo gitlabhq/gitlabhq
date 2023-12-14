@@ -3,6 +3,7 @@
 require_relative 'devise_helpers'
 
 module LoginHelpers
+  include AdminModeHelper
   include DeviseHelpers
 
   # Overriding Devise::Test::IntegrationHelpers#sign_in to store @current_user
@@ -48,12 +49,16 @@ module LoginHelpers
     @current_user = user
   end
 
-  def gitlab_enable_admin_mode_sign_in(user)
-    visit new_admin_session_path
-    fill_in 'user_password', with: user.password
-    click_button 'Enter admin mode'
+  def gitlab_enable_admin_mode_sign_in(user, use_mock_admin_mode: true)
+    if use_mock_admin_mode
+      enable_admin_mode!(user)
+    else
+      visit new_admin_session_path
+      fill_in 'user_password', with: user.password
+      click_button 'Enter admin mode'
 
-    wait_for_requests
+      wait_for_requests
+    end
   end
 
   def gitlab_sign_in_via(provider, user, uid, saml_response = nil)

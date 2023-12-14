@@ -18,7 +18,6 @@ module Sidebars
         def configure_menu_items
           [
             :analytics_dashboards,
-            :dashboards_analytics,
             :cycle_analytics,
             :ci_cd_analytics,
             :contribution_analytics,

@@ -34502,11 +34502,11 @@ CREATE INDEX index_sbom_occurrences_on_component_id_and_id ON sbom_occurrences U
 
 CREATE INDEX index_sbom_occurrences_on_component_version_id ON sbom_occurrences USING btree (component_version_id);
 
+CREATE INDEX index_sbom_occurrences_on_highest_severity ON sbom_occurrences USING btree (project_id, highest_severity DESC NULLS LAST);
+
 CREATE INDEX index_sbom_occurrences_on_licenses_spdx_identifier ON sbom_occurrences USING btree (project_id, ((licenses #> '{0,spdx_identifier}'::text[])), ((licenses #> '{1,spdx_identifier}'::text[])));
 
 CREATE INDEX index_sbom_occurrences_on_pipeline_id ON sbom_occurrences USING btree (pipeline_id);
-
-CREATE INDEX index_sbom_occurrences_on_project_id ON sbom_occurrences USING btree (project_id);
 
 CREATE INDEX index_sbom_occurrences_on_project_id_and_component_id_and_id ON sbom_occurrences USING btree (project_id, component_id, id);
 

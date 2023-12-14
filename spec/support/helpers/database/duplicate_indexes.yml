@@ -156,18 +156,8 @@ sbom_component_versions:
 sbom_occurrences:
   index_sbom_occurrences_for_input_file_path_search:
     - index_sbom_occurrences_on_project_id_component_id
-    - index_sbom_occurrences_on_project_id
-  idx_sbom_occurrences_on_project_id_and_source_id:
-    - index_sbom_occurrences_on_project_id
-  index_sbom_occurrences_on_project_id_and_id:
-    - index_sbom_occurrences_on_project_id
-  index_sbom_occurrences_on_project_id_component_id:
-    - index_sbom_occurrences_on_project_id
   index_sbom_occurrences_on_project_id_and_component_id_and_id:
     - index_sbom_occurrences_on_project_id_component_id
-    - index_sbom_occurrences_on_project_id
-  index_sbom_occurrences_on_project_id_and_package_manager:
-    - index_sbom_occurrences_on_project_id
 search_namespace_index_assignments:
   index_search_namespace_index_assignments_uniqueness_index_type:
     - index_search_namespace_index_assignments_on_namespace_id

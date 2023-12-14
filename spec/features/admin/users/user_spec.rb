@@ -11,7 +11,7 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management do
 
   before do
     sign_in(current_user)
-    gitlab_enable_admin_mode_sign_in(current_user)
+    gitlab_enable_admin_mode_sign_in(current_user, use_mock_admin_mode: false)
   end
 
   describe 'GET /admin/users/:id' do

@@ -94,6 +94,11 @@ export default {
 
       this.currentCategory = findLastIndex(Object.values(categories), ({ top }) => offset >= top);
     },
+    onHide() {
+      this.currentCategory = 0;
+      this.searchValue = '';
+      this.$emit('hidden');
+    },
   },
 };
 </script>
@@ -111,7 +116,7 @@ export default {
       :right="right"
       lazy
       @shown="$emit('shown')"
-      @hidden="$emit('hidden')"
+      @hidden="onHide"
     >
       <template #button-content>
         <slot name="button-content">

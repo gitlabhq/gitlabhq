@@ -423,7 +423,7 @@ and:
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) so the certificates are symlinked
 1. Restart Gitaly manually `sudo gitlab-ctl restart gitaly` for the certificates to be loaded by the Gitaly process.
 
-## Gitaly fails to fork processes stored on `noexec` file systems
+### Gitaly fails to fork processes stored on `noexec` file systems
 
 Because of changes [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5999) in GitLab 14.10, applying the `noexec` option to a mount
 point (for example, `/var`) causes Gitaly to throw `permission denied` errors related to forking processes. For example:

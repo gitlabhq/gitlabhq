@@ -29942,6 +29942,8 @@ Values for sorting dependencies.
 | <a id="dependencysortname_desc"></a>`NAME_DESC` | Name by descending order. |
 | <a id="dependencysortpackager_asc"></a>`PACKAGER_ASC` | Packager by ascending order. |
 | <a id="dependencysortpackager_desc"></a>`PACKAGER_DESC` | Packager by descending order. |
+| <a id="dependencysortseverity_asc"></a>`SEVERITY_ASC` | Severity by ascending order. |
+| <a id="dependencysortseverity_desc"></a>`SEVERITY_DESC` | Severity by descending order. |
 
 ### `DeploymentApprovalSummaryStatus`
 
