@@ -1,8 +1,8 @@
 import { GlDropdown, GlSearchBoxByType, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-
 import { nextTick } from 'vue';
 import DropdownWidget from '~/vue_shared/components/dropdown/dropdown_widget/dropdown_widget.vue';
+import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 
 describe('DropdownWidget component', () => {
   let wrapper;
@@ -27,11 +27,14 @@ describe('DropdownWidget component', () => {
         ...props,
       },
       stubs: {
-        GlDropdown,
+        GlDropdown: stubComponent(GlDropdown, {
+          methods: {
+            hide: jest.fn(),
+          },
+          template: RENDER_ALL_SLOTS_TEMPLATE,
+        }),
       },
     });
-
-    jest.spyOn(findDropdown().vm, 'hide').mockImplementation();
   };
 
   beforeEach(() => {

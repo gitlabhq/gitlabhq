@@ -88,7 +88,7 @@
                 - if @user.twitter.present?
                   = render 'middle_dot_divider', breakpoint: 'sm' do
                     = link_to twitter_url(@user), class: 'gl-hover-text-decoration-none', title: _("X (formerly Twitter)"), target: '_blank', rel: 'noopener noreferrer nofollow' do
-                      = sprite_icon('twitter', css_class: 'twitter-icon')
+                      = sprite_icon('x', css_class: 'x-icon')
                 - if @user.discord.present?
                   = render 'middle_dot_divider', breakpoint: 'sm' do
                     = link_to discord_url(@user), class: 'gl-hover-text-decoration-none', title: "Discord", target: '_blank', rel: 'noopener noreferrer nofollow' do

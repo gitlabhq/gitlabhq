@@ -1,6 +1,7 @@
 import {
   calculateDeploymentStatus,
   calculateStatefulSetStatus,
+  calculateDaemonSetStatus,
 } from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
 import { STATUS_READY, STATUS_FAILED } from '~/kubernetes_dashboard/constants';
 import { CLUSTER_AGENT_ERROR_MESSAGES } from '../constants';
@@ -46,16 +47,10 @@ export function getDeploymentsStatuses(items) {
 
 export function getDaemonSetStatuses(items) {
   const failed = items.filter((item) => {
-    return (
-      item.status?.numberMisscheduled > 0 ||
-      item.status?.numberReady !== item.status?.desiredNumberScheduled
-    );
+    return calculateDaemonSetStatus(item) === STATUS_FAILED;
   });
   const ready = items.filter((item) => {
-    return (
-      item.status?.numberReady === item.status?.desiredNumberScheduled &&
-      !item.status?.numberMisscheduled
-    );
+    return calculateDaemonSetStatus(item) === STATUS_READY;
   });
 
   return {

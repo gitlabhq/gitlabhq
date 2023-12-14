@@ -54,11 +54,6 @@ Only GitLab administrators can change enterprise users' primary email address to
 
 Providing the ability to group Owners to change their enterprise users' primary email to an email with a non-verified domain is proposed in [issue 412966](https://gitlab.com/gitlab-org/gitlab/-/issues/412966).
 
-## Dissociation of the user from their enterprise group
-
-Changing an enterprise user's primary email to an email with a non-verified domain automatically disassociates them from their enterprise group.
-However, there are [primary email change restrictions](#primary-email-change).
-
 ## Verified domains for groups
 
 The following automated processes use [verified domains](../project/pages/custom_domains_ssl_tls_certification/index.md) to run:
@@ -212,6 +207,10 @@ users' information. For users provisioned by the group with [SCIM](../group/saml
 this information includes users' email addresses.
 
 [Issue 391453](https://gitlab.com/gitlab-org/gitlab/-/issues/391453) proposes to change the criteria for access to email addresses from provisioned users to enterprise users.
+
+### Remove enterprise management features from an account
+
+Changing an enterprise user's primary email to any email with a non-verified domain automatically removes the enterprise badge from the account. This does not alter any account roles or permissions for the user, but does limit the group Owner's ability to manage this account.
 
 ## Troubleshooting
 

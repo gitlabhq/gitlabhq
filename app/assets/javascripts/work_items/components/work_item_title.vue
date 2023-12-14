@@ -8,7 +8,7 @@ import {
   WORK_ITEM_TITLE_MAX_LENGTH,
   I18N_MAX_CHARS_IN_WORK_ITEM_TITLE_MESSAGE,
 } from '../constants';
-import { getUpdateWorkItemMutation } from './update_work_item';
+import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import ItemTitle from './item_title.vue';
 
 export default {
@@ -31,11 +31,6 @@ export default {
       type: String,
       required: false,
       default: '',
-    },
-    workItemParentId: {
-      type: String,
-      required: false,
-      default: null,
     },
     canUpdate: {
       type: Boolean,
@@ -68,24 +63,19 @@ export default {
         return;
       }
 
-      const input = {
-        id: this.workItemId,
-        title: updatedTitle,
-      };
-
       this.updateInProgress = true;
 
       try {
         this.track('updated_title');
 
-        const { mutation, variables } = getUpdateWorkItemMutation({
-          workItemParentId: this.workItemParentId,
-          input,
-        });
-
         const { data } = await this.$apollo.mutate({
-          mutation,
-          variables,
+          mutation: updateWorkItemMutation,
+          variables: {
+            input: {
+              id: this.workItemId,
+              title: updatedTitle,
+            },
+          },
         });
 
         const errors = data.workItemUpdate?.errors;

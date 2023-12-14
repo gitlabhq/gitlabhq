@@ -1,7 +1,6 @@
 <script>
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
-  sprintfWorkItem,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_HEALTH_STATUS,
   WIDGET_TYPE_HIERARCHY,
@@ -51,11 +50,6 @@ export default {
       type: Object,
       required: true,
     },
-    workItemParentId: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
   computed: {
     workItemType() {
@@ -66,15 +60,6 @@ export default {
     },
     canDelete() {
       return this.workItem?.userPermissions?.deleteWorkItem;
-    },
-    canSetWorkItemMetadata() {
-      return this.workItem?.userPermissions?.setWorkItemMetadata;
-    },
-    canAssignUnassignUser() {
-      return this.workItemAssignees && this.canSetWorkItemMetadata;
-    },
-    confidentialTooltip() {
-      return sprintfWorkItem(this.$options.i18n.confidentialTooltip, this.workItemType);
     },
     workItemAssignees() {
       return this.isWidgetPresent(WIDGET_TYPE_ASSIGNEES);

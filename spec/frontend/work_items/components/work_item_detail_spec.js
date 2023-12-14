@@ -25,7 +25,6 @@ import { i18n } from '~/work_items/constants';
 import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
-import updateWorkItemTaskMutation from '~/work_items/graphql/update_work_item_task.mutation.graphql';
 import workItemUpdatedSubscription from '~/work_items/graphql/work_item_updated.subscription.graphql';
 
 import {
@@ -89,7 +88,7 @@ describe('WorkItemDetail component', () => {
     updateInProgress = false,
     workItemIid = '1',
     handler = successHandler,
-    confidentialityMock = [updateWorkItemMutation, jest.fn()],
+    mutationHandler,
     error = undefined,
     workItemsMvc2Enabled = false,
     linkedWorkItemsEnabled = false,
@@ -98,8 +97,8 @@ describe('WorkItemDetail component', () => {
       apolloProvider: createMockApollo([
         [workItemByIidQuery, handler],
         [groupWorkItemByIidQuery, groupSuccessHandler],
+        [updateWorkItemMutation, mutationHandler],
         [workItemUpdatedSubscription, workItemUpdatedSubscriptionHandler],
-        confidentialityMock,
       ]),
       isLoggedIn: isLoggedIn(),
       propsData: {
@@ -230,119 +229,52 @@ describe('WorkItemDetail component', () => {
 
   describe('confidentiality', () => {
     const errorMessage = 'Mutation failed';
-    const confidentialWorkItem = workItemByIidResponseFactory({
-      confidential: true,
-    });
-    const workItem = confidentialWorkItem.data.workspace.workItems.nodes[0];
-
-    // Mocks for work item without parent
-    const withoutParentExpectedInputVars = { id, confidential: true };
-    const toggleConfidentialityWithoutParentHandler = jest.fn().mockResolvedValue({
+    const confidentialWorkItem = workItemByIidResponseFactory({ confidential: true });
+    const mutationHandler = jest.fn().mockResolvedValue({
       data: {
         workItemUpdate: {
-          workItem,
+          workItem: confidentialWorkItem.data.workspace.workItems.nodes[0],
           errors: [],
         },
       },
     });
-    const withoutParentHandlerMock = jest
-      .fn()
-      .mockResolvedValue(workItemQueryResponseWithoutParent);
-    const confidentialityWithoutParentMock = [
-      updateWorkItemMutation,
-      toggleConfidentialityWithoutParentHandler,
-    ];
-    const confidentialityWithoutParentFailureMock = [
-      updateWorkItemMutation,
-      jest.fn().mockRejectedValue(new Error(errorMessage)),
-    ];
 
-    // Mocks for work item with parent
-    const withParentExpectedInputVars = {
-      id: mockParent.parent.id,
-      taskData: { id, confidential: true },
-    };
-    const toggleConfidentialityWithParentHandler = jest.fn().mockResolvedValue({
-      data: {
-        workItemUpdate: {
-          workItem: {
-            id: workItem.id,
-            descriptionHtml: workItem.description,
-          },
-          task: {
-            workItem,
-            confidential: true,
-          },
-          errors: [],
-        },
-      },
+    it('sends updateInProgress props to child component', async () => {
+      createComponent({ mutationHandler });
+      await waitForPromises();
+
+      findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
+      await nextTick();
+
+      expect(findCreatedUpdated().props('updateInProgress')).toBe(true);
     });
-    const confidentialityWithParentMock = [
-      updateWorkItemTaskMutation,
-      toggleConfidentialityWithParentHandler,
-    ];
-    const confidentialityWithParentFailureMock = [
-      updateWorkItemTaskMutation,
-      jest.fn().mockRejectedValue(new Error(errorMessage)),
-    ];
 
-    describe.each`
-      context        | handlerMock                 | confidentialityMock                 | confidentialityFailureMock                 | inputVariables
-      ${'no parent'} | ${withoutParentHandlerMock} | ${confidentialityWithoutParentMock} | ${confidentialityWithoutParentFailureMock} | ${withoutParentExpectedInputVars}
-      ${'parent'}    | ${successHandler}           | ${confidentialityWithParentMock}    | ${confidentialityWithParentFailureMock}    | ${withParentExpectedInputVars}
-    `(
-      'when work item has $context',
-      ({ handlerMock, confidentialityMock, confidentialityFailureMock, inputVariables }) => {
-        it('sends updateInProgress props to child component', async () => {
-          createComponent({
-            handler: handlerMock,
-            confidentialityMock,
-          });
+    it('emits workItemUpdated when mutation is successful', async () => {
+      createComponent({ mutationHandler });
+      await waitForPromises();
 
-          await waitForPromises();
+      findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
+      await waitForPromises();
 
-          findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
+      expect(wrapper.emitted('workItemUpdated')).toEqual([[{ confidential: true }]]);
+      expect(mutationHandler).toHaveBeenCalledWith({
+        input: {
+          id: 'gid://gitlab/WorkItem/1',
+          confidential: true,
+        },
+      });
+    });
 
-          await nextTick();
+    it('shows an alert when mutation fails', async () => {
+      createComponent({ mutationHandler: jest.fn().mockRejectedValue(new Error(errorMessage)) });
+      await waitForPromises();
 
-          expect(findCreatedUpdated().props('updateInProgress')).toBe(true);
-        });
+      findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
+      await waitForPromises();
 
-        it('emits workItemUpdated when mutation is successful', async () => {
-          createComponent({
-            handler: handlerMock,
-            confidentialityMock,
-          });
-
-          await waitForPromises();
-
-          findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
-          await waitForPromises();
-
-          expect(wrapper.emitted('workItemUpdated')).toEqual([[{ confidential: true }]]);
-          expect(confidentialityMock[1]).toHaveBeenCalledWith({
-            input: inputVariables,
-          });
-        });
-
-        it('shows an alert when mutation fails', async () => {
-          createComponent({
-            handler: handlerMock,
-            confidentialityMock: confidentialityFailureMock,
-          });
-
-          await waitForPromises();
-          findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
-          await waitForPromises();
-          expect(wrapper.emitted('workItemUpdated')).toBeUndefined();
-
-          await nextTick();
-
-          expect(findAlert().exists()).toBe(true);
-          expect(findAlert().text()).toBe(errorMessage);
-        });
-      },
-    );
+      expect(wrapper.emitted('workItemUpdated')).toBeUndefined();
+      expect(findAlert().text()).toBe(errorMessage);
+    });
   });
 
   describe('description', () => {

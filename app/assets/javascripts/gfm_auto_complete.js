@@ -289,7 +289,7 @@ class GfmAutoComplete {
       displayTpl({ name }) {
         const reviewState = REVIEW_STATES[name];
 
-        return `<li><span class="gl-font-weight-bold gl-display-block">${reviewState.header}</span><small class="description gl-display-block gl-w-full gl-float-left! gl-px-0!">${reviewState.description}</small></li>`;
+        return `<li><span class="name gl-font-weight-bold">${reviewState.header}</span><small class="description"><em>${reviewState.description}</em></small></li>`;
       },
     });
   }

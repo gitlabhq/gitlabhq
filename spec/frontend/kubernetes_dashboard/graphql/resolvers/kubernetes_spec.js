@@ -4,11 +4,13 @@ import k8sDashboardPodsQuery from '~/kubernetes_dashboard/graphql/queries/k8s_da
 import k8sDashboardDeploymentsQuery from '~/kubernetes_dashboard/graphql/queries/k8s_dashboard_deployments.query.graphql';
 import k8sDashboardStatefulSetsQuery from '~/kubernetes_dashboard/graphql/queries/k8s_dashboard_stateful_sets.query.graphql';
 import k8sDashboardReplicaSetsQuery from '~/kubernetes_dashboard/graphql/queries/k8s_dashboard_replica_sets.query.graphql';
+import k8sDashboardDaemonSetsQuery from '~/kubernetes_dashboard/graphql/queries/k8s_dashboard_daemon_sets.query.graphql';
 import {
   k8sPodsMock,
   k8sDeploymentsMock,
   k8sStatefulSetsMock,
   k8sReplicaSetsMock,
+  k8sDaemonSetsMock,
 } from '../mock_data';
 
 describe('~/frontend/environments/graphql/resolvers', () => {
@@ -367,6 +369,90 @@ describe('~/frontend/environments/graphql/resolvers', () => {
 
       await expect(
         mockResolvers.Query.k8sReplicaSets(null, { configuration }, { client }),
+      ).rejects.toThrow('API error');
+    });
+  });
+
+  describe('k8sDaemonSets', () => {
+    const client = { writeQuery: jest.fn() };
+
+    const mockWatcher = WatchApi.prototype;
+    const mockDaemonSetsListWatcherFn = jest.fn().mockImplementation(() => {
+      return Promise.resolve(mockWatcher);
+    });
+
+    const mockOnDataFn = jest.fn().mockImplementation((eventName, callback) => {
+      if (eventName === 'data') {
+        callback([]);
+      }
+    });
+
+    const mockDaemonSetsListFn = jest.fn().mockImplementation(() => {
+      return Promise.resolve({
+        items: k8sDaemonSetsMock,
+      });
+    });
+
+    const mockAllDaemonSetsListFn = jest.fn().mockImplementation(mockDaemonSetsListFn);
+
+    describe('when the DaemonSets data is present', () => {
+      beforeEach(() => {
+        jest
+          .spyOn(AppsV1Api.prototype, 'listAppsV1DaemonSetForAllNamespaces')
+          .mockImplementation(mockAllDaemonSetsListFn);
+        jest
+          .spyOn(mockWatcher, 'subscribeToStream')
+          .mockImplementation(mockDaemonSetsListWatcherFn);
+        jest.spyOn(mockWatcher, 'on').mockImplementation(mockOnDataFn);
+      });
+
+      it('should request all DaemonSets from the cluster_client library and watch the events', async () => {
+        const DaemonSets = await mockResolvers.Query.k8sDaemonSets(
+          null,
+          {
+            configuration,
+          },
+          { client },
+        );
+
+        expect(mockAllDaemonSetsListFn).toHaveBeenCalled();
+        expect(mockDaemonSetsListWatcherFn).toHaveBeenCalled();
+
+        expect(DaemonSets).toEqual(k8sDaemonSetsMock);
+      });
+
+      it('should update cache with the new data when received from the library', async () => {
+        await mockResolvers.Query.k8sDaemonSets(null, { configuration, namespace: '' }, { client });
+
+        expect(client.writeQuery).toHaveBeenCalledWith({
+          query: k8sDashboardDaemonSetsQuery,
+          variables: { configuration, namespace: '' },
+          data: { k8sDaemonSets: [] },
+        });
+      });
+    });
+
+    it('should not watch DaemonSets from the cluster_client library when the DaemonSets data is not present', async () => {
+      jest.spyOn(AppsV1Api.prototype, 'listAppsV1DaemonSetForAllNamespaces').mockImplementation(
+        jest.fn().mockImplementation(() => {
+          return Promise.resolve({
+            items: [],
+          });
+        }),
+      );
+
+      await mockResolvers.Query.k8sDaemonSets(null, { configuration }, { client });
+
+      expect(mockDaemonSetsListWatcherFn).not.toHaveBeenCalled();
+    });
+
+    it('should throw an error if the API call fails', async () => {
+      jest
+        .spyOn(AppsV1Api.prototype, 'listAppsV1DaemonSetForAllNamespaces')
+        .mockRejectedValue(new Error('API error'));
+
+      await expect(
+        mockResolvers.Query.k8sDaemonSets(null, { configuration }, { client }),
       ).rejects.toThrow('API error');
     });
   });

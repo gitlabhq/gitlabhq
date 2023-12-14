@@ -3,6 +3,7 @@ import PodsPage from '../pages/pods_page.vue';
 import DeploymentsPage from '../pages/deployments_page.vue';
 import StatefulSetsPage from '../pages/stateful_sets_page.vue';
 import ReplicaSetsPage from '../pages/replica_sets_page.vue';
+import DaemonSetsPage from '../pages/daemon_sets_page.vue';
 import {
   PODS_ROUTE_NAME,
   PODS_ROUTE_PATH,
@@ -12,6 +13,8 @@ import {
   STATEFUL_SETS_ROUTE_PATH,
   REPLICA_SETS_ROUTE_NAME,
   REPLICA_SETS_ROUTE_PATH,
+  DAEMON_SETS_ROUTE_NAME,
+  DAEMON_SETS_ROUTE_PATH,
 } from './constants';
 
 export default [
@@ -45,6 +48,14 @@ export default [
     component: ReplicaSetsPage,
     meta: {
       title: s__('KubernetesDashboard|ReplicaSets'),
+    },
+  },
+  {
+    name: DAEMON_SETS_ROUTE_NAME,
+    path: DAEMON_SETS_ROUTE_PATH,
+    component: DaemonSetsPage,
+    meta: {
+      title: s__('KubernetesDashboard|DaemonSets'),
     },
   },
 ];

@@ -69,9 +69,15 @@ export default {
 
 <template>
   <section>
-    <div class="gl-lg-display-flex gl-flex-direction-row gl-justify-content-space-between gl-pt-5">
+    <div
+      class="gl-lg-display-flex gl-flex-direction-row gl-py-5"
+      :class="{
+        'gl-justify-content-space-between': showSyntaxOptions,
+        'gl-justify-content-end': !showSyntaxOptions,
+      }"
+    >
       <template v-if="showSyntaxOptions">
-        <div class="gl-pb-6">
+        <div>
           <gl-button
             category="tertiary"
             variant="link"

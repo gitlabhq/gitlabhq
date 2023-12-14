@@ -76,6 +76,7 @@ module Bitbucket
           merge_commit_sha: merge_commit_sha,
           target_branch_name: target_branch_name,
           target_branch_sha: target_branch_sha,
+          source_and_target_project_different: source_and_target_project_different,
           reviewers: reviewers
         }
       end
@@ -88,6 +89,18 @@ module Bitbucket
 
       def target_branch
         raw['destination']
+      end
+
+      def source_repo_uuid
+        source_branch&.dig('repository', 'uuid')
+      end
+
+      def target_repo_uuid
+        target_branch&.dig('repository', 'uuid')
+      end
+
+      def source_and_target_project_different
+        source_repo_uuid != target_repo_uuid
       end
     end
   end

@@ -134,11 +134,6 @@ export default {
       required: false,
       default: false,
     },
-    workItemParentId: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
   apollo: {
     workItemTypes: {
@@ -328,7 +323,6 @@ export default {
         :data-testid="$options.stateToggleTestId"
         :work-item-id="workItemId"
         :work-item-state="workItemState"
-        :work-item-parent-id="workItemParentId"
         :work-item-type="workItemType"
         show-as-dropdown-item
       />

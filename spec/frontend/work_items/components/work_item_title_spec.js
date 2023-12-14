@@ -8,7 +8,6 @@ import ItemTitle from '~/work_items/components/item_title.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
-import updateWorkItemTaskMutation from '~/work_items/graphql/update_work_item_task.mutation.graphql';
 import { updateWorkItemMutationResponse, workItemQueryResponse } from '../mock_data';
 
 describe('WorkItemTitle component', () => {
@@ -20,22 +19,14 @@ describe('WorkItemTitle component', () => {
 
   const findItemTitle = () => wrapper.findComponent(ItemTitle);
 
-  const createComponent = ({
-    workItemParentId,
-    mutationHandler = mutationSuccessHandler,
-    canUpdate = true,
-  } = {}) => {
+  const createComponent = ({ mutationHandler = mutationSuccessHandler, canUpdate = true } = {}) => {
     const { id, title, workItemType } = workItemQueryResponse.data.workItem;
     wrapper = shallowMount(WorkItemTitle, {
-      apolloProvider: createMockApollo([
-        [updateWorkItemMutation, mutationHandler],
-        [updateWorkItemTaskMutation, mutationHandler],
-      ]),
+      apolloProvider: createMockApollo([[updateWorkItemMutation, mutationHandler]]),
       propsData: {
         workItemId: id,
         workItemTitle: title,
         workItemType: workItemType.name,
-        workItemParentId,
         canUpdate,
       },
     });
@@ -73,27 +64,6 @@ describe('WorkItemTitle component', () => {
         input: {
           id: workItemQueryResponse.data.workItem.id,
           title,
-        },
-      });
-    });
-
-    it('calls WorkItemTaskUpdate if passed workItemParentId prop', () => {
-      const title = 'new title!';
-      const workItemParentId = '1234';
-
-      createComponent({
-        workItemParentId,
-      });
-
-      findItemTitle().vm.$emit('title-changed', title);
-
-      expect(mutationSuccessHandler).toHaveBeenCalledWith({
-        input: {
-          id: workItemParentId,
-          taskData: {
-            id: workItemQueryResponse.data.workItem.id,
-            title,
-          },
         },
       });
     });

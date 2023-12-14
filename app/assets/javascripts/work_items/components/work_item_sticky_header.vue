@@ -30,11 +30,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    workItemParentId: {
-      type: String,
-      required: false,
-      default: null,
-    },
     updateInProgress: {
       type: Boolean,
       required: false,
@@ -126,7 +121,6 @@ export default {
             :work-item-reference="workItem.reference"
             :work-item-create-note-email="workItem.createNoteEmail"
             :work-item-state="workItem.state"
-            :work-item-parent-id="workItemParentId"
             :is-modal="isModal"
             @deleteWorkItem="$emit('deleteWorkItem')"
             @toggleWorkItemConfidentiality="

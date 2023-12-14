@@ -35,6 +35,17 @@ RSpec.describe Gitlab::Tracking::EventDefinition do
     expect { described_class.definitions }.not_to raise_error
   end
 
+  it 'has no duplicated actions in InternalEventTracking events', :aggregate_failures do
+    definitions_by_action = described_class.definitions
+                                           .each_value.select { |d| d.category == 'InternalEventTracking' }
+                                           .group_by(&:action)
+
+    definitions_by_action.each do |action, definitions|
+      expect(definitions.size).to eq(1),
+        "Multiple definitions use the action '#{action}': #{definitions.map(&:path).join(', ')}"
+    end
+  end
+
   it 'has event definitions for all events used in Internal Events metric definitions', :aggregate_failures do
     from_metric_definitions = Gitlab::Usage::MetricDefinition.definitions
       .values

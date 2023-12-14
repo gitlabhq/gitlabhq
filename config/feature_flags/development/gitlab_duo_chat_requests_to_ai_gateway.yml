@@ -1,0 +1,8 @@
+---
+name: gitlab_duo_chat_requests_to_ai_gateway
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138274
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/433213
+milestone: '16.7'
+type: development
+group: group::ai framework
+default_enabled: false

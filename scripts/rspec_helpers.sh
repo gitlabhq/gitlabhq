@@ -227,6 +227,8 @@ function handle_retry_rspec_in_new_process() {
 }
 
 function rspec_paralellized_job() {
+  echo "[$(date '+%H:%M:%S')] Starting rspec_paralellized_job"
+
   read -ra job_name <<< "${CI_JOB_NAME}"
   local test_tool="${job_name[0]}"
   local test_level="${job_name[1]}"

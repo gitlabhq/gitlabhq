@@ -563,7 +563,7 @@ gem 'flipper', '~> 0.26.2' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'flipper-active_record', '~> 0.26.2' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'flipper-active_support_cache_store', '~> 0.26.2' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'unleash', '~> 3.2.2' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'gitlab-experiment', '~> 0.8.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'gitlab-experiment', '~> 0.9.1', feature_category: :shared
 
 # Structured logging
 gem 'lograge', '~> 0.5' # rubocop:todo Gemfile/MissingFeatureCategory

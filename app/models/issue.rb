@@ -65,24 +65,7 @@ class Issue < ApplicationRecord
   belongs_to :moved_to, class_name: 'Issue', inverse_of: :moved_from
   has_one :moved_from, class_name: 'Issue', foreign_key: :moved_to_id, inverse_of: :moved_to
 
-  has_internal_id :iid, scope: :namespace, track_if: -> { !importing? }, init: ->(issue, scope) do
-    # we need this init for the case where the IID allocation in internal_ids#last_value
-    # is higher than the actual issues.max(iid) value for a given project. For instance
-    # in case of an import where a batch of IIDs may be prealocated
-    #
-    # TODO: remove this once the UpdateIssuesInternalIdScope migration completes
-    if issue
-      [
-        InternalId.where(project: issue.project, usage: :issues).pick(:last_value).to_i,
-        issue.namespace&.issues&.maximum(:iid).to_i
-      ].max
-    else
-      [
-        InternalId.where(**scope, usage: :issues).pick(:last_value).to_i,
-        where(**scope).maximum(:iid).to_i
-      ].max
-    end
-  end
+  has_internal_id :iid, scope: :namespace, track_if: -> { !importing? }
 
   has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 

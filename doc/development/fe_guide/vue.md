@@ -860,7 +860,7 @@ component under test, with the `computed` property, for example). Remember to us
 We should test for events emitted in response to an action in our component. This testing
 verifies the correct events are being fired with the correct arguments.
 
-For any DOM events we should use [`trigger`](https://v1.test-utils.vuejs.org/api/wrapper/#trigger)
+For any native DOM events we should use [`trigger`](https://v1.test-utils.vuejs.org/api/wrapper/#trigger)
 to fire out event.
 
 ```javascript
@@ -891,6 +891,20 @@ it('should fire the itemClicked event', () => {
 
 We should verify an event has been fired by asserting against the result of the
 [`emitted()`](https://v1.test-utils.vuejs.org/api/wrapper/#emitted) method.
+
+It is a good practice to prefer to use `vm.$emit` over `trigger` when emitting events from child components.
+
+Using `trigger` on the component means we treat it as a white box: we assume that the root element of child component has a native `click` event. Also, some tests fail in Vue3 mode when using `trigger` on child components.
+
+   ```javascript
+   const findButton = () => wrapper.findComponent(GlButton);
+
+   // bad
+   findButton().trigger('click');
+
+   // good
+   findButton().vm.$emit('click');
+   ```
 
 ## Vue.js Expert Role
 

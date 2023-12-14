@@ -54,9 +54,6 @@ export const i18n = {
     "WorkItem|This work item is not available. It either doesn't exist or you don't have permission to view it.",
   ),
   updateError: s__('WorkItem|Something went wrong while updating the work item. Please try again.'),
-  confidentialTooltip: s__(
-    'WorkItem|Only project members with at least the Reporter role, the author, and assignees can view or be notified about this %{workItemType}.',
-  ),
 };
 
 export const I18N_WORK_ITEM_ERROR_FETCHING_LABELS = s__(

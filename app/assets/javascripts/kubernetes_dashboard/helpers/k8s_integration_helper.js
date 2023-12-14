@@ -48,3 +48,13 @@ export function calculateStatefulSetStatus(item) {
   }
   return STATUS_FAILED;
 }
+
+export function calculateDaemonSetStatus(item) {
+  if (
+    item.status?.numberReady === item.status?.desiredNumberScheduled &&
+    !item.status?.numberMisscheduled
+  ) {
+    return STATUS_READY;
+  }
+  return STATUS_FAILED;
+}

@@ -295,3 +295,59 @@ export const k8sReplicaSetsMock = [readyStatefulSet, readyStatefulSet, failedSta
 export const mockReplicaSetsTableItems = mockStatefulSetsTableItems.map((item) => {
   return { ...item, kind: 'ReplicaSet' };
 });
+
+const readyDaemonSet = {
+  status: { numberMisscheduled: 0, numberReady: 2, desiredNumberScheduled: 2 },
+  metadata: {
+    name: 'daemonSet-1',
+    namespace: 'default',
+    creationTimestamp: '2023-07-31T11:50:17Z',
+    labels: {},
+    annotations: {},
+  },
+};
+
+const failedDaemonSet = {
+  status: { numberMisscheduled: 1, numberReady: 1, desiredNumberScheduled: 2 },
+  metadata: {
+    name: 'daemonSet-2',
+    namespace: 'default',
+    creationTimestamp: '2023-11-21T11:50:59Z',
+    labels: {},
+    annotations: {},
+  },
+};
+
+export const mockDaemonSetsStats = [
+  {
+    title: 'Ready',
+    value: 1,
+  },
+  {
+    title: 'Failed',
+    value: 1,
+  },
+];
+
+export const mockDaemonSetsTableItems = [
+  {
+    name: 'daemonSet-1',
+    namespace: 'default',
+    status: 'Ready',
+    age: '114d',
+    labels: {},
+    annotations: {},
+    kind: 'DaemonSet',
+  },
+  {
+    name: 'daemonSet-2',
+    namespace: 'default',
+    status: 'Failed',
+    age: '1d',
+    labels: {},
+    annotations: {},
+    kind: 'DaemonSet',
+  },
+];
+
+export const k8sDaemonSetsMock = [readyDaemonSet, failedDaemonSet];

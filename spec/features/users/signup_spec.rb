@@ -62,7 +62,7 @@ RSpec.describe 'Signup', :js, feature_category: :user_management do
   let(:terms_text) do
     <<~TEXT.squish
       By clicking Register or registering through a third party you accept the
-      Terms of Use and acknowledge the Privacy Policy and Cookie Policy
+      Terms of Use and acknowledge the Privacy Statement and Cookie Policy
     TEXT
   end
 
@@ -383,7 +383,7 @@ RSpec.describe 'Signup', :js, feature_category: :user_management do
     let(:terms_text) do
       <<~TEXT.squish
         By clicking Register, I agree that I have read and accepted the Terms of
-        Use and Privacy Policy
+        Use and Privacy Statement
       TEXT
     end
 

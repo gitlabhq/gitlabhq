@@ -8,7 +8,6 @@ import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
 import ItemTitle from '~/work_items/components/item_title.vue';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
-import createWorkItemFromTaskMutation from '~/work_items/graphql/create_work_item_from_task.mutation.graphql';
 import { projectWorkItemTypesQueryResponse, createWorkItemMutationResponse } from '../mock_data';
 
 jest.mock('~/lib/utils/uuids', () => ({ uuids: () => ['testuuid'] }));
@@ -42,7 +41,6 @@ describe('Create work item component', () => {
       [
         [projectWorkItemTypesQuery, queryHandler],
         [createWorkItemMutation, mutationHandler],
-        [createWorkItemFromTaskMutation, mutationHandler],
       ],
       {},
       { typePolicies: { Project: { merge: true } } },

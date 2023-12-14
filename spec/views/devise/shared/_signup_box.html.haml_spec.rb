@@ -8,13 +8,13 @@ RSpec.describe 'devise/shared/_signup_box' do
 
   let(:translation_com) do
     s_("SignUp|By clicking %{button_text} or registering through a third party you "\
-      "accept the GitLab%{link_start} Terms of Use and acknowledge the Privacy Policy "\
+      "accept the GitLab%{link_start} Terms of Use and acknowledge the Privacy Statement "\
       "and Cookie Policy%{link_end}")
   end
 
   let(:translation_non_com) do
     s_("SignUp|By clicking %{button_text} or registering through a third party you "\
-      "accept the%{link_start} Terms of Use and acknowledge the Privacy Policy and "\
+      "accept the%{link_start} Terms of Use and acknowledge the Privacy Statement and "\
       "Cookie Policy%{link_end}")
   end
 

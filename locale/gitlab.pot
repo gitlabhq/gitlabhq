@@ -27874,6 +27874,12 @@ msgstr ""
 msgid "KubernetesDashboard|Annotations"
 msgstr ""
 
+msgid "KubernetesDashboard|DaemonSet"
+msgstr ""
+
+msgid "KubernetesDashboard|DaemonSets"
+msgstr ""
+
 msgid "KubernetesDashboard|Dashboard"
 msgstr ""
 
@@ -45646,19 +45652,19 @@ msgstr ""
 msgid "Sign-up restrictions"
 msgstr ""
 
-msgid "SignUp|By clicking %{button_text} or registering through a third party you accept the GitLab%{link_start} Terms of Use and acknowledge the Privacy Policy and Cookie Policy%{link_end}"
+msgid "SignUp|By clicking %{button_text} or registering through a third party you accept the GitLab%{link_start} Terms of Use and acknowledge the Privacy Statement and Cookie Policy%{link_end}"
 msgstr ""
 
-msgid "SignUp|By clicking %{button_text} or registering through a third party you accept the%{link_start} Terms of Use and acknowledge the Privacy Policy and Cookie Policy%{link_end}"
+msgid "SignUp|By clicking %{button_text} or registering through a third party you accept the%{link_start} Terms of Use and acknowledge the Privacy Statement and Cookie Policy%{link_end}"
 msgstr ""
 
-msgid "SignUp|By clicking %{button_text}, I agree that I have read and accepted the %{link_start}Terms of Use and Privacy Policy%{link_end}"
+msgid "SignUp|By clicking %{button_text}, I agree that I have read and accepted the %{link_start}Terms of Use and Privacy Statement%{link_end}"
 msgstr ""
 
-msgid "SignUp|By clicking %{button_text}, I agree that I have read and accepted the GitLab %{link_start}Terms of Use and Privacy Policy%{link_end}"
+msgid "SignUp|By clicking %{button_text}, I agree that I have read and accepted the GitLab %{link_start}Terms of Use and Privacy Statement%{link_end}"
 msgstr ""
 
-msgid "SignUp|By signing in you accept the %{link_start}Terms of Use and acknowledge the Privacy Policy and Cookie Policy%{link_end}."
+msgid "SignUp|By signing in you accept the %{link_start}Terms of Use and acknowledge the Privacy Statement and Cookie Policy%{link_end}."
 msgstr ""
 
 msgid "SignUp|First name is too long (maximum is %{max_length} characters)."
@@ -55127,9 +55133,6 @@ msgid "WorkItem|Objective"
 msgstr ""
 
 msgid "WorkItem|Only %{MAX_WORK_ITEMS} items can be added at a time."
-msgstr ""
-
-msgid "WorkItem|Only project members with at least the Reporter role, the author, and assignees can view or be notified about this %{workItemType}."
 msgstr ""
 
 msgid "WorkItem|Open"

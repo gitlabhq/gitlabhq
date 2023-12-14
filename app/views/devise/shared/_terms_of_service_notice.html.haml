@@ -3,15 +3,15 @@
 %p.gl-text-gray-500.gl-mt-5.gl-mb-0
   - if Feature.enabled?(:restyle_login_page, @project)
     - if Gitlab.com?
-      = html_escape(s_("SignUp|By clicking %{button_text} or registering through a third party you accept the GitLab%{link_start} Terms of Use and acknowledge the Privacy Policy and Cookie Policy%{link_end}")) % { button_text: button_text,
+      = html_escape(s_("SignUp|By clicking %{button_text} or registering through a third party you accept the GitLab%{link_start} Terms of Use and acknowledge the Privacy Statement and Cookie Policy%{link_end}")) % { button_text: button_text,
         link_start: "<a href='#{terms_path}' target='_blank' rel='noreferrer noopener'>".html_safe, link_end: '</a>'.html_safe }
     - else
-      = html_escape(s_("SignUp|By clicking %{button_text} or registering through a third party you accept the%{link_start} Terms of Use and acknowledge the Privacy Policy and Cookie Policy%{link_end}")) % { button_text: button_text,
+      = html_escape(s_("SignUp|By clicking %{button_text} or registering through a third party you accept the%{link_start} Terms of Use and acknowledge the Privacy Statement and Cookie Policy%{link_end}")) % { button_text: button_text,
         link_start: "<a href='#{terms_path}' target='_blank' rel='noreferrer noopener'>".html_safe, link_end: '</a>'.html_safe }
   - else
     - if Gitlab.com?
-      = html_escape(s_("SignUp|By clicking %{button_text}, I agree that I have read and accepted the GitLab %{link_start}Terms of Use and Privacy Policy%{link_end}")) % { button_text: button_text,
+      = html_escape(s_("SignUp|By clicking %{button_text}, I agree that I have read and accepted the GitLab %{link_start}Terms of Use and Privacy Statement%{link_end}")) % { button_text: button_text,
         link_start: "<a href='#{terms_path}' target='_blank' rel='noreferrer noopener'>".html_safe, link_end: '</a>'.html_safe }
     - else
-      = html_escape(s_("SignUp|By clicking %{button_text}, I agree that I have read and accepted the %{link_start}Terms of Use and Privacy Policy%{link_end}")) % { button_text: button_text,
+      = html_escape(s_("SignUp|By clicking %{button_text}, I agree that I have read and accepted the %{link_start}Terms of Use and Privacy Statement%{link_end}")) % { button_text: button_text,
         link_start: "<a href='#{terms_path}' target='_blank' rel='noreferrer noopener'>".html_safe, link_end: '</a>'.html_safe }

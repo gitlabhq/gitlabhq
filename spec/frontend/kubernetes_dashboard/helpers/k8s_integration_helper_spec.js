@@ -2,6 +2,7 @@ import {
   getAge,
   calculateDeploymentStatus,
   calculateStatefulSetStatus,
+  calculateDaemonSetStatus,
 } from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
 import { useFakeDate } from 'helpers/fake_date';
 
@@ -70,6 +71,23 @@ describe('k8s_integration_helper', () => {
       ${'there are the same amount of readyReplicas as in spec'} | ${ready}  | ${'Ready'}
     `('returns status as $expected when $condition', ({ item, expected }) => {
       expect(calculateStatefulSetStatus(item)).toBe(expected);
+    });
+  });
+
+  describe('calculateDaemonSetStatus', () => {
+    const ready = {
+      status: { numberMisscheduled: 0, numberReady: 2, desiredNumberScheduled: 2 },
+    };
+    const failed = {
+      status: { numberMisscheduled: 1, numberReady: 1, desiredNumberScheduled: 2 },
+    };
+
+    it.each`
+      condition                                                                                        | item      | expected
+      ${'there are less numberReady than desiredNumberScheduled or the numberMisscheduled is present'} | ${failed} | ${'Failed'}
+      ${'there are the same amount of numberReady and desiredNumberScheduled'}                         | ${ready}  | ${'Ready'}
+    `('returns status as $expected when $condition', ({ item, expected }) => {
+      expect(calculateDaemonSetStatus(item)).toBe(expected);
     });
   });
 });

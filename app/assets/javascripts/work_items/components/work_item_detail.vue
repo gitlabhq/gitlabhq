@@ -17,7 +17,6 @@ import {
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_AWARD_EMOJI,
   WIDGET_TYPE_HIERARCHY,
-  WORK_ITEM_TYPE_VALUE_ISSUE,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_LINKED_ITEMS,
@@ -25,7 +24,6 @@ import {
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
-import updateWorkItemTaskMutation from '../graphql/update_work_item_task.mutation.graphql';
 import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import { findHierarchyWidgetChildren } from '../utils';
@@ -79,11 +77,6 @@ export default {
       default: false,
     },
     workItemIid: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    workItemParentId: {
       type: String,
       required: false,
       default: null,
@@ -163,9 +156,6 @@ export default {
     workItemTypeId() {
       return this.workItem.workItemType?.id;
     },
-    workItemBreadcrumbReference() {
-      return this.workItemType ? `#${this.workItem.iid}` : '';
-    },
     canUpdate() {
       return this.workItem.userPermissions?.updateWorkItem;
     },
@@ -184,25 +174,8 @@ export default {
     parentWorkItem() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
     },
-    parentWorkItemType() {
-      return this.parentWorkItem?.workItemType?.name;
-    },
-    parentWorkItemIconName() {
-      return this.parentWorkItem?.workItemType?.iconName;
-    },
     parentWorkItemConfidentiality() {
       return this.parentWorkItem?.confidential;
-    },
-    parentWorkItemReference() {
-      return this.parentWorkItem ? `${this.parentWorkItem.title} #${this.parentWorkItem.iid}` : '';
-    },
-    parentUrl() {
-      // Once more types are moved to have Work Items involved
-      // we need to handle this properly.
-      if (this.parentWorkItemType === WORK_ITEM_TYPE_VALUE_ISSUE) {
-        return `../../-/issues/${this.parentWorkItem?.iid}`;
-      }
-      return this.parentWorkItem?.webUrl;
     },
     workItemIconName() {
       return this.workItem.workItemType?.iconName;
@@ -290,34 +263,21 @@ export default {
     },
     toggleConfidentiality(confidentialStatus) {
       this.updateInProgress = true;
-      let updateMutation = updateWorkItemMutation;
-      let inputVariables = {
-        id: this.workItem.id,
-        confidential: confidentialStatus,
-      };
-
-      if (this.parentWorkItem) {
-        updateMutation = updateWorkItemTaskMutation;
-        inputVariables = {
-          id: this.parentWorkItem.id,
-          taskData: {
-            id: this.workItem.id,
-            confidential: confidentialStatus,
-          },
-        };
-      }
 
       this.$apollo
         .mutate({
-          mutation: updateMutation,
+          mutation: updateWorkItemMutation,
           variables: {
-            input: inputVariables,
+            input: {
+              id: this.workItem.id,
+              confidential: confidentialStatus,
+            },
           },
         })
         .then(
           ({
             data: {
-              workItemUpdate: { errors, workItem, task },
+              workItemUpdate: { errors, workItem },
             },
           }) => {
             if (errors?.length) {
@@ -325,7 +285,7 @@ export default {
             }
 
             this.$emit('workItemUpdated', {
-              confidential: workItem?.confidential || task?.confidential,
+              confidential: workItem?.confidential,
             });
           },
         )
@@ -435,7 +395,6 @@ export default {
               :work-item-id="workItem.id"
               :work-item-title="workItem.title"
               :work-item-type="workItemType"
-              :work-item-parent-id="workItemParentId"
               :can-update="canUpdate"
               @error="updateError = $event"
             />
@@ -465,7 +424,6 @@ export default {
               :work-item-create-note-email="workItem.createNoteEmail"
               :is-modal="isModal"
               :work-item-state="workItem.state"
-              :work-item-parent-id="workItemParentId"
               @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
               @toggleWorkItemConfidentiality="toggleConfidentiality"
               @error="updateError = $event"
@@ -490,7 +448,6 @@ export default {
             :work-item-id="workItem.id"
             :work-item-title="workItem.title"
             :work-item-type="workItemType"
-            :work-item-parent-id="workItemParentId"
             :can-update="canUpdate"
             :use-h1="!isModal"
             @error="updateError = $event"
@@ -511,7 +468,6 @@ export default {
           :is-modal="isModal"
           :work-item="workItem"
           :is-sticky-header-showing="isStickyHeaderShowing"
-          :work-item-parent-id="workItemParentId"
           :work-item-notifications-subscribed="workItemNotificationsSubscribed"
           @hideStickyHeader="hideStickyHeader"
           @showStickyHeader="showStickyHeader"
@@ -530,7 +486,6 @@ export default {
               class="gl-border-b"
               :full-path="fullPath"
               :work-item="workItem"
-              :work-item-parent-id="workItemParentId"
               @error="updateError = $event"
             />
             <work-item-description
@@ -605,7 +560,6 @@ export default {
             <work-item-attributes-wrapper
               :full-path="fullPath"
               :work-item="workItem"
-              :work-item-parent-id="workItemParentId"
               @error="updateError = $event"
             />
           </aside>

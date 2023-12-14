@@ -23117,6 +23117,8 @@ CREATE TABLE sbom_component_versions (
     updated_at timestamp with time zone NOT NULL,
     component_id bigint NOT NULL,
     version text NOT NULL,
+    source_package_name text,
+    CONSTRAINT check_39636b9a8a CHECK ((char_length(source_package_name) <= 255)),
     CONSTRAINT check_e71cad08d3 CHECK ((char_length(version) <= 255))
 );
 

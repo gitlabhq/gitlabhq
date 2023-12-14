@@ -23,7 +23,7 @@
 
   - if Feature.enabled?(:restyle_login_page, @project) && Gitlab::CurrentSettings.current_application_settings.terms
     %p.gl-px-5
-      = html_escape(s_("SignUp|By signing in you accept the %{link_start}Terms of Use and acknowledge the Privacy Policy and Cookie Policy%{link_end}.")) % { link_start: "<a href='#{terms_path}' target='_blank' rel='noreferrer noopener'>".html_safe,
+      = html_escape(s_("SignUp|By signing in you accept the %{link_start}Terms of Use and acknowledge the Privacy Statement and Cookie Policy%{link_end}.")) % { link_start: "<a href='#{terms_path}' target='_blank' rel='noreferrer noopener'>".html_safe,
       link_end: '</a>'.html_safe }
 
   - if allow_signup?

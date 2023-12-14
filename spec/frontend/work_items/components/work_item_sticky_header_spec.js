@@ -21,7 +21,6 @@ describe('WorkItemStickyHeader', () => {
         fullPath: '/test',
         isStickyHeaderShowing: true,
         workItemNotificationsSubscribed: true,
-        workItemParentId: null,
         updateInProgress: false,
         parentWorkItemConfidentiality: false,
         showWorkItemCurrentUserTodos: true,
