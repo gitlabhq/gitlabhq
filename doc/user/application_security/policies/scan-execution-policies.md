@@ -201,7 +201,7 @@ The keys for a schedule rule are:
 
 ## `scan` action type
 
-> - Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.6 [with a flag](../../../administration/feature_flags.md) named `security_policies_variables_precedence`. Disabled by default.
+> - Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_variables_precedence`. Enabled by default.
 > - The `custom` scan action type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126457) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `compliance_pipeline_in_policies`. On GitLab.com, this feature is not available. On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `compliance_pipeline_in_policies`.
 
 This action executes the selected `scan` with additional parameters when conditions for at least one

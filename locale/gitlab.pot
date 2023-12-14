@@ -923,10 +923,10 @@ msgstr ""
 msgid "%{linkStart}%{linkEnd} review summary"
 msgstr ""
 
-msgid "%{linkStart}Advanced search%{linkEnd} is enabled."
+msgid "%{linkStart}Advanced search%{linkEnd} is disabled since %{ref_elem} is not the default branch. %{docs_link}"
 msgstr ""
 
-msgid "%{linkStart}Exact code search (powered by Zoekt)%{linkEnd} is disabled since %{ref_elem} is not the default branch. %{docs_link}"
+msgid "%{linkStart}Advanced search%{linkEnd} is enabled."
 msgstr ""
 
 msgid "%{listToShow}, and %{awardsListLength} more"

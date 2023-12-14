@@ -1997,6 +1997,7 @@ DEPENDENCIES
   openid_connect (= 1.3.0)
   openssl (~> 3.0)
   org-ruby (~> 0.9.12)
+  os (~> 1.1)
   pact (~> 1.63)
   parallel (~> 1.19)
   parser (~> 3.2, >= 3.2.2.4)

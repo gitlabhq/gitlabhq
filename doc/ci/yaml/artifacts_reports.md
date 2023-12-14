@@ -314,6 +314,8 @@ GitLab can display the results of one or more reports in the
 
 ## `artifacts:reports:repository_xray` **(ULTIMATE ALL)**
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432235) in GitLab 16.7.
+
 The `repository_xray` report collects information about your repository for use by AI in code suggestions.
 
 ## `artifacts:reports:sast`

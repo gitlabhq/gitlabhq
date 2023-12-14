@@ -123,7 +123,7 @@ export default {
     <template #toggle>
       <div class="gl-min-h-7">
         <gl-button
-          class="gl-md-display-none! gl-new-dropdown-toggle gl-absolute gl-top-0 gl-left-0 gl-w-full"
+          class="gl-md-display-none! gl-new-dropdown-toggle gl-absolute gl-top-0 gl-left-0 gl-w-full gl-sm-w-auto"
           button-text-classes="gl-w-full"
           category="secondary"
           :aria-label="$options.i18n.actionsLabel"

@@ -8,10 +8,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37911) in GitLab 13.6 [with a flag](../../administration/feature_flags.md) named `custom_emoji`. Disabled by default.
 > - Enabled on GitLab.com in GitLab 14.0.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138969) in GitLab 16.7.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `custom_emoji`.
-On GitLab.com, this feature is available.
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `custom_emoji`.
 This feature is ready for production use.
 
 To use [custom emoji](../../user/emoji_reactions.md) in comments and descriptions, you can add them to a top-level group using the GraphQL API.

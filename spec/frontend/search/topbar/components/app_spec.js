@@ -108,15 +108,15 @@ describe('GlobalSearchTopbar', () => {
     });
 
     describe.each`
-      state                                                              | defaultBranchName | hasSyntaxOptions
-      ${{ query: { repository_ref: '' }, searchType: 'basic' }}          | ${'master'}       | ${false}
-      ${{ query: { repository_ref: 'v0.1' }, searchType: 'basic' }}      | ${''}             | ${false}
-      ${{ query: { repository_ref: 'master' }, searchType: 'basic' }}    | ${'master'}       | ${false}
-      ${{ query: { repository_ref: 'master' }, searchType: 'advanced' }} | ${''}             | ${false}
-      ${{ query: { repository_ref: '' }, searchType: 'advanced' }}       | ${'master'}       | ${true}
-      ${{ query: { repository_ref: 'v0.1' }, searchType: 'advanced' }}   | ${''}             | ${false}
-      ${{ query: { repository_ref: 'master' }, searchType: 'advanced' }} | ${'master'}       | ${true}
-      ${{ query: { repository_ref: 'master' }, searchType: 'zoekt' }}    | ${'master'}       | ${true}
+      state                                                                                                                   | hasSyntaxOptions
+      ${{ query: { repository_ref: '' }, searchType: 'basic', searchLevel: 'project', defaultBranchName: 'master' }}          | ${false}
+      ${{ query: { repository_ref: 'v0.1' }, searchType: 'basic', searchLevel: 'project', defaultBranchName: '' }}            | ${false}
+      ${{ query: { repository_ref: 'master' }, searchType: 'basic', searchLevel: 'project', defaultBranchName: 'master' }}    | ${false}
+      ${{ query: { repository_ref: 'master' }, searchType: 'advanced', searchLevel: 'project', defaultBranchName: '' }}       | ${false}
+      ${{ query: { repository_ref: '' }, searchType: 'advanced', searchLevel: 'project', defaultBranchName: 'master' }}       | ${true}
+      ${{ query: { repository_ref: 'v0.1' }, searchType: 'advanced', searchLevel: 'project', defaultBranchName: '' }}         | ${false}
+      ${{ query: { repository_ref: 'master' }, searchType: 'advanced', searchLevel: 'project', defaultBranchName: 'master' }} | ${true}
+      ${{ query: { repository_ref: 'master' }, searchType: 'zoekt', searchLevel: 'project', defaultBranchName: 'master' }}    | ${true}
     `(
       `the syntax option based on component state`,
       ({ state, defaultBranchName, hasSyntaxOptions }) => {

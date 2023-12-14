@@ -77,6 +77,47 @@ The following data is shared with third-party AI APIs:
   record).
 - Filename.
 
+## Vulnerability resolution **(ULTIMATE SAAS EXPERIMENT)**
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [Experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
+
+Use GitLab Duo Vulnerability resolution to automatically create a merge request that
+resolves the vulnerability.
+
+On GitLab.com this feature is available. By default, it is powered by Google's `code-bison-001`
+model.
+
+We cannot guarantee that the large language model produces results that are correct. Use the
+explanation with caution.
+
+Prerequisites:
+
+- You must have the GitLab Ultimate subscription tier.
+- You must be a member of the project.
+- The vulnerability must be a SAST finding.
+
+Learn more about [how to enable all GitLab Duo features](../../ai_features.md#enable-aiml-features).
+
+To resolve the vulnerability:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Security and Compliance > Vulnerability report**.
+1. In the **Tool** dropdown list, select **SAST**.
+1. Select the SAST vulnerability you want resolved.
+1. At the top of the vulnerability's page, from the **Resolve with merge request** dropdown list, select **Resolve with AI**.
+
+A merge request containing the AI remediation suggestions is opened. Review the suggested changes,
+then process the merge request according to your standard workflow.
+
+### Data shared with third-party AI APIs
+
+The following data is shared with third-party AI APIs:
+
+- Vulnerability title (which might contain the file name, depending on which scanner is used).
+- Vulnerability identifiers.
+- Code block.
+- File name.
+
 ## Vulnerability status values
 
 A vulnerability's status can be:

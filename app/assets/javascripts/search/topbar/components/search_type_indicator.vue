@@ -8,6 +8,7 @@ import {
   ZOEKT_SEARCH_TYPE,
   ADVANCED_SEARCH_TYPE,
   BASIC_SEARCH_TYPE,
+  SEARCH_LEVEL_PROJECT,
 } from '~/search/store/constants';
 import {
   ZOEKT_HELP_PAGE,
@@ -30,7 +31,7 @@ export default {
     ),
     advanced_enabled: __('%{linkStart}Advanced search%{linkEnd} is enabled.'),
     advanced_disabled: __(
-      '%{linkStart}Exact code search (powered by Zoekt)%{linkEnd} is disabled since %{ref_elem} is not the default branch. %{docs_link}',
+      '%{linkStart}Advanced search%{linkEnd} is disabled since %{ref_elem} is not the default branch. %{docs_link}',
     ),
     more: __('Learn more.'),
   },
@@ -39,7 +40,7 @@ export default {
     GlLink,
   },
   computed: {
-    ...mapState(['searchType', 'defaultBranchName', 'query']),
+    ...mapState(['searchType', 'defaultBranchName', 'query', 'searchLevel']),
     zoektHelpUrl() {
       return helpPagePath(ZOEKT_HELP_PAGE);
     },
@@ -63,6 +64,10 @@ export default {
       return this.searchType === ADVANCED_SEARCH_TYPE;
     },
     isEnabled() {
+      if (this.searchLevel !== SEARCH_LEVEL_PROJECT) {
+        return true;
+      }
+
       return !this.query.repository_ref || this.query.repository_ref === this.defaultBranchName;
     },
     isBasicSearch() {

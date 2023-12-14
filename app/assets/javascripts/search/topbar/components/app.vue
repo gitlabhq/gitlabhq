@@ -23,15 +23,8 @@ export default {
     MarkdownDrawer,
     SearchTypeIndicator,
   },
-  props: {
-    defaultBranchName: {
-      type: String,
-      required: false,
-      default: '',
-    },
-  },
   computed: {
-    ...mapState(['query', 'searchType']),
+    ...mapState(['query', 'searchType', 'defaultBranchName']),
     search: {
       get() {
         return this.query ? this.query.search : '';

@@ -18,6 +18,6 @@
 
 #js-search-topbar{ data: { "default-branch-name": @project&.default_branch } }
 .results.gl-lg-display-flex.gl-mt-0
-  #js-search-sidebar{ data: { navigation_json: search_navigation_json, search_type: search_service.search_type, group_initial_json: group_attributes.to_json, project_initial_json: project_attributes.to_json, } }
+  #js-search-sidebar{ data: { navigation_json: search_navigation_json, search_type: search_service.search_type, search_level: search_service.level, group_initial_json: group_attributes.to_json, project_initial_json: project_attributes.to_json, } }
   - if @search_term
     = render 'search/results'

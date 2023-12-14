@@ -17,7 +17,7 @@ describe('SearchTypeIndicator', () => {
     preloadStoredFrequentItems: jest.fn(),
   };
 
-  const createComponent = (initialState = {}, defaultBranchName = '') => {
+  const createComponent = (initialState = {}) => {
     const store = new Vuex.Store({
       state: {
         query: MOCK_QUERY,
@@ -28,7 +28,6 @@ describe('SearchTypeIndicator', () => {
 
     wrapper = shallowMountExtended(SearchTypeIndicator, {
       store,
-      propsData: { defaultBranchName },
       stubs: {
         GlSprintf,
       },
@@ -39,19 +38,26 @@ describe('SearchTypeIndicator', () => {
   const findDocsLink = () => wrapper.findComponentByTestId('docs-link');
   const findSyntaxDocsLink = () => wrapper.findComponentByTestId('syntax-docs-link');
 
+  // searchType and search level params cobination in this test reflects
+  // all possible combinations
+
   describe.each`
-    searchType    | repository  | showSearchTypeIndicator
-    ${'advanced'} | ${'master'} | ${'advanced-enabled'}
-    ${'advanced'} | ${'v0.1'}   | ${'advanced-disabled'}
-    ${'zoekt'}    | ${'master'} | ${'zoekt-enabled'}
-    ${'zoekt'}    | ${'v0.1'}   | ${'zoekt-disabled'}
+    searchType    | searchLevel  | repository  | showSearchTypeIndicator
+    ${'advanced'} | ${'project'} | ${'master'} | ${'advanced-enabled'}
+    ${'advanced'} | ${'project'} | ${'v0.1'}   | ${'advanced-disabled'}
+    ${'advanced'} | ${'group'}   | ${'master'} | ${'advanced-enabled'}
+    ${'advanced'} | ${'global'}  | ${'master'} | ${'advanced-enabled'}
+    ${'zoekt'}    | ${'project'} | ${'master'} | ${'zoekt-enabled'}
+    ${'zoekt'}    | ${'project'} | ${'v0.1'}   | ${'zoekt-disabled'}
+    ${'zoekt'}    | ${'group'}   | ${'master'} | ${'zoekt-enabled'}
   `(
-    'search type indicator for $searchType',
-    ({ searchType, repository, showSearchTypeIndicator }) => {
+    'search type indicator for $searchType $searchLevel',
+    ({ searchType, repository, showSearchTypeIndicator, searchLevel }) => {
       beforeEach(() => {
         createComponent({
           query: { repository_ref: repository },
           searchType,
+          searchLevel,
           defaultBranchName: 'master',
         });
       });
@@ -93,6 +99,7 @@ describe('SearchTypeIndicator', () => {
       createComponent({
         query: { repository_ref: 'master' },
         searchType,
+        searchLevel: 'project',
         defaultBranchName: 'master',
       });
     });
@@ -110,6 +117,7 @@ describe('SearchTypeIndicator', () => {
       createComponent({
         query: { repository_ref: '000' },
         searchType,
+        searchLevel: 'project',
         defaultBranchName: 'master',
       });
     });

@@ -11,18 +11,12 @@ export const initTopbar = (store) => {
     return false;
   }
 
-  const { defaultBranchName } = el.dataset;
-
   return new Vue({
     el,
     name: 'GlobalSearchTopbar',
     store,
     render(createElement) {
-      return createElement(GlobalSearchTopbar, {
-        props: {
-          defaultBranchName,
-        },
-      });
+      return createElement(GlobalSearchTopbar);
     },
   });
 };

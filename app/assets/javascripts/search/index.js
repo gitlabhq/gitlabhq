@@ -11,13 +11,36 @@ const sidebarInitState = () => {
   const el = document.getElementById('js-search-sidebar');
   if (!el) return {};
 
-  const { navigationJson, searchType, groupInitialJson, projectInitialJson } = el.dataset;
+  const {
+    navigationJson,
+    searchType,
+    searchLevel,
+    groupInitialJson,
+    projectInitialJson,
+  } = el.dataset;
 
   const navigationJsonParsed = JSON.parse(navigationJson);
   const groupInitialJsonParsed = JSON.parse(groupInitialJson);
   const projectInitialJsonParsed = JSON.parse(projectInitialJson);
 
-  return { navigationJsonParsed, searchType, groupInitialJsonParsed, projectInitialJsonParsed };
+  return {
+    navigationJsonParsed,
+    searchType,
+    searchLevel,
+    groupInitialJsonParsed,
+    projectInitialJsonParsed,
+  };
+};
+
+const topBarInitState = () => {
+  const el = document.getElementById('js-search-topbar');
+
+  if (!el) {
+    return false;
+  }
+
+  const { defaultBranchName } = el.dataset;
+  return { defaultBranchName };
 };
 
 export const initSearchApp = () => {
@@ -26,16 +49,21 @@ export const initSearchApp = () => {
   const {
     navigationJsonParsed: navigation,
     searchType,
+    searchLevel,
     groupInitialJsonParsed: groupInitialJson,
     projectInitialJsonParsed: projectInitialJson,
   } = sidebarInitState() || {};
+
+  const { defaultBranchName } = topBarInitState() || {};
 
   const store = createStore({
     query,
     navigation,
     searchType,
+    searchLevel,
     groupInitialJson,
     projectInitialJson,
+    defaultBranchName,
   });
 
   initTopbar(store);

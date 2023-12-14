@@ -23,7 +23,7 @@ module Gitlab
 
       # Indexes with reindexing support
       scope :reindexing_support, -> do
-        where(partitioned: false, exclusion: false, expression: false, type: Gitlab::Database::Reindexing::SUPPORTED_TYPES)
+        where(exclusion: false, expression: false, type: Gitlab::Database::Reindexing::SUPPORTED_TYPES)
           .not_match("#{Gitlab::Database::Reindexing::ReindexConcurrently::TEMPORARY_INDEX_PATTERN}$")
       end
 

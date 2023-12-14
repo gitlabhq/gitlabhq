@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'os'
 require 'yaml'
 require 'rspec/core/formatters/base_formatter'
 require_relative '../../tooling/lib/tooling/helpers/duration_formatter'
@@ -84,10 +85,18 @@ module Support
 
         # skip the output unless the duration increased by at least 1 second
         unless @last_elapsed_seconds.nil? || elapsed_seconds - @last_elapsed_seconds < 1
-          output.puts "# [RSpecRunTime] RSpec elapsed time: #{readable_duration(elapsed_seconds)}.\n\n"
+          output.puts \
+            "# [RSpecRunTime] RSpec elapsed time: #{readable_duration(elapsed_seconds)}. " \
+            "#{current_rss_in_megabytes}\n\n"
         end
 
         @last_elapsed_seconds = elapsed_seconds
+      end
+
+      def current_rss_in_megabytes
+        rss_in_megabytes = OS.rss_bytes / 1024 / 1024
+
+        "Current RSS: ~#{rss_in_megabytes.round}M"
       end
     end
   end
