@@ -785,6 +785,13 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
         ensure_no_tabs
       end
 
+      it 'renders logo', :js do
+        visit new_user_session_path
+
+        image = find('img.js-portrait-logo-detection')
+        expect(image['class']).to include('gl-h-9')
+      end
+
       it 'renders link to sign up path' do
         visit new_user_session_path
 

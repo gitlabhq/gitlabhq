@@ -646,7 +646,8 @@ module QA
       def events(comments, label_events, state_events, milestone_events)
         mapped_label_events = label_events.map { |event| event_mapping["label_#{event[:action]}"] }
         mapped_milestone_events = milestone_events.map { |event| event_mapping["milestone_#{event[:action]}"] }
-        mapped_state_event = state_events.map { |event| event[:state] }
+        # merged events are fetched through comments so duplicates need to be removed
+        mapped_state_event = state_events.map { |event| event[:state] }.reject { |state| state == "merged" }
         mapped_comment_events = comments.map do |c|
           event_mapping[c[:body].match(event_pattern)&.named_captures&.fetch("event", nil)]
         end

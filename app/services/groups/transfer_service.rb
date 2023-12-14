@@ -65,7 +65,6 @@ module Groups
       ) do
         Group.transaction do
           update_group_attributes
-          remove_paid_features_for_projects(old_root_ancestor_id)
           ensure_ownership
           update_integrations
           remove_issue_contacts(old_root_ancestor_id, was_root_group)
@@ -74,6 +73,7 @@ module Groups
         end
       end
 
+      remove_paid_features_for_projects(old_root_ancestor_id)
       post_update_hooks(@updated_project_ids, old_root_ancestor_id)
       propagate_integrations
       update_pending_builds

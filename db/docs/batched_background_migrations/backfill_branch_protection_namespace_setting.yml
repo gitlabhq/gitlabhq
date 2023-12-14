@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillBranchProtectionNamespaceSetting
+description: This migration back fills column default_branch_protection_defaults of namespace settings table
+feature_category: source_code_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136181
+milestone: '16.7'
+queued_migration_version: 20231107092912
+finalize_after: '2024-01-23'
+finalized_by: # version of the migration that ensured this bbm

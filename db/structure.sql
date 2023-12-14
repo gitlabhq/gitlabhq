@@ -12913,6 +12913,23 @@ CREATE SEQUENCE audit_events_streaming_http_group_namespace_filters_id_seq
 
 ALTER SEQUENCE audit_events_streaming_http_group_namespace_filters_id_seq OWNED BY audit_events_streaming_http_group_namespace_filters.id;
 
+CREATE TABLE audit_events_streaming_http_instance_namespace_filters (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    audit_events_instance_external_audit_event_destination_id bigint NOT NULL,
+    namespace_id bigint NOT NULL
+);
+
+CREATE SEQUENCE audit_events_streaming_http_instance_namespace_filters_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE audit_events_streaming_http_instance_namespace_filters_id_seq OWNED BY audit_events_streaming_http_instance_namespace_filters.id;
+
 CREATE TABLE audit_events_streaming_instance_event_type_filters (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -26354,6 +26371,8 @@ ALTER TABLE ONLY audit_events_streaming_headers ALTER COLUMN id SET DEFAULT next
 
 ALTER TABLE ONLY audit_events_streaming_http_group_namespace_filters ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_http_group_namespace_filters_id_seq'::regclass);
 
+ALTER TABLE ONLY audit_events_streaming_http_instance_namespace_filters ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_http_instance_namespace_filters_id_seq'::regclass);
+
 ALTER TABLE ONLY audit_events_streaming_instance_event_type_filters ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_instance_event_type_filters_id_seq'::regclass);
 
 ALTER TABLE ONLY authentication_events ALTER COLUMN id SET DEFAULT nextval('authentication_events_id_seq'::regclass);
@@ -28211,6 +28230,9 @@ ALTER TABLE ONLY audit_events_streaming_headers
 
 ALTER TABLE ONLY audit_events_streaming_http_group_namespace_filters
     ADD CONSTRAINT audit_events_streaming_http_group_namespace_filters_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY audit_events_streaming_http_instance_namespace_filters
+    ADD CONSTRAINT audit_events_streaming_http_instance_namespace_filters_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY audit_events_streaming_instance_event_type_filters
     ADD CONSTRAINT audit_events_streaming_instance_event_type_filters_pkey PRIMARY KEY (id);
@@ -31867,6 +31889,8 @@ CREATE UNIQUE INDEX index_atlassian_identities_on_extern_uid ON atlassian_identi
 
 CREATE UNIQUE INDEX index_audit_events_external_audit_on_verification_token ON audit_events_external_audit_event_destinations USING btree (verification_token);
 
+CREATE INDEX index_audit_events_instance_namespace_filters_on_namespace_id ON audit_events_streaming_http_instance_namespace_filters USING btree (namespace_id);
+
 CREATE INDEX index_audit_events_on_entity_id_and_entity_type_and_created_at ON ONLY audit_events USING btree (entity_id, entity_type, created_at, id);
 
 CREATE INDEX index_authentication_events_on_provider ON authentication_events USING btree (provider);
@@ -35421,6 +35445,8 @@ CREATE UNIQUE INDEX unique_audit_events_group_namespace_filters_destination_id O
 
 CREATE UNIQUE INDEX unique_audit_events_group_namespace_filters_namespace_id ON audit_events_streaming_http_group_namespace_filters USING btree (namespace_id);
 
+CREATE UNIQUE INDEX unique_audit_events_instance_namespace_filters_destination_id ON audit_events_streaming_http_instance_namespace_filters USING btree (audit_events_instance_external_audit_event_destination_id);
+
 CREATE UNIQUE INDEX unique_batched_background_migrations_queued_migration_version ON batched_background_migrations USING btree (queued_migration_version);
 
 CREATE UNIQUE INDEX unique_ci_builds_token_encrypted_and_partition_id ON ci_builds USING btree (token_encrypted, partition_id) WHERE (token_encrypted IS NOT NULL);
@@ -37321,6 +37347,9 @@ ALTER TABLE ONLY users_star_projects
 ALTER TABLE ONLY alert_management_alerts
     ADD CONSTRAINT fk_2358b75436 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY audit_events_streaming_http_instance_namespace_filters
+    ADD CONSTRAINT fk_23f3ab7df0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY import_failures
     ADD CONSTRAINT fk_24b824da43 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -37905,6 +37934,9 @@ ALTER TABLE ONLY identities
 
 ALTER TABLE ONLY boards
     ADD CONSTRAINT fk_ab0a250ff6 FOREIGN KEY (iteration_cadence_id) REFERENCES iterations_cadences(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY audit_events_streaming_http_instance_namespace_filters
+    ADD CONSTRAINT fk_abe44125bc FOREIGN KEY (audit_events_instance_external_audit_event_destination_id) REFERENCES audit_events_instance_external_audit_event_destinations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_ad525e1f87 FOREIGN KEY (merge_user_id) REFERENCES users(id) ON DELETE SET NULL;

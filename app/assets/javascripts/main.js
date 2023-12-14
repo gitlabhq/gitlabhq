@@ -22,7 +22,7 @@ import { getLocationHash, visitUrl, mergeUrlParams } from './lib/utils/url_utili
 
 // everything else
 import LazyLoader from './lazy_loader';
-import initLogoAnimation from './logo';
+import initLogoAnimation, { initPortraitLogoDetection } from './logo';
 import initBreadcrumbs from './breadcrumb';
 import initPersistentUserCallouts from './persistent_user_callouts';
 import { initUserTracking, initDefaultTrackers } from './tracking';
@@ -83,6 +83,7 @@ function deferredInitialisation() {
   initBreadcrumbs();
   initPrefetchLinks('.js-prefetch-document');
   initLogoAnimation();
+  initPortraitLogoDetection();
   initUserPopovers();
   initBroadcastNotifications();
   initPersistentUserCallouts();

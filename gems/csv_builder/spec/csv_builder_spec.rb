@@ -1,18 +1,19 @@
 # frozen_string_literal: true
 
 RSpec.describe CsvBuilder do
-  let(:object) { double(question: :answer) }
   let(:csv_data) { subject.render }
+  let(:header_to_value_hash) do
+    { 'Q & A' => :question, 'Reversed' => ->(o) { o.question.to_s.reverse } }
+  end
 
   let(:subject) do
-    described_class.new(
-      enumerable, 'Q & A' => :question, 'Reversed' => ->(o) { o.question.to_s.reverse })
+    described_class.new(enumerable, **header_to_value_hash)
   end
 
   shared_examples 'csv builder examples' do
     let(:items) { [object] }
 
-    it "has a version number" do
+    it 'has a version number' do
       expect(CsvBuilder::Version::VERSION).not_to be nil
     end
 
@@ -45,30 +46,6 @@ RSpec.describe CsvBuilder do
       end
     end
 
-    describe 'truncation' do
-      let(:big_object) { double(question: 'Long' * 1024) }
-      let(:row_size) { big_object.question.length * 2 }
-      let(:items) { [big_object, big_object, big_object] }
-
-      it 'occurs after given number of bytes' do
-        expect(subject.render(row_size * 2).length).to be_between(row_size * 2, row_size * 3)
-        expect(subject).to be_truncated
-        expect(subject.rows_written).to eq 2
-      end
-
-      it 'is ignored by default' do
-        expect(subject.render.length).to be > row_size * 3
-        expect(subject.rows_written).to eq 3
-      end
-
-      it 'causes rows_expected to fall back to .count' do
-        subject.render(0)
-
-        expect(enumerable).to receive(:count).and_call_original
-        expect(subject.rows_expected).to eq 3
-      end
-    end
-
     it 'avoids loading all data in a single query' do
       expect(enumerable).to receive(:find_each)
 
@@ -83,42 +60,61 @@ RSpec.describe CsvBuilder do
       expect(csv_data).to include 'answer'
     end
 
-    it 'allows lamdas to look up more complicated data' do
+    it 'allows lambdas to look up more complicated data' do
       expect(csv_data).to include 'rewsna'
     end
+  end
 
-    describe 'excel sanitization' do
-      let(:dangerous_title) { double(title: "=cmd|' /C calc'!A0 title", description: "*safe_desc") }
-      let(:dangerous_desc) { double(title: "*safe_title", description: "=cmd|' /C calc'!A0 desc") }
-      let(:items) { [dangerous_title, dangerous_desc] }
-      let(:subject) { described_class.new(enumerable, 'Title' => 'title', 'Description' => 'description') }
-      let(:csv_data) { subject.render }
+  shared_examples 'csv builder with truncation ability' do
+    let(:items) { [big_object, big_object, big_object] }
+    let(:row_size) { question_value.length * 2 }
 
-      it 'sanitizes dangerous characters at the beginning of a column' do
-        expect(csv_data).to include "'=cmd|' /C calc'!A0 title"
-        expect(csv_data).to include "'=cmd|' /C calc'!A0 desc"
-      end
+    it 'occurs after given number of bytes' do
+      expect(subject.render(row_size * 2).length).to be_between(row_size * 2, row_size * 3)
+      expect(subject).to be_truncated
+      expect(subject.rows_written).to eq 2
+    end
 
-      it 'does not sanitize safe symbols at the beginning of a column' do
-        expect(csv_data).not_to include "'*safe_desc"
-        expect(csv_data).not_to include "'*safe_title"
-      end
+    it 'is ignored by default' do
+      expect(subject.render.length).to be > row_size * 3
+      expect(subject.rows_written).to eq 3
+    end
 
-      context 'when dangerous characters are after a line break' do
-        let(:items) { [double(title: "Safe title", description: "With task list\n-[x] todo 1")] }
+    it 'causes rows_expected to fall back to .count' do
+      subject.render(0)
 
-        it 'does not append single quote to description' do
-          builder = described_class.new(enumerable, 'Title' => 'title', 'Description' => 'description')
+      expect(enumerable).to receive(:count).and_call_original
+      expect(subject.rows_expected).to eq 3
+    end
+  end
 
-          csv_data = builder.render
+  shared_examples 'excel sanitization' do
+    let(:dangerous_title) { double(title: "=cmd|' /C calc'!A0 title", description: "*safe_desc") }
+    let(:dangerous_desc) { double(title: "*safe_title", description: "=cmd|' /C calc'!A0 desc") }
+    let(:header_to_value_hash) { { 'Title' => 'title', 'Description' => 'description' } }
+    let(:items) { [dangerous_title, dangerous_desc] }
 
-          expect(csv_data).to eq("Title,Description\nSafe title,\"With task list\n-[x] todo 1\"\n")
-        end
+    it 'sanitizes dangerous characters at the beginning of a column' do
+      expect(csv_data).to include "'=cmd|' /C calc'!A0 title"
+      expect(csv_data).to include "'=cmd|' /C calc'!A0 desc"
+    end
+
+    it 'does not sanitize safe symbols at the beginning of a column' do
+      expect(csv_data).not_to include "'*safe_desc"
+      expect(csv_data).not_to include "'*safe_title"
+    end
+
+    context 'when dangerous characters are after a line break' do
+      let(:items) { [double(title: "Safe title", description: "With task list\n-[x] todo 1")] }
+
+      it 'does not append single quote to description' do
+        expect(csv_data).to eq("Title,Description\nSafe title,\"With task list\n-[x] todo 1\"\n")
       end
     end
   end
 
   context 'when ActiveRecord::Relation like object is given' do
+    let(:object) { double(question: :answer) }
     let(:enumerable) { described_class::FakeRelation.new(items) }
 
     before do
@@ -132,11 +128,43 @@ RSpec.describe CsvBuilder do
     end
 
     it_behaves_like 'csv builder examples'
+    it_behaves_like 'excel sanitization'
+    it_behaves_like 'csv builder with truncation ability' do
+      let(:big_object) { double(question: 'Long' * 1024) }
+      let(:question_value) { big_object.question }
+    end
   end
 
   context 'when Enumerable like object is given' do
+    let(:object) { double(question: :answer) }
     let(:enumerable) { items }
 
     it_behaves_like 'csv builder examples'
+    it_behaves_like 'excel sanitization'
+    it_behaves_like 'csv builder with truncation ability' do
+      let(:big_object) { double(question: 'Long' * 1024) }
+      let(:question_value) { big_object.question }
+    end
+  end
+
+  context 'when Hash object is given' do
+    let(:object) { { question: :answer } }
+    let(:enumerable) { items }
+    let(:header_to_value_hash) do
+      { 'Q & A' => :question, 'Reversed' => ->(o) { o[:question].to_s.reverse } }
+    end
+
+    it_behaves_like 'csv builder examples'
+
+    it_behaves_like 'excel sanitization' do
+      let(:dangerous_title) { { title: "=cmd|' /C calc'!A0 title", description: "*safe_desc" } }
+      let(:dangerous_desc) { { title: "*safe_title", description: "=cmd|' /C calc'!A0 desc" } }
+      let(:header_to_value_hash) { { 'Title' => :title, 'Description' => :description } }
+    end
+
+    it_behaves_like 'csv builder with truncation ability' do
+      let(:big_object) { { question: 'Long' * 1024 } }
+      let(:question_value) { big_object[:question] }
+    end
   end
 end
