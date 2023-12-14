@@ -3198,7 +3198,6 @@ Layout/LineLength:
     - 'spec/features/oauth_login_spec.rb'
     - 'spec/features/user_settings/active_sessions_spec.rb'
     - 'spec/features/profiles/password_spec.rb'
-    - 'spec/features/profiles/personal_access_tokens_spec.rb'
     - 'spec/features/profiles/two_factor_auths_spec.rb'
     - 'spec/features/profiles/user_edit_profile_spec.rb'
     - 'spec/features/projects/artifacts/file_spec.rb'

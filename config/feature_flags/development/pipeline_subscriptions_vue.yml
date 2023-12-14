@@ -1,0 +1,8 @@
+---
+name: pipeline_subscriptions_vue
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139405
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/434831
+milestone: '16.7'
+type: development
+group: group::pipeline execution
+default_enabled: false

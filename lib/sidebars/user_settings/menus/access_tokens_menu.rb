@@ -6,7 +6,7 @@ module Sidebars
       class AccessTokensMenu < ::Sidebars::Menu
         override :link
         def link
-          profile_personal_access_tokens_path
+          user_settings_personal_access_tokens_path
         end
 
         override :title

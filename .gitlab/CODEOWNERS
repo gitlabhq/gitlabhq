@@ -993,7 +993,7 @@ lib/gitlab/checks/**
 /app/assets/javascripts/pages/oauth/
 /app/assets/javascripts/pages/omniauth_callbacks/
 /app/assets/javascripts/pages/profiles/password_prompt/
-/app/assets/javascripts/pages/profiles/personal_access_tokens/
+/app/assets/javascripts/pages/user_settings/personal_access_tokens/
 /app/assets/javascripts/pages/profiles/two_factor_auths/
 /app/assets/javascripts/pages/projects/settings/access_tokens/
 /app/assets/javascripts/pages/sessions/new/oauth_remember_me.js
@@ -1019,7 +1019,7 @@ lib/gitlab/checks/**
 /app/controllers/omniauth_callbacks_controller.rb
 /app/controllers/passwords_controller.rb
 /app/controllers/profiles/passwords_controller.rb
-/app/controllers/profiles/personal_access_tokens_controller.rb
+/app/controllers/user_settings/personal_access_tokens_controller.rb
 /app/controllers/profiles/two_factor_auths_controller.rb
 /app/controllers/profiles/webauthn_registrations_controller.rb
 /app/controllers/projects/settings/access_tokens_controller.rb
@@ -1091,7 +1091,7 @@ lib/gitlab/checks/**
 /app/views/notify/access_token_revoked_email.html.haml
 /app/views/notify/access_token_revoked_email.text.erb
 /app/views/profiles/passwords/
-/app/views/profiles/personal_access_tokens/
+/app/views/user_settings/personal_access_tokens/
 /app/views/profiles/two_factor_auths/
 /app/views/projects/mirrors/_authentication_method.html.haml
 /app/views/projects/settings/access_tokens/

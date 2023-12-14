@@ -205,41 +205,6 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
     it_behaves_like 'avoids N+1 queries'
   end
 
-  describe 'rootNamespace' do
-    before_all do
-      namespace.add_developer(user)
-    end
-
-    let(:query) do
-      <<~GQL
-        query {
-          ciCatalogResources {
-            nodes {
-              id
-              rootNamespace {
-                id
-                name
-                path
-              }
-            }
-          }
-        }
-      GQL
-    end
-
-    it 'returns the correct root namespace data' do
-      post_query
-
-      expect(graphql_data_at(:ciCatalogResources, :nodes)).to contain_exactly(
-        a_graphql_entity_for(
-          resource1,
-          rootNamespace: a_graphql_entity_for(namespace, :name, :path)
-        ),
-        a_graphql_entity_for(public_resource, rootNamespace: nil)
-      )
-    end
-  end
-
   describe 'openIssuesCount' do
     before_all do
       namespace.add_developer(user)

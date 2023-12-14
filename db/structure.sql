@@ -28500,7 +28500,7 @@ ALTER TABLE ONLY ci_pipeline_schedules
     ADD CONSTRAINT ci_pipeline_schedules_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ci_pipeline_variables
-    ADD CONSTRAINT ci_pipeline_variables_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT ci_pipeline_variables_pkey PRIMARY KEY (id, partition_id);
 
 ALTER TABLE ONLY ci_pipelines_config
     ADD CONSTRAINT ci_pipelines_config_pkey PRIMARY KEY (pipeline_id);
@@ -32307,8 +32307,6 @@ CREATE INDEX index_ci_pipeline_schedules_on_owner_id_and_id_and_active ON ci_pip
 
 CREATE INDEX index_ci_pipeline_schedules_on_project_id ON ci_pipeline_schedules USING btree (project_id);
 
-CREATE UNIQUE INDEX index_ci_pipeline_variables_on_id_partition_id_unique ON ci_pipeline_variables USING btree (id, partition_id);
-
 CREATE INDEX index_ci_pipelines_config_on_pipeline_id ON ci_pipelines_config USING btree (pipeline_id);
 
 CREATE INDEX index_ci_pipelines_for_ondemand_dast_scans ON ci_pipelines USING btree (id) WHERE (source = 13);
@@ -32457,13 +32455,15 @@ CREATE INDEX index_ci_sources_projects_on_pipeline_id ON ci_sources_projects USI
 
 CREATE UNIQUE INDEX index_ci_sources_projects_on_source_project_id_and_pipeline_id ON ci_sources_projects USING btree (source_project_id, pipeline_id);
 
+CREATE UNIQUE INDEX index_ci_stages_on_id_partition_id_unique ON ci_stages USING btree (id, partition_id);
+
 CREATE INDEX index_ci_stages_on_pipeline_id ON ci_stages USING btree (pipeline_id);
 
 CREATE INDEX index_ci_stages_on_pipeline_id_and_id ON ci_stages USING btree (pipeline_id, id) WHERE (status = ANY (ARRAY[0, 1, 2, 8, 9, 10]));
 
-CREATE UNIQUE INDEX index_ci_stages_on_pipeline_id_and_name ON ci_stages USING btree (pipeline_id, name);
-
 CREATE INDEX index_ci_stages_on_pipeline_id_and_position ON ci_stages USING btree (pipeline_id, "position");
+
+CREATE UNIQUE INDEX index_ci_stages_on_pipeline_id_name_partition_id_unique ON ci_stages USING btree (pipeline_id, name, partition_id);
 
 CREATE INDEX index_ci_stages_on_project_id ON ci_stages USING btree (project_id);
 
@@ -32548,6 +32548,8 @@ CREATE INDEX index_clusters_on_user_id ON clusters USING btree (user_id);
 CREATE UNIQUE INDEX index_commit_user_mentions_on_note_id ON commit_user_mentions USING btree (note_id);
 
 CREATE INDEX index_compliance_frameworks_id_where_frameworks_not_null ON compliance_management_frameworks USING btree (id) WHERE (pipeline_configuration_full_path IS NOT NULL);
+
+CREATE INDEX index_compliance_management_frameworks_on_name_trigram ON compliance_management_frameworks USING gin (name gin_trgm_ops);
 
 CREATE INDEX index_composer_cache_files_where_namespace_id_is_null ON packages_composer_cache_files USING btree (id) WHERE (namespace_id IS NULL);
 

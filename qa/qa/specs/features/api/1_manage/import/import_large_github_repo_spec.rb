@@ -45,7 +45,7 @@ module QA
       let(:logger) { Runtime::Logger.logger }
       let(:gitlab_address) { QA::Runtime::Scenario.gitlab_address.chomp("/") }
       let(:dummy_url) { "https://example.com" } # this is used to replace all dynamic urls in descriptions and comments
-      let(:api_request_params) { { auto_paginate: true, attempts: 2 } }
+      let(:api_request_params) { { auto_paginate: true, attempts: 3 } }
 
       let(:created_by_pattern) { /\*Created by: \S+\*\n\n/ }
       let(:suggestion_pattern) { /suggestion:-\d+\+\d+/ }
@@ -536,7 +536,7 @@ module QA
       def gl_branches
         @gl_branches ||= begin
           logger.debug("= Fetching branches =")
-          imported_project.repository_branches(auto_paginate: true).map { |b| b[:name] }
+          imported_project.repository_branches(auto_paginate: true, attempts: 3).map { |b| b[:name] }
         end
       end
 
@@ -546,7 +546,7 @@ module QA
       def gl_commits
         @gl_commits ||= begin
           logger.debug("= Fetching commits =")
-          imported_project.commits(auto_paginate: true, attempts: 2).map { |c| c[:id] }
+          imported_project.commits(auto_paginate: true, attempts: 3).map { |c| c[:id] }
         end
       end
 
@@ -556,7 +556,7 @@ module QA
       def gl_labels
         @gl_labels ||= begin
           logger.debug("= Fetching labels =")
-          imported_project.labels(auto_paginate: true).map { |label| label.slice(:name, :color) }
+          imported_project.labels(auto_paginate: true, attempts: 3).map { |label| label.slice(:name, :color) }
         end
       end
 
@@ -566,7 +566,7 @@ module QA
       def gl_milestones
         @gl_milestones ||= begin
           logger.debug("= Fetching milestones =")
-          imported_project.milestones(auto_paginate: true).map { |ms| ms.slice(:title, :description) }
+          imported_project.milestones(auto_paginate: true, attempts: 3).map { |ms| ms.slice(:title, :description) }
         end
       end
 

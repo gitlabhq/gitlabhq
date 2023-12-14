@@ -78,7 +78,8 @@ When you mention a group in a comment, every member of the group gets a to-do it
 added to their To-do list.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Issues** or **Merge requests**, and find your issue or merge request.
+1. For merge requests, select **Code > Merge requests**, and find your merge request.
+1. For issues, select **Plan > Issues**, and find your issue.
 1. In a comment, type `@` followed by the user, group, or subgroup namespace.
    For example, `@alex`, `@alex-team`, or `@alex-team/marketing`.
 1. Select **Comment**.
@@ -98,7 +99,7 @@ persist, even when you:
 To add a commit diff comment:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Merge requests**, and find your merge request.
+1. Select **Code > Merge requests**, and find your merge request.
 1. Select the **Commits** tab, then select the commit message.
 1. By the line you want to comment on, hover over the line number and select **Comment** (**{comment}**).
    You can select multiple lines by dragging the **Comment** (**{comment}**) icon.
@@ -160,7 +161,8 @@ Prerequisites:
 To lock an issue or merge request:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Issues** or **Merge requests**, and find your issue or merge request.
+1. For merge requests, select **Code > Merge requests**, and find your merge request.
+1. For issues, select **Plan > Issues**, and find your issue.
 1. On the top right, select **Merge request actions** or **Issue actions** (**{ellipsis_v}**), then select **Lock discussion**.
 
 A system note is added to the page details.

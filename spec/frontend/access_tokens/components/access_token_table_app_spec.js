@@ -25,7 +25,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       expires_soon: true,
       expires_at: null,
       revoked: false,
-      revoke_path: '/-/profile/personal_access_tokens/1/revoke',
+      revoke_path: '/-/user_settings/personal_access_tokens/1/revoke',
       role: 'Maintainer',
     },
     {
@@ -37,7 +37,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       expires_soon: false,
       expires_at: new Date().toISOString(),
       revoked: false,
-      revoke_path: '/-/profile/personal_access_tokens/2/revoke',
+      revoke_path: '/-/user_settings/personal_access_tokens/2/revoke',
       role: 'Maintainer',
     },
   ];
@@ -154,7 +154,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
     expect(button.attributes()).toMatchObject({
       'aria-label': __('Revoke'),
       'data-testid': 'revoke-button',
-      href: '/-/profile/personal_access_tokens/1/revoke',
+      href: '/-/user_settings/personal_access_tokens/1/revoke',
       'data-confirm': sprintf(
         __(
           'Are you sure you want to revoke the %{accessTokenType} "%{tokenName}"? This action cannot be undone.',
@@ -172,7 +172,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
     expect(cells.at(11).text()).toBe(__('Expired'));
     expect(cells.at(12).text()).toBe('Maintainer');
     button = cells.at(13).findComponent(GlButton);
-    expect(button.attributes('href')).toBe('/-/profile/personal_access_tokens/2/revoke');
+    expect(button.attributes('href')).toBe('/-/user_settings/personal_access_tokens/2/revoke');
     expect(button.props('category')).toBe('tertiary');
   });
 

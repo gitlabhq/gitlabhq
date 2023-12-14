@@ -14,7 +14,7 @@ RSpec.describe Organizations::UpdateService, feature_category: :cell do
     let(:avatar_filename) { nil }
     let(:params) { { name: name, path: path }.merge(extra_params) }
     let(:extra_params) { {} }
-    let(:updated_organization) { response.payload }
+    let(:updated_organization) { response.payload[:organization] }
 
     subject(:response) do
       described_class.new(organization, current_user: current_user, params: params).execute
@@ -67,6 +67,7 @@ RSpec.describe Organizations::UpdateService, feature_category: :cell do
 
         it 'returns an error' do
           expect(response).to be_error
+          expect(updated_organization).to be_instance_of Organizations::Organization
           expect(response.message).to match_array(["Name can't be blank"])
         end
       end

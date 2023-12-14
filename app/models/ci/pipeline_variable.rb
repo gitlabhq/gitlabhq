@@ -11,6 +11,8 @@ module Ci
 
     belongs_to :pipeline
 
+    self.primary_key = :id
+
     partitionable scope: :pipeline
 
     alias_attribute :secret_value, :value

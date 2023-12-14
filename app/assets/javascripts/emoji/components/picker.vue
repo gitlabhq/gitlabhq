@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlIcon, GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
+import { GlButton, GlIcon, GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
 import { findLastIndex } from 'lodash';
 import VirtualList from 'vue-virtual-scroll-list';
 import { getEmojiCategoryMap, state } from '~/emoji';
@@ -11,6 +11,7 @@ import { addToFrequentlyUsed, getEmojiCategories, hasFrequentlyUsedEmojis } from
 
 export default {
   components: {
+    GlButton,
     GlIcon,
     GlDropdown,
     GlDropdownItem,
@@ -144,19 +145,16 @@ export default {
         v-show="!searchValue"
         class="gl-display-flex gl-mx-5 gl-border-b-solid gl-border-gray-100 gl-border-b-1"
       >
-        <button
+        <gl-button
           v-for="(category, index) in categoryNames"
           :key="category.name"
-          :class="{
-            'gl-text-body! emoji-picker-category-active': index === currentCategory,
-          }"
-          type="button"
-          class="gl-border-0 gl-border-b-2 gl-border-b-solid gl-flex-grow-1 gl-text-gray-300 gl-pt-3 gl-pb-3 gl-bg-transparent emoji-picker-category-tab"
+          category="tertiary"
+          :class="{ 'emoji-picker-category-active': index === currentCategory }"
+          class="gl-px-3! gl-rounded-0! gl-border-b-2! gl-border-b-solid! gl-flex-grow-1 emoji-picker-category-tab"
+          :icon="category.icon"
           :aria-label="category.name"
           @click="scrollToCategory(category.name)"
-        >
-          <gl-icon :name="category.icon" />
-        </button>
+        />
       </div>
       <emoji-list :search-value="searchValue">
         <template #default="{ filteredCategories }">

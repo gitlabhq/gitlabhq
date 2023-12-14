@@ -88,7 +88,7 @@ module Emails
       return unless user&.active?
 
       @user = user
-      @target_url = profile_personal_access_tokens_url
+      @target_url = user_settings_personal_access_tokens_url
       @token_name = token_name
 
       email_with_layout(to: @user.notification_email_or_default, subject: subject(_("A new personal access token has been created")))
@@ -99,7 +99,7 @@ module Emails
 
       @user = user
       @token_names = token_names
-      @target_url = profile_personal_access_tokens_url
+      @target_url = user_settings_personal_access_tokens_url
       @days_to_expire = PersonalAccessToken::DAYS_TO_EXPIRE
 
       email_with_layout(to: @user.notification_email_or_default, subject: subject(_("Your personal access tokens will expire in %{days_to_expire} days or less") % { days_to_expire: @days_to_expire }))
@@ -110,7 +110,7 @@ module Emails
 
       @user = user
       @token_names = token_names
-      @target_url = profile_personal_access_tokens_url
+      @target_url = user_settings_personal_access_tokens_url
 
       email_with_layout(to: @user.notification_email_or_default, subject: subject(_("Your personal access tokens have expired")))
     end
@@ -120,7 +120,7 @@ module Emails
 
       @user = user
       @token_name = token_name
-      @target_url = profile_personal_access_tokens_url
+      @target_url = user_settings_personal_access_tokens_url
       @source = source
 
       email_with_layout(to: @user.notification_email_or_default, subject: subject(_("Your personal access token has been revoked")))

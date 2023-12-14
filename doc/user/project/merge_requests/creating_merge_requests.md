@@ -45,7 +45,7 @@ After merging the merge request, the issue is closed automatically, unless
 To create a branch and a merge request at the same time:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Issues** and find your issue.
+1. Select **Plan > Issues** and find your issue.
 1. Go to the bottom of the issue description.
 1. Select **Create merge request > Create merge request and branch**.
 1. In the dialog, review the suggested branch name. It's based on your project's

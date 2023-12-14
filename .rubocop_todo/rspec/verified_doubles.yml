@@ -255,7 +255,6 @@ RSpec/VerifiedDoubles:
     - 'spec/features/help_pages_spec.rb'
     - 'spec/features/issuables/markdown_references/jira_spec.rb'
     - 'spec/features/markdown/markdown_spec.rb'
-    - 'spec/features/profiles/personal_access_tokens_spec.rb'
     - 'spec/features/projects/container_registry_spec.rb'
     - 'spec/features/projects/integrations/user_activates_jira_spec.rb'
     - 'spec/finders/ci/auth_job_finder_spec.rb'

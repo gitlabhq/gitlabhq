@@ -51,16 +51,24 @@ gl-emoji {
   border-bottom-color: transparent;
 
   &:hover {
-    @include gl-text-gray-900;
+    color: $gray-900 !important;
 
     &:not(.emoji-picker-category-active) {
-      @include gl-border-b-gray-200;
+      border-bottom-color: $gray-300;
     }
+  }
+
+  &:focus {
+    z-index: 2;
   }
 }
 
 .emoji-picker-category-active {
-  border-bottom-color: $blue-500;
+  border-bottom-color: $blue-500 !important;
+
+  svg {
+    color: $gray-900 !important;
+  }
 }
 
 .emoji-picker .gl-dropdown-contents > :last-child {

@@ -22,7 +22,7 @@ exports[`Comment templates list item component renders list item 1`] = `
         <button
           aria-controls="reference-1"
           aria-labelledby="reference-0"
-          class="btn btn-default btn-default-tertiary btn-md gl-button gl-new-dropdown-icon-only gl-new-dropdown-toggle gl-new-dropdown-toggle-no-caret"
+          class="btn btn-default btn-default-tertiary btn-icon btn-md gl-button gl-new-dropdown-icon-only gl-new-dropdown-toggle gl-new-dropdown-toggle-no-caret"
           data-testid="base-dropdown-toggle"
           id="reference-0"
           type="button"

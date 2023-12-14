@@ -106,7 +106,7 @@ resolve their conflicts. The merge conflict resolution editor helps you resolve
 these complex conflicts in the GitLab interface:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Merge requests** and find the merge request.
+1. Select **Code > Merge requests** and find the merge request.
 1. Select **Overview**, and scroll to the merge request reports section.
 1. Find the merge conflicts message, and select **Resolve conflicts**.
    GitLab shows a list of files with merge conflicts.

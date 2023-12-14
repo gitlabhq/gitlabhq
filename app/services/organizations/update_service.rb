@@ -18,7 +18,7 @@ module Organizations
       return error_no_permissions unless allowed?
 
       if organization.update(params)
-        ServiceResponse.success(payload: organization)
+        ServiceResponse.success(payload: { organization: organization })
       else
         error_updating
       end
@@ -37,7 +37,7 @@ module Organizations
     def error_updating
       message = organization.errors.full_messages || _('Failed to update organization')
 
-      ServiceResponse.error(payload: organization, message: Array(message))
+      ServiceResponse.error(payload: { organization: organization }, message: Array(message))
     end
   end
 end

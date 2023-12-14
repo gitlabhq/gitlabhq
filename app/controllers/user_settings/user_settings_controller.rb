@@ -2,7 +2,6 @@
 
 module UserSettings
   class UserSettingsController < ApplicationController
-    layout 'profile'
     feature_category :system_access
 
     def authentication_log

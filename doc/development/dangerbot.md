@@ -193,7 +193,7 @@ where Danger is already configured.
 
 Contributors can configure Danger for their forks with the following steps:
 
-1. Create a [personal API token](https://gitlab.com/-/profile/personal_access_tokens?name=GitLab+Dangerbot&scopes=api)
+1. Create a [personal API token](https://gitlab.com/-/user_settings/personal_access_tokens?name=GitLab+Dangerbot&scopes=api)
   that has the `api` scope set (don't forget to copy it to the clipboard).
 1. In your fork, add a [project CI/CD variable](../ci/variables/index.md#for-a-project)
   called `DANGER_GITLAB_API_TOKEN` with the token copied in the previous step.

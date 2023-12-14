@@ -4,8 +4,6 @@ module Organizations
   class BaseService
     include BaseServiceUtility
 
-    attr_reader :current_user, :params
-
     def initialize(current_user: nil, params: {})
       @current_user = current_user
       @params = params.dup
@@ -14,6 +12,8 @@ module Organizations
     end
 
     private
+
+    attr_reader :current_user, :params
 
     def build_organization_detail_attributes
       @params[:organization_detail_attributes] ||= {}

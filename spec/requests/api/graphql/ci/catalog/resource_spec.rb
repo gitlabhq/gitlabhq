@@ -294,34 +294,6 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
     end
   end
 
-  describe 'rootNamespace' do
-    let(:query) do
-      <<~GQL
-        query {
-          ciCatalogResource(id: "#{resource.to_global_id}") {
-            id
-            rootNamespace {
-              id
-              name
-              path
-            }
-          }
-        }
-      GQL
-    end
-
-    it 'returns the correct root namespace data' do
-      post_query
-
-      expect(graphql_data_at(:ciCatalogResource)).to match(
-        a_graphql_entity_for(
-          resource,
-          rootNamespace: a_graphql_entity_for(namespace, :name, :path)
-        )
-      )
-    end
-  end
-
   describe 'openIssuesCount' do
     context 'when open_issue_count is requested' do
       let(:query) do

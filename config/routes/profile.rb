@@ -76,12 +76,6 @@ resource :profile, only: [:show, :update] do
 
     resource :avatar, only: [:destroy]
 
-    resources :personal_access_tokens, only: [:index, :create] do
-      member do
-        put :revoke
-      end
-    end
-
     resource :two_factor_auth, only: [:show, :create, :destroy] do
       member do
         post :codes

@@ -29,6 +29,10 @@ Source Code Management shares ownership of Code Owners with the Code Review grou
 
 - [Approval Rules](../../merge_request_concepts/approval_rules.md)
 
+### Push Rules
+
+- [Push Rules development guidelines](../../push_rules/index.md)
+
 ### Protected Branches
 
 Details about Protected Branches models can be found in the [Code Owners](../../code_owners/index.md#related-models) technical reference page.

@@ -66,7 +66,7 @@ RSpec.describe 'Profile account page', :js, feature_category: :user_profile do
   end
 
   it 'allows resetting of feed token' do
-    visit profile_personal_access_tokens_path
+    visit user_settings_personal_access_tokens_path
 
     previous_token = ''
 
@@ -88,7 +88,7 @@ RSpec.describe 'Profile account page', :js, feature_category: :user_profile do
   it 'allows resetting of incoming email token' do
     allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
 
-    visit profile_personal_access_tokens_path
+    visit user_settings_personal_access_tokens_path
 
     previous_token = ''
 

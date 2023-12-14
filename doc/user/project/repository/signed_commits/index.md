@@ -28,7 +28,7 @@ they are signed.
 1. To review commits:
    - For a project, select **Code > Commits**.
    - For a merge request:
-     1. Select **Merge requests**, then select your merge request.
+     1. Select **Code > Merge requests**, then select your merge request.
      1. Select **Commits**.
 1. Identify the commit you want to review. Signed commits show either a **Verified**
    or **Unverified** badge, depending on the verification status of the signature.

@@ -9,7 +9,7 @@ module Organizations
 
       return error_creating(organization) unless organization.persisted?
 
-      ServiceResponse.success(payload: organization)
+      ServiceResponse.success(payload: { organization: organization })
     end
 
     private

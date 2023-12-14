@@ -85,16 +85,16 @@ module QA
 
       # Imported objects
       #
-      let(:imported_project) { imported_group.projects(auto_paginate: true).find { |project| project.name == gitlab_source_project }.reload! }
-      let(:branches) { imported_project.repository_branches(auto_paginate: true).map { |b| b[:name] } }
-      let(:commits) { imported_project.commits(auto_paginate: true).map { |c| c[:id] } }
-      let(:labels) { imported_project.labels(auto_paginate: true).map { |l| l.except(:id, :description_html) } }
-      let(:milestones) { imported_project.milestones(auto_paginate: true).map { |ms| ms.except(:id, :web_url, :project_id) } }
+      let(:imported_project) { imported_group.projects(auto_paginate: true, attempts: 3).find { |project| project.name == gitlab_source_project }.reload! }
+      let(:branches) { imported_project.repository_branches(auto_paginate: true, attempts: 3).map { |b| b[:name] } }
+      let(:commits) { imported_project.commits(auto_paginate: true, attempts: 3).map { |c| c[:id] } }
+      let(:labels) { imported_project.labels(auto_paginate: true, attempts: 3).map { |l| l.except(:id, :description_html) } }
+      let(:milestones) { imported_project.milestones(auto_paginate: true, attempts: 3).map { |ms| ms.except(:id, :web_url, :project_id) } }
       let(:mrs) { fetch_mrs(imported_project, api_client) }
       let(:issues) { fetch_issues(imported_project, api_client) }
       let(:pipelines) do
         imported_project
-          .pipelines(auto_paginate: true)
+          .pipelines(auto_paginate: true, attempts: 3)
           .sort_by { |pipeline| pipeline[:created_at] }
           .map { |pipeline| pipeline.except(:id, :web_url, :project_id) }
       end
@@ -353,7 +353,7 @@ module QA
       # @param [Boolean] transform_urls
       # @return [Hash]
       def fetch_mrs(project, client, transform_urls: false)
-        imported_mrs = project.merge_requests(auto_paginate: true, attempts: 2)
+        imported_mrs = project.merge_requests(auto_paginate: true, attempts: 3)
 
         Parallel.map(imported_mrs, in_threads: api_parallel_threads) do |mr|
           resource = build(:merge_request, project: project, iid: mr[:iid], api_client: client)
@@ -364,7 +364,7 @@ module QA
             body: sanitize_description(mr[:description], transform_urls) || '',
             state: mr[:state],
             comments: resource
-              .comments(auto_paginate: true, attempts: 2)
+              .comments(auto_paginate: true, attempts: 3)
               .map { |c| sanitize_comment(c[:body], transform_urls) }
           }]
         end.to_h
@@ -377,7 +377,7 @@ module QA
       # @param [Boolean] transform_urls
       # @return [Hash]
       def fetch_issues(project, client, transform_urls: false)
-        imported_issues = project.issues(auto_paginate: true, attempts: 2)
+        imported_issues = project.issues(auto_paginate: true, attempts: 3)
 
         Parallel.map(imported_issues, in_threads: api_parallel_threads) do |issue|
           resource = build(:issue, project: project, iid: issue[:iid], api_client: client)
@@ -388,7 +388,7 @@ module QA
             state: issue[:state],
             body: sanitize_description(issue[:description], transform_urls) || '',
             comments: resource
-              .comments(auto_paginate: true, attempts: 2)
+              .comments(auto_paginate: true, attempts: 3)
               .map { |c| sanitize_comment(c[:body], transform_urls) }
           }]
         end.to_h

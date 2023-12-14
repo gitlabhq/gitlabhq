@@ -209,6 +209,7 @@ export default {
     <gl-button
       v-if="showEdit"
       v-gl-tooltip
+      data-testid="note-actions-edit"
       data-track-action="click_button"
       data-track-label="edit_button"
       category="tertiary"

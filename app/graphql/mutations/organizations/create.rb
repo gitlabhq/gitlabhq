@@ -23,7 +23,7 @@ module Mutations
           params: args
         ).execute
 
-        { organization: result.payload, errors: result.errors }
+        { organization: result.payload[:organization], errors: result.errors }
       end
     end
   end

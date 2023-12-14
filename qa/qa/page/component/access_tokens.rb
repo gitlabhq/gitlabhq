@@ -40,7 +40,7 @@ module QA
             element 'revoke-button'
           end
 
-          base.view 'app/views/profiles/personal_access_tokens/index.html.haml' do
+          base.view 'app/views/user_settings/personal_access_tokens/index.html.haml' do
             element 'add-new-token-button'
           end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Profiles::PersonalAccessTokensController do
+RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :system_access do
   let(:access_token_user) { create(:user) }
   let(:token_attributes) { attributes_for(:personal_access_token) }
 
@@ -49,7 +49,7 @@ RSpec.describe Profiles::PersonalAccessTokensController do
     end
   end
 
-  describe 'GET /-/profile/personal_access_tokens' do
+  describe 'GET /-/user_settings/personal_access_tokens' do
     let(:get_access_tokens) do
       get :index
       response

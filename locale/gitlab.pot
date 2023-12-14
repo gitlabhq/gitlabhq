@@ -26974,6 +26974,9 @@ msgstr ""
 msgid "JiraConnect|Are you a GitLab administrator?"
 msgstr ""
 
+msgid "JiraConnect|Are you a Jira administrator?"
+msgstr ""
+
 msgid "JiraConnect|Cannot find namespace. Make sure you have sufficient permissions."
 msgstr ""
 
@@ -27043,9 +27046,6 @@ msgstr ""
 msgid "JiraConnect|Groups are the GitLab groups and subgroups you link to this Jira instance."
 msgstr ""
 
-msgid "JiraConnect|In order to complete the set up, you’ll need to complete a few steps in GitLab:"
-msgstr ""
-
 msgid "JiraConnect|Jira Connect Application ID"
 msgstr ""
 
@@ -27104,6 +27104,12 @@ msgid "JiraConnect|Tell us what you think!"
 msgstr ""
 
 msgid "JiraConnect|The Jira user is not a site or organization administrator. Check the permissions in Jira and try again."
+msgstr ""
+
+msgid "JiraConnect|To complete the setup, you must follow a few steps in GitLab:"
+msgstr ""
+
+msgid "JiraConnect|To complete the setup, you must meet %{linkStart}certain user requirements%{linkEnd} in Jira."
 msgstr ""
 
 msgid "JiraConnect|We would love to learn more about your experience with the GitLab for Jira Cloud App."
@@ -35369,6 +35375,12 @@ msgid "PipelineSource|Web IDE"
 msgstr ""
 
 msgid "PipelineStatusTooltip|Pipeline: %{ciStatus}"
+msgstr ""
+
+msgid "PipelineSubscriptions|An error occurred while fetching downstream pipeline subscriptions."
+msgstr ""
+
+msgid "PipelineSubscriptions|An error occurred while fetching upstream pipeline subscriptions."
 msgstr ""
 
 msgid "PipelineWizardDefaultCommitMessage|Add %{filename}"

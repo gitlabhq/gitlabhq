@@ -68,7 +68,7 @@ list of scopes. To do this, you can append a `name` parameter and a list of comm
 to the URL. For example:
 
 ```plaintext
-https://gitlab.example.com/-/profile/personal_access_tokens?name=Example+Access+token&scopes=api,read_user,read_registry
+https://gitlab.example.com/-/user_settings/personal_access_tokens?name=Example+Access+token&scopes=api,read_user,read_registry
 ```
 
 WARNING:

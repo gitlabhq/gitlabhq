@@ -1607,7 +1607,6 @@ RSpec/FeatureCategory:
     - 'spec/controllers/profiles/gpg_keys_controller_spec.rb'
     - 'spec/controllers/profiles/keys_controller_spec.rb'
     - 'spec/controllers/profiles/notifications_controller_spec.rb'
-    - 'spec/controllers/profiles/personal_access_tokens_controller_spec.rb'
     - 'spec/controllers/profiles/preferences_controller_spec.rb'
     - 'spec/controllers/profiles/webauthn_registrations_controller_spec.rb'
     - 'spec/controllers/profiles_controller_spec.rb'

@@ -10,7 +10,7 @@ RSpec.describe PersonalAccessTokenEntity do
 
   it 'has the correct attributes' do
     expected_revoke_path = Gitlab::Routing.url_helpers
-                                          .revoke_profile_personal_access_token_path(
+                                          .revoke_user_settings_personal_access_token_path(
                                             { id: token })
 
     expect(json).to(

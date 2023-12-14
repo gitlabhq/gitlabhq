@@ -1,6 +1,6 @@
 import { mockGetProjectStorageStatisticsGraphQLResponse } from 'jest/usage_quotas/storage/mock_data';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import getProjectStorageStatisticsQuery from '../queries/project_storage.query.graphql';
+import getProjectStorageStatisticsQuery from 'ee_else_ce/usage_quotas/storage/queries/project_storage.query.graphql';
 import ProjectStorageApp from './project_storage_app.vue';
 
 const meta = {

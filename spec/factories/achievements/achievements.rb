@@ -5,5 +5,9 @@ FactoryBot.define do
     namespace
 
     name { generate(:name) }
+
+    trait :with_avatar do
+      avatar { fixture_file_upload('spec/fixtures/dk.png') }
+    end
   end
 end

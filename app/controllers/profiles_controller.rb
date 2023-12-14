@@ -42,7 +42,7 @@ class ProfilesController < Profiles::ApplicationController
 
     flash[:notice] = s_("Profiles|Incoming email token was successfully reset")
 
-    redirect_to profile_personal_access_tokens_path
+    redirect_to user_settings_personal_access_tokens_path
   end
 
   def reset_feed_token
@@ -52,7 +52,7 @@ class ProfilesController < Profiles::ApplicationController
 
     flash[:notice] = s_('Profiles|Feed token was successfully reset')
 
-    redirect_to profile_personal_access_tokens_path
+    redirect_to user_settings_personal_access_tokens_path
   end
 
   def reset_static_object_token
@@ -60,7 +60,7 @@ class ProfilesController < Profiles::ApplicationController
       user.reset_static_object_token!
     end
 
-    redirect_to profile_personal_access_tokens_path,
+    redirect_to user_settings_personal_access_tokens_path,
       notice: s_('Profiles|Static object token was successfully reset')
   end
 

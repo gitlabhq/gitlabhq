@@ -216,8 +216,9 @@ Make sure the AWS KMS keys are replicated to your desired primary, secondary and
 
 ### Configuration change policy
 
-Configuration changes are batched up and applied during your environment's weekly four-hour maintenance
-window.
+Configuration changes requested with a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) are batched up and applied during your environment's weekly four-hour maintenance window.
+
+This policy does not apply to configuration changes made by a GitLab Dedicated tenant admin [using Switchboard](#configuration-changes-in-switchboard).
 
 To have a change considered for an upcoming weekly maintenance window, all required information
 must be submitted in full two business days before the start of the window.
@@ -226,14 +227,20 @@ A configuration change might not be applied during an upcoming weekly maintenanc
 it meets the minimum lead time. If GitLab needs to perform high-priority maintenance tasks that
 run beyond the maintenance window, configuration changes will be postponed to the following week.
 
-Changes cannot be applied outside of a weekly maintenance window unless it qualifies for
+Changes requested with a support ticket cannot be applied outside of a weekly maintenance window unless it qualifies for
 [emergency support](https://about.gitlab.com/support/#how-to-engage-emergency-support).
 
-### Making configuration changes
+### Configuration changes in Switchboard
 
 Switchboard empowers the user to make limited configuration changes to their Dedicated Tenant Instance. As Switchboard matures further configuration changes will be made available.
 
-To change or update the configuration of your GitLab Dedicated instance, use Switchboard following the instructions in the relevant section or open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) with your request. You can request configuration changes for the options originally specified during onboarding, or for any of the following optional features.
+To change or update the configuration of your GitLab Dedicated instance, use Switchboard following the instructions in the relevant section or open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) with your request.
+
+You can request configuration changes for some of the options originally specified during onboarding, or for any of the following optional features.
+
+Configuration changes made with Switchboard can be applied immediately or deferred until your next scheduled weekly [maintenance window](#maintenance-window).
+
+When applied immediately, changes may take up to 90 minutes to be deployed to your environment. Individual changes are applied in the order they are saved, or you may choose to save several changes at once before applying them in one batch.
 
 ### Inbound Private Link
 

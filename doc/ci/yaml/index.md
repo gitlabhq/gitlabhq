@@ -190,6 +190,27 @@ The time limit to resolve all files is 30 seconds.
 - [Use variables with `include`](includes.md#use-variables-with-include).
 - [Use `rules` with `include`](includes.md#use-rules-with-include).
 
+#### `include:component`
+
+Use `include:component` to add a [CI/CD component](../components/index.md) to the
+pipeline configuration.
+
+**Keyword type**: Global keyword.
+
+**Possible inputs**: The full address of the CI/CD component, formatted as
+`<fully-qualified-domain-name>/<project-path>/<component-name>@<specific-version>`.
+
+**Example of `include:component`**:
+
+```yaml
+include:
+  - component: gitlab.example.com/my-org/security-components/secret-detection@1.0
+```
+
+**Related topics**:
+
+- [Use a CI/CD component](../components/index.md#use-a-component).
+
 #### `include:local`
 
 Use `include:local` to include a file that is in the same repository and branch as the configuration file containing the `include` keyword.

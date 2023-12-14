@@ -10,7 +10,7 @@ RSpec.describe Organizations::CreateService, feature_category: :cell do
     let(:params) { attributes_for(:organization).merge(extra_params) }
     let(:avatar_filename) { nil }
     let(:extra_params) { {} }
-    let(:created_organization) { response.payload }
+    let(:created_organization) { response.payload[:organization] }
 
     subject(:response) { described_class.new(current_user: current_user, params: params).execute }
 
