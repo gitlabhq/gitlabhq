@@ -1,11 +1,11 @@
 import { GlLink, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
-import { shallowMount, mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -97,59 +97,56 @@ describe('SidebarDropdownWidget', () => {
       ...requestHandlers,
     ]);
 
-    wrapper = extendedWrapper(
-      mount(SidebarDropdownWidget, {
-        provide: { canUpdate: true },
-        apolloProvider: mockApollo,
-        propsData: {
-          workspacePath: mockIssue.projectPath,
-          attrWorkspacePath: mockIssue.projectPath,
-          iid: mockIssue.iid,
-          issuableType: TYPE_ISSUE,
-          issuableAttribute: IssuableAttributeType.Milestone,
-        },
-        attachTo: document.body,
-      }),
-    );
+    wrapper = mountExtended(SidebarDropdownWidget, {
+      provide: { canUpdate: true },
+      apolloProvider: mockApollo,
+      propsData: {
+        workspacePath: mockIssue.projectPath,
+        attrWorkspacePath: mockIssue.projectPath,
+        iid: mockIssue.iid,
+        issuableType: TYPE_ISSUE,
+        issuableAttribute: IssuableAttributeType.Milestone,
+      },
+      attachTo: document.body,
+    });
 
     await waitForApollo();
   };
 
   const createComponent = ({ data = {}, mutationPromise = mutationSuccess, queries = {} } = {}) => {
-    wrapper = extendedWrapper(
-      shallowMount(SidebarDropdownWidget, {
-        provide: { canUpdate: true },
-        data() {
-          return data;
-        },
-        propsData: {
-          workspacePath: '',
-          attrWorkspacePath: '',
-          iid: '',
-          issuableType: TYPE_ISSUE,
-          issuableAttribute: IssuableAttributeType.Milestone,
-        },
-        mocks: {
-          $apollo: {
-            mutate: mutationPromise(),
-            queries: {
-              issuable: { loading: false },
-              attributesList: { loading: false },
-              ...queries,
-            },
+    wrapper = shallowMountExtended(SidebarDropdownWidget, {
+      provide: { canUpdate: true },
+      data() {
+        return data;
+      },
+      propsData: {
+        workspacePath: '',
+        attrWorkspacePath: '',
+        iid: '',
+        issuableType: TYPE_ISSUE,
+        issuableAttribute: IssuableAttributeType.Milestone,
+      },
+      mocks: {
+        $apollo: {
+          mutate: mutationPromise(),
+          queries: {
+            issuable: { loading: false },
+            attributesList: { loading: false },
+            ...queries,
           },
         },
-        directives: {
-          GlTooltip: createMockDirective('gl-tooltip'),
-        },
-        stubs: {
-          SidebarEditableItem,
-          GlSearchBoxByType,
-        },
-      }),
-    );
-
-    wrapper.vm.$refs.dropdown.show = jest.fn();
+      },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
+      stubs: {
+        SidebarEditableItem,
+        GlSearchBoxByType,
+        SidebarDropdown: stubComponent(SidebarDropdown, {
+          methods: { show: jest.fn() },
+        }),
+      },
+    });
   };
 
   describe('when not editing', () => {

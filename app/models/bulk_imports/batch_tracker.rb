@@ -8,7 +8,17 @@ module BulkImports
 
     validates :batch_number, presence: true, uniqueness: { scope: :tracker_id }
 
+    IN_PROGRESS_STATES = %i[created started].freeze
+
     scope :by_last_updated, -> { order(updated_at: :desc) }
+    scope :in_progress, -> { with_status(IN_PROGRESS_STATES) }
+
+    # rubocop: disable Database/AvoidUsingPluckWithoutLimit -- We should use this method only when scoped to a tracker.
+    # Batches are self-limiting per tracker based on the amount of data being imported.
+    def self.pluck_batch_numbers
+      pluck(:batch_number)
+    end
+    # rubocop: enable Database/AvoidUsingPluckWithoutLimit
 
     state_machine :status, initial: :created do
       state :created, value: 0

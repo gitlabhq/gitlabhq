@@ -12276,6 +12276,7 @@ CREATE TABLE application_settings (
     update_namespace_name_rate_limit smallint DEFAULT 120 NOT NULL,
     pre_receive_secret_detection_enabled boolean DEFAULT false NOT NULL,
     can_create_organization boolean DEFAULT true NOT NULL,
+    bulk_import_concurrent_pipeline_batch_limit smallint DEFAULT 25 NOT NULL,
     web_ide_oauth_application_id integer,
     instance_level_ai_beta_features_enabled boolean DEFAULT false NOT NULL,
     security_txt_content text,
@@ -31891,6 +31892,8 @@ CREATE INDEX index_background_migration_jobs_on_class_name_and_status_and_id ON 
 CREATE INDEX index_badges_on_group_id ON badges USING btree (group_id);
 
 CREATE INDEX index_badges_on_project_id ON badges USING btree (project_id);
+
+CREATE INDEX index_batch_trackers_on_tracker_id_status ON bulk_import_batch_trackers USING btree (tracker_id, status);
 
 CREATE INDEX index_batched_background_migrations_on_status ON batched_background_migrations USING btree (status);
 

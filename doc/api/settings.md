@@ -126,7 +126,8 @@ Example response:
   "package_registry_allow_anyone_to_pull_option": true,
   "bulk_import_max_download_file_size": 5120,
   "project_jobs_api_rate_limit": 600,
-  "security_txt_content": null
+  "security_txt_content": null,
+  "bulk_import_concurrent_pipeline_batch_limit": 25
 }
 ```
 
@@ -272,7 +273,8 @@ Example response:
   "package_registry_allow_anyone_to_pull_option": true,
   "bulk_import_max_download_file_size": 5120,
   "project_jobs_api_rate_limit": 600,
-  "security_txt_content": null
+  "security_txt_content": null,
+  "bulk_import_concurrent_pipeline_batch_limit": 25
 }
 ```
 
@@ -621,6 +623,7 @@ listed in the descriptions of the relevant settings.
 | `valid_runner_registrars`                | array of strings | no                                   | List of types which are allowed to register a GitLab Runner. Can be `[]`, `['group']`, `['project']` or `['group', 'project']`. |
 | `whats_new_variant`                      | string           | no                                   | What's new variant, possible values: `all_tiers`, `current_tier`, and `disabled`. |
 | `wiki_page_max_content_bytes`            | integer          | no                                   | Maximum wiki page content size in **bytes**. Default: 52428800 Bytes (50 MB). The minimum value is 1024 bytes. |
+| `bulk_import_concurrent_pipeline_batch_limit` | integer     | no                                   | Maximum simultaneous Direct Transfer batches to process. |
 
 ### Configure inactive project deletion
 

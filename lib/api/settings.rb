@@ -212,6 +212,7 @@ module API
       optional :pipeline_limit_per_project_user_sha, type: Integer, desc: "Maximum number of pipeline creation requests allowed per minute per user and commit. Set to 0 for unlimited requests per minute."
       optional :jira_connect_application_key, type: String, desc: "Application ID of the OAuth application that should be used to authenticate with the GitLab for Jira Cloud app"
       optional :jira_connect_proxy_url, type: String, desc: "URL of the GitLab instance that should be used as a proxy for the GitLab for Jira Cloud app"
+      optional :bulk_import_concurrent_pipeline_batch_limit, type: Integer, desc: 'Maximum simultaneous Direct Transfer pipeline batches to process'
       optional :bulk_import_enabled, type: Boolean, desc: 'Enable migrating GitLab groups and projects by direct transfer'
       optional :bulk_import_max_download_file, type: Integer, desc: 'Maximum download file size in MB when importing from source GitLab instances by direct transfer'
       optional :allow_runner_registration_token, type: Boolean, desc: 'Allow registering runners using a registration token'

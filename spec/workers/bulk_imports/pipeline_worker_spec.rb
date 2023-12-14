@@ -48,7 +48,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
     end
   end
 
-  include_examples 'an idempotent worker' do
+  it_behaves_like 'an idempotent worker' do
     let(:job_args) { [pipeline_tracker.id, pipeline_tracker.stage, entity.id] }
 
     it 'runs the pipeline and sets tracker to finished' do
@@ -478,8 +478,8 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
       end
     end
 
-    context 'when export is batched' do
-      let(:batches_count) { 2 }
+    context 'when export is batched', :aggregate_failures do
+      let(:batches_count) { 3 }
 
       before do
         allow_next_instance_of(BulkImports::ExportStatus) do |status|
@@ -489,10 +489,14 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
           allow(status).to receive(:empty?).and_return(false)
           allow(status).to receive(:failed?).and_return(false)
         end
+        allow(worker).to receive(:log_extra_metadata_on_done).and_call_original
       end
 
       it 'enqueues pipeline batches' do
-        expect(BulkImports::PipelineBatchWorker).to receive(:perform_async).twice
+        expect(BulkImports::PipelineBatchWorker).to receive(:perform_async).exactly(3).times
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:batched, true)
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_batch_numbers_enqueued, [1, 2, 3])
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_final_batch_was_enqueued, true)
 
         worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
 
@@ -500,7 +504,24 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
 
         expect(pipeline_tracker.status_name).to eq(:started)
         expect(pipeline_tracker.batched).to eq(true)
-        expect(pipeline_tracker.batches.count).to eq(batches_count)
+        expect(pipeline_tracker.batches.pluck_batch_numbers).to contain_exactly(1, 2, 3)
+        expect(described_class.jobs).to be_empty
+      end
+
+      it 'enqueues only missing pipelines batches' do
+        create(:bulk_import_batch_tracker, tracker: pipeline_tracker, batch_number: 2)
+        expect(BulkImports::PipelineBatchWorker).to receive(:perform_async).twice
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_batch_numbers_enqueued, [1, 3])
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_final_batch_was_enqueued, true)
+
+        worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+
+        pipeline_tracker.reload
+
+        expect(pipeline_tracker.status_name).to eq(:started)
+        expect(pipeline_tracker.batched).to eq(true)
+        expect(pipeline_tracker.batches.pluck_batch_numbers).to contain_exactly(1, 2, 3)
+        expect(described_class.jobs).to be_empty
       end
 
       context 'when batches count is less than 1' do
@@ -512,6 +533,127 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
           worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
 
           expect(pipeline_tracker.reload.status_name).to eq(:finished)
+        end
+      end
+
+      context 'when pipeline batch enqueuing should be limited' do
+        using RSpec::Parameterized::TableSyntax
+
+        before do
+          allow(::Gitlab::CurrentSettings).to receive(:bulk_import_concurrent_pipeline_batch_limit).and_return(2)
+        end
+
+        it 'only enqueues limited batches and reenqueues itself' do
+          expect(BulkImports::PipelineBatchWorker).to receive(:perform_async).twice
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_batch_numbers_enqueued, [1, 2])
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_final_batch_was_enqueued, false)
+
+          worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+
+          pipeline_tracker.reload
+
+          expect(pipeline_tracker.status_name).to eq(:started)
+          expect(pipeline_tracker.batched).to eq(true)
+          expect(pipeline_tracker.batches.pluck_batch_numbers).to contain_exactly(1, 2)
+          expect(described_class.jobs).to contain_exactly(
+            hash_including(
+              'args' => [pipeline_tracker.id, pipeline_tracker.stage, entity.id],
+              'scheduled_at' => be_within(1).of(10.seconds.from_now.to_i)
+            )
+          )
+        end
+
+        context 'when there is a batch in progress' do
+          where(:status) { BulkImports::BatchTracker::IN_PROGRESS_STATES }
+
+          with_them do
+            before do
+              create(:bulk_import_batch_tracker, status, batch_number: 1, tracker: pipeline_tracker)
+            end
+
+            it 'counts the in progress batch against the limit' do
+              expect(BulkImports::PipelineBatchWorker).to receive(:perform_async).once
+              expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_batch_numbers_enqueued, [2])
+              expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_final_batch_was_enqueued, false)
+
+              worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+
+              pipeline_tracker.reload
+
+              expect(pipeline_tracker.status_name).to eq(:started)
+              expect(pipeline_tracker.batched).to eq(true)
+              expect(pipeline_tracker.batches.pluck_batch_numbers).to contain_exactly(1, 2)
+              expect(described_class.jobs).to contain_exactly(
+                hash_including(
+                  'args' => [pipeline_tracker.id, pipeline_tracker.stage, entity.id],
+                  'scheduled_at' => be_within(1).of(10.seconds.from_now.to_i)
+                )
+              )
+            end
+          end
+        end
+
+        context 'when there is a batch that has finished' do
+          where(:status) do
+            all_statuses = BulkImports::BatchTracker.state_machines[:status].states.map(&:name)
+            all_statuses - BulkImports::BatchTracker::IN_PROGRESS_STATES
+          end
+
+          with_them do
+            before do
+              create(:bulk_import_batch_tracker, status, batch_number: 1, tracker: pipeline_tracker)
+            end
+
+            it 'does not count the finished batch against the limit' do
+              expect(BulkImports::PipelineBatchWorker).to receive(:perform_async).twice
+              expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_batch_numbers_enqueued, [2, 3])
+              expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_final_batch_was_enqueued, true)
+
+              worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+
+              pipeline_tracker.reload
+
+              expect(pipeline_tracker.batches.pluck_batch_numbers).to contain_exactly(1, 2, 3)
+              expect(described_class.jobs).to be_empty
+            end
+          end
+        end
+
+        context 'when the feature flag is disabled' do
+          before do
+            stub_feature_flags(bulk_import_limit_concurrent_batches: false)
+          end
+
+          it 'does not limit batches' do
+            expect(BulkImports::PipelineBatchWorker).to receive(:perform_async).exactly(3).times
+            expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_batch_numbers_enqueued, [1, 2, 3])
+            expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_final_batch_was_enqueued, true)
+
+            worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+
+            pipeline_tracker.reload
+
+            expect(pipeline_tracker.status_name).to eq(:started)
+            expect(pipeline_tracker.batched).to eq(true)
+            expect(pipeline_tracker.batches.pluck_batch_numbers).to contain_exactly(1, 2, 3)
+            expect(described_class.jobs).to be_empty
+          end
+
+          it 'still enqueues only missing pipelines batches' do
+            create(:bulk_import_batch_tracker, tracker: pipeline_tracker, batch_number: 2)
+            expect(BulkImports::PipelineBatchWorker).to receive(:perform_async).twice
+            expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_batch_numbers_enqueued, [1, 3])
+            expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_final_batch_was_enqueued, true)
+
+            worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+
+            pipeline_tracker.reload
+
+            expect(pipeline_tracker.status_name).to eq(:started)
+            expect(pipeline_tracker.batched).to eq(true)
+            expect(pipeline_tracker.batches.pluck_batch_numbers).to contain_exactly(1, 2, 3)
+            expect(described_class.jobs).to be_empty
+          end
         end
       end
     end

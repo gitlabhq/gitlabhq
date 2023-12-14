@@ -26,6 +26,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.default_branch_protection_defaults).to eq({}) }
     it { expect(setting.max_decompressed_archive_size).to eq(25600) }
     it { expect(setting.decompress_archive_file_timeout).to eq(210) }
+    it { expect(setting.bulk_import_concurrent_pipeline_batch_limit).to eq(25) }
   end
 
   describe 'validations' do
@@ -1349,6 +1350,13 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           .is_greater_than_or_equal_to(0)
           .is_less_than_or_equal_to(1)
           .with_message("must be a value between 0 and 1")
+      end
+    end
+
+    describe 'bulk_import_concurrent_pipeline_batch_limit' do
+      it do
+        is_expected.to validate_numericality_of(:bulk_import_concurrent_pipeline_batch_limit)
+         .is_greater_than(0)
       end
     end
   end

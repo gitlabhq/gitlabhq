@@ -42,7 +42,7 @@ module BulkImports
     end
 
     def import_in_progress?
-      sorted_batches.any? { |b| b.started? || b.created? }
+      sorted_batches.in_progress.any?
     end
 
     def most_recent_batch_stale?

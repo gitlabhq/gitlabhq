@@ -64,6 +64,9 @@ export default {
         ? 'gl-relative gl-display-flex gl-align-items-flex-start gl-flex-nowrap'
         : '';
     },
+    commentButtonText() {
+      return this.isNewDiscussion ? __('Comment') : __('Reply');
+    },
   },
   watch: {
     showCommentForm: {
@@ -131,7 +134,7 @@ export default {
             :abuse-report-id="abuseReportId"
             :is-submitting="isSubmitting"
             :autosave-key="autosaveKey"
-            :is-new-discussion="isNewDiscussion"
+            :comment-button-text="commentButtonText"
             @submitForm="addNote"
             @cancelEditing="cancelEditing"
           />

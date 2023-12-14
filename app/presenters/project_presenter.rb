@@ -395,7 +395,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       else
         AnchorData.new(
           false,
-          statistic_icon + _('Enable Auto DevOps'),
+          content_tag(:span, statistic_icon('plus', 'gl-mr-3') + _('Enable Auto DevOps')),
           project_settings_ci_cd_path(project, anchor: 'autodevops-settings')
         )
       end
@@ -408,7 +408,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     if can_instantiate_cluster?
       if clusters.empty?
         if Feature.enabled?(:project_overview_reorg)
-          AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'gl-mr-3') + _('Add Kubernetes cluster'), class: 'btn-link'), project_clusters_path(project))
+          AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'gl-mr-3') + _('Add Kubernetes cluster')), project_clusters_path(project))
         else
           AnchorData.new(false, content_tag(:span, statistic_icon + _('Add Kubernetes cluster')), project_clusters_path(project))
         end
@@ -424,7 +424,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     return unless can_view_pipeline_editor?(project)
 
     if cicd_missing?
-      AnchorData.new(false, statistic_icon + _('Set up CI/CD'), project_ci_pipeline_editor_path(project))
+      AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'gl-mr-3') + _('Set up CI/CD')), project_ci_pipeline_editor_path(project))
     elsif repository.gitlab_ci_yml.present?
       AnchorData.new(false, statistic_icon('rocket') + _('CI/CD configuration'), project_ci_pipeline_editor_path(project), 'btn-default')
     end
@@ -484,7 +484,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     return unless can?(current_user, :admin_project, project)
 
     if Feature.enabled?(:project_overview_reorg)
-      AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'gl-blue-500! gl-mr-3') + _('Configure Integrations'), class: 'btn-link'), project_settings_integrations_path(project), nil, nil, nil)
+      AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'gl-blue-500! gl-mr-3') + _('Configure Integrations')), project_settings_integrations_path(project), nil, nil, nil)
     else
       AnchorData.new(false, content_tag(:span, statistic_icon('settings') + _('Configure Integrations')), project_settings_integrations_path(project), nil, nil, nil)
     end

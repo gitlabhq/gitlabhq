@@ -60,7 +60,7 @@ describe('Abuse Report Add Note', () => {
         abuseReportId: mockAbuseReportId,
         isSubmitting: false,
         autosaveKey: `${mockAbuseReportId}-comment`,
-        isNewDiscussion: true,
+        commentButtonText: 'Comment',
         initialValue: '',
       });
     });
@@ -211,6 +211,7 @@ describe('Abuse Report Add Note', () => {
       await findReplyTextarea().trigger('click');
 
       expect(findAbuseReportCommentForm().exists()).toBe(true);
+      expect(findAbuseReportCommentForm().props('commentButtonText')).toBe('Reply');
     });
 
     it('should show comment form if `showCommentForm` is true', () => {

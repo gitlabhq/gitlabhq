@@ -93,6 +93,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['default_branch_protection_defaults']).to be_kind_of(Hash)
       expect(json_response['max_login_attempts']).to be_nil
       expect(json_response['failed_login_attempts_unlock_period_in_minutes']).to be_nil
+      expect(json_response['bulk_import_concurrent_pipeline_batch_limit']).to eq(25)
     end
   end
 
@@ -202,6 +203,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             jira_connect_proxy_url: 'http://example.com',
             bulk_import_enabled: false,
             bulk_import_max_download_file_size: 1,
+            bulk_import_concurrent_pipeline_batch_limit: 2,
             allow_runner_registration_token: true,
             user_defaults_to_private_profile: true,
             default_syntax_highlighting_theme: 2,
@@ -296,6 +298,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['max_import_remote_file_size']).to be(2)
         expect(json_response['bulk_import_max_download_file_size']).to be(1)
         expect(json_response['security_txt_content']).to be(nil)
+        expect(json_response['bulk_import_concurrent_pipeline_batch_limit']).to be(2)
       end
     end
 

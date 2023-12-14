@@ -2,7 +2,9 @@ import { shallowMount } from '@vue/test-utils';
 import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import AbuseReportNote from '~/admin/abuse_report/components/notes/abuse_report_note.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
+import EditedAt from '~/issues/show/components/edited.vue';
 import AbuseReportNoteBody from '~/admin/abuse_report/components/notes/abuse_report_note_body.vue';
+import AbuseReportEditNote from '~/admin/abuse_report/components/notes/abuse_report_edit_note.vue';
 import AbuseReportNoteActions from '~/admin/abuse_report/components/notes/abuse_report_note_actions.vue';
 
 import { mockAbuseReport, mockDiscussionWithNoReplies } from '../../mock_data';
@@ -18,6 +20,10 @@ describe('Abuse Report Note', () => {
 
   const findNoteHeader = () => wrapper.findComponent(NoteHeader);
   const findNoteBody = () => wrapper.findComponent(AbuseReportNoteBody);
+
+  const findEditNote = () => wrapper.findComponent(AbuseReportEditNote);
+  const findEditedAt = () => wrapper.findComponent(EditedAt);
+
   const findNoteActions = () => wrapper.findComponent(AbuseReportNoteActions);
 
   const createComponent = ({
@@ -86,11 +92,84 @@ describe('Abuse Report Note', () => {
     });
   });
 
+  describe('Editing', () => {
+    it('should not be in edit mode by default', () => {
+      expect(findEditNote().exists()).toBe(false);
+    });
+
+    it('should trigger edit mode when `startEditing` event is emitted', async () => {
+      await findNoteActions().vm.$emit('startEditing');
+
+      expect(findEditNote().exists()).toBe(true);
+      expect(findEditNote().props()).toMatchObject({
+        abuseReportId: mockAbuseReportId,
+        note: mockNote,
+      });
+
+      expect(findNoteHeader().exists()).toBe(false);
+      expect(findNoteBody().exists()).toBe(false);
+    });
+
+    it('should hide edit mode when `cancelEditing` event is emitted', async () => {
+      await findNoteActions().vm.$emit('startEditing');
+      await findEditNote().vm.$emit('cancelEditing');
+
+      expect(findEditNote().exists()).toBe(false);
+
+      expect(findNoteHeader().exists()).toBe(true);
+      expect(findNoteBody().exists()).toBe(true);
+    });
+  });
+
+  describe('Edited At', () => {
+    it('should not show edited-at if lastEditedBy is null', () => {
+      expect(findEditedAt().exists()).toBe(false);
+    });
+
+    it('should show edited-at if lastEditedBy is not null', () => {
+      createComponent({
+        note: {
+          ...mockNote,
+          lastEditedBy: { name: 'user', webPath: '/user' },
+          lastEditedAt: '2023-10-20T02:46:50Z',
+        },
+      });
+
+      expect(findEditedAt().exists()).toBe(true);
+
+      expect(findEditedAt().props()).toMatchObject({
+        updatedAt: '2023-10-20T02:46:50Z',
+        updatedByName: 'user',
+        updatedByPath: '/user',
+      });
+
+      expect(findEditedAt().classes()).toEqual(
+        expect.arrayContaining(['gl-text-secondary', 'gl-pl-3']),
+      );
+    });
+
+    it('should add the correct classList when showReplyButton is false', () => {
+      createComponent({
+        note: {
+          ...mockNote,
+          lastEditedBy: { name: 'user', webPath: '/user' },
+          lastEditedAt: '2023-10-20T02:46:50Z',
+        },
+        showReplyButton: false,
+      });
+
+      expect(findEditedAt().classes()).toEqual(
+        expect.arrayContaining(['gl-text-secondary', 'gl-pl-8']),
+      );
+    });
+  });
+
   describe('Actions', () => {
     it('should show note actions', () => {
       expect(findNoteActions().exists()).toBe(true);
       expect(findNoteActions().props()).toMatchObject({
         showReplyButton: mockShowReplyButton,
+        showEditButton: true,
       });
     });
 

@@ -814,6 +814,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
+  validates :bulk_import_concurrent_pipeline_batch_limit,
+    presence: true,
+    numericality: { only_integer: true, greater_than: 0 }
+
   validates :allow_runner_registration_token,
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }

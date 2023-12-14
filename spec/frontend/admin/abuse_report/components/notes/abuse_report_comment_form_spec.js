@@ -36,7 +36,7 @@ describe('Abuse Report Comment Form', () => {
     isSubmitting = false,
     initialValue = mockInitialValue,
     autosaveKey = mockAutosaveKey,
-    isNewDiscussion = true,
+    commentButtonText = 'Comment',
   } = {}) => {
     wrapper = shallowMount(AbuseReportCommentForm, {
       propsData: {
@@ -44,7 +44,7 @@ describe('Abuse Report Comment Form', () => {
         isSubmitting,
         initialValue,
         autosaveKey,
-        isNewDiscussion,
+        commentButtonText,
       },
       provide: {
         uploadNoteAttachmentPath: 'test-upload-path',
@@ -119,7 +119,7 @@ describe('Abuse Report Comment Form', () => {
     });
 
     it('should show `Reply` button if its not a new discussion', () => {
-      createComponent({ isNewDiscussion: false });
+      createComponent({ commentButtonText: 'Reply' });
       expect(findCommentButton().text()).toBe('Reply');
     });
 

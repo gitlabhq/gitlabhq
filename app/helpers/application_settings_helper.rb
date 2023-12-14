@@ -497,6 +497,7 @@ module ApplicationSettingsHelper
       :pipeline_limit_per_project_user_sha,
       :invitation_flow_enforcement,
       :can_create_group,
+      :bulk_import_concurrent_pipeline_batch_limit,
       :bulk_import_enabled,
       :bulk_import_max_download_file_size,
       :allow_runner_registration_token,

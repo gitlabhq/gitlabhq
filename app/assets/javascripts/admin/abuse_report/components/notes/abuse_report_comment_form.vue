@@ -35,12 +35,12 @@ export default {
       type: String,
       required: true,
     },
-    isNewDiscussion: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     initialValue: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    commentButtonText: {
       type: String,
       required: false,
       default: '',
@@ -62,9 +62,6 @@ export default {
     },
     markdownDocsPath() {
       return helpPagePath('user/markdown');
-    },
-    commentButtonText() {
-      return this.isNewDiscussion ? __('Comment') : __('Reply');
     },
   },
   methods: {

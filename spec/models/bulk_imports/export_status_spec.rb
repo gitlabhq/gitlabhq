@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::ExportStatus, feature_category: :importers do
+RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_category: :importers do
   let_it_be(:relation) { 'labels' }
   let_it_be(:import) { create(:bulk_import) }
   let_it_be(:config) { create(:bulk_import_configuration, bulk_import: import) }
@@ -278,6 +278,113 @@ RSpec.describe BulkImports::ExportStatus, feature_category: :importers do
       context 'when export is not batched' do
         it 'returns nil' do
           expect(subject.batch(1)).to eq(nil)
+        end
+      end
+    end
+  end
+
+  describe 'caching' do
+    let(:cached_status) do
+      subject.send(:status)
+      subject.send(:status_from_cache)
+    end
+
+    shared_examples 'does not result in a cached status' do
+      specify do
+        expect(cached_status).to be_nil
+      end
+    end
+
+    shared_examples 'results in a cached status' do
+      specify do
+        expect(cached_status).to include('status' => status)
+      end
+
+      context 'when something goes wrong during export status fetch' do
+        before do
+          allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
+            allow(client).to receive(:get).and_raise(
+              BulkImports::NetworkError.new("Unsuccessful response", response: nil)
+            )
+          end
+        end
+
+        include_examples 'does not result in a cached status'
+      end
+    end
+
+    context 'when export status is started' do
+      let(:status) { BulkImports::Export::STARTED }
+
+      it_behaves_like 'does not result in a cached status'
+    end
+
+    context 'when export status is failed' do
+      let(:status) { BulkImports::Export::FAILED }
+
+      it_behaves_like 'results in a cached status'
+    end
+
+    context 'when export status is finished' do
+      let(:status) { BulkImports::Export::FINISHED }
+
+      it_behaves_like 'results in a cached status'
+    end
+
+    context 'when export status is not present' do
+      let(:status) { nil }
+
+      it_behaves_like 'does not result in a cached status'
+    end
+
+    context 'when the cache is empty' do
+      let(:status) { BulkImports::Export::FAILED }
+
+      it 'fetches the status from the remote' do
+        expect(subject).to receive(:status_from_remote).and_call_original
+        expect(subject.send(:status)).to include('status' => status)
+      end
+    end
+
+    context 'when the cache is not empty' do
+      let(:status) { BulkImports::Export::FAILED }
+
+      before do
+        Gitlab::Cache::Import::Caching.write(
+          described_class.new(tracker, 'labels').send(:cache_key),
+          { 'status' => 'mock status' }.to_json
+        )
+      end
+
+      it 'does not fetch the status from the remote' do
+        expect(subject).not_to receive(:status_from_remote)
+        expect(subject.send(:status)).to eq({ 'status' => 'mock status' })
+      end
+
+      context 'with a different entity' do
+        before do
+          tracker.entity = create(:bulk_import_entity, bulk_import: import, source_full_path: 'foo')
+        end
+
+        it 'fetches the status from the remote' do
+          expect(subject).to receive(:status_from_remote).and_call_original
+          expect(subject.send(:status)).to include('status' => status)
+        end
+      end
+
+      context 'with a different relation' do
+        let_it_be(:relation) { 'merge_requests' }
+
+        let(:response_double) do
+          instance_double(HTTParty::Response, parsed_response: [
+            { 'relation' => 'labels', 'status' => status },
+            { 'relation' => 'merge_requests', 'status' => status }
+          ])
+        end
+
+        it 'fetches the status from the remote' do
+          expect(subject).to receive(:status_from_remote).and_call_original
+          expect(subject.send(:status)).to include('status' => status)
         end
       end
     end
