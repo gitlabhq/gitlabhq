@@ -325,8 +325,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
             'agent_name' => agent.name,
             'gitaly_info' => a_hash_including(
               'address' => match(/\.socket$/),
-              'token' => 'secret',
-              'features' => Feature::Gitaly.server_feature_flags
+              'token' => 'secret'
             ),
             'gitaly_repository' => a_hash_including(
               'storage_name' => project.repository_storage,
@@ -368,8 +367,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
               'project_id' => project.id,
               'gitaly_info' => a_hash_including(
                 'address' => match(/\.socket$/),
-                'token' => 'secret',
-                'features' => Feature::Gitaly.server_feature_flags
+                'token' => 'secret'
               ),
               'gitaly_repository' => a_hash_including(
                 'storage_name' => project.repository_storage,

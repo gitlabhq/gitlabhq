@@ -1432,10 +1432,6 @@ ee/lib/ee/api/entities/project.rb
 /ee/app/graphql/mutations/audit_events/
 /ee/app/models/concerns/audit_events/
 /ee/app/views/projects/audit_events/
-/app/controllers/groups/releases_controller.rb
-/app/controllers/projects/releases/evidences_controller.rb
-/app/workers/releases/create_evidence_worker.rb
-/app/workers/releases/manage_evidence_worker.rb
 
 ^[Fulfillment::Utilization] @sheldonled @aalakkad @kpalchyk
 /ee/app/assets/javascripts/usage_quotas/components/

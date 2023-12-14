@@ -21,9 +21,7 @@ module API
         strong_memoize_attr :agent
 
         def gitaly_info(project)
-          gitaly_features = Feature::Gitaly.server_feature_flags
-
-          Gitlab::GitalyClient.connection_data(project.repository_storage).merge(features: gitaly_features)
+          Gitlab::GitalyClient.connection_data(project.repository_storage)
         end
 
         def gitaly_repository(project)

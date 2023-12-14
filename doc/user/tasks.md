@@ -493,14 +493,14 @@ or assignees, on the right.
 
 ![Task two column view](img/task_two_column_view_v16_7.png)
 
-## Linked items in Tasks
+## Linked items in tasks
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416558) in GitLab 16.5 [with a flag](../administration/feature_flags.md) named `linked_work_items`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416558) in GitLab 16.5 [with a flag](../administration/feature_flags.md) named `linked_work_items`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139394) in GitLab 16.7.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `linked_work_items`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `linked_work_items`.
+On GitLab.com, this feature is available.
 
 Linked items are a bi-directional relationship and appear in a block below
 the emoji reactions section. You can link an objective, key result, or a task in the same project with each other.

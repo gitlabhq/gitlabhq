@@ -1,0 +1,8 @@
+---
+name: create_personal_ns_outside_model
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139487
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/434921
+milestone: '16.7'
+type: development
+group: group::tenant scale
+default_enabled: false

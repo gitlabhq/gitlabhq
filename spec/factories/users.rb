@@ -13,7 +13,7 @@ FactoryBot.define do
     color_scheme_id { 1 }
 
     after(:build) do |user, evaluator|
-      user.assign_personal_namespace if Feature.enabled?(:create_user_ns_outside_model)
+      user.assign_personal_namespace if Feature.enabled?(:create_personal_ns_outside_model, Feature.current_request)
     end
 
     trait :admin do

@@ -1608,7 +1608,7 @@ class User < MainClusterwide::ApplicationRecord
     if namespace
       namespace.path = username if username_changed?
       namespace.name = name if name_changed?
-    elsif Feature.disabled?(:create_user_ns_outside_model)
+    elsif Feature.disabled?(:create_personal_ns_outside_model, Feature.current_request)
       # TODO: we should no longer need the `type` parameter once we can make the
       #       the `has_one :namespace` association use the correct class.
       #       issue https://gitlab.com/gitlab-org/gitlab/-/issues/341070

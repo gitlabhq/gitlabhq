@@ -5,4 +5,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/418946
 milestone: '16.3'
 type: development
 group: group::product planning
-default_enabled: false
+default_enabled: true

@@ -55504,6 +55504,9 @@ msgstr ""
 msgid "You"
 msgstr ""
 
+msgid "You already have access."
+msgstr ""
+
 msgid "You already have pending todo for this alert"
 msgstr ""
 
@@ -55959,6 +55962,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "You have already reported this user"
+msgstr ""
+
+msgid "You have already requested access."
 msgstr ""
 
 msgid "You have been granted %{access_level} access to the %{source_link} %{source_type}."

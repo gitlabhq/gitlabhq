@@ -5695,9 +5695,9 @@ RSpec.describe User, feature_category: :user_profile do
         expect(user.namespace).to be_nil
       end
 
-      context 'when create_user_ns_outside_model feature flag is disabled' do
+      context 'when create_personal_ns_outside_model feature flag is disabled' do
         before do
-          stub_feature_flags(create_user_ns_outside_model: false)
+          stub_feature_flags(create_personal_ns_outside_model: false)
         end
 
         it 'creates the namespace' do
