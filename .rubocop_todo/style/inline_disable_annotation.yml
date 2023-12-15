@@ -162,7 +162,6 @@ Style/InlineDisableAnnotation:
     - 'app/finders/merge_requests_finder.rb'
     - 'app/finders/milestones_finder.rb'
     - 'app/finders/notes_finder.rb'
-    - 'app/finders/organizations/groups_finder.rb'
     - 'app/finders/packages/build_infos_finder.rb'
     - 'app/finders/projects/groups_finder.rb'
     - 'app/finders/projects/members/effective_access_level_finder.rb'

@@ -1497,14 +1497,6 @@ class User < MainClusterwide::ApplicationRecord
       .where_exists(counts)
   end
 
-  def with_defaults
-    User.defaults.each do |k, v|
-      public_send("#{k}=", v) # rubocop:disable GitlabSecurity/PublicSend
-    end
-
-    self
-  end
-
   def can_leave_project?(project)
     project.namespace != namespace &&
       project.member(self)

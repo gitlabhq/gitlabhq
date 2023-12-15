@@ -366,14 +366,16 @@ export function renderPlayable(state, node) {
 }
 
 export function renderCodeBlock(state, node) {
+  const numBackticks = Math.max(2, node.textContent.match(/```+/g)?.[0]?.length || 0) + 1;
+  const backticks = state.repeat('`', numBackticks);
   state.write(
-    `\`\`\`${
+    `${backticks}${
       (node.attrs.language || '') + (node.attrs.langParams ? `:${node.attrs.langParams}` : '')
     }\n`,
   );
   state.text(node.textContent, false);
   state.ensureNewLine();
-  state.write('```');
+  state.write(backticks);
   state.closeBlock(node);
 }
 

@@ -25,12 +25,18 @@ module Resolvers
 
       private
 
-      def resolve_groups(**args)
-        return Group.none if Feature.disabled?(:resolve_organization_groups, context[:current_user])
+      alias_method :organization, :object
 
-        ::Organizations::GroupsFinder
-          .new(organization: object, current_user: context[:current_user], params: args)
-          .execute
+      def resolve_groups(**args)
+        return Group.none if Feature.disabled?(:resolve_organization_groups, current_user)
+
+        extra_args = { organization: organization, include_ancestors: false, all_available: false }
+        groups = GroupsFinder.new(current_user, args.merge(extra_args)).execute
+
+        args[:sort] ||= { field: 'name', direction: :asc }
+        field = args[:sort][:field]
+        direction = args[:sort][:direction]
+        groups.sort_by_attribute("#{field}_#{direction}")
       end
     end
   end

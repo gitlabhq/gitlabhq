@@ -45,6 +45,7 @@ class Namespace < ApplicationRecord
   cache_markdown_field :description, pipeline: :description
 
   has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :non_archived_projects, -> { where.not(archived: true) }, class_name: 'Project'
   has_many :project_statistics
   has_one :namespace_settings, inverse_of: :namespace, class_name: 'NamespaceSetting', autosave: true
   has_one :ci_cd_settings, inverse_of: :namespace, class_name: 'NamespaceCiCdSetting', autosave: true

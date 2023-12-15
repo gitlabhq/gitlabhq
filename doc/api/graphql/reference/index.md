@@ -1093,11 +1093,11 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="queryworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
-| <a id="queryworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent ids. |
-| <a id="queryworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace ids. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
+| <a id="queryworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
+| <a id="queryworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
 | <a id="queryworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
-| <a id="queryworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project ids. |
-| <a id="queryworkspacesuserids"></a>`userIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by user ids. |
+| <a id="queryworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
+| <a id="queryworkspacesuserids"></a>`userIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by user GlobalIDs. |
 
 ## `Mutation` type
 
@@ -8620,7 +8620,7 @@ Input type: `WorkspaceCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationworkspacecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationworkspacecreateclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID!`](#clustersagentid) | ID of the cluster agent the created workspace will be associated with. |
+| <a id="mutationworkspacecreateclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID!`](#clustersagentid) | GlobalID of the cluster agent the created workspace will be associated with. |
 | <a id="mutationworkspacecreatedesiredstate"></a>`desiredState` | [`String!`](#string) | Desired state of the created workspace. |
 | <a id="mutationworkspacecreatedevfilepath"></a>`devfilePath` | [`String!`](#string) | Project repo git path containing the devfile used to configure the workspace. |
 | <a id="mutationworkspacecreatedevfileref"></a>`devfileRef` | [`String!`](#string) | Project repo git ref containing the devfile used to configure the workspace. |
@@ -14243,10 +14243,10 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="addonuserworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
-| <a id="addonuserworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent ids. |
-| <a id="addonuserworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace ids. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
+| <a id="addonuserworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
+| <a id="addonuserworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
 | <a id="addonuserworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
-| <a id="addonuserworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project ids. |
+| <a id="addonuserworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `AgentConfiguration`
 
@@ -14923,10 +14923,10 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="autocompleteduserworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
-| <a id="autocompleteduserworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent ids. |
-| <a id="autocompleteduserworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace ids. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
+| <a id="autocompleteduserworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
+| <a id="autocompleteduserworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
 | <a id="autocompleteduserworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
-| <a id="autocompleteduserworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project ids. |
+| <a id="autocompleteduserworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `AwardEmoji`
 
@@ -16001,6 +16001,30 @@ GitLab CI/CD configuration template.
 | <a id="clusteragentvulnerabilityimages"></a>`vulnerabilityImages` | [`VulnerabilityContainerImageConnection`](#vulnerabilitycontainerimageconnection) | Container images reported on the agent vulnerabilities. (see [Connections](#connections)) |
 | <a id="clusteragentwebpath"></a>`webPath` | [`String`](#string) | Web path of the cluster agent. |
 
+#### Fields with arguments
+
+##### `ClusterAgent.workspaces`
+
+Workspaces associated with the agent.
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`WorkspaceConnection`](#workspaceconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="clusteragentworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
+| <a id="clusteragentworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
+| <a id="clusteragentworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalID. |
+
 ### `ClusterAgentActivityEvent`
 
 #### Fields
@@ -16936,10 +16960,10 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="currentuserworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
-| <a id="currentuserworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent ids. |
-| <a id="currentuserworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace ids. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
+| <a id="currentuserworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
+| <a id="currentuserworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
 | <a id="currentuserworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
-| <a id="currentuserworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project ids. |
+| <a id="currentuserworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `CustomEmoji`
 
@@ -19135,6 +19159,7 @@ GPG signature for a signed commit.
 | <a id="groupdependencyproxytotalsize"></a>`dependencyProxyTotalSize` | [`String!`](#string) | Total size of the dependency proxy cached images. |
 | <a id="groupdependencyproxytotalsizebytes"></a>`dependencyProxyTotalSizeBytes` | [`BigInt!`](#bigint) | Total size of the dependency proxy cached images in bytes, encoded as a string. |
 | <a id="groupdependencyproxytotalsizeinbytes"></a>`dependencyProxyTotalSizeInBytes` **{warning-solid}** | [`Int!`](#int) | **Deprecated** in 16.1. Use `dependencyProxyTotalSizeBytes`. |
+| <a id="groupdescendantgroupscount"></a>`descendantGroupsCount` | [`Int!`](#int) | Count of direct descendant groups of this group. |
 | <a id="groupdescription"></a>`description` | [`String`](#string) | Description of the namespace. |
 | <a id="groupdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="groupdora"></a>`dora` | [`Dora`](#dora) | Group's DORA metrics. |
@@ -19147,6 +19172,7 @@ GPG signature for a signed commit.
 | <a id="groupfullname"></a>`fullName` | [`String!`](#string) | Full name of the namespace. |
 | <a id="groupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. |
 | <a id="groupgooglecloudloggingconfigurations"></a>`googleCloudLoggingConfigurations` | [`GoogleCloudLoggingConfigurationTypeConnection`](#googlecloudloggingconfigurationtypeconnection) | Google Cloud logging configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
+| <a id="groupgroupmemberscount"></a>`groupMembersCount` | [`Int!`](#int) | Count of direct members of this group. |
 | <a id="groupid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
 | <a id="groupistemporarystorageincreaseenabled"></a>`isTemporaryStorageIncreaseEnabled` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.7. Feature removal, will be completely removed in 17.0. |
 | <a id="grouplfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
@@ -19157,6 +19183,7 @@ GPG signature for a signed commit.
 | <a id="grouppath"></a>`path` | [`String!`](#string) | Path of the namespace. |
 | <a id="grouppendingmembers"></a>`pendingMembers` **{warning-solid}** | [`PendingGroupMemberConnection`](#pendinggroupmemberconnection) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. A pending membership of a user within this group. |
 | <a id="groupprojectcreationlevel"></a>`projectCreationLevel` | [`String`](#string) | Permission level required to create projects in the group. |
+| <a id="groupprojectscount"></a>`projectsCount` | [`Int!`](#int) | Count of direct projects in this group. |
 | <a id="grouprecentissueboards"></a>`recentIssueBoards` | [`BoardConnection`](#boardconnection) | List of recently visited boards of the group. Maximum size is 4. (see [Connections](#connections)) |
 | <a id="grouprepositorysizeexcessprojectcount"></a>`repositorySizeExcessProjectCount` | [`Int!`](#int) | Number of projects in the root namespace where the repository size exceeds the limit. This only applies to namespaces under Project limit enforcement. |
 | <a id="grouprequestaccessenabled"></a>`requestAccessEnabled` | [`Boolean`](#boolean) | Indicates if users can request access to namespace. |
@@ -21804,10 +21831,10 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestassigneeworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
-| <a id="mergerequestassigneeworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent ids. |
-| <a id="mergerequestassigneeworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace ids. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
+| <a id="mergerequestassigneeworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
+| <a id="mergerequestassigneeworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
 | <a id="mergerequestassigneeworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
-| <a id="mergerequestassigneeworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project ids. |
+| <a id="mergerequestassigneeworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `MergeRequestAuthor`
 
@@ -22092,10 +22119,10 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestauthorworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
-| <a id="mergerequestauthorworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent ids. |
-| <a id="mergerequestauthorworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace ids. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
+| <a id="mergerequestauthorworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
+| <a id="mergerequestauthorworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
 | <a id="mergerequestauthorworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
-| <a id="mergerequestauthorworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project ids. |
+| <a id="mergerequestauthorworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `MergeRequestDiff`
 
@@ -22443,10 +22470,10 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestparticipantworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
-| <a id="mergerequestparticipantworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent ids. |
-| <a id="mergerequestparticipantworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace ids. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
+| <a id="mergerequestparticipantworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
+| <a id="mergerequestparticipantworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
 | <a id="mergerequestparticipantworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
-| <a id="mergerequestparticipantworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project ids. |
+| <a id="mergerequestparticipantworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `MergeRequestPermissions`
 
@@ -22767,10 +22794,10 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestreviewerworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
-| <a id="mergerequestreviewerworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent ids. |
-| <a id="mergerequestreviewerworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace ids. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
+| <a id="mergerequestreviewerworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
+| <a id="mergerequestreviewerworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
 | <a id="mergerequestreviewerworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
-| <a id="mergerequestreviewerworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project ids. |
+| <a id="mergerequestreviewerworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `Metadata`
 
@@ -27833,10 +27860,10 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="usercoreworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
-| <a id="usercoreworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent ids. |
-| <a id="usercoreworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace ids. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
+| <a id="usercoreworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
+| <a id="usercoreworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
 | <a id="usercoreworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
-| <a id="usercoreworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project ids. |
+| <a id="usercoreworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `UserMergeRequestInteraction`
 

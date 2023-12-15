@@ -5766,9 +5766,6 @@ msgstr ""
 msgid "Analytics|Visualization"
 msgstr ""
 
-msgid "Analytics|Visualization Designer"
-msgstr ""
-
 msgid "Analytics|Visualization designer"
 msgstr ""
 

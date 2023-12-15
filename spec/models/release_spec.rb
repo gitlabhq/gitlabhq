@@ -39,6 +39,24 @@ RSpec.describe Release, feature_category: :release_orchestration do
       end
     end
 
+    describe 'scopes' do
+      let_it_be(:another_project) { create(:project) }
+      let_it_be(:release) { create(:release, project: project, author: user, tag: 'v1') }
+      let_it_be(:another_release) { create(:release, project: another_project, tag: 'v2') }
+
+      describe '.for_projects' do
+        it 'returns releases for the given projects' do
+          expect(described_class.for_projects([project])).to eq([release])
+        end
+      end
+
+      describe '.by_tag' do
+        it 'returns releases with the given tag' do
+          expect(described_class.by_tag(release.tag)).to eq([release])
+        end
+      end
+    end
+
     context 'when description of a release is longer than the limit' do
       let(:description) { 'a' * (Gitlab::Database::MAX_TEXT_SIZE_LIMIT + 1) }
       let(:release) { build(:release, project: project, description: description) }

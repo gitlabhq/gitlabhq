@@ -17,10 +17,13 @@ module Gitlab
           private
 
           def create_event(issue_event)
+            milestone = project.milestones.find_by_title(issue_event.milestone_title)
+            return unless milestone
+
             attrs = {
               user_id: author_id(issue_event),
               created_at: issue_event.created_at,
-              milestone_id: project.milestones.find_by_title(issue_event.milestone_title)&.id,
+              milestone_id: milestone.id,
               action: action(issue_event.event),
               state: DEFAULT_STATE
             }.merge(resource_event_belongs_to(issue_event))

@@ -277,7 +277,7 @@ To create a custom visualization:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > Analytics dashboards**.
-1. Select **Visualization Designer**.
+1. Select **Visualization designer**.
 1. In the **Visualization title** field, enter the name of your visualization.
 1. From the **Visualization type** dropdown list, select a visualization type.
 1. In the **What metric do you want to visualize?** section, select the metric you want to query.

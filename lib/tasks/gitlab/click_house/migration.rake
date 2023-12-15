@@ -8,7 +8,7 @@ namespace :gitlab do
       click_house_database_names.each do |database|
         desc "GitLab | ClickHouse | Migrate the #{database} database (options: VERSION=x, VERBOSE=false, SCOPE=y)"
         task database, [:skip_unless_configured] => :environment do |_t, args|
-          if args[:skip_unless_configured] && !::ClickHouse::Client.configuration.databases[database]
+          if args[:skip_unless_configured] && !::ClickHouse::Client.database_configured?(database)
             puts "The '#{database}' ClickHouse database is not configured, skipping migrations"
             next
           end

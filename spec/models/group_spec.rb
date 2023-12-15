@@ -925,6 +925,18 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       it { is_expected.to eq([group_1, group_2, group_4, group_3]) }
     end
 
+    context 'when sort by path_asc' do
+      let(:sort) { 'path_asc' }
+
+      it { is_expected.to eq([group_1, group_2, group_3, group_4].sort_by(&:path)) }
+    end
+
+    context 'when sort by path_desc' do
+      let(:sort) { 'path_desc' }
+
+      it { is_expected.to eq([group_1, group_2, group_3, group_4].sort_by(&:path).reverse) }
+    end
+
     context 'when sort by recently_created' do
       let(:sort) { 'created_desc' }
 
@@ -3153,6 +3165,48 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       new_group_id = create(:group).id
 
       expect(described_class.get_ids_by_ids_or_paths([new_group_id], [group_path])).to match_array([group_id, new_group_id])
+    end
+  end
+
+  describe '.descendant_groups_counts' do
+    let_it_be(:parent) { create(:group) }
+    let_it_be(:group) { create(:group, parent: parent) }
+    let_it_be(:project) { create(:project, namespace: parent) }
+
+    subject(:descendant_groups_counts) { described_class.id_in(parent).descendant_groups_counts }
+
+    it 'return a hash of group id and descendant groups count without projects' do
+      expect(descendant_groups_counts).to eq({ parent.id => 1 })
+    end
+  end
+
+  describe '.projects_counts' do
+    let_it_be(:parent) { create(:group) }
+    let_it_be(:group) { create(:group, parent: parent) }
+    let_it_be(:project) { create(:project, namespace: parent) }
+    let_it_be(:archived_project) { create(:project, :archived, namespace: parent) }
+
+    subject(:projects_counts) { described_class.id_in(parent).projects_counts }
+
+    it 'return a hash of group id and projects count without counting archived projects' do
+      expect(projects_counts).to eq({ parent.id => 1 })
+    end
+  end
+
+  describe '.group_members_counts' do
+    let_it_be(:parent) { create(:group) }
+    let_it_be(:group) { create(:group, parent: parent) }
+
+    before_all do
+      create(:group_member, group: parent)
+      create(:group_member, group: parent, requested_at: Time.current)
+      create(:group_member, group: group)
+    end
+
+    subject(:group_members_counts) { described_class.id_in(parent).group_members_counts }
+
+    it 'return a hash of group id and approved direct group members' do
+      expect(group_members_counts).to eq({ parent.id => 1 })
     end
   end
 

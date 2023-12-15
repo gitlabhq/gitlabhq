@@ -58,8 +58,6 @@ To open any file by its name:
 1. Press <kbd>Command</kbd>+<kbd>P</kbd>.
 1. Enter the name of your file.
 
-![fuzzy_finder_v15_7](img/fuzzy_finder_v15_7.png)
-
 ## Search across files
 
 You can use the Web IDE to search all files in the opened folder.

@@ -104,7 +104,7 @@ The first 2-3 quarters are required to define a general split of data, and build
 
     The purpose is to perform a targeted decomposition of `users` and `namespaces`, because `namespaces` will be stored locally in the Cell.
 
-1. **User can create Project.**
+1. **User can create Project.** ✓ ([demo](https://www.youtube.com/watch?v=Z-2W8MfDwuI))
 
     The purpose is to perform a targeted decomposition of `users` and `projects`, because `projects` will be stored locally in the Cell.
 

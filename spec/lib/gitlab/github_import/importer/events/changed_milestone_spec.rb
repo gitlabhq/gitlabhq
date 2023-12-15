@@ -18,7 +18,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedMilestone do
       'actor' => { 'id' => user.id, 'login' => user.username },
       'event' => event_type,
       'commit_id' => nil,
-      'milestone_title' => milestone.title,
+      'milestone_title' => milestone_title,
       'issue_db_id' => issuable.id,
       'created_at' => '2022-04-26 18:30:53 UTC',
       'issue' => { 'number' => issuable.iid, pull_request: issuable.is_a?(MergeRequest) }
@@ -35,11 +35,23 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedMilestone do
   end
 
   shared_examples 'new event' do
-    it 'creates a new milestone event' do
-      expect { importer.execute(issue_event) }.to change { issuable.resource_milestone_events.count }
-        .from(0).to(1)
-      expect(issuable.resource_milestone_events.last)
-        .to have_attributes(expected_event_attrs)
+    context 'when a matching milestone exists in GitLab' do
+      let(:milestone_title) { milestone.title }
+
+      it 'creates a new milestone event' do
+        expect { importer.execute(issue_event) }.to change { issuable.resource_milestone_events.count }
+          .from(0).to(1)
+        expect(issuable.resource_milestone_events.last)
+          .to have_attributes(expected_event_attrs)
+      end
+    end
+
+    context 'when a matching milestone does not exist in GitLab' do
+      let(:milestone_title) { 'A deleted milestone title' }
+
+      it 'does not create a new milestone event without a milestone' do
+        expect { importer.execute(issue_event) }.not_to change { issuable.resource_milestone_events.count }
+      end
     end
   end
 

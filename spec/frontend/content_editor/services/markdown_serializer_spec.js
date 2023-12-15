@@ -461,6 +461,52 @@ this is not really json:table but just trying out whether this case works or not
     );
   });
 
+  it('correctly serializes a markdown code block containing a nested code block', () => {
+    expect(
+      serialize(
+        codeBlock(
+          { language: 'markdown' },
+          'markdown code block **bold** _italic_ `code`\n\n```js\nvar a = 0;\n```\n\nend markdown code block',
+        ),
+      ),
+    ).toBe(
+      `
+\`\`\`\`markdown
+markdown code block **bold** _italic_ \`code\`
+
+\`\`\`js
+var a = 0;
+\`\`\`
+
+end markdown code block
+\`\`\`\`
+      `.trim(),
+    );
+  });
+
+  it('correctly serializes a markdown code block containing a markdown code block containing another code block', () => {
+    expect(
+      serialize(
+        codeBlock(
+          { language: 'markdown' },
+          '````md\na nested code block\n\n```js\nvar a = 0;\n```\n````',
+        ),
+      ),
+    ).toBe(
+      `
+\`\`\`\`\`markdown
+\`\`\`\`md
+a nested code block
+
+\`\`\`js
+var a = 0;
+\`\`\`
+\`\`\`\`
+\`\`\`\`\`
+      `.trim(),
+    );
+  });
+
   it('correctly serializes emoji', () => {
     expect(serialize(paragraph(emoji({ name: 'dog' })))).toBe(':dog:');
   });

@@ -23,7 +23,8 @@ RSpec.describe 'getting organization information', feature_category: :cell do
   let_it_be(:organization_user) { create(:organization_user) }
   let_it_be(:organization) { organization_user.organization }
   let_it_be(:user) { organization_user.user }
-  let_it_be(:public_group) { create(:group, name: 'public-group', organization: organization) }
+  let_it_be(:parent_group) { create(:group, name: 'parent-group', organization: organization) }
+  let_it_be(:public_group) { create(:group, name: 'public-group', parent: parent_group, organization: organization) }
   let_it_be(:other_group) { create(:group, name: 'other-group', organization: organization) }
   let_it_be(:outside_organization_group) { create(:group) }
 
@@ -72,6 +73,12 @@ RSpec.describe 'getting organization information', feature_category: :cell do
         expect(graphql_data_at(:organization)).not_to be_nil
         expect(graphql_data_at(:organization, :groups, :nodes)).to be_empty
       end
+    end
+
+    it 'does not return ancestors of authorized groups' do
+      request_organization
+
+      expect(groups.pluck('id')).not_to include(parent_group.to_global_id.to_s)
     end
 
     context 'when requesting organization user' do
