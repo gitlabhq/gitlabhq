@@ -6,6 +6,7 @@ module Gitlab
     module Cli
       autoload :VERSION, 'gitlab/backup/cli/version'
       autoload :Runner, 'gitlab/backup/cli/runner'
+      autoload :Utils, 'gitlab/backup/cli/utils'
 
       Error = Class.new(StandardError)
       # Your code goes here...

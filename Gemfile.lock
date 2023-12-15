@@ -666,7 +666,7 @@ GEM
     git (1.18.0)
       addressable (~> 2.8)
       rchardet (~> 1.8)
-    gitaly (16.5.0.pre.rc1)
+    gitaly (16.7.0.pre.rc1)
       grpc (~> 1.0)
     gitlab (4.19.0)
       httparty (~> 0.20)
@@ -1871,7 +1871,7 @@ DEPENDENCIES
   fuubar (~> 2.2.0)
   gettext (~> 3.3)
   gettext_i18n_rails (~> 1.11.0)
-  gitaly (~> 16.5.0.pre.rc1)
+  gitaly (~> 16.7.0.pre.rc1)
   gitlab-backup-cli!
   gitlab-chronic (~> 0.10.5)
   gitlab-dangerfiles (~> 4.6.0)

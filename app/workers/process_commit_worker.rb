@@ -42,6 +42,8 @@ class ProcessCommitWorker
     update_issue_metrics(commit, author)
   end
 
+  private
+
   def process_commit_message(project, commit, user, author, default = false)
     # Ignore closing references from GitLab-generated commit messages.
     find_closing_issues = default && !commit.merged_merge_request?(user)

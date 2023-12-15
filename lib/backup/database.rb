@@ -24,44 +24,37 @@ module Backup
     end
 
     override :dump
-    def dump(destination_dir, backup_id)
+    def dump(destination_dir, _)
       FileUtils.mkdir_p(destination_dir)
 
-      each_database(destination_dir) do |database_name, current_db|
-        model = current_db[:model]
-        snapshot_id = current_db[:snapshot_id]
+      each_database(destination_dir) do |backup_connection|
+        pg_env = backup_connection.database_configuration.pg_env_variables
+        active_record_config = backup_connection.database_configuration.activerecord_variables
+        pg_database_name = active_record_config[:database]
 
-        pg_env = model.config[:pg_env]
-        connection = model.connection
-        active_record_config = model.config[:activerecord]
-        pg_database = active_record_config[:database]
+        dump_file_name = file_name(destination_dir, backup_connection.connection_name)
+        FileUtils.rm_f(dump_file_name)
 
-        db_file_name = file_name(destination_dir, database_name)
-        FileUtils.rm_f(db_file_name)
+        progress.print "Dumping PostgreSQL database #{pg_database_name} ... "
 
-        progress.print "Dumping PostgreSQL database #{pg_database} ... "
-
-        pgsql_args = ["--clean"] # Pass '--clean' to include 'DROP TABLE' statements in the DB dump.
-        pgsql_args << '--if-exists'
-        pgsql_args << "--snapshot=#{snapshot_id}" if snapshot_id
+        schemas = []
 
         if Gitlab.config.backup.pg_schema
-          pgsql_args << '-n'
-          pgsql_args << Gitlab.config.backup.pg_schema
-
-          Gitlab::Database::EXTRA_SCHEMAS.each do |schema|
-            pgsql_args << '-n'
-            pgsql_args << schema.to_s
-          end
+          schemas << Gitlab.config.backup.pg_schema
+          schemas.push(*Gitlab::Database::EXTRA_SCHEMAS.map(&:to_s))
         end
 
-        success = with_transient_pg_env(pg_env) do
-          Backup::Dump::Postgres.new.dump(pg_database, db_file_name, pgsql_args)
-        end
+        pg_dump = ::Gitlab::Backup::Cli::Utils::PgDump.new(
+          database_name: pg_database_name,
+          snapshot_id: backup_connection.snapshot_id,
+          schemas: schemas,
+          env: pg_env)
 
-        connection.rollback_transaction if snapshot_id
+        success = Backup::Dump::Postgres.new.dump(dump_file_name, pg_dump)
 
-        raise DatabaseBackupError.new(active_record_config, db_file_name) unless success
+        backup_connection.release_snapshot! if backup_connection.snapshot_id
+
+        raise DatabaseBackupError.new(active_record_config, dump_file_name) unless success
 
         report_success(success)
         progress.flush
@@ -76,10 +69,10 @@ module Backup
 
     override :restore
     def restore(destination_dir, backup_id)
-      base_models_for_backup.each do |database_name, _base_model|
-        backup_model = Backup::DatabaseModel.new(database_name)
+      base_models_for_backup.each do |database_name, _|
+        backup_connection = Backup::DatabaseConnection.new(database_name)
 
-        config = backup_model.config[:activerecord]
+        config = backup_connection.database_configuration.activerecord_variables
 
         db_file_name = file_name(destination_dir, database_name)
         database = config[:database]
@@ -100,7 +93,7 @@ module Backup
         # hanging out from a failed upgrade
         drop_tables(database_name)
 
-        pg_env = backup_model.config[:pg_env]
+        pg_env = backup_connection.database_configuration.pg_env_variables
         success = with_transient_pg_env(pg_env) do
           decompress_rd, decompress_wr = IO.pipe
           decompress_pid = spawn(decompress_cmd, out: decompress_wr, in: db_file_name)
@@ -235,6 +228,7 @@ module Backup
       puts_time 'done'.color(:green)
     end
 
+    # @deprecated This will be removed when restore operation is refactored to use extended_env directly
     def with_transient_pg_env(extended_env)
       ENV.merge!(extended_env)
       result = yield
@@ -248,32 +242,36 @@ module Backup
     end
 
     def each_database(destination_dir, &block)
-      databases = {}
+      databases = []
+
+      # each connection will loop through all database connections defined in `database.yml`
+      # and reject the ones that are shared, so we don't get duplicates
+      #
+      # we consider a connection to be shared when it has `database_tasks: false`
       ::Gitlab::Database::EachDatabase.each_connection(
         only: base_models_for_backup.keys, include_shared: false
-      ) do |_connection, name|
-        next if databases[name]
+      ) do |_, database_connection_name|
+        backup_connection = Backup::DatabaseConnection.new(database_connection_name)
+        databases << backup_connection
 
-        backup_model = Backup::DatabaseModel.new(name)
-
-        databases[name] = {
-          model: backup_model
-        }
-
-        next unless Gitlab::Database.database_mode == Gitlab::Database::MODE_MULTIPLE_DATABASES
-
-        connection = backup_model.connection
+        next unless multiple_databases?
 
         begin
-          Gitlab::Database::TransactionTimeoutSettings.new(connection).disable_timeouts
-          connection.begin_transaction(isolation: :repeatable_read)
-          databases[name][:snapshot_id] = connection.select_value("SELECT pg_export_snapshot()")
+          # Trigger a transaction snapshot export that will be used by pg_dump later on
+          backup_connection.export_snapshot!
         rescue ActiveRecord::ConnectionNotEstablished
-          raise Backup::DatabaseBackupError.new(backup_model.config[:activerecord], file_name(destination_dir, name))
+          raise Backup::DatabaseBackupError.new(
+            backup_connection.database_configuration.activerecord_variables,
+            file_name(destination_dir, database_connection_name)
+          )
         end
       end
 
       databases.each(&block)
+    end
+
+    def multiple_databases?
+      Gitlab::Database.database_mode == Gitlab::Database::MODE_MULTIPLE_DATABASES
     end
   end
 end

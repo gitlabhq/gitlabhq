@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'profiles/keys/_form.html.haml' do
+RSpec.describe 'profiles/keys/_form.html.haml', feature_category: :system_access do
   include SshKeysHelper
 
   let_it_be(:key) { Key.new }
@@ -44,7 +44,7 @@ RSpec.describe 'profiles/keys/_form.html.haml' do
     end
 
     it 'has the validation warning', :aggregate_failures do
-      expect(rendered).to have_text("Oops, are you sure? Publicly visible private SSH keys can compromise your system.")
+      expect(rendered).to have_text("Are you sure? Publicly visible private SSH keys can compromise your system.")
       expect(rendered).to have_button('Yes, add it')
     end
 

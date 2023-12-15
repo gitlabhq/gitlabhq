@@ -2866,7 +2866,6 @@ Style/InlineDisableAnnotation:
     - 'spec/lib/api/base_spec.rb'
     - 'spec/lib/api/entities/wiki_page_spec.rb'
     - 'spec/lib/api/helpers/packages/npm_spec.rb'
-    - 'spec/lib/backup/database_model_spec.rb'
     - 'spec/lib/backup/database_spec.rb'
     - 'spec/lib/backup/manager_spec.rb'
     - 'spec/lib/banzai/filter/footnote_filter_spec.rb'

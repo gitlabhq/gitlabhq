@@ -25,12 +25,13 @@
           %p.form-text.text-muted= ssh_key_expires_field_description
 
     .js-add-ssh-key-validation-warning.hide
-      .bs-callout.bs-callout-warning.gl-mt-0{ role: 'alert', aria_live: 'assertive' }
-        %strong= _('Oops, are you sure?')
-        %p= s_("Profiles|Publicly visible private SSH keys can compromise your system.")
-      = render Pajamas::ButtonComponent.new(variant: :confirm,
-        button_options: { class: 'js-add-ssh-key-validation-confirm-submit' }) do
-        = _("Yes, add it")
+      = render Pajamas::AlertComponent.new(title: _('Are you sure?'), variant: :warning, dismissible: false) do |c|
+        - c.with_body do
+          = s_("Profiles|Publicly visible private SSH keys can compromise your system.")
+        - c.with_actions do
+          = render Pajamas::ButtonComponent.new(variant: :confirm,
+            button_options: { class: 'js-add-ssh-key-validation-confirm-submit' }) do
+            = _("Yes, add it")
 
     = f.submit s_('Profiles|Add key'), class: "js-add-ssh-key-validation-original-submit", pajamas_button: true, data: { testid: 'add-key-button' }
     = render Pajamas::ButtonComponent.new(button_options: { type: 'reset', class: 'js-add-ssh-key-validation-cancel gl-ml-2 js-toggle-button' }) do

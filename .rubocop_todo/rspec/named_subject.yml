@@ -1694,7 +1694,6 @@ RSpec/NamedSubject:
     - 'spec/lib/atlassian/jira_connect/serializers/repository_entity_spec.rb'
     - 'spec/lib/atlassian/jira_connect/serializers/reviewer_entity_spec.rb'
     - 'spec/lib/backup/database_backup_error_spec.rb'
-    - 'spec/lib/backup/database_model_spec.rb'
     - 'spec/lib/backup/database_spec.rb'
     - 'spec/lib/backup/dump/postgres_spec.rb'
     - 'spec/lib/backup/files_spec.rb'

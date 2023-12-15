@@ -2224,46 +2224,82 @@ RSpec.describe Repository, feature_category: :source_code_management do
     describe 'rolling back the `rebase_commit_sha`' do
       let(:new_sha) { Digest::SHA1.hexdigest('foo') }
 
-      it 'does not rollback when there are no errors' do
-        second_response = double(pre_receive_error: nil, git_error: nil)
-        mock_gitaly(second_response)
+      context 'when there are no errors' do
+        before do
+          responses = [
+            double(rebase_sha: new_sha).as_null_object,
+            double
+          ]
 
-        repository.rebase(user, merge_request)
+          expect_any_instance_of(
+            Gitaly::OperationService::Stub
+          ).to receive(:user_rebase_confirmable).and_return(responses.each)
+        end
 
-        expect(merge_request.reload.rebase_commit_sha).to eq(new_sha)
-      end
-
-      it 'does rollback when a PreReceiveError is encountered in the second step' do
-        second_response = double(pre_receive_error: 'my_error', git_error: nil)
-        mock_gitaly(second_response)
-
-        expect do
+        it 'does not rollback when there are no errors' do
           repository.rebase(user, merge_request)
-        end.to raise_error(Gitlab::Git::PreReceiveError)
 
-        expect(merge_request.reload.rebase_commit_sha).to be_nil
+          expect(merge_request.reload.rebase_commit_sha).to eq(new_sha)
+        end
       end
 
-      it 'does rollback when a GitError is encountered in the second step' do
-        second_response = double(pre_receive_error: nil, git_error: 'git error')
-        mock_gitaly(second_response)
+      context 'when there was an error' do
+        let(:first_response) do
+          double(rebase_sha: new_sha).as_null_object
+        end
 
-        expect do
-          repository.rebase(user, merge_request)
-        end.to raise_error(Gitlab::Git::Repository::GitError)
+        before do
+          request_enum = double(push: nil).as_null_object
+          allow(Gitlab::GitalyClient::QueueEnumerator).to receive(:new).and_return(request_enum)
 
-        expect(merge_request.reload.rebase_commit_sha).to be_nil
-      end
+          expect_any_instance_of(
+            Gitaly::OperationService::Stub
+          ).to receive(:user_rebase_confirmable).and_return(first_response)
 
-      def mock_gitaly(second_response)
-        responses = [
-          double(rebase_sha: new_sha).as_null_object,
-          second_response
-        ]
+          # Faking second request failure
+          allow(request_enum).to receive(:push)
+            .with(Gitaly::UserRebaseConfirmableRequest.new(apply: true)) { raise(error) }
+        end
 
-        expect_any_instance_of(
-          Gitaly::OperationService::Stub
-        ).to receive(:user_rebase_confirmable).and_return(responses.each)
+        context 'when a PreReceiveError is encountered in the second step' do
+          let(:error) do
+            new_detailed_error(
+              GRPC::Core::StatusCodes::INTERNAL,
+              'something failed',
+              Gitaly::UserRebaseConfirmableError.new(
+                access_check: Gitaly::AccessCheckError.new(
+                  error_message: 'something went wrong'
+                )))
+          end
+
+          it 'does rollback' do
+            expect do
+              repository.rebase(user, merge_request)
+            end.to raise_error(Gitlab::Git::PreReceiveError)
+
+            expect(merge_request.reload.rebase_commit_sha).to be_nil
+          end
+        end
+
+        context 'when a when a GitError is encountered in the second step' do
+          let(:error) do
+            new_detailed_error(
+              GRPC::Core::StatusCodes::INTERNAL,
+              'something failed',
+              Gitaly::UserSquashError.new(
+                rebase_conflict: Gitaly::MergeConflictError.new(
+                  conflicting_files: ['conflicting-file']
+                )))
+          end
+
+          it 'does rollback' do
+            expect do
+              repository.rebase(user, merge_request)
+            end.to raise_error(Gitlab::Git::Repository::GitError)
+
+            expect(merge_request.reload.rebase_commit_sha).to be_nil
+          end
+        end
       end
     end
   end

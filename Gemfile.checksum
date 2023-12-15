@@ -206,7 +206,7 @@
 {"name":"gettext","version":"3.4.9","platform":"ruby","checksum":"292864fe6a15c224cee4125a4a72fab426fdbb280e4cff3cfe44935f549b009a"},
 {"name":"gettext_i18n_rails","version":"1.11.0","platform":"ruby","checksum":"e19c7e4a256c500f7f38396dca44a282b9838ae278f57c362993a54964b22bbe"},
 {"name":"git","version":"1.18.0","platform":"ruby","checksum":"c9b80462e4565cd3d7a9ba8440c41d2c52244b17b0dad0bfddb46de70630c465"},
-{"name":"gitaly","version":"16.5.0.pre.rc1","platform":"ruby","checksum":"ed17515ad04d4663a0efc15c8f2887b705f006133e8b10cc9321460eb0a38353"},
+{"name":"gitaly","version":"16.7.0.pre.rc1","platform":"ruby","checksum":"cd2a2fbbde6bfb51fd09c4b0fded247150cc4bea36a0b44008921d77810311f7"},
 {"name":"gitlab","version":"4.19.0","platform":"ruby","checksum":"3f645e3e195dbc24f0834fbf83e8ccfb2056d8e9712b01a640aad418a6949679"},
 {"name":"gitlab-chronic","version":"0.10.5","platform":"ruby","checksum":"f80f18dc699b708870a80685243331290bc10cfeedb6b99c92219722f729c875"},
 {"name":"gitlab-dangerfiles","version":"4.6.0","platform":"ruby","checksum":"441b37b17d1dad36268517490a30aaf57e43dffb2e9ebc1da38d3bc9fa20741e"},

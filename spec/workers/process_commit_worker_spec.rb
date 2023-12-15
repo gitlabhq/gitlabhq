@@ -3,11 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
-  let(:worker) { described_class.new }
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
+
   let(:project) { create(:project, :public, :repository) }
   let(:issue) { create(:issue, project: project, author: user) }
   let(:commit) { project.commit }
+
+  let(:worker) { described_class.new }
 
   it "is deduplicated" do
     expect(described_class.get_deduplicate_strategy).to eq(:until_executed)
@@ -15,168 +17,172 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
   end
 
   describe '#perform' do
-    it 'does not process the commit when the project does not exist' do
-      expect(worker).not_to receive(:close_issues)
+    subject(:perform) { worker.perform(project_id, user_id, commit.to_hash, default) }
 
-      worker.perform(-1, user.id, commit.to_hash)
+    let(:project_id) { project.id }
+    let(:user_id) { user.id }
+
+    before do
+      allow(Commit).to receive(:build_from_sidekiq_hash).and_return(commit)
     end
 
-    it 'does not process the commit when the user does not exist' do
-      expect(worker).not_to receive(:close_issues)
-
-      worker.perform(project.id, -1, commit.to_hash)
-    end
-
-    include_examples 'an idempotent worker' do
-      subject do
-        perform_multiple([project.id, user.id, commit.to_hash], worker: worker)
-      end
-
-      it 'processes the commit message' do
-        expect(worker).to receive(:process_commit_message)
-          .exactly(IdempotentWorkerHelper::WORKER_EXEC_TIMES)
-          .and_call_original
-
-        subject
-      end
-
-      it 'updates the issue metrics' do
-        expect(worker).to receive(:update_issue_metrics)
-          .exactly(IdempotentWorkerHelper::WORKER_EXEC_TIMES)
-          .and_call_original
-
-        subject
-      end
-    end
-  end
-
-  describe '#process_commit_message' do
     context 'when pushing to the default branch' do
-      before do
-        allow(commit).to receive(:safe_message).and_return("Closes #{issue.to_reference}")
+      let(:default) { true }
+
+      context 'when project does not exist' do
+        let(:project_id) { -1 }
+
+        it 'does not close related issues' do
+          expect { perform }.to change { Issues::CloseWorker.jobs.size }.by(0)
+
+          perform
+        end
       end
 
-      it 'closes issues that should be closed per the commit message' do
-        expect(worker).to receive(:close_issues).with(project, user, user, commit, [issue])
+      context 'when user does not exist' do
+        let(:user_id) { -1 }
 
-        worker.process_commit_message(project, commit, user, user, true)
+        it 'does not close related issues' do
+          expect { perform }.not_to change { Issues::CloseWorker.jobs.size }
+
+          perform
+        end
       end
 
-      it 'creates cross references' do
-        expect(commit).to receive(:create_cross_references!).with(user, [issue])
+      include_examples 'an idempotent worker' do
+        before do
+          allow(commit).to receive(:safe_message).and_return("Closes #{issue.to_reference}")
+          issue.metrics.update!(first_mentioned_in_commit_at: nil)
+        end
 
-        worker.process_commit_message(project, commit, user, user, true)
+        subject do
+          perform_multiple([project.id, user.id, commit.to_hash], worker: worker)
+        end
+
+        it 'closes related issues' do
+          expect { perform }.to change { Issues::CloseWorker.jobs.size }.by(1)
+
+          subject
+        end
+      end
+
+      context 'when commit is not a merge request merge commit' do
+        context 'when commit has issue reference' do
+          before do
+            allow(commit).to receive(:safe_message).and_return("Closes #{issue.to_reference}")
+          end
+
+          it 'closes issues that should be closed per the commit message' do
+            expect { perform }.to change { Issues::CloseWorker.jobs.size }.by(1)
+          end
+
+          it 'creates cross references' do
+            expect(commit).to receive(:create_cross_references!).with(user, [issue])
+
+            perform
+          end
+
+          describe 'issue metrics', :clean_gitlab_redis_cache do
+            context 'when issue has no first_mentioned_in_commit_at set' do
+              before do
+                issue.metrics.update!(first_mentioned_in_commit_at: nil)
+              end
+
+              it 'updates issue metrics' do
+                expect { perform }.to change { issue.metrics.reload.first_mentioned_in_commit_at }
+                  .to(commit.committed_date)
+              end
+            end
+
+            context 'when issue has first_mentioned_in_commit_at earlier than given committed_date' do
+              before do
+                issue.metrics.update!(first_mentioned_in_commit_at: commit.committed_date - 1.day)
+              end
+
+              it "doesn't update issue metrics" do
+                expect { perform }.not_to change { issue.metrics.reload.first_mentioned_in_commit_at }
+              end
+            end
+
+            context 'when issue has first_mentioned_in_commit_at later than given committed_date' do
+              before do
+                issue.metrics.update!(first_mentioned_in_commit_at: commit.committed_date + 1.day)
+              end
+
+              it 'updates issue metrics' do
+                expect { perform }.to change { issue.metrics.reload.first_mentioned_in_commit_at }
+                  .to(commit.committed_date)
+              end
+            end
+          end
+        end
+
+        context 'when commit has no issue references' do
+          before do
+            allow(commit).to receive(:safe_message).and_return("Lorem Ipsum")
+          end
+
+          describe 'issue metrics' do
+            it "doesn't execute any queries with false conditions" do
+              expect { perform }.not_to make_queries_matching(/WHERE (?:1=0|0=1)/)
+            end
+          end
+        end
+      end
+
+      context 'when commit is a merge request merge commit' do
+        let(:merge_request) do
+          create(
+            :merge_request,
+            description: "Closes #{issue.to_reference}",
+            source_branch: 'feature-merged',
+            target_branch: 'master',
+            source_project: project
+          )
+        end
+
+        let(:commit) do
+          project.repository.create_branch('feature-merged', 'feature')
+          project.repository.after_create_branch
+
+          MergeRequests::MergeService
+            .new(project: project, current_user: merge_request.author, params: { sha: merge_request.diff_head_sha })
+            .execute(merge_request)
+
+          merge_request.reload.merge_commit
+        end
+
+        it 'does not close any issues from the commit message' do
+          expect { perform }.not_to change { Issues::CloseWorker.jobs.size }
+
+          perform
+        end
+
+        it 'still creates cross references' do
+          expect(commit).to receive(:create_cross_references!).with(commit.author, [])
+
+          perform
+        end
       end
     end
 
     context 'when pushing to a non-default branch' do
-      it 'does not close any issues' do
+      let(:default) { false }
+
+      before do
         allow(commit).to receive(:safe_message).and_return("Closes #{issue.to_reference}")
-
-        expect(worker).not_to receive(:close_issues)
-
-        worker.process_commit_message(project, commit, user, user, false)
-      end
-
-      it 'does not create cross references' do
-        expect(commit).to receive(:create_cross_references!).with(user, [])
-
-        worker.process_commit_message(project, commit, user, user, false)
-      end
-    end
-
-    context 'when commit is a merge request merge commit to the default branch' do
-      let(:merge_request) do
-        create(
-          :merge_request,
-          description: "Closes #{issue.to_reference}",
-          source_branch: 'feature-merged',
-          target_branch: 'master',
-          source_project: project
-        )
-      end
-
-      let(:commit) do
-        project.repository.create_branch('feature-merged', 'feature')
-        project.repository.after_create_branch
-
-        MergeRequests::MergeService
-          .new(project: project, current_user: merge_request.author, params: { sha: merge_request.diff_head_sha })
-          .execute(merge_request)
-
-        merge_request.reload.merge_commit
       end
 
       it 'does not close any issues from the commit message' do
-        expect(worker).not_to receive(:close_issues)
+        expect { perform }.not_to change { Issues::CloseWorker.jobs.size }
 
-        worker.process_commit_message(project, commit, user, user, true)
+        perform
       end
 
       it 'still creates cross references' do
         expect(commit).to receive(:create_cross_references!).with(user, [])
 
-        worker.process_commit_message(project, commit, user, user, true)
-      end
-    end
-  end
-
-  describe '#close_issues' do
-    it 'creates Issue::CloseWorker jobs' do
-      expect do
-        worker.close_issues(project, user, user, commit, [issue])
-      end.to change { Issues::CloseWorker.jobs.size }.by(1)
-    end
-  end
-
-  describe '#update_issue_metrics', :clean_gitlab_redis_cache do
-    context 'when commit has issue reference' do
-      subject(:update_metrics_and_reload) do
-        -> {
-          worker.update_issue_metrics(commit, user)
-          issue.metrics.reload
-        }
-      end
-
-      before do
-        allow(commit).to receive(:safe_message).and_return("Closes #{issue.to_reference}")
-      end
-
-      context 'when issue has no first_mentioned_in_commit_at set' do
-        it 'updates issue metrics' do
-          expect { update_metrics_and_reload.call }
-            .to change { issue.metrics.first_mentioned_in_commit_at }.to(commit.committed_date)
-        end
-      end
-
-      context 'when issue has first_mentioned_in_commit_at earlier than given committed_date' do
-        before do
-          issue.metrics.update!(first_mentioned_in_commit_at: commit.committed_date - 1.day)
-        end
-
-        it "doesn't update issue metrics" do
-          expect {  update_metrics_and_reload.call }.not_to change { issue.metrics.first_mentioned_in_commit_at }
-        end
-      end
-
-      context 'when issue has first_mentioned_in_commit_at later than given committed_date' do
-        before do
-          issue.metrics.update!(first_mentioned_in_commit_at: commit.committed_date + 1.day)
-        end
-
-        it "doesn't update issue metrics" do
-          expect { update_metrics_and_reload.call }
-            .to change { issue.metrics.first_mentioned_in_commit_at }.to(commit.committed_date)
-        end
-      end
-    end
-
-    context 'when commit has no issue references' do
-      it "doesn't execute any queries with false conditions" do
-        allow(commit).to receive(:safe_message).and_return("Lorem Ipsum")
-
-        expect { worker.update_issue_metrics(commit, user) }
-          .not_to make_queries_matching(/WHERE (?:1=0|0=1)/)
+        perform
       end
     end
   end
