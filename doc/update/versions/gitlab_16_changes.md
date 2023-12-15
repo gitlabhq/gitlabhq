@@ -31,6 +31,21 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   - [Praefect configuration structure change](#praefect-configuration-structure-change).
   - [Gitaly configuration structure change](#gitaly-configuration-structure-change).
 
+## 16.7.0
+
+### Linux package installations
+
+Specific information applies to Linux package installations:
+
+- As of GitLab 16.7, PostgreSQL 14 is the default version installed with the Linux package.
+  During a package upgrade, the database isn't upgraded to PostgreSQL 14.
+  If you want to upgrade to PostgreSQL 14, [you must do it manually](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
+
+  PostgreSQL 14 isn't supported on Geo deployments and is [planned](https://gitlab.com/groups/gitlab-org/-/epics/9065)
+  for future releases.
+
+  If you want to use PostgreSQL 13, you must set `postgresql['version'] = 13` in `/etc/gitlab/gitlab.rb`.
+
 ## 16.6.0
 
 - Old [CI Environment destroy jobs may be spawned](https://gitlab.com/gitlab-org/gitlab/-/issues/433264#) after upgrading to GitLab 16.6.

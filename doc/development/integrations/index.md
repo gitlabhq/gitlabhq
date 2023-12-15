@@ -63,12 +63,36 @@ You should always access the fields through their `getters` and not interact wit
 You **must not** write to the `properties` hash, you **must** use the generated setter method instead. Direct writes to this
 hash are not persisted.
 
-You should also define validations for all your properties.
 To see how these fields are exposed in the frontend form for the integration,
 see [Customize the frontend form](#customize-the-frontend-form).
 
 Other approaches include using `Integration.prop_accessor` or `Integration.data_field`, which you might see in earlier versions of integrations.
 You should not use these approaches for new integrations.
+
+### Define validations
+
+You should define Rails validations for all of your fields.
+
+Validations should only apply when the integration is enabled, by testing the `#activated?` method.
+
+Any field with the [`required:` property](#customize-the-frontend-form) should have a
+corresponding validation for `presence`, as the `required:` field property is only for the frontend.
+
+For example:
+
+```ruby
+module Integrations
+  class FooBar < Integration
+    with_options if: :activated? do
+      validates :key, presence: true, format: { with: KEY_REGEX }
+      validates :bar, inclusion: [true, false]
+    end
+
+    field :key, required: true
+    field :bar, type: :checkbox
+  end
+end
+```
 
 ### Define trigger events
 
@@ -194,7 +218,7 @@ This method should return an array of hashes for each field, where the keys can 
 |:---------------|:--------|:---------|:-----------------------------|:--
 | `type:`        | symbol  | true     | `:text`                      | The type of the form field. Can be `:text`, `:textarea`, `:password`, `:checkbox`, or `:select`.
 | `name:`        | string  | true     |                              | The property name for the form field.
-| `required:`    | boolean | false    | `false`                      | Specify if the form field is required or optional.
+| `required:`    | boolean | false    | `false`                      | Specify if the form field is required or optional. Note [backend validations](#define-validations) for presence are still needed.
 | `title:`       | string  | false    | Capitalized value of `name:` | The label for the form field.
 | `placeholder:` | string  | false    |                              | A placeholder for the form field.
 | `help:`        | string  | false    |                              | A help text that displays below the form field.

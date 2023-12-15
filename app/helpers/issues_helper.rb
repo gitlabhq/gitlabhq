@@ -166,8 +166,18 @@ module IssuesHelper
       jira_integration_path: help_page_url('integration/jira/issues', anchor: 'view-jira-issues'),
       rss_path: url_for(safe_params.merge(rss_url_options)),
       sign_in_path: new_user_session_path,
-      has_issue_date_filter_feature: Feature.enabled?(:issue_date_filter, current_user).to_s
+      has_issue_date_filter_feature: has_issue_date_filter_feature?(namespace, current_user).to_s
     }
+  end
+
+  def has_issue_date_filter_feature?(namespace, current_user)
+    enabled_for_user = Feature.enabled?(:issue_date_filter, current_user)
+    return true if enabled_for_user
+
+    enabled_for_group = Feature.enabled?(:issue_date_filter, namespace.group) if namespace.respond_to?(:group)
+    return true if enabled_for_group
+
+    Feature.enabled?(:issue_date_filter, namespace)
   end
 
   def project_issues_list_data(project, current_user)

@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe IssuesHelper, feature_category: :team_planning do
   include Features::MergeRequestHelpers
 
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project) }
   let_it_be_with_reload(:issue) { create(:issue, project: project) }
 
@@ -47,7 +49,6 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
   describe '#award_state_class' do
     let!(:upvote) { create(:award_emoji) }
     let(:awardable) { upvote.awardable }
-    let(:user) { upvote.user }
 
     before do
       allow(helper).to receive(:can?) do |*args|
@@ -264,7 +265,6 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
   end
 
   describe '#group_issues_list_data' do
-    let(:group) { create(:group) }
     let(:current_user) { double.as_null_object }
 
     it 'returns expected result' do
@@ -432,6 +432,98 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
 
       it 'returns `nil`' do
         expect(helper.hidden_issue_icon(resource)).to be_nil
+      end
+    end
+  end
+
+  describe '#has_issue_date_filter_feature?' do
+    subject(:has_issue_date_filter_feature) { helper.has_issue_date_filter_feature?(namespace, namespace.owner) }
+
+    context 'when namespace is a group project' do
+      let_it_be(:namespace) { create(:project, namespace: group) }
+
+      it { is_expected.to be_truthy }
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(issue_date_filter: false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when feature flag enabled for group' do
+        before do
+          stub_feature_flags(issue_date_filter: [group])
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when feature flag enabled for user' do
+        before do
+          stub_feature_flags(issue_date_filter: [namespace.owner])
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when namespace is a group' do
+      let_it_be(:namespace) { group }
+
+      subject(:has_issue_date_filter_feature) { helper.has_issue_date_filter_feature?(namespace, user) }
+
+      before_all do
+        namespace.add_reporter(user)
+      end
+
+      it { is_expected.to be_truthy }
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(issue_date_filter: false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when feature flag enabled for group' do
+        before do
+          stub_feature_flags(issue_date_filter: [group])
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when feature flag enabled for user' do
+        before do
+          stub_feature_flags(issue_date_filter: [user])
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when namespace is a user project' do
+      let_it_be(:namespace) { project }
+
+      it { is_expected.to be_truthy }
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(issue_date_filter: false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when feature flag enabled for user' do
+        before do
+          stub_feature_flags(issue_date_filter: [project.owner])
+        end
+
+        it { is_expected.to be_truthy }
       end
     end
   end

@@ -168,6 +168,8 @@ If this applies to you, we strongly recommended referring to the linked document
 Testing is done regularly via our [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance) and its dataset, which is available for anyone to use.
 The results of this testing are [available publicly on the GPT wiki](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest). For more information on our testing strategy [refer to this section of the documentation](index.md#validation-and-test-results).
 
+The load balancers used for testing were HAProxy for Linux package environments or equivalent Cloud Provider services via NGINX Ingress for Cloud Native Hybrids. Note that these selections do not represent a specific requirement or recommendation as most [reputable load balancers are expected to work](#configure-the-external-load-balancer).
+
 ## Setup components
 
 To set up GitLab and its components to accommodate up to 10,000 users:
@@ -234,16 +236,12 @@ The following list includes descriptions of each server and its assigned IP:
 ## Configure the external load balancer
 
 In a multi-node GitLab configuration, you'll need a load balancer to route
-traffic to the application servers. The specifics on which load balancer to use
-or its exact configuration is beyond the scope of GitLab documentation. We assume
-that if you're managing multi-node systems like GitLab, you already have a load
-balancer of choice. Some load balancer examples include HAProxy (open-source),
-F5 Big-IP LTM, and Citrix Net Scaler. This documentation outline the ports and
-protocols needed for use with GitLab.
+traffic to the application servers.
 
-This architecture has been tested and validated with [HAProxy](https://www.haproxy.org/)
-as the load balancer. Although other load balancers with similar feature sets
-could also be used, those load balancers have not been validated.
+The specifics on which load balancer to use, or its exact configuration
+is beyond the scope of GitLab documentation. It is expected however that any
+reputable load balancer should work and as such this section will focus on the specifics of
+what to configure for your load balancer of choice.
 
 ### Balancing algorithm
 

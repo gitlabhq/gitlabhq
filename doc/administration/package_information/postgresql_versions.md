@@ -31,6 +31,7 @@ Read more about update policies and warnings in the PostgreSQL
 
 | First GitLab version | PostgreSQL versions | Default version for fresh installs | Default version for upgrades | Notes |
 | -------------- | ------------------- | ---------------------------------- | ---------------------------- | ----- |
+| 16.7.0 | 13.12, 14.9 | 14.9 | 14.9 | |
 | 16.4.3, 16.5.3, 16.6.1 | 13.12, 14.9 | 13.12 | 13.12 | For upgrades, you can manually upgrade to 14.9 following the [upgrade documentation](../../update/versions/gitlab_16_changes.md#linux-package-installations-2). |
 | 16.2.0 | 13.11, 14.8 | 13.11 | 13.11 | For upgrades, you can manually upgrade to 14.8 following the [upgrade documentation](../../update/versions/gitlab_16_changes.md#linux-package-installations-2). |
 | 16.0.2 | 13.11 | 13.11 | 13.11 | |

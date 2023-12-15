@@ -15,7 +15,7 @@ prior.
 To access the chart:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Analyze > Issue analytics**.
+1. Select **Analyze > Issue analytics**.
 
 You can also access the chart from the [Value Streams Dashboard](../../analytics/value_streams_dashboard.md) through the **New issues** drill-down report.
 

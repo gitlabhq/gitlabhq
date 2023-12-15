@@ -115,6 +115,11 @@ export default {
       required: false,
       default: false,
     },
+    codequalityReportAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     endpointCodequality: {
       type: String,
       required: false,
@@ -158,22 +163,23 @@ export default {
         return { fullPath: this.projectPath, iid: this.iid };
       },
       skip() {
-        const codeQualityBoolean = Boolean(this.endpointCodequality);
-
         if (this.hasScannerError) {
           return true;
         }
 
-        return !this.sastReportsInInlineDiff || (!codeQualityBoolean && !this.sastReportAvailable);
+        return (
+          !this.sastReportsInInlineDiff ||
+          (!this.codequalityReportAvailable && !this.sastReportAvailable)
+        );
       },
       update(data) {
-        const codeQualityBoolean = Boolean(this.endpointCodequality);
         const { codequalityReportsComparer, sastReport } = data?.project?.mergeRequest || {};
 
         this.activeProject = data?.project?.mergeRequest?.project;
         if (
           (sastReport?.status === FINDINGS_STATUS_PARSED || !this.sastReportAvailable) &&
-          (!codeQualityBoolean || codequalityReportsComparer.status === FINDINGS_STATUS_PARSED)
+          (!this.codequalityReportAvailable ||
+            codequalityReportsComparer.status === FINDINGS_STATUS_PARSED)
         ) {
           this.$apollo.queries.getMRCodequalityAndSecurityReports.stopPolling();
         }

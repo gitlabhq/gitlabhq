@@ -231,7 +231,7 @@ To disable group mentions:
 You can export a list of members in a group or subgroup as a CSV.
 
 1. On the left sidebar, select **Search or go to** and find your group or subgroup.
-1. On the left sidebar,  **Manage > Members**.
+1. Select  **Manage > Members**.
 1. Select **Export as CSV**.
 1. After the CSV file has been generated, it is emailed as an attachment to the user that requested it.
 
@@ -304,7 +304,7 @@ Prerequisites:
 To approve members that are pending because they've exceeded the user cap:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Settings > Usage Quotas**.
+1. Select **Settings > Usage Quotas**.
 1. On the **Seats** tab, under the alert, select **View pending approvals**.
 1. For each member you want to approve, select **Approve**.
 
@@ -509,7 +509,7 @@ Changes to [group wikis](../project/wiki/group.md) do not appear in group activi
 You can view the most recent actions taken in a group, either in your browser or in an RSS feed:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Manage > Activity**.
+1. Select **Manage > Activity**.
 
 To view the activity feed in Atom format, select the
 **RSS** (**{rss}**) icon.

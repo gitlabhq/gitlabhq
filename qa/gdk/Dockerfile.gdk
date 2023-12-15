@@ -5,7 +5,7 @@ ENV GITLAB_LICENSE_MODE=test \
 
 # Clone GDK at specific sha and bootstrap packages
 #
-ARG GDK_SHA=a9866e456270dd01dd3bf586bf9aaf0d15957992
+ARG GDK_SHA=768deeebc94e37ba103dfec8102e794ba0f22c4e
 RUN set -eux; \
     git clone --depth 1 https://gitlab.com/gitlab-org/gitlab-development-kit.git && cd gitlab-development-kit; \
     git fetch --depth 1 origin ${GDK_SHA} && git -c advice.detachedHead=false checkout ${GDK_SHA}; \
