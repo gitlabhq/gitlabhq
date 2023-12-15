@@ -3717,5 +3717,40 @@ export const updateWorkItemNotificationsMutationResponse = (subscribed) => ({
   },
 });
 
+export const allowedChildrenTypesResponse = {
+  data: {
+    workItem: {
+      id: 'gid://gitlab/WorkItem/634',
+      workItemType: {
+        id: 'gid://gitlab/WorkItems::Type/6',
+        name: 'Objective',
+        widgetDefinitions: [
+          {
+            type: 'HIERARCHY',
+            allowedChildTypes: {
+              nodes: [
+                {
+                  id: 'gid://gitlab/WorkItems::Type/7',
+                  name: 'Key Result',
+                  __typename: 'WorkItemType',
+                },
+                {
+                  id: 'gid://gitlab/WorkItems::Type/6',
+                  name: 'Objective',
+                  __typename: 'WorkItemType',
+                },
+              ],
+              __typename: 'WorkItemTypeConnection',
+            },
+            __typename: 'WorkItemWidgetDefinitionHierarchy',
+          },
+        ],
+        __typename: 'WorkItemType',
+      },
+      __typename: 'WorkItem',
+    },
+  },
+};
+
 export const generateWorkItemsListWithId = (count) =>
   Array.from({ length: count }, (_, i) => ({ id: `gid://gitlab/WorkItem/${i + 1}` }));

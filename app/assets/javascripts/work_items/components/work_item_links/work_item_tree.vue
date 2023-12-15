@@ -1,15 +1,20 @@
 <script>
 import { GlToggle } from '@gitlab/ui';
+import { sprintf, s__ } from '~/locale';
 import {
   FORM_TYPES,
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEMS_TREE_TEXT_MAP,
+  WORK_ITEM_TYPE_VALUE_MAP,
+  WORK_ITEMS_TYPE_MAP,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
   I18N_WORK_ITEM_SHOW_LABELS,
 } from '../../constants';
+import { findHierarchyWidgetDefinition } from '../../utils';
+import getAllowedWorkItemChildTypes from '../../graphql/work_item_allowed_children.query.graphql';
 import WidgetWrapper from '../widget_wrapper.vue';
-import OkrActionsSplitButton from './okr_actions_split_button.vue';
+import WorkItemActionsSplitButton from './work_item_actions_split_button.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
 import WorkItemChildrenWrapper from './work_item_children_wrapper.vue';
 
@@ -19,7 +24,7 @@ export default {
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
   components: {
-    OkrActionsSplitButton,
+    WorkItemActionsSplitButton,
     WidgetWrapper,
     WorkItemLinksForm,
     WorkItemChildrenWrapper,
@@ -72,7 +77,22 @@ export default {
       childType: null,
       widgetName: 'tasks',
       showLabels: true,
+      allowedChildrenTypes: [],
     };
+  },
+  apollo: {
+    allowedChildrenTypes: {
+      query: getAllowedWorkItemChildTypes,
+      variables() {
+        return {
+          id: this.workItemId,
+        };
+      },
+      update(data) {
+        return findHierarchyWidgetDefinition(data.workItem.workItemType.widgetDefinitions)
+          .allowedChildTypes.nodes;
+      },
+    },
   },
   computed: {
     childrenIds() {
@@ -85,8 +105,37 @@ export default {
         )
         .some((hierarchy) => hierarchy.hasChildren);
     },
+    addItemsActions() {
+      const reorderedChildTypes = this.allowedChildrenTypes
+        .slice()
+        .sort((a, b) => a.id.localeCompare(b.id));
+      return reorderedChildTypes.map((type) => {
+        const enumType = WORK_ITEM_TYPE_VALUE_MAP[type.name];
+        return {
+          name: WORK_ITEMS_TYPE_MAP[enumType].name,
+          items: this.genericActionItems(type.name).map((item) => ({
+            text: item.title,
+            action: item.action,
+          })),
+        };
+      });
+    },
   },
   methods: {
+    genericActionItems(workItem) {
+      const enumType = WORK_ITEM_TYPE_VALUE_MAP[workItem];
+      const workItemName = WORK_ITEMS_TYPE_MAP[enumType].name.toLowerCase();
+      return [
+        {
+          title: sprintf(s__('WorkItem|New %{workItemName}'), { workItemName }),
+          action: () => this.showAddForm(FORM_TYPES.create, enumType),
+        },
+        {
+          title: sprintf(s__('WorkItem|Existing %{workItemName}'), { workItemName }),
+          action: () => this.showAddForm(FORM_TYPES.add, enumType),
+        },
+      ];
+    },
     showAddForm(formType, childType) {
       this.$refs.wrapper.show();
       this.isShownAddForm = true;
@@ -129,21 +178,7 @@ export default {
         label-id="relationship-toggle-labels"
         @change="showLabels = $event"
       />
-      <okr-actions-split-button
-        v-if="canUpdate"
-        @showCreateObjectiveForm="
-          showAddForm($options.FORM_TYPES.create, $options.WORK_ITEM_TYPE_ENUM_OBJECTIVE)
-        "
-        @showAddObjectiveForm="
-          showAddForm($options.FORM_TYPES.add, $options.WORK_ITEM_TYPE_ENUM_OBJECTIVE)
-        "
-        @showCreateKeyResultForm="
-          showAddForm($options.FORM_TYPES.create, $options.WORK_ITEM_TYPE_ENUM_KEY_RESULT)
-        "
-        @showAddKeyResultForm="
-          showAddForm($options.FORM_TYPES.add, $options.WORK_ITEM_TYPE_ENUM_KEY_RESULT)
-        "
-      />
+      <work-item-actions-split-button v-if="canUpdate" :actions="addItemsActions" />
     </template>
     <template #body>
       <div class="gl-new-card-content">

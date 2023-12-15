@@ -192,6 +192,11 @@ export const WORK_ITEMS_TYPE_MAP = {
   },
 };
 
+export const WORK_ITEM_TYPE_VALUE_MAP = {
+  [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: WORK_ITEM_TYPE_ENUM_OBJECTIVE,
+  [WORK_ITEM_TYPE_VALUE_KEY_RESULT]: WORK_ITEM_TYPE_ENUM_KEY_RESULT,
+};
+
 export const WORK_ITEMS_TREE_TEXT_MAP = {
   [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: {
     title: s__('WorkItem|Child objectives and key results'),

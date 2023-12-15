@@ -22,7 +22,7 @@ information, see [Restricted actions](#restricted-actions).
 To restore a namespace to its standard state, you can:
 
 - For exceeded free user limits:
-  - [Reduce the number of members](free_user_limit.md#manage-members-in-your-namespace) in your namespace.
+  - [Reduce the number of members](free_user_limit.md#manage-members-in-your-group-namespace) in your namespace.
   - [Start a free trial](https://gitlab.com/-/trial_registrations/new), which includes an unlimited number of members.
   - [Purchase a paid tier](https://about.gitlab.com/pricing/).
 - For exceeded storage quota:

@@ -111,7 +111,9 @@ export default {
     items() {
       this.selectedIndex = this.shouldSelectFirstItem ? 0 : -1;
     },
-    selectedIndex() {
+    async selectedIndex() {
+      // wait for the DOM to update before scrolling
+      await this.$nextTick();
       this.scrollIntoView();
     },
   },

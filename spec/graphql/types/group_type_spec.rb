@@ -16,7 +16,6 @@ RSpec.describe GitlabSchema.types['Group'] do
       id name path full_name full_path description description_html visibility
       lfs_enabled request_access_enabled projects root_storage_statistics
       web_url avatar_url share_with_group_lock project_creation_level
-      descendant_groups_count group_members_count projects_count
       subgroup_creation_level require_two_factor_authentication
       two_factor_grace_period auto_devops_enabled emails_disabled
       mentions_disabled parent boards milestones group_members
@@ -124,72 +123,6 @@ RSpec.describe GitlabSchema.types['Group'] do
       create_list(:milestone, 2, group: subgroup)
 
       expect { clean_state_query }.not_to exceed_all_query_limit(control)
-    end
-  end
-
-  shared_examples 'avoids N+1 queries on group field' do
-    let(:query) { graphql_query_for(:organization, { id: organization.to_global_id }, organization_fields) }
-    let(:current_user) { user }
-    let(:groups) { graphql_data_at(:organization, :groups, :nodes) }
-    let(:organization_fields) do
-      <<~FIELDS
-      id
-      path
-      groups {
-        nodes {
-          id
-          #{group_field}
-        }
-      }
-      FIELDS
-    end
-
-    let_it_be(:organization_user) { create(:organization_user) }
-    let_it_be(:organization) { organization_user.organization }
-    let_it_be(:user) { organization_user.user }
-    let_it_be(:group) { create(:group, organization: organization) }
-    let_it_be(:group2) { create(:group, organization: organization) }
-
-    before_all do
-      group.add_developer(user)
-      create(:group, parent: group, organization: organization)
-      create(:project, group: group, organization: organization)
-    end
-
-    def run_query
-      run_with_clean_state(query, context: { current_user: current_user })
-    end
-
-    def add_associations
-      group2.add_developer(user)
-      create(:group, parent: group2, organization: organization)
-      create(:project, group: group2, organization: organization)
-    end
-
-    it 'avoids N+1 queries' do
-      base_query_count = ActiveRecord::QueryRecorder.new { run_query }.count
-
-      add_associations
-
-      expect { run_query }.not_to exceed_all_query_limit(base_query_count + 1) # +1 for SAMLProvider Load
-    end
-  end
-
-  describe 'descendant_groups_count' do
-    it_behaves_like 'avoids N+1 queries on group field' do
-      let(:group_field) { 'descendantGroupsCount' }
-    end
-  end
-
-  describe 'projects_count' do
-    it_behaves_like 'avoids N+1 queries on group field' do
-      let(:group_field) { 'projectsCount' }
-    end
-  end
-
-  describe 'group_members_count' do
-    it_behaves_like 'avoids N+1 queries on group field' do
-      let(:group_field) { 'groupMembersCount' }
     end
   end
 

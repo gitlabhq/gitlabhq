@@ -36,6 +36,9 @@ export const formatAncestors = (workItem) =>
     href: ancestor.webUrl,
   }));
 
+export const findHierarchyWidgetDefinition = (widgetDefinitions) =>
+  widgetDefinitions?.find((widgetDefinition) => widgetDefinition.type === WIDGET_TYPE_HIERARCHY);
+
 const autocompleteSourcesPath = (autocompleteType, fullPath, workItemIid) => {
   return `${
     gon.relative_url_root || ''

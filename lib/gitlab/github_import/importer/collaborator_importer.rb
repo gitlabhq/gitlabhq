@@ -53,6 +53,7 @@ module Gitlab
 
         def create_membership!(user_id, access_level)
           ::ProjectMember.create!(
+            importing: true,
             source: project,
             access_level: access_level,
             user_id: user_id,

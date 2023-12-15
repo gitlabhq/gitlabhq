@@ -21,6 +21,7 @@ module Gitlab
             return unless milestone
 
             attrs = {
+              importing: true,
               user_id: author_id(issue_event),
               created_at: issue_event.created_at,
               milestone_id: milestone.id,

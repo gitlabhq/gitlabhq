@@ -63,7 +63,7 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
   const dropzone = $formDropzone.dropzone({
     url: uploadsPath,
     dictDefaultMessage: '',
-    clickable: document.querySelector('[data-button-type="attach-file"]') ?? true,
+    clickable: form.get(0).querySelector('[data-button-type="attach-file"]') ?? true,
     paramName: 'file',
     maxFilesize: maxFileSize,
     uploadMultiple: false,

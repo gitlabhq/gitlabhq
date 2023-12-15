@@ -79,6 +79,50 @@ To disable fetching:
 - If the module name or its prefix is in `GONOPRIVATE` or `GONOSUMDB`, Go does not query
   Checksum databases.
 
+## Authenticate Git requests to private subgroups
+
+If the Go module is located under a private subgroup like
+`gitlab.com/namespace/subgroup/go-module`, then the Git authentication doesn't work.
+It happens, because `go get` makes an unauthenticated request to discover
+the repository path.
+Without an HTTP authentication via `.netrc` file, GitLab responds with
+`gitlab.com/namespace/subgroup.git` to prevent a security risk of exposing
+the project's existence for unauthenticated users.
+As a result, the Go module cannot be downloaded.
+
+Unfortunately, Go doesn't provide any means of request authentication apart
+from `.netrc`. In a future version, Go may add support for arbitrary
+authentication headers.
+Follow [`golang/go#26232`](https://github.com/golang/go/issues/26232) for details.
+
+### Workaround: use `.git` in the module name
+
+There is a way to skip `go get` request and force Go to use a Git authentication
+directly, but it requires a modification of the module name.
+
+<!-- markdownlint-disable proper-names -->
+
+> If the module path has a VCS qualifier (one of .bzr, .fossil, .git, .hg, .svn)
+> at the end of a path component, the go command will use everything up to that
+> path qualifier as the repository URL. For example, for the module
+> example.com/foo.git/bar, the go command downloads the repository
+> at example.com/foo.git using git, expecting to find the module
+> in the bar subdirectory.
+
+<!-- markdownlint-enable proper-names -->
+
+[From Go documentation](https://go.dev/ref/mod#vcs-find)
+
+1. Go to `go.mod` of the Go module in a private subgroup.
+1. Add `.git` to the module name.
+   For example, rename`module gitlab.com/namespace/subgroup/go-module` to `module gitlab.com/namespace/subgroup/go-module.git`.
+1. Commit and push this change.
+1. Visit Go projects that depend on this module and adjust their `import` calls.
+   For example, `import gitlab.com/namespace/subgroup/go-module.git`.
+
+The Go module should be correctly fetched after this change.
+For example, `GOPRIVATE=gitlab.com/namespace/* go mod tidy`.
+
 ## Fetch Go modules from Geo secondary sites
 
 Use [Geo](../../administration/geo/index.md) to access Git repositories that contain Go modules

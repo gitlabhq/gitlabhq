@@ -3168,48 +3168,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
-  describe '.descendant_groups_counts' do
-    let_it_be(:parent) { create(:group) }
-    let_it_be(:group) { create(:group, parent: parent) }
-    let_it_be(:project) { create(:project, namespace: parent) }
-
-    subject(:descendant_groups_counts) { described_class.id_in(parent).descendant_groups_counts }
-
-    it 'return a hash of group id and descendant groups count without projects' do
-      expect(descendant_groups_counts).to eq({ parent.id => 1 })
-    end
-  end
-
-  describe '.projects_counts' do
-    let_it_be(:parent) { create(:group) }
-    let_it_be(:group) { create(:group, parent: parent) }
-    let_it_be(:project) { create(:project, namespace: parent) }
-    let_it_be(:archived_project) { create(:project, :archived, namespace: parent) }
-
-    subject(:projects_counts) { described_class.id_in(parent).projects_counts }
-
-    it 'return a hash of group id and projects count without counting archived projects' do
-      expect(projects_counts).to eq({ parent.id => 1 })
-    end
-  end
-
-  describe '.group_members_counts' do
-    let_it_be(:parent) { create(:group) }
-    let_it_be(:group) { create(:group, parent: parent) }
-
-    before_all do
-      create(:group_member, group: parent)
-      create(:group_member, group: parent, requested_at: Time.current)
-      create(:group_member, group: group)
-    end
-
-    subject(:group_members_counts) { described_class.id_in(parent).group_members_counts }
-
-    it 'return a hash of group id and approved direct group members' do
-      expect(group_members_counts).to eq({ parent.id => 1 })
-    end
-  end
-
   describe '#shared_with_group_links_visible_to_user' do
     let_it_be(:admin) { create :admin }
     let_it_be(:normal_user) { create :user }

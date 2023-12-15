@@ -190,14 +190,6 @@ export default {
         })
         .catch(() => {});
     },
-    handleAttachFile(e) {
-      e.preventDefault();
-      const $gfmForm = $(this.$el).closest('.gfm-form');
-      const $gfmTextarea = $gfmForm.find('.js-gfm-input');
-
-      $gfmForm.find('.div-dropzone').click();
-      $gfmTextarea.focus();
-    },
     insertIntoTextarea(text) {
       const textArea = this.$el.closest('.md-area')?.querySelector('textarea');
       if (textArea) {
@@ -490,6 +482,10 @@ export default {
             icon="table"
             tracking-property="table"
           />
+          <!--
+            The attach file button's click behavior is added by
+            dropzone_input.js.
+          -->
           <toolbar-button
             v-if="!previewMarkdown && !restrictedToolBarItems.includes('attach-file')"
             data-testid="button-attach-file"
@@ -498,7 +494,6 @@ export default {
             icon="paperclip"
             class="gl-mr-2"
             tracking-property="upload"
-            @click="handleAttachFile"
           />
           <drawio-toolbar-button
             v-if="!previewMarkdown && drawioEnabled"

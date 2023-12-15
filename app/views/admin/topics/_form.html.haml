@@ -31,8 +31,7 @@
   .form-group.gl-mt-3.gl-mb-3
     = f.label :avatar, _('Topic avatar'), class: 'gl-display-block'
     - if @topic.avatar?
-      .avatar-container.rect-avatar.s90
-        = topic_icon(@topic, alt: _('Topic avatar'), class: 'avatar topic-avatar s90')
+      = render Pajamas::AvatarComponent.new(@topic, alt: _('Topic avatar'), class: 'gl-float-left gl-mr-5', size: 96)
     = render 'shared/choose_avatar_button', f: f
     - if @topic.avatar?
       .js-remove-topic-avatar{ data: { path: admin_topic_avatar_path(@topic), name: @topic.name } }

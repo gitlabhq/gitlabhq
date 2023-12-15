@@ -38,7 +38,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to have_many(:namespace_commit_emails).class_name('Users::NamespaceCommitEmail') }
     it { is_expected.to have_many(:cycle_analytics_stages) }
     it { is_expected.to have_many(:value_streams) }
-    it { is_expected.to have_many(:non_archived_projects).class_name('Project') }
 
     it do
       is_expected.to have_one(:ci_cd_settings).class_name('NamespaceCiCdSetting').inverse_of(:namespace).autosave(true)

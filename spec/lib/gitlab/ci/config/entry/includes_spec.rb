@@ -13,4 +13,18 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Includes, feature_category: :pipelin
       2.times { expect { described_class.new(config) }.not_to change { described_class.aspects.count } }
     end
   end
+
+  describe 'validations' do
+    let(:config) { [1, 2] }
+
+    let(:includes_entry) { described_class.new(config, max_size: 1) }
+
+    it 'returns invalid' do
+      expect(includes_entry).not_to be_valid
+    end
+
+    it 'returns the appropriate error' do
+      expect(includes_entry.errors).to include('includes config is too long (maximum is 1)')
+    end
+  end
 end

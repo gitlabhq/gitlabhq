@@ -26,6 +26,7 @@ module Gitlab
 
           def create_state_event(issue_event)
             attrs = {
+              importing: true,
               user_id: author_id(issue_event),
               source_commit: issue_event.commit_id,
               state: 'closed',

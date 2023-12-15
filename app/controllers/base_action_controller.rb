@@ -26,9 +26,8 @@ class BaseActionController < ActionController::Base
     next if p.directives.blank?
 
     if helpers.vite_enabled?
-      vite_host = ViteRuby.instance.config.host
       vite_port = ViteRuby.instance.config.port
-      vite_origin = "#{vite_host}:#{vite_port}"
+      vite_origin = "#{Gitlab.config.gitlab.host}:#{vite_port}"
       http_origin = "http://#{vite_origin}"
       ws_origin = "ws://#{vite_origin}"
       wss_origin = "wss://#{vite_origin}"

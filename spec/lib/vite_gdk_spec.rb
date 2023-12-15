@@ -24,8 +24,8 @@ RSpec.describe ViteGdk, feature_category: :tooling do
           end.and_return(true)
           expect(YAML).to receive(:safe_load_file) do |file_path|
             expect(file_path).to end_with(VITE_GDK_CONFIG_FILEPATH)
-          end.and_return('enabled' => true, 'port' => 3038)
-          expect(ViteRuby).to receive(:configure).with(port: 3038)
+          end.and_return('enabled' => true, 'port' => 3038, 'host' => 'gdk.test')
+          expect(ViteRuby).to receive(:configure).with(host: 'gdk.test', port: 3038)
           expect(ViteRuby.env).to receive(:[]=).with('VITE_ENABLED', 'true')
 
           described_class.load_gdk_vite_config

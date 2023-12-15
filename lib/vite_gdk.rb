@@ -15,6 +15,7 @@ module ViteGdk
     return unless enabled
 
     ViteRuby.configure(
+      host: config.fetch('host', 'localhost'),
       port: Integer(config.fetch('port', 3038))
     )
   end

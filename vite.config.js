@@ -1,4 +1,6 @@
-import path from 'path';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue2';
 import graphql from '@rollup/plugin-graphql';
@@ -12,7 +14,15 @@ import {
   SOURCEGRAPH_PUBLIC_PATH,
   GITLAB_WEB_IDE_PUBLIC_PATH,
 } from './config/webpack.constants';
-import viteSharedConfig from './config/vite.json';
+
+let viteGDKConfig;
+try {
+  viteGDKConfig = JSON.parse(
+    readFileSync(path.resolve(__dirname, 'config/vite.gdk.json'), 'utf-8'),
+  );
+} catch {
+  viteGDKConfig = {};
+}
 
 const aliasArr = Object.entries(webpackConfig.resolve.alias).map(([find, replacement]) => ({
   find: find.includes('$') ? new RegExp(find) : find,
@@ -94,8 +104,7 @@ export default defineConfig({
     ],
   },
   plugins: [
-    // VITE_ENABLED is present when running with GDK
-    process.env.VITE_ENABLED ? autoRestartPlugin : null,
+    viteGDKConfig.enabled ? autoRestartPlugin : null,
     fixedRubyPlugin,
     vue({
       template: {
@@ -122,11 +131,17 @@ export default defineConfig({
     'process.env.GITLAB_WEB_IDE_PUBLIC_PATH': JSON.stringify(GITLAB_WEB_IDE_PUBLIC_PATH),
   },
   server: {
-    hmr: {
-      host: viteSharedConfig?.development?.host || 'localhost',
-      // ensure we stay compatible with HTTPS enabled for GDK
-      protocol: 'ws',
-    },
+    hmr:
+      viteGDKConfig.hmr === undefined
+        ? /*
+        This is a legacy behavior for older GDKs. They will fallback to:
+          ws://localhost:3038/vite-dev/
+        TODO: Remove this after 2024-01-18 */
+          {
+            host: 'localhost',
+            protocol: 'ws',
+          }
+        : viteGDKConfig.hmr,
     https: false,
     watch: {
       ignored: [

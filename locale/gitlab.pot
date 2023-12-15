@@ -27841,9 +27841,6 @@ msgstr ""
 msgid "Key details"
 msgstr ""
 
-msgid "Key result"
-msgstr ""
-
 msgid "Key:"
 msgstr ""
 
@@ -33055,22 +33052,7 @@ msgstr ""
 msgid "OKRs|An update is due on: %{update_due_date}"
 msgstr ""
 
-msgid "OKR|Existing key result"
-msgstr ""
-
-msgid "OKR|Existing objective"
-msgstr ""
-
-msgid "OKR|New key result"
-msgstr ""
-
-msgid "OKR|New objective"
-msgstr ""
-
 msgid "Object does not exist on the server or you don't have permissions to access it"
-msgstr ""
-
-msgid "Objective"
 msgstr ""
 
 msgid "ObservabilityMetrics|Date"
@@ -55096,6 +55078,9 @@ msgstr ""
 msgid "WorkItem|Epic"
 msgstr ""
 
+msgid "WorkItem|Existing %{workItemName}"
+msgstr ""
+
 msgid "WorkItem|Existing task"
 msgstr ""
 
@@ -55130,6 +55115,9 @@ msgid "WorkItem|Mark as done"
 msgstr ""
 
 msgid "WorkItem|Milestone"
+msgstr ""
+
+msgid "WorkItem|New %{workItemName}"
 msgstr ""
 
 msgid "WorkItem|New %{workItemType}"
