@@ -106,6 +106,7 @@ RSpec.describe Tooling::PredictiveTests, feature_category: :tooling do
       context 'when some files used for frontend fixtures were changed' do
         let(:changed_files_content) { 'app/models/todo.rb' }
         let(:changed_files_matching_test) { 'spec/models/todo_spec.rb' }
+        let(:additional_matching_tests) { 'spec/models/every_model_spec.rb' }
         let(:matching_frontend_fixture) { 'tmp/tests/frontend/fixtures-ee/todos/todos.html' }
         let(:fixtures_mapping_content) do
           JSON.dump(changed_files_matching_test => [matching_frontend_fixture]) # rubocop:disable Gitlab/Json
@@ -120,7 +121,7 @@ RSpec.describe Tooling::PredictiveTests, feature_category: :tooling do
         it 'appends the spec file to RSPEC_MATCHING_TESTS_PATH' do
           expect { subject }.to change { File.read(matching_tests.path) }
             .from(matching_tests_initial_content)
-            .to("#{matching_tests_initial_content} #{changed_files_matching_test}")
+            .to("#{matching_tests_initial_content} #{additional_matching_tests} #{changed_files_matching_test}")
         end
 
         it 'does not change files other than RSPEC_CHANGED_FILES_PATH nor RSPEC_MATCHING_TESTS_PATH' do

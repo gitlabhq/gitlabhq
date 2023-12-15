@@ -9,6 +9,7 @@ module Ci
     # in order to generate the CI/CD catalog.
     class Resource < ::ApplicationRecord
       include PgFullTextSearchable
+      include Gitlab::VisibilityLevel
 
       self.table_name = 'catalog_resources'
 
@@ -40,6 +41,22 @@ module Ci
       before_create :sync_with_project
 
       class << self
+        def public_or_visible_to_user(user)
+          return public_to_user unless user
+
+          where(
+            'EXISTS (?) OR catalog_resources.visibility_level IN (?)',
+            user.authorizations_for_projects(related_project_column: 'catalog_resources.project_id'),
+            Gitlab::VisibilityLevel.levels_for_user(user)
+          )
+        end
+
+        def visible_to_user(user)
+          return none unless user
+
+          where_exists(user.authorizations_for_projects(related_project_column: 'catalog_resources.project_id'))
+        end
+
         # Used by Ci::ProcessSyncEventsService
         def sync!(event)
           # There may be orphaned records since this table does not enforce FKs
@@ -67,6 +84,11 @@ module Ci
       # Triggered in Ci::Catalog::Resources::Version and Release model callbacks
       def update_latest_released_at!
         update!(latest_released_at: versions.latest&.released_at)
+      end
+
+      # Required for Gitlab::VisibilityLevel module
+      def visibility_level_field
+        :visibility_level
       end
 
       private

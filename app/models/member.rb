@@ -171,6 +171,8 @@ class Member < ApplicationRecord
   scope :by_access_level, -> (access_level) { active.where(access_level: access_level) }
   scope :all_by_access_level, -> (access_level) { where(access_level: access_level) }
 
+  scope :preload_user, -> { preload(:user) }
+
   scope :preload_user_and_notification_settings, -> do
     preload(user: :notification_settings)
       .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417456")
@@ -353,7 +355,7 @@ class Member < ApplicationRecord
     end
 
     def access_for_user_ids(user_ids)
-      where(user_id: user_ids).has_access.pluck(:user_id, :access_level).to_h
+      with_user(user_ids).has_access.pluck(:user_id, :access_level).to_h
     end
 
     def find_by_invite_token(raw_invite_token)

@@ -5389,7 +5389,6 @@ RSpec/FeatureCategory:
     - 'spec/views/layouts/application.html.haml_spec.rb'
     - 'spec/views/layouts/devise_empty.html.haml_spec.rb'
     - 'spec/views/layouts/fullscreen.html.haml_spec.rb'
-    - 'spec/views/layouts/header/_gitlab_version.html.haml_spec.rb'
     - 'spec/views/layouts/profile.html.haml_spec.rb'
     - 'spec/views/layouts/signup_onboarding.html.haml_spec.rb'
     - 'spec/views/layouts/terms.html.haml_spec.rb'

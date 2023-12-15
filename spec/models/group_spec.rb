@@ -11,10 +11,11 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   describe 'associations' do
     it { is_expected.to have_many :projects }
     it { is_expected.to have_many(:all_group_members).dependent(:destroy) }
+    it { is_expected.to have_many(:all_owner_members) }
     it { is_expected.to have_many(:group_members).dependent(:destroy) }
     it { is_expected.to have_many(:namespace_members) }
     it { is_expected.to have_many(:users).through(:group_members) }
-    it { is_expected.to have_many(:owners).through(:all_group_members) }
+    it { is_expected.to have_many(:owners).through(:all_owner_members) }
     it { is_expected.to have_many(:requesters).dependent(:destroy) }
     it { is_expected.to have_many(:namespace_requesters) }
     it { is_expected.to have_many(:members_and_requesters) }

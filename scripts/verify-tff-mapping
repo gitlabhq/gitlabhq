@@ -155,6 +155,18 @@ tests = [
   },
 
   {
+    explanation: 'Spec for FOSS model',
+    changed_file: 'app/models/some_new_model.rb',
+    expected: ['spec/models/every_model_spec.rb']
+  },
+
+  {
+    explanation: 'Spec for EE model',
+    changed_file: 'ee/app/models/some_new_model.rb',
+    expected: ['spec/models/every_model_spec.rb']
+  },
+
+  {
     explanation: 'Spec for FOSS sidekiq worker',
     changed_file: 'app/workers/new_worker.rb',
     expected: ['spec/workers/every_sidekiq_worker_spec.rb']

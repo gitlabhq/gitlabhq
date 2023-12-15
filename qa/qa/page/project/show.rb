@@ -22,10 +22,6 @@ module QA
           element 'file-tree-table'
         end
 
-        view 'app/views/layouts/header/_new_dropdown.html.haml' do
-          element 'new-menu-toggle'
-        end
-
         view 'app/views/projects/_last_push.html.haml' do
           element 'create-merge-request-button'
         end

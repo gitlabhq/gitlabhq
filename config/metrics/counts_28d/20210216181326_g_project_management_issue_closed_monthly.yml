@@ -9,7 +9,6 @@ value_type: number
 status: active
 time_frame: 28d
 data_source: internal_events
-instrumentation_class: RedisHLLMetric
 options:
   events:
   - g_project_management_issue_closed

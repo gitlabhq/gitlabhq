@@ -117,6 +117,82 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
     end
   end
 
+  describe 'authorized catalog resources' do
+    let_it_be(:namespace) { create(:group) }
+    let_it_be(:other_namespace) { create(:group) }
+    let_it_be(:other_user) { create(:user) }
+
+    let_it_be(:public_project) { create(:project, :public) }
+    let_it_be(:internal_project) { create(:project, :internal) }
+    let_it_be(:internal_namespace_project) { create(:project, :internal, namespace: namespace) }
+    let_it_be(:private_namespace_project) { create(:project, namespace: namespace) }
+    let_it_be(:other_private_namespace_project) { create(:project, namespace: other_namespace) }
+
+    let_it_be(:public_resource) { create(:ci_catalog_resource, project: public_project) }
+    let_it_be(:internal_resource) { create(:ci_catalog_resource, project: internal_project) }
+    let_it_be(:internal_namespace_resource) { create(:ci_catalog_resource, project: internal_namespace_project) }
+    let_it_be(:private_namespace_resource) { create(:ci_catalog_resource, project: private_namespace_project) }
+
+    let_it_be(:other_private_namespace_resource) do
+      create(:ci_catalog_resource, project: other_private_namespace_project)
+    end
+
+    before_all do
+      namespace.add_reporter(current_user)
+      other_namespace.add_guest(other_user)
+    end
+
+    describe '.public_or_visible_to_user' do
+      subject(:resources) { described_class.public_or_visible_to_user(current_user) }
+
+      it 'returns all resources visible to the user' do
+        expect(resources).to contain_exactly(
+          public_resource, internal_resource, internal_namespace_resource, private_namespace_resource)
+      end
+
+      context 'with a different user' do
+        let(:current_user) { other_user }
+
+        it 'returns all resources visible to the user' do
+          expect(resources).to contain_exactly(
+            public_resource, internal_resource, internal_namespace_resource, other_private_namespace_resource)
+        end
+      end
+
+      context 'when the user is nil' do
+        let(:current_user) { nil }
+
+        it 'returns only public resources' do
+          expect(resources).to contain_exactly(public_resource)
+        end
+      end
+    end
+
+    describe '.visible_to_user' do
+      subject(:resources) { described_class.visible_to_user(current_user) }
+
+      it "returns resources belonging to the user's authorized namespaces" do
+        expect(resources).to contain_exactly(internal_namespace_resource, private_namespace_resource)
+      end
+
+      context 'with a different user' do
+        let(:current_user) { other_user }
+
+        it "returns resources belonging to the user's authorized namespaces" do
+          expect(resources).to contain_exactly(other_private_namespace_resource)
+        end
+      end
+
+      context 'when the user is nil' do
+        let(:current_user) { nil }
+
+        it 'does not return any resources' do
+          expect(resources).to be_empty
+        end
+      end
+    end
+  end
+
   describe '#state' do
     it 'defaults to draft' do
       expect(resource_a.state).to eq('draft')

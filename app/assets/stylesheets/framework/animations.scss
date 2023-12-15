@@ -101,10 +101,6 @@
   @include transition(color);
 }
 
-.notification-dot {
-  @include transition(background-color, color, border);
-}
-
 .stage-nav-item {
   @include transition(background-color, box-shadow);
 }

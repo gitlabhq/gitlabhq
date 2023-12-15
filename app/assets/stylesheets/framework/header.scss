@@ -67,51 +67,10 @@
         border-bottom-color: $white;
       }
     }
-
-    .navbar-collapse > ul.nav > li:not(.d-none) {
-      margin: 0 2px;
-    }
-  }
-
-  .navbar-collapse {
-    flex: 0 0 auto;
-    border-top: 0;
-    padding: 0;
-
-    @include media-breakpoint-down(xs) {
-      .legacy-top-bar & {
-        flex: 1 1 auto;
-      }
-    }
-
-    .nav {
-      flex-wrap: nowrap;
-
-      > li:not(.d-none) a {
-        @include media-breakpoint-down(xs) {
-          margin-left: 0;
-        }
-      }
-    }
   }
 
   .container-fluid {
     padding: 0;
-
-    .navbar-nav {
-      @include media-breakpoint-down(xs) {
-        display: flex;
-        padding-right: 10px;
-        flex-direction: row;
-      }
-
-      li {
-        .badge.badge-pill:not(.gl-badge) {
-          box-shadow: none;
-          font-weight: $gl-font-weight-bold;
-        }
-      }
-    }
 
     .nav > li {
       > a {
@@ -119,84 +78,9 @@
         margin: 4px 0;
         padding: 6px 8px;
         height: 32px;
-
-        .legacy-top-bar & {
-          @include media-breakpoint-down(xs) {
-            padding: 0;
-          }
-        }
-      }
-
-      .header-new-dropdown-toggle {
-        margin-right: 0;
       }
     }
   }
-}
-
-.navbar-sub-nav,
-.navbar-nav {
-  > li {
-    > a,
-    > button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 6px 8px;
-      margin: 4px 2px;
-      font-size: 12px;
-      color: currentColor;
-      border-radius: $border-radius-default;
-      height: 32px;
-      font-weight: $gl-font-weight-bold;
-
-      &:hover,
-      &:focus {
-        text-decoration: none;
-        outline: 0;
-        color: $white;
-      }
-
-      &:active,
-      &:focus {
-        @include gl-focus($focus-ring: $focus-ring-dark);
-      }
-    }
-
-    &.line-separator {
-      margin: 8px;
-    }
-  }
-
-  .dropdown-menu {
-    position: absolute;
-  }
-}
-
-.navbar-sub-nav {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  margin: 0 0 0 6px;
-
-  .dropdown-chevron {
-    position: relative;
-    top: -1px;
-    font-size: 10px;
-  }
-}
-
-.caret-down,
-.btn .caret-down {
-  top: 0;
-  height: 11px;
-  width: 11px;
-  margin-left: 4px;
-  fill: currentColor;
-}
-
-.header-new .dropdown-menu {
-  margin-top: $dropdown-vertical-offset;
 }
 
 .top-bar-container {
@@ -238,41 +122,6 @@
   @include media-breakpoint-down(xs) {
     @include str-truncated(128px);
   }
-}
-
-@include media-breakpoint-down(xs) {
-  .navbar-gitlab.legacy-top-bar .container-fluid {
-    font-size: 18px;
-
-    .navbar-nav {
-      table-layout: fixed;
-      width: 100%;
-      margin: 0;
-      text-align: right;
-    }
-
-    .navbar-collapse {
-      margin-left: -8px;
-      margin-right: -10px;
-
-      .nav > li:not(.d-none) {
-        flex: 1;
-      }
-    }
-  }
-}
-
-.notification-dot {
-  background-color: $orange-300;
-  height: 12px;
-  width: 12px;
-  pointer-events: none;
-  visibility: hidden;
-  top: 3px;
-}
-
-.with-notifications .notification-dot {
-  visibility: visible;
 }
 
 .navbar-empty {
@@ -334,7 +183,6 @@
     color: inherit !important;
   }
 }
-
 
 .header-logged-out {
   z-index: $header-zindex;

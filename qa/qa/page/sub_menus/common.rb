@@ -12,6 +12,10 @@ module QA
               element 'super-sidebar'
             end
 
+            view 'app/assets/javascripts/super_sidebar/components/create_menu.vue' do
+              element 'new-menu-toggle'
+            end
+
             view 'app/assets/javascripts/super_sidebar/components/menu_section.vue' do
               element 'menu-section-button'
               element 'menu-section'
@@ -19,10 +23,6 @@ module QA
 
             view 'app/assets/javascripts/super_sidebar/components/nav_item.vue' do
               element 'nav-item-link'
-            end
-
-            view 'app/views/layouts/header/_new_dropdown.html.haml' do
-              element 'new-menu-toggle'
             end
           end
         end

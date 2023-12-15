@@ -7013,6 +7013,9 @@ msgstr ""
 msgid "AuditStreams|Filter by audit event type"
 msgstr ""
 
+msgid "AuditStreams|Filter by groups or projects"
+msgstr ""
+
 msgid "AuditStreams|Google Cloud Logging"
 msgstr ""
 
@@ -7047,6 +7050,12 @@ msgid "AuditStreams|Secret Access Key"
 msgstr ""
 
 msgid "AuditStreams|Select events"
+msgstr ""
+
+msgid "AuditStreams|Select namespace"
+msgstr ""
+
+msgid "AuditStreams|Select projects"
 msgstr ""
 
 msgid "AuditStreams|Setup streaming for audit events"
@@ -10675,7 +10684,10 @@ msgstr ""
 msgid "CiVariables|Variables specified here are %{boldStart}expanded%{boldEnd} and not %{boldStart}masked.%{boldEnd}"
 msgstr ""
 
-msgid "CiVariables|Variables store information, like passwords and secret keys, that you can use in job scripts. Each %{entity} can define a maximum of %{limit} variables."
+msgid "CiVariables|Variables store information that you can use in job scripts. All projects on the instance can use these variables."
+msgstr ""
+
+msgid "CiVariables|Variables store information that you can use in job scripts. Each %{entity} can define a maximum of %{limit} variables."
 msgstr ""
 
 msgid "CiVariables|You can use CI/CD variables with the same name in different places, but the variables might overwrite each other. %{linkStart}What is the order of precedence for variables?%{linkEnd}"
@@ -11954,9 +11966,6 @@ msgstr ""
 msgid "CodeSuggestionsGAAlert|Try GitLab Duo Code Suggestions today"
 msgstr ""
 
-msgid "CodeSuggestionsGAAlert|Try now"
-msgstr ""
-
 msgid "CodeSuggestionsSM|By enabling this feature, you agree to the %{terms_link_start}GitLab Testing Agreement%{link_end} and acknowledge that GitLab will send data from the instance, including personal data, to our %{ai_docs_link_start}AI providers%{link_end} to provide this feature."
 msgstr ""
 
@@ -12546,6 +12555,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Background color"
 msgstr ""
 
+msgid "ComplianceFrameworks|Basic information"
+msgstr ""
+
 msgid "ComplianceFrameworks|Cancel"
 msgstr ""
 
@@ -12561,7 +12573,13 @@ msgstr ""
 msgid "ComplianceFrameworks|Configuration not found"
 msgstr ""
 
+msgid "ComplianceFrameworks|Create a compliance framework"
+msgstr ""
+
 msgid "ComplianceFrameworks|Default compliance framework successfully updated"
+msgstr ""
+
+msgid "ComplianceFrameworks|Default framework will be applied automatically to any new project created in the group or sub group."
 msgstr ""
 
 msgid "ComplianceFrameworks|Delete compliance framework %{framework}"
@@ -12574,6 +12592,9 @@ msgid "ComplianceFrameworks|Description"
 msgstr ""
 
 msgid "ComplianceFrameworks|Description is required"
+msgstr ""
+
+msgid "ComplianceFrameworks|Edit a compliance framework"
 msgstr ""
 
 msgid "ComplianceFrameworks|Edit compliance framework"
@@ -12606,7 +12627,13 @@ msgstr ""
 msgid "ComplianceFrameworks|Name is required"
 msgstr ""
 
+msgid "ComplianceFrameworks|Name, description"
+msgstr ""
+
 msgid "ComplianceFrameworks|New compliance framework"
+msgstr ""
+
+msgid "ComplianceFrameworks|New framework"
 msgstr ""
 
 msgid "ComplianceFrameworks|No compliance frameworks are set up yet"
@@ -12627,10 +12654,16 @@ msgstr ""
 msgid "ComplianceFrameworks|Saved changes to compliance framework"
 msgstr ""
 
+msgid "ComplianceFrameworks|Set as default"
+msgstr ""
+
 msgid "ComplianceFrameworks|Set compliance pipeline configuration for projects that use this framework. %{linkStart}How do I create the configuration?%{linkEnd}"
 msgstr ""
 
 msgid "ComplianceFrameworks|Set default"
+msgstr ""
+
+msgid "ComplianceFrameworks|There can be only one default framework."
 msgstr ""
 
 msgid "ComplianceFrameworks|Unable to save this compliance framework. Please try again"
@@ -15511,6 +15544,9 @@ msgid "DastConfig|No previous scans found for this project"
 msgstr ""
 
 msgid "DastConfig|Not enabled"
+msgstr ""
+
+msgid "DastProfiles|%{linkStart}Headers may appear in vulnerability reports%{linkEnd}."
 msgstr ""
 
 msgid "DastProfiles|/graphql"
@@ -21390,6 +21426,9 @@ msgstr ""
 msgid "Generate site and private keys at"
 msgstr ""
 
+msgid "Generated files are collapsed by default. This behavior can be overriden via .gitattributes file if required."
+msgstr ""
+
 msgid "Generated with JSON data"
 msgstr ""
 
@@ -21905,9 +21944,6 @@ msgid "Geo|primary"
 msgstr ""
 
 msgid "Geo|secondary"
-msgstr ""
-
-msgid "Get a free instance review"
 msgstr ""
 
 msgid "Get a support subscription"
@@ -47064,9 +47100,6 @@ msgstr ""
 msgid "Submit as spam"
 msgstr ""
 
-msgid "Submit feedback"
-msgstr ""
-
 msgid "Submit feedback and approve these changes."
 msgstr ""
 
@@ -47709,9 +47742,6 @@ msgid "Switch branch"
 msgstr ""
 
 msgid "Switch branch/tag"
-msgstr ""
-
-msgid "Switch to GitLab Next"
 msgstr ""
 
 msgid "Switch to plain text editing"
@@ -53332,9 +53362,6 @@ msgstr ""
 msgid "Variables can have several attributes."
 msgstr ""
 
-msgid "Variables store information, like passwords and secret keys, that you can use in job scripts. All projects on the instance can use these variables."
-msgstr ""
-
 msgid "Various container registry settings."
 msgstr ""
 
@@ -53414,9 +53441,6 @@ msgid "VersionCheck|You are currently on version %{currentVersion}! We strongly 
 msgstr ""
 
 msgid "VersionCheck|You are currently on version %{currentVersion}! We strongly recommend upgrading your GitLab installation to one of the following versions immediately: %{latestStableVersions}."
-msgstr ""
-
-msgid "VersionCheck|Your GitLab Version"
 msgstr ""
 
 msgid "View File Metadata"

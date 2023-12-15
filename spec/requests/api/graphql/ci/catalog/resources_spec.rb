@@ -60,7 +60,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
     it do
       ctx = { current_user: user }
 
-      control_count = ActiveRecord::QueryRecorder.new do
+      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         run_with_clean_state(query, context: ctx)
       end
 

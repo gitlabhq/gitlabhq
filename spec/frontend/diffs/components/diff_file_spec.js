@@ -399,6 +399,27 @@ describe('DiffFile', () => {
       });
     });
 
+    describe('automatically collapsed generated file', () => {
+      beforeEach(() => {
+        makeFileAutomaticallyCollapsed(store);
+        const file = store.state.diffs.diffFiles[0];
+        Object.assign(store.state.diffs.diffFiles[0], {
+          ...file,
+          viewer: {
+            ...file.viewer,
+            generated: true,
+          },
+        });
+      });
+
+      it('should show the generated file warning with expansion button', () => {
+        expect(findDiffContentArea(wrapper).html()).toContain(
+          'Generated files are collapsed by default. This behavior can be overriden via .gitattributes file if required.',
+        );
+        expect(findToggleButton(wrapper).exists()).toBe(true);
+      });
+    });
+
     describe('not collapsed', () => {
       beforeEach(() => {
         makeFileOpenByDefault(store);

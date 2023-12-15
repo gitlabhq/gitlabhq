@@ -7,100 +7,50 @@
     }
   },
   "then": {
-    "oneOf": [
-      {
+    "properties": {
+      "instrumentation_class": false,
+      "options": {
+        "type": "object",
         "properties": {
-          "instrumentation_class": {
-            "const": "RedisHLLMetric"
-          },
-          "options": {
-            "type": "object",
-            "properties": {
-              "events": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            },
-            "required": [
-              "events"
-            ],
-            "additionalProperties": false
-          },
           "events": {
             "type": "array",
             "items": {
-              "type": "object",
-              "required": [
-                "name",
-                "unique"
-              ],
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "unique": {
-                  "type": "string",
-                  "enum": [
-                    "user.id",
-                    "project.id",
-                    "namespace.id"
-                  ]
-                }
-              },
-              "additionalProperties": false
+              "type": "string"
             }
           }
         },
         "required": [
-          "events",
-          "options",
-          "instrumentation_class"
-        ]
+          "events"
+        ],
+        "additionalProperties": false
       },
-      {
-        "properties": {
-          "instrumentation_class": {
-            "const": "TotalCountMetric"
-          },
-          "options": {
-            "type": "object",
-            "properties": {
-              "events": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
+      "events": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "name"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
             },
-            "required": [
-              "events"
-            ],
-            "additionalProperties": false
-          },
-          "events": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "required": [
-                "name"
-              ],
-              "properties": {
-                "name": {
-                  "type": "string"
-                }
-              },
-              "additionalProperties": false
+            "unique": {
+              "type": "string",
+              "enum": [
+                "user.id",
+                "project.id",
+                "namespace.id"
+              ]
             }
-          }
-        },
-        "required": [
-          "events",
-          "options",
-          "instrumentation_class"
-        ]
+          },
+          "additionalProperties": false
+        }
       }
+    },
+    "required": [
+      "events",
+      "options"
     ]
   }
 }

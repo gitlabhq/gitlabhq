@@ -33,7 +33,6 @@ module Gitlab
       private
 
       def project_data
-        owners = project.owners.compact
         # When this is removed, also remove the `deprecated_owner` method
         # See https://gitlab.com/gitlab-org/gitlab/-/issues/350603
         owner = project.deprecated_owner
@@ -45,11 +44,25 @@ module Gitlab
           project_id: project.id,
           owner_name: owner.try(:name),
           owner_email: user_email(owner),
-          owners: owners.map do |owner|
-            owner_data(owner)
-          end,
+          owners: owners_data,
           project_visibility: project.visibility.downcase
         }
+      end
+
+      def owners_data
+        # Extracted code from ProjectTeam#owners, but works without creating cross joins queries
+        # Can be consolidate again once https://gitlab.com/gitlab-org/gitlab/-/issues/432606 is addressed
+        if project.group
+          project.group.all_owner_members.select(:id, :user_id)
+            .preload_user.find_each.map { |member| owner_data(member.user) }
+        else
+          data = []
+          project.project_authorizations.owners.preload_user.each_batch(column: :user_id) do |relation|
+            data.concat(relation.map { |member| owner_data(member.user) })
+          end
+          data |= Array.wrap(owner_data(project.owner)) if project.owner
+          data
+        end
       end
 
       def owner_data(user)

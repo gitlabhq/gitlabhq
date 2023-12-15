@@ -170,6 +170,11 @@ export default {
     showWarning() {
       return this.isCollapsed && this.automaticallyCollapsed && !this.viewDiffsFileByFile;
     },
+    expandableWarning() {
+      return this.file.viewer?.generated
+        ? this.$options.i18n.autoCollapsedGenerated
+        : this.$options.i18n.autoCollapsed;
+    },
     showContent() {
       return !this.isCollapsed && !this.isFileTooLarge;
     },
@@ -530,7 +535,7 @@ export default {
             class="collapsed-file-warning gl-p-7 gl-bg-orange-50 gl-text-center gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
           >
             <p class="gl-mb-5">
-              {{ $options.i18n.autoCollapsed }}
+              {{ expandableWarning }}
             </p>
             <gl-button data-testid="expand-button" @click.prevent="handleToggle">
               {{ $options.i18n.expand }}

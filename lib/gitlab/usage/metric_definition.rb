@@ -25,6 +25,14 @@ module Gitlab
         events_from_new_structure || events_from_old_structure || {}
       end
 
+      def instrumentation_class
+        if internal_events?
+          events.each_value.first.nil? ? "TotalCountMetric" : "RedisHLLMetric"
+        else
+          attributes[:instrumentation_class]
+        end
+      end
+
       def to_context
         return unless %w[redis redis_hll].include?(data_source)
 
@@ -77,6 +85,10 @@ module Gitlab
         VALID_SERVICE_PING_STATUSES.include?(attributes[:status])
       end
 
+      def internal_events?
+        data_source == 'internal_events'
+      end
+
       alias_method :to_dictionary, :to_h
 
       class << self
@@ -97,7 +109,9 @@ module Gitlab
         end
 
         def with_instrumentation_class
-          all.select { |definition| definition.attributes[:instrumentation_class].present? && definition.available? }
+          all.select do |definition|
+            (definition.internal_events? || definition.attributes[:instrumentation_class].present?) && definition.available?
+          end
         end
 
         def context_for(key_path)

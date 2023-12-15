@@ -9328,8 +9328,6 @@
 - './spec/views/layouts/devise.html.haml_spec.rb'
 - './spec/views/layouts/_flash.html.haml_spec.rb'
 - './spec/views/layouts/fullscreen.html.haml_spec.rb'
-- './spec/views/layouts/header/_gitlab_version.html.haml_spec.rb'
-- './spec/views/layouts/header/_new_dropdown.haml_spec.rb'
 - './spec/views/layouts/_head.html.haml_spec.rb'
 - './spec/views/layouts/profile.html.haml_spec.rb'
 - './spec/views/layouts/_published_experiments.html.haml_spec.rb'

@@ -1,8 +1,0 @@
-.title
-  %span.gl-sr-only GitLab
-  = link_to root_path, title: _('Homepage'), id: 'logo', class: 'has-tooltip', aria: { label: _('Homepage') }, **tracking_attrs('main_navigation', 'click_gitlab_logo_link', 'navigation_top') do
-    = brand_header_logo
-  .gl-display-flex.gl-align-items-center
-    - if Gitlab.com_and_canary?
-      = gl_badge_tag({ variant: :success, size: :sm }, { href: Gitlab::Saas.canary_toggle_com_url, data: { testid: 'canary_badge_link' }, target: :_blank, rel: 'noopener noreferrer', class: 'canary-badge' }) do
-        = _('Next')

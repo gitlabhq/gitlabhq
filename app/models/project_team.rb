@@ -78,7 +78,7 @@ class ProjectTeam
   # so we filter out only members of project or project's group
   def members_in_project_and_ancestors
     members.where(id: member_user_ids)
-      .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422405')
+      .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/432606')
   end
 
   def members_with_access_levels(access_levels = [])

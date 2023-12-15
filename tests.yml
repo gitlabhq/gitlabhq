@@ -79,6 +79,9 @@ mapping:
   - source: 'doc/index\.md'
     test: 'spec/haml_lint/linter/documentation_links_spec.rb'
 
+  - source: '(ee/)?app/models/.+\.rb'
+    test: 'spec/models/every_model_spec.rb'
+
   - source: '(ee/)?app/workers/.+\.rb'
     test: 'spec/workers/every_sidekiq_worker_spec.rb'
 

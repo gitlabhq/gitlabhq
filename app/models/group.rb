@@ -35,18 +35,17 @@ class Group < Namespace
     { name: [:asc] }
   end
 
-  has_many :all_group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
-  has_many :group_members, -> { where(requested_at: nil).where.not(members: { access_level: Gitlab::Access::MINIMAL_ACCESS }) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
-  has_many :namespace_members, -> { where(requested_at: nil).where.not(members: { access_level: Gitlab::Access::MINIMAL_ACCESS }).unscope(where: %i[source_id source_type]) },
+  has_many :all_group_members, -> { non_request }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
+  has_many :all_owner_members, -> { non_request.all_owners }, as: :source, class_name: 'GroupMember'
+  has_many :group_members, -> { non_request.where.not(members: { access_level: Gitlab::Access::MINIMAL_ACCESS }) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
+  has_many :namespace_members, -> { non_request.where.not(members: { access_level: Gitlab::Access::MINIMAL_ACCESS }).unscope(where: %i[source_id source_type]) },
     foreign_key: :member_namespace_id, inverse_of: :group, class_name: 'GroupMember'
   alias_method :members, :group_members
 
-  has_many :users, -> { allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/422405") },
+  has_many :users, -> { allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/432604") },
     through: :group_members
-  has_many :owners, -> {
-    where(members: { access_level: Gitlab::Access::OWNER })
-    .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/422405")
-  }, through: :all_group_members, source: :user
+  has_many :owners, -> { allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/432604") },
+    through: :all_owner_members, source: :user
 
   has_many :requesters, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
   has_many :namespace_requesters, -> { where.not(requested_at: nil).unscope(where: %i[source_id source_type]) },

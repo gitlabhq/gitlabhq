@@ -271,6 +271,10 @@ module Gitlab
 
       private
 
+      def collapse_generated_file?
+        generated? && !expanded
+      end
+
       def encode_diff_to_utf8(replace_invalid_utf8_chars)
         return unless replace_invalid_utf8_chars && diff_should_be_converted?
 
@@ -316,7 +320,7 @@ module Gitlab
           ::Gitlab::Metrics.add_event(:patch_hard_limit_bytes_hit)
 
           too_large!
-        elsif collapsed?
+        elsif collapsed? || collapse_generated_file?
           collapse!
         end
       end

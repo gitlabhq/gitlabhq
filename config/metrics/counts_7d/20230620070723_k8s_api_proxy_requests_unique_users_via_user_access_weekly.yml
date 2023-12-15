@@ -11,7 +11,6 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124147
 time_frame: 7d
 data_source: internal_events
 data_category: optional
-instrumentation_class: RedisHLLMetric
 options:
   events:
     - k8s_api_proxy_requests_unique_users_via_user_access

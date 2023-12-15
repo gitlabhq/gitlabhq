@@ -156,6 +156,31 @@ EOT
           expect(diff).to be_collapsed
         end
       end
+
+      context 'when the file is set as generated' do
+        let(:diff) { described_class.new(gitaly_diff, generated: true, expanded: expanded) }
+        let(:raw_patch) { 'some text' }
+
+        context 'when expanded is set to false' do
+          let(:expanded) { false }
+
+          it 'will be marked as generated and collapsed' do
+            expect(diff).to be_generated
+            expect(diff).to be_collapsed
+            expect(diff.diff).to be_empty
+          end
+        end
+
+        context 'when expanded is set to true' do
+          let(:expanded) { true }
+
+          it 'will still be marked as generated, but not as collapsed' do
+            expect(diff).to be_generated
+            expect(diff).not_to be_collapsed
+            expect(diff.diff).not_to be_empty
+          end
+        end
+      end
     end
 
     context 'using a Gitaly::CommitDelta' do

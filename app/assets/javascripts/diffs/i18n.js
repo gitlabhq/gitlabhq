@@ -22,6 +22,9 @@ export const DIFF_FILE = {
   fork: __('Fork'),
   cancel: __('Cancel'),
   autoCollapsed: __('Files with large changes are collapsed by default.'),
+  autoCollapsedGenerated: __(
+    'Generated files are collapsed by default. This behavior can be overriden via .gitattributes file if required.',
+  ),
   expand: __('Expand file'),
 };
 export const START_THREAD = __('Start another thread');

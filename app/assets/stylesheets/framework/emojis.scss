@@ -35,11 +35,18 @@ gl-emoji {
   // Create a width that fits 9 emojis per row
   width: 100 / 9 * 1%;
   transition: transform 0.15s cubic-bezier(0.3, 0, 0.2, 2) !important;
-  will-change: transform;
+  transform: scale(1) !important;
+  mix-blend-mode: normal !important;
 
   &:hover,
   &:focus {
-    transform: scale(1.3);
+    @include gl-z-index-2;
+    transform: scale(1.3) !important;
+  }
+
+  gl-emoji img {
+    top: auto;
+    max-width: unset;
   }
 }
 

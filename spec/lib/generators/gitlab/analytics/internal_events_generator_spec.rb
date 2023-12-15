@@ -175,7 +175,6 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
           metric_definition = base_metric_definition.merge(
             "key_path" => key_path,
             "time_frame" => time_frame,
-            "instrumentation_class" => "RedisHLLMetric",
             "events" => [{ "name" => event, "unique" => unique }]
           ).merge(metric_definition_extra)
           expect(YAML.safe_load(File.read(metric_definition_path))).to eq(metric_definition)
@@ -193,7 +192,6 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
           metric_definition = base_metric_definition.merge(
             "key_path" => key_path,
             "time_frame" => time_frame,
-            "instrumentation_class" => "TotalCountMetric",
             "events" => [{ "name" => event }]
           ).merge(metric_definition_extra)
           expect(YAML.safe_load(File.read(metric_definition_path))).to eq(metric_definition)

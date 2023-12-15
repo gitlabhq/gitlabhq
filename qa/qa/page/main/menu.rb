@@ -39,10 +39,6 @@ module QA
           element 'menu-item-link'
         end
 
-        view 'app/views/layouts/header/_new_dropdown.html.haml' do
-          element 'new-menu-toggle'
-        end
-
         view 'app/helpers/nav/new_dropdown_helper.rb' do
           element 'global-new-group-link'
           element 'global-new-project-link'

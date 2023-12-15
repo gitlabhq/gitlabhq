@@ -169,6 +169,25 @@ To update a streaming destination's event filters:
 1. Select the dropdown list and select or clear the required event types.
 1. Select **Save** to update the event filters.
 
+#### Update namespace filters
+
+> Namespace filtering in the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390133) in GitLab 16.7.
+
+When this feature is enabled for a group, you can permit users to filter streamed audit events per destination.
+If the feature is enabled with no filters, the destination receives all audit events.
+
+A streaming destination that has a namespace filter set has a **filtered** (**{filter}**) label.
+
+To update a streaming destination's namespace filters:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Audit events**.
+1. On the main area, select the **Streams** tab.
+1. Select the stream to expand.
+1. Locate the **Filter by groups or projects** dropdown list.
+1. Select the dropdown list and select or clear the required namespaces.
+1. Select **Save** to update the namespace filter.
+
 #### Override default content type header
 
 By default, streaming destinations use a `content-type` header of `application/x-www-form-urlencoded`. However, you

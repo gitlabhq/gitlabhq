@@ -11,7 +11,6 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75187
 time_frame: 7d
 data_source: internal_events
 data_category: optional
-instrumentation_class: RedisHLLMetric
 performance_indicator_type: []
 events:
   - name: p_analytics_ci_cd_pipelines

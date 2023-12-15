@@ -5,10 +5,7 @@ module Gitlab
     module Representation
       module PullRequests
         class ReviewRequests
-          include ToHash
-          include ExposeAttribute
-
-          attr_reader :attributes
+          include Representable
 
           expose_attribute :merge_request_id, :merge_request_iid, :users
 

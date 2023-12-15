@@ -110,6 +110,23 @@ RSpec.describe ProjectAuthorization, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.owners' do
+      let_it_be(:project_original_owner_authorization) { project.owner.project_authorizations.first }
+      let_it_be(:project_authorization_owner) { create(:project_authorization, :owner, project: project) }
+
+      before_all do
+        create(:project_authorization, :guest, project: project)
+        create(:project_authorization, :developer, project: project)
+      end
+
+      it 'returns all records which only have Owners access' do
+        expect(described_class.owners.map(&:attributes)).to match_array([
+          project_original_owner_authorization,
+          project_authorization_owner
+        ].map(&:attributes))
+      end
+    end
+
     describe '.for_project' do
       let_it_be(:project_2) { create(:project, namespace: user.namespace) }
       let_it_be(:project_3) { create(:project, namespace: user.namespace) }

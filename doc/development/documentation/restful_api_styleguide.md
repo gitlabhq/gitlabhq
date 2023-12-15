@@ -24,7 +24,7 @@ In the Markdown doc for a resource (AKA endpoint):
 - Every method must have the REST API request. For example:
 
   ```plaintext
-  GET /projects/:id/repository/branches
+  GET /api/v4/projects/:id/repository/branches
   ```
 
 - Every method must have a detailed [description of the attributes](#method-description).
@@ -57,7 +57,7 @@ One or two sentence description of what endpoint does.
 Description of the method.
 
 ```plaintext
-METHOD /endpoint
+METHOD /api/v4/endpoint
 ```
 
 Supported attributes:
