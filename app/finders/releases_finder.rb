@@ -27,11 +27,15 @@ class ReleasesFinder
   private
 
   def get_releases
-    Release.where(project_id: authorized_projects).where.not(tag: nil) # rubocop: disable CodeReuse/ActiveRecord
+    Release
+      .where(project_id: authorized_projects) # rubocop: disable CodeReuse/ActiveRecord
+      .tagged
   end
 
   def get_latest_releases
-    Release.latest_for_projects(authorized_projects, order_by: params[:order_by_for_latest]).where.not(tag: nil) # rubocop: disable CodeReuse/ActiveRecord
+    Release
+      .latest_for_projects(authorized_projects, order_by: params[:order_by_for_latest])
+      .tagged
   end
 
   def authorized_projects

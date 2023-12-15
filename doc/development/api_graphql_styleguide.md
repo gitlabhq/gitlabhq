@@ -1136,7 +1136,7 @@ To find objects to display in a field, we can add resolvers to
 `app/graphql/resolvers`.
 
 Arguments can be defined in the resolver in the same way as in a mutation.
-See the [Mutation arguments](#object-identifier-arguments) section.
+See the [Arguments](#arguments) section.
 
 To limit the amount of queries performed, we can use [BatchLoader](graphql_guide/batchloader.md).
 
@@ -1420,7 +1420,7 @@ We can use `#ready?` to perform set-up, validation, or early-return without invo
 
 Good reasons to use `#ready?` include:
 
-- Validating mutually exclusive arguments (see [validating arguments](#validating-arguments)).
+- Validating mutually exclusive arguments.
 - Returning `Relation.none` if we know before-hand that no results are possible.
 - Performing setup such as initializing instance variables (although consider lazily initialized methods for this).
 
@@ -1624,85 +1624,6 @@ Examples:
 - `NoteDelete`
 
 If you need advice for mutation naming, canvass the Slack `#graphql` channel for feedback.
-
-### Arguments
-
-Arguments for a mutation are defined using `argument`.
-
-Example:
-
-```ruby
-argument :my_arg, GraphQL::Types::String,
-         required: true,
-         description: "A description of the argument."
-```
-
-#### Nullability
-
-Arguments can be marked as `required: true` which means the value must be present and not `null`.
-If a required argument's value can be `null`, use the `required: :nullable` declaration.
-
-Example:
-
-```ruby
-argument :due_date,
-         Types::TimeType,
-         required: :nullable,
-         description: 'The desired due date for the issue. Due date is removed if null.'
-```
-
-In the above example, the `due_date` argument must be given, but unlike the GraphQL spec, the value can be `null`.
-This allows 'unsetting' the due date in a single mutation rather than creating a new mutation for removing the due date.
-
-```ruby
-{ due_date: null } # => OK
-{ due_date: "2025-01-10" } # => OK
-{  } # => invalid (not given)
-```
-
-#### Keywords
-
-Each GraphQL `argument` defined is passed to the `#resolve` method
-of a mutation as keyword arguments.
-
-Example:
-
-```ruby
-def resolve(my_arg:)
-  # Perform mutation ...
-end
-```
-
-#### Input Types
-
-`graphql-ruby` wraps up arguments into an
-[input type](https://graphql.org/learn/schema/#input-types).
-
-For example, the
-[`mergeRequestSetDraft` mutation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/mutations/merge_requests/set_draft.rb)
-defines these arguments (some
-[through inheritance](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/mutations/merge_requests/base.rb)):
-
-```ruby
-argument :project_path, GraphQL::Types::ID,
-         required: true,
-         description: "The project the merge request to mutate is in."
-
-argument :iid, GraphQL::Types::String,
-         required: true,
-         description: "The IID of the merge request to mutate."
-
-argument :draft,
-         GraphQL::Types::Boolean,
-         required: false,
-         description: <<~DESC
-           Whether or not to set the merge request as a draft.
-         DESC
-```
-
-These arguments automatically generate an input type called
-`MergeRequestSetDraftInput` with the 3 arguments we specified and the
-`clientMutationId`.
 
 ### Object identifier arguments
 
@@ -2017,36 +1938,110 @@ code so that we have a single source of truth and we do not trigger a subscripti
 
 For more information, see [GraphQL pagination](graphql_guide/pagination.md).
 
-## Validating arguments
+## Arguments
 
-For validations of single arguments, use the
-[`prepare` option](https://github.com/rmosolgo/graphql-ruby/blob/master/guides/fields/arguments.md)
-as usual.
-
-Sometimes a mutation or resolver may accept a number of optional
-arguments, but we still want to validate that at least one of the optional
-arguments is provided. In this situation, consider using the `#ready?`
-method in your mutation or resolver to provide the validation. The
-`#ready?` method is called before any work is done in the
-`#resolve` method.
+[Arguments](https://graphql-ruby.org/fields/arguments.html) for a resolver or mutation are defined using `argument`.
 
 Example:
 
 ```ruby
-def ready?(**args)
-  if args.values_at(:body, :position).compact.blank?
-    raise Gitlab::Graphql::Errors::ArgumentError,
-          'body or position arguments are required'
-  end
+argument :my_arg, GraphQL::Types::String,
+         required: true,
+         description: "A description of the argument."
+```
 
-  # Always remember to call `#super`
-  super
+### Nullability
+
+Arguments can be marked as `required: true` which means the value must be present and not `null`.
+If a required argument's value can be `null`, use the `required: :nullable` declaration.
+
+Example:
+
+```ruby
+argument :due_date,
+         Types::TimeType,
+         required: :nullable,
+         description: 'The desired due date for the issue. Due date is removed if null.'
+```
+
+In the above example, the `due_date` argument must be given, but unlike the GraphQL spec, the value can be `null`.
+This allows 'unsetting' the due date in a single mutation rather than creating a new mutation for removing the due date.
+
+```ruby
+{ due_date: null } # => OK
+{ due_date: "2025-01-10" } # => OK
+{  } # => invalid (not given)
+```
+
+#### Nullability and required: false
+
+If an argument is marked `required: false` the client is permitted to send `null` as a value.
+Often this is undesirable.
+
+If an argument is optional but `null` is not an allowed value, use validation to ensure that passing `null` returns an error:
+
+```ruby
+argument :name, GraphQL::Types::String,
+         required: false,
+         validates: { allow_null: false }
+```
+
+Alternatively, if you wish to allow `null` when it is not an allowed value, you can replace it with a default value:
+
+```ruby
+argument :name, GraphQL::Types::String,
+         required: false,
+         default_value: "No Name Provided",
+         replace_null_with_default: true
+```
+
+See [Validation](https://graphql-ruby.org/fields/validation.html),
+[Nullability](https://graphql-ruby.org/fields/arguments.html#nullability) and
+[Default Values](https://graphql-ruby.org/fields/arguments.html#default-values) for more details.
+
+### Keywords
+
+Each GraphQL `argument` defined is passed to the `#resolve` method
+of a mutation as keyword arguments.
+
+Example:
+
+```ruby
+def resolve(my_arg:)
+  # Perform mutation ...
 end
 ```
 
-In the future this may be able to be done using `OneOf Input Objects` if
-[this RFC](https://github.com/graphql/graphql-spec/pull/825)
-is merged.
+### Input Types
+
+`graphql-ruby` wraps up arguments into an
+[input type](https://graphql.org/learn/schema/#input-types).
+
+For example, the
+[`mergeRequestSetDraft` mutation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/mutations/merge_requests/set_draft.rb)
+defines these arguments (some
+[through inheritance](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/mutations/merge_requests/base.rb)):
+
+```ruby
+argument :project_path, GraphQL::Types::ID,
+         required: true,
+         description: "The project the merge request to mutate is in."
+
+argument :iid, GraphQL::Types::String,
+         required: true,
+         description: "The IID of the merge request to mutate."
+
+argument :draft,
+         GraphQL::Types::Boolean,
+         required: false,
+         description: <<~DESC
+           Whether or not to set the merge request as a draft.
+         DESC
+```
+
+These arguments automatically generate an input type called
+`MergeRequestSetDraftInput` with the 3 arguments we specified and the
+`clientMutationId`.
 
 ## GitLab custom scalars
 
@@ -2133,7 +2128,7 @@ additional items:
 Integration tests can also verify the following items, because they invoke the
 full stack:
 
-- An argument or scalar's [`prepare`](#validating-arguments) applies correctly.
+- An argument or scalar's validations apply correctly.
 - Logic in a resolver or mutation's [`#ready?` method](#correct-use-of-resolverready) applies correctly.
 - An [argument's `default_value`](https://graphql-ruby.org/fields/arguments.html) applies correctly.
 - Objects resolve successfully, and there are no N+1 issues.

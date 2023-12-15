@@ -54,7 +54,7 @@ GraphQL is a framework with many moving parts. It's important that the framework
 - Do not manually invoke framework bits. For example, do not instantiate resolvers during execution and instead let the framework do that.
 - You can subclass resolvers, as in `MyResolver.single` (see [deriving resolvers](../api_graphql_styleguide.md#deriving-resolvers)).
 - Use the `ready?` method for more complex argument logic (see [correct use of resolver#ready](../api_graphql_styleguide.md#correct-use-of-resolverready)).
-- Use the `prepare` method for more complex argument validation (see [validating arguments](../api_graphql_styleguide.md#validating-arguments)).
+- Use the `prepare` method for more complex argument validation (see [Preprocessing](https://graphql-ruby.org/fields/arguments.html#preprocessing)).
 
 For details, see [resolver guide](../api_graphql_styleguide.md#writing-resolvers).
 

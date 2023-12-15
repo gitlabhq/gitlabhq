@@ -52,10 +52,7 @@ export default {
     @select="onLanguageSelected"
   >
     <template #list-item="{ item: locale }">
-      <span
-        :data-testid="itemTestSelector(locale.value)"
-        :data-qa-selector="itemTestSelector(locale.value)"
-      >
+      <span :data-testid="itemTestSelector(locale.value)">
         {{ locale.text }}
       </span>
     </template>

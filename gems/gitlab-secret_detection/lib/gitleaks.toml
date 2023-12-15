@@ -6,7 +6,7 @@ title = "gitleaks config"
 [[rules]]
 id = "gitlab_personal_access_token"
 description = "GitLab Personal Access Token"
-regex = '''glpat-[0-9a-zA-Z_\-]{20}'''
+regex = '''\bglpat-[0-9a-zA-Z_\-]{20}\b'''
 tags = ["gitlab", "revocation_type"]
 keywords = [
     "glpat",
@@ -15,7 +15,7 @@ keywords = [
 [[rules]]
 id = "gitlab_pipeline_trigger_token"
 description = "GitLab Pipeline Trigger Token"
-regex = '''glptt-[0-9a-zA-Z_\-]{20}'''
+regex = '''\bglptt-[0-9a-zA-Z_\-]{40}\b'''
 tags = ["gitlab"]
 keywords = [
     "glptt",
@@ -24,7 +24,7 @@ keywords = [
 [[rules]]
 id = "gitlab_runner_registration_token"
 description = "GitLab Runner Registration Token"
-regex = '''GR1348941[0-9a-zA-Z_\-]{20}'''
+regex = '''\bGR1348941[0-9a-zA-Z_\-]{20}\b'''
 tags = ["gitlab"]
 keywords = [
     "GR1348941",
@@ -33,17 +33,275 @@ keywords = [
 [[rules]]
 id = "gitlab_runner_auth_token"
 description = "GitLab Runner Authentication Token"
-regex = '''glrt-[0-9a-zA-Z_\-]{20}'''
+regex = '''\bglrt-[0-9a-zA-Z_\-]{20}\b'''
 tags = ["gitlab"]
 keywords = [
     "glrt",
 ]
 
 [[rules]]
-id = "gitlab_feed_token"
+id = "gitlab_oauth_app_secret"
+description = "GitLab OAuth Application Secrets"
+regex = '''\bgloas-[0-9a-zA-Z_\-]{64}\b'''
+tags = ["gitlab"]
+keywords = [
+    "gloas",
+]
+
+[[rules]]
+id = "gitlab_feed_token_v2"
 description = "GitLab Feed Token"
-regex = '''glft-[0-9a-zA-Z_\-]{20}'''
+regex = '''\bglft-[0-9a-zA-Z_\-]{20}\b'''
 tags = ["gitlab"]
 keywords = [
     "glft",
+]
+
+[[rules]]
+id = "gitlab_kubernetes_agent_token"
+description = "GitLab Agent for Kubernetes token"
+regex = '''\bglagent-[0-9a-zA-Z_\-]{50}\b'''
+tags = ["gitlab"]
+keywords = [
+    "glagent",
+]
+
+[[rules]]
+id = "gitlab_incoming_email_token"
+description = "GitLab Incoming email token"
+regex = '''\bglimt-[0-9a-zA-Z_\-]{25}\b'''
+tags = ["gitlab"]
+keywords = [
+    "glimt",
+]
+
+[[rules]]
+id = "AWS"
+description = "AWS Access Token"
+regex = '''\bAKIA[0-9A-Z]{16}\b'''
+tags = ["aws", "revocation_type"]
+keywords = [
+    "AKIA",
+]
+
+[[rules]]
+id = "Github Personal Access Token"
+description = "Github Personal Access Token"
+regex = '''ghp_[0-9a-zA-Z]{36}'''
+keywords = [
+    "ghp_",
+]
+
+[[rules]]
+id = "Github OAuth Access Token"
+description = "Github OAuth Access Token"
+regex = '''gho_[0-9a-zA-Z]{36}'''
+keywords = [
+    "gho_",
+]
+
+[[rules]]
+id = "Github App Token"
+description = "Github App Token"
+regex = '''(ghu|ghs)_[0-9a-zA-Z]{36}'''
+keywords = [
+    "ghu_",
+    "ghs_"
+]
+
+[[rules]]
+id = "Github Refresh Token"
+description = "Github Refresh Token"
+regex = '''ghr_[0-9a-zA-Z]{76}'''
+keywords = [
+    "ghr_"
+]
+
+[[rules]]
+id = "Shopify shared secret"
+description = "Shopify shared secret"
+regex = '''shpss_[a-fA-F0-9]{32}'''
+keywords = [
+    "shpss_"
+]
+
+[[rules]]
+id = "Shopify access token"
+description = "Shopify access token"
+regex = '''shpat_[a-fA-F0-9]{32}'''
+keywords = [
+    "shpat_"
+]
+
+[[rules]]
+id = "Shopify custom app access token"
+description = "Shopify custom app access token"
+regex = '''shpca_[a-fA-F0-9]{32}'''
+keywords = [
+    "shpca_"
+]
+
+[[rules]]
+id = "Shopify private app access token"
+description = "Shopify private app access token"
+regex = '''shppa_[a-fA-F0-9]{32}'''
+keywords = [
+    "shppa_"
+]
+
+[[rules]]
+id = "Slack token"
+description = "Slack token"
+regex = '''xox[baprs]-([0-9a-zA-Z]{10,48})'''
+keywords = [
+    "xoxb","xoxa","xoxp","xoxr","xoxs",
+]
+
+[[rules]]
+id = "Stripe"
+description = "Stripe"
+regex = '''(?i)(sk|pk)_(test|live)_[0-9a-z]{10,32}'''
+keywords = [
+    "sk_test","pk_test","sk_live","pk_live",
+]
+
+[[rules]]
+id = "PyPI upload token"
+description = "PyPI upload token"
+regex = '''pypi-AgEIcHlwaS5vcmc[A-Za-z0-9-_]{50,1000}'''
+tags = ["pypi", "revocation_type"]
+keywords = [
+    "pypi-AgEIcHlwaS5vcmc",
+]
+
+[[rules]]
+id = "Google (GCP) Service-account"
+description = "Google (GCP) Service-account"
+tags = ["gitlab_partner_token", "revocation_type"]
+regex = '''\"private_key\":\s*\"-{5}BEGIN PRIVATE KEY-{5}[\s\S]*?",'''
+keywords = [
+    "service_account",
+]
+
+[[rules]]
+id = "GCP API key"
+description = "GCP API keys can be misused to gain API quota from billed projects"
+tags = ["gitlab_partner_token", "revocation_type"]
+regex = '''(?i)\b(AIza[0-9A-Za-z-_]{35})(?:['|\"|\n|\r|\s|\x60|;]|$)'''
+secretGroup = 1
+keywords = [
+    "AIza",
+]
+
+[[rules]]
+id = "GCP OAuth client secret"
+description = "GCP OAuth client secrets can be misused to spoof your application"
+tags = ["gitlab_partner_token", "revocation_type"]
+regex = '''GOCSPX-[a-zA-Z0-9_-]{28}'''
+keywords = [
+    "GOCSPX-",
+]
+
+[[rules]]
+id = "Grafana API token"
+description = "Grafana API token"
+regex = '''['\"]eyJrIjoi(?i)[a-z0-9-_=]{72,92}['\"]'''
+keywords = [
+    "grafana",
+]
+
+[[rules]]
+id = "Hashicorp Terraform user/org API token"
+description = "Hashicorp Terraform user/org API token"
+regex = '''['\"](?i)[a-z0-9]{14}\.atlasv1\.[a-z0-9-_=]{60,70}['\"]'''
+keywords = [
+    "atlasv1",
+    "hashicorp",
+    "terraform"
+]
+
+[[rules]]
+id = "Hashicorp Vault batch token"
+description = "Hashicorp Vault batch token"
+regex = '''b\.AAAAAQ[0-9a-zA-Z_-]{156}'''
+keywords = [
+    "hashicorp",
+    "AAAAAQ",
+    "vault"
+]
+
+[[rules]]
+id = "Mailchimp API key"
+description = "Mailchimp API key"
+regex = '''(?i)(mailchimp[a-z0-9_ .\-,]{0,25})(=|>|:=|\|\|:|<=|=>|:).{0,5}['\"]([a-f0-9]{32}-us20)['\"]'''
+secretGroup = 3
+keywords = [
+    "mailchimp",
+]
+
+[[rules]]
+id = "Mailgun private API token"
+description = "Mailgun private API token"
+regex = '''(?i)(mailgun[a-z0-9_ .\-,]{0,25})(=|>|:=|\|\|:|<=|=>|:).{0,5}['\"](key-[a-f0-9]{32})['\"]'''
+secretGroup = 3
+keywords = [
+    "mailgun",
+]
+
+[[rules]]
+id = "Mailgun webhook signing key"
+description = "Mailgun webhook signing key"
+regex = '''(?i)(mailgun[a-z0-9_ .\-,]{0,25})(=|>|:=|\|\|:|<=|=>|:).{0,5}['\"]([a-h0-9]{32}-[a-h0-9]{8}-[a-h0-9]{8})['\"]'''
+secretGroup = 3
+keywords = [
+    "mailgun",
+]
+
+[[rules]]
+id = "New Relic user API Key"
+description = "New Relic user API Key"
+regex = '''['\"](NRAK-[A-Z0-9]{27})['\"]'''
+keywords = [
+    "NRAK",
+]
+
+[[rules]]
+id = "New Relic user API ID"
+description = "New Relic user API ID"
+regex = '''(?i)(newrelic[a-z0-9_ .\-,]{0,25})(=|>|:=|\|\|:|<=|=>|:).{0,5}['\"]([A-Z0-9]{64})['\"]'''
+secretGroup = 3
+keywords = [
+    "newrelic",
+]
+
+[[rules]]
+id = "npm access token"
+description = "npm access token"
+regex = '''['\"](npm_(?i)[a-z0-9]{36})['\"]'''
+keywords = [
+    "npm_",
+]
+
+[[rules]]
+id = "Rubygem API token"
+description = "Rubygem API token"
+regex = '''rubygems_[a-f0-9]{48}'''
+keywords = [
+    "rubygems_",
+]
+
+[[rules]]
+id = "Segment Public API token"
+description = "Segment Public API token"
+regex = '''sgp_[a-zA-Z0-9]{64}'''
+keywords = [
+    "sgp_",
+]
+
+[[rules]]
+id = "Sendgrid API token"
+description = "Sendgrid API token"
+regex = '''SG\.(?i)[a-z0-9_\-\.]{66}'''
+keywords = [
+    "sendgrid",
 ]

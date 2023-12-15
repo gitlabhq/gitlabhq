@@ -122,6 +122,20 @@ RSpec.describe Release, feature_category: :release_orchestration do
     end
   end
 
+  describe 'tagged' do
+    # We only test for empty string since there's a not null constraint at the database level
+    it 'does not return the tagless release' do
+      empty_string_tag = create(:release, tag: 'v99.0.0')
+      empty_string_tag.update_column(:tag, '')
+
+      expect(described_class.tagged).not_to include(empty_string_tag)
+    end
+
+    it 'does return the tagged releases' do
+      expect(described_class.tagged).to include(release)
+    end
+  end
+
   describe 'latest releases' do
     let_it_be(:yesterday) { Time.zone.now - 1.day }
     let_it_be(:tomorrow) { Time.zone.now + 1.day }

@@ -23,7 +23,7 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
         {
           "id" => "gitlab_pipeline_trigger_token",
           "description" => "GitLab Pipeline Trigger Token",
-          "regex" => "glptt-[0-9a-zA-Z_\\-]{20}",
+          "regex" => "glptt-[0-9a-zA-Z_\\-]{40}",
           "tags" => ["gitlab"],
           "keywords" => ["glptt"]
         },
@@ -35,7 +35,7 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
           "keywords" => ["GR1348941"]
         },
         {
-          "id" => "gitlab_feed_token",
+          "id" => "gitlab_feed_token_v2",
           "description" => "GitLab Feed Token",
           "regex" => "glft-[0-9a-zA-Z_-]{20}",
           "tags" => ["gitlab"],
@@ -96,7 +96,7 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
       let(:blobs) do
         [
           new_blob(id: 111, data: "glpat-12312312312312312312"), # gitleaks:allow
-          new_blob(id: 222, data: "\n\nglptt-12312312312312312312"), # gitleaks:allow
+          new_blob(id: 222, data: "\n\nglptt-1231231231231231231212312312312312312312"), # gitleaks:allow
           new_blob(id: 333, data: "data with no secret"),
           new_blob(id: 444, data: "GR134894112312312312312312312\nglft-12312312312312312312") # gitleaks:allow
         ]

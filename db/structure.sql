@@ -15997,7 +15997,6 @@ CREATE TABLE deployments (
     on_stop character varying,
     status smallint NOT NULL,
     finished_at timestamp with time zone,
-    cluster_id integer,
     deployable_id bigint,
     archived boolean DEFAULT false NOT NULL
 );
@@ -32704,8 +32703,6 @@ CREATE INDEX index_deployment_merge_requests_on_merge_request_id ON deployment_m
 CREATE INDEX index_deployments_for_visible_scope ON deployments USING btree (environment_id, finished_at DESC) WHERE (status = ANY (ARRAY[1, 2, 3, 4, 6]));
 
 CREATE INDEX index_deployments_on_archived_project_id_iid ON deployments USING btree (archived, project_id, iid);
-
-CREATE INDEX index_deployments_on_cluster_id_and_status ON deployments USING btree (cluster_id, status);
 
 CREATE INDEX index_deployments_on_created_at ON deployments USING btree (created_at);
 

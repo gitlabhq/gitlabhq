@@ -1,6 +1,6 @@
 - show_group_events = local_assigns.fetch(:show_group_events, false)
 
-.scrolling-tabs-container.inner-page-scroll-tabs.is-smaller.flex-fill
+.scrolling-tabs-container.inner-page-scroll-tabs.gl-flex-grow-1.gl-min-w-0.gl-w-full
   %button.fade-left{ type: 'button', title: _('Scroll left'), 'aria-label': _('Scroll left') }
     = sprite_icon('chevron-lg-left', size: 12)
   %button.fade-right{ type: 'button', title: _('Scroll right'), 'aria-label': _('Scroll right') }

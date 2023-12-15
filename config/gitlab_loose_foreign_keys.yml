@@ -217,10 +217,6 @@ deployment_clusters:
   - table: clusters
     column: cluster_id
     on_delete: async_delete
-deployments:
-  - table: clusters
-    column: cluster_id
-    on_delete: async_nullify
 events:
   - table: users
     column: author_id

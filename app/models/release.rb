@@ -38,6 +38,10 @@ class Release < ApplicationRecord
   validates_associated :milestone_releases, message: -> (_, obj) { obj[:value].map(&:errors).map(&:full_messages).join(",") }
   validates :links, nested_attributes_duplicates: { scope: :release, child_attributes: %i[name url filepath] }
 
+  # All releases should have tags, but because of existing invalid data, we need a work around so that presenters don't
+  # fail to generate URLs on release related pages
+  scope :tagged, -> { where.not(tag: [nil, '']) }
+
   scope :sorted, -> { order(released_at: :desc) }
   scope :preloaded, -> {
     includes(
