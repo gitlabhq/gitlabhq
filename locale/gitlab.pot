@@ -9960,6 +9960,9 @@ msgstr ""
 msgid "ChatMessage|in %{project_link}"
 msgstr ""
 
+msgid "Check"
+msgstr ""
+
 msgid "Check again"
 msgstr ""
 
@@ -12844,6 +12847,12 @@ msgid "ComplianceStandardsAdherence|Prevent committers as approvers"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Project"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Raw filter values is not currently supported. Please use available values."
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Raw text search is not currently supported. Please use the available filters."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Requirement"

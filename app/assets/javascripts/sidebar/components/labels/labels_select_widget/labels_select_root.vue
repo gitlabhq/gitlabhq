@@ -52,11 +52,6 @@ export default {
       required: false,
       default: false,
     },
-    enforceLockedLabelsOnMerge: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     showEmbeddedLabelsList: {
       type: Boolean,
       required: false,
@@ -105,6 +100,11 @@ export default {
     issuableType: {
       type: String,
       required: true,
+    },
+    issuableSupportsLockOnMerge: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     workspaceType: {
       type: String,
@@ -157,7 +157,7 @@ export default {
       return this.showEmbeddedLabelsList && isDropdownVariantEmbedded(this.variant);
     },
     isLockOnMergeSupported() {
-      return this.enforceLockedLabelsOnMerge;
+      return this.issuableSupportsLockOnMerge || this.issuable?.supportsLockOnMerge;
     },
   },
   apollo: {

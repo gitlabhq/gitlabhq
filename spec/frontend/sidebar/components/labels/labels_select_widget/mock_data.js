@@ -21,6 +21,7 @@ export const mockLockedLabel = {
   color: '#DADA55',
   textColor: '#FFFFFF',
   lockOnMerge: true,
+  lock_on_merge: true,
 };
 
 export const mockLabels = [

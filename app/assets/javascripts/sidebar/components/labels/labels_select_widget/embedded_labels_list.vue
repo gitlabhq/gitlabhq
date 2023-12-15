@@ -51,7 +51,9 @@ export default {
       return this.allowScopedLabels && isScopedLabel(label);
     },
     isLabelLocked(label) {
-      return label.lockOnMerge && this.supportsLockOnMerge;
+      // These particular labels were initialized from HAML data, so the attributes are
+      // in snake case instead of camel case
+      return label.lock_on_merge && this.supportsLockOnMerge;
     },
     showCloseButton(label) {
       return this.allowLabelRemove && !this.isLabelLocked(label);

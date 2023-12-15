@@ -36,7 +36,7 @@ RSpec.describe Gitlab::Checks::GlobalFileSizeCheck, feature_category: :source_co
     context 'when there are oversized blobs' do
       let(:mock_blob_id) { "88acbfafb1b8fdb7c51db870babce21bd861ac4f" }
       let(:mock_blob_size) { 300 * 1024 * 1024 } # 300 MiB
-      let(:size_msg) { "300.0" } # it is (mock_blob_size / 1024.0 / 1024.0).round(2).to_s
+      let(:size_msg) { "300" }
       let(:blob_double) { instance_double(Gitlab::Git::Blob, size: mock_blob_size, id: mock_blob_id) }
 
       before do
@@ -53,8 +53,7 @@ RSpec.describe Gitlab::Checks::GlobalFileSizeCheck, feature_category: :source_co
         expect(Gitlab::AppJsonLogger).to receive(:info).with('Checking for blobs over the file size limit')
         expect(Gitlab::AppJsonLogger).to receive(:info).with(
           message: 'Found blob over global limit',
-          blob_sizes: [mock_blob_size],
-          blob_details: { mock_blob_id => { "size" => mock_blob_size } }
+          blob_details: [{ "id" => mock_blob_id, "size" => mock_blob_size }]
         )
         expect do
           subject.validate!

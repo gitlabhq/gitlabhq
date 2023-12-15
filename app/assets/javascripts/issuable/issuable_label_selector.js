@@ -42,13 +42,13 @@ export default () => {
       fullPath,
       initialLabels: JSON.parse(initialLabels),
       issuableType,
+      issuableSupportsLockOnMerge: parseBoolean(supportsLockOnMerge),
       labelType: WORKSPACE_PROJECT,
       labelsFilterBasePath,
       labelsManagePath,
       variant: VARIANT_EMBEDDED,
       workspaceType: WORKSPACE_PROJECT,
       toggleAttrs: { 'data-testid': 'issuable-label-dropdown' },
-      supportsLockOnMerge: parseBoolean(supportsLockOnMerge),
     },
     render(createElement) {
       return createElement(IssuableLabelSelector);

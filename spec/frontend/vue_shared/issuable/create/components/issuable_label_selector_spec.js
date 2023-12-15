@@ -16,8 +16,8 @@ const fullPath = '/full-path';
 const labelsFilterBasePath = '/labels-filter-base-path';
 const initialLabels = [];
 const issuableType = 'issue';
+const issuableSupportsLockOnMerge = false;
 const labelType = WORKSPACE_PROJECT;
-const supportsLockOnMerge = false;
 const variant = VARIANT_EMBEDDED;
 const workspaceType = WORKSPACE_PROJECT;
 
@@ -37,8 +37,8 @@ describe('IssuableLabelSelector', () => {
         labelsFilterBasePath,
         initialLabels,
         issuableType,
+        issuableSupportsLockOnMerge,
         labelType,
-        supportsLockOnMerge,
         variant,
         workspaceType,
         ...injectedProps,

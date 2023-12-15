@@ -16,6 +16,7 @@ See report and manage standards adherence, violations, and compliance frameworks
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125444) standards adherence dashboard in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `adherence_report_ui`. Disabled by default.
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/414495) in GitLab 16.5.
 > - [Feature flag `compliance_adherence_report` and `adherence_report_ui`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137398) removed in GitLab 16.7.
+> - Standards adherence filtering [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413734) in GitLab 16.7.
 
 Standards adherence dashboard lists the adherence status of projects complying to GitLab standard.
 
@@ -32,6 +33,12 @@ To view the standards adherence dashboard for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Compliance center**.
+
+You can filter the standards adherence dashboard on:
+
+- The project that the check was performed on.
+- The type of check that was performed on a project.
+- The standard that the check belongs to.
 
 ### GitLab standard
 
