@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupLink::ProjectGroupLinkEntity do
+RSpec.describe GroupLink::ProjectGroupLinkEntity, feature_category: :groups_and_projects do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project_group_link) { create(:project_group_link) }
 
@@ -16,32 +16,86 @@ RSpec.describe GroupLink::ProjectGroupLinkEntity do
     expect(entity.to_json).to match_schema('group_link/project_group_link')
   end
 
-  context 'when current user is a project maintainer' do
-    before_all do
-      project_group_link.project.add_maintainer(current_user)
+  context 'when current user is a direct member' do
+    before do
+      allow(entity).to receive(:direct_member?).and_return(true)
+      allow(entity).to receive(:can?).and_call_original
     end
 
-    it 'exposes `can_update` and `can_remove` as `true`' do
-      expect(as_json[:can_update]).to be true
-      expect(as_json[:can_remove]).to be true
+    describe 'can_update' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(
+        :can_admin_project_member,
+        :can_manage_group_link_with_owner_access,
+        :expected_can_update
+      ) do
+        false | false | false
+        true  | false | false
+        true  | true  | true
+      end
+
+      with_them do
+        before do
+          allow(entity)
+            .to receive(:can?)
+            .with(current_user, :admin_project_member, project_group_link.shared_from)
+            .and_return(can_admin_project_member)
+          allow(entity)
+            .to receive(:can?)
+            .with(current_user, :manage_group_link_with_owner_access, project_group_link)
+            .and_return(can_manage_group_link_with_owner_access)
+        end
+
+        it "exposes `can_update` as `#{params[:expected_can_update]}`" do
+          expect(entity.as_json[:can_update]).to be expected_can_update
+        end
+      end
+    end
+
+    describe 'can_remove' do
+      context 'when current user has `destroy_project_group_link` ability' do
+        before do
+          allow(entity)
+            .to receive(:can?)
+            .with(current_user, :destroy_project_group_link, project_group_link)
+            .and_return(true)
+        end
+
+        it 'exposes `can_remove` as `true`' do
+          expect(entity.as_json[:can_remove]).to be(true)
+        end
+      end
+
+      context 'when current user does not have `destroy_project_group_link` ability' do
+        before do
+          allow(entity)
+            .to receive(:can?)
+            .with(current_user, :destroy_project_group_link, project_group_link)
+            .and_return(false)
+        end
+
+        it 'exposes `can_remove` as `false`' do
+          expect(entity.as_json[:can_remove]).to be(false)
+        end
+      end
     end
   end
 
-  context 'when current user is a group owner' do
-    before_all do
-      project_group_link.group.add_owner(current_user)
+  context 'when current user is not a direct member' do
+    before do
+      allow(entity).to receive(:direct_member?).and_return(false)
     end
 
-    it 'exposes `can_remove` as true' do
-      expect(as_json[:can_remove]).to be true
+    it 'exposes `can_update` and `can_remove` as `false`' do
+      json = entity.as_json
+
+      expect(json[:can_update]).to be false
+      expect(json[:can_remove]).to be false
     end
   end
 
-  context 'when current user is not a group owner' do
-    it 'exposes `can_remove` as false' do
-      expect(as_json[:can_remove]).to be false
-    end
-
+  context 'when current user is not a project member' do
     context 'when group is public' do
       it 'does expose shared_with_group details' do
         expect(as_json[:shared_with_group].keys).to include(:id, :avatar_url, :web_url, :name)

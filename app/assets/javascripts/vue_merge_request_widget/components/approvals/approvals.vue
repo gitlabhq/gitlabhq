@@ -1,7 +1,7 @@
 <script>
-import { GlButton, GlSprintf } from '@gitlab/ui';
+import { GlForm, GlButton, GlSprintf } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import { visitUrl } from '~/lib/utils/url_utility';
+import csrf from '~/lib/utils/csrf';
 import { STATUS_MERGED } from '~/issues/constants';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
@@ -23,7 +23,9 @@ export default {
     StateContainer,
     GlButton,
     GlSprintf,
+    GlForm,
   },
+  csrf,
   mixins: [approvalsMixin, glFeatureFlagsMixin()],
   props: {
     mr: {
@@ -169,16 +171,15 @@ export default {
         .join(', ')
         .concat('.');
     },
+    samlApprovalPath() {
+      return this.mr.samlApprovalPath;
+    },
     requireSamlAuthToApprove() {
       return this.mr.requireSamlAuthToApprove;
     },
   },
   methods: {
     approve() {
-      if (this.requireSamlAuthToApprove) {
-        this.approveWithSamlAuth();
-        return;
-      }
       if (this.requirePasswordToApprove) {
         this.$root.$emit(BV_SHOW_MODAL, this.modalId);
         return;
@@ -195,7 +196,7 @@ export default {
     },
     approveWithSamlAuth() {
       // Intentionally direct to SAML Identity Provider for renewed authorization even if SSO session exists
-      visitUrl(this.mr.samlApprovalPath);
+      this.$refs.form.$el.submit();
     },
     approveWithAuth(data) {
       this.updateApproval(
@@ -270,17 +271,40 @@ export default {
       <template v-else>
         <div class="gl-display-flex gl-flex-direction-column">
           <div class="gl-display-flex gl-flex-direction-row gl-align-items-center">
-            <gl-button
-              v-if="action"
-              :variant="action.variant"
-              :category="action.category"
-              :loading="isApproving"
-              class="gl-mr-3"
-              data-testid="approve-button"
-              @click="action.action"
-            >
-              {{ action.text }}
-            </gl-button>
+            <div v-if="requireSamlAuthToApprove && showApprove">
+              <gl-form
+                ref="form"
+                :action="samlApprovalPath"
+                method="post"
+                data-testid="approve-form"
+              >
+                <gl-button
+                  v-if="action"
+                  :variant="action.variant"
+                  :category="action.category"
+                  :loading="isApproving"
+                  class="gl-mr-3"
+                  data-testid="approve-button"
+                  type="submit"
+                >
+                  {{ action.text }}
+                </gl-button>
+                <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
+              </gl-form>
+            </div>
+            <span v-if="!requireSamlAuthToApprove || showUnapprove">
+              <gl-button
+                v-if="action"
+                :variant="action.variant"
+                :category="action.category"
+                :loading="isApproving"
+                class="gl-mr-3"
+                data-testid="approve-button"
+                @click="action.action"
+              >
+                {{ action.text }}
+              </gl-button>
+            </span>
             <approvals-summary-optional
               v-if="isOptional"
               :can-approve="hasAction"

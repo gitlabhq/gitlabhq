@@ -8,14 +8,22 @@ module GroupLink
       GroupEntity.represent(group_link.shared_from, only: [:id, :full_name, :web_url])
     end
 
+    expose :valid_roles do |group_link|
+      group_link.class.access_options
+    end
+
+    expose :can_update do |group_link, options|
+      can_admin_group_link?(group_link, options)
+    end
+
+    expose :can_remove do |group_link, options|
+      can_admin_group_link?(group_link, options)
+    end
+
     private
 
     def can_admin_group_link?(group_link, options)
-      can?(current_user, admin_permission_name, group_link.shared_from)
-    end
-
-    def admin_permission_name
-      :admin_group_member
+      direct_member?(group_link, options) && can?(current_user, :admin_group_member, group_link.shared_from)
     end
   end
 end

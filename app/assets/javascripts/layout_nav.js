@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import { setNotification } from './whats_new/utils/notification';
 
 function hideEndFade($scrollingTabs) {
   $scrollingTabs.each(function scrollTabsLoop() {
@@ -86,27 +85,8 @@ function initInviteMembers() {
     .catch(() => {});
 }
 
-function initWhatsNewComponent() {
-  const appEl = document.getElementById('whats-new-app');
-  if (!appEl) return;
-
-  setNotification(appEl);
-
-  const triggerEl = document.querySelector('.js-whats-new-trigger');
-  if (!triggerEl) return;
-
-  triggerEl.addEventListener('click', () => {
-    import(/* webpackChunkName: 'whatsNewApp' */ '~/whats_new')
-      .then(({ default: initWhatsNew }) => {
-        initWhatsNew(appEl);
-      })
-      .catch(() => {});
-  });
-}
-
 function initDeferred() {
   initScrollingTabs();
-  initWhatsNewComponent();
   initInviteMembers();
 }
 

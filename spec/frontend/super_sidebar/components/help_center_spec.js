@@ -168,14 +168,13 @@ describe('HelpCenter component', () => {
 
     describe('showWhatsNew', () => {
       beforeEach(() => {
-        beforeEach(() => {
-          createWrapper({ ...sidebarData, show_version_check: true });
-        });
+        createWrapper({ ...sidebarData, show_version_check: true });
+
         findButton("What's new 5").click();
       });
 
       it('shows the "What\'s new" slideout', () => {
-        expect(toggleWhatsNewDrawer).toHaveBeenCalledWith(expect.any(Object));
+        expect(toggleWhatsNewDrawer).toHaveBeenCalledWith(sidebarData.whats_new_version_digest);
       });
 
       it('shows the existing "What\'s new" slideout instance on subsequent clicks', () => {

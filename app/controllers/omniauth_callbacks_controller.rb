@@ -8,6 +8,9 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include KnownSignIn
   include AcceptsPendingInvitations
   include Onboarding::Redirectable
+  include InternalRedirect
+
+  ACTIVE_SINCE_KEY = 'active_since'
 
   after_action :verify_known_sign_in
 
@@ -113,14 +116,21 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     super
   end
 
+  def store_redirect_to
+    # overridden in EE
+  end
+
   def omniauth_flow(auth_module, identity_linker: nil)
     if fragment = request.env.dig('omniauth.params', 'redirect_fragment').presence
       store_redirect_fragment(fragment)
     end
 
+    store_redirect_to
+
     if current_user
       return render_403 unless link_provider_allowed?(oauth['provider'])
 
+      set_session_active_since(oauth['provider']) if ::AuthHelper.saml_providers.include?(oauth['provider'].to_sym)
       track_event(current_user, oauth['provider'], 'succeeded')
 
       if Gitlab::CurrentSettings.admin_mode
@@ -167,6 +177,9 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
   end
 
+  # Overrided in EE
+  def set_session_active_since(id); end
+
   def sign_in_user_flow(auth_user_class)
     auth_user = build_auth_user(auth_user_class)
     new_user = auth_user.new?
@@ -181,6 +194,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       Gitlab::Tracking.event(self.class.name, "#{oauth['provider']}_sso", user: @user) if new_user
 
       set_remember_me(@user)
+      set_session_active_since(oauth['provider']) if ::AuthHelper.saml_providers.include?(oauth['provider'].to_sym)
 
       if @user.two_factor_enabled? && !auth_user.bypass_two_factor?
         prompt_for_two_factor(@user)

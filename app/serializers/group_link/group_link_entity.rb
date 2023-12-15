@@ -15,10 +15,6 @@ module GroupLink
       expose :group_access, as: :integer_value
     end
 
-    expose :valid_roles do |group_link|
-      group_link.class.access_options
-    end
-
     expose :is_shared_with_group_private do |group_link|
       !can_read_shared_group?(group_link)
     end
@@ -43,14 +39,6 @@ module GroupLink
       end
     end
 
-    expose :can_update do |group_link, options|
-      can_admin_shared_from?(group_link, options)
-    end
-
-    expose :can_remove do |group_link, options|
-      direct_member?(group_link, options) && can_admin_group_link?(group_link, options)
-    end
-
     expose :is_direct_member do |group_link, options|
       direct_member?(group_link, options)
     end
@@ -67,11 +55,6 @@ module GroupLink
 
     def direct_member?(group_link, options)
       group_link.shared_from == options[:source]
-    end
-
-    def can_admin_shared_from?(group_link, options)
-      direct_member?(group_link, options) &&
-        can?(current_user, admin_permission_name, group_link.shared_from)
     end
   end
 end

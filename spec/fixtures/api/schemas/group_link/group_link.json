@@ -5,9 +5,6 @@
     "created_at",
     "expires_at",
     "access_level",
-    "valid_roles",
-    "can_update",
-    "can_remove",
     "is_direct_member"
   ],
   "properties": {
@@ -40,9 +37,6 @@
         }
       },
       "additionalProperties": false
-    },
-    "valid_roles": {
-      "type": "object"
     },
     "is_shared_with_group_private": {
       "type": "boolean"
@@ -81,12 +75,6 @@
         }
       },
       "additionalProperties": false
-    },
-    "can_update": {
-      "type": "boolean"
-    },
-    "can_remove": {
-      "type": "boolean"
     },
     "is_direct_member": {
       "type": "boolean"

@@ -95,7 +95,7 @@ RSpec.describe 'User edits a merge request', :js, feature_category: :code_review
 
       click_button('Save changes')
 
-      expect(page).to have_content("requested to merge #{merge_request.source_branch} into merge-test")
+      expect(page).to have_content("• #{merge_request.source_branch} ➔ merge-test")
       expect(page).to have_content("changed target branch from #{merge_request.target_branch} to merge-test")
     end
 

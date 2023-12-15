@@ -103,6 +103,43 @@ RSpec.describe Projects::GroupLinks::CreateService, '#execute', feature_category
           it_behaves_like 'shareable'
         end
       end
+
+      context 'when sharing it to a group with OWNER access' do
+        let(:opts) do
+          {
+            link_group_access: Gitlab::Access::OWNER,
+            expires_at: nil
+          }
+        end
+
+        it 'does not share and returns a forbiden error' do
+          expect do
+            result = subject.execute
+
+            expect(result[:status]).to eq(:error)
+            expect(result[:http_status]).to eq(403)
+          end.not_to change { project.reload.project_group_links.count }
+        end
+      end
+    end
+
+    context 'when the user is an OWNER in the project' do
+      before do
+        project.add_owner(user)
+      end
+
+      it_behaves_like 'shareable'
+
+      context 'when sharing it to a group with OWNER access' do
+        let(:opts) do
+          {
+            link_group_access: Gitlab::Access::OWNER,
+            expires_at: nil
+          }
+        end
+
+        it_behaves_like 'shareable'
+      end
     end
   end
 

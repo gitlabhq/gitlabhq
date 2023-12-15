@@ -3,6 +3,7 @@
 module Resolvers
   class TimelogResolver < BaseResolver
     include LooksAhead
+    include Gitlab::Graphql::Authorize::AuthorizeResource
 
     type ::Types::TimelogType.connection_type, null: false
 
@@ -42,20 +43,29 @@ module Resolvers
     def resolve_with_lookahead(**args)
       validate_args!(object, args)
 
-      timelogs = object&.timelogs || Timelog.all
-
       args = parse_datetime_args(args)
 
-      timelogs = apply_user_filter(timelogs, args)
-      timelogs = apply_project_filter(timelogs, args)
-      timelogs = apply_time_filter(timelogs, args)
-      timelogs = apply_group_filter(timelogs, args)
-      timelogs = apply_sorting(timelogs, args)
+      timelogs = Timelogs::TimelogsFinder.new(object, finder_params(args)).execute
 
       apply_lookahead(timelogs)
+    rescue ArgumentError => e
+      raise_argument_error(e.message)
+    rescue ActiveRecord::RecordNotFound
+      raise_resource_not_available_error!
     end
 
     private
+
+    def finder_params(args)
+      {
+        username: args[:username],
+        start_time: args[:start_time],
+        end_time: args[:end_time],
+        group_id: args[:group_id]&.model_id,
+        project_id: args[:project_id]&.model_id,
+        sort: args[:sort]
+      }
+    end
 
     def preloads
       {
@@ -93,58 +103,6 @@ module Resolvers
 
     def times_provided?(args)
       args[:start_time] && args[:end_time]
-    end
-
-    def validate_time_difference!(args)
-      return unless end_time_before_start_time?(args)
-
-      raise_argument_error('Start argument must be before End argument')
-    end
-
-    def end_time_before_start_time?(args)
-      times_provided?(args) && args[:end_time] < args[:start_time]
-    end
-
-    def apply_project_filter(timelogs, args)
-      return timelogs unless args[:project_id]
-
-      timelogs.in_project(args[:project_id].model_id)
-    end
-
-    def apply_group_filter(timelogs, args)
-      return timelogs unless args[:group_id]
-
-      group = Group.find_by_id(args[:group_id].model_id)
-      timelogs.in_group(group)
-    end
-
-    def apply_user_filter(timelogs, args)
-      return timelogs unless args[:username]
-
-      user = UserFinder.new(args[:username]).find_by_username
-      timelogs.for_user(user)
-    end
-
-    def apply_time_filter(timelogs, args)
-      return timelogs unless args[:start_time] || args[:end_time]
-
-      validate_time_difference!(args)
-
-      if args[:start_time]
-        timelogs = timelogs.at_or_after(args[:start_time])
-      end
-
-      if args[:end_time]
-        timelogs = timelogs.at_or_before(args[:end_time])
-      end
-
-      timelogs
-    end
-
-    def apply_sorting(timelogs, args)
-      return timelogs unless args[:sort]
-
-      timelogs.sort_by_field(args[:sort])
     end
 
     def raise_argument_error(message)

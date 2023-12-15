@@ -98,7 +98,7 @@ RSpec.describe 'User creates a merge request', :js, feature_category: :code_revi
 
         click_button('Create merge request')
 
-        expect(page).to have_content(title).and have_content("requested to merge #{forked_project.full_path}:fix into master")
+        expect(page).to have_content(title).and have_content("• #{forked_project.full_path}:fix ➔ master")
       end
     end
   end

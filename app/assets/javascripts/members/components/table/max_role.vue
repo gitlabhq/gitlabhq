@@ -107,13 +107,13 @@ export default {
       :header-text="__('Change role')"
       :disabled="disabled"
       :loading="busy"
-      data-qa-selector="access_level_dropdown"
+      data-testid="access-level-dropdown"
       :items="accessLevelOptions.formatted"
       :selected="selectedRole"
       @select="handleSelect"
     >
       <template #list-item="{ item }">
-        <span data-qa-selector="access_level_link">{{ item.text }}</span>
+        <span data-testid="access-level-link">{{ item.text }}</span>
       </template>
       <template #footer>
         <ldap-dropdown-footer

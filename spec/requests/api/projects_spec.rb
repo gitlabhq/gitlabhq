@@ -3658,11 +3658,15 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(json_response['error']).to eq 'group_access does not have a valid value'
     end
 
-    it "returns a 400 error when the project-group share is created with an OWNER access level" do
-      post api(path, user), params: { group_id: group.id, group_access: Gitlab::Access::OWNER }
+    it 'returns a 403 when a maintainer tries to create a link with OWNER access' do
+      user = create(:user)
+      project.add_maintainer(user)
 
-      expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['error']).to eq 'group_access does not have a valid value'
+      expect do
+        post api(path, user), params: { group_id: group.id, group_access: Gitlab::Access::OWNER }
+      end.to not_change { project.reload.project_group_links.count }
+
+      expect(response).to have_gitlab_http_status(:forbidden)
     end
 
     it "returns a 409 error when link is not saved" do
@@ -3691,11 +3695,12 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     context 'for a valid group' do
       let_it_be(:group) { create(:group, :private) }
       let_it_be(:group_user) { create(:user) }
+      let(:group_access) { Gitlab::Access::DEVELOPER }
 
       before do
         group.add_developer(group_user)
 
-        create(:project_group_link, group: group, project: project)
+        create(:project_group_link, group: group, project: project, group_access: group_access)
       end
 
       it 'returns 204 when deleting a group share' do
@@ -3725,6 +3730,21 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq '404 Not Found'
+      end
+
+      context 'when a MAINTAINER tries to destroy a link with OWNER access' do
+        let(:group_access) { Gitlab::Access::OWNER }
+
+        it 'returns 403' do
+          user = create(:user)
+          project.add_maintainer(user)
+
+          expect do
+            delete api("/projects/#{project.id}/share/#{group.id}", user)
+          end.to not_change { project.reload.project_group_links.count }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
       end
     end
 

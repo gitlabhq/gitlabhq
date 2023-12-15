@@ -143,7 +143,6 @@ export default {
         ...this.tableAttrs.tr,
         ...(member?.id && {
           'data-testid': `members-table-row-${member.id}`,
-          'data-qa-selector': 'member_row',
         }),
       };
     },

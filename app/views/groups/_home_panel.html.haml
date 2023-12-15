@@ -5,8 +5,7 @@
 .group-home-panel
   .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-sm-flex-direction-column.gl-md-flex-direction-row.gl-gap-3.gl-my-5
     .home-panel-title-row.gl-display-flex
-      .avatar-container.rect-avatar.s48.home-panel-avatar.gl-flex-shrink-0.float-none{ class: 'gl-mr-3!' }
-        = render Pajamas::AvatarComponent.new(@group, alt: @group.name, size: 48, avatar_options: { itemprop: 'logo' })
+      = render Pajamas::AvatarComponent.new(@group, alt: @group.name, size: 48, class: 'float-none gl-flex-shrink-0 gl-mr-3', avatar_options: { itemprop: 'logo' })
       %div
         %h1.home-panel-title.gl-font-size-h-display.gl-mt-3.gl-mb-2.gl-ml-2.gl-display-flex.gl-align-items-center.gl-flex-wrap.gl-gap-3.gl-word-break-word{ itemprop: 'name' }
           = @group.name

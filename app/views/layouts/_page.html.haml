@@ -7,9 +7,6 @@
     - sidebar_data = super_sidebar_context(current_user, group: group, project: @project, panel: sidebar_panel, panel_type: nav).to_json
     %aside.js-super-sidebar.super-sidebar.super-sidebar-loading{ data: { root_path: root_path, sidebar: sidebar_data, force_desktop_expanded_sidebar: @force_desktop_expanded_sidebar.to_s, command_palette: command_palette_data(project: @project).to_json } }
 
-    - if display_whats_new?
-      #whats-new-app{ data: { version_digest: whats_new_version_digest } }
-
     = render_if_exists "layouts/tanuki_bot_chat"
 
   - elsif defined?(nav) && nav

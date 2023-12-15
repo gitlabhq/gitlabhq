@@ -1,34 +1,22 @@
 import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import { mapState } from 'vuex';
-import App from './components/app.vue';
+import WhatsNewApp from './components/app.vue';
 import store from './store';
-import { getVersionDigest, setNotification } from './utils/notification';
 
 let whatsNewApp;
 
-export default (el) => {
+export default (versionDigest) => {
   if (whatsNewApp) {
     store.dispatch('openDrawer');
   } else {
+    const el = document.createElement('div');
+    document.body.append(el);
     whatsNewApp = new Vue({
       el,
       store,
-      components: {
-        App,
-      },
-      computed: {
-        ...mapState(['open']),
-      },
-      watch: {
-        open() {
-          setNotification(el);
-        },
-      },
       render(createElement) {
-        return createElement('app', {
+        return createElement(WhatsNewApp, {
           props: {
-            versionDigest: getVersionDigest(el),
+            versionDigest,
           },
         });
       },

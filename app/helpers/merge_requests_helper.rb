@@ -279,7 +279,7 @@ module MergeRequestsHelper
 
     target_branch = link_to merge_request.target_branch, project_tree_path(merge_request.target_project, merge_request.target_branch), title: merge_request.target_branch, class: 'ref-container gl-display-inline-block gl-text-truncate gl-max-w-26 gl-mx-2'
 
-    _('%{author} requested to merge %{source_branch} %{copy_button} into %{target_branch} %{created_at}').html_safe % { author: link_to_author.html_safe, source_branch: merge_request_source_branch(merge_request).html_safe, copy_button: copy_button.html_safe, target_branch: target_branch.html_safe, created_at: time_ago_with_tooltip(merge_request.created_at, html_class: 'gl-display-inline-block').html_safe }
+    safe_format('%{author} • %{source_branch} %{copy_button} ➔ %{target_branch} %{created_at}', author: link_to_author, source_branch: merge_request_source_branch(merge_request), copy_button: copy_button, target_branch: target_branch, created_at: time_ago_with_tooltip(merge_request.created_at, html_class: 'gl-display-inline-block'))
   end
 
   def sticky_header_data

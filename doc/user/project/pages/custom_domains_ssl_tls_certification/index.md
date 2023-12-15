@@ -273,7 +273,7 @@ meet these requirements.
 
 **Do not** open certificates or encryption keys in
 regular text editors. Always use code editors (such as
-Sublime Text, Atom, Dreamweaver, Brackets, etc).
+Sublime Text, Dreamweaver, Brackets, etc).
 
 ## Force HTTPS for GitLab Pages websites
 

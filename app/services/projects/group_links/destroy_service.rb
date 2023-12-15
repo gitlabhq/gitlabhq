@@ -4,8 +4,14 @@ module Projects
   module GroupLinks
     class DestroyService < BaseService
       def execute(group_link, skip_authorization: false)
-        unless valid_to_destroy?(group_link, skip_authorization)
-          return ServiceResponse.error(message: 'Not found', reason: :not_found)
+        return not_found! unless group_link
+
+        unless skip_authorization
+          return not_found! unless allowed_to_manage_destroy?(group_link)
+
+          unless allowed_to_destroy_link?(group_link)
+            return ServiceResponse.error(message: 'Forbidden', reason: :forbidden)
+          end
         end
 
         if group_link.project.private?
@@ -30,11 +36,16 @@ module Projects
 
       private
 
-      def valid_to_destroy?(group_link, skip_authorization)
-        return false unless group_link
-        return true if skip_authorization
+      def not_found!
+        ServiceResponse.error(message: 'Not found', reason: :not_found)
+      end
 
-        current_user.can?(:admin_project_group_link, group_link)
+      def allowed_to_manage_destroy?(group_link)
+        current_user.can?(:manage_destroy, group_link)
+      end
+
+      def allowed_to_destroy_link?(group_link)
+        current_user.can?(:destroy_project_group_link, group_link)
       end
 
       def refresh_project_authorizations_asynchronously(project)

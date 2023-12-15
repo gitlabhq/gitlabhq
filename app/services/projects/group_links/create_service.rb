@@ -11,12 +11,30 @@ module Projects
         super(project, user, params)
       end
 
+      def execute
+        if adding_a_group_as_owner? && cannot_assign_owner_responsibilities_to_member_in_project?
+          error('403 Forbidden', 403)
+        else
+          super
+        end
+      end
+
       private
 
       delegate :root_ancestor, to: :project
 
+      def adding_a_group_as_owner?
+        params[:link_group_access].to_i == Gitlab::Access::OWNER
+      end
+
+      def cannot_assign_owner_responsibilities_to_member_in_project?
+        !current_user.can?(:manage_owners, project)
+      end
+
       def valid_to_create?
-        can?(current_user, :read_namespace_via_membership, shared_with_group) && sharing_allowed?
+        can?(current_user, :admin_project, project) &&
+          can?(current_user, :read_namespace_via_membership, shared_with_group) &&
+          sharing_allowed?
       end
 
       def build_link

@@ -31,6 +31,7 @@ module QA
       PROJECT_ID = 278964
       FEATURES_DIR = 'https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/specs/features/'
 
+      # @param [Integer] range amount of days for results range
       def initialize(range)
         @range = range.to_i
         @slack_channel = "#quality-reports"

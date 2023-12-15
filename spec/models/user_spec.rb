@@ -5433,8 +5433,7 @@ RSpec.describe User, feature_category: :user_profile do
 
       before do
         shared_project.project_group_links.create!(
-          group: group2,
-          group_access: ProjectGroupLink.default_access
+          group: group2
         )
 
         group2.add_member(user, GroupMember::OWNER)
