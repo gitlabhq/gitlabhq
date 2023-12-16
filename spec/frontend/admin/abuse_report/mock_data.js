@@ -153,7 +153,7 @@ export const mockDiscussionWithNoReplies = [
     },
     lastEditedBy: null,
     userPermissions: {
-      adminNote: true,
+      resolveNote: true,
       __typename: 'NotePermissions',
     },
     discussion: {
@@ -192,7 +192,7 @@ export const mockDiscussionWithReplies = [
     },
     lastEditedBy: null,
     userPermissions: {
-      adminNote: true,
+      resolveNote: true,
       __typename: 'NotePermissions',
     },
     discussion: {
@@ -237,7 +237,7 @@ export const mockDiscussionWithReplies = [
     },
     lastEditedBy: null,
     userPermissions: {
-      adminNote: true,
+      resolveNote: true,
       __typename: 'NotePermissions',
     },
     discussion: {
@@ -282,7 +282,7 @@ export const mockDiscussionWithReplies = [
     },
     lastEditedBy: null,
     userPermissions: {
-      adminNote: true,
+      resolveNote: true,
       __typename: 'NotePermissions',
     },
     discussion: {
@@ -368,7 +368,7 @@ export const createAbuseReportNoteResponse = {
                 },
                 lastEditedBy: null,
                 userPermissions: {
-                  adminNote: true,
+                  resolveNote: true,
                 },
                 discussion: {
                   id: 'gid://gitlab/Discussion/90ca230051611e6e1676c50ba7178e0baeabd98d',
@@ -413,7 +413,7 @@ export const editAbuseReportNoteResponse = {
         },
         lastEditedBy: 'root',
         userPermissions: {
-          adminNote: true,
+          resolveNote: true,
           __typename: 'NotePermissions',
         },
       },

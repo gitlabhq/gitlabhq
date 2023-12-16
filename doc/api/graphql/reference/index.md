@@ -5353,7 +5353,7 @@ Input type: `MemberRoleCreateInput`
 | <a id="mutationmemberrolecreatebaseaccesslevel"></a>`baseAccessLevel` | [`MemberAccessLevel!`](#memberaccesslevel) | Base access level for the custom role. |
 | <a id="mutationmemberrolecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmemberrolecreatedescription"></a>`description` | [`String`](#string) | Description of the member role. |
-| <a id="mutationmemberrolecreategrouppath"></a>`groupPath` | [`ID!`](#id) | Group the member role to mutate is in. |
+| <a id="mutationmemberrolecreategrouppath"></a>`groupPath` | [`ID`](#id) | Group the member role to mutate is in. Required for SaaS. |
 | <a id="mutationmemberrolecreatemanageprojectaccesstokens"></a>`manageProjectAccessTokens` | [`Boolean`](#boolean) | Permission to admin project access tokens. |
 | <a id="mutationmemberrolecreatename"></a>`name` | [`String`](#string) | Name of the member role. |
 | <a id="mutationmemberrolecreatepermissions"></a>`permissions` | [`[MemberRolePermission!]`](#memberrolepermission) | List of all customizable permissions. |
@@ -13857,7 +13857,6 @@ An abuse report.
 | <a id="abusereportdiscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
 | <a id="abusereportid"></a>`id` | [`AbuseReportID!`](#abusereportid) | Global ID of the abuse report. |
 | <a id="abusereportlabels"></a>`labels` | [`LabelConnection`](#labelconnection) | Labels of the abuse report. (see [Connections](#connections)) |
-| <a id="abusereportuserpermissions"></a>`userPermissions` | [`AbuseReportPermissions!`](#abusereportpermissions) | Permissions for the current user on the resource. |
 
 #### Fields with arguments
 
@@ -13876,15 +13875,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="abusereportnotesfilter"></a>`filter` | [`NotesFilterType`](#notesfiltertype) | Type of notes collection: ALL_NOTES, ONLY_COMMENTS, ONLY_ACTIVITY. |
-
-### `AbuseReportPermissions`
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="abusereportpermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
-| <a id="abusereportpermissionsreadabusereport"></a>`readAbuseReport` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_abuse_report` on this resource. |
 
 ### `AccessLevel`
 

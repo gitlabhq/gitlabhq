@@ -656,6 +656,41 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
         end
       end
 
+      context 'when a user has different access for different groups in the hierarchy' do
+        let_it_be(:grand_parent) { create(:group) }
+        let_it_be(:parent) { create(:group, parent: grand_parent) }
+        let_it_be(:child) { create(:group, parent: parent) }
+        let_it_be(:grand_child) { create(:group, parent: child) }
+
+        before_all do
+          parent.add_developer(user)
+          child.add_maintainer(user)
+          grand_child.add_owner(user)
+        end
+
+        it 'returns the access levels that are peers or lower' do
+          expect(helper.access_level_roles_user_can_assign(grand_parent)).to be_empty
+          expect(helper.access_level_roles_user_can_assign(parent)).to eq({
+            'Guest' => ::Gitlab::Access::GUEST,
+            'Reporter' => ::Gitlab::Access::REPORTER,
+            'Developer' => ::Gitlab::Access::DEVELOPER
+          })
+          expect(helper.access_level_roles_user_can_assign(child)).to eq(::Gitlab::Access.options)
+          expect(helper.access_level_roles_user_can_assign(grand_child)).to eq(::Gitlab::Access.options_with_owner)
+        end
+      end
+
+      context 'when a group is linked to another' do
+        let_it_be(:other_group) { create(:group) }
+        let_it_be(:group_link) { create(:group_group_link, shared_group: group, shared_with_group: other_group, group_access: Gitlab::Access::MAINTAINER) }
+
+        before_all do
+          other_group.add_owner(user)
+        end
+
+        it { is_expected.to eq(::Gitlab::Access.options) }
+      end
+
       context 'when user is not provided' do
         before do
           allow(helper).to receive(:current_user).and_return(nil)

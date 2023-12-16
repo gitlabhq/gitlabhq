@@ -11954,10 +11954,13 @@ msgstr ""
 msgid "CodeOwner|Pattern"
 msgstr ""
 
+msgid "CodeSuggestionsGAAlert| (Code Suggestions transitions to a paid feature on %{date}.)"
+msgstr ""
+
 msgid "CodeSuggestionsGAAlert|Learn more"
 msgstr ""
 
-msgid "CodeSuggestionsGAAlert|Quickly and securely author code by getting suggestions in your IDE while you type. Available in multiple languages, try Code Suggestions today."
+msgid "CodeSuggestionsGAAlert|Quickly and securely author code by getting suggestions in %{link_start}your IDE%{link_end} while you type. Available in multiple languages. Try Code Suggestions today."
 msgstr ""
 
 msgid "CodeSuggestionsGAAlert|Try GitLab Duo Code Suggestions today"
@@ -11967,9 +11970,6 @@ msgid "CodeSuggestionsSM|By enabling this feature, you agree to the %{terms_link
 msgstr ""
 
 msgid "CodeSuggestionsSM|Code Suggestions"
-msgstr ""
-
-msgid "CodeSuggestionsSM|Code Suggestions %{beta}"
 msgstr ""
 
 msgid "CodeSuggestionsSM|Enable Code Suggestions for this instance"
@@ -18634,9 +18634,6 @@ msgid "Enable repository checks"
 msgstr ""
 
 msgid "Enable security training"
-msgstr ""
-
-msgid "Enable security training to help your developers learn how to fix vulnerabilities. Developers can view security training from selected educational providers, relevant to the detected vulnerability."
 msgstr ""
 
 msgid "Enable shared runners for all projects and subgroups in this group."
@@ -43244,7 +43241,7 @@ msgstr ""
 msgid "SecurityConfiguration|Enable incubating Breach and Attack Simulation focused features such as callback attacks in your DAST scans."
 msgstr ""
 
-msgid "SecurityConfiguration|Enable security training to help your developers learn how to fix vulnerabilities. Developers can view security training from selected educational providers, relevant to the detected vulnerability."
+msgid "SecurityConfiguration|Enable security training to help your developers learn how to fix vulnerabilities. Developers can view security training from selected educational providers, relevant to the detected vulnerability. Please note that security training is not accessible in an environment that is offline."
 msgstr ""
 
 msgid "SecurityConfiguration|Enabled"

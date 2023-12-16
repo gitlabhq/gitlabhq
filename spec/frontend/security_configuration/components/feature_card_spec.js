@@ -1,7 +1,7 @@
 import { GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import { securityFeatures } from '~/security_configuration/components/constants';
+import { securityFeatures } from '~/security_configuration/constants';
 import FeatureCard from '~/security_configuration/components/feature_card.vue';
 import FeatureCardBadge from '~/security_configuration/components/feature_card_badge.vue';
 import ManageViaMr from '~/vue_shared/security_configuration/components/manage_via_mr.vue';

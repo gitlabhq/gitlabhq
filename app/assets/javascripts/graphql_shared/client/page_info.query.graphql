@@ -1,0 +1,8 @@
+query getPageInfo($input: LocalPageInfoInput) {
+  pageInfo(input: $input) @client {
+    total
+    perPage
+    nextPage
+    previousPage
+  }
+}

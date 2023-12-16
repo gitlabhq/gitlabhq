@@ -4,7 +4,7 @@ import {
   SAST_DESCRIPTION,
   SAST_HELP_PATH,
   SAST_CONFIG_HELP_PATH,
-} from '~/security_configuration/components/constants';
+} from '~/security_configuration/constants';
 import { REPORT_TYPE_SAST } from '~/vue_shared/security_reports/constants';
 
 export const testProjectPath = 'foo/bar';

@@ -1,0 +1,78 @@
+stages:
+  manage:
+    display_name: "Manage"
+    section: core_platform
+    groups:
+      import_and_integrate:
+        name: Import and Integrate
+      foundations:
+        name: Foundations
+
+  plan:
+    display_name: "Plan"
+    section: dev
+    groups:
+      project_management:
+        name: Project Management
+      product_planning:
+        name: Product Planning
+      knowledge:
+        name: Knowledge
+      optimize:
+        name: Optimize
+
+  create:
+    display_name: "Create"
+    section: dev
+    slack:
+      channel: s_create
+    groups:
+      source_code:
+        name: Source Code
+      code_review:
+        name: Code Review
+      ide:
+        name: IDE
+      editor_extensions:
+        name: Editor Extensions
+      code_creation:
+        name: Code Creation
+
+  verify:
+    display_name: "Verify"
+    section: ci
+    slack:
+      channel: s_verify
+    groups:
+      pipeline_execution:
+        name: "Pipeline Execution"
+      pipeline_authoring:
+        name: "Pipeline Authoring"
+      runner:
+        name: "Runner"
+      runner_saas:
+        name: "Runner SaaS"
+      pipeline_security:
+        name: "Pipeline Security"
+
+  package:
+    display_name: "Package"
+    section: ci
+    slack:
+      channel: s_package
+    groups:
+      package_registry:
+        name: Package Registry
+      container_registry:
+        name: Container Registry
+
+  monitor:
+    display_name: Monitor
+    section: analytics
+    groups:
+      analytics_instrumentation:
+        name: Analytics Instrumentation
+      product_analytics:
+        name: Product Analytics
+      observability:
+        name: "Observability"

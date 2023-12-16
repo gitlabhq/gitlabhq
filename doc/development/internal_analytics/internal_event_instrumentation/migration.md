@@ -42,16 +42,13 @@ Gitlab::InternalEvents.track_event('ci_templates_unique', namespace: namespace, 
 
 In addition, you have to create definitions for the metrics that you would like to track.
 
-To generate metric definitions, you can use the generator like this:
+To generate metric definitions, you can use the generator:
 
 ```shell
-bin/rails g gitlab:analytics:internal_events \
-  --time_frames=7d 28d\
-  --group=project_management \
-  --event=ci_templates_unique \
-  --unique=user.id \
-  --mr=https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121544
+ruby scripts/internal_events/cli.rb
 ```
+
+The generator walks you through the required inputs step-by-step.
 
 ### Frontend
 

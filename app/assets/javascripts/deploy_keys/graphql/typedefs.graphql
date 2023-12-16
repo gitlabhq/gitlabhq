@@ -1,0 +1,45 @@
+#import "~/graphql_shared/client/page_info.typedefs.graphql"
+
+enum DeployKeysScope {
+  enabledKeys
+  availableProjectKeys
+  availablePublicKeys
+}
+
+enum LocalDeployKeyActions {
+  enable
+  disable
+}
+
+type LocalProject {
+  id: ID!
+  fullPath: String
+  fullName: String
+}
+
+type LocalDeployKeysProject {
+  canPush: Boolean
+  projects: [LocalProject]
+}
+
+type LocalDeployKey {
+  id: ID!
+  title: String
+  fingerprintSha256: String
+  fingerprint: String
+  editPath: String
+  isEnabled: Boolean
+  destroyedWhenOrphaned: Boolean
+  almostOrphaned: Boolean
+  expiresAt: String
+  createdAt: String
+  deployKeysProjects: [LocalDeployKeysProject]
+}
+
+extend type LocalPageInfoInput {
+  scope: DeployKeysScope
+}
+
+extend type Project {
+  deployKeys: [LocalDeployKey]
+}

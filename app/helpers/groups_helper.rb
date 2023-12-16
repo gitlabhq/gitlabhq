@@ -208,14 +208,10 @@ module GroupsHelper
   end
 
   def access_level_roles_user_can_assign(group)
-    return {} unless current_user
-    return group.access_level_roles if current_user.can_admin_all_resources?
-
-    max_access_level = group.highest_group_member(current_user)&.access_level
-
-    return {} unless max_access_level
-
-    group.access_level_roles.select { |_k, v| v <= max_access_level }
+    max_access_level = group.max_member_access_for_user(current_user)
+    group.access_level_roles.select do |_name, access_level|
+      access_level <= max_access_level
+    end
   end
 
   def groups_projects_more_actions_dropdown_data(source)

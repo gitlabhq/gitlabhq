@@ -54,6 +54,9 @@ export default {
     authorId() {
       return getIdFromGraphQLId(this.author.id);
     },
+    showEditButton() {
+      return this.note.userPermissions.resolveNote;
+    },
     editedAtClasses() {
       return this.showReplyButton ? 'gl-text-secondary gl-pl-3' : 'gl-text-secondary gl-pl-8';
     },
@@ -106,7 +109,7 @@ export default {
           <div class="gl-display-inline-flex">
             <abuse-report-note-actions
               :show-reply-button="showReplyButton"
-              show-edit-button
+              :show-edit-button="showEditButton"
               @startReplying="$emit('startReplying')"
               @startEditing="startEditing"
             />

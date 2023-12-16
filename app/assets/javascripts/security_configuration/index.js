@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { parseBooleanDataAttributes } from '~/lib/utils/dom_utils';
 import SecurityConfigurationApp from './components/app.vue';
-import { securityFeatures } from './components/constants';
+import { securityFeatures } from './constants';
 import { augmentFeatures } from './utils';
 
 export const initSecurityConfiguration = (el) => {

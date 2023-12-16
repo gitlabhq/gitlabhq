@@ -1,5 +1,5 @@
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { SCANNER_NAMES_MAP } from '~/security_configuration/components/constants';
+import { SCANNER_NAMES_MAP } from '~/security_configuration/constants';
 import { REPORT_TYPE_DAST } from '~/vue_shared/security_reports/constants';
 
 /**

@@ -9,7 +9,7 @@ import environmentToStopQuery from '~/environments/graphql/queries/environment_t
 import createMockApollo from 'helpers/mock_apollo_helper';
 import pollIntervalQuery from '~/environments/graphql/queries/poll_interval.query.graphql';
 import isEnvironmentStoppingQuery from '~/environments/graphql/queries/is_environment_stopping.query.graphql';
-import pageInfoQuery from '~/environments/graphql/queries/page_info.query.graphql';
+import pageInfoQuery from '~/graphql_shared/client/page_info.query.graphql';
 import { TEST_HOST } from 'helpers/test_constants';
 import {
   environmentsApp,

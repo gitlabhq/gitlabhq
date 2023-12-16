@@ -357,18 +357,21 @@ Additionally, see [troubleshooting users receiving a 404 after sign in](#users-r
 
 ## Message: The SAML response did not contain an email address. Either the SAML identity provider is not configured to send the attribute, or the identity provider directory does not have an email address value for your user
 
-This error appears when the SAML response does not contain the user's email address in an **email** or **mail** attribute as shown in the following example:
+This error appears when the SAML response does not contain the user's email address in an **email** or **mail** attribute.
+Ensure the SAML identity provider is configured to send a [supported mail attribute](../../../integration/saml.md).
+
+Examples:
 
 ```xml
 <Attribute Name="email">
-  <AttributeValue>user@domain.com‹/AttributeValue>
+  <AttributeValue>user@example.com‹/AttributeValue>
 </Attribute>
 ```
 
-Attribute names starting with phrases such as `http://schemas.xmlsoap.org/ws/2005/05/identity/claims` and `http://schemas.microsoft.com/ws/2008/06/identity/claims/` are supported.
+Attribute names starting with phrases such as `http://schemas.xmlsoap.org/ws/2005/05/identity/claims` and `http://schemas.microsoft.com/ws/2008/06/identity/claims/` are supported by default beginning in GitLab 16.7.
 
 ```xml
 <Attribute Name="http://schemas.microsoft.com/ws/2008/06/identity/claims/emailaddress">
-  <AttributeValue>user@domain.com‹/AttributeValue>
+  <AttributeValue>user@example.com‹/AttributeValue>
 </Attribute>
 ```

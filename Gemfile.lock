@@ -1338,7 +1338,7 @@ GEM
       optimist (>= 3.0.0)
     rbtree (0.4.6)
     rchardet (1.8.0)
-    re2 (2.4.3)
+    re2 (2.5.0)
       mini_portile2 (~> 2.8.5)
     recaptcha (5.12.3)
       json
@@ -2023,7 +2023,7 @@ DEPENDENCIES
   rails-i18n (~> 7.0)
   rainbow (~> 3.0)
   rbtrace (~> 0.4)
-  re2 (= 2.4.3)
+  re2 (= 2.5.0)
   recaptcha (~> 5.12)
   redis (~> 4.8.0)
   redis-actionpack (~> 5.3.0)

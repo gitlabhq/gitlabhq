@@ -15,6 +15,8 @@ class MergeRequestPollWidgetEntity < Grape::Entity
     merge_request.project.merge_requests_ff_only_enabled
   end
 
+  expose :ff_merge_possible?, as: :ff_merge_possible
+
   # User entities
   expose :merge_user, using: UserEntity
 

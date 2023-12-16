@@ -1,0 +1,20 @@
+---
+description: random event string
+category: InternalEventTracking
+action: random_name
+identifiers:
+- project
+- namespace
+- user
+product_section: core_platform
+product_stage: manage
+product_group: import_and_integrate
+milestone: '16.6'
+introduced_by_url: TODO
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

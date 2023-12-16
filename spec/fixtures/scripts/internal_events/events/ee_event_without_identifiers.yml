@@ -1,0 +1,14 @@
+---
+description: Internal Event CLI is opened
+category: InternalEventTracking
+action: internal_events_cli_opened
+product_section: analytics
+product_stage: monitor
+product_group: analytics_instrumentation
+milestone: '16.6'
+introduced_by_url: TODO
+distributions:
+- ee
+tiers:
+- premium
+- ultimate

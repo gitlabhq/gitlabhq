@@ -17,30 +17,13 @@ In order to instrument your code with Internal Events Tracking you need to do th
 
 ## Defining event and metrics
 
-<div class="video-fallback">
-  See the video about <a href="https://www.youtube.com/watch?v=QICKWznLyy0">adding events and metrics using the generator</a>
-</div>
-<figure class="video_container">
-  <iframe src="https://www.youtube-nocookie.com/embed/QICKWznLyy0" frameborder="0" allowfullscreen="true"> </iframe>
-</figure>
-
-To create an event and metric definitions you can use the `internal_events` generator.
-
-This example creates an event definition for an event called `project_created` and two metric definitions, which are aggregated every 7 and 28 days.
+To create event and/or metric definitions, use the `internal_events` generator from the `gitlab` directory:
 
 ```shell
-bundle exec rails generate gitlab:analytics:internal_events \
---time_frames=7d 28d \
---group=project_management \
---event=project_created \
---unique=user.id \
---mr=https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121544
+ruby scripts/internal_events/cli.rb
 ```
 
-Where:
-
-- `time_frames`: Valid options are `7d` and `28d` if you provide a `unique` value and `7d`, `28d` and `all` for metrics without `unique`.
-- `unique`: Valid options are `user.id`, `project.id`, and `namespace.id`, as they are logged as part of the standard context. We [are actively working](https://gitlab.com/gitlab-org/gitlab/-/issues/411255) on a way to define uniqueness on arbitrary properties sent with the event, such as `merge_request.id`.
+This CLI will help you create the correct defintion files based on your specific use-case, then provide code examples for instrumentation and testing.
 
 ## Trigger events
 
@@ -52,11 +35,11 @@ To trigger an event, call the `Gitlab::InternalEvents.track_event` method with t
 
 ```ruby
 Gitlab::InternalEvents.track_event(
-        "i_code_review_user_apply_suggestion",
-        user: user,
-        namespace: namespace,
-        project: project
-        )
+  "i_code_review_user_apply_suggestion",
+  user: user,
+  namespace: namespace,
+  project: project
+)
 ```
 
 This method automatically increments all RedisHLL metrics relating to the event `i_code_review_user_apply_suggestion`, and sends a corresponding Snowplow event with all named arguments and standard context (SaaS only).

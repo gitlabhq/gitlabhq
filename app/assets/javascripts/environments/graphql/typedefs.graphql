@@ -1,3 +1,5 @@
+#import "~/graphql_shared/client/page_info.typedefs.graphql"
+
 type LocalEnvironment {
   id: Int!
   globalId: ID!
@@ -53,13 +55,6 @@ type LocalEnvironmentApp {
 
 type LocalErrors {
   errors: [String!]!
-}
-
-type LocalPageInfo {
-  total: Int!
-  perPage: Int!
-  nextPage: Int!
-  previousPage: Int!
 }
 
 type k8sPodStatus {

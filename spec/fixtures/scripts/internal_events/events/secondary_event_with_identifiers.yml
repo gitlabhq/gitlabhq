@@ -1,0 +1,20 @@
+---
+description: Engineer closes Internal Event CLI
+category: InternalEventTracking
+action: internal_events_cli_closed
+identifiers:
+- project
+- namespace
+- user
+product_section: analytics
+product_stage: monitor
+product_group: analytics_instrumentation
+milestone: '16.6'
+introduced_by_url: TODO
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

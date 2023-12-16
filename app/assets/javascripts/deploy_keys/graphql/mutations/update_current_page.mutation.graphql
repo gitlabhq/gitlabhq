@@ -1,0 +1,3 @@
+mutation updateCurrentDeployKeyPage($page: String) {
+  currentPage(page: $page) @client
+}

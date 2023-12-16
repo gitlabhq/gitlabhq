@@ -1,0 +1,31 @@
+---
+key_path: redis_hll_counters.count_distinct_project_id_from_internal_events_cli_closed_and_internal_events_cli_used_weekly
+description: Weekly count of unique projects where a defition file was created with the CLI
+product_section: analytics
+product_stage: monitor
+product_group: analytics_instrumentation
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '16.6'
+introduced_by_url: TODO
+time_frame: 7d
+data_source: internal_events
+data_category: optional
+instrumentation_class: RedisHLLMetric
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+options:
+  events:
+  - internal_events_cli_closed
+  - internal_events_cli_used
+events:
+- name: internal_events_cli_closed
+  unique: project.id
+- name: internal_events_cli_used
+  unique: project.id

@@ -25,9 +25,12 @@ module QA
           element 'new-project-button'
         end
 
-        def has_project_with_access_role?(project_name, access_role)
-          within_element('project-content', text: project_name) do
-            has_element?('user-role-content', text: access_role)
+        def has_filtered_project_with_access_role?(project_name, access_role)
+          # Retry as in some situations the filter may fail if sidekiq hasn't had a chance
+          # to process all jobs after the project create
+          QA::Support::Retrier.retry_until(max_duration: 60, retry_on_exception: true) do
+            filter_by_name(project_name)
+            has_project_with_access_role?(project_name, access_role)
           end
         end
 
@@ -53,6 +56,14 @@ module QA
 
         def clear_project_filter
           fill_element('project-filter-form-container', "")
+        end
+
+        private
+
+        def has_project_with_access_role?(project_name, access_role)
+          within_element('project-content', text: project_name) do
+            has_element?('user-role-content', text: access_role)
+          end
         end
       end
     end

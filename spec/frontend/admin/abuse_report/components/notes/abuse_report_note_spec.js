@@ -93,6 +93,26 @@ describe('Abuse Report Note', () => {
   });
 
   describe('Editing', () => {
+    it('should show edit button when resolveNote is true', () => {
+      createComponent({
+        note: { ...mockNote, userPermissions: { resolveNote: true } },
+      });
+
+      expect(findNoteActions().props()).toMatchObject({
+        showEditButton: true,
+      });
+    });
+
+    it('should not show edit button when resolveNote is false', () => {
+      createComponent({
+        note: { ...mockNote, userPermissions: { resolveNote: false } },
+      });
+
+      expect(findNoteActions().props()).toMatchObject({
+        showEditButton: false,
+      });
+    });
+
     it('should not be in edit mode by default', () => {
       expect(findEditNote().exists()).toBe(false);
     });
@@ -164,16 +184,14 @@ describe('Abuse Report Note', () => {
     });
   });
 
-  describe('Actions', () => {
-    it('should show note actions', () => {
-      expect(findNoteActions().exists()).toBe(true);
+  describe('Replying', () => {
+    it('should show reply button', () => {
       expect(findNoteActions().props()).toMatchObject({
-        showReplyButton: mockShowReplyButton,
-        showEditButton: true,
+        showReplyButton: true,
       });
     });
 
-    it('should emit `startReplying`', () => {
+    it('should bubble up `startReplying` event', () => {
       findNoteActions().vm.$emit('startReplying');
 
       expect(wrapper.emitted('startReplying')).toHaveLength(1);

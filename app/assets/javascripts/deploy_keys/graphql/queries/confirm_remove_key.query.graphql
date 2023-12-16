@@ -1,0 +1,5 @@
+query confirmRemoveKey {
+  deployKeyToRemove @client {
+    id
+  }
+}

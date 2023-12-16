@@ -10,8 +10,6 @@ module Types
 
     authorize :read_abuse_report
 
-    expose_permissions Types::PermissionTypes::AbuseReport
-
     field :id, Types::GlobalIDType[::AbuseReport],
       null: false, description: 'Global ID of the abuse report.'
 

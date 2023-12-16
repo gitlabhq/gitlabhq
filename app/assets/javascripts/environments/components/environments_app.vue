@@ -4,9 +4,9 @@ import { debounce } from 'lodash';
 import { s__, __, sprintf } from '~/locale';
 import { updateHistory, setUrlParams, queryToObject } from '~/lib/utils/url_utility';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import pageInfoQuery from '~/graphql_shared/client/page_info.query.graphql';
 import environmentAppQuery from '../graphql/queries/environment_app.query.graphql';
 import pollIntervalQuery from '../graphql/queries/poll_interval.query.graphql';
-import pageInfoQuery from '../graphql/queries/page_info.query.graphql';
 import environmentToDeleteQuery from '../graphql/queries/environment_to_delete.query.graphql';
 import environmentToRollbackQuery from '../graphql/queries/environment_to_rollback.query.graphql';
 import environmentToStopQuery from '../graphql/queries/environment_to_stop.query.graphql';
@@ -56,6 +56,9 @@ export default {
     },
     pageInfo: {
       query: pageInfoQuery,
+      variables() {
+        return { page: this.page };
+      },
     },
     environmentToDelete: {
       query: environmentToDeleteQuery,

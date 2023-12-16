@@ -717,16 +717,7 @@ your provider's support.
 
 ### Configure assertions
 
-> - Microsoft Azure/Entra ID attribute support [introduced on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/420766) in GitLab 16.7.
-> - Microsoft Azure/Entra ID attribute support [introduced on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136734) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `saml_microsoft_attribute_names`. Disabled by default, and available to GitLab.com administrators only.
-
-FLAG:
-On self-managed GitLab, Microsoft Azure/Entra ID attributes are supported by default.
-In the following table, these attributes begin with either `http://schemas.xmlsoap.org`
-or `http://schemas.microsoft.com`.
-On GitLab.com, Microsoft Azure/Entra ID attributes are introduced
-[with a flag](../administration/feature_flags.md) named `saml_microsoft_attribute_names`.
-On GitLab.com, this feature is unavailable but can be configured by GitLab.com administrators only.
+> Microsoft Azure/Entra ID attribute support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420766) in GitLab 16.7.
 
 NOTE:
 The attributes are case-sensitive.
