@@ -6,6 +6,7 @@ import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
+import { DRAG_DELAY } from '~/sortable/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
@@ -24,6 +25,8 @@ export default {
     forceFallback: true,
     ghostClass: 'gl-visibility-hidden',
     tag: 'ul',
+    delay: DRAG_DELAY,
+    delayOnTouchOnly: true,
   },
   components: {
     GlAlert,

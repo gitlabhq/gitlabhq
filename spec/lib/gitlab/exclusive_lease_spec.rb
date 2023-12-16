@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ExclusiveLease, :request_store,
-  :clean_gitlab_redis_cluster_shared_state, feature_category: :shared do
+  :clean_gitlab_redis_shared_state, feature_category: :shared do
   let(:unique_key) { SecureRandom.hex(10) }
 
   describe '#try_obtain' do

@@ -15,8 +15,18 @@ module Enums
           job_activity_limit_exceeded: 22,
           deployments_limit_exceeded: 23,
           # 24 was previously used by the deprecated `user_blocked`
-          project_deleted: 25
+          project_deleted: 25,
+          filtered_by_rules: 26,
+          filtered_by_workflow_rules: 27
         }
+      end
+
+      def self.persistable_failure_reasons
+        failure_reasons.except(:filtered_by_rules, :filtered_by_workflow_rules)
+      end
+
+      def self.persistable_failure_reason?(reason)
+        persistable_failure_reasons.include?(reason)
       end
 
       # Returns the `Hash` to use for creating the `sources` enum for

@@ -475,7 +475,8 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Zoekt::IndexerWorker' => 2,
         'Issuable::RelatedLinksCreateWorker' => 3,
         'BulkImports::RelationBatchExportWorker' => 6,
-        'BulkImports::RelationExportWorker' => 6
+        'BulkImports::RelationExportWorker' => 6,
+        'Ci::Runners::ExportUsageCsvWorker' => 3
       }.merge(extra_retry_exceptions)
     end
 

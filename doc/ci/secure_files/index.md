@@ -60,3 +60,26 @@ WARNING:
 The content of files loaded with the `download-secure-files` tool are not [masked](../variables/index.md#mask-a-cicd-variable)
 in the job log output. Make sure to avoid outputting secure file contents in the job log,
 especially when logging output that could contain sensitive information.
+
+## Security details
+
+Project-level Secure Files are encrypted on upload using the [Lockbox](https://github.com/ankane/lockbox)
+Ruby gem by using the [`Ci::SecureFileUploader`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/uploaders/ci/secure_file_uploader.rb)
+interface. This interface generates a SHA256 checksum of the source file during upload
+that is persisted with the record in the database so it can be used to verify the contents
+of the file when downloaded.
+
+A [unique encryption key](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/ci/secure_file.rb#L27)
+is generated for each file when it is created and persisted in the database. The encrypted uploaded files
+are stored in either local storage or object storage depending on the [GitLab instance configuration](../../administration/secure_files.md).
+
+Individual files can be retrieved with the [secure files download API](../../api/secure_files.md#download-secure-file).
+Metadata can be retrieved with the [list](../../api/secure_files.md#list-project-secure-files)
+or [show](../../api/secure_files.md#show-secure-file-details) API endpoints. Files can also be retrieved
+with the [`download-secure-files`](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files)
+tool. This tool automatically verifies the checksum of each file as it is downloaded.
+
+Any project member with at least the Developer role can access Project-level secure files.
+Interactions with Project-level secure files are not included in Audit Events, but
+[issue 117](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/readme/-/issues/117).
+proposes adding this functionality.

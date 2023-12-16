@@ -5,7 +5,7 @@ import produce from 'immer';
 import Draggable from 'vuedraggable';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import { s__ } from '~/locale';
-import { defaultSortableOptions } from '~/sortable/constants';
+import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import {
   DraggableItemTypes,
   flashAnimationDuration,
@@ -89,7 +89,7 @@ export default {
         group: 'boards-list',
         tag: 'div',
         value: this.boardListsToUse,
-        delay: 100,
+        delay: DRAG_DELAY,
         delayOnTouchOnly: true,
         filter: 'input',
         preventOnFilter: false,

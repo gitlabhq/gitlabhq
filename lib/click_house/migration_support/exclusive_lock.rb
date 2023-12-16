@@ -17,7 +17,7 @@ module ClickHouse
         def register_running_worker(worker_class, worker_id)
           ttl = worker_class.click_house_worker_attrs[:migration_lock_ttl].from_now.utc
 
-          Gitlab::Redis::ClusterSharedState.with do |redis|
+          Gitlab::Redis::SharedState.with do |redis|
             redis.zadd(ACTIVE_WORKERS_REDIS_KEY, ttl.to_i, worker_id, gt: true)
 
             yield
@@ -41,7 +41,7 @@ module ClickHouse
         end
 
         def active_sidekiq_workers?
-          Gitlab::Redis::ClusterSharedState.with do |redis|
+          Gitlab::Redis::SharedState.with do |redis|
             min = Time.now.utc.to_i
 
             # expire keys in the past

@@ -3,7 +3,7 @@ import { GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
 import { STATUS_CLOSED } from '~/issues/constants';
 import { sprintf, __, s__ } from '~/locale';
-import { defaultSortableOptions } from '~/sortable/constants';
+import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
 import Tracking from '~/tracking';
 import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
@@ -218,7 +218,7 @@ export default {
         'ghost-class': 'board-card-drag-active',
         'data-list-id': this.list.id,
         value: this.boardListItems,
-        delay: 100,
+        delay: DRAG_DELAY,
         delayOnTouchOnly: true,
       };
 

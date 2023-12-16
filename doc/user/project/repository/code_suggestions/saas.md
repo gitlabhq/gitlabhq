@@ -19,12 +19,11 @@ Learn about [data usage when using Code Suggestions](index.md#code-suggestions-d
 
 ## Enable Code Suggestions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121079) in GitLab 16.1 as [Beta](../../../../policy/experiment-beta-support.md#beta).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121079) in GitLab 16.1 as [Beta](../../../../policy/experiment-beta-support.md#beta).
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139916) in GitLab 16.8. Available to a percentage of users.
 
-You must enable Code Suggestions for both your user account and your top-level group:
-
-- [Enable Code Suggestions for your top-level group](../../../group/manage.md#enable-code-suggestions) (you must be a group owner).
-- [Enable Code Suggestions for your own account](../../../profile/preferences.md#enable-code-suggestions).
+A group owner must
+[enable Code Suggestions for your top-level group](../../../group/manage.md#enable-code-suggestions-for-a-group).
 
 NOTE:
 If you are having issues enabling Code Suggestions, view the
@@ -34,13 +33,18 @@ If you are having issues enabling Code Suggestions, view the
 
 Prerequisites:
 
-- You must have a [supported IDE editor extension](index.md#supported-editor-extensions).
+- You must have configured Code Suggestions in a
+  [supported IDE editor extension](index.md#supported-editor-extensions).
 - Code Suggestions must be enabled for:
-  - [The top-level group](../../../group/manage.md#enable-code-suggestions).
-  - [Your own account](../../../profile/preferences.md#enable-code-suggestions).
+  - [The top-level group](../../../group/manage.md#enable-code-suggestions-for-a-group).
+  - [Your own account](../../../profile/preferences.md#enable-code-suggestions), if your
+    account is not part of the percentage rollout.
 
 To use Code Suggestions:
 
+1. Determine if your user account is part of the percentage rollout. See
+   [Enable Code Suggestions](../../../profile/preferences.md#enable-code-suggestions)
+   for more information.
 1. Author your code. As you type, suggestions are displayed.
    Code Suggestions provide code snippets or complete the current line, depending on the cursor position.
 1. Describe the requirements in natural language. Be concise and specific. Code Suggestions generates functions and code snippets as appropriate.
@@ -52,3 +56,8 @@ Things to remember:
 
 - AI is non-deterministic, so you may not get the same suggestion every time with the same input.
 - Just like product requirements, writing clear, descriptive, and specific tasks results in quality generated code.
+
+## Disable Code Suggestions
+
+Individual users can disable Code Suggestions by disabling the feature in their
+[installed IDE editor extension](index.md#supported-editor-extensions).

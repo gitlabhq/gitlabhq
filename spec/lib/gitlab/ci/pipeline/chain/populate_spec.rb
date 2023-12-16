@@ -34,12 +34,15 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate, feature_category: :continu
     { rspec: { script: 'rspec' } }
   end
 
+  let(:ff_always_set_pipeline_failure_reason) { true }
+
   def run_chain
     dependencies.map(&:perform!)
     step.perform!
   end
 
   before do
+    stub_feature_flags(always_set_pipeline_failure_reason: ff_always_set_pipeline_failure_reason)
     stub_ci_pipeline_yaml_file(YAML.dump(config))
   end
 
@@ -100,7 +103,27 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate, feature_category: :continu
 
     it 'increments the error metric' do
       counter = Gitlab::Metrics.counter(:gitlab_ci_pipeline_failure_reasons, 'desc')
-      expect { run_chain }.to change { counter.get(reason: 'unknown_failure') }.by(1)
+      expect { run_chain }.to change { counter.get(reason: 'filtered_by_rules') }.by(1)
+    end
+
+    it 'sets the failure reason without persisting the pipeline', :aggregate_failures do
+      run_chain
+
+      expect(pipeline).not_to be_persisted
+      expect(pipeline).to be_failed
+      expect(pipeline).to be_filtered_by_rules
+    end
+
+    context 'when ff always_set_pipeline_failure_reason is disabled' do
+      let(:ff_always_set_pipeline_failure_reason) { false }
+
+      it 'sets the failure reason without persisting the pipeline', :aggregate_failures do
+        run_chain
+
+        expect(pipeline).not_to be_persisted
+        expect(pipeline).not_to be_failed
+        expect(pipeline).not_to be_filtered_by_rules
+      end
     end
   end
 

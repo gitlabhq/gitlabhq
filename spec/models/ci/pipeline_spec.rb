@@ -3794,6 +3794,44 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '#set_failed' do
+    let(:pipeline) { build(:ci_pipeline) }
+
+    it 'marks the pipeline as failed with the given reason without saving', :aggregate_failures do
+      pipeline.set_failed(:filtered_by_rules)
+
+      expect(pipeline).to be_failed
+      expect(pipeline).to be_filtered_by_rules
+      expect(pipeline).not_to be_persisted
+    end
+  end
+
+  describe '#filtered_as_empty?' do
+    let(:pipeline) { build_stubbed(:ci_pipeline) }
+
+    subject { pipeline.filtered_as_empty? }
+
+    it { is_expected.to eq false }
+
+    context 'when the pipeline is failed' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:drop_reason, :expected) do
+        :unknown_failure            | false
+        :filtered_by_rules          | true
+        :filtered_by_workflow_rules | true
+      end
+
+      with_them do
+        before do
+          pipeline.set_failed(drop_reason)
+        end
+
+        it { is_expected.to eq expected }
+      end
+    end
+  end
+
   describe '#has_yaml_errors?' do
     let(:pipeline) { build_stubbed(:ci_pipeline) }
 

@@ -171,6 +171,8 @@
   - 1
 - - ci_parse_secure_file_metadata
   - 1
+- - ci_runners_export_usage_csv
+  - 1
 - - ci_runners_process_runner_version_update
   - 1
 - - ci_unlock_pipelines_in_queue

@@ -39,5 +39,5 @@ end
 # 2. Rails.cache
 # 3. HTTP clients
 Gitlab::Redis::ALL_CLASSES.each do |redis_instance|
-  redis_instance.with { nil }
+  redis_instance.with { nil } unless redis_instance == Gitlab::Redis::ClusterSharedState
 end

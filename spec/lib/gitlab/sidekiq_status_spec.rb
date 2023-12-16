@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues,
-  :clean_gitlab_redis_shared_state, :clean_gitlab_redis_cluster_shared_state do
+  :clean_gitlab_redis_shared_state do
   shared_examples 'tracking status in redis' do
     describe '.set' do
       it 'stores the job ID' do

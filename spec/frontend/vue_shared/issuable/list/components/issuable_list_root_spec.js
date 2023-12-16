@@ -4,6 +4,7 @@ import VueDraggable from 'vuedraggable';
 
 import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
+import { DRAG_DELAY } from '~/sortable/constants';
 
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
 import IssuableListRoot from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
@@ -474,6 +475,11 @@ describe('IssuableListRoot', () => {
 
       it('IssuableItem has grab cursor', () => {
         expect(findIssuableItem().classes()).toContain('gl-cursor-grab');
+      });
+
+      it('sets delay and delayOnTouchOnly attributes on list', () => {
+        expect(findVueDraggable().vm.$attrs.delay).toBe(DRAG_DELAY);
+        expect(findVueDraggable().vm.$attrs.delayOnTouchOnly).toBe(true);
       });
 
       it('emits a "reorder" event when user updates the issue order', () => {

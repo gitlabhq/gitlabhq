@@ -824,6 +824,13 @@ module Ci
       add_message(:warning, content)
     end
 
+    # Like #drop!, but does not persist the pipeline nor trigger any state
+    # machine callbacks.
+    def set_failed(drop_reason)
+      self.failure_reason = drop_reason.to_s
+      self.status = 'failed'
+    end
+
     # We can't use `messages.error` scope here because messages should also be
     # read when the pipeline is not persisted. Using the scope will return no
     # results as it would query persisted data.
@@ -1071,6 +1078,10 @@ module Ci
 
     def created_successfully?
       persisted? && failure_reason.blank?
+    end
+
+    def filtered_as_empty?
+      filtered_by_rules? || filtered_by_workflow_rules?
     end
 
     def detailed_status(current_user)

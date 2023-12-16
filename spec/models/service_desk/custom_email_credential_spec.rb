@@ -21,7 +21,7 @@ RSpec.describe ServiceDesk::CustomEmailCredential, feature_category: :service_de
     it { is_expected.not_to allow_value('/example').for(:smtp_address) }
     it { is_expected.not_to allow_value('localhost').for(:smtp_address) }
     it { is_expected.not_to allow_value('127.0.0.1').for(:smtp_address) }
-    it { is_expected.not_to allow_value('192.168.12.12').for(:smtp_address) } # disallow local network
+    it { is_expected.to allow_value('192.168.12.12').for(:smtp_address) } # allow local network on self-managed
 
     it { is_expected.to validate_presence_of(:smtp_port) }
     it { is_expected.to validate_numericality_of(:smtp_port).only_integer.is_greater_than(0) }
@@ -31,6 +31,10 @@ RSpec.describe ServiceDesk::CustomEmailCredential, feature_category: :service_de
 
     it { is_expected.to validate_presence_of(:smtp_password) }
     it { is_expected.to validate_length_of(:smtp_password).is_at_least(8).is_at_most(128) }
+
+    context 'when SaaS', :saas do
+      it { is_expected.not_to allow_value('192.168.12.12').for(:smtp_address) } # Disallow local network on .com
+    end
   end
 
   describe 'encrypted #smtp_username' do

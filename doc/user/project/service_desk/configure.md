@@ -184,6 +184,7 @@ To enable this setting:
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/387003) in GitLab 16.4.
 > - Ability to select the SMTP authentication method [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429680) in GitLab 16.6.
 > - [Feature flag `service_desk_custom_email` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/387003) in GitLab 16.7.
+> - Local network allowed for SMTP host on GitLab self-managed [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435206) in GitLab 16.7
 
 Configure a custom email address to show as the sender of your support communication.
 Maintain brand identity and instill confidence among support requesters with a domain they recognize.
@@ -213,6 +214,8 @@ The custom email address you want to use must meet all of the following requirem
 - You have SMTP credentials (ideally, you should use an app password).
   The username and password are stored in the database using the Advanced Encryption Standard (AES)
   with a 256-bit key.
+- The **SMTP host** must be resolvable from the network of your GitLab instance (on GitLab self-managed)
+  or the public internet (on GitLab SaaS).
 - You must have at least the Maintainer role for the project.
 - Service Desk must be configured for the project.
 
@@ -226,8 +229,7 @@ Configure and verify a custom email address when you want to send Service Desk e
 1. Note the presented Service Desk address of this project, and with your email provider
    (for example, Gmail), set up email forwarding from the custom email address to the
    Service Desk address.
-1. Back in GitLab, complete the fields. **SMTP host** must be resolvable from the network of your GitLab instance (on GitLab self-managed)
-   or the public internet (on GitLab SaaS).
+1. Back in GitLab, complete the fields.
 1. Select **Save & test settings**.
 
 The configuration has been saved and the verification of the custom email address is triggered.

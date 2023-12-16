@@ -1,4 +1,5 @@
 export const DRAG_CLASS = 'is-dragging';
+export const DRAG_DELAY = 100;
 
 /**
  * Default config options for sortablejs.

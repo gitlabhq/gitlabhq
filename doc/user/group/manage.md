@@ -443,7 +443,7 @@ Approval settings should not be confused with [approval rules](../project/merge_
 for the ability to set merge request approval rules for groups is tracked in
 [epic 4367](https://gitlab.com/groups/gitlab-org/-/epics/4367).
 
-## Enable Code Suggestions **(FREE SAAS)**
+## Enable Code Suggestions for a group **(FREE SAAS)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/405126) in GitLab 15.11.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/408158) from GitLab Ultimate to GitLab Premium in 16.0.
@@ -454,12 +454,9 @@ This feature is in [Beta](../../policy/experiment-beta-support.md#beta).
 Beta users should read about the [known limitations](../project/repository/code_suggestions/index.md#known-limitations).
 We look forward to hearing your [feedback](../project/repository/code_suggestions/index.md#feedback).
 
-You can give all users in a group and its subgroups access to [Code Suggestions](../project/repository/code_suggestions/index.md).
-
-- This setting
-  [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading) in the group.
-- Each user can
-  [enable Code Suggestions](../../user/profile/preferences.md#enable-code-suggestions).
+You can give all users in a group and its subgroups access to
+[Code Suggestions](../project/repository/code_suggestions/index.md). This setting
+[cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading) in the group.
 
 Code Suggestions are enabled by default at the group level.
 
@@ -470,6 +467,9 @@ To update this setting:
 1. Expand **Permissions and group features**.
 1. Under **Code Suggestions**, select the **Projects in this group can use Code Suggestions** checkbox.
 1. Select **Save changes**.
+
+Individual users can disable Code Suggestions by disabling the feature in their
+[installed IDE editor extension](../project/repository/code_suggestions/index.md#supported-editor-extensions).
 
 ## Enable Experiment and Beta features **(ULTIMATE SAAS)**
 

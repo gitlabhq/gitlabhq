@@ -27,14 +27,15 @@ Learn about [data usage when using Code Suggestions](index.md#code-suggestions-d
 
 ## Enable Code Suggestions on self-managed GitLab
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10653) in GitLab 16.1 as [Beta](../../../../policy/experiment-beta-support.md#beta).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10653) in GitLab 16.1 as [Beta](../../../../policy/experiment-beta-support.md#beta).
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139916) in GitLab 16.8. Available to a percentage of users.
 
 When you enable Code Suggestions for your self-managed instance, you:
 
 - Agree to the [GitLab testing agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
 - Acknowledge that GitLab sends data from the instance, including personal data, to GitLab.com infrastructure.
 
-How you enable Code Suggestions differs depending on your version of GitLab.
+How you enable Code Suggestions for your instance differs depending on your version of GitLab.
 
 ### GitLab 16.3 and later **(PREMIUM)**
 
@@ -180,3 +181,8 @@ The Code Suggestions service then securely returns an AI-generated code suggesti
 
 Neither GitLab nor Google Vertex AI Codey APIs have any visibility into a self-managed customer's code other than
 what is sent to generate the code suggestion.
+
+## Disable Code Suggestions
+
+Individual users can disable Code Suggestions by disabling the feature in their
+[installed IDE editor extension](index.md#supported-editor-extensions).

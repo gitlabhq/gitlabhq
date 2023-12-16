@@ -16,7 +16,10 @@ module Ci
         size_limit_exceeded: 'The pipeline size limit was exceeded.',
         job_activity_limit_exceeded: 'The pipeline job activity limit was exceeded.',
         deployments_limit_exceeded: 'The pipeline deployments limit was exceeded.',
-        project_deleted: 'The project associated with this pipeline was deleted.' }
+        project_deleted: 'The project associated with this pipeline was deleted.',
+        filtered_by_rules: 'Pipeline will not run for the selected trigger. ' \
+                           'The rules configuration prevented any jobs from being added to the pipeline.',
+        filtered_by_workflow_rules: 'Pipeline filtered out by workflow rules.' }
     end
 
     presents ::Ci::Pipeline, as: :pipeline

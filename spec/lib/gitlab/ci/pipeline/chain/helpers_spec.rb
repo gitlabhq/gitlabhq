@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Pipeline::Chain::Helpers do
+RSpec.describe Gitlab::Ci::Pipeline::Chain::Helpers, feature_category: :continuous_integration do
   let(:helper_class) do
     Class.new do
       include Gitlab::Ci::Pipeline::Chain::Helpers
@@ -38,14 +38,35 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Helpers do
   describe '.error' do
     shared_examples 'error function' do
       specify do
-        expect(pipeline).to receive(:drop!).with(drop_reason).and_call_original
         expect(pipeline).to receive(:add_error_message).with(message).and_call_original
-        expect(pipeline).to receive(:ensure_project_iid!).twice.and_call_original
+
+        if command.save_incompleted
+          expect(pipeline).to receive(:ensure_project_iid!).twice.and_call_original
+          expect(pipeline).to receive(:drop!).with(drop_reason).and_call_original
+        end
 
         subject.error(message, config_error: config_error, drop_reason: drop_reason)
 
         expect(pipeline.yaml_errors).to eq(yaml_error)
         expect(pipeline.errors[:base]).to include(message)
+        expect(pipeline.status).to eq 'failed'
+        expect(pipeline.failure_reason).to eq drop_reason.to_s
+      end
+
+      context 'when feature flag always_set_pipeline_failure_reason is false' do
+        before do
+          stub_feature_flags(always_set_pipeline_failure_reason: false)
+        end
+
+        specify do
+          subject.error(message, config_error: config_error, drop_reason: drop_reason)
+
+          if command.save_incompleted
+            expect(pipeline.failure_reason).to eq drop_reason.to_s
+          else
+            expect(pipeline.failure_reason).not_to be_present
+          end
+        end
       end
     end
 
@@ -79,6 +100,43 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Helpers do
           let(:yaml_error) { nil }
 
           it_behaves_like "error function"
+
+          specify do
+            subject.error(message, config_error: config_error, drop_reason: drop_reason)
+
+            expect(pipeline).to be_persisted
+          end
+
+          context ' when the drop reason is not persistable' do
+            let(:drop_reason) { :filtered_by_rules }
+            let(:command) { double(project: nil) }
+
+            specify do
+              expect(command).to receive(:increment_pipeline_failure_reason_counter)
+
+              subject.error(message, config_error: config_error, drop_reason: drop_reason)
+
+              expect(pipeline).to be_failed
+              expect(pipeline.failure_reason).to eq drop_reason.to_s
+              expect(pipeline).not_to be_persisted
+            end
+          end
+
+          context 'when save_incompleted is false' do
+            let(:command) { double(save_incompleted: false, project: nil) }
+
+            before do
+              allow(command).to receive(:increment_pipeline_failure_reason_counter)
+            end
+
+            it_behaves_like "error function"
+
+            specify do
+              subject.error(message, config_error: config_error, drop_reason: drop_reason)
+
+              expect(pipeline).not_to be_persisted
+            end
+          end
         end
       end
     end
