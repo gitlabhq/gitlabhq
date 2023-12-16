@@ -47175,6 +47175,9 @@ msgstr ""
 msgid "SubscriptionMangement|Your subscription is in read-only mode"
 msgstr ""
 
+msgid "SubscriptionTableRow|*Access temporarily extended until %{temporaryExtensionEndDate}"
+msgstr ""
+
 msgid "SubscriptionTable|Add seats"
 msgstr ""
 

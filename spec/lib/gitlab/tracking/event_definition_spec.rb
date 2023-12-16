@@ -37,7 +37,7 @@ RSpec.describe Gitlab::Tracking::EventDefinition do
 
   it 'has no duplicated actions in InternalEventTracking events', :aggregate_failures do
     definitions_by_action = described_class.definitions
-                                           .each_value.select { |d| d.category == 'InternalEventTracking' }
+                                           .select { |d| d.category == 'InternalEventTracking' }
                                            .group_by(&:action)
 
     definitions_by_action.each do |action, definitions|
@@ -54,7 +54,7 @@ RSpec.describe Gitlab::Tracking::EventDefinition do
       .compact
       .uniq
 
-    event_names = Gitlab::Tracking::EventDefinition.definitions.values.map { |e| e.attributes[:action] }
+    event_names = Gitlab::Tracking::EventDefinition.definitions.map { |e| e.attributes[:action] }
 
     from_metric_definitions.each do |event|
       expect(event_names).to include(event),

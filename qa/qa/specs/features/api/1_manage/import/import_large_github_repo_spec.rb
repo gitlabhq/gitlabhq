@@ -296,15 +296,18 @@ module QA
         fetch_github_objects unless only_stats_comparison
 
         import_status = -> {
-          imported_project.project_import_status.then do |status|
-            @import_status = status
-            @stats = status[:stats]&.slice(:fetched, :imported)
-
-            # fail fast if import explicitly failed
-            raise "Import of '#{imported_project.full_path}' failed!" if status[:import_status] == 'failed'
-
-            status[:import_status]
+          @import_status = Support::Retrier.retry_on_exception(
+            sleep_interval: 1,
+            log: false,
+            message: "Fetching import status"
+          ) do
+            imported_project.project_import_status
           end
+          @stats = @import_status[:stats]&.slice(:fetched, :imported)
+          # fail fast if import explicitly failed
+          raise "Import of '#{imported_project.full_path}' failed!" if @import_status[:import_status] == 'failed'
+
+          @import_status[:import_status]
         }
 
         logger.info("== Waiting for import to be finished ==")

@@ -26,7 +26,6 @@ module QA
         let!(:target_sandbox) { source_sandbox }
 
         let(:destination_group_path) { "target-group-for-import-#{SecureRandom.hex(4)}" }
-        let(:cleanup!) { user.remove_via_api! }
 
         it(
           'successfully imports project',

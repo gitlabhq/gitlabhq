@@ -71,19 +71,24 @@ module QA
       imported_group.import_details.sum([]) { |details| details[:failures] }
     end
 
-    let(:cleanup!) {} # rubocop:disable Lint/EmptyBlock
-
     def expect_group_import_finished_successfully
       imported_group # trigger import
 
-      status = nil
-      Support::Retrier.retry_until(**import_wait_duration, raise_on_failure: false) do
-        status = imported_group.import_status
-        %w[finished failed].include?(status)
-      end
+      import_status = -> {
+        status = Support::Retrier.retry_on_exception(
+          sleep_interval: 1,
+          log: false,
+          message: "Fetching import status"
+        ) do
+          imported_group.import_status
+        end
+        # fail fast if import explicitly failed, we don't test negative scenarios where we expect failed status
+        raise "Import of '#{imported_group.full_path}' failed!" if status == 'failed'
 
-      # finished status means success, all other statuses are considered to fail the test
-      expect(status).to eq('finished'), "Expected import to finish successfully, but status was: #{status}"
+        status
+      }
+
+      expect(import_status).to eventually_eq('finished').within(**import_wait_duration)
     end
 
     before do
@@ -98,10 +103,7 @@ module QA
       # Log failures for easier debugging
       Runtime::Logger.error("Import failures: #{import_failures}") if example.exception && !import_failures.empty?
     rescue StandardError
-      # rescue when import did not happen at all and checking import failues will raise an error
-    ensure
-      # make sure cleanup runs last
-      cleanup!
+      # rescue when import did not happen at all and checking import failures will raise an error
     end
 
     def enable_bulk_import(api_client)

@@ -514,7 +514,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     exclusion: { in: :restricted_visibility_levels, message: "cannot be set to a restricted visibility level" },
     if: :should_prevent_visibility_restriction?
 
-  validates_each :import_sources do |record, attr, value|
+  validates_each :import_sources, on: :update do |record, attr, value|
     value&.each do |source|
       unless Gitlab::ImportSources.options.value?(source)
         record.errors.add(attr, _("'%{source}' is not a import source") % { source: source })
