@@ -134,6 +134,16 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
       end
     end
 
+    context 'when namespace_in_path is enabled' do
+      before do
+        stub_pages_setting(namespace_in_path: true)
+      end
+
+      it 'returns nil' do
+        expect(lookup_path.unique_host).to be_nil
+      end
+    end
+
     context 'when unique domain is enabled' do
       it 'returns the project unique domain' do
         project.project_setting.pages_unique_domain_enabled = true

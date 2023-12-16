@@ -177,7 +177,7 @@ RSpec.describe Gitlab::Pages::UrlBuilder, feature_category: :pages do
         context 'when pages_unique_domain_enabled is true' do
           let(:unique_domain_enabled) { true }
 
-          it { is_expected.to eq('http://unique-domain.example.com') }
+          it { is_expected.to eq('http://example.com/unique-domain') }
         end
       end
     end
@@ -188,6 +188,12 @@ RSpec.describe Gitlab::Pages::UrlBuilder, feature_category: :pages do
 
     context 'when pages_unique_domain_enabled is false' do
       let(:unique_domain_enabled) { false }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when namespace_in_path is true' do
+      let(:namespace_in_path) { true }
 
       it { is_expected.to be_nil }
     end
