@@ -6,7 +6,7 @@ class CreateEvents < ClickHouse::Migration
       CREATE TABLE IF NOT EXISTS events
       (
         id UInt64 DEFAULT 0,
-        path String DEFAULT '',
+        path String DEFAULT '0/', -- the event_namespace_paths MV depends on this format
         author_id UInt64 DEFAULT 0,
         target_id UInt64 DEFAULT 0,
         target_type LowCardinality(String) DEFAULT '',

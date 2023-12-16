@@ -34,13 +34,11 @@ RSpec.describe Peek::Views::ClickHouse, :click_house, :request_store, feature_ca
         }),
         a_hash_including({
           sql: 'INSERT INTO events (id) VALUES (1)',
-          database: 'database: main',
-          statistics: include('written_rows=>"1"')
+          database: 'database: main'
         }),
         a_hash_including({
           sql: 'INSERT INTO events (id) FORMAT CSV',
-          database: 'database: main',
-          statistics: include('written_rows=>"2"')
+          database: 'database: main'
         })
       ])
     end

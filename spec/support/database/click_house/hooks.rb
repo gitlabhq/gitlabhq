@@ -37,6 +37,10 @@ class ClickHouseTestRunner
     @ensure_schema = true
   end
 
+  def reset_schema_cache!
+    @ensure_schema = nil
+  end
+
   private
 
   def tables_for(db)
@@ -53,6 +57,7 @@ RSpec.configure do |config|
     with_net_connect_allowed do
       if example.example.metadata[:click_house] == :without_migrations
         click_house_test_runner.clear_db
+        click_house_test_runner.reset_schema_cache!
       else
         click_house_test_runner.ensure_schema
         click_house_test_runner.truncate_tables
