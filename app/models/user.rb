@@ -1364,10 +1364,6 @@ class User < MainClusterwide::ApplicationRecord
     namespace.try :id
   end
 
-  def name_with_username
-    "#{name} (#{username})"
-  end
-
   def already_forked?(project)
     !!fork_of(project)
   end
