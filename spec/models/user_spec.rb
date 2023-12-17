@@ -6390,6 +6390,34 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '#max_member_access_for_group' do
+    let(:user) { create(:user) }
+    let(:group) { create(:group) }
+
+    context 'when user has no access' do
+      it 'returns Gitlab::Access::NO_ACCESS' do
+        expect(user.max_member_access_for_group(group.id)).to eq(Gitlab::Access::NO_ACCESS)
+      end
+    end
+
+    context 'when user has access via a single permission' do
+      it 'returns Gitlab::Access::DEVELOPER' do
+        group.add_developer(user)
+
+        expect(user.max_member_access_for_group(group.id)).to eq(Gitlab::Access::DEVELOPER)
+      end
+    end
+
+    context 'when user has access via a multiple groups' do
+      it 'returns Gitlab::Access::MAINTAINER' do
+        group.add_developer(user)
+        group.add_maintainer(user)
+
+        expect(user.max_member_access_for_group(group.id)).to eq(Gitlab::Access::MAINTAINER)
+      end
+    end
+  end
+
   context 'changing a username' do
     let(:user) { create(:user, username: 'foo') }
 
