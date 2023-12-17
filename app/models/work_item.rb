@@ -12,8 +12,10 @@ class WorkItem < Issue
   self.inheritance_column = :_type_disabled
 
   belongs_to :namespace, inverse_of: :work_items
+
   has_one :parent_link, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_id
   has_one :work_item_parent, through: :parent_link, class_name: 'WorkItem'
+  has_one :dates_source, class_name: 'WorkItems::DatesSource', foreign_key: 'issue_id', inverse_of: :work_item
 
   has_many :child_links, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_parent_id
   has_many :work_item_children, through: :child_links, class_name: 'WorkItem',

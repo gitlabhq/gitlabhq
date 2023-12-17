@@ -25526,6 +25526,21 @@ CREATE SEQUENCE wiki_repository_states_id_seq
 
 ALTER SEQUENCE wiki_repository_states_id_seq OWNED BY wiki_repository_states.id;
 
+CREATE TABLE work_item_dates_sources (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    issue_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    start_date_is_fixed boolean DEFAULT false NOT NULL,
+    due_date_is_fixed boolean DEFAULT false NOT NULL,
+    start_date date,
+    due_date date,
+    start_date_sourcing_work_item_id bigint,
+    start_date_sourcing_milestone_id bigint,
+    due_date_sourcing_work_item_id bigint,
+    due_date_sourcing_milestone_id bigint
+);
+
 CREATE TABLE work_item_hierarchy_restrictions (
     id bigint NOT NULL,
     parent_type_id bigint NOT NULL,
@@ -30150,6 +30165,9 @@ ALTER TABLE ONLY wiki_page_slugs
 
 ALTER TABLE ONLY wiki_repository_states
     ADD CONSTRAINT wiki_repository_states_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY work_item_dates_sources
+    ADD CONSTRAINT work_item_dates_sources_pkey PRIMARY KEY (issue_id);
 
 ALTER TABLE ONLY work_item_hierarchy_restrictions
     ADD CONSTRAINT work_item_hierarchy_restrictions_pkey PRIMARY KEY (id);
@@ -35540,6 +35558,16 @@ CREATE INDEX users_forbidden_state_idx ON users USING btree (id) WHERE ((confirm
 
 CREATE UNIQUE INDEX vulnerability_occurrence_pipelines_on_unique_keys ON vulnerability_occurrence_pipelines USING btree (occurrence_id, pipeline_id);
 
+CREATE INDEX wi_datessources_due_date_sourcing_milestone_id_index ON work_item_dates_sources USING btree (due_date_sourcing_milestone_id);
+
+CREATE INDEX wi_datessources_due_date_sourcing_work_item_id_index ON work_item_dates_sources USING btree (due_date_sourcing_work_item_id);
+
+CREATE INDEX wi_datessources_namespace_id_index ON work_item_dates_sources USING btree (namespace_id);
+
+CREATE INDEX wi_datessources_start_date_sourcing_milestone_id_index ON work_item_dates_sources USING btree (start_date_sourcing_milestone_id);
+
+CREATE INDEX wi_datessources_start_date_sourcing_work_item_id_index ON work_item_dates_sources USING btree (start_date_sourcing_work_item_id);
+
 CREATE UNIQUE INDEX work_item_types_namespace_id_and_name_unique ON work_item_types USING btree (namespace_id, btrim(lower(name)));
 
 ALTER INDEX analytics_cycle_analytics_issue_stage_events_pkey ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_00_pkey;
@@ -37400,6 +37428,9 @@ ALTER TABLE ONLY geo_event_log
 ALTER TABLE ONLY user_namespace_callouts
     ADD CONSTRAINT fk_27a69fd1bd FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY work_item_dates_sources
+    ADD CONSTRAINT fk_283fb4ad36 FOREIGN KEY (start_date_sourcing_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY project_group_links
     ADD CONSTRAINT fk_28a1244b01 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
 
@@ -37832,6 +37863,9 @@ ALTER TABLE ONLY catalog_resource_components
 ALTER TABLE ONLY protected_branch_merge_access_levels
     ADD CONSTRAINT fk_8a3072ccb3 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY work_item_dates_sources
+    ADD CONSTRAINT fk_8a4948b668 FOREIGN KEY (start_date_sourcing_work_item_id) REFERENCES issues(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY bulk_import_exports
     ADD CONSTRAINT fk_8c6f33cebe FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -38168,6 +38202,9 @@ ALTER TABLE p_ci_builds
 ALTER TABLE ONLY ci_sources_pipelines
     ADD CONSTRAINT fk_d4e29af7d7 FOREIGN KEY (source_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY work_item_dates_sources
+    ADD CONSTRAINT fk_d602f0955d FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY incident_management_timeline_events
     ADD CONSTRAINT fk_d606a2a890 FOREIGN KEY (promoted_from_note_id) REFERENCES notes(id) ON DELETE SET NULL;
 
@@ -38209,6 +38246,9 @@ ALTER TABLE ONLY project_topics
 
 ALTER TABLE ONLY web_hooks
     ADD CONSTRAINT fk_db1ea5699b FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_dates_sources
+    ADD CONSTRAINT fk_dbbe8917ee FOREIGN KEY (due_date_sourcing_work_item_id) REFERENCES issues(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY security_scans
     ADD CONSTRAINT fk_dbc89265b9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -38368,6 +38408,9 @@ ALTER TABLE ONLY system_note_metadata
 
 ALTER TABLE ONLY vulnerability_remediations
     ADD CONSTRAINT fk_fc61a535a0 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_dates_sources
+    ADD CONSTRAINT fk_fc7bc5e687 FOREIGN KEY (due_date_sourcing_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY abuse_report_events
     ADD CONSTRAINT fk_fdd4d610e0 FOREIGN KEY (abuse_report_id) REFERENCES abuse_reports(id) ON DELETE CASCADE;
@@ -39388,6 +39431,9 @@ ALTER TABLE incident_management_pending_alert_escalations
 
 ALTER TABLE ONLY approval_merge_request_rules_approved_approvers
     ADD CONSTRAINT fk_rails_8dc94cff4d FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_dates_sources
+    ADD CONSTRAINT fk_rails_8dcefa21a5 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY design_user_mentions
     ADD CONSTRAINT fk_rails_8de8c6d632 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;

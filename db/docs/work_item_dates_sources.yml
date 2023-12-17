@@ -1,0 +1,12 @@
+---
+table_name: work_item_dates_sources
+classes:
+  - WorkItems::DatesSource
+feature_categories:
+  - team_planning
+description: The rolled up Start and Due dates for Work Items.
+introduced_by_url:
+milestone: '16.7'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces

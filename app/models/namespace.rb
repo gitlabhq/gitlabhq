@@ -81,6 +81,7 @@ class Namespace < ApplicationRecord
 
   has_one :cluster_enabled_grant, inverse_of: :namespace, class_name: 'Clusters::ClusterEnabledGrant'
   has_many :work_items, inverse_of: :namespace
+  has_many :work_items_dates_source, inverse_of: :namespace, class_name: 'WorkItems::DatesSource'
   has_many :issues, inverse_of: :namespace
 
   has_many :timelog_categories, class_name: 'TimeTracking::TimelogCategory'
