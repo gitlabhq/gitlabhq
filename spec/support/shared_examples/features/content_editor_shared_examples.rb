@@ -449,6 +449,9 @@ RSpec.shared_examples 'edits content using the content editor' do |params = {
     before do
       switch_to_content_editor
 
+      type_in_content_editor [modifier_key, 'a']
+      type_in_content_editor :delete
+
       type_in_content_editor "Some **rich** _text_ ~~content~~ [link](https://gitlab.com)"
 
       type_in_content_editor [modifier_key, 'a']
@@ -485,6 +488,26 @@ RSpec.shared_examples 'edits content using the content editor' do |params = {
         expect(page).not_to have_selector('em')
         expect(page).not_to have_selector('s')
         expect(page).not_to have_selector('a')
+      end
+    end
+
+    it 'pastes raw markdown with formatting when pasting inside a markdown code block' do
+      type_in_content_editor '```md'
+      type_in_content_editor :enter
+      type_in_content_editor [modifier_key, 'v']
+
+      page.within content_editor_testid do
+        expect(page).to have_selector('pre', text: 'Some **rich** _text_ ~~content~~ [link](https://gitlab.com)')
+      end
+    end
+
+    it 'pastes raw markdown without formatting when pasting inside a plaintext code block' do
+      type_in_content_editor '```'
+      type_in_content_editor :enter
+      type_in_content_editor [modifier_key, 'v']
+
+      page.within content_editor_testid do
+        expect(page).to have_selector('pre', text: 'Some rich text content link')
       end
     end
 

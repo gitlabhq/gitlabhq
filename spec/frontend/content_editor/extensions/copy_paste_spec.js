@@ -20,12 +20,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 import MarkdownSerializer from '~/content_editor/services/markdown_serializer';
 import { createTestEditor, createDocBuilder, waitUntilNextDocTransaction } from '../test_utils';
 
-const CODE_BLOCK_HTML = '<pre class="js-syntax-highlight" lang="javascript">var a = 2;</pre>';
-const CODE_SUGGESTION_HTML =
-  '<pre data-lang-params="-0+0" class="js-syntax-highlight language-suggestion" lang="suggestion">Suggested code</pre>';
-const DIAGRAM_HTML =
-  '<img data-diagram="nomnoml" data-diagram-src="data:text/plain;base64,WzxmcmFtZT5EZWNvcmF0b3IgcGF0dGVybl0=">';
-const FRONTMATTER_HTML = '<pre lang="yaml" data-lang-params="frontmatter">key: value</pre>';
 const PARAGRAPH_HTML =
   '<p dir="auto">Some text with <strong>bold</strong> and <em>italic</em> text.</p>';
 
@@ -121,19 +115,6 @@ describe('content_editor/extensions/copy_paste', () => {
     ${['text/plain', 'text/html', 'vscode-editor-data']} | ${{ 'vscode-editor-data': '{ "mode": "ruby" }' }}     | ${'vscode snippet'}
   `('handles $formatDesc', async ({ types, data }) => {
     expect(await triggerPasteEventHandler(buildClipboardEvent({ types, data }))).toBe(true);
-  });
-
-  it.each`
-    nodeType            | html                    | handled  | desc
-    ${'codeBlock'}      | ${CODE_BLOCK_HTML}      | ${false} | ${'does not handle'}
-    ${'codeSuggestion'} | ${CODE_SUGGESTION_HTML} | ${false} | ${'does not handle'}
-    ${'diagram'}        | ${DIAGRAM_HTML}         | ${false} | ${'does not handle'}
-    ${'frontmatter'}    | ${FRONTMATTER_HTML}     | ${false} | ${'does not handle'}
-    ${'paragraph'}      | ${PARAGRAPH_HTML}       | ${true}  | ${'handles'}
-  `('$desc paste if currently a `$nodeType` is in focus', async ({ html, handled }) => {
-    tiptapEditor.commands.insertContent(html);
-
-    expect(await triggerPasteEventHandler(buildClipboardEvent())).toBe(handled);
   });
 
   describe.each`

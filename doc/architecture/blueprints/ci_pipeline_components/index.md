@@ -189,7 +189,7 @@ a file `mydir/file.yml` in `gitlab-org/dast` project would be expanded to:
 gitlab.com/gitlab-org/dast/mydir/path/to/component@<CURRENT_SHA>
 ```
 
-The component YAML file follows the filename convention `<type>.yml` where component type is one of:
+The component YAML file follows the file name convention `<type>.yml` where component type is one of:
 
 | Component type | Context |
 | -------------- | ------- |
@@ -206,7 +206,7 @@ For example:
 A component YAML file:
 
 - Must have a **name** to be referenced to.
-- Must specify its **type** in the filename, which defines how it can be used (raw configuration to be `include`d, child pipeline workflow, job step).
+- Must specify its **type** in the file name, which defines how it can be used (raw configuration to be `include`d, child pipeline workflow, job step).
 - Must define its **content** based on the type.
 - Must specify **input parameters** that it accepts. Components should depend on input parameters for dynamic values and not environment variables.
 - Should be **validated statically** (for example: using JSON schema validators).

@@ -94,7 +94,7 @@ GET projects/:id/packages/debian/pool/:distribution/:letter/:package_name/:packa
 | `letter`          | string | yes      | The Debian Classification (first-letter or lib-first-letter). |
 | `package_name`    | string | yes      | The source package name. |
 | `package_version` | string | yes      | The source package version. |
-| `file_name`       | string | yes      | The filename. |
+| `file_name`       | string | yes      | The file name. |
 
 ```shell
 curl --header "Private-Token: <personal_access_token>" "https://gitlab.example.com/api/v4/projects/1/packages/debian/pool/my-distro/a/my-pkg/1.0.0/example_1.0.0~alpha2_amd64.deb"
@@ -108,7 +108,7 @@ curl --header "Private-Token: <personal_access_token>" \
      --remote-name
 ```
 
-This writes the downloaded file using the remote filename in the current directory.
+This writes the downloaded file using the remote file name in the current directory.
 
 ## Route prefix
 
@@ -166,7 +166,7 @@ curl --header "Private-Token: <personal_access_token>" \
      --remote-name
 ```
 
-This writes the downloaded file using the remote filename in the current directory.
+This writes the downloaded file using the remote file name in the current directory.
 
 ## Download a signed distribution Release file
 
@@ -194,7 +194,7 @@ curl --header "Private-Token: <personal_access_token>" \
      --remote-name
 ```
 
-This writes the downloaded file using the remote filename in the current directory.
+This writes the downloaded file using the remote file name in the current directory.
 
 ## Download a release file signature
 
@@ -222,7 +222,7 @@ curl --header "Private-Token: <personal_access_token>" \
      --remote-name
 ```
 
-This writes the downloaded file using the remote filename in the current directory.
+This writes the downloaded file using the remote file name in the current directory.
 
 ## Download a packages index
 
@@ -252,7 +252,7 @@ curl --header "Private-Token: <personal_access_token>" \
      --remote-name
 ```
 
-This writes the downloaded file using the remote filename in the current directory.
+This writes the downloaded file using the remote file name in the current directory.
 
 ## Download a packages index by hash
 
@@ -283,7 +283,7 @@ curl --header "Private-Token: <personal_access_token>" \
      --remote-name
 ```
 
-This writes the downloaded file using the remote filename in the current directory.
+This writes the downloaded file using the remote file name in the current directory.
 
 ## Download a Debian Installer packages index
 
@@ -313,7 +313,7 @@ curl --header "Private-Token: <personal_access_token>" \
      --remote-name
 ```
 
-This writes the downloaded file using the remote filename in the current directory.
+This writes the downloaded file using the remote file name in the current directory.
 
 ## Download a Debian Installer packages index by hash
 
@@ -343,7 +343,7 @@ curl --header "Private-Token: <personal_access_token>" \
      --remote-name
 ```
 
-This writes the downloaded file using the remote filename in the current directory.
+This writes the downloaded file using the remote file name in the current directory.
 
 ## Download a source packages index
 
@@ -372,7 +372,7 @@ curl --header "Private-Token: <personal_access_token>" \
      --remote-name
 ```
 
-This writes the downloaded file using the remote filename in the current directory.
+This writes the downloaded file using the remote file name in the current directory.
 
 ## Download a source packages index by hash
 
@@ -401,4 +401,4 @@ curl --header "Private-Token: <personal_access_token>" \
      --remote-name
 ```
 
-This writes the downloaded file using the remote filename in the current directory.
+This writes the downloaded file using the remote file name in the current directory.

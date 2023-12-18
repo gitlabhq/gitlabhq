@@ -79,7 +79,7 @@ describe('~/environments/components/environments_folder.vue', () => {
       it('is collapsed by default', () => {
         const link = findLink();
 
-        expect(collapse.attributes('visible')).toBeUndefined();
+        expect(collapse.props('visible')).toBe(false);
         const iconNames = icons.wrappers.map((i) => i.props('name')).slice(0, 2);
         expect(iconNames).toEqual(['chevron-lg-right', 'folder-o']);
         expect(folderName.classes('gl-font-weight-bold')).toBe(false);
@@ -96,7 +96,7 @@ describe('~/environments/components/environments_folder.vue', () => {
         const link = findLink();
 
         expect(button.attributes('aria-label')).toBe(__('Collapse'));
-        expect(collapse.attributes('visible')).toBe('visible');
+        expect(collapse.props('visible')).toBe(true);
         const iconNames = icons.wrappers.map((i) => i.props('name')).slice(0, 2);
         expect(iconNames).toEqual(['chevron-lg-down', 'folder-open']);
         expect(folderName.classes('gl-font-weight-bold')).toBe(true);

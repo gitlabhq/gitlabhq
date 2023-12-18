@@ -29,7 +29,7 @@ If job artifacts are using too much disk space, see the
 
 This message appears in job logs when a the runner can't find the file to upload. Either
 the path to the file is incorrect, or the file was not created. You can check the job
-log for other errors or warnings that specify the filename and why it wasn't
+log for other errors or warnings that specify the file name and why it wasn't
 generated.
 
 For more detailed job logs, you can [enable CI/CD debug logging](../variables/index.md#enable-debug-logging)

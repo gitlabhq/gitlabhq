@@ -74,7 +74,7 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
     });
 
     it('is collapsed by default', () => {
-      expect(findCollapse().props('visible')).toBeUndefined();
+      expect(findCollapse().props('visible')).toBe(false);
       expect(findCollapseButton().attributes('aria-label')).toBe(KubernetesOverview.i18n.expand);
       expect(findCollapseButton().props('icon')).toBe('chevron-right');
     });
@@ -88,7 +88,7 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
       findCollapseButton().vm.$emit('click');
       await nextTick();
 
-      expect(findCollapse().attributes('visible')).toBe('true');
+      expect(findCollapse().props('visible')).toBe(true);
       expect(findCollapseButton().attributes('aria-label')).toBe(KubernetesOverview.i18n.collapse);
       expect(findCollapseButton().props('icon')).toBe('chevron-down');
     });

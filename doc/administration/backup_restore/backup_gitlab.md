@@ -1843,9 +1843,9 @@ Truncate the file names in the `uploads` table:
       SELECT
          u.id,
          u.path,
-         -- Current filename
+         -- Current file name
          (regexp_match(u.path, '[^\\/:*?"<>|\r\n]+$'))[1] AS current_filename,
-         -- New filename
+         -- New file name
          CONCAT(
             LEFT(SPLIT_PART((regexp_match(u.path, '[^\\/:*?"<>|\r\n]+$'))[1], '.', 1), 242),
             COALESCE(SUBSTRING((regexp_match(u.path, '[^\\/:*?"<>|\r\n]+$'))[1] FROM '\.(?:.(?!\.))+$'))
@@ -1875,8 +1875,8 @@ Truncate the file names in the `uploads` table:
 
       Where:
 
-      - `current_filename`: a filename that is currently more than 246 characters long.
-      - `new_filename`: a filename that has been truncated to 246 characters maximum.
+      - `current_filename`: a file name that is currently more than 246 characters long.
+      - `new_filename`: a file name that has been truncated to 246 characters maximum.
       - `new_path`: new path considering the `new_filename` (truncated).
 
    After you validate the batch results, you must change the batch size (`row_id`) using the following sequence of numbers (10000 to 20000). Repeat this process until you reach the last record in the `uploads` table.

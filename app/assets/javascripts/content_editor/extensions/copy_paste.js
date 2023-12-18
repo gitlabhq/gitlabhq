@@ -149,21 +149,26 @@ export default Extension.create({
             const { clipboardData } = event;
 
             const gfmContent = clipboardData.getData(GFM_FORMAT);
-
-            if (gfmContent) {
-              return this.editor.commands.pasteContent(gfmContent, true);
-            }
-
             const textContent = clipboardData.getData(TEXT_FORMAT);
             const htmlContent = clipboardData.getData(HTML_FORMAT);
 
             const { from, to } = view.state.selection;
+            const isCodeBlockActive = CODE_BLOCK_NODE_TYPES.some((type) =>
+              this.editor.isActive(type),
+            );
 
-            if (pasteRaw) {
-              this.editor.commands.insertContentAt(
-                { from, to },
-                textContent.replace(/^\s+|\s+$/gm, ''),
-              );
+            if (pasteRaw || isCodeBlockActive) {
+              const isMarkdownCodeBlockActive = this.editor.isActive(CodeBlockHighlight.name, {
+                language: 'markdown',
+              });
+
+              const contentToInsert = isMarkdownCodeBlockActive
+                ? gfmContent || textContent
+                : textContent.replace(/^\s+|\s+$/gm, '');
+
+              if (!contentToInsert) return false;
+
+              this.editor.commands.insertContentAt({ from, to }, contentToInsert);
               return true;
             }
 
@@ -172,16 +177,15 @@ export default Extension.create({
             const vsCodeMeta = hasVsCode ? JSON.parse(clipboardData.getData(VS_CODE_FORMAT)) : {};
             const language = vsCodeMeta.mode;
 
-            // if a code block is active, paste as plain text
-            if (!textContent || CODE_BLOCK_NODE_TYPES.some((type) => this.editor.isActive(type))) {
-              return false;
-            }
-
             if (hasVsCode) {
               return this.editor.commands.pasteContent(
                 language === 'markdown' ? textContent : `\`\`\`${language}\n${textContent}\n\`\`\``,
                 true,
               );
+            }
+
+            if (gfmContent) {
+              return this.editor.commands.pasteContent(gfmContent, true);
             }
 
             const preStartRegex = /^<pre[^>]*lang="markdown"[^>]*>/;

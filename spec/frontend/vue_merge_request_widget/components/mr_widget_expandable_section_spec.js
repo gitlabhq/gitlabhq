@@ -39,7 +39,7 @@ describe('MrWidgetExpanableSection', () => {
       const collapse = findCollapse();
 
       expect(collapse.exists()).toBe(true);
-      expect(collapse.attributes('visible')).toBeUndefined();
+      expect(collapse.props('visible')).toBe(false);
     });
   });
 
@@ -60,7 +60,7 @@ describe('MrWidgetExpanableSection', () => {
       const collapse = findCollapse();
 
       expect(collapse.exists()).toBe(true);
-      expect(collapse.attributes('visible')).toBe('true');
+      expect(collapse.props('visible')).toBe(true);
     });
   });
 });

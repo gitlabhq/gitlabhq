@@ -125,14 +125,14 @@ To change the permissions to cancel pipelines or jobs:
 > Support for external `.gitlab-ci.yml` locations [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14376) in GitLab 12.6.
 
 GitLab expects to find the CI/CD configuration file (`.gitlab-ci.yml`) in the project's root
-directory. However, you can specify an alternate filename path, including locations outside the project.
+directory. However, you can specify an alternate file name path, including locations outside the project.
 
 To customize the path:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
-1. In the **CI/CD configuration file** field, enter the filename. If the file:
+1. In the **CI/CD configuration file** field, enter the file name. If the file:
    - Is not in the root directory, include the path.
    - Is in a different project, include the group and project name.
    - Is on an external site, enter the full URL.

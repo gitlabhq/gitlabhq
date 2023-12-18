@@ -15,7 +15,7 @@ include:
       gitlab_auth_token_variable_name: "PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE"
       allure_job_name: "${QA_RUN_TYPE}"
   - project: gitlab-org/quality/pipeline-common
-    ref: 8.1.1
+    ref: 8.2.0
     file:
       - /ci/base.gitlab-ci.yml
       - /ci/knapsack-report.yml

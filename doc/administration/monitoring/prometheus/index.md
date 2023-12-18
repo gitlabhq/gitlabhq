@@ -102,7 +102,7 @@ prometheus['scrape_configs'] = [
     'metrics_path': '/probe',
     'params' => {
       'param_a' => ['test'],
-      'param_b' => ['additional_test']
+      'param_b' => ['additional_test'],
     },
     'static_configs' => [
       'targets' => ['1.1.1.1:8060'],
@@ -240,7 +240,7 @@ To use an external Prometheus server:
    nginx['status']['options'] = {
          "server_tokens" => "off",
          "access_log" => "off",
-         "allow" => ["192.168.0.1", "192.168.0.2"]
+         "allow" => ["192.168.0.1", "192.168.0.2"],
          "deny" => "all",
    }
    ```

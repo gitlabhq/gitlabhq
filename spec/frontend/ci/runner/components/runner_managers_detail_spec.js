@@ -85,7 +85,7 @@ describe('RunnerJobs', () => {
     });
 
     it('is collapsed', () => {
-      expect(findCollapse().attributes('visible')).toBeUndefined();
+      expect(findCollapse().props('visible')).toBe(false);
     });
 
     describe('when expanded', () => {
@@ -99,7 +99,7 @@ describe('RunnerJobs', () => {
       });
 
       it('shows loading state', () => {
-        expect(findCollapse().attributes('visible')).toBe('true');
+        expect(findCollapse().props('visible')).toBe(true);
         expect(findSkeletonLoader().exists()).toBe(true);
       });
 
@@ -156,14 +156,14 @@ describe('RunnerJobs', () => {
     });
 
     it('shows rows', () => {
-      expect(findCollapse().attributes('visible')).toBe('true');
+      expect(findCollapse().props('visible')).toBe(true);
       expect(findRunnerManagersTable().props('items')).toEqual(mockRunnerManagers);
     });
 
     it('collapses when clicked', async () => {
       await findHideDetails().trigger('click');
 
-      expect(findCollapse().attributes('visible')).toBeUndefined();
+      expect(findCollapse().props('visible')).toBe(false);
     });
   });
 });
