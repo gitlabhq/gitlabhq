@@ -52,7 +52,6 @@ Layout/LineLength:
     - 'app/controllers/jwt_controller.rb'
     - 'app/controllers/omniauth_callbacks_controller.rb'
     - 'app/controllers/profiles/chat_names_controller.rb'
-    - 'app/controllers/profiles/passwords_controller.rb'
     - 'app/controllers/profiles/two_factor_auths_controller.rb'
     - 'app/controllers/projects/analytics/cycle_analytics/summary_controller.rb'
     - 'app/controllers/projects/blame_controller.rb'

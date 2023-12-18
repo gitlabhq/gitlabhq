@@ -82,7 +82,7 @@ You can also have code explained in the context of a merge request. To explain
 code in a merge request:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Code > Merge requests**, then select your merge request.
+1. Select **Code > Merge requests**, then select your merge request.
 1. On the secondary menu, select **Changes**.
 1. On the file you would like explained, select the three dots (**{ellipsis_v}**) and select **View File @ $SHA**.
 

@@ -145,6 +145,15 @@ RSpec.describe Projects::GroupLinks::CreateService, '#execute', feature_category
 
   context 'when user does not have permissions to share the project with a group' do
     it_behaves_like 'not shareable'
+
+    context 'when the user has less than MAINTAINER access in the project' do
+      before do
+        group.add_guest(user)
+        project.add_developer(user)
+      end
+
+      it_behaves_like 'not shareable'
+    end
   end
 
   context 'when group is blank' do

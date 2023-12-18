@@ -27,9 +27,8 @@ class MilestonesFinder
 
   def execute
     items = Milestone.all
-    items = by_ids(items)
+    items = by_ids_or_title(items)
     items = by_groups_and_projects(items)
-    items = by_title(items)
     items = by_search_title(items)
     items = by_search(items)
     items = by_state(items)
@@ -43,25 +42,17 @@ class MilestonesFinder
 
   private
 
-  def by_ids(items)
-    return items unless params[:ids].present?
+  def by_ids_or_title(items)
+    return items if params[:ids].blank? && params[:title].blank?
+    return items.id_in(params[:ids]) if params[:ids].present? && params[:title].blank?
+    return items.with_title(params[:title]) if params[:ids].blank? && params[:title].present?
 
-    items.id_in(params[:ids])
+    items.with_ids_or_title(ids: params[:ids], title: params[:title])
   end
 
   def by_groups_and_projects(items)
     items.for_projects_and_groups(params[:project_ids], params[:group_ids])
   end
-
-  # rubocop: disable CodeReuse/ActiveRecord
-  def by_title(items)
-    if params[:title]
-      items.where(title: params[:title])
-    else
-      items
-    end
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def by_search_title(items)
     if params[:search_title].present?

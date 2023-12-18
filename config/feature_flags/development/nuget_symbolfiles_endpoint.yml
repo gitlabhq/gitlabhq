@@ -1,8 +1,0 @@
----
-name: nuget_symbolfiles_endpoint
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134564
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/433528
-milestone: '16.7'
-type: development
-group: group::package registry
-default_enabled: false

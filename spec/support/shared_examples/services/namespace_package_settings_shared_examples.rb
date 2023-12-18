@@ -11,6 +11,7 @@ RSpec.shared_examples 'updating the namespace package setting attributes' do |to
       .and change { namespace.package_settings.reload.generic_duplicate_exception_regex }.from(from[:generic_duplicate_exception_regex]).to(to[:generic_duplicate_exception_regex])
       .and change { namespace.package_settings.reload.nuget_duplicates_allowed }.from(from[:nuget_duplicates_allowed]).to(to[:nuget_duplicates_allowed])
       .and change { namespace.package_settings.reload.nuget_duplicate_exception_regex }.from(from[:nuget_duplicate_exception_regex]).to(to[:nuget_duplicate_exception_regex])
+      .and change { namespace.package_settings.reload.nuget_symbol_server_enabled }.from(from[:nuget_symbol_server_enabled]).to(to[:nuget_symbol_server_enabled])
   end
 end
 
@@ -34,6 +35,7 @@ RSpec.shared_examples 'creating the namespace package setting' do
     expect(namespace.package_setting_relation.generic_duplicate_exception_regex).to eq(package_settings[:generic_duplicate_exception_regex])
     expect(namespace.package_setting_relation.nuget_duplicates_allowed).to eq(package_settings[:nuget_duplicates_allowed])
     expect(namespace.package_setting_relation.nuget_duplicate_exception_regex).to eq(package_settings[:nuget_duplicate_exception_regex])
+    expect(namespace.package_setting_relation.nuget_symbol_server_enabled).to eq(package_settings[:nuget_symbol_server_enabled])
   end
 
   it_behaves_like 'returning a success'

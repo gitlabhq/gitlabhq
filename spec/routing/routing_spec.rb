@@ -122,7 +122,6 @@ end
 
 #             profile_account GET    /-/profile/account(.:format)             profile#account
 #             profile_history GET    /-/profile/history(.:format)             profile#history
-#            profile_password PUT    /-/profile/password(.:format)            profile#password_update
 #               profile_token GET    /-/profile/token(.:format)               profile#token
 #                     profile GET    /-/profile(.:format)                     profile#show
 #              profile_update PUT    /-/profile/update(.:format)              profile#update

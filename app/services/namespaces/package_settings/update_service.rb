@@ -16,7 +16,8 @@ module Namespaces
                               pypi_package_requests_forwarding
                               lock_maven_package_requests_forwarding
                               lock_npm_package_requests_forwarding
-                              lock_pypi_package_requests_forwarding].freeze
+                              lock_pypi_package_requests_forwarding
+                              nuget_symbol_server_enabled].freeze
 
       def execute
         return ServiceResponse.error(message: 'Access Denied', http_status: 403) unless allowed?

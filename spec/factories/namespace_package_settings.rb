@@ -13,6 +13,8 @@ FactoryBot.define do
     nuget_duplicates_allowed { true }
     nuget_duplicate_exception_regex { 'foo' }
 
+    nuget_symbol_server_enabled { false }
+
     trait :group do
       namespace { association(:group) }
     end

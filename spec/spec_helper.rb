@@ -38,7 +38,7 @@ require 'test_prof/factory_prof/nate_heckler'
 require 'parslet/rig/rspec'
 require 'axe-rspec'
 
-require 'rspec_flaky'
+require 'gitlab/rspec_flaky'
 
 rspec_profiling_is_configured =
   ENV['RSPEC_PROFILING_POSTGRES_URL'].present? ||
@@ -224,9 +224,9 @@ RSpec.configure do |config|
     config.exceptions_to_hard_fail = [DeprecationToolkitEnv::DeprecationBehaviors::SelectiveRaise::RaiseDisallowedDeprecation]
   end
 
-  if RspecFlaky::Config.generate_report?
+  if Gitlab::RspecFlaky::Config.generate_report?
     config.reporter.register_listener(
-      RspecFlaky::Listener.new,
+      Gitlab::RspecFlaky::Listener.new,
       :example_passed,
       :dump_summary)
   end

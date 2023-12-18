@@ -297,7 +297,7 @@ class ApplicationController < BaseActionController
     return if current_user.nil?
 
     if current_user.password_expired? && current_user.allow_password_authentication?
-      redirect_to new_profile_password_path
+      redirect_to new_user_settings_password_path
     end
   end
 

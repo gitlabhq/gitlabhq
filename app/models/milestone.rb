@@ -56,6 +56,7 @@ class Milestone < ApplicationRecord
   scope :with_api_entity_associations, -> { preload(project: [:project_feature, :route, namespace: :route]) }
   scope :preload_for_indexing, -> { includes(project: [:project_feature]) }
   scope :order_by_dates_and_title, -> { order(due_date: :asc, start_date: :asc, title: :asc) }
+  scope :with_ids_or_title, ->(ids:, title:) { id_in(ids).or(with_title(title)) }
 
   validates :group, presence: true, unless: :project
   validates :project, presence: true, unless: :group

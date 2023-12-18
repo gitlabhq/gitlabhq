@@ -486,7 +486,7 @@ end
 # Gems required in various pipelines
 group :development, :test, :monorepo do
   gem 'gitlab-rspec', path: 'gems/gitlab-rspec' # rubocop:todo Gemfile/MissingFeatureCategory
-  gem 'rspec_flaky', path: 'gems/rspec_flaky' # rubocop:todo Gemfile/MissingFeatureCategory
+  gem 'gitlab-rspec_flaky', path: 'gems/gitlab-rspec_flaky', feature_category: :tooling
 end
 
 group :test do

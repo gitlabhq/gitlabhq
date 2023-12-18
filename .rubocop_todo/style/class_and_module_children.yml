@@ -111,7 +111,6 @@ Style/ClassAndModuleChildren:
     - 'app/controllers/profiles/groups_controller.rb'
     - 'app/controllers/profiles/keys_controller.rb'
     - 'app/controllers/profiles/notifications_controller.rb'
-    - 'app/controllers/profiles/passwords_controller.rb'
     - 'app/controllers/profiles/preferences_controller.rb'
     - 'app/controllers/profiles/two_factor_auths_controller.rb'
     - 'app/controllers/profiles/webauthn_registrations_controller.rb'

@@ -330,7 +330,7 @@
 .right-sidebar {
   &:not(.right-sidebar-merge-requests) {
     @include right-sidebar;
-    top: $calc-application-bars-height;
+    top: $calc-application-header-height;
 
     @include media-breakpoint-down(md) {
       z-index: 251;
@@ -488,6 +488,10 @@
   &.right-sidebar-expanded {
     &:not(.right-sidebar-merge-requests) {
       width: $right-sidebar-width;
+    }
+
+    .issuable-sidebar-header {
+      @include gl-py-5;
     }
 
     .value {

@@ -19,7 +19,7 @@ include:
       gem_name: "ipynbdiff"
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:
-      gem_name: "rspec_flaky"
+      gem_name: "gitlab-rspec_flaky"
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:
       gem_name: "gitlab-safe_request_store"

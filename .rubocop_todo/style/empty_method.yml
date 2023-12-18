@@ -19,7 +19,6 @@ Style/EmptyMethod:
     - 'app/controllers/import/fogbugz_controller.rb'
     - 'app/controllers/import/manifest_controller.rb'
     - 'app/controllers/profiles/chat_names_controller.rb'
-    - 'app/controllers/profiles/passwords_controller.rb'
     - 'app/controllers/profiles/preferences_controller.rb'
     - 'app/controllers/profiles_controller.rb'
     - 'app/controllers/projects/alert_management_controller.rb'

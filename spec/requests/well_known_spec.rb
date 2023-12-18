@@ -7,7 +7,7 @@ RSpec.describe 'well-known URLs', feature_category: :shared do
     it 'redirects to edit profile password path' do
       get('/.well-known/change-password')
 
-      expect(response).to redirect_to(edit_profile_password_path)
+      expect(response).to redirect_to(edit_user_settings_password_path)
     end
   end
 

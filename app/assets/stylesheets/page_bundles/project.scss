@@ -159,11 +159,9 @@
 
 // FF :project_overview_reorg enabled
 .project-page-indicator:not(.hidden) + .project-page-layout {
-  --project-overview-sidebar-width: 290px;
-
   @include media-breakpoint-up(lg) {
     display: grid;
-    grid-template-columns: auto var(--project-overview-sidebar-width);
+    grid-template-columns: auto $right-sidebar-width;
     gap: 2rem;
 
     .project-page-layout-content,
@@ -190,7 +188,7 @@
       -webkit-overflow-scrolling: touch;
 
       .project-page-sidebar-block {
-        width: calc(var(--project-overview-sidebar-width) - 1px);
+        width: $right-sidebar-width - 1px;
 
         &:first-of-type {
           padding-top: $gl-spacing-scale-1;

@@ -587,12 +587,51 @@ can also push them manually:
 nuget push My.Package.snupkg -Source <source_name>
 ```
 
-Consuming symbol packages is not yet guaranteed using clients such as Visual Studio or
-dotnet-symbol. The `.snupkg` files are available for download through the UI or the
-[API](../../../api/packages/nuget.md#download-a-package-file).
+### Use the package registry as a symbol server
 
-Follow the [NuGet symbol package issue](https://gitlab.com/gitlab-org/gitlab/-/issues/262081)
-for further updates.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416178) in GitLab 16.7.
+
+GitLab can consume symbol files from the NuGet package registry,
+so you can use the package registry as a symbol server.
+
+To use the symbol server:
+
+1. Enable the `nuget_symbol_server_enabled` namespace setting with the [GraphQl API](../../../api/graphql/reference/index.md#packagesettings).
+1. Configure your debugger to use the symbol server.
+   For example, to configure Visual Studio:
+
+   1. Open **Tools > Preferences**.
+   1. Select **Debugger > Symbol sources**.
+   1. Select **Add**.
+   1. Fill in the required fields. The URL for the symbol server is:
+
+      ```shell
+      https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/nuget/symbolfiles
+      -- or --
+      https://gitlab.example.com/api/v4/groups/<your_group_id>/-/packages/nuget/symbolfiles
+      ```
+
+   1. Select **Add Source**.
+
+After you configure the debugger, you can debug your application as usual.
+The debugger automatically downloads the symbol PDB files from the package registry as long as they're available.
+
+#### Consuming symbol packages
+
+When the debugger is configured to consume symbol packages, the debugger sends the following
+in a request:
+
+- `Symbolchecksum` header: The SHA-256 checksum of the symbol file.
+- `file_name` request parameter: The name of the symbol file. For example, `mypackage.pdb`.
+- `signature` request parameter: The GUID and age of the PDB file.
+
+The GitLab server matches this information to a symbol file and returns it.
+
+Note that:
+
+- Only portable PDB files are supported.
+- Because debuggers can't provide authentication tokens, the symbol server endpoint doesn't support the usual authentication methods.
+  The GitLab server requires the `signature` and `Symbolchecksum` to return the correct symbol file.
 
 ## Supported CLI commands
 

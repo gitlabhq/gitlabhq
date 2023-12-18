@@ -34,12 +34,6 @@ resource :profile, only: [:show, :update] do
       end
     end
 
-    resource :password, only: [:new, :create, :edit, :update] do
-      member do
-        put :reset
-      end
-    end
-
     resource :slack, only: [:edit] do
       member do
         get :slack_link

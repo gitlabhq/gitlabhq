@@ -48,7 +48,7 @@ module API
 
             namespace :symbolfiles do
               after_validation do
-                not_found! if Feature.disabled?(:nuget_symbolfiles_endpoint, project_or_group_without_auth)
+                forbidden! unless symbol_server_enabled?
               end
 
               desc 'The NuGet Symbol File Download Endpoint' do
@@ -56,6 +56,7 @@ module API
                 success code: 200
                 failure [
                   { code: 400, message: 'Bad Request' },
+                  { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
                 headers Symbolchecksum: {

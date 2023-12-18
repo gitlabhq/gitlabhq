@@ -4,14 +4,14 @@ module QA
   module Page
     module Profile
       class Password < Page::Base
-        view 'app/views/profiles/passwords/edit.html.haml' do
+        view 'app/views/user_settings/passwords/edit.html.haml' do
           element :current_password_field
           element :new_password_field
           element :confirm_password_field
           element :save_password_button
         end
 
-        view 'app/views/profiles/passwords/new.html.haml' do
+        view 'app/views/user_settings/passwords/new.html.haml' do
           element :current_password_field
           element :new_password_field
           element :confirm_password_field

@@ -101,6 +101,13 @@ RSpec.describe MilestonesFinder do
       expect(result).to contain_exactly(milestone_1, milestone_2)
     end
 
+    it 'filters by id or title' do
+      params[:ids] = [milestone_2.id]
+      params[:title] = [milestone_1.title]
+
+      expect(result).to contain_exactly(milestone_1, milestone_2)
+    end
+
     it 'filters by active state' do
       params[:state] = 'active'
 

@@ -233,7 +233,7 @@ Once a test is in quarantine, there are 3 choices:
 On our CI, we use [`RSpec::Retry`](https://github.com/NoRedInk/rspec-retry) to automatically retry a failing example a few
 times (see [`spec/spec_helper.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/spec_helper.rb) for the precise retries count).
 
-We also use a custom [`RspecFlaky::Listener`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/rspec_flaky/lib/rspec_flaky/listener.rb).
+We also use a custom [`Gitlab::RspecFlaky::Listener`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-rspec_flaky/lib/gitlab/rspec_flaky/listener.rb).
 This listener runs in the `update-tests-metadata` job in `maintenance` scheduled pipelines
 on the `master` branch, and saves flaky examples to `rspec/flaky/report-suite.json`.
 The report file is then retrieved by the `retrieve-tests-metadata` job in all pipelines.

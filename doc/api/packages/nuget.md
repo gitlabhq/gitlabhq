@@ -456,6 +456,41 @@ Possible request responses:
 | `403`  | Forbidden |
 | `404`  | Not found |
 
+## Download a debugging symbol file `.pdb`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416178) in GitLab 16.7.
+
+Download a debugging symbol file (`.pdb`):
+
+```plaintext
+GET <route-prefix>/symbolfiles/:file_name/:signature/:file_name
+```
+
+| Attribute         | Type   | Required | Description |
+| ----------------- | ------ | -------- | ----------- |
+| `file_name`       | string | yes      | The name of the file. |
+| `signature`       | string | yes      | The signature of the file. |
+| `Symbolchecksum` | string | yes      | Required header. The checksum of the file. |
+
+```shell
+curl --header "Symbolchecksum: SHA256:<file_checksum>" "https://gitlab.example.com/api/v4/projects/1/packages/nuget/symbolfiles/:file_name/:signature/:file_name"
+```
+
+Write the output to a file:
+
+```shell
+curl --header "Symbolchecksum: SHA256:<file_checksum>" "https://gitlab.example.com/api/v4/projects/1/packages/nuget/symbolfiles/mynugetpkg.pdb/k813f89485474661234z7109cve5709eFFFFFFFF/mynugetpkg.pdb" > mynugetpkg.pdb
+```
+
+Possible request responses:
+
+| Status | Description |
+| ------ | ----------- |
+| `200`  | File downloaded |
+| `400`  | Bad request |
+| `403`  | Forbidden |
+| `404`  | Not found |
+
 ## V2 Feed Metadata Endpoints
 
 > Introduced in GitLab 16.3.

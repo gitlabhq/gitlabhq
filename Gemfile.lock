@@ -48,6 +48,13 @@ PATH
       railties (~> 7)
 
 PATH
+  remote: gems/gitlab-rspec_flaky
+  specs:
+    gitlab-rspec_flaky (0.1.0)
+      activesupport (>= 6.1, < 8)
+      rspec (~> 3.0)
+
+PATH
   remote: gems/gitlab-rspec
   specs:
     gitlab-rspec (0.1.0)
@@ -91,13 +98,6 @@ PATH
     ipynbdiff (0.4.7)
       diffy (~> 3.4)
       oj (~> 3.13.16)
-
-PATH
-  remote: gems/rspec_flaky
-  specs:
-    rspec_flaky (0.1.0)
-      activesupport (>= 6.1, < 8)
-      rspec (~> 3.0)
 
 PATH
   remote: vendor/gems/attr_encrypted
@@ -1892,6 +1892,7 @@ DEPENDENCIES
   gitlab-markup (~> 1.9.0)
   gitlab-net-dns (~> 0.9.2)
   gitlab-rspec!
+  gitlab-rspec_flaky!
   gitlab-safe_request_store!
   gitlab-schema-validation!
   gitlab-sdk
@@ -2046,7 +2047,6 @@ DEPENDENCIES
   rspec-parameterized (~> 1.0)
   rspec-rails (~> 6.1.0)
   rspec-retry (~> 0.6.2)
-  rspec_flaky!
   rspec_junit_formatter
   rspec_profiling (~> 0.0.6)
   rubocop

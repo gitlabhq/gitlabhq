@@ -150,7 +150,7 @@ module Emails
       @user = user
       @ip = ip
       @time = time
-      @target_url = edit_profile_password_url
+      @target_url = edit_user_settings_password_url
 
       email_with_layout(
         to: @user.notification_email_or_default,

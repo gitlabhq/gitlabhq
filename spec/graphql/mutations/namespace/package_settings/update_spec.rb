@@ -38,7 +38,8 @@ RSpec.describe Mutations::Namespace::PackageSettings::Update, feature_category: 
           npm_package_requests_forwarding: nil,
           lock_npm_package_requests_forwarding: false,
           pypi_package_requests_forwarding: nil,
-          lock_pypi_package_requests_forwarding: false
+          lock_pypi_package_requests_forwarding: false,
+          nuget_symbol_server_enabled: false
         }, to: {
           maven_duplicates_allowed: false,
           maven_duplicate_exception_regex: 'RELEASE',
@@ -51,7 +52,8 @@ RSpec.describe Mutations::Namespace::PackageSettings::Update, feature_category: 
           npm_package_requests_forwarding: true,
           lock_npm_package_requests_forwarding: true,
           pypi_package_requests_forwarding: true,
-          lock_pypi_package_requests_forwarding: true
+          lock_pypi_package_requests_forwarding: true,
+          nuget_symbol_server_enabled: true
         }
 
       it_behaves_like 'returning a success'
@@ -106,7 +108,8 @@ RSpec.describe Mutations::Namespace::PackageSettings::Update, feature_category: 
           npm_package_requests_forwarding: true,
           lock_npm_package_requests_forwarding: true,
           pypi_package_requests_forwarding: true,
-          lock_pypi_package_requests_forwarding: true
+          lock_pypi_package_requests_forwarding: true,
+          nuget_symbol_server_enabled: true
         }
       end
 

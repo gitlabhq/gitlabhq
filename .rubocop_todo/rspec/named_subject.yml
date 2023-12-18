@@ -1417,7 +1417,7 @@ RSpec/NamedSubject:
     - 'spec/features/admin/users/user_spec.rb'
     - 'spec/features/groups/clusters/user_spec.rb'
     - 'spec/features/merge_request/user_sees_merge_widget_spec.rb'
-    - 'spec/features/profiles/password_spec.rb'
+    - 'spec/features/user_settings/password_spec.rb'
     - 'spec/features/projects/clusters/user_spec.rb'
     - 'spec/features/projects/pipelines/pipeline_spec.rb'
     - 'spec/features/projects/settings/registry_settings_cleanup_tags_spec.rb'

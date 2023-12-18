@@ -15,7 +15,7 @@
 
 %aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { always_show_toggle: true, signed: { in: signed_in }, issuable_type: issuable_type }, class: "#{sidebar_gutter_collapsed_class(is_merge_request_with_flag)} #{'right-sidebar-merge-requests' if is_merge_request_with_flag}", 'aria-live' => 'polite', 'aria-label': issuable_type }
   .issuable-sidebar{ class: "#{'is-merge-request' if is_merge_request_with_flag}" }
-    .issuable-sidebar-header{ class: "gl-pb-4! #{'gl-pb-2! gl-md-display-flex gl-justify-content-end gl-lg-display-none!' if is_merge_request_with_flag}" }
+    .issuable-sidebar-header{ class: "#{'gl-pb-2! gl-md-display-flex gl-justify-content-end gl-lg-display-none!' if is_merge_request_with_flag}" }
       = render Pajamas::ButtonComponent.new(button_options: { class: "gutter-toggle float-right js-sidebar-toggle has-tooltip gl-shadow-none! #{'gl-display-block' if moved_sidebar_enabled} #{'gl-mt-2' if notifications_todos_buttons_enabled?}" , type: 'button', 'aria-label' => _('Toggle sidebar'), title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }) do
         = sidebar_gutter_toggle_icon
       - if signed_in

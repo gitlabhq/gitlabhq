@@ -105,3 +105,8 @@
     @include gl-font-weight-normal;
   }
 }
+
+[data-page="projects:issues:show"] .top-bar-fixed,
+[data-page="groups:epics:show"] .top-bar-fixed {
+  width: 100%;
+}

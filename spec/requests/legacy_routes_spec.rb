@@ -37,4 +37,20 @@ RSpec.describe "Legacy routes", type: :request, feature_category: :system_access
     get "/-/profile/applications"
     expect(response).to redirect_to('/-/user_settings/applications')
   end
+
+  it "/-/profile/password/new" do
+    get "/-/profile/password/new"
+    expect(response).to redirect_to('/-/user_settings/password/new')
+
+    get "/-/profile/password/new?abc=xyz"
+    expect(response).to redirect_to('/-/user_settings/password/new?abc=xyz')
+  end
+
+  it "/-/profile/password/edit" do
+    get "/-/profile/password/edit"
+    expect(response).to redirect_to('/-/user_settings/password/edit')
+
+    get "/-/profile/password/edit?abc=xyz"
+    expect(response).to redirect_to('/-/user_settings/password/edit?abc=xyz')
+  end
 end

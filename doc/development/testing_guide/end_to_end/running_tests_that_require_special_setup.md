@@ -600,3 +600,23 @@ To run the [`login_via_oauth_and_oidc_with_gitlab_as_idp_spec`](https://gitlab.c
 
    RELEASE_REGISTRY_URL='registry.gitlab.com' RELEASE_REGISTRY_USERNAME='<your_gitlab_username>' RELEASE_REGISTRY_PASSWORD='<your_gitlab_personal_access_token>' RELEASE='registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:c0ae46db6b31ea231b2de88961cd687acf634179' GITLAB_QA_ADMIN_ACCESS_TOKEN="<your_gdk_admin_personal_access_token>" QA_DEBUG=true CHROME_HEADLESS=false bundle exec bin/qa Test::Instance::All http://gdk.test:3000 qa/specs/features/browser_ui/1_manage/login/login_via_oauth_and_oidc_with_gitlab_as_idp_spec.rb
    ```
+
+## Product Analytics tests
+
+Product Analytics e2e tests require Product Analytics services running and connected to your GDK.
+
+In order to run Product Analytics services, devkit can be used. Instructions to set it up and connect to your GDK can be found in the [devkit project's `README.md`](https://gitlab.com/gitlab-org/analytics-section/product-analytics/devkit).
+
+Additionally, the following setup is required on the GDK:
+
+- Ultimate license applied.
+  - [How to request the license](https://about.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses).
+  - [How to activate GitLab EE with a license file or key](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/license_file.md#activate-gitlab-ee-with-a-license-file-or-key).
+- Product Analytics feature flags enabled. The list of feature flags can be [found here](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/user/product_analytics#enable-product-analytics).
+- Simulate SaaS enabled. Instructions can be [found here](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/ee_features.md#simulate-a-saas-instance).
+
+Once Product Analytics services are running and are connected to your GDK, the tests can be executed with:
+
+```shell
+bundle exec rspec qa/specs/features/ee/browser_ui/8_monitor/product_analytics/onboarding_spec.rb
+```

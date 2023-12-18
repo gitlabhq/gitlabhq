@@ -289,7 +289,7 @@ To leave a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. On the project overview page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
-1. Select **Leave project**, then **Leave project** again..
+1. Select **Leave project**, then **Leave project** again.
 
 ## Add a compliance framework to a project **(PREMIUM)**
 

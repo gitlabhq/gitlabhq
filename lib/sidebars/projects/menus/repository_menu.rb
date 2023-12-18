@@ -64,7 +64,7 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
             active_routes: { controller: %w[commit commits] },
             item_id: :commits,
-            container_html_options: { id: 'js-onboarding-commits-link', class: 'shortcuts-commits' }
+            container_html_options: { class: 'shortcuts-commits' }
           )
         end
 
@@ -74,8 +74,7 @@ module Sidebars
             link: project_branches_path(context.project),
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
             active_routes: { controller: :branches },
-            item_id: :branches,
-            container_html_options: { id: 'js-onboarding-branches-link' }
+            item_id: :branches
           )
         end
 

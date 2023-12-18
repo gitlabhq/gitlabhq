@@ -1162,7 +1162,6 @@ RSpec/ContextWording:
     - 'spec/features/participants_autocomplete_spec.rb'
     - 'spec/features/profiles/chat_names_spec.rb'
     - 'spec/features/profiles/keys_spec.rb'
-    - 'spec/features/profiles/password_spec.rb'
     - 'spec/features/profiles/user_edit_profile_spec.rb'
     - 'spec/features/projects/active_tabs_spec.rb'
     - 'spec/features/projects/activity/user_sees_design_activity_spec.rb'

@@ -1,23 +1,29 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'with cross-reference system notes' do
-  let(:merge_request) { create(:merge_request) }
-  let(:project) { merge_request.project }
-  let(:new_merge_request) { create(:merge_request) }
-  let(:commit) { new_merge_request.project.commit }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:pat) { create(:personal_access_token, user: user) }
+  let_it_be(:project) { create(:project, :small_repo) }
+  let_it_be(:project2) { create(:project, :small_repo) }
+  let_it_be(:project3) { create(:project, :small_repo) }
+
+  let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+  let_it_be(:new_merge_request) { create(:merge_request, source_project: project2) }
+  let_it_be(:hidden_merge_request) { create(:merge_request, source_project: project3) }
+
   let!(:note) { create(:system_note, noteable: merge_request, project: project, note: cross_reference) }
   let!(:note_metadata) { create(:system_note_metadata, note: note, action: 'cross_reference') }
   let(:cross_reference) { "test commit #{commit.to_reference(project)}" }
-  let(:pat) { create(:personal_access_token, user: user) }
+  let(:commit) { new_merge_request.project.commit }
 
-  before do
+  let!(:new_note) { create(:system_note, noteable: merge_request, project: project, note: hidden_cross_reference) }
+  let!(:new_note_metadata) { create(:system_note_metadata, note: new_note, action: 'cross_reference') }
+  let(:hidden_cross_reference) { "test commit #{hidden_commit.to_reference(project)}" }
+  let(:hidden_commit) { hidden_merge_request.project.commit }
+
+  before_all do
     project.add_developer(user)
-    new_merge_request.project.add_developer(user)
-
-    hidden_merge_request = create(:merge_request)
-    new_cross_reference = "test commit #{hidden_merge_request.project.commit.to_reference(project)}"
-    new_note = create(:system_note, noteable: merge_request, project: project, note: new_cross_reference)
-    create(:system_note_metadata, note: new_note, action: 'cross_reference')
+    project2.add_developer(user)
   end
 
   it 'returns only the note that the user should see' do

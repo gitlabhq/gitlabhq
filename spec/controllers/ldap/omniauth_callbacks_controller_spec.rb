@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ldap::OmniauthCallbacksController do
+RSpec.describe Ldap::OmniauthCallbacksController, type: :controller, feature_category: :system_access do
   include_context 'Ldap::OmniauthCallbacksController'
 
   it 'allows sign in' do

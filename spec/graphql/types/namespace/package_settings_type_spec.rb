@@ -32,6 +32,7 @@ RSpec.describe GitlabSchema.types['PackageSettings'], feature_category: :package
       maven_package_requests_forwarding_locked
       npm_package_requests_forwarding_locked
       pypi_package_requests_forwarding_locked
+      nuget_symbol_server_enabled
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
