@@ -4430,9 +4430,6 @@ msgstr ""
 msgid "After it is removed, the fork relationship can only be restored by using the API. This project will no longer be able to receive or send merge requests to the upstream project or other forks."
 msgstr ""
 
-msgid "After the Apple App Store Connect integration is activated, the following protected variables will be created for CI/CD use."
-msgstr ""
-
 msgid "After the export is complete, download the data file from a notification email or from this page. You can then import the data file from the %{strong_text_start}Create new group%{strong_text_end} page of another GitLab instance."
 msgstr ""
 
@@ -4440,6 +4437,9 @@ msgid "After the report is generated, an email will be sent with the report atta
 msgstr ""
 
 msgid "After you enable the integration, the following protected variable is created for CI/CD use:"
+msgstr ""
+
+msgid "After you enable the integration, the following protected variables are created for CI/CD use:"
 msgstr ""
 
 msgid "After you've reviewed these contribution guidelines, you'll be all set to"
@@ -5856,6 +5856,27 @@ msgstr ""
 msgid "Append the comment with %{tableflip}"
 msgstr ""
 
+msgid "Append the hostname of your GitLab instance to the status check name."
+msgstr ""
+
+msgid "Apple App Store Connect private key file name."
+msgstr ""
+
+msgid "Apple App Store Connect private key."
+msgstr ""
+
+msgid "AppleAppStore|Apple App Store Connect issuer ID"
+msgstr ""
+
+msgid "AppleAppStore|Apple App Store Connect issuer ID."
+msgstr ""
+
+msgid "AppleAppStore|Apple App Store Connect key ID"
+msgstr ""
+
+msgid "AppleAppStore|Apple App Store Connect key ID."
+msgstr ""
+
 msgid "AppleAppStore|Drag your Private Key file here or %{linkStart}click to upload%{linkEnd}."
 msgstr ""
 
@@ -5868,16 +5889,10 @@ msgstr ""
 msgid "AppleAppStore|Leave empty to use your current Private Key."
 msgstr ""
 
-msgid "AppleAppStore|Only set variables on protected branches and tags"
-msgstr ""
-
 msgid "AppleAppStore|Protected branches and tags only"
 msgstr ""
 
-msgid "AppleAppStore|The Apple App Store Connect Issuer ID."
-msgstr ""
-
-msgid "AppleAppStore|The Apple App Store Connect Key ID."
+msgid "AppleAppStore|Set variables on protected branches and tags only."
 msgstr ""
 
 msgid "AppleAppStore|The Apple App Store Connect Private Key (.p8)"
@@ -22054,7 +22069,13 @@ msgstr ""
 msgid "GitHub API rate limit exceeded. Try again after %{reset_time}"
 msgstr ""
 
+msgid "GitHub API token with `repo:status` OAuth scope."
+msgstr ""
+
 msgid "GitHub import"
+msgstr ""
+
+msgid "GitHub repository URL."
 msgstr ""
 
 msgid "GitHubImporter|*Merged by: %{author} at %{timestamp}*"
@@ -52558,9 +52579,6 @@ msgstr ""
 msgid "Use the %{strongStart}Test%{strongEnd} option above to create an event."
 msgstr ""
 
-msgid "Use the Apple App Store Connect integration to easily connect to the Apple App Store with Fastlane in CI/CD pipelines."
-msgstr ""
-
 msgid "Use the Google Play integration to connect to Google Play with fastlane in CI/CD pipelines."
 msgstr ""
 
@@ -52574,6 +52592,9 @@ msgid "Use the public cloud instance URL (%{kroki_public_url}) or %{install_link
 msgstr ""
 
 msgid "Use the search bar on the top of this page"
+msgstr ""
+
+msgid "Use this integration to connect to the Apple App Store with fastlane in CI/CD pipelines."
 msgstr ""
 
 msgid "Use this section to disable your one-time password authenticator and WebAuthn devices. You can also generate new recovery codes."

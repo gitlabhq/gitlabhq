@@ -186,6 +186,22 @@ RSpec.describe ::Integrations::Field, feature_category: :integrations do
     end
   end
 
+  describe '#api_type' do
+    it 'returns String' do
+      expect(field.api_type).to eq(String)
+    end
+
+    context 'when type is checkbox' do
+      before do
+        attrs[:type] = :checkbox
+      end
+
+      it 'returns Boolean' do
+        expect(field.api_type).to eq(::API::Integrations::Boolean)
+      end
+    end
+  end
+
   describe '#key?' do
     it { is_expected.to be_key(:type) }
     it { is_expected.not_to be_key(:foo) }

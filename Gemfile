@@ -463,6 +463,8 @@ group :development, :test do
   # See: https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/106
   gem 'vite_rails', '~> 3.0.17', feature_category: :shared
   gem 'vite_ruby', '~> 3.5.0', feature_category: :shared
+
+  gem 'gitlab-housekeeper', path: 'gems/gitlab-housekeeper' # rubocop:todo Gemfile/MissingFeatureCategory
 end
 
 group :development, :test, :danger do

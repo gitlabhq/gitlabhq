@@ -955,6 +955,14 @@ Gitlab.ee do
 end
 
 #
+# Cloud connector
+#
+Gitlab.ee do
+  Settings['cloud_connector'] = {}
+  Settings.cloud_connector['base_url'] ||= ENV['CLOUD_CONNECTOR_BASE_URL'] || 'https://cloud.gitlab.com'
+end
+
+#
 # Zoekt credentials
 #
 Gitlab.ee do

@@ -30,6 +30,13 @@ PATH
       thor (~> 1.3)
 
 PATH
+  remote: gems/gitlab-housekeeper
+  specs:
+    gitlab-housekeeper (0.1.0)
+      httparty
+      rubocop
+
+PATH
   remote: gems/gitlab-http
   specs:
     gitlab-http (0.1.0)
@@ -1877,6 +1884,7 @@ DEPENDENCIES
   gitlab-dangerfiles (~> 4.6.0)
   gitlab-experiment (~> 0.9.1)
   gitlab-fog-azure-rm (~> 1.8.0)
+  gitlab-housekeeper!
   gitlab-http!
   gitlab-labkit (~> 0.34.0)
   gitlab-license (~> 2.3)

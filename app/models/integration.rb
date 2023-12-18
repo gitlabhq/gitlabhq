@@ -526,6 +526,17 @@ class Integration < ApplicationRecord
     fields.reject { _1[:type] == :password || _1[:name] == 'webhook' || (_1.key?(:if) && _1[:if] != true) }.pluck(:name)
   end
 
+  def self.api_fields
+    fields.map do |field|
+      {
+        required: field.required?,
+        name: field.name.to_sym,
+        type: field.api_type,
+        desc: field.description
+      }
+    end
+  end
+
   def form_fields
     fields.reject { _1[:api_only] == true || (_1.key?(:if) && _1[:if] != true) }
   end

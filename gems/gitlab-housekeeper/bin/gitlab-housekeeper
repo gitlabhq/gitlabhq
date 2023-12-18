@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+
+require "optparse"
+require 'gitlab/housekeeper'
+
+options = {}
+
+OptionParser.new do |opts|
+  opts.banner = 'Creates merge requests that can be inferred from the current state of the codebase'
+
+  opts.on('-m=M', '--max-mrs=M', Integer, 'Limit of MRs to create. Defaults to 1.') do |m|
+    options[:max_mrs] = m
+  end
+
+  opts.on('-d', '--dry-run', 'Dry-run only. Print the MR titles, descriptions and diffs') do
+    options[:dry_run] = true
+  end
+
+  opts.on('-r lib/foo.rb lib/bar.rb', '--require lib/foo.rb lib/bar.rb', Array, 'Require keeps specified') do |r|
+    options[:require] = r
+  end
+
+  opts.on('-k OverdueFinalizeBackgroundMigration,AnotherKeep', '--keeps OverdueFinalizeBackgroundMigration,AnotherKeep', Array, 'Require keeps specified') do |k|
+    options[:keeps] = k
+  end
+
+  opts.on('-h', '--help', 'Prints this help') do
+    abort opts.to_s
+  end
+end.parse!
+
+Gitlab::Housekeeper::Runner.new(**options).run

@@ -33,6 +33,7 @@ module Quality
         haml_lint
         helpers
         initializers
+        keeps
         lib
         metrics_server
         models

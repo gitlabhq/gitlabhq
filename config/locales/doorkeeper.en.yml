@@ -134,7 +134,7 @@ en:
       write_observability:
         Grants write access to GitLab Observability.
       ai_features:
-        Grants permission to perform API actions for GitLab Duo.
+        Grants permission to perform API actions for GitLab Duo. This scope is designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see scope requirements.
       openid:
         Grants permission to authenticate with GitLab using OpenID Connect. Also gives read-only access to the user's profile and group memberships.
       sudo:

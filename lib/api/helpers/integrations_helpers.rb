@@ -126,38 +126,7 @@ module API
 
       def self.integrations
         {
-          'apple-app-store' => [
-            {
-              required: true,
-              name: :app_store_issuer_id,
-              type: String,
-              desc: 'The Apple App Store Connect Issuer ID'
-            },
-            {
-              required: true,
-              name: :app_store_key_id,
-              type: String,
-              desc: 'The Apple App Store Connect Key ID'
-            },
-            {
-              required: true,
-              name: :app_store_private_key,
-              type: String,
-              desc: 'The Apple App Store Connect Private Key'
-            },
-            {
-              required: true,
-              name: :app_store_private_key_file_name,
-              type: String,
-              desc: 'The Apple App Store Connect Private Key File Name'
-            },
-            {
-              required: false,
-              name: :app_store_protected_refs,
-              type: ::Grape::API::Boolean,
-              desc: 'Only enable for protected refs'
-            }
-          ],
+          'apple-app-store' => ::Integrations::AppleAppStore.api_fields,
           'asana' => [
             {
               required: true,

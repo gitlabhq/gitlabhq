@@ -251,7 +251,7 @@ export default {
       <template #list-item="{ item }">
         <span class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
           {{ item.text }}
-          <gl-icon v-if="item.icon" :name="item.icon" class="gl-text-purple-600" />
+          <gl-icon v-if="item.icon" :name="item.icon" class="gl-text-gray-500" />
         </span>
       </template>
     </gl-disclosure-dropdown-group>

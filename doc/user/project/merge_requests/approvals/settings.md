@@ -114,7 +114,8 @@ When this field is changed, it can affect all open merge requests depending on t
 
 ## Require user re-authentication to approve
 
-> Requiring re-authentication by using SAML authentication for GitLab.com groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5981) in GitLab 16.6 [with a flag](../../../../administration/feature_flags.md) named `ff_require_saml_auth_to_approve`. Disabled by default.
+> - Requiring re-authentication by using SAML authentication for GitLab.com groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5981) in GitLab 16.6 [with a flag](../../../../administration/feature_flags.md) named `ff_require_saml_auth_to_approve`. Disabled by default.
+> - Requiring re-authentication by using SAML authentication for self-managed instances [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/431415) in GitLab 16.7 [with a flag](../../../../administration/feature_flags.md) named `ff_require_saml_auth_to_approve`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default requiring re-authentication by using SAML authentication is not available. To make it available, an administrator can
@@ -123,16 +124,18 @@ On self-managed GitLab, by default requiring re-authentication by using SAML aut
 You can force potential approvers to first authenticate with either:
 
 - A password.
-- SAML. Available on GitLab.com groups only.
+- SAML.
 
 This permission enables an electronic signature for approvals, such as the one defined by
-[Code of Federal Regulations (CFR) Part 11](https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfcfr/CFRSearch.cfm?CFRPart=11&showFR=1&subpartNode=21:1.0.1.1.8.3)):
+[Code of Federal Regulations (CFR) Part 11](https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfcfr/CFRSearch.cfm?CFRPart=11&showFR=1&subpartNode=21:1.0.1.1.8.3)). This
+setting is only available on top-level groups. For more information, see [Settings cascading](#settings-cascading).
 
 1. Enable password authentication and SAML authentication. For more information on:
    - Password authentication, see
      [sign-in restrictions documentation](../../../../administration/settings/sign_in_restrictions.md#password-authentication-enabled).
    - SAML authentication for GitLab.com groups, see
      [SAML SSO for GitLab.com groups documentation](../../../../user/group/saml_sso).
+   - SAML authentication for self-managed instances, see [SAML SSO for self-managed GitLab instances](../../../../integration/saml.md).
 1. On the left sidebar, select **Settings > Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval settings** and
    select **Require user re-authentication (password or SAML) to approve**.

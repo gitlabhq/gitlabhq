@@ -1,0 +1,8 @@
+---
+name: use_cloud_connector_lb
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139265
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435142
+milestone: '16.8'
+type: experiment
+group: group::cloud connector
+default_enabled: false
