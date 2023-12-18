@@ -62,7 +62,7 @@ RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition
 
       allow(helper)
         .to receive(:image_path)
-        .with('illustrations/project-run-CICD-pipelines-sm.svg')
+        .with('illustrations/empty-state/empty-devops-md.svg')
         .and_return('illustrations/validate.svg')
 
       allow(helper)

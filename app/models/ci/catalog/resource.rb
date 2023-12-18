@@ -68,10 +68,6 @@ module Ci
         full_path
       end
 
-      def unpublish!
-        update!(state: :draft)
-      end
-
       def publish!
         update!(state: :published)
       end

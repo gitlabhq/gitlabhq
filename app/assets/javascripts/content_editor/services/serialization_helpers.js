@@ -480,6 +480,22 @@ export function renderReferenceLabel(state, node) {
   state.write(node.attrs.originalText || `~${state.quote(node.attrs.text)}`);
 }
 
+const findChildWithMark = (mark, parent) => {
+  let child;
+  let offset;
+  let index;
+
+  parent.forEach((_child, _offset, _index) => {
+    if (mark.isInSet(_child.marks)) {
+      child = _child;
+      offset = _offset;
+      index = _index;
+    }
+  });
+
+  return child ? { child, offset, index } : null;
+};
+
 const generateBoldTags = (wrapTagName = openTag) => {
   return (_, mark) => {
     const type = /^(\*\*|__|<strong|<b).*/.exec(mark.attrs.sourceMarkdown)?.[1];
@@ -531,11 +547,21 @@ export const italic = {
 };
 
 const generateCodeTag = (wrapTagName = openTag) => {
-  return (_, mark) => {
+  const isOpen = wrapTagName === openTag;
+
+  return (_, mark, parent) => {
     const type = /^(`|<code).*/.exec(mark.attrs.sourceMarkdown)?.[1];
 
     if (type === '<code') {
       return wrapTagName(type.substring(1));
+    }
+
+    const childText = findChildWithMark(mark, parent).child?.text || '';
+    if (childText.includes('`')) {
+      let tag = '``';
+      if (childText.startsWith('`') || childText.endsWith('`'))
+        tag = isOpen ? `${tag} ` : ` ${tag}`;
+      return tag;
     }
 
     return '`';
@@ -580,22 +606,6 @@ const normalizeUrl = (url) => {
  */
 const isValidAutolinkURL = (url) =>
   /(https?:\/\/)?([\w-])+\.{1}([a-zA-Z]{2,63})([/\w-]*)*\/?\??([^#\n\r]*)?#?([^\n\r]*)/.test(url);
-
-const findChildWithMark = (mark, parent) => {
-  let child;
-  let offset;
-  let index;
-
-  parent.forEach((_child, _offset, _index) => {
-    if (mark.isInSet(_child.marks)) {
-      child = _child;
-      offset = _offset;
-      index = _index;
-    }
-  });
-
-  return child ? { child, offset, index } : null;
-};
 
 /**
  * This function detects whether a link should be serialized

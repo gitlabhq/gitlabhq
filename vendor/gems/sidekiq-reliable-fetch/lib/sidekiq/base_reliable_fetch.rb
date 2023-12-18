@@ -179,6 +179,7 @@ module Sidekiq
       Sidekiq.logger.info(
         message: "Pushed job #{msg['jid']} back to queue #{queue}",
         jid: msg['jid'],
+        class: msg['class'],
         queue: queue
       )
     end

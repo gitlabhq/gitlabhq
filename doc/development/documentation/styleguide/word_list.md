@@ -650,6 +650,17 @@ Do not confuse with [download](#download).
 We want users to find information quickly, and they rarely search for the term **FAQ**.
 Information in FAQs belongs with other similar information, under an easily searchable topic title.
 
+## feature
+
+You should rarely need to use the word **feature**. Instead, explain what GitLab does.
+For example, use:
+
+- Use merge requests to incorporate changes into the target branch.
+
+Instead of:
+
+- Use the merge request feature to incorporate changes into the target branch.
+
 ## field
 
 Use **text box** instead of **field** or **box**.

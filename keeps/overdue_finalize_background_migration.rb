@@ -1,16 +1,33 @@
 # frozen_string_literal: true
 
-require ::File.expand_path('../config/environment', __dir__)
+require_relative '../config/environment'
 require_relative '../lib/generators/post_deployment_migration/post_deployment_migration_generator'
 require_relative './helpers/postgres_ai'
 
 module Keeps
+  # This is an implementation of a ::Gitlab::Housekeeper::Keep. This keep will locate any old batched background
+  # migrations that were added before CUTOFF_MILESTONE and then check if they are finished by querying Postgres.ai
+  # database archive. Once it has determined it is safe to finalize the batched background migration it will generate a
+  # new migration which calls `ensure_batched_background_migration_is_finished` for this migration. It also updates the
+  # `db/docs/batched_background_migrations` file with `finalized_by` and generates the `schema_migrations` file.
+  #
+  # This keep requires the following additional environment variables to be set:
+  #  - POSTGRES_AI_CONNECTION_STRING: A valid postgres connection string
+  #  - POSTGRES_AI_PASSWORD: The password for the postgres database in connection string
+  #
+  # You can run it individually with:
+  #
+  # ```
+  # bundle exec gitlab-housekeeper -d \
+  #   -r keeps/overdue_finalize_background_migration.rb \
+  #   -k Keeps::OverdueFinalizeBackgroundMigration
+  # ```
   class OverdueFinalizeBackgroundMigration < ::Gitlab::Housekeeper::Keep
     CUTOFF_MILESTONE = '16.4'
 
     def initialize; end
 
-    def each
+    def each_change
       each_batched_background_migration do |migration_yaml_file, migration|
         next unless before_cuttoff_milestone?(migration['milestone'])
 

@@ -5,7 +5,7 @@ require 'sidekiq/reliable_fetch'
 require 'sidekiq/semi_reliable_fetch'
 
 describe Sidekiq::BaseReliableFetch do
-  let(:job) { Sidekiq.dump_json(class: 'Bob', args: [1, 2, 'foo']) }
+  let(:job) { Sidekiq.dump_json(class: 'Bob', args: [1, 2, 'foo'], jid: 55) }
 
   before { Sidekiq.redis(&:flushdb) }
 
@@ -47,6 +47,16 @@ describe Sidekiq::BaseReliableFetch do
     it 'requeues the bulk' do
       uow = described_class::UnitOfWork
       jobs = [ uow.new('queue:foo', job), uow.new('queue:foo', job), uow.new('queue:bar', job) ]
+
+      jobs.map(&:queue).each do |q|
+        expect(Sidekiq.logger).to receive(:info).with(
+         message: "Pushed job 55 back to queue #{q}",
+          jid: 55,
+          class: 'Bob',
+          queue: q
+        )
+      end
+
       described_class.new(options).bulk_requeue(jobs, nil)
 
       expect(queue1.size).to eq 2

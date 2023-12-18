@@ -1108,7 +1108,6 @@ Style/InlineDisableAnnotation:
     - 'config/initializers/mail_starttls_patch.rb'
     - 'config/initializers/postgres_cte_as_materialized.rb'
     - 'config/initializers/rack_VULNDB-255039_patch.rb'
-    - 'config/initializers/rspec_profiling.rb'
     - 'config/initializers/safe_session_store_patch.rb'
     - 'config/initializers/sidekiq.rb'
     - 'config/initializers/warden.rb'

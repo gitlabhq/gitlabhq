@@ -48,31 +48,46 @@ module RspecProfilingExt
   end
 
   module Run
-    def example_finished(*args)
-      # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    # rubocop:disable Gitlab/ModuleWithInstanceVariables -- patching class which requires setting ivars
+    def example_finished(notification)
+      # If available, use the spec location where (deeply nested) shared examples are used.
+      file, line_number = notification
+        .example
+        .metadata
+        .fetch(:shared_group_inclusion_backtrace)
+        .reverse
+        .lazy
+        .map { |bt| bt.formatted_inclusion_location&.split(':') }
+        .first
+
+      unless file && line_number
+        file = @current_example.file
+        line_number = @current_example.line_number
+      end
+
       collector.insert({
         branch: vcs.branch,
-                         commit_hash: vcs.sha,
-                         date: vcs.time,
-                         file: @current_example.file,
-                         line_number: @current_example.line_number,
-                         description: @current_example.description,
-                         status: @current_example.status,
-                         exception: @current_example.exception,
-                         time: @current_example.time,
-                         query_count: @current_example.query_count,
-                         query_time: @current_example.query_time,
-                         request_count: @current_example.request_count,
-                         request_time: @current_example.request_time,
-                         feature_category: @current_example.feature_category
+        commit_hash: vcs.sha,
+        date: vcs.time,
+        file: file,
+        line_number: line_number,
+        description: @current_example.description,
+        status: @current_example.status,
+        exception: @current_example.exception,
+        time: @current_example.time,
+        query_count: @current_example.query_count,
+        query_time: @current_example.query_time,
+        request_count: @current_example.request_count,
+        request_time: @current_example.request_time,
+        feature_category: @current_example.feature_category
       })
-      # rubocop:enable Gitlab/ModuleWithInstanceVariables
     rescue StandardError => err
-      return if @already_logged_example_finished_error # rubocop:disable Gitlab/ModuleWithInstanceVariables
+      return if @already_logged_example_finished_error
 
       warn "rspec_profiling couldn't collect an example: #{err}. Further warnings suppressed."
-      @already_logged_example_finished_error = true # rubocop:disable Gitlab/ModuleWithInstanceVariables
+      @already_logged_example_finished_error = true
     end
+    # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
     alias_method :example_passed, :example_finished
     alias_method :example_failed, :example_finished

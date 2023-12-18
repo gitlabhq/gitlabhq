@@ -315,7 +315,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'ee/app/workers/approval_rules/external_approval_rule_payload_worker.rb'
     - 'ee/app/workers/arkose/blocked_users_report_worker.rb'
     - 'ee/app/workers/auth/saml_group_sync_worker.rb'
-    - 'ee/app/workers/automation/execute_rule_worker.rb'
     - 'ee/app/workers/ci/minutes/refresh_cached_data_worker.rb'
     - 'ee/app/workers/ci/minutes/update_project_and_namespace_usage_worker.rb'
     - 'ee/app/workers/ci/sync_reports_to_report_approval_rules_worker.rb'

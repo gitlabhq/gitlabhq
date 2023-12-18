@@ -75,8 +75,6 @@
   - 2
 - - auto_merge
   - 3
-- - automation_execute_rule
-  - 1
 - - background_migration
   - 1
 - - background_migration_ci_database

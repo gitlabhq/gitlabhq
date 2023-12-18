@@ -464,7 +464,7 @@ group :development, :test do
   gem 'vite_rails', '~> 3.0.17', feature_category: :shared
   gem 'vite_ruby', '~> 3.5.0', feature_category: :shared
 
-  gem 'gitlab-housekeeper', path: 'gems/gitlab-housekeeper' # rubocop:todo Gemfile/MissingFeatureCategory
+  gem 'gitlab-housekeeper', path: 'gems/gitlab-housekeeper', feature_category: :tooling
 end
 
 group :development, :test, :danger do

@@ -2066,28 +2066,6 @@ Input type: `BulkRunnerDeleteInput`
 | <a id="mutationbulkrunnerdeletedeletedids"></a>`deletedIds` | [`[CiRunnerID!]`](#cirunnerid) | IDs of records effectively deleted. Only present if operation was performed synchronously. |
 | <a id="mutationbulkrunnerdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
-### `Mutation.catalogResourceUnpublish`
-
-WARNING:
-**Introduced** in 16.6.
-This feature is an Experiment. It can be changed or removed at any time.
-
-Input type: `CatalogResourceUnpublishInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationcatalogresourceunpublishclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcatalogresourceunpublishid"></a>`id` | [`CiCatalogResourceID!`](#cicatalogresourceid) | Global ID of the catalog resource to unpublish. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationcatalogresourceunpublishclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcatalogresourceunpublisherrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-
 ### `Mutation.catalogResourcesCreate`
 
 WARNING:

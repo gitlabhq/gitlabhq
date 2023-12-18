@@ -1,6 +1,13 @@
 <script>
 import { cloneDeep, isEmpty } from 'lodash';
-import { GlFormGroup, GlFormInput, GlFormRadio, GlFormRadioGroup, GlLink } from '@gitlab/ui';
+import {
+  GlFormGroup,
+  GlFormInput,
+  GlFormRadio,
+  GlFormRadioGroup,
+  GlLink,
+  GlAlert,
+} from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { scrollToElement } from '~/lib/utils/common_utils';
 
@@ -14,6 +21,7 @@ export default {
     GlFormRadio,
     GlFormRadioGroup,
     GlLink,
+    GlAlert,
   },
   props: {
     initialUrl: {
@@ -39,6 +47,9 @@ export default {
   computed: {
     urlState() {
       return !this.isValidated || !isEmpty(this.url);
+    },
+    urlHasChanged() {
+      return this.url !== this.initialUrl;
     },
     maskedUrl() {
       if (!this.url) {
@@ -152,6 +163,9 @@ export default {
     urlPlaceholder: 'http://example.com/trigger-ci.json',
     urlPreview: s__('Webhooks|URL preview'),
     valuePartOfUrl: s__('Webhooks|Must match part of URL'),
+    tokenWillBeCleared: s__(
+      'Webhooks|Secret token will be cleared on save unless token is updated.',
+    ),
   },
 };
 </script>
@@ -175,6 +189,14 @@ export default {
         :placeholder="$options.i18n.urlPlaceholder"
         data-testid="form-url"
       />
+      <gl-alert
+        v-if="urlHasChanged"
+        variant="warning"
+        :dismissible="false"
+        class="gl-my-4 gl-form-input-xl"
+      >
+        {{ $options.i18n.tokenWillBeCleared }}
+      </gl-alert>
     </gl-form-group>
     <div class="gl-mt-5">
       <gl-form-radio-group v-model="maskEnabled">

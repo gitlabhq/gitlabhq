@@ -222,29 +222,6 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
     end
   end
 
-  describe '#unpublish!' do
-    context 'when the catalog resource is in published state' do
-      it 'updates the state of the catalog resource to draft' do
-        resource_a.update!(state: :published)
-        expect(resource_a.state).to eq('published')
-
-        resource_a.unpublish!
-
-        expect(resource_a.reload.state).to eq('draft')
-      end
-    end
-
-    context 'when the catalog resource is already in draft state' do
-      it 'leaves the state as draft' do
-        expect(resource_a.state).to eq('draft')
-
-        resource_a.unpublish!
-
-        expect(resource_a.reload.state).to eq('draft')
-      end
-    end
-  end
-
   describe 'synchronizing denormalized columns with `projects` table', :sidekiq_inline do
     let_it_be_with_reload(:project) { create(:project, name: 'Test project', description: 'Test description') }
 

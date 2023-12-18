@@ -145,7 +145,6 @@ module Types
     mount_mutation Mutations::ContainerRepositories::DestroyTags
     mount_mutation Mutations::Ci::Catalog::Resources::Create, alpha: { milestone: '15.11' }
     mount_mutation Mutations::Ci::Catalog::Resources::Destroy, alpha: { milestone: '16.6' }
-    mount_mutation Mutations::Ci::Catalog::Resources::Unpublish, alpha: { milestone: '16.6' }
     mount_mutation Mutations::Ci::Job::Cancel
     mount_mutation Mutations::Ci::Job::Play
     mount_mutation Mutations::Ci::Job::Retry

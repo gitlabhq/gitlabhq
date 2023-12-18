@@ -769,7 +769,7 @@ rspec-ee unit gitlab-duo-chat-zeroshot pg14:
     - .rails:rules:ee-gitlab-duo-chat-optional
   script:
     - !reference [.base-script, script]
-    - rspec_paralellized_job "--tag zeroshot_executor"
+    - rspec_parallelized_job "--tag zeroshot_executor"
 
 rspec-ee unit gitlab-duo-chat-qa-fast pg14:
   extends:
@@ -777,7 +777,7 @@ rspec-ee unit gitlab-duo-chat-qa-fast pg14:
     - .rails:rules:ee-gitlab-duo-chat-always
   script:
     - !reference [.base-script, script]
-    - rspec_paralellized_job "--tag fast_chat_qa_evaluation"
+    - rspec_parallelized_job "--tag fast_chat_qa_evaluation"
 
 rspec-ee unit gitlab-duo pg14:
   extends:
@@ -785,7 +785,7 @@ rspec-ee unit gitlab-duo pg14:
     - .rails:rules:ee-gitlab-duo-chat-always
   script:
     - !reference [.base-script, script]
-    - rspec_paralellized_job "--tag gitlab_duo"
+    - rspec_parallelized_job "--tag gitlab_duo"
 
 rspec-ee unit gitlab-duo-chat-qa pg14:
   variables:

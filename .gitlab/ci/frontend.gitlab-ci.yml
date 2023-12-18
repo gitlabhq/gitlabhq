@@ -153,7 +153,7 @@ retrieve-frontend-fixtures:
     - run_timed_command "gem install knapsack --no-document"
     - section_start "gitaly-test-spawn" "Spawning Gitaly"; scripts/gitaly-test-spawn; section_end "gitaly-test-spawn";  # Do not use 'bundle exec' here
     - source ./scripts/rspec_helpers.sh
-    - rspec_paralellized_job
+    - rspec_parallelized_job
   artifacts:
     name: frontend-fixtures
     expire_in: 31d

@@ -27,8 +27,9 @@ module Gitlab
         created = 0
 
         git.with_branch_from_branch do
-          @keeps.each do |keep|
-            keep.new.each do |change|
+          @keeps.each do |keep_class|
+            keep = keep_class.new
+            keep.each_change do |change|
               branch_name = git.commit_in_branch(change)
 
               if @dry_run

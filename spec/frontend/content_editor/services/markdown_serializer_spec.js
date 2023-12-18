@@ -152,19 +152,26 @@ describe('markdownSerializer', () => {
     expect(serialize(paragraph(italic('italics')))).toBe('_italics_');
   });
 
-  it('correctly serializes code blocks wrapped by italics and bold marks', () => {
-    const codeBlockContent = 'code block';
+  it.each`
+    input                          | output
+    ${'code'}                      | ${'`code`'}
+    ${'code `with` backticks'}     | ${'``code `with` backticks``'}
+    ${'this is `inline-code`'}     | ${'`` this is `inline-code` ``'}
+    ${'`inline-code` in markdown'} | ${'`` `inline-code` in markdown ``'}
+    ${'```js'}                     | ${'`` ```js ``'}
+  `('correctly serializes inline code ("$input")', ({ input, output }) => {
+    expect(serialize(paragraph(code(input)))).toBe(output);
+  });
 
-    expect(serialize(paragraph(italic(code(codeBlockContent))))).toBe(`_\`${codeBlockContent}\`_`);
-    expect(serialize(paragraph(code(italic(codeBlockContent))))).toBe(`_\`${codeBlockContent}\`_`);
-    expect(serialize(paragraph(bold(code(codeBlockContent))))).toBe(`**\`${codeBlockContent}\`**`);
-    expect(serialize(paragraph(code(bold(codeBlockContent))))).toBe(`**\`${codeBlockContent}\`**`);
-    expect(serialize(paragraph(strike(code(codeBlockContent))))).toBe(
-      `~~\`${codeBlockContent}\`~~`,
-    );
-    expect(serialize(paragraph(code(strike(codeBlockContent))))).toBe(
-      `~~\`${codeBlockContent}\`~~`,
-    );
+  it('correctly serializes inline code wrapped by italics and bold marks', () => {
+    const content = 'code';
+
+    expect(serialize(paragraph(italic(code(content))))).toBe(`_\`${content}\`_`);
+    expect(serialize(paragraph(code(italic(content))))).toBe(`_\`${content}\`_`);
+    expect(serialize(paragraph(bold(code(content))))).toBe(`**\`${content}\`**`);
+    expect(serialize(paragraph(code(bold(content))))).toBe(`**\`${content}\`**`);
+    expect(serialize(paragraph(strike(code(content))))).toBe(`~~\`${content}\`~~`);
+    expect(serialize(paragraph(code(strike(content))))).toBe(`~~\`${content}\`~~`);
   });
 
   it('correctly serializes inline diff', () => {

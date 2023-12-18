@@ -168,4 +168,34 @@ RSpec.describe UserCustomAttribute, feature_category: :user_profile do
       end
     end
   end
+
+  describe '.set_assumed_high_risk_reason' do
+    let_it_be(:user) { create(:user) }
+    let(:reason) { 'Because' }
+
+    subject(:call_method) { described_class.set_assumed_high_risk_reason(user: user, reason: reason) }
+
+    it 'creates a custom attribute with correct attribute values for the user' do
+      expect { call_method }.to change { user.custom_attributes.count }.by(1)
+
+      record = user.custom_attributes.find_by_key(UserCustomAttribute::ASSUMED_HIGH_RISK_REASON)
+      expect(record.value).to eq 'Because'
+    end
+
+    context 'when passed in user is nil' do
+      let(:user) { nil }
+
+      it 'does nothing' do
+        expect { call_method }.not_to change { UserCustomAttribute.count }
+      end
+    end
+
+    context 'when there is no reason passed in' do
+      let(:reason) { nil }
+
+      it 'does nothing' do
+        expect { call_method }.not_to change { UserCustomAttribute.count }
+      end
+    end
+  end
 end

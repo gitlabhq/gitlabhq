@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'gitlab/housekeeper/runner'
 
 RSpec.describe ::Gitlab::Housekeeper::Runner do
-  let(:fake_keep) { double(:fake_keep) } # rubocop:disable RSpec/VerifiedDoubles
+  let(:fake_keep) { instance_double(Class) }
 
   let(:change1) do
     ::Gitlab::Housekeeper::Change.new(
@@ -34,10 +34,10 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
   end
 
   before do
-    fake_keep_instance = double(:fake_keep_instance) # rubocop:disable RSpec/VerifiedDoubles
+    fake_keep_instance = instance_double(::Gitlab::Housekeeper::Keep)
     allow(fake_keep).to receive(:new).and_return(fake_keep_instance)
 
-    allow(fake_keep_instance).to receive(:each)
+    allow(fake_keep_instance).to receive(:each_change)
       .and_yield(change1)
       .and_yield(change2)
       .and_yield(change3)

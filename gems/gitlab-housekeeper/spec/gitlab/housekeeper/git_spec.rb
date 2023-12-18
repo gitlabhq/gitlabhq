@@ -40,7 +40,7 @@ RSpec.describe ::Gitlab::Housekeeper::Git do
   end
 
   after do
-    Dir.chdir(@previous_dir) if @previous_dir # rubocop:disable RSpec/InstanceVariable
+    Dir.chdir(@previous_dir) if @previous_dir # rubocop:disable RSpec/InstanceVariable -- let not suitable for before/after cleanup
     FileUtils.rm_rf(repository_path)
   end
 

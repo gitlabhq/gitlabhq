@@ -11,7 +11,6 @@ RSpec.describe 'cross-database foreign keys' do
   # should be added as a comment along with the name of the column.
   let!(:allowed_cross_database_foreign_keys) do
     [
-      'events.author_id',                         # https://gitlab.com/gitlab-org/gitlab/-/issues/429803
       'gitlab_subscriptions.hosted_plan_id',      # https://gitlab.com/gitlab-org/gitlab/-/issues/422012
       'group_import_states.user_id',              # https://gitlab.com/gitlab-org/gitlab/-/issues/421210
       'identities.saml_provider_id',              # https://gitlab.com/gitlab-org/gitlab/-/issues/422010
@@ -29,7 +28,6 @@ RSpec.describe 'cross-database foreign keys' do
       'path_locks.user_id',                       # https://gitlab.com/gitlab-org/gitlab/-/issues/429380
       'protected_branch_push_access_levels.user_id',  # https://gitlab.com/gitlab-org/gitlab/-/issues/431054
       'protected_branch_merge_access_levels.user_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/431055
-      'security_orchestration_policy_configurations.bot_user_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/429438
       'user_group_callouts.user_id'               # https://gitlab.com/gitlab-org/gitlab/-/issues/421287
     ]
   end
@@ -56,6 +54,19 @@ RSpec.describe 'cross-database foreign keys' do
           expect(allowed_cross_database_foreign_keys).to include(column), "Found extra cross-database foreign key #{column} referencing #{fk.to_table} with constraint name #{fk.name}. When a foreign key references another database you must use a Loose Foreign Key instead https://docs.gitlab.com/ee/development/database/loose_foreign_keys.html ."
         end
       end
+    end
+  end
+
+  it 'only allows existing foreign keys to be present in the exempted list', :aggregate_failures do
+    allowed_cross_database_foreign_keys.each do |entry|
+      table, _ = entry.split('.')
+
+      all_foreign_keys_for_table = foreign_keys_for(table)
+      fk_entry = all_foreign_keys_for_table.find { |fk| "#{fk.from_table}.#{fk.column}" == entry }
+
+      expect(fk_entry).to be_present,
+        "`#{entry}` is no longer a foreign key. " \
+        "You must remove this entry from the `allowed_cross_database_foreign_keys` list."
     end
   end
 end

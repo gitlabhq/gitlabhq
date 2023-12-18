@@ -16,12 +16,6 @@ module Gitlab
           attributes %i[tag_name tag_message name ref milestones assets].freeze
           attr_reader :released_at
 
-          # Attributable description conflicts with
-          # ::Gitlab::Config::Entry::Node.description
-          def has_description?
-            true
-          end
-
           def description
             config[:description]
           end

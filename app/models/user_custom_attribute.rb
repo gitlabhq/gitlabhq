@@ -23,6 +23,7 @@ class UserCustomAttribute < ApplicationRecord
   IDENTITY_VERIFICATION_EXEMPT = 'identity_verification_exempt'
   DELETED_OWN_ACCOUNT_AT = 'deleted_own_account_at'
   SKIPPED_ACCOUNT_DELETION_AT = 'skipped_account_deletion_at'
+  ASSUMED_HIGH_RISK_REASON = 'assumed_high_risk_reason'
 
   class << self
     def upsert_custom_attributes(custom_attributes)
@@ -79,6 +80,13 @@ class UserCustomAttribute < ApplicationRecord
       return unless user
 
       upsert_custom_attribute(user_id: user.id, key: SKIPPED_ACCOUNT_DELETION_AT, value: Time.zone.now.to_s)
+    end
+
+    def set_assumed_high_risk_reason(user:, reason:)
+      return unless user
+      return unless reason
+
+      upsert_custom_attribute(user_id: user.id, key: ASSUMED_HIGH_RISK_REASON, value: reason)
     end
 
     private

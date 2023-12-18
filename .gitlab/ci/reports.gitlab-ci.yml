@@ -80,7 +80,7 @@ gemnasium-python-dependency_scanning:
   extends: .default-retry
   stage: test
   image:
-    name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/security-products/package-hunter-cli:v2.1.0@sha256:1f1d31fdc81f6cf0ee305ff0291bfb56f22c5764fe042948ff1676f2f8c60352
+    name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/security-products/package-hunter-cli:v3.0.0@sha256:e281525b3be870d6618b6bad2685733dcb9908e4eb21f0e5b4fe4bb6f6083f91
     entrypoint: [""]
   variables:
     HTR_user: '$PACKAGE_HUNTER_USER'

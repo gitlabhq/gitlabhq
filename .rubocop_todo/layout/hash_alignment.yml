@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Layout/HashAlignment:
   Exclude:
-    - 'config/initializers/rspec_profiling.rb'
     - 'ee/spec/lib/ee/gitlab/usage_data_spec.rb'
     - 'ee/spec/support/shared_examples/controllers/analytics/cycle_analytics/value_stream_shared_examples.rb'
     - 'lib/gitlab/redis/multi_store.rb'

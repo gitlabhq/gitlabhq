@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlFormGroup, GlFormRadio, GlFormRadioGroup, GlLink } from '@gitlab/ui';
+import { GlFormGroup, GlFormRadio, GlFormRadioGroup, GlLink, GlAlert } from '@gitlab/ui';
 import { scrollToElement } from '~/lib/utils/common_utils';
 
 import FormUrlApp from '~/webhooks/components/form_url_app.vue';
@@ -30,6 +30,7 @@ describe('FormUrlApp', () => {
   const findFormUrlPreview = () => wrapper.findByTestId('form-url-preview');
   const findUrlMaskSection = () => wrapper.findByTestId('url-mask-section');
   const findFormEl = () => document.querySelector('.js-webhook-form');
+  const findAlert = () => wrapper.findComponent(GlAlert);
   const submitForm = () => findFormEl().dispatchEvent(new Event('submit'));
 
   describe('template', () => {
@@ -153,6 +154,23 @@ describe('FormUrlApp', () => {
             itemValue: mockItem2.value,
           });
         });
+      });
+    });
+
+    describe('token will be cleared warning', () => {
+      beforeEach(() => {
+        createComponent({ initialUrl: 'url' });
+      });
+
+      it('is hidden when URL has not changed', () => {
+        expect(findAlert().exists()).toBe(false);
+      });
+
+      it('is displayed when URL has changed', async () => {
+        findFormUrl().vm.$emit('input', 'another_url');
+        await nextTick();
+
+        expect(findAlert().exists()).toBe(true);
       });
     });
 

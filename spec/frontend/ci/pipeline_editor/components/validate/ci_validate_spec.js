@@ -1,5 +1,12 @@
 import Vue from 'vue';
-import { GlAlert, GlDisclosureDropdown, GlIcon, GlLoadingIcon, GlPopover } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlDisclosureDropdown,
+  GlEmptyState,
+  GlIcon,
+  GlLoadingIcon,
+  GlPopover,
+} from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
 
@@ -70,7 +77,7 @@ describe('Pipeline Editor Validate Tab', () => {
   const findCta = () => wrapper.findByTestId('simulate-pipeline-button');
   const findDisabledCtaTooltip = () => wrapper.findByTestId('cta-tooltip');
   const findHelpIcon = () => wrapper.findComponent(GlIcon);
-  const findIllustration = () => wrapper.findByRole('img');
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findPipelineSource = () => wrapper.findComponent(GlDisclosureDropdown);
   const findPopover = () => wrapper.findComponent(GlPopover);
@@ -283,7 +290,7 @@ describe('Pipeline Editor Validate Tab', () => {
 
     it('returns to init state', async () => {
       // init state
-      expect(findIllustration().exists()).toBe(true);
+      expect(findEmptyState().exists()).toBe(true);
       expect(findCiLintResults().exists()).toBe(false);
 
       // mutations should have successful results
@@ -294,7 +301,7 @@ describe('Pipeline Editor Validate Tab', () => {
       await findCancelBtn().vm.$emit('click');
 
       // should still render init state
-      expect(findIllustration().exists()).toBe(true);
+      expect(findEmptyState().exists()).toBe(true);
       expect(findCiLintResults().exists()).toBe(false);
     });
   });

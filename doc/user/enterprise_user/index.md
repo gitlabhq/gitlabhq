@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Enterprise users **(PREMIUM SAAS)**
 
 Enterprise users have user accounts that are administered by an organization that
-has purchased a [GitLab subscription](../../subscriptions/index.md).
+has [verified their email domain](../project/pages/custom_domains_ssl_tls_certification/index.md) and purchased a [GitLab subscription](../../subscriptions/index.md).
 
 Enterprise users are identified by the **Enterprise** badge
 next to their names on the [Members list](../group/index.md#filter-and-sort-members-in-a-group).
