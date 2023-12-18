@@ -56,12 +56,17 @@ module QA
           :reliable,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363348'
         ) do
-          expect do
-            create(:file,
-              api_client: parent_group_user_api_client,
-              project: sub_group_project,
-              branch: "new_branch_#{SecureRandom.hex(8)}")
-          end.not_to raise_error
+          # Retry is needed due to delays with project authorization updates
+          # Long term solution to accessing the status of a project authorization update
+          # has been proposed in https://gitlab.com/gitlab-org/gitlab/-/issues/393369
+          QA::Support::Retrier.retry_on_exception(max_attempts: 30, sleep_interval: 2) do
+            expect do
+              create(:file,
+                api_client: parent_group_user_api_client,
+                project: sub_group_project,
+                branch: "new_branch_#{SecureRandom.hex(8)}")
+            end.not_to raise_error
+          end
         end
 
         it(
@@ -71,7 +76,7 @@ module QA
           # Retry is needed due to delays with project authorization updates
           # Long term solution to accessing the status of a project authorization update
           # has been proposed in https://gitlab.com/gitlab-org/gitlab/-/issues/393369
-          QA::Support::Retrier.retry_on_exception(max_attempts: 5, sleep_interval: 2) do
+          QA::Support::Retrier.retry_on_exception(max_attempts: 30, sleep_interval: 2) do
             expect do
               create(:commit,
                 api_client: parent_group_user_api_client,

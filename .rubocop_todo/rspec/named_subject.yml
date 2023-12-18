@@ -71,7 +71,6 @@ RSpec/NamedSubject:
     - 'ee/spec/finders/audit_event_finder_spec.rb'
     - 'ee/spec/finders/auth/group_saml_identity_finder_spec.rb'
     - 'ee/spec/finders/autocomplete/group_subgroups_finder_spec.rb'
-    - 'ee/spec/finders/boards/users_finder_spec.rb'
     - 'ee/spec/finders/compliance_management/merge_requests/compliance_violations_finder_spec.rb'
     - 'ee/spec/finders/custom_project_templates_finder_spec.rb'
     - 'ee/spec/finders/dast/profiles_finder_spec.rb'

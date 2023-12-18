@@ -1396,7 +1396,6 @@ Layout/LineLength:
     - 'ee/spec/finders/analytics/devops_adoption/enabled_namespaces_finder_spec.rb'
     - 'ee/spec/finders/analytics/devops_adoption/snapshots_finder_spec.rb'
     - 'ee/spec/finders/audit_event_finder_spec.rb'
-    - 'ee/spec/finders/boards/users_finder_spec.rb'
     - 'ee/spec/finders/compliance_management/merge_requests/compliance_violations_finder_spec.rb'
     - 'ee/spec/finders/custom_project_templates_finder_spec.rb'
     - 'ee/spec/finders/dast_site_validations_finder_spec.rb'

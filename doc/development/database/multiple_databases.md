@@ -144,6 +144,56 @@ following the
 In that case the `namespace_id` would need to be the ID of the
 `ProjectNamespace` and not the group that the namespace belongs to.
 
+#### Defining a `desired_sharding_key` for automatically backfilling a `sharding_key`
+
+We need to backfill a `sharding_key` to hundreds of tables that do not have one.
+This process will involve creating a merge request like
+<https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136800> to add the new
+column, backfill the data from a related table in the database, and then create
+subsequent merge requests to add indexes, foreign keys and not-null
+constraints.
+
+In order to minimize the amount of repetitive effort for developers we've
+introduced a concise declarative way to describe how to backfill the
+`sharding_key` for this specific table. This content will later be used in
+automation to create all the necessary merge requests.
+
+An example of the `desired_sharding_key` was added in
+<https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139336> and it looks like:
+
+```yaml
+--- # db/docs/security_findings.yml
+table_name: security_findings
+classes:
+- Security::Finding
+
+...
+
+desired_sharding_key:
+  project_id:
+    references: projects
+    backfill_via:
+      parent:
+        foreign_key: scanner_id
+        table: vulnerability_scanners
+        sharding_key: project_id
+        belongs_to: scanner
+```
+
+To understand best how this YAML data will be used you can map it onto
+the merge request we created manually in
+<https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136800>. The idea
+will be to automatically create this. The content of the YAML specifies
+the parent table and its `sharding_key` to backfill from in the batched
+background migration. It also specifies a `belongs_to` relation which
+will be added to the model to automatically populate the `sharding_key` in
+the `before_save`.
+
+There are likely edge cases where this `desired_sharding_key` structure is not
+suitable for backfilling a `sharding_key`. In such cases the team owning the
+table will need to create the necessary merge requests to add the
+`sharding_key` manually.
+
 ### The impact of `gitlab_schema`
 
 The usage of `gitlab_schema` has a significant impact on the application.

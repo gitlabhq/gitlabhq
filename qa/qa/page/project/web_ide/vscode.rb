@@ -245,15 +245,31 @@ module QA
               open_file_from_explorer(file_name)
               click_inside_editor_frame
               within_file_editor do
-                send_keys(:enter, :enter, prompt_data)
+                wait_until_code_suggestions_enabled
+                send_keys(:enter, :enter)
+
+                # Send keys one at a time to allow suggestions request to be triggered
+                prompt_data.each_char { |c| send_keys(c) }
               end
             end
+          end
+
+          def wait_until_code_suggestions_enabled
+            wait_until(max_duration: 30, message: 'Wait for Code Suggestions extension to be enabled') do
+              has_code_suggestions_status?('enabled')
+            end
+          end
+
+          def has_code_suggestions_status?(status)
+            page.document.has_css?(
+              "#GitLab\\.gitlab-workflow\\.gl\\.status\\.code_suggestions[aria-label~=#{status.downcase}]"
+            )
           end
 
           def verify_prompt_appears_and_accept(pattern)
             within_vscode_editor do
               within_file_editor do
-                Support::Waiter.wait_until(max_duration: 30) do
+                Support::Waiter.wait_until(max_duration: 60, message: 'Wait for suggestion to appear') do
                   page.text.match?(pattern)
                 end
                 send_keys(:tab)

@@ -469,7 +469,6 @@
 - './ee/spec/finders/boards/boards_finder_spec.rb'
 - './ee/spec/finders/boards/epic_boards_finder_spec.rb'
 - './ee/spec/finders/boards/milestones_finder_spec.rb'
-- './ee/spec/finders/boards/users_finder_spec.rb'
 - './ee/spec/finders/clusters/environments_finder_spec.rb'
 - './ee/spec/finders/compliance_management/merge_requests/compliance_violations_finder_spec.rb'
 - './ee/spec/finders/custom_project_templates_finder_spec.rb'

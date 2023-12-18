@@ -42,6 +42,8 @@ module QA
 
         def host_name
           @host_name ||= if QA::Runtime::Env.running_in_ci? || QA::Runtime::Env.qa_hostname
+                           return host_ip if gdk_network
+
                            "#{@name}.#{@network_cache}"
                          else
                            host_ip

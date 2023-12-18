@@ -1277,7 +1277,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/finders/autocomplete/project_invited_groups_finder.rb'
     - 'ee/app/finders/autocomplete/vulnerabilities_autocomplete_finder.rb'
     - 'ee/app/finders/boards/milestones_finder.rb'
-    - 'ee/app/finders/boards/users_finder.rb'
     - 'ee/app/finders/concerns/ee/finder_with_group_hierarchy.rb'
     - 'ee/app/finders/concerns/epics/findable.rb'
     - 'ee/app/finders/concerns/epics/with_access_check.rb'

@@ -61,6 +61,14 @@ module Gitlab
           data['sharding_key']
         end
 
+        def desired_sharding_key
+          data['desired_sharding_key']
+        end
+
+        def classes
+          data['classes']
+        end
+
         def schema?(schema_name)
           gitlab_schema == schema_name.to_s
         end
