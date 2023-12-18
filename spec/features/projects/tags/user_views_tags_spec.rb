@@ -38,6 +38,9 @@ RSpec.describe 'User views tags', :feature, feature_category: :source_code_manag
         it_behaves_like "it has an RSS button with current_user's feed token"
         it_behaves_like "an autodiscoverable RSS feed with current_user's feed token"
         it_behaves_like 'has access to the tags RSS feed'
+        it 'passes axe automated accessibility testing', :js do
+          expect(page).to be_axe_clean.within('#content-body')
+        end
       end
 
       context 'when user signed out' do

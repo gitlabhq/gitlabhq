@@ -31,7 +31,7 @@ export default {
         };
       },
       update(data) {
-        return data?.ciCatalogResource?.components?.nodes || [];
+        return data?.ciCatalogResource?.latestVersion?.components?.nodes || [];
       },
       error() {
         createAlert({ message: this.$options.i18n.fetchError });
@@ -64,7 +64,7 @@ export default {
       thClass: 'gl-w-40p',
     },
     {
-      key: 'defaultValue',
+      key: 'default',
       label: s__('CiCatalogComponent|Default Value'),
       thClass: 'gl-w-40p',
     },
@@ -103,7 +103,6 @@ export default {
         data-testid="component-section"
       >
         <h3 class="gl-font-size-h2" data-testid="component-name">{{ component.name }}</h3>
-        <p class="gl-mt-5">{{ component.description }}</p>
         <div class="gl-display-flex">
           <pre
             class="gl-w-85p gl-py-4 gl-display-flex gl-justify-content-space-between gl-m-0 gl-border-r-none"
@@ -124,7 +123,7 @@ export default {
         </div>
         <div class="gl-mt-5">
           <b class="gl-display-block gl-mb-4"> {{ $options.i18n.inputTitle }}</b>
-          <gl-table-lite :items="component.inputs.nodes" :fields="$options.fields">
+          <gl-table-lite :items="component.inputs" :fields="$options.fields">
             <template #cell(required)="{ item }">
               {{ humanizeBoolean(item.required) }}
             </template>

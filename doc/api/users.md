@@ -911,7 +911,7 @@ Example response:
 ```
 
 Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see these
-preferences:
+preferences if `code_suggestions_used_by_default` feature flag is disabled:
 
 - `code_suggestions`
 
@@ -949,7 +949,7 @@ Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also ca
 
 | Attribute                        | Required | Description                                        |
 |:---------------------------------|:---------|:---------------------------------------------------|
-| `code_suggestions`               | No       | Flag indicating the user allows code suggestions. Argument is experimental and can be removed in the future without notice. |
+| `code_suggestions`               | No       | Flag indicating the user allows code suggestions. Argument is experimental and can be removed in the future without notice. In GitLab 16.8 and later, this attribute is ignored if `code_suggestions_used_by_default` feature flag is enabled. |
 
 ## User follow
 

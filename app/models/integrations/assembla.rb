@@ -6,12 +6,14 @@ module Integrations
 
     field :token,
       type: :password,
+      description: -> { s_('The authentication token.') },
       non_empty_password_title: -> { s_('ProjectService|Enter new token') },
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current token.') },
       placeholder: '',
       required: true
 
     field :subdomain,
+      description: -> { s_('The subdomain setting.') },
       exposes_secrets: true,
       placeholder: ''
 

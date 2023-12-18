@@ -131,8 +131,15 @@ export default {
       }
     },
     reviewStateIcon(user) {
-      if (user.mergeRequestInteraction.approved) return REVIEW_STATE_ICONS.APPROVED;
-
+      if (user.mergeRequestInteraction.approved) {
+        return {
+          ...REVIEW_STATE_ICONS.APPROVED,
+          class: [
+            REVIEW_STATE_ICONS.APPROVED.class,
+            this.loadingStates[user.id] === JUST_APPROVED && 'merge-request-approved-icon',
+          ],
+        };
+      }
       return REVIEW_STATE_ICONS[user.mergeRequestInteraction.reviewState];
     },
     showRequestReviewButton(user) {

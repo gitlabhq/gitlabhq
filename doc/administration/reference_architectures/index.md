@@ -18,7 +18,7 @@ the _total_ load that comes with such a user count based on real data along with
 
 However, it should be noted that in some cases, known heavy scenarios such as [large monorepos](#large-monorepos) or notable [additional workloads](#additional-workloads) may require adjustments to be made.
 
-For each Reference Architecture, the details of what they have been tested against can be found respectively in the "Testing Methodology" section of each page.
+For details about what each Reference Architecture has been tested against, see the "Testing Methodology" section of each page.
 
 ### GitLab package (Omnibus)
 

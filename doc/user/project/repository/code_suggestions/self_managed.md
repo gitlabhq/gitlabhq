@@ -65,6 +65,9 @@ The users in your instance can now use Code Suggestions.
 
 ### GitLab 16.2 and earlier
 
+FLAG:
+On self-managed GitLab 16.0 and earlier, GitLab Duo Code Suggestions is not available. To use this feature, you must have GitLab 16.1 or later. For optimal performance and full feature access, you should upgrade to GitLab 16.3 or later, which supports cloud licensing.
+
 Prerequisites:
 
 - You are an administrator.

@@ -1,5 +1,3 @@
-import { componentsMockData } from '~/ci/catalog/constants';
-
 export const emptyCatalogResponseBody = {
   data: {
     ciCatalogResources: {
@@ -382,14 +380,47 @@ const generateResourcesNodes = (count = 20, startId = 0) => {
 
 export const mockCatalogResourceItem = generateResourcesNodes(1)[0];
 
+const componentsMockData = {
+  __typename: 'CiComponentConnection',
+  nodes: [
+    {
+      id: 'gid://gitlab/Ci::Component/1',
+      name: 'Ruby gal',
+      description: 'This is a pretty amazing component that does EVERYTHING ruby.',
+      path: 'gitlab.com/gitlab-org/ruby-gal@~latest',
+      inputs: [{ name: 'version', default: '1.0.0', required: true }],
+    },
+    {
+      id: 'gid://gitlab/Ci::Component/2',
+      name: 'Javascript madness',
+      description: 'Adds some spice to your life.',
+      path: 'gitlab.com/gitlab-org/javascript-madness@~latest',
+      inputs: [
+        { name: 'isFun', default: 'true', required: true },
+        { name: 'RandomNumber', default: '10', required: false },
+      ],
+    },
+    {
+      id: 'gid://gitlab/Ci::Component/3',
+      name: 'Go go go',
+      description: 'When you write Go, you gotta go go go.',
+      path: 'gitlab.com/gitlab-org/go-go-go@~latest',
+      inputs: [{ name: 'version', default: '1.0.0', required: true }],
+    },
+  ],
+};
+
 export const mockComponents = {
   data: {
     ciCatalogResource: {
       __typename: 'CiCatalogResource',
       id: `gid://gitlab/CiCatalogResource/1`,
-      webPath: 'twitter/project-1',
-      components: {
-        ...componentsMockData,
+      webPath: '/twitter/project-1',
+      latestVersion: {
+        id: 'gid://gitlab/Version/1',
+        components: {
+          ...componentsMockData,
+        },
       },
     },
   },
@@ -400,8 +431,11 @@ export const mockComponentsEmpty = {
     ciCatalogResource: {
       __typename: 'CiCatalogResource',
       id: `gid://gitlab/CiCatalogResource/1`,
-      webPath: 'twitter/project-1',
-      components: [],
+      webPath: '/twitter/project-1',
+      latestVersion: {
+        id: 'gid://gitlab/Version/1',
+        components: [],
+      },
     },
   },
 };

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UserHighestRole do
+RSpec.describe UserHighestRole, feature_category: :sm_provisioning do
   describe 'associations' do
     it { is_expected.to belong_to(:user).required }
   end
@@ -24,6 +24,24 @@ RSpec.describe UserHighestRole do
           another_developer
         )
       end
+    end
+  end
+
+  describe '.allowed_values' do
+    let(:expected_allowed_values) do
+      [
+        Gitlab::Access::GUEST,
+        Gitlab::Access::REPORTER,
+        Gitlab::Access::DEVELOPER,
+        Gitlab::Access::MAINTAINER,
+        Gitlab::Access::OWNER
+      ]
+    end
+
+    it 'returns all access values' do
+      expected_allowed_values << Gitlab::Access::MINIMAL_ACCESS if Gitlab.ee?
+
+      expect(::UserHighestRole.allowed_values).to eq(expected_allowed_values)
     end
   end
 end

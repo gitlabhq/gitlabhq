@@ -128,8 +128,8 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `api_key` | string | true | User API token. User must have access to task. All comments are attributed to this user. |
-| `restrict_to_branch` | string | false | Comma-separated list of branches to be are automatically inspected. Leave blank to include all branches. |
+| `api_key` | string | true | User API token. The user must have access to the task. All comments are attributed to this user. |
+| `restrict_to_branch` | string | false | Comma-separated list of branches to be automatically inspected. Leave blank to include all branches. |
 
 ### Disable Asana
 

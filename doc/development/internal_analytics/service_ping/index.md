@@ -361,7 +361,7 @@ Rake tasks exist to export Service Ping data in different formats.
 - The Rake tasks export the Redis counter class or the line of the Redis block for `redis_usage_data`.
 - The Rake tasks calculate the `alt_usage_data` metrics.
 
-In the home directory of your local GitLab installation run the following Rake tasks for the YAML and JSON versions respectively:
+In the home directory of your local GitLab installation run the following Rake tasks for either the YAML or the JSON versions:
 
 ```shell
 # for YAML export of SQL queries

@@ -7,6 +7,9 @@ module Explore
     feature_category :pipeline_composition
     before_action :check_resource_access, only: :show
     track_internal_event :index, name: 'unique_users_visiting_ci_catalog'
+    before_action do
+      push_frontend_feature_flag(:ci_catalog_components_tab, current_user)
+    end
 
     def show; end
 

@@ -12154,6 +12154,9 @@ msgstr ""
 msgid "ComboSearch is not defined"
 msgstr ""
 
+msgid "Comma-separated list of branches to be automatically inspected. Leave blank to include all branches."
+msgstr ""
+
 msgid "Comma-separated list of email addresses."
 msgstr ""
 
@@ -48563,6 +48566,9 @@ msgstr ""
 msgid "The associated issue #%{issueId} has been closed as the error is now resolved."
 msgstr ""
 
+msgid "The authentication token."
+msgstr ""
+
 msgid "The branch for this project has no active pipeline configuration."
 msgstr ""
 
@@ -49024,6 +49030,9 @@ msgid "The specified tab is invalid, please select another"
 msgstr ""
 
 msgid "The start date must be earlier than the end date."
+msgstr ""
+
+msgid "The subdomain setting."
 msgstr ""
 
 msgid "The subject will be used as the title of the new issue, and the message will be the description. %{quickActionsLinkStart}Quick actions%{quickActionsLinkEnd} and styling with %{markdownLinkStart}Markdown%{markdownLinkEnd} are supported."
@@ -52654,6 +52663,9 @@ msgid "User %{user} SCIM identity is reactivated"
 msgstr ""
 
 msgid "User %{user} was removed from %{group}."
+msgstr ""
+
+msgid "User API token. The user must have access to the task. All comments are attributed to this user."
 msgstr ""
 
 msgid "User ID"

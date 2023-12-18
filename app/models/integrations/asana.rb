@@ -14,11 +14,13 @@ module Integrations
       non_empty_password_title: -> { s_('ProjectService|Enter new API key') },
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current API key.') },
       placeholder: '0/68a9e79b868c6789e79a124c30b0', # Example Personal Access Token from Asana docs
+      description: -> { s_('User API token. The user must have access to the task. All comments are attributed to this user.') },
       required: true
 
     field :restrict_to_branch,
       title: -> { s_('Integrations|Restrict to branch (optional)') },
-      help: -> { s_('AsanaService|Comma-separated list of branches to be automatically inspected. Leave blank to include all branches.') }
+      help: -> { s_('AsanaService|Comma-separated list of branches to be automatically inspected. Leave blank to include all branches.') },
+      description: -> { s_('Comma-separated list of branches to be automatically inspected. Leave blank to include all branches.') }
 
     def self.title
       'Asana'

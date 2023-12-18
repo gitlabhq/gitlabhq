@@ -127,34 +127,8 @@ module API
       def self.integrations
         {
           'apple-app-store' => ::Integrations::AppleAppStore.api_fields,
-          'asana' => [
-            {
-              required: true,
-              name: :api_key,
-              type: String,
-              desc: 'User API token'
-            },
-            {
-              required: false,
-              name: :restrict_to_branch,
-              type: String,
-              desc: 'Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches'
-            }
-          ],
-          'assembla' => [
-            {
-              required: true,
-              name: :token,
-              type: String,
-              desc: 'The authentication token'
-            },
-            {
-              required: false,
-              name: :subdomain,
-              type: String,
-              desc: 'Subdomain setting'
-            }
-          ],
+          'asana' => ::Integrations::Asana.api_fields,
+          'assembla' => ::Integrations::Assembla.api_fields,
           'bamboo' => [
             {
               required: true,

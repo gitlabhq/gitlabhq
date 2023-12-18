@@ -1,4 +1,3 @@
-import { componentsMockData } from '../constants';
 import getCurrentPage from './queries/client/get_current_page.query.graphql';
 
 export const ciCatalogResourcesItemsCount = 20;
@@ -38,11 +37,6 @@ export const resolvers = {
           },
         },
       });
-    },
-  },
-  CiCatalogResource: {
-    components() {
-      return componentsMockData;
     },
   },
 };

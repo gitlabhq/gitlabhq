@@ -184,7 +184,7 @@ Possible response status codes:
 
 Download a single artifact file for a specific job of the latest **successful** pipeline
 for the given reference name from inside the job's artifacts archive.
-The file is extracted from the archive and streamed to the client.
+The file is extracted from the archive and streamed to the client, with the `plain/text` content type.
 
 The artifact file provides more detail than what is available in the
 [CSV export](../user/application_security/vulnerability_report/index.md#export-vulnerability-details).

@@ -227,17 +227,21 @@ unless the report is added as a regular artifact with `artifacts:paths`.
 You can download the artifacts archive for a specific job with a publicly accessible
 URL for the [job artifacts API](../../api/job_artifacts.md#download-the-artifacts-archive).
 
-For example, to download the latest artifacts of a job named `build` in the `main` branch of a project on GitLab.com:
+For example:
 
-```plaintext
-https://gitlab.com/api/v4/projects/<project-id>/jobs/artifacts/main/download?job=build
-```
+- To download the latest artifacts of a job named `build` in the `main` branch of a project on GitLab.com:
 
-For example, to download the file `review/index.html` from the latest job named `build` in the `main` branch of a project on GitLab.com:
+  ```plaintext
+  https://gitlab.com/api/v4/projects/<project-id>/jobs/artifacts/main/download?job=build
+  ```
 
-```plaintext
-https://gitlab.com/api/v4/projects/<project-id>/jobs/artifacts/main/raw/review/index.html?job=build
-```
+- To download the file `review/index.html` from the latest job named `build` in the `main` branch of a project on GitLab.com:
+
+  ```plaintext
+  https://gitlab.com/api/v4/projects/<project-id>/jobs/artifacts/main/raw/review/index.html?job=build
+  ```
+
+  Files returned by this endpoint always have the `plain/text` content type.
 
 In both examples, replace `<project-id>` with a valid project ID, found at the top of the project details page.
 

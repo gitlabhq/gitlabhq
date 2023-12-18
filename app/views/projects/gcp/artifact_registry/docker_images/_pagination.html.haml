@@ -1,0 +1,13 @@
+.gl-display-flex.gl-justify-content-center
+  %nav.gl-pagination.gl-mt-3
+    .gl-keyset-pagination.btn-group
+      - if @page > 1
+        = link_to 'Prev', namespace_project_gcp_artifact_registry_docker_images_path(params[:namespace_id], params[:project_id], page_token: @previous_page_token, page_tokens: @page_tokens, page: @page - 1, gcp_project_id: params[:gcp_project_id], gcp_location: params[:gcp_location], gcp_ar_repository: params[:gcp_ar_repository], gcp_wlif_url: params[:gcp_wlif_url]), class: 'btn btn-default btn-md gl-button'
+      - else
+        %span.btn.btn-default.btn-md.gl-button.disabled= 'Prev'
+      - if @next_page_token.present?
+        = link_to 'Next', namespace_project_gcp_artifact_registry_docker_images_path(params[:namespace_id], params[:project_id], page_token: @next_page_token, page_tokens: @page_tokens, page: @page + 1, gcp_project_id: params[:gcp_project_id], gcp_location: params[:gcp_location], gcp_ar_repository: params[:gcp_ar_repository], gcp_wlif_url: params[:gcp_wlif_url]), class: 'btn btn-default btn-md gl-button'
+      - else
+        %span.btn.btn-default.btn-md.gl-button.disabled= 'Next'
+
+

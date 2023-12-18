@@ -3,15 +3,14 @@
 - emails_disabled = @group.emails_disabled?
 
 .group-home-panel
-  .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-sm-flex-direction-column.gl-md-flex-direction-row.gl-gap-3.gl-my-5
+  .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-flex-direction-column.gl-sm-flex-direction-row.gl-gap-3.gl-my-5
     .home-panel-title-row.gl-display-flex
-      = render Pajamas::AvatarComponent.new(@group, alt: @group.name, size: 48, class: 'float-none gl-flex-shrink-0 gl-mr-3', avatar_options: { itemprop: 'logo' })
-      %div
-        %h1.home-panel-title.gl-font-size-h-display.gl-mt-3.gl-mb-2.gl-ml-2.gl-display-flex.gl-align-items-center.gl-flex-wrap.gl-gap-3.gl-word-break-word{ itemprop: 'name' }
-          = @group.name
-          %span.visibility-icon.gl-text-secondary.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
-            = visibility_level_icon(@group.visibility_level, options: { class: 'icon' })
-          = render_if_exists 'shared/tier_badge', source: @group, namespace_to_track: @group
+      = render Pajamas::AvatarComponent.new(@group, alt: @group.name, size: 48, class: 'float-none gl-align-self-start gl-flex-shrink-0 gl-mr-3', avatar_options: { itemprop: 'logo' })
+      %h1.home-panel-title.gl-heading-1.gl-mt-3.gl-display-flex.gl-align-items-center.gl-flex-wrap.gl-gap-3.gl-word-break-word{ class: 'gl-mb-0!', itemprop: 'name' }
+        = @group.name
+        %span.visibility-icon.gl-text-secondary.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
+          = visibility_level_icon(@group.visibility_level, options: { class: 'icon' })
+        = render_if_exists 'shared/tier_badge', source: @group, namespace_to_track: @group
 
     - if current_user
       .home-panel-buttons.gl-display-flex.gl-justify-content-md-end.gl-align-items-center.gl-flex-wrap.gl-gap-3{ data: { testid: 'group-buttons' } }

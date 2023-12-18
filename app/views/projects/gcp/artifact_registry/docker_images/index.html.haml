@@ -1,0 +1,23 @@
+- page_title 'Artifact Registry Docker Images'
+
+- unless @error
+  .gl-display-flex.gl-flex-direction-column
+    .gl-display-flex.gl-justify-content-space-between.gl-py-3
+      .gl-flex-direction-column.gl-flex-grow-1
+        .gl-display-flex
+          .gl-display-flex.gl-flex-direction-column
+            %h2.gl-font-size-h1.gl-mt-3.gl-mb-0 Docker Images of #{@artifact_repository_name}
+  = render partial: 'pagination'
+  = render partial: 'docker_image', collection: @docker_images
+  = render partial: 'pagination'
+- else
+  .flash-container.flash-container-page.sticky
+    .gl-alert.flash-notice.gl-alert-info
+      .gl-alert-icon-container
+        = sprite_icon('information-o', css_class: 's16 gl-alert-icon gl-alert-icon-no-title')
+      .gl-alert-content
+        .gl-alert-body
+          - if @error
+            = @error
+          - else
+            Nothing to show here.

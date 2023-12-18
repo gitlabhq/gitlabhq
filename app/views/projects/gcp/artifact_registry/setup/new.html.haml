@@ -1,0 +1,31 @@
+- page_title 'Artifact Registry Setup'
+
+- if @error.present?
+  .flash-container.flash-container-page.sticky
+    .gl-alert.flash-notice.gl-alert-info
+      .gl-alert-icon-container
+        = sprite_icon('information-o', css_class: 's16 gl-alert-icon gl-alert-icon-no-title')
+      .gl-alert-content
+        .gl-alert-body= @error
+- else
+  %p
+
+  = form_tag namespace_project_gcp_artifact_registry_docker_images_path , method: :get do
+    .form-group.row
+      = label_tag :gcp_project_id, 'Google Project ID', class: 'col-form-label col-md-2'
+      .col-md-4
+        = text_field_tag :gcp_project_id, nil, class: 'form-control gl-form-input gl-mr-3'
+    .form-group.row
+      = label_tag :gcp_location, 'Google Project Location', class: 'col-form-label col-md-2'
+      .col-md-4
+        = text_field_tag :gcp_location, nil, class: 'form-control gl-form-input gl-mr-3'
+    .form-group.row
+      = label_tag :gcp_ar_repository, 'Artifact Registry Repository Name', class: 'col-form-label col-md-2'
+      .col-md-4
+        = text_field_tag :gcp_ar_repository, nil, class: 'form-control gl-form-input gl-mr-3'
+    .form-group.row
+      = label_tag :gcp_wlif_url, 'Worflow Identity Federation url', class: 'col-form-label col-md-2'
+      .col-md-4
+        = text_field_tag :gcp_wlif_url, nil, class: 'form-control gl-form-input gl-mr-3'
+    .form-actions
+      = submit_tag 'Setup', class: 'gl-button btn btn-confirm'

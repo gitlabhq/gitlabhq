@@ -12,6 +12,7 @@ There are two software distributions of GitLab:
 
 - The open source [Community Edition](https://gitlab.com/gitlab-org/gitlab-foss/) (CE).
 - The open core [Enterprise Edition](https://gitlab.com/gitlab-org/gitlab/) (EE).
+  **Note:** The EE repository has been archived. GitLab now operates [under a single codebase](https://about.gitlab.com/blog/2019/08/23/a-single-codebase-for-gitlab-community-and-enterprise-edition/).
 
 GitLab is available under [different subscriptions](https://about.gitlab.com/pricing/).
 

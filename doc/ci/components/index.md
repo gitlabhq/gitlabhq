@@ -68,8 +68,13 @@ The repository must contain:
   - In sub-directories containing `template.yml` files as entry points, for components
     that bundle together multiple related files. For example, `templates/secret-detection/template.yml`.
 
-Configure the project's `.gitlab-ci.yml` to [test the components](#test-the-component)
-and [release new versions](#publish-a-new-release).
+You should also:
+
+- Configure the project's `.gitlab-ci.yml` to [test the components](#test-the-component)
+  and [release new versions](#publish-a-new-release).
+- Add a `LICENSE.md` file with a license of your choice that covers the usage of your component.
+  For example the [MIT](https://opensource.org/license/mit/) or [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0#apply)
+  open source licenses.
 
 For example:
 
@@ -78,6 +83,7 @@ For example:
   ```plaintext
   ├── templates/
   │   └── my-component.yml
+  ├── LICENSE.md
   ├── README.md
   └── .gitlab-ci.yml
   ```
@@ -91,6 +97,7 @@ For example:
   │       ├── template.yml
   │       ├── Dockerfile
   │       └── test.sh
+  ├── LICENSE.md
   ├── README.md
   └── .gitlab-ci.yml
   ```

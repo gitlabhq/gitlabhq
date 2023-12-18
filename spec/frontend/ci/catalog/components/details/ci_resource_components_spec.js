@@ -2,7 +2,6 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { resolvers } from '~/ci/catalog/graphql/settings';
 import CiResourceComponents from '~/ci/catalog/components/details/ci_resource_components.vue';
 import getCiCatalogcomponentComponents from '~/ci/catalog/graphql/queries/get_ci_catalog_resource_components.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -17,7 +16,7 @@ describe('CiResourceComponents', () => {
   let wrapper;
   let mockComponentsResponse;
 
-  const components = mockComponents.data.ciCatalogResource.components.nodes;
+  const components = mockComponents.data.ciCatalogResource.latestVersion.components.nodes;
 
   const resourcePath = 'twitter/project-1';
 
@@ -25,7 +24,7 @@ describe('CiResourceComponents', () => {
 
   const createComponent = async () => {
     const handlers = [[getCiCatalogcomponentComponents, mockComponentsResponse]];
-    const mockApollo = createMockApollo(handlers, resolvers);
+    const mockApollo = createMockApollo(handlers);
 
     wrapper = mountExtended(CiResourceComponents, {
       propsData: {
@@ -113,10 +112,9 @@ describe('CiResourceComponents', () => {
         expect(findComponents()).toHaveLength(components.length);
       });
 
-      it('renders the component name, description and snippet', () => {
+      it('renders the component name and snippet', () => {
         components.forEach((component) => {
           expect(wrapper.text()).toContain(component.name);
-          expect(wrapper.text()).toContain(component.description);
           expect(wrapper.text()).toContain(component.path);
         });
       });
@@ -134,9 +132,9 @@ describe('CiResourceComponents', () => {
         it('renders the component parameter attributes', () => {
           const [firstComponent] = components;
 
-          firstComponent.inputs.nodes.forEach((input) => {
+          firstComponent.inputs.forEach((input) => {
             expect(findComponents().at(0).text()).toContain(input.name);
-            expect(findComponents().at(0).text()).toContain(input.defaultValue);
+            expect(findComponents().at(0).text()).toContain(input.default);
             expect(findComponents().at(0).text()).toContain('Yes');
           });
         });

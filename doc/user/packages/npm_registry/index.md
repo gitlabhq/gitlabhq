@@ -232,6 +232,18 @@ To install a package from the instance level, the package must have been publish
    npm install @scope/my-package
    ```
 
+### Package forwarding to npmjs.com
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/55344) in GitLab 12.9.
+
+When an npm package is not found in the package registry, GitLab responds with an HTTP redirect so the requesting client can resend the request to [npmjs.com](https://www.npmjs.com/).
+
+Administrators can disable this behavior in the [Continuous Integration settings](../../../administration/settings/continuous_integration.md).
+
+Group owners can disable this behavior in the group **Packages and registries** settings.
+
+Improvements are tracked in [epic 3608](https://gitlab.com/groups/gitlab-org/-/epics/3608).
+
 ## Deprecate a package
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396763) in GitLab 16.0.
@@ -266,14 +278,6 @@ npm deprecate @scope/package ""
 ```
 
 ## Helpful hints
-
-### Package forwarding to npmjs.com
-
-When an npm package is not found in the package registry, the request is forwarded to [npmjs.com](https://www.npmjs.com/). The forward is performed by sending an HTTP redirect back to the requesting client.
-
-Administrators can disable this behavior in the [Continuous Integration settings](../../../administration/settings/continuous_integration.md).
-
-Group owners can disable this behavior in the group Packages and Registries settings.
 
 ### Install npm packages from other organizations
 

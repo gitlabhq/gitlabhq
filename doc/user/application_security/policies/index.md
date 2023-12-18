@@ -116,7 +116,7 @@ Implementation options for SPPs differ slightly between GitLab SaaS and GitLab s
 main difference is that on GitLab SaaS it's only possible to create subgroups. Ensuring separation
 of duties requires more granular permission configuration.
 
-### Enforce policies across subgroups and projects **(ULTIMATE SAAS)
+### Enforce policies across subgroups and projects **(ULTIMATE SAAS)**
 
 To enforce policies against subgroups and projects, create a subgroup to contain the SPPs, separate
 to the subgroups containing the projects. Using separate subgroups allows for separation of duties,

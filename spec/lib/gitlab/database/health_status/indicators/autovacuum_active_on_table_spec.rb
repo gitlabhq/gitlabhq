@@ -19,6 +19,7 @@ RSpec.describe Gitlab::Database::HealthStatus::Indicators::AutovacuumActiveOnTab
 
     before do
       swapout_view_for_table(:postgres_autovacuum_activity, connection: connection)
+      stub_feature_flags(skip_autovacuum_health_check_for_ci_builds: false)
     end
 
     let(:tables) { [table] }
@@ -59,10 +60,34 @@ RSpec.describe Gitlab::Database::HealthStatus::Indicators::AutovacuumActiveOnTab
         expect(subject.indicator_class).to eq(described_class)
       end
 
-      it 'returns NoSignal signal in case the feature flag is disabled' do
-        stub_feature_flags(batched_migrations_health_status_autovacuum: false)
+      context 'with specific feature flags' do
+        it 'returns NotAvailable on batched_migrations_health_status_autovacuum FF being disable' do
+          stub_feature_flags(batched_migrations_health_status_autovacuum: false)
 
-        expect(subject).to be_a(Gitlab::Database::HealthStatus::Signals::NotAvailable)
+          expect(subject).to be_a(Gitlab::Database::HealthStatus::Signals::NotAvailable)
+        end
+
+        context 'with skip_autovacuum_health_check_for_ci_builds FF being enabled' do
+          before do
+            stub_feature_flags(skip_autovacuum_health_check_for_ci_builds: true)
+          end
+
+          context 'for ci_builds table' do
+            let(:table) { 'ci_builds' }
+
+            it 'returns NotAvailable' do
+              expect(subject).to be_a(Gitlab::Database::HealthStatus::Signals::NotAvailable)
+            end
+          end
+
+          context 'for users table' do
+            let(:table) { 'users' }
+
+            it 'returns Stop signal' do
+              expect(subject).to be_a(Gitlab::Database::HealthStatus::Signals::Stop)
+            end
+          end
+        end
       end
     end
   end
