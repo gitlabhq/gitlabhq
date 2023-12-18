@@ -254,11 +254,10 @@
   display: contents;
 
   gl-emoji {
-    margin-top: -1px;
-    margin-bottom: -1px;
+    margin-block: -0.1em;
 
     img {
-      top: 0;
+      top: -0.025em;
     }
   }
 }

@@ -79,6 +79,12 @@
 
       gl-emoji {
         @include gl-mr-2;
+        vertical-align: text-top;
+
+        img {
+          margin-block: -0.1em;
+          top: 0.05em;
+        }
       }
 
       .dropdown-label-box {

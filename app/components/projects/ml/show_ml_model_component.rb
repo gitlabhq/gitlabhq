@@ -18,7 +18,7 @@ module Projects
             id: model.id,
             name: model.name,
             path: model.path,
-            description: "This is a placeholder for the short description",
+            description: model.description,
             latest_version: latest_version_view_model,
             version_count: model.version_count
           }

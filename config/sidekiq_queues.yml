@@ -129,6 +129,8 @@
   - 1
 - - bitbucket_server_import_stage_import_repository
   - 1
+- - bitbucket_server_import_stage_import_users
+  - 1
 - - bulk_import
   - 1
 - - bulk_imports_entity

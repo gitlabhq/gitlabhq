@@ -3,7 +3,7 @@
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Verify/Accessibility.gitlab-ci.yml
 
-# Read more about the feature here: https://docs.gitlab.com/ee/user/project/merge_requests/accessibility_testing.html
+# Read more about the feature here: https://docs.gitlab.com/ee/ci/testing/accessibility_testing.html
 stages:
   - build
   - test

@@ -14,7 +14,11 @@ module Gitlab
 
           importer.execute
 
-          ImportPullRequestsWorker.perform_async(project.id)
+          if Feature.enabled?(:bitbucket_server_convert_mentions_to_users, project.creator)
+            ImportUsersWorker.perform_async(project.id)
+          else
+            ImportPullRequestsWorker.perform_async(project.id)
+          end
         end
 
         def importer_class

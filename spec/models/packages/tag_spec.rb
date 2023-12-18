@@ -1,9 +1,10 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::Tag, type: :model, feature_category: :package_registry do
-  let!(:project) { create(:project) }
-  let!(:package) { create(:npm_package, version: '1.0.2', project: project, updated_at: 3.days.ago) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:package) { create(:npm_package, version: '1.0.2', project: project, updated_at: 3.days.ago) }
 
   describe '#ensure_project_id' do
     it 'sets the project_id before saving' do
@@ -82,5 +83,26 @@ RSpec.describe Packages::Tag, type: :model, feature_category: :package_registry 
 
       it { is_expected.to contain_exactly(tag1, tag3) }
     end
+  end
+
+  describe '.for_package_ids_with_distinct_names' do
+    let_it_be(:package2) { create(:package, project: project) }
+    let_it_be(:package3) { create(:package, project: project) }
+    let_it_be(:tag1) { create(:packages_tag, name: 'latest', package: package, updated_at: 4.days.ago) }
+    let_it_be(:tag2) { create(:packages_tag, name: 'latest', package: package2, updated_at: 3.days.ago) }
+    let_it_be(:tag3) { create(:packages_tag, name: 'latest', package: package2, updated_at: 2.days.ago) }
+    let_it_be(:tag4) { create(:packages_tag, name: 'tag4', package: package3, updated_at: 5.days.ago) }
+    let_it_be(:tag5) { create(:packages_tag, name: 'tag5', package: package3, updated_at: 4.days.ago) }
+    let_it_be(:tag6) { create(:packages_tag, name: 'tag6', package: package3, updated_at: 6.days.ago) }
+
+    subject { described_class.for_package_ids_with_distinct_names(project.packages) }
+
+    before do
+      stub_const("#{described_class}::FOR_PACKAGES_TAGS_LIMIT", 3)
+    end
+
+    # `tag3` is returned because it's the most recently updated with the name `latest`.
+    # `tag5` is returned before `tag4` because it was updated more recently than `tag4`.
+    it { is_expected.to eq([tag3, tag5, tag4]) }
   end
 end

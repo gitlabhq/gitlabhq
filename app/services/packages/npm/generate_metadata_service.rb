@@ -105,7 +105,7 @@ module Packages
       end
 
       def package_tags
-        Packages::Tag.for_package_ids(packages)
+        Packages::Tag.for_package_ids_with_distinct_names(packages)
                      .preload_package
       end
 

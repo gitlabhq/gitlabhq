@@ -221,7 +221,7 @@ GEM
       faraday (>= 1, < 3)
       sawyer (~> 0.9)
     os (1.1.4)
-    parallel (1.23.0)
+    parallel (1.24.0)
     parallel_tests (4.3.0)
       parallel
     parser (3.2.2.1)
@@ -366,7 +366,7 @@ DEPENDENCIES
   knapsack (~> 4.0)
   nokogiri (~> 1.15, >= 1.15.5)
   octokit (~> 8.0.0)
-  parallel (~> 1.23)
+  parallel (~> 1.24)
   parallel_tests (~> 4.3)
   pry-byebug (~> 3.10.1)
   rainbow (~> 3.1.1)
@@ -385,4 +385,4 @@ DEPENDENCIES
   zeitwerk (~> 2.6, >= 2.6.12)
 
 BUNDLED WITH
-   2.4.22
+   2.5.1

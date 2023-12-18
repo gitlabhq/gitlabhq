@@ -3,8 +3,12 @@
 require "spec_helper"
 
 RSpec.describe Projects::Ml::ShowMlModelComponent, type: :component, feature_category: :mlops do
-  let_it_be(:project) { create(:project) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- build_stubbed breaks because it doesn't create iids properly.
-  let_it_be(:model1) { create(:ml_models, :with_latest_version_and_package, project: project) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- build_stubbed breaks because it doesn't create iids properly.
+  # rubocop:disable RSpec/FactoryBot/AvoidCreate -- build_stubbed breaks because it doesn't create iids properly.
+  let_it_be(:project) { create(:project) }
+  let_it_be(:model1) do
+    create(:ml_models, :with_latest_version_and_package, project: project, description: "A description")
+  end
+  # rubocop:enable RSpec/FactoryBot/AvoidCreate
 
   let_it_be(:experiment) { model1.default_experiment }
   let_it_be(:candidate) { model1.latest_version.candidate }
@@ -26,7 +30,7 @@ RSpec.describe Projects::Ml::ShowMlModelComponent, type: :component, feature_cat
           'id' => model1.id,
           'name' => model1.name,
           'path' => "/#{project.full_path}/-/ml/models/#{model1.id}",
-          'description' => 'This is a placeholder for the short description',
+          'description' => 'A description',
           'latestVersion' => {
             'version' => model1.latest_version.version,
             'description' => model1.latest_version.description,

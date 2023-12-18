@@ -35,10 +35,13 @@ If you [restrict IP addresses for Jira access](https://support.atlassian.com/sec
 
 For the root cause, check the [`integrations_json.log`](../../administration/logs/index.md#integrations_jsonlog) file. When GitLab tries to comment on a Jira issue, an `Error sending message` log entry might appear.
 
-In GitLab 16.1 and later, when an error occurs, the [`integrations_json.log`](../../administration/logs/index.md#integrations_jsonlog) file contains `client_*` keys in the outgoing API request to Jira.
+In GitLab 16.1 and later, when an error occurs, the `integrations_json.log` file contains `client_*` keys in the outgoing API request to Jira.
 You can use the `client_*` keys to check the [Atlassian API documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issues/#api-group-issues) for why the error has occurred.
 
-In the following example, Jira responds with a `404` because the Jira issue `ALPHA-1` does not exist:
+In the following example, Jira responds with a `404`. This error might happen if:
+
+- The Jira user you created for the Jira issue integration does not have permission to view the issue.
+- The Jira issue ID you specified does not exist.
 
 ```json
 {
@@ -52,6 +55,18 @@ In the following example, Jira responds with a `404` because the Jira issue `ALP
   "exception.message": "Not Found",
 }
 ```
+
+For more information about returned status codes, see the [Jira Cloud platform REST API documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-issueidorkey-get-response).
+
+#### Using `curl` to verify access to a Jira issue
+
+To verify that a Jira user can access a specific Jira issue, run the following script:
+
+```shell
+curl --verbose --user "$USER:$API_TOKEN" "https://$ATLASSIAN_SUBDOMAIN.atlassian.net/rest/api/2/issue/$JIRA_ISSUE"
+```
+
+If the user can access the issue, Jira responds with a `200` and the returned JSON includes the Jira issue details.
 
 ### GitLab cannot close a Jira issue
 
@@ -260,3 +275,5 @@ Both methods should return a JSON response:
 
 - `total` gives a count of the issues that match the Jira project key.
 - `issues` contains an array of the issues that match the Jira project key.
+
+For more information about returned status codes, see the [Jira Cloud platform REST API documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-issueidorkey-get-response).

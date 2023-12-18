@@ -18,6 +18,10 @@ To set up the GitLab for Jira Cloud app on your self-managed instance, do one of
 - [Connect the GitLab for Jira Cloud app](#connect-the-gitlab-for-jira-cloud-app) (GitLab 15.7 and later).
 - [Install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually).
 
+After you set up the app, you can use the [project toolchain](https://support.atlassian.com/jira-software-cloud/docs/what-is-the-project-toolchain-in-jira)
+developed and maintained by Atlassian to [link GitLab repositories to Jira projects](https://support.atlassian.com/jira-software-cloud/docs/link-repositories-to-a-project/#Link-repositories-using-the-toolchain-feature).
+The project toolchain does not affect how development information is synced between GitLab and Jira Cloud.
+
 For Jira Data Center or Jira Server, use the [Jira DVCS connector](../../integration/jira/dvcs/index.md) developed and maintained by Atlassian.
 
 ## Set up OAuth authentication
@@ -244,6 +248,16 @@ Other GitLab instances that use the proxy must configure the following settings 
 ## Security considerations
 
 The GitLab for Jira Cloud app connects GitLab and Jira. Data must be shared between the two applications, and access must be granted in both directions.
+
+### Using GitLab.com as a proxy
+
+When you use [GitLab.com as a proxy](#configure-your-gitlab-instance-to-serve-as-a-proxy),
+the Jira access token is shared with GitLab.com.
+
+The Jira access token is stored on GitLab.com because the token must be used to verify
+incoming requests from Jira before the requests are sent to your self-managed instance.
+The token is encrypted and is not used to access data in Jira.
+Any data from your self-managed instance is sent directly to Jira.
 
 ### Access to GitLab through OAuth
 

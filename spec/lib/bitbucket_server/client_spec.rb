@@ -80,6 +80,25 @@ RSpec.describe BitbucketServer::Client, feature_category: :importers do
     end
   end
 
+  describe '#users' do
+    let(:path) { "/projects/#{project}/permissions/users" }
+
+    it 'requests a collection' do
+      expect(BitbucketServer::Paginator).to receive(:new).with(anything, path, :user, page_offset: 0, limit: nil)
+
+      subject.users(project)
+    end
+
+    it 'requests a collection with offset and limit' do
+      offset = 10
+      limit = 100
+
+      expect(BitbucketServer::Paginator).to receive(:new).with(anything, path, :user, page_offset: offset, limit: limit)
+
+      subject.users(project, page_offset: offset, limit: limit)
+    end
+  end
+
   describe '#create_branch' do
     let(:branch) { 'test-branch' }
     let(:sha) { '12345678' }

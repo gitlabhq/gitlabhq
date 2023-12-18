@@ -29,6 +29,11 @@ module BitbucketServer
       get_collection(path, :repo, page_offset: page_offset, limit: limit)
     end
 
+    def users(project_key, page_offset: 0, limit: nil)
+      path = "/projects/#{project_key}/permissions/users"
+      get_collection(path, :user, page_offset: page_offset, limit: limit)
+    end
+
     def create_branch(project_key, repo, branch_name, sha)
       payload = {
         name: branch_name,

@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe ::Packages::Npm::GenerateMetadataService, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:project) { create(:project) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, namespace: group) }
   let_it_be(:package_name) { "@#{project.root_namespace.path}/test" }
   let_it_be(:package1) { create(:npm_package, version: '2.0.4', project: project, name: package_name) }
   let_it_be(:package2) { create(:npm_package, version: '2.0.6', project: project, name: package_name) }
@@ -154,6 +155,19 @@ RSpec.describe ::Packages::Npm::GenerateMetadataService, feature_category: :pack
           create_list(:npm_package, 5, project: project, name: package_name).each_with_index do |npm_package, index|
             create(:packages_tag, package: npm_package, name: "tag_#{index}")
           end
+        end
+      end
+
+      context 'with duplicate tags' do
+        let_it_be(:project2) { create(:project, namespace: group) }
+        let_it_be(:package2) { create(:npm_package, version: '3.0.0', project: project2, name: package_name) }
+        let_it_be(:package_tag1) { create(:packages_tag, package: package1, name: 'latest') }
+        let_it_be(:package_tag2) { create(:packages_tag, package: package2, name: 'latest') }
+
+        let(:packages) { ::Packages::Package.for_projects([project.id, project2.id]).with_name(package_name) }
+
+        it "returns the tag of the latest package's version" do
+          expect(subject['latest']).to eq(package2.version)
         end
       end
     end

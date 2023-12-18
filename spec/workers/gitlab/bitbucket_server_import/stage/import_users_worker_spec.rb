@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BitbucketServerImport::Stage::ImportRepositoryWorker, feature_category: :importers do
+RSpec.describe Gitlab::BitbucketServerImport::Stage::ImportUsersWorker, feature_category: :importers do
   let_it_be(:project) { create(:project, :import_started) }
 
   let(:worker) { described_class.new }
@@ -12,29 +12,16 @@ RSpec.describe Gitlab::BitbucketServerImport::Stage::ImportRepositoryWorker, fea
   describe '#perform' do
     context 'when the import succeeds' do
       before do
-        allow_next_instance_of(Gitlab::BitbucketServerImport::Importers::RepositoryImporter) do |importer|
+        allow_next_instance_of(Gitlab::BitbucketServerImport::Importers::UsersImporter) do |importer|
           allow(importer).to receive(:execute)
         end
       end
 
       it 'schedules the next stage' do
-        expect(Gitlab::BitbucketServerImport::Stage::ImportUsersWorker).to receive(:perform_async)
+        expect(Gitlab::BitbucketServerImport::Stage::ImportPullRequestsWorker).to receive(:perform_async)
           .with(project.id)
 
         worker.perform(project.id)
-      end
-
-      context 'when the bitbucket_server_convert_mentions_to_users flag is disabled' do
-        before do
-          stub_feature_flags(bitbucket_server_convert_mentions_to_users: false)
-        end
-
-        it 'skips the user import and schedules the next stage' do
-          expect(Gitlab::BitbucketServerImport::Stage::ImportPullRequestsWorker).to receive(:perform_async)
-            .with(project.id)
-
-          worker.perform(project.id)
-        end
       end
 
       it 'logs stage start and finish' do
@@ -49,7 +36,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Stage::ImportRepositoryWorker, fea
 
     context 'when project does not exists' do
       it 'does not call importer' do
-        expect(Gitlab::BitbucketServerImport::Importers::RepositoryImporter).not_to receive(:new)
+        expect(Gitlab::BitbucketServerImport::Importers::UsersImporter).not_to receive(:new)
 
         worker.perform(-1)
       end
@@ -59,7 +46,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Stage::ImportRepositoryWorker, fea
       it 'does not call importer' do
         project = create(:project, :import_canceled)
 
-        expect(Gitlab::BitbucketServerImport::Importers::RepositoryImporter).not_to receive(:new)
+        expect(Gitlab::BitbucketServerImport::Importers::UsersImporter).not_to receive(:new)
 
         worker.perform(project.id)
       end
@@ -69,7 +56,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Stage::ImportRepositoryWorker, fea
       it 'does not schedule the next stage and raises error' do
         exception = StandardError.new('Error')
 
-        allow_next_instance_of(Gitlab::BitbucketServerImport::Importers::RepositoryImporter) do |importer|
+        allow_next_instance_of(Gitlab::BitbucketServerImport::Importers::UsersImporter) do |importer|
           allow(importer).to receive(:execute).and_raise(exception)
         end
 
@@ -78,11 +65,11 @@ RSpec.describe Gitlab::BitbucketServerImport::Stage::ImportRepositoryWorker, fea
             project_id: project.id,
             exception: exception,
             error_source: described_class.name,
-            fail_import: true
+            fail_import: false
           ).and_call_original
 
         expect { worker.perform(project.id) }
-          .to change { Gitlab::BitbucketServerImport::Stage::ImportPullRequestsWorker.jobs.size }.by(0)
+          .to change { Gitlab::BitbucketServerImport::Stage::ImportUsersWorker.jobs.size }.by(0)
           .and raise_error(exception)
       end
     end

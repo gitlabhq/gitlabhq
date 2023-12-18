@@ -1492,7 +1492,7 @@ Payload example:
       "docker"
     ]
   },
-  "environment": null
+  "environment": null,
   "source_pipeline":{
      "project":{
        "id": 41,
