@@ -383,3 +383,30 @@ end.each do |project, configuration_ids|
   Security::ScanResultPolicies::SyncProjectWorker.perform_async(project.id)
 end
 ```
+
+### Debugging security approval policy approvals
+
+GitLab SaaS users may submit a [support ticket](https://about.gitlab.com/support/) titled "Scan result approval policy debugging". Provide the following details:
+
+- Group path, project path and optionally merge request ID
+- Severity
+- Current behavior
+- Expected behavior
+
+Support teams will investigate [logs](https://log.gprd.gitlab.net/) (`pubsub-sidekiq-inf-gprd*`) to identify the failure `reason`. Below is an example response snippet from logs. You can use this query to find logs related to approvals: `json.event.keyword: "update_approvals"` and `json.project_path: "group-path/project-path"`. Optionally, you can further filter by the merge request identifier using `json.merge_request_iid`:
+
+```json
+"json": {
+  "project_path": "group-path/project-path",
+  "merge_request_iid": 2,
+  "missing_scans": [
+    "api_fuzzing"
+  ],
+  "reason": "Scanner removed by MR",
+  "event": "update_approvals",
+}
+```
+
+Common failure reasons:
+
+- Scanner removed by MR: Scan result policy expect that the scanners defined in the policy are present and that they successfully produce an artifact for comparison.
