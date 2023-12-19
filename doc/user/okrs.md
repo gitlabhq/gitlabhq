@@ -220,7 +220,7 @@ Prerequisites:
 To promote a key result:
 
 1. [Open the key result](#view-a-key-result).
-1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**)..
+1. In the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**).
 1. Select **Promote to objective**.
 
 Alternatively, use the `/promote_to objective` [quick action](../user/project/quick_actions.md).
@@ -236,7 +236,7 @@ To copy the objective or key result reference to your clipboard:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your objective or key result to view it.
-1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy Reference**.
+1. In the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy Reference**.
 
 You can now paste the reference into another description or comment.
 
@@ -256,7 +256,7 @@ To copy the objective's or key result's email address:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
-1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy objective email address** or **Copy key result email address**.
+1. In the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy objective email address** or **Copy key result email address**.
 
 ## Close an OKR
 
@@ -443,7 +443,7 @@ Prerequisites:
 To change the confidentiality of an existing OKR:
 
 1. [Open the objective](#view-an-objective) or [key result](#view-a-key-result).
-1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**).
+1. In the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**).
 1. Select **Turn on confidentiality** or **Turn off confidentiality**.
 
 ### Who can see confidential OKRs

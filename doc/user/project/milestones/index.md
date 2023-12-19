@@ -142,7 +142,7 @@ To edit a milestone:
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Milestones**.
 1. Select a milestone's title.
-1. In the top right corner, select **Milestone actions** (**{ellipsis_v}**) and then select **Edit**.
+1. In the upper-right corner, select **Milestone actions** (**{ellipsis_v}**) and then select **Edit**.
 1. Edit the title, start date, due date, or description.
 1. Select **Save changes**.
 
@@ -159,7 +159,7 @@ To edit a milestone:
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Milestones**.
 1. Select a milestone's title.
-1. In the top right corner, select **Milestone actions** (**{ellipsis_v}**) and then select **Delete**.
+1. In the upper-right corner, select **Milestone actions** (**{ellipsis_v}**) and then select **Delete**.
 1. Select **Delete milestone**.
 
 ## Promote a project milestone to a group milestone

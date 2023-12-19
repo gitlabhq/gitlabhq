@@ -366,7 +366,7 @@ To copy the task reference to your clipboard:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
 1. In the issue description, in the **Tasks** section, select your task.
-1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy Reference**.
+1. In the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy Reference**.
 
 You can now paste the reference into another description or comment.
 
@@ -386,7 +386,7 @@ To copy the task's email address:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
-1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy task email address**.
+1. In the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy task email address**.
 
 ## Set an issue as a parent
 
@@ -442,7 +442,7 @@ Check that box and select **Create task**.
 To change the confidentiality of an existing task:
 
 1. [Open the task](#view-tasks).
-1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**).
+1. In the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**).
 1. Select **Turn on confidentiality**.
 
 ### Who can see confidential tasks

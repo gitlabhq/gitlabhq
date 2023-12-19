@@ -163,7 +163,7 @@ To lock an issue or merge request:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. For merge requests, select **Code > Merge requests**, and find your merge request.
 1. For issues, select **Plan > Issues**, and find your issue.
-1. On the top right, select **Merge request actions** or **Issue actions** (**{ellipsis_v}**), then select **Lock discussion**.
+1. On the upper-right corner, select **Merge request actions** or **Issue actions** (**{ellipsis_v}**), then select **Lock discussion**.
 
 A system note is added to the page details.
 

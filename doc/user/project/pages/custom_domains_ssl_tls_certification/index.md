@@ -47,7 +47,7 @@ this document for an [overview on DNS records](dns_concepts.md).
 To add your custom domain to GitLab Pages:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Deploy > Pages**.
+1. Select **Deploy > Pages**.
 1. In the upper-right corner, select **New Domain**.
 1. In **Domain**, enter the domain name.
 1. Optional. In **Certificate**, turn off the **Automatic certificate management using Let's Encrypt** toggle to add an [SSL/TLS certificate](#adding-an-ssltls-certificate-to-pages). You can also add the certificate and key later.
@@ -158,7 +158,7 @@ If you're using Cloudflare, check
 After you have added all the DNS records:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Deploy > Pages**.
+1. Select **Deploy > Pages**.
 1. Next to the domain name, select **Edit**.
 1. In **Verification status**, select **Retry verification** (**{retry}**).
 
@@ -287,7 +287,7 @@ domain (as long as you've set a valid certificate for it).
 To enable this setting:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Deploy > Pages**.
+1. Select **Deploy > Pages**.
 1. Select the **Force HTTPS (requires valid certificates)** checkbox.
 1. Select **Save changes**.
 

@@ -35,7 +35,7 @@ To create a new branch from the GitLab UI:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Branches**.
-1. On the top right, select **New branch**.
+1. On the upper-right corner, select **New branch**.
 1. Enter a **Branch name**.
 1. In **Create from**, select the base of your branch: an existing branch, an existing
    tag, or a commit SHA.

@@ -77,8 +77,8 @@ Next, add the subgroup as a member of the `engineering` group:
 
 1. On the left sidebar, select **Search or go to**
    and search for `engineering`. Select the group named `Engineering`.
-1. On the left sidebar, select **Manage > Members**.
-1. On the top right, select **Invite a group**.
+1. Select **Manage > Members**.
+1. In the upper right, select **Invite a group**.
 1. For **Select a group to invite**, select `Engineering / Managers`.
 1. When adding the subgroups select the role **Maintainer**.
    This configures the highest role a member of the subgroup can inherit when accessing the `engineering` group and its projects.
@@ -270,7 +270,7 @@ Your rules are now in place, even though no `1.*` branches exist yet:
 Now that all branch protections in place, you're ready to create your 1.0.0 release branch:
 
 1. On the left sidebar, select **Code > Branches**.
-1. On the top right, select **New branch**. Name it `1.0.0`.
+1. In the upper-right corner, select **New branch**. Name it `1.0.0`.
 1. Select **Create branch**.
 
 The branch protections are now visible in the UI:

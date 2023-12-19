@@ -24904,7 +24904,6 @@ CREATE TABLE vulnerabilities (
     description text,
     description_html text,
     start_date_sourcing_milestone_id bigint,
-    due_date_sourcing_milestone_id bigint,
     state smallint DEFAULT 1 NOT NULL,
     severity smallint NOT NULL,
     severity_overridden boolean DEFAULT false,
@@ -35092,8 +35091,6 @@ CREATE INDEX index_vulnerabilities_on_detected_at_and_id ON vulnerabilities USIN
 
 CREATE INDEX index_vulnerabilities_on_dismissed_by_id ON vulnerabilities USING btree (dismissed_by_id);
 
-CREATE INDEX index_vulnerabilities_on_due_date_sourcing_milestone_id ON vulnerabilities USING btree (due_date_sourcing_milestone_id);
-
 CREATE INDEX index_vulnerabilities_on_epic_id ON vulnerabilities USING btree (epic_id);
 
 CREATE INDEX index_vulnerabilities_on_finding_id ON vulnerabilities USING btree (finding_id);
@@ -37793,9 +37790,6 @@ ALTER TABLE ONLY catalog_resource_versions
 
 ALTER TABLE ONLY issue_customer_relations_contacts
     ADD CONSTRAINT fk_7b92f835bb FOREIGN KEY (contact_id) REFERENCES customer_relations_contacts(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY vulnerabilities
-    ADD CONSTRAINT fk_7c5bb22a22 FOREIGN KEY (due_date_sourcing_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY ssh_signatures
     ADD CONSTRAINT fk_7d2f93996c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

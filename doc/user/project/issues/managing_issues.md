@@ -355,7 +355,7 @@ To delete an issue:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
-1. On the top right corner, select **Issue actions** (**{ellipsis_v}**).
+1. On the upper-right corner, select **Issue actions** (**{ellipsis_v}**).
 1. Select **Delete issue**.
 
 Alternatively:
@@ -377,7 +377,7 @@ To promote an issue to an epic:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
-1. On the top right corner, select **Issue actions** (**{ellipsis_v}**).
+1. On the upper-right corner, select **Issue actions** (**{ellipsis_v}**).
 1. Select **Promote to epic**.
 
 Alternatively, you can use the `/promote` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
