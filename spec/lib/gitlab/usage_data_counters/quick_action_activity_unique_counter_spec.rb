@@ -31,6 +31,14 @@ RSpec.describe Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter, :cle
     end
   end
 
+  context 'when tracking react' do
+    let(:quickaction_name) { 'react' }
+
+    it_behaves_like 'a tracked quick action unique event' do
+      let(:action) { 'i_quickactions_award' }
+    end
+  end
+
   context 'tracking assigns' do
     let(:quickaction_name) { 'assign' }
 

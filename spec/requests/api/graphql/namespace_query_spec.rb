@@ -8,7 +8,8 @@ RSpec.describe 'Query', feature_category: :groups_and_projects do
   let_it_be(:user) { create(:user) }
   let_it_be(:other_user) { create(:user) }
 
-  let_it_be(:group_namespace) { create(:group) }
+  let_it_be(:group_namespace) { create(:group, :private) }
+  let_it_be(:public_group_namespace) { create(:group, :public) }
   let_it_be(:user_namespace) { create(:user_namespace, owner: user) }
   let_it_be(:project_namespace) { create(:project_namespace, parent: group_namespace) }
 
@@ -56,6 +57,51 @@ RSpec.describe 'Query', feature_category: :groups_and_projects do
           it 'does not retrieve the record' do
             expect(query_result).to be_nil
           end
+        end
+      end
+    end
+
+    context 'when used with a public group' do
+      let(:target_namespace) { public_group_namespace }
+
+      before do
+        subject
+      end
+
+      it_behaves_like 'a working graphql query'
+
+      context 'when user is a member' do
+        before do
+          public_group_namespace.add_developer(user)
+        end
+
+        it 'fetches the expected data' do
+          expect(query_result).to include(
+            'fullPath' => target_namespace.full_path,
+            'name' => target_namespace.name
+          )
+        end
+      end
+
+      context 'when user is anonymous' do
+        let(:current_user) { nil }
+
+        it 'fetches the expected data' do
+          expect(query_result).to include(
+            'fullPath' => target_namespace.full_path,
+            'name' => target_namespace.name
+          )
+        end
+      end
+
+      context 'when user is not a member' do
+        let(:current_user) { other_user }
+
+        it 'fetches the expected data' do
+          expect(query_result).to include(
+            'fullPath' => target_namespace.full_path,
+            'name' => target_namespace.name
+          )
         end
       end
     end

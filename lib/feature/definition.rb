@@ -49,23 +49,27 @@ module Feature
       end
 
       unless type.present?
-        raise Feature::InvalidFeatureFlagError, "Feature flag '#{name}' is missing type. Ensure to update #{path}"
+        raise Feature::InvalidFeatureFlagError, "Feature flag '#{name}' is missing `type`. Ensure to update #{path}"
       end
 
       unless Definition::TYPES.include?(type.to_sym)
         raise Feature::InvalidFeatureFlagError, "Feature flag '#{name}' type '#{type}' is invalid. Ensure to update #{path}"
       end
 
-      unless File.basename(path, ".yml") == name
+      if File.basename(path, ".yml") != name || File.basename(File.dirname(path)) != type
         raise Feature::InvalidFeatureFlagError, "Feature flag '#{name}' has an invalid path: '#{path}'. Ensure to update #{path}"
       end
 
-      unless File.basename(File.dirname(path)) == type
-        raise Feature::InvalidFeatureFlagError, "Feature flag '#{name}' has an invalid type: '#{path}'. Ensure to update #{path}"
+      validate_default_enabled!
+    end
+
+    def validate_default_enabled!
+      if default_enabled.nil?
+        raise Feature::InvalidFeatureFlagError, "Feature flag '#{name}' is missing `default_enabled`. Ensure to update #{path}"
       end
 
-      if default_enabled.nil?
-        raise Feature::InvalidFeatureFlagError, "Feature flag '#{name}' is missing default_enabled. Ensure to update #{path}"
+      if default_enabled && !Definition::TYPES.dig(type.to_sym, :can_be_default_enabled)
+        raise Feature::InvalidFeatureFlagError, "Feature flag '#{name}' cannot have `default_enabled` set to `true`. Ensure to update #{path}"
       end
     end
 

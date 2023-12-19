@@ -5,13 +5,17 @@
 # Automatically stages the file and amends the previous commit if the `--amend`
 # argument is used.
 
-require 'optparse'
-require 'yaml'
 require 'fileutils'
-require 'uri'
+require 'httparty'
+require 'json'
+require 'optparse'
 require 'readline'
+require 'shellwords'
+require 'uri'
+require 'yaml'
 
 require_relative '../lib/feature/shared' unless defined?(Feature::Shared)
+require_relative '../lib/gitlab/popen'
 
 module FeatureFlagHelpers
   Abort = Class.new(StandardError)
@@ -32,6 +36,20 @@ class FeatureFlagOptionParser
   extend FeatureFlagHelpers
   extend ::Feature::Shared
 
+  WWW_GITLAB_COM_SITE = 'https://about.gitlab.com'
+  WWW_GITLAB_COM_GROUPS_JSON = "#{WWW_GITLAB_COM_SITE}/groups.json".freeze
+  FF_ROLLOUT_ISSUE_TEMPLATE = '.gitlab/issue_templates/Feature Flag Roll Out.md'
+  COPY_COMMANDS = [
+    'pbcopy', # macOS
+    'xclip -selection clipboard', # Linux
+    'xsel --clipboard --input', # Linux
+    'wl-copy' # Wayland
+  ].freeze
+  OPEN_COMMANDS = [
+    'open', # macOS
+    'xdg-open' # Linux
+  ].freeze
+
   Options = Struct.new(
     :name,
     :type,
@@ -41,8 +59,11 @@ class FeatureFlagOptionParser
     :amend,
     :dry_run,
     :force,
+    :feature_issue_url,
     :introduced_by_url,
-    :rollout_issue_url
+    :rollout_issue_url,
+    :username,
+    keyword_init: true
   )
 
   class << self
@@ -62,6 +83,10 @@ class FeatureFlagOptionParser
           options.force = value
         end
 
+        opts.on('-a', '--feature-issue-url [string]', String, 'URL of the original feature issue') do |value|
+          options.feature_issue_url = value
+        end
+
         opts.on('-m', '--introduced-by-url [string]', String, 'URL of merge request introducing the Feature Flag') do |value|
           options.introduced_by_url = value
         end
@@ -79,11 +104,15 @@ class FeatureFlagOptionParser
         end
 
         opts.on('-g', '--group [string]', String, "The group introducing a feature flag, like: `group::project management`") do |value|
-          options.group = value if value.start_with?('group::')
+          options.group = value if group_labels.include?(value)
         end
 
         opts.on('-t', '--type [string]', String, "The category of the feature flag, valid options are: #{TYPES.keys.map(&:to_s).join(', ')}") do |value|
-          options.type = value.to_sym if TYPES[value.to_sym]
+          options.type = value.to_sym if TYPES.key?(value.to_sym)
+        end
+
+        opts.on('-u', '--username [string]', String, "The username of the feature flag DRI") do |value|
+          options.username = value
         end
 
         opts.on('-e', '--ee', 'Generate a feature flag entry for GitLab EE') do |value|
@@ -110,82 +139,133 @@ class FeatureFlagOptionParser
       options
     end
 
-    def read_group
-      $stdout.puts
-      $stdout.puts ">> Specify the group introducing the feature flag, like `group::project management`:"
+    def groups
+      @groups ||= fetch_json(WWW_GITLAB_COM_GROUPS_JSON)
+    end
 
-      loop do
-        group = Readline.readline('?> ', false)&.strip
-        group = nil if group.empty?
-        return group if group.nil? || group.start_with?('group::')
+    def rollout_issue_template
+      @rollout_issue_template ||= File.read(File.expand_path("../#{FF_ROLLOUT_ISSUE_TEMPLATE}", __dir__))
+    end
 
-        $stderr.puts "The group needs to include `group::`"
+    def group_labels
+      @group_labels ||= groups.map { |_, group| group['label'] }.sort
+    end
+
+    def find_group_by_label(label)
+      groups.find { |_, group| group['label'] == label }[1]
+    end
+
+    def group_list
+      list = []
+      group_labels.each_with_index do |group_label, index|
+        list << "#{index + 1}. #{group_label}"
       end
+
+      list.join("\n")
+    end
+
+    def fetch_json(json_url)
+      json = with_retries { HTTParty.get(json_url, format: :plain) }
+      JSON.parse(json)
+    end
+
+    def with_retries(attempts: 3)
+      yield
+    rescue Errno::ECONNRESET, OpenSSL::SSL::SSLError, Net::OpenTimeout
+      retry if (attempts -= 1).positive?
+      raise
     end
 
     def read_type
-      # if there's only one type, do not ask, return
-      return TYPES.first.first if TYPES.one?
-
       $stdout.puts
       $stdout.puts ">> Specify the feature flag type:"
       $stdout.puts
-      TYPES.each do |type, data|
+      TYPES.each_with_index do |(type, data), index|
         next if data[:deprecated]
 
-        $stdout.puts "#{type.to_s.rjust(15)}#{' '*6}#{data[:description]}"
+        $stdout.puts "#{index + 1}. #{type.to_s.rjust(17)}    #{data[:description]}"
       end
 
       loop do
-        type = Readline.readline('?> ', false)&.strip&.to_sym
-        return type if TYPES[type] && !TYPES[type][:deprecated]
+        type = Readline.readline('?> ', false)&.strip
+        type = TYPES.keys[type.to_i - 1] unless type.to_i.zero?
+        type = type&.to_sym
+        type_def = TYPES[type]
 
-        $stderr.puts "Invalid type specified '#{type}'"
+        if type_def && !type_def[:deprecated]
+          $stdout.puts "You picked the type '#{type}'"
+          return type
+        else
+          $stderr.puts "Invalid type specified '#{type}'"
+        end
       end
+    end
+
+    def read_group
+      $stdout.puts
+      $stdout.puts ">> Specify the group label to which the feature flag belongs, from the following list:\n#{group_list}"
+
+      loop do
+        group = Readline.readline('?> ', false)&.strip
+        group = group_labels[group.to_i - 1] unless group.to_i.zero?
+
+        if group_labels.include?(group)
+          $stdout.puts "You picked the group '#{group}'"
+          return group
+        else
+          $stderr.puts "The group label isn't in the above labels list"
+        end
+
+      end
+    end
+
+    def read_feature_issue_url
+      read_url('URL of the original feature issue (enter to skip):')
     end
 
     def read_introduced_by_url
-      $stdout.puts
-      $stdout.puts ">> URL of the MR introducing the feature flag (enter to skip):"
-
-      loop do
-        introduced_by_url = Readline.readline('?> ', false)&.strip
-        introduced_by_url = nil if introduced_by_url.empty?
-        return introduced_by_url if introduced_by_url.nil? || introduced_by_url.start_with?('https://')
-
-        $stderr.puts "URL needs to start with https://"
-      end
-    end
-
-    def read_ee_only(options)
-      TYPES.dig(options.type, :ee_only)
+      read_url('URL of the MR introducing the feature flag (enter to skip and let Danger provide a suggestion directly in the MR):')
     end
 
     def read_rollout_issue_url(options)
       return unless TYPES.dig(options.type, :rollout_issue)
 
-      url = "https://gitlab.com/gitlab-org/gitlab/-/issues/new"
-      title = "[Feature flag] Rollout of `#{options.name}`"
+      issue_new_url = "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/new"
+      issue_title = "[Feature flag] Rollout of `#{options.name}`"
+      issue_new_url = issue_new_url + "?" + URI.encode_www_form('issue[title]' => issue_title)
+      group_name = find_group_by_label(options.group)
 
-      params = {
-        'issue[title]' => "[Feature flag] Rollout of `#{options.name}`",
-        'issuable_template' => 'Feature Flag Roll Out',
-      }
-      issue_new_url = url + "?" + URI.encode_www_form(params)
+      template = rollout_issue_template
+
+      if options.username
+        template.gsub!('<gitlab-username-of-dri>', options.username)
+      else
+        # Assign to current user by default
+        template.gsub!('/assign @<gitlab-username-of-dri>', "/assign me")
+      end
+
+      template.gsub!('<feature-flag-name>', options.name)
+      template.gsub!('<merge-request-url>', options.introduced_by_url) if options.introduced_by_url
+      template.gsub!('<milestone>', options.milestone)
+      template.gsub!('<feature-issue-link>', options.feature_issue_url) if options.feature_issue_url
+      template.gsub!('<slack-channel-of-dri-team>', group_name['slack_channel']) if group_name&.key?('slack_channel')
+      template.gsub!('<group-label>', %Q(~"#{options.group}"))
 
       $stdout.puts
-      $stdout.puts ">> Open this URL and fill in the rest of the details:"
-      $stdout.puts issue_new_url
-      $stdout.puts
+      $stdout.puts ">> Press any key and paste the issue content that we copied to your clipboard! 🚀"
+      Readline.readline('?> ', false)
+      copy_to_clipboard!(template)
+
+      if open_url!(issue_new_url) != 0
+        $stdout.puts ">> Automatic opening of the new issue URL failed, so please visit #{issue_new_url} manually."
+      end
 
       $stdout.puts ">> URL of the rollout issue (enter to skip):"
 
       loop do
         created_url = Readline.readline('?> ', false)&.strip
         created_url = nil if created_url.empty?
-        return created_url if created_url.nil? || created_url.start_with?('https://')
-
-        $stderr.puts "URL needs to start with https://"
+        return created_url if created_url.nil? || valid_url?(created_url)
       end
     end
 
@@ -194,8 +274,65 @@ class FeatureFlagOptionParser
       milestone.gsub(/^(\d+\.\d+).*$/, '\1').chomp
     end
 
-    def read_default_enabled(options)
-      TYPES.dig(options.type, :default_enabled)
+    def read_username
+      $stdout.puts
+      $stdout.puts ">> Username of the feature flag DRI (enter to skip):"
+
+      loop do
+        username = Readline.readline('?> ', false)&.strip
+        return if username.empty?
+        return username if valid_url?("https://gitlab.com/#{username}")
+      end
+    end
+
+    def read_url(prompt)
+      $stdout.puts
+      $stdout.puts ">> #{prompt}"
+
+      loop do
+        url = Readline.readline('?> ', false)&.strip
+        url = nil if url.empty?
+        return url if url.nil? || valid_url?(url)
+      end
+    end
+
+    def valid_url?(url)
+      unless url.start_with?('https://')
+        $stderr.puts "URL needs to start with https://"
+        return false
+      end
+
+      response = HTTParty.head(url)
+
+      return true if response.success?
+
+      $stderr.puts "URL '#{url}' isn't valid!"
+    end
+
+    def open_url!(url)
+      _, open_url_status = Gitlab::Popen.popen([open_command, url])
+
+      open_url_status
+    end
+
+    def copy_to_clipboard!(text)
+      IO.popen(copy_to_clipboard_command.shellsplit, 'w') do |pipe|
+        pipe.print(text)
+      end
+    end
+
+    def copy_to_clipboard_command
+      find_compatible_command(COPY_COMMANDS)
+    end
+
+    def open_command
+      find_compatible_command(OPEN_COMMANDS)
+    end
+
+    def find_compatible_command(commands)
+      commands.find do |command|
+        Gitlab::Popen.popen(%W[which #{command.split(' ')[0]}])[1] == 0
+      end
     end
   end
 end
@@ -216,11 +353,12 @@ class FeatureFlagCreator
 
     # Read type from stdin unless is already set
     options.type ||= FeatureFlagOptionParser.read_type
-    options.ee ||= FeatureFlagOptionParser.read_ee_only(options)
     options.group ||= FeatureFlagOptionParser.read_group
+    options.feature_issue_url ||= FeatureFlagOptionParser.read_feature_issue_url
     options.introduced_by_url ||= FeatureFlagOptionParser.read_introduced_by_url
-    options.rollout_issue_url ||= FeatureFlagOptionParser.read_rollout_issue_url(options)
     options.milestone ||= FeatureFlagOptionParser.read_milestone
+    options.username ||= FeatureFlagOptionParser.read_username
+    options.rollout_issue_url ||= FeatureFlagOptionParser.read_rollout_issue_url(options)
 
     $stdout.puts "\e[32mcreate\e[0m #{file_path}"
     $stdout.puts contents
@@ -238,22 +376,19 @@ class FeatureFlagCreator
   private
 
   def contents
-    # Slice is used to ensure that YAML keys
-    # are always ordered in a predictable way
-    config_hash.slice(
-      *::Feature::Shared::PARAMS.map(&:to_s)
-    ).to_yaml
+    config_hash.to_yaml
   end
 
   def config_hash
     {
       'name'              => options.name,
+      'feature_issue_url' => options.feature_issue_url,
       'introduced_by_url' => options.introduced_by_url,
       'rollout_issue_url' => options.rollout_issue_url,
       'milestone'         => options.milestone,
       'group'             => options.group,
       'type'              => options.type.to_s,
-      'default_enabled'   => FeatureFlagOptionParser.read_default_enabled(options)
+      'default_enabled'   => false
     }
   end
 

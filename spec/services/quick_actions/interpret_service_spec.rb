@@ -564,7 +564,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       it 'returns the reaction message' do
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq('Toggled :100: emoji award.')
+        expect(message).to eq('Toggled :100: emoji reaction.')
       end
     end
 
@@ -1911,8 +1911,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           let(:content) { "#{command} :100:" }
           let(:issuable) { commit }
 
-          # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/434446
-          it_behaves_like 'failed command', "Could not apply award command."
+          it_behaves_like 'failed command', "Could not apply react command."
         end
       end
     end
@@ -2877,7 +2876,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       it 'includes the emoji' do
         _, explanations = service.explain(content, issue)
 
-        expect(explanations).to eq(['Toggles :confetti_ball: emoji award.'])
+        expect(explanations).to eq(['Toggles :confetti_ball: emoji reaction.'])
       end
     end
 

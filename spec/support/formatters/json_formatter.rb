@@ -89,7 +89,13 @@ module Support
           [metadata[:file_path], metadata[:line_number]]
         else
           # If there are nested shared examples, the outermost location is last in the array
-          metadata[:shared_group_inclusion_backtrace].last.formatted_inclusion_location.split(':')
+          (
+            metadata[:shared_group_inclusion_backtrace].last.formatted_inclusion_location ||
+              # RSpec ignores some paths by default, e.g. bin/, which result in the above being nil.
+              # Source: https://github.com/rspec/rspec-core/blob/v3.12.2/lib/rspec/core/backtrace_formatter.rb#L11
+              # In that case, we fallback to use the raw `#inclusion_location`.
+              metadata[:shared_group_inclusion_backtrace].last.inclusion_location
+          ).split(':')
         end
       end
 

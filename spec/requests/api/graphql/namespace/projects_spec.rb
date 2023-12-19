@@ -20,6 +20,7 @@ RSpec.describe 'getting projects', feature_category: :groups_and_projects do
       'namespace',
       { 'fullPath' => subject.full_path },
       <<~QUERY
+      id
       projects(includeSubgroups: #{include_subgroups}) {
         edges {
           node {
@@ -53,17 +54,17 @@ RSpec.describe 'getting projects', feature_category: :groups_and_projects do
 
       expect(graphql_data['namespace']['projects']['edges'].size).to eq(count)
     end
-
-    context 'with no user' do
-      it 'finds only public projects' do
-        post_graphql(query, current_user: nil)
-
-        expect(graphql_data['namespace']).to be_nil
-      end
-    end
   end
 
   it_behaves_like 'a graphql namespace'
+
+  context 'when no user is given' do
+    it 'finds only public projects' do
+      post_graphql(query, current_user: nil)
+
+      expect(graphql_data_at(:namespace, :projects, :edges).size).to eq(1)
+    end
+  end
 
   context 'when the namespace is a user' do
     subject { user.namespace }
@@ -71,6 +72,12 @@ RSpec.describe 'getting projects', feature_category: :groups_and_projects do
     let(:include_subgroups) { false }
 
     it_behaves_like 'a graphql namespace'
+
+    it 'does not show namespace entity for anonymous user' do
+      post_graphql(query, current_user: nil)
+
+      expect(graphql_data['namespace']).to be_nil
+    end
   end
 
   context 'when not including subgroups' do

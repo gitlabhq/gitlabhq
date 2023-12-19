@@ -50961,7 +50961,7 @@ msgstr ""
 msgid "Toggle details"
 msgstr ""
 
-msgid "Toggle emoji award"
+msgid "Toggle emoji reaction"
 msgstr ""
 
 msgid "Toggle file browser"
@@ -50988,10 +50988,10 @@ msgstr ""
 msgid "Toggle the navigation sidebar"
 msgstr ""
 
-msgid "Toggled :%{name}: emoji award."
+msgid "Toggled :%{name}: emoji reaction."
 msgstr ""
 
-msgid "Toggles :%{name}: emoji award."
+msgid "Toggles :%{name}: emoji reaction."
 msgstr ""
 
 msgid "Token"

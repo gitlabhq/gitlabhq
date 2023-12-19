@@ -26,10 +26,14 @@ To resolve this issue, set up [OAuth authentication](jira_cloud_app.md#set-up-oa
 
 ## Manual installation fails
 
-You might get an error if you have installed the GitLab for Jira Cloud app from the official marketplace listing and replaced it with [manual installation](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually):
+You might see one of the following errors if you have installed the GitLab for Jira Cloud app from the official marketplace listing and replaced it with [manual installation](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually):
 
 ```plaintext
 The app "gitlab-jira-connect-gitlab.com" could not be installed as a local app as it has previously been installed from Atlassian Marketplace
+```
+
+```plaintext
+The app host returned HTTP response code 401 when we tried to contact it during installation. Please try again later or contact the app vendor.
 ```
 
 To resolve this issue, disable the **Jira Connect Proxy URL** setting.

@@ -163,7 +163,9 @@ Prerequisites:
 
 - You need to [authenticate with the API](../../../api/rest/index.md#authentication). If authenticating with a personal access token, it must be configured with the `read_api` scope.
 
-Authentication tokens (Job Token or Personal Access Token) can be provided for `terraform` in your `~/.terraformrc` or `%APPDATA%/terraform.rc` file:
+### From a namespace
+
+You can provide authentication tokens (job tokens, personal access tokens, or deploy tokens) for `terraform` in your `~/.terraformrc` or `%APPDATA%/terraform.rc` file:
 
 ```terraform
 credentials "gitlab.com" {
@@ -182,6 +184,30 @@ module "<module>" {
 ```
 
 Where `<namespace>` is the [namespace](../../../user/namespace/index.md) of the Terraform Module Registry.
+
+### From a project
+
+To reference a Terraform module using a project-level source, use the [fetching archives over HTTP](https://developer.hashicorp.com/terraform/language/modules/sources#fetching-archives-over-http) source type provided by Terraform.
+
+You can provide authentication tokens (job tokens, personal access tokens, or deploy tokens) for `terraform` in your `~/.netrc` file:
+
+```netrc
+machine gitlab.com
+login <USERNAME>
+password <TOKEN>
+```
+
+Where `gitlab.com` can be replaced with the hostname of your self-managed GitLab instance, and `<USERNAME>` is your token username.
+
+You can refer to your Terraform module from a downstream Terraform project:
+
+```terraform
+module "<module>" {
+  source = "https://gitlab.com/api/v4/projects/<project-id>/packages/terraform/modules/<module-name>/<module-system>/<module-version>"
+}
+```
+
+If you need to reference the latest version of a module, you can omit the `<module-version>` from the source URL. To prevent future issues, you should reference a specific version if possible.
 
 ## Download a Terraform module
 

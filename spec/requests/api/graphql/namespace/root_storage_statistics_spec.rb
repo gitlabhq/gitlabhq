@@ -63,7 +63,7 @@ RSpec.describe 'rendering namespace statistics', feature_category: :metrics do
       it 'hides statistics for unauthenticated requests' do
         post_graphql(query, current_user: nil)
 
-        expect(graphql_data['namespace']).to be_blank
+        expect(graphql_data_at(:namespace, :root_storage_statistics)).to be_blank
       end
     end
   end

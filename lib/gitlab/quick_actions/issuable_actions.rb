@@ -197,12 +197,12 @@ module Gitlab
           @updates[:subscription_event] = 'unsubscribe'
         end
 
-        desc { _('Toggle emoji award') }
+        desc { _('Toggle emoji reaction') }
         explanation do |name|
-          _("Toggles :%{name}: emoji award.") % { name: name } if name
+          _("Toggles :%{name}: emoji reaction.") % { name: name } if name
         end
         execution_message do |name|
-          _("Toggled :%{name}: emoji award.") % { name: name } if name
+          _("Toggled :%{name}: emoji reaction.") % { name: name } if name
         end
         params ':emoji:'
         types ::Issuable
@@ -213,7 +213,7 @@ module Gitlab
           match = emoji_param.match(Banzai::Filter::EmojiFilter.emoji_pattern)
           match[1] if match
         end
-        command :award, :react do |name|
+        command :react, :award do |name|
           if name && quick_action_target.user_can_award?(current_user)
             @updates[:emoji_award] = name
           end

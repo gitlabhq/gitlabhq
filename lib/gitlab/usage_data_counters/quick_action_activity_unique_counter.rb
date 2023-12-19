@@ -19,6 +19,8 @@ module Gitlab
 
         def prepare_name(name, args)
           case name
+          when 'react'
+            'award'
           when 'assign'
             event_name_for_assign(args)
           when 'copy_metadata'

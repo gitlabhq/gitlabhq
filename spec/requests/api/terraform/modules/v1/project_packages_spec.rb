@@ -6,6 +6,18 @@ RSpec.describe API::Terraform::Modules::V1::ProjectPackages, feature_category: :
   include_context 'for terraform modules api setup'
   using RSpec::Parameterized::TableSyntax
 
+  describe 'GET /api/v4/projects/:project_id/packages/terraform/modules/:module_name/:module_system' do
+    it_behaves_like 'handling project level terraform module download requests' do
+      let(:module_version) { nil }
+    end
+  end
+
+  describe 'GET /api/v4/projects/:project_id/packages/terraform/modules/:module_name/:module_system/:module_version' do
+    it_behaves_like 'handling project level terraform module download requests' do
+      let(:module_version) { package.version }
+    end
+  end
+
   describe 'PUT /api/v4/projects/:project_id/packages/terraform/modules/:module_name/:module_system/:module_version/file/authorize' do
     include_context 'workhorse headers'
 

@@ -31675,6 +31675,8 @@ CREATE INDEX idx_pkgs_installable_package_files_on_package_id_id_file_name ON pa
 
 CREATE INDEX idx_pkgs_npm_metadata_caches_on_id_and_project_id_and_status ON packages_npm_metadata_caches USING btree (id) WHERE ((project_id IS NULL) AND (status = 0));
 
+CREATE INDEX idx_pkgs_on_project_id_name_version_on_installable_terraform ON packages_packages USING btree (project_id, name, version, id) WHERE ((package_type = 12) AND (status = ANY (ARRAY[0, 1])));
+
 CREATE INDEX idx_proj_feat_usg_on_jira_dvcs_cloud_last_sync_at_and_proj_id ON project_feature_usages USING btree (jira_dvcs_cloud_last_sync_at, project_id) WHERE (jira_dvcs_cloud_last_sync_at IS NOT NULL);
 
 CREATE INDEX idx_proj_feat_usg_on_jira_dvcs_server_last_sync_at_and_proj_id ON project_feature_usages USING btree (jira_dvcs_server_last_sync_at, project_id) WHERE (jira_dvcs_server_last_sync_at IS NOT NULL);

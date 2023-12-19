@@ -7,7 +7,7 @@ info: "See the Technical Writers assigned to Development Guidelines: https://han
 # Feature flags in the development of GitLab
 
 NOTE:
-This document explains how to contribute to the development of the GitLab product.
+This document explains how to contribute to the development and operations of the GitLab product.
 If you want to use feature flags to show and hide functionality in your own applications,
 view [this feature flags information](../../operations/feature_flags.md) instead.
 
@@ -16,6 +16,11 @@ All newly-introduced feature flags should be [disabled by default](https://about
 
 WARNING:
 All newly-introduced feature flags should be [used with an actor](controls.md#percentage-based-actor-selection).
+
+Blueprints:
+
+- (Latest) [Feature Flags usage in GitLab development and operations](../../architecture/blueprints/feature_flags_usage_in_dev_and_ops/index.md)
+- [Development Feature Flags Architecture](../../architecture/blueprints/feature_flags_development/index.md)
 
 This document is the subject of continued work as part of an epic to [improve internal usage of feature flags](https://gitlab.com/groups/gitlab-org/-/epics/3551). Raise any suggestions as new issues and attach them to the epic.
 
@@ -44,77 +49,147 @@ should be leveraged:
 When the feature implementation is delivered over multiple merge requests:
 
 1. [Create a new feature flag](#create-a-new-feature-flag)
-   which is **off** by default, in the first merge request which uses the flag.
-   Flags [should not be added separately](#risk-of-a-broken-main-branch).
+   which is **disabled** by default, in the first merge request which uses the flag.
+   Flags [should not be added separately](#risk-of-a-broken-default-branch).
 1. Submit incremental changes via one or more merge requests, ensuring that any
-   new code added can only be reached if the feature flag is **on**.
+   new code added can only be reached if the feature flag is **enabled**.
    You can keep the feature flag enabled on your local GDK during development.
 1. When the feature is ready to be tested by other team members, [create the initial documentation](../documentation/feature_flags.md#when-to-document-features-behind-a-feature-flag).
    Include details about the status of the [feature flag](../documentation/feature_flags.md#how-to-add-feature-flag-documentation).
-1. Enable the feature flag for a specific project and ensure that there are no issues
+1. Enable the feature flag for a specific group/project/user and ensure that there are no issues
    with the implementation. Do not enable the feature flag for a public project
-   like `gitlab` if there is no documentation. Team members and contributors might search for
+   like `gitlab-org/gitlab` if there is no documentation. Team members and contributors might search for
    documentation on how to use the feature if they see it enabled in a public project.
 1. When the feature is ready for production use, open a merge request to:
    - Update the documentation to describe the latest flag status.
    - Add a [changelog entry](#changelog).
-   - Flip the feature flag to be **on by default** or remove it entirely
-     to enable the new behavior.
+   - Remove the feature flag to enable the new behavior, or flip the feature flag to be **enabled by default** (only for `ops` and `beta` feature flags).
 
 One might be tempted to think that feature flags will delay the release of a
 feature by at least one month (= one release). This is not the case. A feature
 flag does not have to stick around for a specific amount of time
 (for example, at least one release), instead they should stick around until the feature
-is deemed stable. Stable means it works on GitLab.com without causing any
-problems, such as outages.
+is deemed stable. **Stable means it works on GitLab.com without causing any
+problems, such as outages.**
 
-## Risk of a broken main branch
+## Risk of a broken default branch
 
 Feature flags must be used in the MR that introduces them. Not doing so causes a
-[broken main branch](https://about.gitlab.com/handbook/engineering/workflow/#broken-master) scenario due
-to the `rspec:feature-flags` job that only runs on the `main` branch.
+[broken default branch](https://about.gitlab.com/handbook/engineering/workflow/#broken-master) scenario due
+to the `rspec:feature-flags` job that only runs on the default branch.
 
 ## Types of feature flags
 
 Choose a feature flag type that matches the expected usage.
 
-### `development` type
+### `gitlab_com_derisk` type
 
-`development` feature flags are short-lived feature flags,
-used for deploying unfinished code to production. Most feature flags used at
-GitLab are the `development` type.
+`gitlab_com_derisk` feature flags are short-lived feature flags,
+used to de-risk GitLab.com deployments. Most feature flags used at
+GitLab are of the `gitlab_com_derisk` type.
 
-A `development` feature flag must have a rollout issue
-created from the [Feature flag Roll Out template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md).
+#### Constraints
 
-The format for `development` feature flags is `Feature.<state>(:<dev_flag_name>)`.
+- `default_enabled`: **Must not** be set to true. This kind of feature flag is meant to lower the risk on GitLab.com, thus there's no need to keep the flag in the codebase after it's been enabled on GitLab.com. `default_enabled: true` will not have any effect for this type of feature flag.
+- Maximum Lifespan: 2 months after it's merged into the default branch
+- Documentation: This type of feature flag don't need to be documented in the
+  [All feature flags in GitLab](../../user/feature_flags.md) page given they're short-lived and deployment-related
+- Rollout issue: **Must** have a rollout issue created from the
+  [Feature flag Roll Out template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md)
+
+#### Usage
+
+The format for `gitlab_com_derisk` feature flags is `Feature.<state>(:<dev_flag_name>)`.
+
 To enable and disable them, run on the GitLab Rails console:
 
 ```ruby
 # To enable it for the instance:
-Feature.enable(:<dev_flag_name>)
+Feature.enable(:<dev_flag_name>, type: :gitlab_com_derisk)
 
 # To disable it for the instance:
-Feature.disable(:<dev_flag_name>)
+Feature.disable(:<dev_flag_name>, type: :gitlab_com_derisk)
 
 # To enable for a specific project:
-Feature.enable(:<dev_flag_name>, Project.find(<project id>))
+Feature.enable(:<dev_flag_name>, Project.find(<project id>), type: :gitlab_com_derisk)
 
 # To disable for a specific project:
-Feature.disable(:<dev_flag_name>, Project.find(<project id>))
+Feature.disable(:<dev_flag_name>, Project.find(<project id>), type: :gitlab_com_derisk)
 ```
 
-To check a `development` feature flag's state:
+To check a `gitlab_com_derisk` feature flag's state:
 
 ```ruby
 # Check if the feature flag is enabled
-Feature.enabled?(:dev_flag_name)
+Feature.enabled?(:dev_flag_name, type: :gitlab_com_derisk)
 
 # Check if the feature flag is disabled
-Feature.disabled?(:dev_flag_name)
+Feature.disabled?(:dev_flag_name, type: :gitlab_com_derisk)
 ```
 
-For `development` feature flags, the type doesn't need to be specified (they're the default type).
+### `wip` type
+
+Some features are complex and need to be implemented through several MRs. Until they're fully implemented,
+it needs to be hidden from anyone. In that case, the `wip` (for "Work In Progress") feature flag allows
+to merge all the changes to the main branch without actually using the feature yet.
+
+Once the feature is complete, the feature flag type can be changed to the `gitlab_com_derisk` or
+`beta` type depending on how the feature will be presented/documented to customers.
+
+#### Constraints
+
+- `default_enabled`: **Must not** be set to true. If needed, this type can be changed to beta once the feature is complete.
+- Maximum Lifespan: 4 months after it's merged into the default branch
+- Documentation: This type of feature flag don't need to be documented in the
+  [All feature flags in GitLab](../../user/feature_flags.md) page given they're mostly hiding unfinished code
+- Rollout issue: Likely no need for a rollout issues, as `wip` feature flags should be transitioned to
+  another type before being enabled
+
+#### Usage
+
+```ruby
+# Check if feature flag is enabled
+Feature.enabled?(:my_wip_flag, project, type: :wip)
+
+# Check if feature flag is disabled
+Feature.disabled?(:my_wip_flag, project, type: :wip)
+
+# Push feature flag to Frontend
+push_frontend_feature_flag(:my_wip_flag, project, type: :wip)
+```
+
+### `beta` type
+
+We might
+[not be confident we'll be able to scale, support, and maintain a feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#experiment-beta-ga)
+in its current form for every designed use case ([example](https://gitlab.com/gitlab-org/gitlab/-/issues/336070#note_1523983444)).
+There are also scenarios where a feature is not complete enough to be considered an MVC.
+Providing a flag in this case allows engineers and customers to disable the new feature until it's performant enough.
+
+#### Constraints
+
+- `default_enabled`: Can be set to `true` so that a feature can be "released" to everyone in Beta with the
+  possibility to disable it in the case of scalability issues (ideally it should only be disabled for this
+  reason on specific on-premise installations)
+- Maximum Lifespan: 6 months after it's merged into the default branch
+- Documentation: This type of feature flag **must** be documented in the
+  [All feature flags in GitLab](../../user/feature_flags.md) page
+- Rollout issue: **Must** have a rollout issue
+  created from the
+  [Feature flag Roll Out template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md)
+
+#### Usage
+
+```ruby
+# Check if feature flag is enabled
+Feature.enabled?(:my_beta_flag, project, type: :beta)
+
+# Check if feature flag is disabled
+Feature.disabled?(:my_beta_flag, project, type: :beta)
+
+# Push feature flag to Frontend
+push_frontend_feature_flag(:my_beta_flag, project, type: :beta)
+```
 
 ### `ops` type
 
@@ -122,10 +197,20 @@ For `development` feature flags, the type doesn't need to be specified (they're 
 of GitLab product behavior. For example, feature flags that disable features that might
 have a performance impact such as Sidekiq worker behavior.
 
-`ops` feature flags likely do not have rollout issues, as it is hard to
-predict when they are enabled or disabled.
+Remember that using this type should follow a conscious decision not to introduce an
+instance/group/project/user setting.
 
-To invoke `ops` feature flags, you must append `type: :ops`:
+#### Constraints
+
+- `default_enabled`: Can be set to `true` so that a feature can be "released" to everyone in Beta with the
+  possibility to disable it in the case of scalability issues (ideally it should only be disabled for this
+  reason on specific on-premise installations)
+- Maximum Lifespan: Unlimited
+- Documentation: This type of feature flag **must** be documented in the
+  [All feature flags in GitLab](../../user/feature_flags.md) page
+- Rollout issue: Likely no need for a rollout issues, as it is hard to predict when they are enabled or disabled
+
+#### Usage
 
 ```ruby
 # Check if feature flag is enabled
@@ -142,17 +227,26 @@ push_frontend_feature_flag(:my_ops_flag, project, type: :ops)
 
 `experiment` feature flags are used for A/B testing on GitLab.com.
 
-An `experiment` feature flag should conform to the same standards as a `development` feature flag,
+An `experiment` feature flag should conform to the same standards as a `beta` feature flag,
 although the interface has some differences. An experiment feature flag should have a rollout issue,
 created using the [Experiment Tracking template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Experiment%20Rollout.md). More information can be found in the [experiment guide](../experiment_guide/index.md).
 
+#### Constraints
+
+- `default_enabled`: **Must not** be set to `true`.
+- Maximum Lifespan: 6 months after it's merged into the default branch
+
 ### `worker` type
 
-`worker` feature flags are used for controlling Sidekiq workers behavior, such as deferring Sidekiq jobs.
+`worker` feature flags are special `ops` flags that allow to control Sidekiq workers behavior, such as deferring Sidekiq jobs.
 
 `worker` feature flags likely do not have any YAML definition as the name could be dynamically generated using
 the worker name itself, for example, `run_sidekiq_jobs_AuthorizedProjectsWorker`. Some examples for using `worker` type feature
 flags can be found in [deferring Sidekiq jobs](#deferring-sidekiq-jobs).
+
+### [Deprecated]`development` type
+
+The `development` type is deprecated in favor of the `gitlab_com_derisk`, `wip`, and `beta` feature flag types.
 
 ## Feature flag definition and validation
 
@@ -179,10 +273,11 @@ Each feature flag is defined in a separate YAML file consisting of a number of f
 | `name`              | yes      | Name of the feature flag.                                      |
 | `type`              | yes      | Type of feature flag.                                          |
 | `default_enabled`   | yes      | The default state of the feature flag.                         |
-| `introduced_by_url` | no       | The URL to the merge request that introduced the feature flag. |
+| `introduced_by_url` | yes      | The URL to the merge request that introduced the feature flag. |
+| `milestone`         | yes      | Milestone in which the feature flag was created. |
+| `group`             | yes      | The [group](https://about.gitlab.com/handbook/product/categories/#devops-stages) that owns the feature flag. |
+| `feature_issue_url` | no       | The URL to the original feature issue.                         |
 | `rollout_issue_url` | no       | The URL to the Issue covering the feature flag rollout.        |
-| `milestone`         | no       | Milestone in which the feature flag was created. |
-| `group`             | no       | The [group](https://about.gitlab.com/handbook/product/categories/#devops-stages) that owns the feature flag. |
 
 NOTE:
 All validations are skipped when running in `RAILS_ENV=production`.
